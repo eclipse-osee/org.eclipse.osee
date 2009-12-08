@@ -109,9 +109,11 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       }
       getDatabaseService().runBatchUpdate(connection, INSERT_BRANCH, insertData);
       getDatabaseService().runBatchUpdate(connection, UPDATE_BRANCH, updateData);
-      getDatabaseService().runBatchUpdate(connection, DELETE_BRANCH, deleteData);
 
       storeAliases(connection, dirtyAliases);
+
+      getDatabaseService().runBatchUpdate(connection, DELETE_BRANCH, deleteData);
+
       for (Branch branch : branches) {
          if (branch.getModificationType() == ModificationType.NEW) {
             branch.setModificationType(ModificationType.MODIFIED);

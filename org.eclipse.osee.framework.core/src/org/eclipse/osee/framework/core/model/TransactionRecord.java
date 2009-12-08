@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 
 /**
  * @author Jeff C. Phillips
@@ -46,12 +47,8 @@ public final class TransactionRecord implements IAdaptable {
    }
 
    public Branch getBranch() throws OseeCoreException {
-      try {
-         return branchCache.getById(getBranchId());
-      } catch (NullPointerException e) {
-         System.out.print("");
-         throw e;
-      }
+      Conditions.checkNotNull(branchCache, "BranchCache was not set after construction");
+      return branchCache.getById(getBranchId());
    }
 
    public int getId() {

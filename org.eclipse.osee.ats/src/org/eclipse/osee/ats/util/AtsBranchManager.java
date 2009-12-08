@@ -254,7 +254,9 @@ public class AtsBranchManager {
 
    public Collection<TransactionRecord> getTransactionIdsForBaslineBranches() throws OseeCoreException {
       Collection<TransactionRecord> transactionIds = new ArrayList<TransactionRecord>();
-      for (TransactionRecord transactionId : TransactionManager.getCommittedArtifactTransactionIds(smaMgr.getSma())) {
+      Collection<TransactionRecord> committedTransactions =
+            TransactionManager.getCommittedArtifactTransactionIds(smaMgr.getSma());
+      for (TransactionRecord transactionId : committedTransactions) {
          // exclude working branches including branch states that are re-baselined 
          if (transactionId.getBranch().getBranchType().isBaselineBranch()) {
             transactionIds.add(transactionId);
@@ -606,7 +608,7 @@ public class AtsBranchManager {
     * @return true if there is at least one destination branch committed to
     */
    public boolean isCommittedBranchExists() throws OseeCoreException {
-      return isAllObjectsToCommitToConfigured() && getBranchesCommittedTo().size() > 0;
+      return isAllObjectsToCommitToConfigured() && !getBranchesCommittedTo().isEmpty();
    }
 
    /**

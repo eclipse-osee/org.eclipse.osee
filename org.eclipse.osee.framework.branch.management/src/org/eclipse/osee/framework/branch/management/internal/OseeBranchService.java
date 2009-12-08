@@ -93,8 +93,9 @@ public class OseeBranchService implements IOseeBranchService {
       IOperation op = new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
       Operations.executeWorkAndCheckStatus(op, monitor, -1);
 
-      response.getTransaction().setBranchCache(branchCache);
-      transactionCache.cache(response.getTransaction());
+      TransactionRecord newTransaction = response.getTransaction();
+      newTransaction.setBranchCache(branchCache);
+      transactionCache.cache(newTransaction);
       if (branchCommitData.isArchiveAllowed()) {
          sourceBranch.setArchived(true);
          branchCache.storeItems(sourceBranch);

@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.branch.management.purge;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Megumi Telles
@@ -50,7 +49,6 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
          "delete from osee_artifact art where not exists (select 1 from osee_artifact_version arv where arv.art_id = art.art_id)";
 
    private static final String DELETE_FROM_TX_DETAILS = "delete from osee_tx_details where branch_id = ?";
-   private static final String DELETE_FROM_BRANCH_TABLE = "delete from osee_branch where branch_id = ?";
 
    public static final String SELECT_ADDRESSING_BY_BRANCH =
          "select txd.transaction_id, gamma_id from %s txs, osee_tx_details txd where txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
@@ -80,7 +78,8 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
             oseeDatabaseProvider.getOseeDatabaseService().runPreparedQueryFetchObject(0, COUNT_CHILD_BRANCHES,
                   branch.getId());
       if (numberOfChildren > 0) {
-         throw new OseeArgumentException("Unable to purge a branch containing children");
+         throw new OseeArgumentException(String.format("Unable to purge a branch containing children: branchId[%s]",
+               branch.getId()));
       }
 
       if (oseeDatabaseProvider.getOseeDatabaseService().runPreparedQueryFetchObject(0, TEST_TXS, branch.getId()) == 1) {
@@ -102,22 +101,12 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       purgeAddressing(0.20);
 
       purgeFromTable("Tx Details", DELETE_FROM_TX_DETAILS, 0.09, branch.getId());
-      purgeFromTable("Branch", DELETE_FROM_BRANCH_TABLE, 0.01, branch.getId());
-   }
 
-   @Override
-   protected void doFinally(IProgressMonitor monitor) {
-      super.doFinally(monitor);
-
-      if (getStatus().isOK()) {
-         BranchCache branchCache;
-         try {
-            branchCache = cachingService.getOseeCachingService().getBranchCache();
-            branchCache.decache(branch);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
+      BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
+      branch.setModificationType(ModificationType.DELETED);
+      branchCache.storeItems(branch);
+      branchCache.decache(branch);
+      monitor.worked(calculateWork(0.01));
    }
 
    private void purgeGammas(String tableName, double percentage) throws OseeDataStoreException {

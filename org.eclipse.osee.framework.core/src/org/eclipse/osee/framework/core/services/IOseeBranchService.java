@@ -25,14 +25,11 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Jeff C. Phillips
  */
 public interface IOseeBranchService {
-   void commitBranch(IProgressMonitor monitor, BranchCommitRequest branchCommitData,
-         BranchCommitResponse response) throws OseeCoreException;
+   void commitBranch(IProgressMonitor monitor, BranchCommitRequest branchCommitData, BranchCommitResponse response) throws OseeCoreException;
 
-   void getChanges(IProgressMonitor monitor, ChangeReportRequest request,
-         ChangeReportResponse response) throws OseeCoreException;
+   void getChanges(IProgressMonitor monitor, ChangeReportRequest request, ChangeReportResponse response) throws OseeCoreException;
 
-   void createBranch(IProgressMonitor monitor, BranchCreationRequest request,
-         BranchCreationResponse response) throws OseeCoreException;
+   void createBranch(IProgressMonitor monitor, BranchCreationRequest request, BranchCreationResponse response) throws OseeCoreException;
 
    void purge(IProgressMonitor monitor, PurgeBranchRequest request) throws OseeCoreException;
 }

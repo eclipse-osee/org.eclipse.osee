@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
@@ -110,7 +109,7 @@ public final class BranchCacheUpdateUtil {
    private TransactionRecord getTx(Map<Integer, Integer> branchToTx, Integer branchId) throws OseeCoreException {
       TransactionRecord tx = null;
       Integer txId = branchToTx.get(branchId);
-      if (txId != null && txId > -1) {
+      if (txId != null && txId > 0) {
          tx = txCache.getOrLoad(txId);
       }
       return tx;
@@ -119,8 +118,9 @@ public final class BranchCacheUpdateUtil {
    public static void loadFromCache(AbstractBranchCacheMessage message, BranchCache cache, Collection<Branch> types) throws OseeCoreException {
       for (Branch br : types) {
          Integer branchId = br.getId();
-         message.getBranchRows().add(new BranchRow(br.getId(), br.getGuid(), br.getName(), br.getBranchType(), br.getBranchState(),
-               br.getArchiveState(), br.getModificationType()));
+         message.getBranchRows().add(
+               new BranchRow(br.getId(), br.getGuid(), br.getName(), br.getBranchType(), br.getBranchState(),
+                     br.getArchiveState(), br.getModificationType()));
          if (br.hasParentBranch()) {
             message.getChildToParent().put(branchId, br.getParentBranch().getId());
          }
