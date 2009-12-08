@@ -627,6 +627,16 @@ public class AtsBranchManager {
       return true;
    }
 
+   public boolean isBranchesAllCommittedExcept(Branch branchToExclude) throws OseeCoreException {
+      Collection<Branch> committedTo = getBranchesCommittedTo();
+      for (Branch destBranch : getBranchesToCommitTo()) {
+         if (!destBranch.equals(branchToExclude) && !committedTo.contains(destBranch)) {
+            return false;
+         }
+      }
+      return true;
+   }
+
    /**
     * Perform error checks and popup confirmation dialogs associated with creating a working branch.
     * 

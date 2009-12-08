@@ -104,7 +104,9 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       }
       checkPreconditions();
       storedBranchState = sourceBranch.getBranchState();
-      updateBranchState(BranchState.COMMIT_IN_PROGRESS);
+      if (!sourceBranch.getBranchState().equals(BranchState.COMMITTED)) {
+         updateBranchState(BranchState.COMMIT_IN_PROGRESS);
+      }
 
       try {
          txHolder.setTransaction(addCommitTransactionToDatabase(userArtId));
