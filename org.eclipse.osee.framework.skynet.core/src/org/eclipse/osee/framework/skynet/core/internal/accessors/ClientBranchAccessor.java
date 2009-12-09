@@ -16,6 +16,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.BranchCacheStoreRequest;
 import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.IArtifactFactory;
@@ -24,13 +25,16 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.util.BranchCacheUpdateUtil;
+import org.eclipse.osee.framework.core.util.HttpMessage;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.HttpMessage;
+import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
 
 /**
@@ -75,6 +79,7 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
    public void store(IOseeCache<Branch> cache, Collection<Branch> types) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", CacheOperation.STORE.name());
+      parameters.put("sessionId", ClientSessionManager.getSessionId());
 
       BranchCacheStoreRequest request = BranchCacheStoreRequest.fromCache((BranchCache) cache, types);
       AcquireResult updateResponse =
@@ -82,11 +87,31 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
                   request, null);
 
       if (updateResponse.wasSuccessful()) {
+         sendChangeEvents(types);
          for (Branch type : types) {
             type.clearDirty();
          }
       }
+   }
 
+   private void sendChangeEvents(Collection<Branch> branches) {
+      for (Branch branch : branches) {
+         if (branch.getBranchState().isDeleted()) {
+            try {
+               OseeEventManager.kickBranchEvent(this, BranchEventType.Deleted, branch.getId());
+            } catch (Exception ex) {
+               // Do Nothing
+            }
+         }
+
+         try {
+            if (branch.isFieldDirty(AbstractOseeType.NAME_FIELD_KEY)) {
+               OseeEventManager.kickBranchEvent(this, BranchEventType.Renamed, branch.getId());
+            }
+         } catch (Exception ex) {
+            // Do Nothing
+         }
+      }
    }
 
    private final static class ShallowArtifactFactory implements IArtifactFactory<Artifact> {
