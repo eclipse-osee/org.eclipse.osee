@@ -91,7 +91,7 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
                   IPath[] paths = starterNature.getProjectRelativeBundlePaths();
                   for (IPath path : paths) {
                      IResourceDelta pluginDelta = child.findMember(path);
-                     if (pluginDelta != null) {
+                     if (pluginDelta != null && isModifyingChange(pluginDelta)) {
                         handlePluginChanges(project.getLocation().removeLastSegments(1),
                               pluginDelta.getAffectedChildren());
                         triggered = true;
@@ -106,6 +106,14 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
          }
       }
    }
+
+	/**
+	 * @param pluginDelta
+	 * @return
+	 */
+	private boolean isModifyingChange(IResourceDelta pluginDelta) {
+		return pluginDelta.getFlags() != IResourceDelta.SYNC;
+	}
 
    /**
     * @param projectPath
