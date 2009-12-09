@@ -88,6 +88,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          roughArtifact.addAttribute("Name", proNumber);
       } else if (roughArtifact != null) {
          wordFormattedContent.append(content);
+         roughArtifact.addAttribute(WordAttribute.WORD_TEMPLATE_CONTENT, wordFormattedContent.toString());
       }
    }
 

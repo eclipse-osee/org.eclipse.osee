@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
  * @author Theron Virgin
  */
 public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
-   private class LocalRelationLink {
+   private static class LocalRelationLink {
       public int relLinkId;
       public int gammaId;
       public int transactionId;

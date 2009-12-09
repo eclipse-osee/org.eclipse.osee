@@ -412,7 +412,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
                attributeTypeSelectPanel.setAllowedAttributeTypes(getArtifactType().getAttributeTypes(
                      getDestinationArtifact().getBranch()));
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.getLocalizedMessage());
+               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, ex.getLocalizedMessage());
             }
          }
       }

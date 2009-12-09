@@ -67,4 +67,8 @@ public class RoughArtifactCollector {
       return roughRelations;
    }
 
+   @Override
+   public String toString() {
+      return roughArtifacts.toString();
+   }
 }
