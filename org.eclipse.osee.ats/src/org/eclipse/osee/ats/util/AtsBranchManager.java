@@ -856,7 +856,7 @@ public class AtsBranchManager {
       if (commitPopup) {
          branchCommitted = CommitHandler.commitBranch(conflictManager, archiveWorkingBranch);
       } else {
-         BranchManager.commitBranch(null, conflictManager, true, archiveWorkingBranch);
+         BranchManager.commitBranch(null, conflictManager, archiveWorkingBranch, true);
          branchCommitted = true;
       }
       if (branchCommitted) {
