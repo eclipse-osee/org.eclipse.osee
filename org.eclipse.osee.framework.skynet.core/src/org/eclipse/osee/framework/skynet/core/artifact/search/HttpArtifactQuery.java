@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -70,7 +70,7 @@ final class HttpArtifactQuery {
    private String getSearchUrl(String sessionId) throws OseeDataStoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("sessionId", sessionId);
-      return HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_CONTEXT, parameters);
+      return HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_CONTEXT, parameters);
    }
 
    private CharBackedInputStream getSearchParameters(String sessionId, boolean withMatches, boolean findAllMatchLocations) throws IOException {

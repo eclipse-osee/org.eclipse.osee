@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.branch.management.IBranchUpdateEvent;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
+import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
@@ -55,10 +57,12 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
          "select * from osee_branch_definitions order by mapped_branch_id";
 
    private final TransactionCache txCache;
+   private final IBranchUpdateEvent eventSender;
 
-   public DatabaseBranchAccessor(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider, TransactionCache txCache) {
+   public DatabaseBranchAccessor(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider, IBranchUpdateEvent eventSender, TransactionCache txCache) {
       super(databaseProvider, factoryProvider);
       this.txCache = txCache;
+      this.eventSender = eventSender;
    }
 
    @Override
@@ -167,8 +171,10 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
          while (chStmt.next()) {
             Branch sourceBranch = branchCache.getById(chStmt.getInt("source_branch_id"));
             Branch destBranch = branchCache.getById(chStmt.getInt("dest_branch_id"));
-            Branch mergeBranch = branchCache.getById(chStmt.getInt("merge_branch_id"));
-            branchCache.cacheMergeBranch(mergeBranch, sourceBranch, destBranch);
+
+            MergeBranch mergeBranch = (MergeBranch) branchCache.getById(chStmt.getInt("merge_branch_id"));
+            mergeBranch.setSourceBranch(sourceBranch);
+            mergeBranch.setDestinationBranch(destBranch);
          }
       } finally {
          chStmt.close();
@@ -200,8 +206,9 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
 
    @Override
    public void store(Collection<Branch> branches) throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new BranchStoreOperation(getDatabaseServiceProvider(), branches),
-            new NullProgressMonitor(), -1);
+      Operations.executeWorkAndCheckStatus(
+            new BranchStoreOperation(getDatabaseServiceProvider(), eventSender, branches), new NullProgressMonitor(),
+            -1);
    }
 
 }

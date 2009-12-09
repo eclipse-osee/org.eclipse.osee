@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.osee.ModelUtil;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.HttpMessage;
+import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
@@ -89,7 +89,7 @@ public class OseeTypesImportOperation extends AbstractOperation {
                   createCompareReport, isPersistAllowed);
 
       OseeImportModelResponse response =
-            HttpMessage.send(OseeServerContext.OSEE_MODEL_CONTEXT, parameters,
+            HttpClientMessage.send(OseeServerContext.OSEE_MODEL_CONTEXT, parameters,
                   CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST, modelRequest, CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);
 
       if (response.wasPersisted()) {

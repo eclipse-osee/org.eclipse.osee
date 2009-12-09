@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -192,11 +193,11 @@ public class BranchManager {
    /**
     * returns the merge branch for this source destination pair from the cache or null if not found
     */
-   public static Branch getMergeBranch(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      return getCache().getMergeBranch(sourceBranch, destinationBranch);
+   public static MergeBranch getMergeBranch(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
+      return getCache().findMergeBranch(sourceBranch, destinationBranch);
    }
 
-   public static boolean isMergeBranch(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+   public static boolean doesMergeBranchExist(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       return getMergeBranch(sourceBranch, destBranch) != null;
    }
 
@@ -209,10 +210,9 @@ public class BranchManager {
     * the source branch.
     */
    public static Branch getOrCreateMergeBranch(Branch sourceBranch, Branch destBranch, ArrayList<Integer> expectedArtIds) throws OseeCoreException {
-      Branch mergeBranch = getMergeBranch(sourceBranch, destBranch);
+      MergeBranch mergeBranch = getMergeBranch(sourceBranch, destBranch);
       if (mergeBranch == null) {
          mergeBranch = createMergeBranch(sourceBranch, destBranch, expectedArtIds);
-         getCache().cacheMergeBranch(mergeBranch, sourceBranch, destBranch);
       } else {
          UpdateMergeBranch dbTransaction = new UpdateMergeBranch(mergeBranch, expectedArtIds, destBranch, sourceBranch);
          dbTransaction.execute();
@@ -220,7 +220,7 @@ public class BranchManager {
       return mergeBranch;
    }
 
-   private static Branch createMergeBranch(final Branch sourceBranch, final Branch destBranch, final ArrayList<Integer> expectedArtIds) throws OseeCoreException {
+   private static MergeBranch createMergeBranch(final Branch sourceBranch, final Branch destBranch, final ArrayList<Integer> expectedArtIds) throws OseeCoreException {
       Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
       int populateBaseTxFromAddressingQueryId = ArtifactLoader.getNewQueryId();
       List<Object[]> datas = new LinkedList<Object[]>();
@@ -228,7 +228,7 @@ public class BranchManager {
          datas.add(new Object[] {populateBaseTxFromAddressingQueryId, insertTime, artId, sourceBranch.getId(),
                SQL3DataType.INTEGER});
       }
-      Branch mergeBranch = null;
+      MergeBranch mergeBranch = null;
       try {
          ArtifactLoader.insertIntoArtifactJoin(datas);
 
@@ -238,9 +238,11 @@ public class BranchManager {
                      destBranch.getName());
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
          mergeBranch =
-               HttpBranchCreation.createBranch(BranchType.MERGE, parentTxId, sourceBranch.getId(), branchName, null,
-                     null, UserManager.getUser(), creationComment, populateBaseTxFromAddressingQueryId,
-                     destBranch.getId());
+               (MergeBranch) HttpBranchCreation.createBranch(BranchType.MERGE, parentTxId, sourceBranch.getId(),
+                     branchName, null, null, UserManager.getUser(), creationComment,
+                     populateBaseTxFromAddressingQueryId, destBranch.getId());
+         mergeBranch.setSourceBranch(sourceBranch);
+         mergeBranch.setDestinationBranch(destBranch);
       } finally {
          ArtifactLoader.clearQuery(populateBaseTxFromAddressingQueryId);
       }

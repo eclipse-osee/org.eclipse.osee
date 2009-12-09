@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -32,7 +32,7 @@ public class ArtifactURL {
       parameters.put("guid", artifact.getGuid());
       parameters.put("branchId", String.valueOf(artifact.getBranch().getId()));
       String urlString =
-            HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.ARTIFACT_CONTEXT, parameters);
+            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.ARTIFACT_CONTEXT, parameters);
       URL url = null;
       try {
          url = new URL(urlString);
@@ -54,7 +54,7 @@ public class ArtifactURL {
       }
       parameters.put("cmd", cmd);
       String urlString =
-            HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.CLIENT_LOOPBACK_CONTEXT, parameters);
+            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.CLIENT_LOOPBACK_CONTEXT, parameters);
       URL url = null;
       try {
          url = new URL(urlString);

@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Roberto E. Escobar
  */
-public final class Branch extends AbstractOseeType implements Comparable<Branch>, IAccessControllable, IAdaptable {
+public class Branch extends AbstractOseeType implements Comparable<Branch>, IAccessControllable, IAdaptable {
 
    private static final int SHORT_NAME_LIMIT = 25;
 

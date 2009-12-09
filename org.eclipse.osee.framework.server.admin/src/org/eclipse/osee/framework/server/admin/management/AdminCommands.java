@@ -21,6 +21,8 @@ public class AdminCommands {
    private final ServerShutdownWorker shutdownWorker;
    private final RemoveServerVersionWorker removeServerVersion;
    private final AddServerVersionWorker addServerVersion;
+   private final ReloadCachesWorker reloadCacheWorker;
+   private final ClearCachesWorker clearCacheWorker;
 
    public AdminCommands() {
       this.shutdownWorker = new ServerShutdownWorker();
@@ -32,6 +34,11 @@ public class AdminCommands {
       this.removeServerVersion = new RemoveServerVersionWorker();
       this.removeServerVersion.setExecutionAllowed(true);
 
+      this.reloadCacheWorker = new ReloadCachesWorker();
+      this.reloadCacheWorker.setExecutionAllowed(true);
+
+      this.clearCacheWorker = new ClearCachesWorker();
+      this.clearCacheWorker.setExecutionAllowed(true);
    }
 
    public void getServerStatus(CommandInterpreter ci) {
@@ -49,6 +56,34 @@ public class AdminCommands {
       serverVersion.setCommandInterpreter(ci);
       serverVersion.setExecutionAllowed(true);
       Operations.executeAsJob(serverVersion, false);
+   }
+
+   public void reloadCache(CommandInterpreter ci) {
+      if (!this.clearCacheWorker.isRunning() && !this.reloadCacheWorker.isRunning()) {
+         this.reloadCacheWorker.setCommandInterpreter(ci);
+         Operations.executeAsJob(reloadCacheWorker, false);
+      } else {
+         if (clearCacheWorker.isRunning()) {
+            ci.println("Waiting for clear cache to complete");
+         }
+         if (reloadCacheWorker.isRunning()) {
+            ci.println("Waiting for reload cache to complete");
+         }
+      }
+   }
+
+   public void clearCache(CommandInterpreter ci) {
+      if (!this.clearCacheWorker.isRunning() && !this.reloadCacheWorker.isRunning()) {
+         this.clearCacheWorker.setCommandInterpreter(ci);
+         Operations.executeAsJob(clearCacheWorker, false);
+      } else {
+         if (clearCacheWorker.isRunning()) {
+            ci.println("Waiting for clear cache to complete");
+         }
+         if (reloadCacheWorker.isRunning()) {
+            ci.println("Waiting for reload cache to complete");
+         }
+      }
    }
 
    public void addServerVersion(CommandInterpreter ci) {

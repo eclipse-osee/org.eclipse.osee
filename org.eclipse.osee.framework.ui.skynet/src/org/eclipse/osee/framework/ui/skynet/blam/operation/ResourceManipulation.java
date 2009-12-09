@@ -32,7 +32,7 @@ import java.util.zip.ZipInputStream;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -320,7 +320,7 @@ public class ResourceManipulation extends AbstractBlam {
       }
 
       String urlString =
-            HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
+            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
       HttpProcessor.put(new URL(urlString), new ByteArrayInputStream(toUpload), resource.result.getContentType(),
             resource.result.getEncoding());
    }
@@ -333,7 +333,7 @@ public class ResourceManipulation extends AbstractBlam {
          parameterMap.put("sessionId", ClientSessionManager.getSessionId());
          parameterMap.put("uri", resourcePath);
          String urlString =
-               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
+               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
 
          AcquireResult result = HttpProcessor.acquire(new URL(urlString), sourceOutputStream);
          if (result.getCode() == HttpURLConnection.HTTP_OK) {

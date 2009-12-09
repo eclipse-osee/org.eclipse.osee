@@ -20,6 +20,9 @@ public class BranchField {
    public static final String BRANCH_BASE_TRANSACTION = "osee.branch.base.transaction";
    public static final String BRANCH_SOURCE_TRANSACTION = "osee.branch.source.transaction";
 
+   public static final String MERGE_BRANCH_SOURCE = "osee.merge.branch.source";
+   public static final String MERGE_BRANCH_DESTINATION = "osee.merge.branch.destination";
+
    private BranchField() {
    }
 }

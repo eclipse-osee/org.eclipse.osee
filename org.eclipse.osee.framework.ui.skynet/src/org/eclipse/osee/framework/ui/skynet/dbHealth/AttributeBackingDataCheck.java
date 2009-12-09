@@ -19,7 +19,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -104,7 +104,7 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
          parameters.put("uri", attrData.getUri());
          parameters.put("check.available", "true");
          String url =
-               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameters);
+               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameters);
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          AcquireResult acquireResult = HttpProcessor.acquire(new URL(url), outputStream);
          if (acquireResult.wasSuccessful()) {

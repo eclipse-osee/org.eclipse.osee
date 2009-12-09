@@ -28,7 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
@@ -115,13 +115,13 @@ public class OseeApplicationServer {
          Map<String, String> parameters = new HashMap<String, String>();
          parameters.put("version", OseeCodeVersion.getVersion());
          String url =
-               HttpUrlBuilder.getInstance().getOsgiArbitrationServiceUrl(OseeServerContext.LOOKUP_CONTEXT, parameters);
+               HttpUrlBuilderClient.getInstance().getOsgiArbitrationServiceUrl(OseeServerContext.LOOKUP_CONTEXT, parameters);
 
          outputStream = new ByteArrayOutputStream();
          AcquireResult result = HttpProcessor.acquire(new URL(url), outputStream);
          try {
             OseeLog.reportStatus(new BaseStatus(ArbitrationService, Level.INFO, "%s",
-                  HttpUrlBuilder.getInstance().getArbitrationServerPrefix()));
+                  HttpUrlBuilderClient.getInstance().getArbitrationServerPrefix()));
          } catch (OseeDataStoreException ex) {
             OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
          }

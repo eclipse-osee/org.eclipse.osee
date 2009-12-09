@@ -19,15 +19,13 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 
 /**
  * @author Roberto E. Escobar
  */
 public class BranchCache extends AbstractOseeCache<Branch> {
-   private final CompositeKeyHashMap<Branch, Branch, Branch> sourceDestMerge =
-         new CompositeKeyHashMap<Branch, Branch, Branch>();
 
    private Branch systemRootBranch;
    private Branch commonBranch;
@@ -40,7 +38,6 @@ public class BranchCache extends AbstractOseeCache<Branch> {
 
    @Override
    protected void clearAdditionalData() {
-      sourceDestMerge.clear();
       systemRootBranch = null;
       commonBranch = null;
    }
@@ -56,24 +53,6 @@ public class BranchCache extends AbstractOseeCache<Branch> {
    public Branch getSystemRootBranch() throws OseeCoreException {
       ensurePopulated();
       return systemRootBranch;
-   }
-
-   public CompositeKeyHashMap<Branch, Branch, Branch> getMergeBranches() throws OseeCoreException {
-      return sourceDestMerge;
-   }
-
-   public Branch getMergeBranch(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      ensurePopulated();
-      return sourceDestMerge.get(sourceBranch, destinationBranch);
-   }
-
-   public void cacheMergeBranch(Branch mergeBranch, Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      Conditions.checkNotNull(mergeBranch, "merge branch");
-      Conditions.checkNotNull(sourceBranch, "source branch");
-      Conditions.checkNotNull(destinationBranch, "destination branch");
-
-      ensurePopulated();
-      sourceDestMerge.put(sourceBranch, destinationBranch, mergeBranch);
    }
 
    public Collection<Branch> getByAlias(String alias) throws OseeCoreException {
@@ -106,45 +85,27 @@ public class BranchCache extends AbstractOseeCache<Branch> {
       return branches.iterator().next();
    }
 
-   //   public void setAssociatedArtifact(Branch branch, IBasicArtifact<?> artifact) throws OseeCoreException {
-   //      ensurePopulated();
-   //      if (artifact != null) {
-   //         // Artifact has already been loaded so check
-   //         // TODO: this method should allow the artifact to be on any branch, not just common
-   //         if (artifact instanceof IBasicArtifact<?>) {
-   //            if (artifact.getBranch() != getCommonBranch()) {
-   //               throw new OseeArgumentException(
-   //                     "Setting associated artifact for branch only valid for common branch artifact.");
-   //            }
-   //         }
-   //         IBasicArtifact<?> lastArtifact = branchToAssociatedArtifact.get(branch);
-   //         if (lastArtifact != null) {
-   //            if (!lastArtifact.equals(artifact)) {
-   //               branchToAssociatedArtifact.put(branch, artifact);
-   //            }
-   //         } else {
-   //            branchToAssociatedArtifact.put(branch, artifact);
-   //         }
-   //      } else {
-   //         branchToAssociatedArtifact.remove(branch);
-   //      }
-   //   }
-   //
-   //   public IBasicArtifact<?> getAssociatedArtifact(Branch branch) throws OseeCoreException {
-   //      ensurePopulated();
-   //      IBasicArtifact<?> associatedArtifact = branchToAssociatedArtifact.get(branch);
-   //      if (associatedArtifact == null) {
-   //         associatedArtifact = getDefaultAssociatedArtifact();
-   //      }
-   //      return associatedArtifact;
-   //   }
-   //
-
    public Branch getCommonBranch() throws OseeCoreException {
       ensurePopulated();
       if (commonBranch == null) {
          commonBranch = getUniqueByAlias(CoreBranches.COMMON.getName());
       }
       return commonBranch;
+   }
+
+   public MergeBranch findMergeBranch(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
+      Conditions.checkNotNull(sourceBranch, "source branch");
+      Conditions.checkNotNull(destinationBranch, "destination branch");
+      MergeBranch toReturn = null;
+      for (Branch branch : getAll()) {
+         if (branch instanceof MergeBranch) {
+            MergeBranch mergeBranch = (MergeBranch) branch;
+            if (sourceBranch.equals(mergeBranch.getSourceBranch()) && destinationBranch.equals(mergeBranch.getDestinationBranch())) {
+               toReturn = mergeBranch;
+               break;
+            }
+         }
+      }
+      return toReturn;
    }
 }

@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.ArtifactTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.AttributeTypeCacheUpdateResponse;
@@ -33,6 +34,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -144,7 +146,20 @@ public class OseeCacheServlet extends OseeHttpServlet {
                   return new DefaultBasicArtifact(artId, null, null);
                }
             }).updateCache(updateRequest, caching.getBranchCache());
-      caching.getBranchCache().storeItems(updated);
+
+      BranchCache cache = caching.getBranchCache();
+      if (updateRequest.isServerUpdateMessage()) {
+         for (Branch branch : updated) {
+            if (branch.getModificationType() == ModificationType.NEW) {
+               branch.setModificationType(ModificationType.MODIFIED);
+            }
+            branch.clearDirty();
+            cache.decache(branch);
+            cache.cache(branch);
+         }
+      } else {
+         cache.storeItems(updated);
+      }
       try {
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/plain");
@@ -193,7 +208,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
       ITranslatorId transalatorId = null;
       switch (updateRequest.getCacheId()) {
          case BRANCH_CACHE:
-            response = BranchCacheUpdateResponse.fromCache(caching.getBranchCache(), caching.getBranchCache().getAll());
+            response = BranchCacheUpdateResponse.fromCache(caching.getBranchCache().getAll());
             transalatorId = CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE;
             break;
          case TRANSACTION_CACHE:

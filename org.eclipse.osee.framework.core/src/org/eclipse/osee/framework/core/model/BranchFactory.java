@@ -32,7 +32,14 @@ public class BranchFactory implements IOseeTypeFactory {
       Conditions.checkNotNull(branchType, "branch type");
       Conditions.checkNotNull(branchState, "branch state");
       String checkedGuid = Conditions.checkGuidCreateIfNeeded(guid);
-      return new Branch(checkedGuid, name, branchType, branchState, isArchived);
+
+      Branch toReturn;
+      if (branchType.isMergeBranch()) {
+         toReturn = new MergeBranch(checkedGuid, name, branchType, branchState, isArchived);
+      } else {
+         toReturn = new Branch(checkedGuid, name, branchType, branchState, isArchived);
+      }
+      return toReturn;
    }
 
    public Branch createOrUpdate(AbstractOseeCache<Branch> cache, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {

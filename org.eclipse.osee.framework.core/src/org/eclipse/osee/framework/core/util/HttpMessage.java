@@ -8,15 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact;
+package org.eclipse.osee.framework.core.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Map;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
@@ -24,7 +21,6 @@ import org.eclipse.osee.framework.core.services.ITranslatorId;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -35,14 +31,9 @@ public class HttpMessage {
    }
 
    @SuppressWarnings("unchecked")
-   public static <J, K> J send(String context, Map<String, String> parameters, ITranslatorId requestId, K requestData, ITranslatorId responseId) throws OseeCoreException {
-      if (!parameters.containsKey("sessionId")) {
-         parameters.put("sessionId", ClientSessionManager.getSessionId());
-      }
-      String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(context, parameters);
+   public static <J, K> J send(String urlString, IDataTranslationService service, ITranslatorId requestId, K requestData, ITranslatorId responseId) throws OseeCoreException {
       InputStream inputStream = null;
       try {
-         IDataTranslationService service = Activator.getInstance().getTranslationService();
          inputStream = service.convertToStream(requestData, requestId);
          ByteArrayOutputStream buffer = new ByteArrayOutputStream();
          AcquireResult result = HttpProcessor.post(new URL(urlString), inputStream, "text/xml", "UTF-8", buffer);

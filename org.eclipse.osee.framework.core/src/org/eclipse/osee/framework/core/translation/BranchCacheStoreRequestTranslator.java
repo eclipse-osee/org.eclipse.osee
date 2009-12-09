@@ -21,10 +21,15 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class BranchCacheStoreRequestTranslator implements ITranslator<BranchCacheStoreRequest> {
 
+   private enum Field {
+      IS_SERVER_MESSAGE;
+   }
+
    @Override
    public BranchCacheStoreRequest convert(PropertyStore store) throws OseeCoreException {
       BranchCacheStoreRequest request = new BranchCacheStoreRequest();
       BranchCacheUpdateUtil.loadMessage(request, store);
+      request.setServerUpdateMessage(store.getBoolean(Field.IS_SERVER_MESSAGE.name()));
       return request;
    }
 
@@ -32,6 +37,7 @@ public class BranchCacheStoreRequestTranslator implements ITranslator<BranchCach
    public PropertyStore convert(BranchCacheStoreRequest object) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       BranchCacheUpdateUtil.loadStore(store, object);
+      store.put(Field.IS_SERVER_MESSAGE.name(), object.isServerUpdateMessage());
       return store;
    }
 }

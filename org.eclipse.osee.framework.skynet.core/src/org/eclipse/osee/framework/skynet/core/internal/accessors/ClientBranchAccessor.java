@@ -16,7 +16,6 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.BranchCacheStoreRequest;
 import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.IArtifactFactory;
@@ -32,7 +31,7 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider
 import org.eclipse.osee.framework.core.util.BranchCacheUpdateUtil;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.HttpMessage;
+import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
@@ -79,12 +78,11 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
    public void store(IOseeCache<Branch> cache, Collection<Branch> types) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", CacheOperation.STORE.name());
-      parameters.put("sessionId", ClientSessionManager.getSessionId());
 
-      BranchCacheStoreRequest request = BranchCacheStoreRequest.fromCache((BranchCache) cache, types);
+      BranchCacheStoreRequest request = BranchCacheStoreRequest.fromCache(types);
       AcquireResult updateResponse =
-            HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST,
-                  request, null);
+            HttpClientMessage.send(OseeServerContext.CACHE_CONTEXT, parameters,
+                  CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST, request, null);
 
       if (updateResponse.wasSuccessful()) {
          sendChangeEvents(types);

@@ -8,19 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.server;
+package org.eclipse.osee.framework.core.services;
 
-import java.util.Collection;
-import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IApplicationServerLookup {
+public interface IDataTranslationServiceProvider {
 
-   public Collection<OseeServerInfo> getAvailableServers() throws OseeCoreException;
-
-   public OseeServerInfo getServerInfoBy(String version) throws OseeCoreException;
-
+   IDataTranslationService getTranslationService() throws OseeCoreException;
 }

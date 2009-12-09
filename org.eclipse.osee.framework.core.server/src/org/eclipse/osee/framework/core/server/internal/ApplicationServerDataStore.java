@@ -52,7 +52,7 @@ public class ApplicationServerDataStore {
    private static final String SELECT_SUPPORTED_VERSIONS_FROM_LOOKUP_TABLE_BY_SERVER_ID =
          "SELECT version_id FROM osee_server_lookup where server_id = ?";
 
-   static void removeByServerId(List<OseeServerInfo> infos) throws OseeDataStoreException {
+   static void removeByServerId(Collection<OseeServerInfo> infos) throws OseeDataStoreException {
       if (!infos.isEmpty()) {
          List<Object[]> data = new ArrayList<Object[]>();
          for (OseeServerInfo info : infos) {
@@ -158,6 +158,26 @@ public class ApplicationServerDataStore {
          }
       }
       return servers.values();
+   }
+
+   static Collection<OseeServerInfo> getAllApplicationServerInfos() throws OseeDataStoreException {
+      Collection<OseeServerInfo> infos = new ArrayList<OseeServerInfo>();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         chStmt.runPreparedQuery(SELECT_FROM_LOOKUP_TABLE);
+         while (chStmt.next()) {
+            String serverVersion = chStmt.getString("version_id");
+            String serverAddress = chStmt.getString("server_address");
+            int port = chStmt.getInt("port");
+            OseeServerInfo info =
+                  new OseeServerInfo(chStmt.getString("server_id"), serverAddress, port, new String[] {serverVersion},
+                        chStmt.getTimestamp("start_time"), chStmt.getInt("accepts_requests") != 0 ? true : false);
+            infos.add(info);
+         }
+      } finally {
+         chStmt.close();
+      }
+      return infos;
    }
 
    static Set<String> getOseeVersionsByServerId(String serverId) throws OseeDataStoreException {

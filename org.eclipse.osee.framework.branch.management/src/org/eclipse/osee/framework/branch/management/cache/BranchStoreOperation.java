@@ -1,15 +1,22 @@
-/*
- * Created on Oct 19, 2009
+/*******************************************************************************
+ * Copyright (c) 2009 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.cache;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.branch.management.IBranchUpdateEvent;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -21,6 +28,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Ryan D. Brooks
@@ -46,10 +54,12 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
 
    public static final String DELETE_ADDRESSING = "delete from %s where branch_id = ?";
 
+   private final IBranchUpdateEvent eventSender;
    private final Collection<Branch> branches;
 
-   public BranchStoreOperation(IOseeDatabaseServiceProvider provider, Collection<Branch> branches) {
+   public BranchStoreOperation(IOseeDatabaseServiceProvider provider, IBranchUpdateEvent eventSender, Collection<Branch> branches) {
       super(provider, "Branch Archive Operation", Activator.PLUGIN_ID);
+      this.eventSender = eventSender;
       this.branches = branches;
    }
 
@@ -120,7 +130,11 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
          }
          branch.clearDirty();
       }
-      sendChangeEvents(branches);
+      try {
+         eventSender.send(branches);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Error creating branch update relay", ex);
+      }
    }
 
    public void moveBranchAddressing(OseeConnection connection, Branch branch, boolean archive) throws OseeDataStoreException {
@@ -163,24 +177,4 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       }
    }
 
-   private void sendChangeEvents(Collection<Branch> branches) {
-      // TODO send Branch Events
-      //      for (Branch branch : branches) {
-      //         if (branch.getBranchState().isDeleted()) {
-      //            try {
-      //               OseeEventManager.kickBranchEvent(this, BranchEventType.Deleted, branch.getId());
-      //            } catch (Exception ex) {
-      //               // Do Nothing
-      //            }
-      //         }
-      //
-      //         try {
-      //            if (branch.isFieldDirty(AbstractOseeType.NAME_FIELD_KEY)) {
-      //               OseeEventManager.kickBranchEvent(this, BranchEventType.Renamed, branch.getId());
-      //            }
-      //         } catch (Exception ex) {
-      //            // Do Nothing
-      //         }
-      //      }
-   }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2009 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,19 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.server;
+package org.eclipse.osee.framework.branch.management;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IApplicationServerLookup {
+public interface IBranchUpdateEvent {
 
-   public Collection<OseeServerInfo> getAvailableServers() throws OseeCoreException;
-
-   public OseeServerInfo getServerInfoBy(String version) throws OseeCoreException;
-
+   void send(Collection<Branch> branches) throws OseeCoreException;
 }

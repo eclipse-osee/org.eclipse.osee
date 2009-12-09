@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -112,7 +112,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
          Map<String, String> parameters = new HashMap<String, String>();
          parameters.put("registerToLookup", "true");
          String url =
-               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.LOOKUP_CONTEXT, parameters);
+               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.LOOKUP_CONTEXT, parameters);
          String response = HttpProcessor.post(new URL(url));
          OseeLog.log(DatabaseInitActivator.class, Level.INFO, response);
       } catch (Exception ex1) {
@@ -131,7 +131,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
       });
 
       boolean displayWarning = false;
-      String server = HttpUrlBuilder.getInstance().getApplicationServerPrefix();
+      String server = HttpUrlBuilderClient.getInstance().getApplicationServerPrefix();
       try {
          URL serverUrl = new URL(server);
          Socket socket = new Socket(serverUrl.getHost(), serverUrl.getPort());

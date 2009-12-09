@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -64,7 +64,7 @@ public class HttpBranchExchange {
    private static void execute(Map<String, String> parameters) throws OseeDataStoreException {
       try {
          String returnVal =
-               HttpProcessor.post(new URL(HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(
+               HttpProcessor.post(new URL(HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(
                      OseeServerContext.BRANCH_EXCHANGE_CONTEXT, parameters)));
          OseeLog.log(HttpBranchExchange.class, Level.INFO, returnVal);
       } catch (Exception ex) {

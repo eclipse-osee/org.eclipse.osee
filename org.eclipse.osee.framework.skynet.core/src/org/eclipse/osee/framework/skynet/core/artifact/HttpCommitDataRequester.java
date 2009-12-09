@@ -44,8 +44,8 @@ public class HttpCommitDataRequester {
             new BranchCommitRequest(user.getArtId(), sourceBranch.getId(), destinationBranch.getId(), isArchiveAllowed);
 
       BranchCommitResponse response =
-            HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.BRANCH_COMMIT_REQUEST,
-                  requestData, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
+            HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters,
+                  CoreTranslatorId.BRANCH_COMMIT_REQUEST, requestData, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
 
       if (response != null) {
          TransactionRecord newTransaction = response.getTransaction();

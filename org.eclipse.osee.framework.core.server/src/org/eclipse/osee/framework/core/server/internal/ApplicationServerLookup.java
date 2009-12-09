@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
@@ -29,9 +30,12 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
 
    private static ThreadFactory threadFactory = null;
 
-   public OseeServerInfo getServerInfoBy(String version) throws OseeDataStoreException {
-      Collection<OseeServerInfo> infos = ApplicationServerDataStore.getApplicationServerInfos(version);
+   @Override
+   public Collection<OseeServerInfo> getAvailableServers() throws OseeCoreException {
+      return getHealthyServers(ApplicationServerDataStore.getAllApplicationServerInfos());
+   }
 
+   private Collection<OseeServerInfo> getHealthyServers(Collection<OseeServerInfo> infos) throws OseeCoreException {
       List<OseeServerInfo> healthyServers = new ArrayList<OseeServerInfo>();
       List<OseeServerInfo> unHealthyServers = new ArrayList<OseeServerInfo>();
       for (OseeServerInfo info : infos) {
@@ -44,10 +48,17 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
          }
       }
       cleanUpServers(unHealthyServers);
+      return healthyServers;
+   }
+
+   @Override
+   public OseeServerInfo getServerInfoBy(String version) throws OseeCoreException {
+      Collection<OseeServerInfo> healthyServers =
+            getHealthyServers(ApplicationServerDataStore.getApplicationServerInfos(version));
       return getBestAvailable(healthyServers);
    }
 
-   private static void cleanUpServers(final List<OseeServerInfo> unHealthyServers) {
+   private static void cleanUpServers(final Collection<OseeServerInfo> unHealthyServers) {
       if (!unHealthyServers.isEmpty()) {
          if (threadFactory == null) {
             threadFactory = CoreServerActivator.createNewThreadFactory("Server Status Thread Factory");
@@ -67,10 +78,10 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
       }
    }
 
-   private OseeServerInfo getBestAvailable(List<OseeServerInfo> infos) {
+   private OseeServerInfo getBestAvailable(Collection<OseeServerInfo> infos) {
       OseeServerInfo result = null;
       if (infos.size() == 1) {
-         result = infos.get(0);
+         result = infos.iterator().next();
       } else {
          int minSessions = Integer.MAX_VALUE;
          for (OseeServerInfo info : infos) {
@@ -91,4 +102,5 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
    private boolean isServerAlive(OseeServerInfo info) {
       return HttpProcessor.isAlive(info.getServerAddress(), info.getPort());
    }
+
 }

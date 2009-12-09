@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.model.IOseeStorableType;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.services.ITranslatorId;
-import org.eclipse.osee.framework.skynet.core.artifact.HttpMessage;
+import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 
 /**
  * @author Roberto E. Escobar
@@ -58,8 +58,9 @@ public abstract class AbstractClientDataAccessor<T extends IOseeStorableType> im
       CacheUpdateRequest updateRequest = new CacheUpdateRequest(cache.getCacheId());
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", CacheOperation.UPDATE.name());
-      return HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST,
-            updateRequest, txId);
+
+      return HttpClientMessage.send(OseeServerContext.CACHE_CONTEXT, parameters,
+            CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST, updateRequest, txId);
    }
 
    protected abstract Collection<T> updateCache(IOseeCache<T> cache) throws OseeCoreException;

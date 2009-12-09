@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.skynet.core.artifact.HttpMessage;
+import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 
 /**
  * @author Roberto E. Escobar
@@ -70,9 +70,10 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
       TransactionRecordFactory factory = factoryProvider.getOseeFactoryService().getTransactionFactory();
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", CacheOperation.UPDATE.name());
+
       TransactionCacheUpdateResponse response =
-            HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST,
-                  updateRequest, CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
+            HttpClientMessage.send(OseeServerContext.CACHE_CONTEXT, parameters,
+                  CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST, updateRequest, CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
       for (TransactionRecord row : response.getTxRows()) {
          TransactionRecord record =
                factory.createOrUpdate(cache, row.getId(), row.getBranchId(), row.getComment(), row.getTimeStamp(),

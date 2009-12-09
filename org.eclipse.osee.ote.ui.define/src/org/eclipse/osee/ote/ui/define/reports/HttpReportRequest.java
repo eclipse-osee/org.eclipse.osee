@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.core.client.server.HttpRequest;
 import org.eclipse.osee.framework.core.client.server.HttpResponse;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.client.server.IHttpServerRequest;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -61,7 +61,7 @@ public class HttpReportRequest implements IHttpServerRequest {
       if (preview > -1) {
          parameters.put(PREVIEW_SIZE, Integer.toString(preview));
       }
-      return HttpUrlBuilder.getInstance().getUrlForLocalSkynetHttpServer(HttpReportRequest.REQUEST_TYPE, parameters);
+      return HttpUrlBuilderClient.getInstance().getUrlForLocalSkynetHttpServer(HttpReportRequest.REQUEST_TYPE, parameters);
    }
 
    public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {

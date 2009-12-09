@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.AbstractBranchCacheMessage;
@@ -25,10 +24,9 @@ import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
+import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.translation.TranslationUtil;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 
@@ -96,12 +94,12 @@ public final class BranchCacheUpdateUtil {
             }
          }
       }
-      BranchCache brCache = (BranchCache) cache;
       for (Triplet<Integer, Integer, Integer> entry : cacheMessage.getMergeBranches()) {
          Branch sourceBranch = cache.getById(entry.getFirst());
          Branch destinationBranch = cache.getById(entry.getSecond());
-         Branch mergeBranch = cache.getById(entry.getThird());
-         brCache.cacheMergeBranch(mergeBranch, sourceBranch, destinationBranch);
+         MergeBranch mergeBranch = (MergeBranch) cache.getById(entry.getThird());
+         mergeBranch.setSourceBranch(sourceBranch);
+         mergeBranch.setDestinationBranch(destinationBranch);
       }
       return updatedItems;
    }
@@ -115,7 +113,7 @@ public final class BranchCacheUpdateUtil {
       return tx;
    }
 
-   public static void loadFromCache(AbstractBranchCacheMessage message, BranchCache cache, Collection<Branch> types) throws OseeCoreException {
+   public static void loadFromCache(AbstractBranchCacheMessage message, Collection<Branch> types) throws OseeCoreException {
       for (Branch br : types) {
          Integer branchId = br.getId();
          message.getBranchRows().add(
@@ -128,8 +126,10 @@ public final class BranchCacheUpdateUtil {
          addTxRecord(message.getBranchToBaseTx(), branchId, br.getBaseTransaction());
          addTxRecord(message.getBranchToSourceTx(), branchId, br.getSourceTransaction());
          addAssocArtifact(message.getBranchToAssocArt(), branchId, br.getAssociatedArtifact());
+         if (br.getBranchType().isMergeBranch()) {
+            addMergeBranches(message.getMergeBranches(), (MergeBranch) br);
+         }
       }
-      loadMergeBranches(message.getMergeBranches(), cache.getMergeBranches());
    }
 
    private static void addAliases(Map<Integer, String[]> branchToAliases, Integer branchId, Collection<String> aliases) {
@@ -146,13 +146,11 @@ public final class BranchCacheUpdateUtil {
       }
    }
 
-   private static void loadMergeBranches(List<Triplet<Integer, Integer, Integer>> srcDestMerge, CompositeKeyHashMap<Branch, Branch, Branch> sourceDestMerge) {
-      for (Entry<Pair<Branch, Branch>, Branch> entry : sourceDestMerge.entrySet()) {
-         Integer src = entry.getKey().getFirst().getId();
-         Integer dest = entry.getKey().getSecond().getId();
-         Integer merge = entry.getValue().getId();
-         srcDestMerge.add(new Triplet<Integer, Integer, Integer>(src, dest, merge));
-      }
+   private static void addMergeBranches(List<Triplet<Integer, Integer, Integer>> srcDestMerge, MergeBranch mergeBranch) throws OseeCoreException {
+      Integer src = mergeBranch.getSourceBranch().getId();
+      Integer dest = mergeBranch.getDestinationBranch().getId();
+      Integer merge = mergeBranch.getId();
+      srcDestMerge.add(new Triplet<Integer, Integer, Integer>(src, dest, merge));
    }
 
    private static void addTxRecord(Map<Integer, Integer> map, Integer branchId, TransactionRecord toAdd) {

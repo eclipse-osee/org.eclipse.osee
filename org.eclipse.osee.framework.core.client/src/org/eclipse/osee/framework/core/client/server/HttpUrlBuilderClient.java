@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.core.client.server;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
@@ -21,56 +20,26 @@ import org.eclipse.osee.framework.core.client.internal.OseeApplicationServer;
 import org.eclipse.osee.framework.core.exception.OseeArbitrationServerException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
  */
-public class HttpUrlBuilder {
+public class HttpUrlBuilderClient {
    private static final String urlPrefixFormat = "http://%s:%s/";
-   private static HttpUrlBuilder instance = null;
+   private static final HttpUrlBuilderClient instance = new HttpUrlBuilderClient();
 
-   private HttpUrlBuilder() {
+   private HttpUrlBuilderClient() {
    }
 
-   public static HttpUrlBuilder getInstance() {
-      if (instance == null) {
-         instance = new HttpUrlBuilder();
-      }
+   public static HttpUrlBuilderClient getInstance() {
       return instance;
-   }
-
-   private String encode(String value) throws UnsupportedEncodingException {
-      return URLEncoder.encode(value, "UTF-8");
-   }
-
-   public String getParametersAsEncodedUrl(Map<String, String> keyValues) throws UnsupportedEncodingException {
-      StringBuilder sb = new StringBuilder();
-      for (String key : keyValues.keySet()) {
-         sb.append(encode(key));
-         sb.append("=");
-         sb.append(encode(keyValues.get(key)));
-         sb.append("&");
-      }
-      if (sb.length() - 1 >= 0) {
-         // Delete the last unnecessary '&'
-         sb.deleteCharAt(sb.length() - 1);
-      }
-      return sb.toString();
-   }
-
-   private String buildUrl(String prefix, String context, String parameters) {
-      StringBuilder sb = new StringBuilder();
-      sb.append(prefix);
-      sb.append(context);
-      sb.append("?");
-      sb.append(parameters);
-      return sb.toString();
    }
 
    public String getUrlForLocalSkynetHttpServer(String context, Map<String, String> parameters) throws OseeStateException {
       try {
-         return buildUrl(getHttpLocalServerPrefix(), context, getParametersAsEncodedUrl(parameters));
+         return HttpUrlBuilder.createURL(getHttpLocalServerPrefix(), context, parameters);
       } catch (UnsupportedEncodingException ex) {
          OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
       }
@@ -103,7 +72,7 @@ public class HttpUrlBuilder {
 
    public String getOsgiServletServiceUrl(String context, Map<String, String> parameters) throws OseeDataStoreException {
       try {
-         return buildUrl(getApplicationServerPrefix(), context, getParametersAsEncodedUrl(parameters));
+         return HttpUrlBuilder.createURL(getApplicationServerPrefix(), context, parameters);
       } catch (UnsupportedEncodingException ex) {
          throw new OseeDataStoreException(ex);
       }
@@ -111,7 +80,7 @@ public class HttpUrlBuilder {
 
    public String getOsgiArbitrationServiceUrl(String context, Map<String, String> parameters) throws OseeDataStoreException {
       try {
-         return buildUrl(getArbitrationServerPrefix(), context, getParametersAsEncodedUrl(parameters));
+         return HttpUrlBuilder.createURL(getArbitrationServerPrefix(), context, parameters);
       } catch (UnsupportedEncodingException ex) {
          throw new OseeDataStoreException(ex);
       }

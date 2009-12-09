@@ -56,8 +56,8 @@ public class HttpBranchCreation {
                   populateBaseTxFromAddressingQueryId, destinationBranchId);
 
       BranchCreationResponse response =
-            HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.BRANCH_CREATION_REQUEST,
-                  request, CoreTranslatorId.BRANCH_CREATION_RESPONSE);
+            HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters,
+                  CoreTranslatorId.BRANCH_CREATION_REQUEST, request, CoreTranslatorId.BRANCH_CREATION_RESPONSE);
 
       Branch branch = BranchManager.getBranch(response.getBranchId());
       OseeEventManager.kickBranchEvent(HttpBranchCreation.class, BranchEventType.Added, branch.getId());

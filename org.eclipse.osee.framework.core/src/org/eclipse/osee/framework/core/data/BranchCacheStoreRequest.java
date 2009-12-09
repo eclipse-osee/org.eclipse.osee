@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.BranchCacheUpdateUtil;
@@ -21,14 +20,24 @@ import org.eclipse.osee.framework.core.util.BranchCacheUpdateUtil;
  */
 public class BranchCacheStoreRequest extends AbstractBranchCacheMessage {
 
+   private boolean isServerUpdateMessage;
+
    public BranchCacheStoreRequest() {
       super();
+      this.isServerUpdateMessage = false;
    }
 
-   public static BranchCacheStoreRequest fromCache(BranchCache cache, Collection<Branch> types) throws OseeCoreException {
+   public static BranchCacheStoreRequest fromCache(Collection<Branch> types) throws OseeCoreException {
       BranchCacheStoreRequest request = new BranchCacheStoreRequest();
-      BranchCacheUpdateUtil.loadFromCache(request, cache, types);
+      BranchCacheUpdateUtil.loadFromCache(request, types);
       return request;
    }
 
+   public void setServerUpdateMessage(boolean isServerUpdateMessage) {
+      this.isServerUpdateMessage = isServerUpdateMessage;
+   }
+
+   public boolean isServerUpdateMessage() {
+      return isServerUpdateMessage;
+   }
 }

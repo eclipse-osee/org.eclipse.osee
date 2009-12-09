@@ -23,6 +23,10 @@ public interface IOseeCache<T> {
 
    int size();
 
+   void reloadCache() throws OseeCoreException;
+
+   void decacheAll();
+
    void decache(T... types) throws OseeCoreException;
 
    void decache(T type) throws OseeCoreException;

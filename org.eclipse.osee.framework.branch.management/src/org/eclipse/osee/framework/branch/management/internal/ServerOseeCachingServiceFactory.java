@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.internal;
 
+import org.eclipse.osee.framework.branch.management.IBranchUpdateEvent;
+import org.eclipse.osee.framework.branch.management.cache.BranchUpdateEventImpl;
 import org.eclipse.osee.framework.branch.management.cache.DatabaseArtifactTypeAccessor;
 import org.eclipse.osee.framework.branch.management.cache.DatabaseAttributeTypeAccessor;
 import org.eclipse.osee.framework.branch.management.cache.DatabaseBranchAccessor;
@@ -25,6 +27,8 @@ import org.eclipse.osee.framework.core.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
+import org.eclipse.osee.framework.core.server.IApplicationServerLookupProvider;
+import org.eclipse.osee.framework.core.services.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
@@ -37,10 +41,14 @@ public class ServerOseeCachingServiceFactory implements IOseeCachingServiceFacto
 
    private final IOseeDatabaseServiceProvider databaseProvider;
    private final IOseeModelFactoryServiceProvider factoryProvider;
+   private final IDataTranslationServiceProvider txProvider;
+   private final IApplicationServerLookupProvider serverLookUpProvider;
 
-   public ServerOseeCachingServiceFactory(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider) {
+   public ServerOseeCachingServiceFactory(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider, IDataTranslationServiceProvider txProvider, IApplicationServerLookupProvider serverLookUpProvider) {
       this.databaseProvider = databaseProvider;
       this.factoryProvider = factoryProvider;
+      this.txProvider = txProvider;
+      this.serverLookUpProvider = serverLookUpProvider;
    }
 
    public IOseeCachingService createCachingService() {
@@ -53,7 +61,9 @@ public class ServerOseeCachingServiceFactory implements IOseeCachingServiceFacto
       AttributeTypeCache attributeCache = new AttributeTypeCache(attrAccessor);
 
       TransactionCache txCache = new TransactionCache();
-      BranchCache branchCache = new BranchCache(new DatabaseBranchAccessor(databaseProvider, factoryProvider, txCache));
+      IBranchUpdateEvent branchEventSender = new BranchUpdateEventImpl(txProvider, serverLookUpProvider);
+      BranchCache branchCache =
+            new BranchCache(new DatabaseBranchAccessor(databaseProvider, factoryProvider, branchEventSender, txCache));
       txCache.setAccessor(new DatabaseTransactionRecordAccessor(databaseProvider, factoryProvider, branchCache));
 
       ArtifactTypeCache artifactCache =

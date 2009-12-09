@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.OseeEnumType;
 import org.eclipse.osee.framework.core.model.RelationType;
@@ -77,7 +78,7 @@ public class ModelAsserts {
       Branch destionationBranch = cache.getByGuid(destinationBranchGuid);
       Assert.assertNotNull(destionationBranch);
 
-      Branch actualMergeBranch = cache.getMergeBranch(sourceBranch, destionationBranch);
+      Branch actualMergeBranch = cache.findMergeBranch(sourceBranch, destionationBranch);
       if (expectedMergeBranchGuid == null) {
          Assert.assertNull(actualMergeBranch);
       } else {
@@ -94,7 +95,10 @@ public class ModelAsserts {
       Assert.assertNotNull(sourceBranch);
       Branch destionationBranch = cache.getByGuid(destinationBranchGuid);
       Assert.assertNotNull(destionationBranch);
-      cache.cacheMergeBranch(mergeBranch, sourceBranch, destionationBranch);
+      Assert.assertTrue(mergeBranch instanceof MergeBranch);
+      MergeBranch mBranch = (MergeBranch) mergeBranch;
+      mBranch.setSourceBranch(sourceBranch);
+      mBranch.setDestinationBranch(destionationBranch);
    }
 
    public static void checkHierarchy(BranchCache cache, String parentGuid, String... expected) throws OseeCoreException {
@@ -134,7 +138,12 @@ public class ModelAsserts {
    }
 
    public static Branch createBranch(String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
-      Branch branch = new Branch(guid, name, branchType, branchState, isArchived);
+      Branch branch;
+      if (branchType.isMergeBranch()) {
+         branch = new MergeBranch(guid, name, branchType, branchState, isArchived);
+      } else {
+         branch = new Branch(guid, name, branchType, branchState, isArchived);
+      }
       Assert.assertNotNull(branch);
       return branch;
    }

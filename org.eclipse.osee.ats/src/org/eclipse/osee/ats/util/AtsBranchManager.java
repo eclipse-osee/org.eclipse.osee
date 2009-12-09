@@ -134,7 +134,7 @@ public class AtsBranchManager {
       if (workingBranch == null) {
          return false;
       }
-      return BranchManager.isMergeBranch(workingBranch, destinationBranch);
+      return BranchManager.doesMergeBranchExist(workingBranch, destinationBranch);
    }
 
    public boolean isMergeCompleted(Branch destinationBranch) throws OseeCoreException {

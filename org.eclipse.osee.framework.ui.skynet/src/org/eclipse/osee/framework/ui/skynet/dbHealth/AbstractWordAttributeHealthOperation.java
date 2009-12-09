@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -185,7 +185,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
             parameterMap.put("sessionId", ClientSessionManager.getSessionId());
             parameterMap.put("uri", resourcePath);
             String urlString =
-                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
+                  HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
                         parameterMap);
 
             AcquireResult result = HttpProcessor.acquire(new URL(urlString), sourceOutputStream);
@@ -226,7 +226,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
          }
 
          String urlString =
-               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
+               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
          HttpProcessor.put(new URL(urlString), new ByteArrayInputStream(toUpload), resource.result.getContentType(),
                resource.result.getEncoding());
       }

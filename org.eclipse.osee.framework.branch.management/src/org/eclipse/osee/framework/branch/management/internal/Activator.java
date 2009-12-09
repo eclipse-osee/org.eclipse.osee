@@ -18,7 +18,11 @@ import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.exchange.BranchExchange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
+import org.eclipse.osee.framework.core.server.IApplicationServerLookupProvider;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
+import org.eclipse.osee.framework.core.services.IDataTranslationService;
+import org.eclipse.osee.framework.core.services.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeBranchService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
@@ -36,7 +40,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class Activator implements BundleActivator, IOseeDatabaseServiceProvider, IOseeModelFactoryServiceProvider, IOseeCachingServiceProvider, IOseeModelingServiceProvider {
+public class Activator implements BundleActivator, IOseeDatabaseServiceProvider, IOseeModelFactoryServiceProvider, IOseeCachingServiceProvider, IOseeModelingServiceProvider, IDataTranslationServiceProvider, IApplicationServerLookupProvider {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.branch.management";
 
    private enum TrackerId {
@@ -47,7 +51,9 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
       OSEE_FACTORY_SERVICE,
       OSEE_CACHING_SERVICE,
       OSEE_MODELING_SERVICE,
-      MASTER_SERVICE;
+      DATA_TRANSLATION_SERVICE,
+      MASTER_SERVICE,
+      LOOKUP_SERVICE;
    }
 
    private static Activator instance;
@@ -63,7 +69,7 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
    public void start(BundleContext context) throws Exception {
       instance = this;
 
-      IOseeCachingServiceFactory factory = new ServerOseeCachingServiceFactory(this, this);
+      IOseeCachingServiceFactory factory = new ServerOseeCachingServiceFactory(this, this, this, this);
       createService(context, IOseeCachingServiceFactory.class, factory);
 
       IOseeCachingService cachingService = factory.createCachingService();
@@ -78,9 +84,11 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
       createServiceTracker(context, IOseeDatabaseService.class, TrackerId.OSEE_DATABASE_SERVICE);
       createServiceTracker(context, IOseeCachingService.class, TrackerId.OSEE_CACHING_SERVICE);
       createServiceTracker(context, IOseeModelingService.class, TrackerId.OSEE_MODELING_SERVICE);
+      createServiceTracker(context, IDataTranslationService.class, TrackerId.DATA_TRANSLATION_SERVICE);
 
       createServiceTracker(context, IOseeModelFactoryService.class, TrackerId.OSEE_FACTORY_SERVICE);
       createServiceTracker(context, IApplicationServerManager.class, TrackerId.MASTER_SERVICE);
+      createServiceTracker(context, IApplicationServerLookup.class, TrackerId.LOOKUP_SERVICE);
    }
 
    public void stop(BundleContext context) throws Exception {
@@ -145,6 +153,16 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
    @Override
    public IOseeModelingService getOseeModelingService() throws OseeCoreException {
       return getTracker(TrackerId.OSEE_MODELING_SERVICE, IOseeModelingService.class);
+   }
+
+   @Override
+   public IDataTranslationService getTranslationService() throws OseeCoreException {
+      return getTracker(TrackerId.DATA_TRANSLATION_SERVICE, IDataTranslationService.class);
+   }
+
+   @Override
+   public IApplicationServerLookup getApplicationServerLookupService() throws OseeCoreException {
+      return getTracker(TrackerId.LOOKUP_SERVICE, IApplicationServerLookup.class);
    }
 
    private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {

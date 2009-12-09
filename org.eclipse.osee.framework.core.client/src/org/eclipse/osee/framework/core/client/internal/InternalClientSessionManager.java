@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.client.ICredentialProvider;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.data.OseeClientInfo;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
@@ -159,7 +159,7 @@ public class InternalClientSessionManager {
       parameters.put("sessionId", sessionId);
       try {
          String url =
-               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
+               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
          String reponse = HttpProcessor.post(new URL(url));
          OseeLog.log(CoreClientActivator.class, Level.INFO, reponse);
          oseeSession = null;
@@ -174,7 +174,7 @@ public class InternalClientSessionManager {
       try {
          Map<String, String> parameters = new HashMap<String, String>();
          String url =
-               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
+               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          AcquireResult result = HttpProcessor.acquire(new URL(url), outputStream);
          if (result.getCode() == HttpURLConnection.HTTP_OK) {
@@ -205,7 +205,7 @@ public class InternalClientSessionManager {
       parameters.put("operation", "create");
       String url = null;
       try {
-         url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
+         url = HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          AcquireResult result =
                HttpProcessor.post(new URL(url), asInputStream(credential), "text/xml", "UTF-8", outputStream);
