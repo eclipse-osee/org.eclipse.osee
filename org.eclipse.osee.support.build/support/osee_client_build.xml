@@ -9,7 +9,6 @@
 	-->
 		<property name="topLevelElementId" value="org.eclipse.osee.client.feature" />
 		<property name="filteredDependencyCheck" value="false" />
-		<property name="buildHelp" value="true" />
 		<property name="p2.category.definition" value="file:${basedir}/client_category.xml" />
 
 		<antcall target="PdeBuild" />
