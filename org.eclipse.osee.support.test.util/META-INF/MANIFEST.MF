@@ -7,7 +7,8 @@ Bundle-Activator: org.eclipse.osee.support.test.util.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.support.test.util
-Import-Package: org.eclipse.osee.framework.core.client,
+Import-Package: org.eclipse.core.runtime,
+ org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.database.core,

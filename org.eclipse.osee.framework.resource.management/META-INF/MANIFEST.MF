@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.eclipse.osee.framework.resource.management;singleton:=t
 Bundle-Version: 0.9.0.qualifier
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.framework.resource.management.Activator
-Import-Package: org.eclipse.osee.framework.core.exception,
+Import-Package: org.eclipse.core.runtime;version="3.4.0",
+ org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osgi.util,

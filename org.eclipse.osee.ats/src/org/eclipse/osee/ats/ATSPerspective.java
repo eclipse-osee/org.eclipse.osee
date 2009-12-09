@@ -18,6 +18,8 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.group.GroupExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
+import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
+import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -31,11 +33,8 @@ public class ATSPerspective implements IPerspectiveFactory {
    }
 
    public void defineActions(final IPageLayout layout) {
-
-      // Add "show views".
       layout.addShowViewShortcut(NavigateView.VIEW_ID);
       layout.addShowViewShortcut(ActionHyperView.VIEW_ID);
-      //      layout.addShowViewShortcut(ActionSkyWalker.VIEW_ID);
 
       layout.addShowViewShortcut(ArtifactHyperView.VIEW_ID);
       layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
@@ -45,7 +44,6 @@ public class ATSPerspective implements IPerspectiveFactory {
       layout.addShowViewShortcut("osee.admin.AdminView");
       layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");
       layout.addShowViewShortcut("org.eclipse.ui.views.PropertySheet");
-
    }
 
    public void defineLayout(final IPageLayout layout) {
@@ -64,6 +62,8 @@ public class ATSPerspective implements IPerspectiveFactory {
       }
       bottom.addView(BranchView.VIEW_ID);
       bottom.addView(GroupExplorer.VIEW_ID);
+      bottom.addView(NewSearchUI.SEARCH_VIEW_ID);
+      bottom.addPlaceholder(MergeView.VIEW_ID);
 
       final IFolderLayout bottomRight =
             layout.createFolder("bottomRight", IPageLayout.BOTTOM, 0.6f, ArtifactExplorer.VIEW_ID);

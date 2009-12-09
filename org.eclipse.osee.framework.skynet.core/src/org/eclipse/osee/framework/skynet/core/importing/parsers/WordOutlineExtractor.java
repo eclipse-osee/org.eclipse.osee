@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
@@ -22,7 +23,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -109,7 +109,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected void extractFromSource(URI source, RoughArtifactCollector collector) throws Exception {
+   protected void extractFromSource(URI source, RoughArtifactCollector collector) throws OseeCoreException, IOException {
       Reader reader = null;
       try {
          reader = new BufferedReader(new InputStreamReader(source.toURL().openStream(), "UTF-8"));
@@ -160,12 +160,8 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
                listIdentifier = "";
                paragraphStyle = null;
                parseContentDetails(content, new Stack<String>());
-               try {
-                  getDelegate().processContent(collector, forceBody, forcePrimaryType, headerNumber, listIdentifier,
-                        paragraphStyle, content.toString(), element == PARAGRAPH_TAG);
-               } catch (OseeCoreException ex) {
-                  throw new OseeWrappedException(String.format("Error processing: [%s]", source.toASCIIString()), ex);
-               }
+               getDelegate().processContent(collector, forceBody, forcePrimaryType, headerNumber, listIdentifier,
+                     paragraphStyle, content.toString(), element == PARAGRAPH_TAG);
             }
          }
 

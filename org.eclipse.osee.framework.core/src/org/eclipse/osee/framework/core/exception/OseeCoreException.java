@@ -10,31 +10,29 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+
 /**
  * @author Ryan D. Brooks
  */
-public class OseeCoreException extends Exception {
+public class OseeCoreException extends CoreException {
    private static final long serialVersionUID = 1L;
 
-   /**
-    * @param message
-    */
    public OseeCoreException(String message) {
-      super(message);
+      super(new Status(IStatus.ERROR, null, message));
    }
 
-   /**
-    * @param message
-    * @param cause
-    */
    public OseeCoreException(String message, Throwable cause) {
-      super(message, cause);
+      super(new Status(IStatus.ERROR, null, message, cause));
    }
 
-   /**
-    * @param cause
-    */
    public OseeCoreException(Throwable cause) {
-      super(cause);
+      super(new Status(IStatus.ERROR, null, null, cause));
+   }
+
+   public OseeCoreException(IStatus status) {
+      super(status);
    }
 }

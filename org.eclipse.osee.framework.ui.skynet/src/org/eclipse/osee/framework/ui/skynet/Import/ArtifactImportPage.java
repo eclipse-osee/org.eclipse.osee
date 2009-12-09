@@ -391,7 +391,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    private synchronized void updateExtractedElements() {
       selectionLatch.setCurrentValues(getDestinationArtifact(), getSourceFile(), getArtifactParser());
       if (selectionLatch.areSelectionsValid()) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Artifact need to be extracted from from source");
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Artifacts need to be extracted from source");
          selectionLatch.latch();
 
          collector.reset();

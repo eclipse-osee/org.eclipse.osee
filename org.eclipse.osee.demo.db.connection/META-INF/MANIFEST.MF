@@ -6,7 +6,8 @@ Bundle-Version: 0.9.0.qualifier
 Bundle-Activator: org.eclipse.osee.demo.db.connection.internal.Activator
 Bundle-Vendor: Boeing
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.osee.framework.core.data,
+Import-Package: org.eclipse.core.runtime,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.logging,
