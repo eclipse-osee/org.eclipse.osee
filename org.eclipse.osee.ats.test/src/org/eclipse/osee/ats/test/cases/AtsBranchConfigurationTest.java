@@ -266,7 +266,7 @@ public class AtsBranchConfigurationTest {
       teamWf.persist(transaction);
       transaction.execute();
 
-      TestUtil.sleep(2000);
+      TestUtil.sleep(4000);
       SMAEditor.editArtifact(teamWf, true);
       // Verify XWorkingBranch and XCommitManger widgets exist in editor
       try {
