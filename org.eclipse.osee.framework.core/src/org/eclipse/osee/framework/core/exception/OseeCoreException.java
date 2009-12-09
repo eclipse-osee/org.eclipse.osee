@@ -21,15 +21,15 @@ public class OseeCoreException extends CoreException {
    private static final long serialVersionUID = 1L;
 
    public OseeCoreException(String message) {
-      super(new Status(IStatus.ERROR, null, message));
+      super(new Status(IStatus.ERROR, "OSEE", message));
    }
 
    public OseeCoreException(String message, Throwable cause) {
-      super(new Status(IStatus.ERROR, null, message, cause));
+      super(new Status(IStatus.ERROR, "OSEE", message, cause));
    }
 
    public OseeCoreException(Throwable cause) {
-      super(new Status(IStatus.ERROR, null, null, cause));
+      super(new Status(IStatus.ERROR, "OSEE", null, cause));
    }
 
    public OseeCoreException(IStatus status) {
