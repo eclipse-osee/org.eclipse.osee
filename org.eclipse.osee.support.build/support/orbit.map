@@ -1,7 +1,7 @@
 feature@org.eclipse.osee.external.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.external.feature
-plugin@org.eclipse.team.svn=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.team.svn_0.7.8.I20090904-1300.jar
-plugin@org.eclipse.team.svn.ui=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.team.svn.ui_0.7.8.I20090904-1300.jar
-plugin@org.eclipse.team.svn.core=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.team.svn.core_0.7.8.I20090904-1300.jar
+plugin@org.eclipse.team.svn=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.team.svn_0.7.8.I20091023-1300.jar
+plugin@org.eclipse.team.svn.ui=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.team.svn.ui_0.7.8.I20091023-1300.jar
+plugin@org.eclipse.team.svn.core=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.team.svn.core_0.7.8.I20091023-1300.jar
 
 plugin@com.lowagie.text,1.5.4=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/com.lowagie.text_1.5.4.v200908052355.jar
 plugin@javax.activation,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/javax.activation_1.1.0.v200905021805.jar
