@@ -744,13 +744,11 @@ public class AtsBranchManager {
     */
    public void createWorkingBranch(String pageId, final Branch parentBranch) throws OseeCoreException {
       final Artifact stateMachineArtifact = smaMgr.getSma();
-      String title = stateMachineArtifact.getName();
-      if (title.length() > 40) {
-         title = title.substring(0, 39) + "...";
+      String smaTitle = stateMachineArtifact.getName();
+      if (smaTitle.length() > 40) {
+         smaTitle = smaTitle.substring(0, 39) + "...";
       }
-      final String branchName =
-            String.format("%s - %s - %s", stateMachineArtifact.getHumanReadableId(), stateMachineArtifact.getName(),
-                  title);
+      final String branchName = String.format("%s - %s", stateMachineArtifact.getHumanReadableId(), smaTitle);
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
