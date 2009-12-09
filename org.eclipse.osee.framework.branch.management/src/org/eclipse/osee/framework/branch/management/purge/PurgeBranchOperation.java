@@ -43,7 +43,8 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
 
    public static final String TEST_TXS =
          "select count(1) from osee_tx_details txd where txd.branch_id = ? AND txd.tx_type = 1 AND exists (select 1 from osee_txs txs where txd.transaction_id = txs.transaction_id)";
-   public static final String TEST_MERGE = "select count(1) from osee_merge where source_branch_id=?";
+   public static final String TEST_MERGE =
+         "select count(1) from osee_merge where merge_branch_id = ? and source_branch_id=?";
    private static final String PURGE_GAMMAS = "delete from %s where gamma_id = ?";
 
    private static final String DELETE_FROM_ARTIFACT =
@@ -51,7 +52,8 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    private static final String DELETE_FROM_BRANCH_TABLE = "delete from osee_branch where branch_id = ?";
    private static final String DELETE_FROM_BRANCH_DEFINITIONS =
          "delete from osee_branch_definitions where mapped_branch_id=?";
-   private static final String DELETE_FROM_MERGE = "delete from osee_merge where source_branch_id = ?";
+   private static final String DELETE_FROM_MERGE =
+         "delete from osee_merge where merge_branch_id = ? and source_branch_id=?";
    private static final String DELETE_FROM_TX_DETAILS = "delete from osee_tx_details where branch_id = ?";
 
    public static final String SELECT_ADDRESSING_BY_BRANCH =
@@ -103,10 +105,12 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       purgeFromTable("Artifact", DELETE_FROM_ARTIFACT, 0.10);
       purgeAddressing(0.20);
       purgeFromTable("Tx Details", DELETE_FROM_TX_DETAILS, 0.09, branch.getId());
-      if (oseeDatabaseProvider.getOseeDatabaseService().runPreparedQueryFetchObject(0, TEST_MERGE, branch.getId()) == 1) {
-         purgeFromTable("Merge", DELETE_FROM_MERGE, 0.01, branch.getId());
+      if (oseeDatabaseProvider.getOseeDatabaseService().runPreparedQueryFetchObject(0, TEST_MERGE, branch.getId(),
+            branch.getParentBranch().getId()) == 1) {
+         purgeFromTable("Merge", DELETE_FROM_MERGE, 0.01, branch.getId(), branch.getParentBranch().getId());
       }
-      purgeFromTable("Branch Definitions", DELETE_FROM_BRANCH_DEFINITIONS, 0.01, branch.getId());
+      purgeFromTable("Branch Definitions", DELETE_FROM_BRANCH_DEFINITIONS, 0.01, branch.getId(),
+            branch.getParentBranch().getId());
       purgeFromTable("Branch", DELETE_FROM_BRANCH_TABLE, 0.01, branch.getId());
    }
 
