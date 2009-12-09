@@ -3,22 +3,17 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.coverage.util;
+package org.eclipse.osee.coverage.merge;
 
 import java.util.Collection;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.merge.IMergeItem;
-import org.eclipse.osee.coverage.merge.MatchItem;
-import org.eclipse.osee.coverage.merge.MatchType;
-import org.eclipse.osee.coverage.merge.MergeItem;
-import org.eclipse.osee.coverage.merge.MergeItemGroup;
-import org.eclipse.osee.coverage.merge.MergeManager;
-import org.eclipse.osee.coverage.merge.MergeType;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -31,12 +26,12 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 /**
  * @author Donald G. Dunne
  */
-public class CoveragePackageImportManager {
+public class MergeImportManager {
 
    private final CoveragePackage coveragePackage;
    private final MergeManager mergeManager;
 
-   public CoveragePackageImportManager(MergeManager mergeManager) {
+   public MergeImportManager(MergeManager mergeManager) {
       this.mergeManager = mergeManager;
       this.coveragePackage = mergeManager.getCoveragePackage();
    }
@@ -83,6 +78,14 @@ public class CoveragePackageImportManager {
                      } else {
                         rd.logError(String.format("[%s] doesn't support merge item [%s] (1)",
                               mergeItem.getClass().getSimpleName(), MergeType.Add_With_Moves.toString(), mergeItem));
+                     }
+                     // Since order has changed and items added, update parent coverage unit's file contents
+                     if (packageCoverage.getParent() != null && packageCoverage.getParent() instanceof CoverageUnit) {
+                        CoverageUnit parentPackageCoverage = (CoverageUnit) packageCoverage.getParent();
+                        CoverageUnit parentImportCoverage = (CoverageUnit) importCoverage.getParent();
+                        if (!parentPackageCoverage.getFileContents().equals(parentImportCoverage.getFileContents())) {
+                           parentPackageCoverage.setFileContents(parentImportCoverage.getFileContents());
+                        }
                      }
                   } else {
                      rd.logError(String.format("[%s] doesn't support merge item [%s] (2)",
@@ -158,6 +161,9 @@ public class CoveragePackageImportManager {
                parentPackageItem.addCoverageUnit(importCoverageUnit.copy(true));
                rd.log(String.format("Added [%s] to parent [%s]", importCoverageUnit, parentCoverageUnit));
                rd.log("");
+
+               // Since item was added, update parent coverage unit's file contents if necessary
+               parentPackageItem.setFileContents(parentImportItem.getFileContents());
 
             }
          }

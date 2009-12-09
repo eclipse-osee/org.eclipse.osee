@@ -28,6 +28,7 @@ import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryImport
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryPackage;
 import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.merge.MergeImportManager;
 import org.eclipse.osee.coverage.merge.IMergeItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.merge.MessageMergeItem;
@@ -36,7 +37,6 @@ import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
-import org.eclipse.osee.coverage.util.CoveragePackageImportManager;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.NotSaveable;
@@ -155,7 +155,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
          return;
       }
       try {
-         XResultData rd = new CoveragePackageImportManager(mergeManager).importItems(this, mergeItems);
+         XResultData rd = new MergeImportManager(mergeManager).importItems(this, mergeItems);
          rd.report("Import");
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

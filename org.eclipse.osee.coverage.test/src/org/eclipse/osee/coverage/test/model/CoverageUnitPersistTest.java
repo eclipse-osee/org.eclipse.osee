@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.merge.MergeImportManager;
 import org.eclipse.osee.coverage.merge.IMergeItem;
 import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
@@ -21,7 +22,6 @@ import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.test.SampleJavaFileParser;
 import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
-import org.eclipse.osee.coverage.util.CoveragePackageImportManager;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -97,7 +97,7 @@ public class CoverageUnitPersistTest {
          for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
             ((MergeItem) mergeItem).setChecked(true);
          }
-         CoveragePackageImportManager importer = new CoveragePackageImportManager(mergeManager);
+         MergeImportManager importer = new MergeImportManager(mergeManager);
          importer.importItems(new ISaveable() {
 
             @Override

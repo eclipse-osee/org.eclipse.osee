@@ -7,6 +7,7 @@ package org.eclipse.osee.coverage.test;
 
 import junit.framework.Assert;
 import org.eclipse.osee.coverage.merge.IMergeItem;
+import org.eclipse.osee.coverage.merge.MergeImportManager;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.merge.MergeType;
 import org.eclipse.osee.coverage.merge.MessageMergeItem;
@@ -14,6 +15,7 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
@@ -21,7 +23,6 @@ import org.eclipse.osee.coverage.test.import2.CoverageImport2TestBlam;
 import org.eclipse.osee.coverage.test.import3.CoverageImport3TestBlam;
 import org.eclipse.osee.coverage.test.import4.CoverageImport4TestBlam;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
-import org.eclipse.osee.coverage.util.CoveragePackageImportManager;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -97,7 +98,7 @@ public class CoveragePackageImportTest {
       }
 
       // Test import where not-editable
-      CoveragePackageImportManager importManager = new CoveragePackageImportManager(mergeManager);
+      MergeImportManager importManager = new MergeImportManager(mergeManager);
       XResultData resultData = importManager.importItems(new ISaveable() {
 
          @Override
@@ -224,7 +225,7 @@ public class CoveragePackageImportTest {
       for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
          Assert.assertEquals(MergeType.Add, mergeItem.getMergeType());
       }
-      CoveragePackageImportManager importManager = new CoveragePackageImportManager(mergeManager);
+      MergeImportManager importManager = new MergeImportManager(mergeManager);
       XResultData resultData = importManager.importItems(new ISaveable() {
 
          @Override
@@ -296,6 +297,13 @@ public class CoveragePackageImportTest {
          coveragePackage = packageStore.getCoveragePackage();
       }
 
+      // Look at file contents for PowerUnit1.java
+      CoverageUnit coverageUnit =
+            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit1.java");
+      Assert.assertNotNull(coverageUnit);
+      String preFileContents = coverageUnit.getFileContents();
+      Assert.assertFalse("initAdded should not yet exist in file contents", preFileContents.contains("initAdded"));
+
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
@@ -303,7 +311,7 @@ public class CoveragePackageImportTest {
       for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
          Assert.assertEquals(MergeType.Add, mergeItem.getMergeType());
       }
-      CoveragePackageImportManager importManager = new CoveragePackageImportManager(mergeManager);
+      MergeImportManager importManager = new MergeImportManager(mergeManager);
       XResultData resultData = importManager.importItems(new ISaveable() {
 
          @Override
@@ -327,6 +335,14 @@ public class CoveragePackageImportTest {
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageMethodEnum.Exception_Handling).size());
       Assert.assertEquals(67, coveragePackage.getCoverageItemsCovered(CoverageMethodEnum.Test_Unit).size());
       Assert.assertEquals(66, coveragePackage.getCoverageItemsCovered(CoverageMethodEnum.Not_Covered).size());
+
+      // Confirm that fileContents were updated
+      coverageUnit = (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit1.java");
+      Assert.assertNotNull(coverageUnit);
+      String postFileContents = coverageUnit.getFileContents();
+      Assert.assertTrue("File Contents should have been updated and thus not equal",
+            !postFileContents.equals(preFileContents));
+      Assert.assertTrue("initAdded should now exist in file contents", postFileContents.contains("initAdded"));
 
       CoveragePackage loadedCp = null;
       if (testWithDb) {
@@ -356,6 +372,12 @@ public class CoveragePackageImportTest {
       Assert.assertEquals(67, loadedCp.getCoverageItemsCovered(CoverageMethodEnum.Test_Unit).size());
       Assert.assertEquals(66, loadedCp.getCoverageItemsCovered(CoverageMethodEnum.Not_Covered).size());
 
+      // Confirm that updated fileContents were loaded
+      coverageUnit = (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit1.java");
+      Assert.assertNotNull(coverageUnit);
+      String postLoadFileContents = coverageUnit.getFileContents();
+      Assert.assertEquals("File Contents should be same pre and post save", postLoadFileContents, postFileContents);
+      Assert.assertTrue("initAdded should exist in loaded file contents", postLoadFileContents.contains("initAdded"));
    }
 
    @Test
@@ -375,6 +397,14 @@ public class CoveragePackageImportTest {
          coveragePackage = packageStore.getCoveragePackage();
       }
 
+      // Look at file contents for PowerUnit1.java
+      CoverageUnit coverageUnit =
+            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit1.java");
+      Assert.assertNotNull(coverageUnit);
+      String preFileContents = coverageUnit.getFileContents();
+      Assert.assertFalse("deselectAdded should not yet exist in file contents",
+            preFileContents.contains("deselectAdded"));
+
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
@@ -382,7 +412,7 @@ public class CoveragePackageImportTest {
       for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
          Assert.assertEquals(MergeType.Add_With_Moves, mergeItem.getMergeType());
       }
-      CoveragePackageImportManager importManager = new CoveragePackageImportManager(mergeManager);
+      MergeImportManager importManager = new MergeImportManager(mergeManager);
       XResultData resultData = importManager.importItems(new ISaveable() {
 
          @Override
@@ -406,6 +436,14 @@ public class CoveragePackageImportTest {
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageMethodEnum.Exception_Handling).size());
       Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered(CoverageMethodEnum.Test_Unit).size());
       Assert.assertEquals(66, coveragePackage.getCoverageItemsCovered(CoverageMethodEnum.Not_Covered).size());
+
+      // Confirm that fileContents were updated
+      coverageUnit = (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit1.java");
+      Assert.assertNotNull(coverageUnit);
+      String postFileContents = coverageUnit.getFileContents();
+      Assert.assertTrue("File Contents should have been updated and thus not equal",
+            !postFileContents.equals(preFileContents));
+      Assert.assertTrue("deselectAdded should now exist in file contents", postFileContents.contains("deselectAdded"));
 
       CoveragePackage loadedCp = null;
       if (testWithDb) {
@@ -435,6 +473,13 @@ public class CoveragePackageImportTest {
       Assert.assertEquals(68, loadedCp.getCoverageItemsCovered(CoverageMethodEnum.Test_Unit).size());
       Assert.assertEquals(66, loadedCp.getCoverageItemsCovered(CoverageMethodEnum.Not_Covered).size());
 
+      // Confirm that updated fileContents were loaded
+      coverageUnit = (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit1.java");
+      Assert.assertNotNull(coverageUnit);
+      String postLoadFileContents = coverageUnit.getFileContents();
+      Assert.assertEquals("File Contents should be same pre and post save", postLoadFileContents, postFileContents);
+      Assert.assertTrue("deselectAdded should exist in loaded file contents",
+            postLoadFileContents.contains("deselectAdded"));
    }
 
 }
