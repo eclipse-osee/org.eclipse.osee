@@ -604,9 +604,6 @@
 		<Column id="REM_TX_CURRENT" defaultValue="not null" type="smallint" />
 		<Column id="REM_TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_REM_TXS_RG_RTX_PK" type="PRIMARY KEY" appliesTo="REM_GAMMA_ID, REM_TRANSACTION_ID"/>
-		<Constraint schema="OSEE" id="OSEE_TRANSACTION_ID_FK3" type="FOREIGN KEY" appliesTo="TRANSACTION_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_TX_DETAILS" column="TRANSACTION_ID" />
-		</Constraint>
 	</Table>
 	
 	
