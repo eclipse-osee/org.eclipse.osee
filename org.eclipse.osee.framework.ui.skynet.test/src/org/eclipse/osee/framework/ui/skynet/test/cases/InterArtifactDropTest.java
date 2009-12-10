@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -43,12 +45,6 @@ public class InterArtifactDropTest {
    private static Artifact sourceArtifact;
    private Branch sourceBranch;
    private Branch destinationBranch;
-
-   @After
-   public void tearDown() throws Exception {
-      BranchManager.purgeBranch(sourceBranch);
-      BranchManager.purgeBranch(destinationBranch);
-   }
 
    @Before
    public void setUp() throws Exception {
@@ -92,5 +88,15 @@ public class InterArtifactDropTest {
       OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Sleeping " + milliseconds);
       Thread.sleep(milliseconds);
       OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Awake");
+   }
+   
+   @After
+   public void tearDown() throws Exception {
+      if(sourceBranch != null){
+         BranchManager.purgeBranch(sourceBranch);
+      }
+      if(destinationBranch != null){
+         BranchManager.purgeBranch(destinationBranch);
+      }
    }
 }
