@@ -303,7 +303,7 @@ public class BranchManager {
    public static void purgeBranch(final Branch branch) throws OseeCoreException {
       try {
          HttpPurgeBranchRequester.purge(branch);
-      } catch (Exception ex) {
+      } catch (RuntimeException ex) {
          throw new OseeWrappedException(ex);
       }
    }
