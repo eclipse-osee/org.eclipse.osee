@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.core.enums;
  * @author Jeff C. Phillips
  */
 public enum TransactionDetailsType {
-   NonBaselined(0), Baselined(1);
+   NonBaselined(0), Baselined(1), reverted(2);
 
    private int id;
 
@@ -27,6 +27,10 @@ public enum TransactionDetailsType {
       return id;
    }
 
+   public boolean isBaseline() {
+      return this == TransactionDetailsType.Baselined;
+   }
+
    public static TransactionDetailsType toEnum(int value) {
       for (TransactionDetailsType txType : values()) {
          if (txType.getId() == value) {
@@ -35,4 +39,5 @@ public enum TransactionDetailsType {
       }
       return null;
    }
+
 }
