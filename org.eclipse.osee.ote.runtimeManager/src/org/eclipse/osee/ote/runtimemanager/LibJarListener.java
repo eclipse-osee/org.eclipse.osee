@@ -20,6 +20,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.osee.framework.ui.workspacebundleloader.FileChangeDetector;
 import org.eclipse.osee.framework.ui.workspacebundleloader.IJarChangeListener;
 import org.eclipse.osee.framework.ui.workspacebundleloader.JarCollectionNature;
 import org.eclipse.osee.ote.runtimemanager.container.OteClasspathContainer;
@@ -27,133 +28,143 @@ import org.eclipse.osee.ote.runtimemanager.container.OteClasspathContainer;
 /**
  * @author Robert A. Fisher
  */
-public class LibJarListener<T extends JarCollectionNature> implements IJarChangeListener<T> {
+public class LibJarListener<T extends JarCollectionNature> implements
+		IJarChangeListener<T> {
 
-   private static final boolean VERBOSE_DEBUG = true;
+	private static final boolean VERBOSE_DEBUG = true;
 
-   private final Object bundleSynchronizer;
-   private final Set<URL> newBundles;
-   private final Set<URL> changedBundles;
-   private final Set<URL> removedBundles;
+	private FileChangeDetector detector = new FileChangeDetector();
+	
+	private final Object bundleSynchronizer;
+	private final Set<URL> newBundles;
+	private final Set<URL> changedBundles;
+	private final Set<URL> removedBundles;
+	
 
-   public LibJarListener() {
-      this.bundleSynchronizer = new Object();
-      this.newBundles = new HashSet<URL>();
-      this.changedBundles = new HashSet<URL>();
-      this.removedBundles = new HashSet<URL>();
-   }
+	
+	public LibJarListener() {
+		this.bundleSynchronizer = new Object();
+		this.newBundles = new HashSet<URL>();
+		this.changedBundles = new HashSet<URL>();
+		this.removedBundles = new HashSet<URL>();
+	}
 
-   @Override
-   public void handleBundleAdded(URL url) {
-      synchronized (bundleSynchronizer) {
-         newBundles.add(url);
-         changedBundles.remove(url);
-         removedBundles.remove(url);
-      }
-      debugEcho(url);
-   }
+	@Override
+	public void handleBundleAdded(URL url) {
+		synchronized (bundleSynchronizer) {
+			if (detector.isChanged(url)) {
+				newBundles.add(url);
+				changedBundles.remove(url);
+				removedBundles.remove(url);
+				debugEcho(url);
+			}
+		}
+	}
 
-   @Override
-   public void handleBundleChanged(URL url) {
-      synchronized (bundleSynchronizer) {
-         changedBundles.add(url);
-         newBundles.remove(url);
-         removedBundles.remove(url);
-      }
-      debugEcho(url);
-   }
+	@Override
+	public void handleBundleChanged(URL url) {
+		synchronized (bundleSynchronizer) {
+			if (detector.isChanged(url)) {
+				changedBundles.add(url);
+				newBundles.remove(url);
+				removedBundles.remove(url);
+				debugEcho(url);
+			}
+		}
+	}
 
-   @Override
-   public void handleBundleRemoved(URL url) {
-      synchronized (bundleSynchronizer) {
-         removedBundles.add(url);
-         newBundles.remove(url);
-         changedBundles.remove(url);
-      }
-      debugEcho(url);
-   }
+	@Override
+	public void handleBundleRemoved(URL url) {
+		synchronized (bundleSynchronizer) {
+			detector.remove(url);
+			removedBundles.add(url);
+			newBundles.remove(url);
+			changedBundles.remove(url);
+		}
+		debugEcho(url);
+	}
 
-   /**
-    * @param url
-    */
-   private void debugEcho(URL url) {
-      if (VERBOSE_DEBUG) {
-         try {
-            String bundleName = getBundleNameFromJar(url);
-            System.out.println("Bundle changed:" + bundleName);
-         } catch (IOException ex) {
-         }
-      }
-   }
+	/**
+	 * @param url
+	 */
+	private void debugEcho(URL url) {
+		if (VERBOSE_DEBUG) {
+			try {
+				String bundleName = getBundleNameFromJar(url);
+				System.out.println("Bundle changed:" + bundleName);
+			} catch (IOException ex) {
+			}
+		}
+	}
 
-   @Override
-   public void handleNatureClosed(T nature) {
-      IProject project = nature.getProject();
-      System.out.println("Project closed: " + project.getName());
-      for (URL url : nature.getBundles()) {
-         handleBundleRemoved(url);
-      }
-      
-      nature.setClosing(true);
-      updateContainers();
-      nature.setClosing(false);
-   }
+	@Override
+	public void handleNatureClosed(T nature) {
+		IProject project = nature.getProject();
+		System.out.println("Project closed: " + project.getName());
+		for (URL url : nature.getBundles()) {
+			handleBundleRemoved(url);
+		}
 
-   private void updateContainers() {
-      OteClasspathContainer.refreshAll();
-   }
+		nature.setClosing(true);
+		updateContainers();
+		nature.setClosing(false);
+	}
 
-   @Override
-   public void handlePostChange() {
-      updateContainers();
-      System.out.println("Bunch of changes just finished");
-   }
+	private void updateContainers() {
+		OteClasspathContainer.refreshAll();
+	}
 
-   private <S extends Object> Set<S> duplicateAndClear(Set<S> set) {
-      synchronized (bundleSynchronizer) {
-         Set<S> returnBundles = new HashSet<S>(set);
-         set.clear();
-         return returnBundles;
-      }
-   }
+	@Override
+	public void handlePostChange() {
+		updateContainers();
+		System.out.println("Bunch of changes just finished");
+	}
 
-   /**
-    * @return the newBundles
-    */
-   public Set<URL> consumeNewBundles() {
-      return duplicateAndClear(newBundles);
-   }
+	private <S extends Object> Set<S> duplicateAndClear(Set<S> set) {
+		synchronized (bundleSynchronizer) {
+			Set<S> returnBundles = new HashSet<S>(set);
+			set.clear();
+			return returnBundles;
+		}
+	}
 
-   /**
-    * @return the changedBundles
-    */
-   public Set<URL> consumeChangedBundles() {
-      return duplicateAndClear(changedBundles);
-   }
+	/**
+	 * @return the newBundles
+	 */
+	public Set<URL> consumeNewBundles() {
+		return duplicateAndClear(newBundles);
+	}
 
-   /**
-    * @return the removedBundles
-    */
-   public Set<URL> consumeRemovedBundles() {
-      return duplicateAndClear(removedBundles);
-   }
+	/**
+	 * @return the changedBundles
+	 */
+	public Set<URL> consumeChangedBundles() {
+		return duplicateAndClear(changedBundles);
+	}
 
-   /**
-    * @param url
-    * @return
-    * @throws IOException
-    */
-   private String getBundleNameFromJar(URL url) throws IOException {
-      File file;
-      try {
-         file = new File(url.toURI());
-      } catch (URISyntaxException ex) {
-         file = new File(url.getPath());
-      }
+	/**
+	 * @return the removedBundles
+	 */
+	public Set<URL> consumeRemovedBundles() {
+		return duplicateAndClear(removedBundles);
+	}
 
-      JarFile jarFile = new JarFile(file);
-      Manifest jarManifest = jarFile.getManifest();
-      return BundleInfo.generateBundleName(jarManifest);
-   }
+	/**
+	 * @param url
+	 * @return
+	 * @throws IOException
+	 */
+	private String getBundleNameFromJar(URL url) throws IOException {
+		File file;
+		try {
+			file = new File(url.toURI());
+		} catch (URISyntaxException ex) {
+			file = new File(url.getPath());
+		}
+
+		JarFile jarFile = new JarFile(file);
+		Manifest jarManifest = jarFile.getManifest();
+		return BundleInfo.generateBundleName(jarManifest);
+	}
 
 }

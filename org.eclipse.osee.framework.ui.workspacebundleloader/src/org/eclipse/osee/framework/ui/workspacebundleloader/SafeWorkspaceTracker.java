@@ -45,6 +45,9 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 	private JarChangeResourceListener workspaceListener;
 	private SafeWorkspaceAccess service;
 	private ServiceTracker packageAdminTracker;
+
+	private FileChangeDetector detector = new FileChangeDetector();
+
 	/**
 	 * @param context
 	 * @param filter
@@ -52,14 +55,15 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 	 */
 	public SafeWorkspaceTracker(BundleContext context) {
 		super(context, SafeWorkspaceAccess.class.getName(), null);
-		
-		packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
-	    packageAdminTracker.open(true);
-		
+
+		packageAdminTracker = new ServiceTracker(context, PackageAdmin.class
+				.getName(), null);
+		packageAdminTracker.open(true);
+
 		this.installedBundles = new HashMap<String, Bundle>();
 		this.runningBundles = new HashMap<String, Bundle>();
 		this.stoppedBundles = new LinkedList<Bundle>();
-		
+
 		context.registerService(WorkspaceLoader.class.getName(), this, null);
 	}
 
@@ -114,7 +118,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 	private void cleanupHandledBundles() {
 		for (Bundle bundle : installedBundles.values()) {
 			try {
-				if(bundle.getState() != Bundle.UNINSTALLED){
+				if (bundle.getState() != Bundle.UNINSTALLED) {
 					bundle.uninstall();
 				}
 			} catch (BundleException ex) {
@@ -162,9 +166,11 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 	@Override
 	public void handleBundleAdded(URL url) {
 		try {
-			String urlString = url.toString();
-			 Bundle bundle = context.installBundle(urlString);
-			installedBundles.put(urlString,bundle);
+			if (detector.isChanged(url)) {
+				String urlString = url.toString();
+				Bundle bundle = context.installBundle(urlString);
+				installedBundles.put(urlString, bundle);
+			}
 		} catch (BundleException ex) {
 			OseeLog.log(SafeWorkspaceTracker.class, Level.SEVERE, ex);
 		}
@@ -178,17 +184,19 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 	@Override
 	public void handleBundleChanged(URL url) {
 		try {
-			String urlString = url.toString();
+			if (detector.isChanged(url)) {
+				String urlString = url.toString();
 
-			// Check to see if this is the first we've seen this
-			if (runningBundles.containsKey(urlString)) {
-				Bundle bundle = runningBundles.get(urlString);
-				System.out.println("\tUpdating plugin "
-						+ bundle.getSymbolicName());
+				// Check to see if this is the first we've seen this
+				if (runningBundles.containsKey(urlString)) {
+					Bundle bundle = runningBundles.get(urlString);
+					System.out.println("\tUpdating plugin "
+							+ bundle.getSymbolicName());
 
-				bundle.update();
-			} else {
-				handleBundleAdded(url);
+					bundle.update();
+				} else {
+					handleBundleAdded(url);
+				}
 			}
 		} catch (BundleException ex) {
 		}
@@ -202,6 +210,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 	@Override
 	public void handleBundleRemoved(URL url) {
 		try {
+			detector.remove(url);
 			String urlString = url.toString();
 			if (runningBundles.containsKey(urlString)) {
 				Bundle bundle = runningBundles.get(urlString);
@@ -239,12 +248,13 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 	 * 
 	 */
 	private void refreshPackages() {
-		PackageAdmin packageAdmin = (PackageAdmin)packageAdminTracker.getService();
+		PackageAdmin packageAdmin = (PackageAdmin) packageAdminTracker
+				.getService();
 		packageAdmin.refreshPackages(null);
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException ex) {
-		}
+		// try {
+		// Thread.sleep(10000);
+		// } catch (InterruptedException ex) {
+		// }
 	}
 
 	/**
@@ -262,6 +272,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 				OseeLog.log(Activator.class, Level.SEVERE, th);
 			}
 		}
+		refreshPackages();
 	}
 
 	@Override
