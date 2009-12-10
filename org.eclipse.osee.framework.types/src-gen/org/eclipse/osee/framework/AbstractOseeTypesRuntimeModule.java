@@ -20,6 +20,11 @@ public abstract class AbstractOseeTypesRuntimeModule extends DefaultRuntimeModul
 		super.configure(binder);
 		binder.bind(String.class).annotatedWith(Names.named(Constants.LANGUAGE_NAME)).toInstance(
 			"org.eclipse.osee.framework.OseeTypes");
+		bindProperties(binder);
+	}
+	
+	protected void bindProperties(Binder binder) {
+		bindProperties(binder, "/org/eclipse/osee/framework/OseeTypes.properties");
 	}
 	
 	
@@ -54,6 +59,16 @@ public abstract class AbstractOseeTypesRuntimeModule extends DefaultRuntimeModul
 	}
 
 	// contributed by de.itemis.xtext.antlr.XtextAntlrGeneratorFragment
+	public com.google.inject.Provider<org.eclipse.osee.framework.parser.antlr.internal.InternalOseeTypesLexer> provideInternalOseeTypesLexer() {
+		return org.eclipse.xtext.parser.antlr.LexerProvider.create(org.eclipse.osee.framework.parser.antlr.internal.InternalOseeTypesLexer.class);
+	}
+
+	// contributed by de.itemis.xtext.antlr.XtextAntlrGeneratorFragment
+	public void configureRuntimeLexer(com.google.inject.Binder binder) {
+		binder.bind(org.eclipse.xtext.parser.antlr.Lexer.class).annotatedWith(com.google.inject.name.Names.named(org.eclipse.xtext.parser.antlr.LexerBindings.RUNTIME)).to(org.eclipse.osee.framework.parser.antlr.internal.InternalOseeTypesLexer.class);
+	}
+
+	// contributed by de.itemis.xtext.antlr.XtextAntlrGeneratorFragment
 	public Class<? extends org.eclipse.xtext.parser.antlr.ITokenDefProvider> bindITokenDefProvider() {
 		return org.eclipse.xtext.parser.antlr.AntlrTokenDefProvider.class;
 	}
@@ -66,6 +81,11 @@ public abstract class AbstractOseeTypesRuntimeModule extends DefaultRuntimeModul
 	// contributed by org.eclipse.xtext.generator.scoping.JavaScopingFragment
 	public Class<? extends org.eclipse.xtext.scoping.IScopeProvider> bindIScopeProvider() {
 		return org.eclipse.osee.framework.scoping.OseeTypesScopeProvider.class;
+	}
+
+	// contributed by org.eclipse.xtext.generator.scoping.JavaScopingFragment
+	public void configureIScopeProviderDelegate(com.google.inject.Binder binder) {
+		binder.bind(org.eclipse.xtext.scoping.IScopeProvider.class).annotatedWith(com.google.inject.name.Names.named("org.eclipse.xtext.scoping.IScopeProvider.delegate")).to(org.eclipse.xtext.scoping.impl.SimpleNameScopeProvider.class);
 	}
 
 	// contributed by org.eclipse.xtext.generator.formatting.FormatterFragment

@@ -3,7 +3,6 @@ package org.eclipse.osee.framework.ui.wizard;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -12,13 +11,16 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.internal.xtend.type.impl.java.JavaBeansMetaModel;
+import org.eclipse.xtend.type.impl.java.JavaBeansMetaModel;
 import org.eclipse.xpand2.XpandExecutionContextImpl;
 import org.eclipse.xpand2.XpandFacade;
 import org.eclipse.xpand2.output.Outlet;
 import org.eclipse.xpand2.output.OutputImpl;
 import org.eclipse.xtext.ui.core.util.EclipseResourceUtil;
 import org.eclipse.xtext.ui.core.wizard.DefaultProjectCreator;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class OseeTypesProjectCreator extends DefaultProjectCreator {
 
@@ -57,32 +59,36 @@ public class OseeTypesProjectCreator extends DefaultProjectCreator {
 		final IProject project = EclipseResourceUtil.createProject(
 				getProjectInfo().getProjectName(), SRC_FOLDER_LIST, Collections
 						.<IProject> emptyList(),
-				new LinkedHashSet<String>(Arrays.asList(
-						"com.ibm.icu",
-						"org.eclipse.xtext.log4j;bundle-version=\"1.2.15\"",
-						"org.eclipse.xtext", 
-						"org.eclipse.xtext.generator",
-						"org.eclipse.xtend",
-						"org.eclipse.xtend.typesystem.emf",
-						"org.eclipse.xpand", 
-						"org.apache.commons.logging",
-						"de.itemis.xtext.antlr;resolution:=optional",
-						"org.eclipse.emf.codegen.ecore;resolution:=optional",
-						"org.eclipse.xtend.util.stdlib",
-						DSL_GENERATOR_PROJECT_NAME)), null, null, null,
-				monitor, null,
-				new String[] {"org.eclipse.jdt.core.javanature", "org.eclipse.pde.PluginNature"});
+				Sets.newLinkedHashSet(getRequiredBundles()), 
+				null,
+				Lists.newArrayList("org.apache.log4j"),
+				null,
+				monitor,
+				null,
+				new String[] { "org.eclipse.jdt.core.javanature", "org.eclipse.pde.PluginNature" });
 
 		return project;
 	}
 
+	protected List<String> getRequiredBundles() {
+		return Lists.newArrayList(
+			"com.ibm.icu",
+			"org.eclipse.xtext", 
+			"org.eclipse.xtext.generator",
+			"org.eclipse.xtend",
+			"org.eclipse.xtend.typesystem.emf",
+			"org.eclipse.xpand", 
+			"de.itemis.xtext.antlr;resolution:=optional",
+			"org.eclipse.xtend.util.stdlib",
+			DSL_GENERATOR_PROJECT_NAME);
+	}
+
 	protected void initializeProject(final IProject project, final IProgressMonitor monitor) throws CoreException {
-		final String encoding = "iso-8859-1";
 		OutputImpl output = new OutputImpl();
-		output.addOutlet(new Outlet(false, encoding, null, true, project.getLocation().makeAbsolute().toOSString()));
+		output.addOutlet(new Outlet(false, getEncoding(), null, true, project.getLocation().makeAbsolute().toOSString()));
 
 		XpandExecutionContextImpl execCtx = new XpandExecutionContextImpl(output, null);
-		execCtx.setFileEncoding(encoding);
+		execCtx.setFileEncoding("Cp1252");
 		execCtx.registerMetaModel(new JavaBeansMetaModel());
 
 		XpandFacade facade = XpandFacade.create(execCtx);

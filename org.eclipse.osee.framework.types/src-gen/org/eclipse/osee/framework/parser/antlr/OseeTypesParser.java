@@ -4,7 +4,7 @@
 package org.eclipse.osee.framework.parser.antlr;
 
 import org.antlr.runtime.ANTLRInputStream;
-import org.eclipse.xtext.parser.antlr.ITokenDefProvider;
+import org.antlr.runtime.TokenSource;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.parser.ParseException;
 import org.eclipse.xtext.parser.antlr.XtextTokenStream;
@@ -15,20 +15,16 @@ import org.eclipse.osee.framework.services.OseeTypesGrammarAccess;
 
 public class OseeTypesParser extends org.eclipse.xtext.parser.antlr.AbstractAntlrParser {
 	
-	@Inject 
-    protected ITokenDefProvider antlrTokenDefProvider;
-	
 	@Inject
 	private OseeTypesGrammarAccess grammarAccess;
 	
 	@Override
 	protected IParseResult parse(String ruleName, ANTLRInputStream in) {
-		org.eclipse.osee.framework.parser.antlr.internal.InternalOseeTypesLexer lexer = new org.eclipse.osee.framework.parser.antlr.internal.InternalOseeTypesLexer(in);
-		XtextTokenStream stream = new XtextTokenStream(lexer, antlrTokenDefProvider);
-		stream.setInitialHiddenTokens("RULE_WS", "RULE_ML_COMMENT", "RULE_SL_COMMENT");
-		org.eclipse.osee.framework.parser.antlr.internal.InternalOseeTypesParser parser = new org.eclipse.osee.framework.parser.antlr.internal.InternalOseeTypesParser(
-				stream, getElementFactory(), grammarAccess);
-		parser.setTokenTypeMap(antlrTokenDefProvider.getTokenDefMap());
+		TokenSource tokenSource = createLexer(in);
+		XtextTokenStream tokenStream = createTokenStream(tokenSource);
+		tokenStream.setInitialHiddenTokens("RULE_WS", "RULE_ML_COMMENT", "RULE_SL_COMMENT");
+		org.eclipse.osee.framework.parser.antlr.internal.InternalOseeTypesParser parser = createParser(tokenStream);
+		parser.setTokenTypeMap(getTokenDefProvider().getTokenDefMap());
 		try {
 			if(ruleName != null)
 				return parser.parse(ruleName);
@@ -36,6 +32,10 @@ public class OseeTypesParser extends org.eclipse.xtext.parser.antlr.AbstractAntl
 		} catch (Exception re) {
 			throw new ParseException(re.getMessage(),re);
 		}
+	}
+	
+	protected org.eclipse.osee.framework.parser.antlr.internal.InternalOseeTypesParser createParser(XtextTokenStream stream) {
+		return new org.eclipse.osee.framework.parser.antlr.internal.InternalOseeTypesParser(stream, getElementFactory(), getGrammarAccess());
 	}
 	
 	@Override 
@@ -50,4 +50,5 @@ public class OseeTypesParser extends org.eclipse.xtext.parser.antlr.AbstractAntl
 	public void setGrammarAccess(OseeTypesGrammarAccess grammarAccess) {
 		this.grammarAccess = grammarAccess;
 	}
+	
 }

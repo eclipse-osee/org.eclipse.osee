@@ -11,7 +11,7 @@ import org.eclipse.xtext.validation.ComposedChecks;
 public class AbstractOseeTypesJavaValidator extends AbstractDeclarativeValidator {
 
     @Override
-    protected List<? extends EPackage> getEPackages() {
+    protected List<EPackage> getEPackages() {
         List<EPackage> result = new ArrayList<EPackage>();
         result.add(org.eclipse.osee.framework.oseeTypes.OseeTypesPackage.eINSTANCE);
         return result;

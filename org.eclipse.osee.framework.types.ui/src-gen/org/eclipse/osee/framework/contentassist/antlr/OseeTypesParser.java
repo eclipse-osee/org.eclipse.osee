@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.antlr.runtime.CharStream;
 import org.antlr.runtime.RecognitionException;
 import org.eclipse.xtext.AbstractElement;
 import org.eclipse.xtext.ui.common.editor.contentassist.antlr.AbstractContentAssistParser;
@@ -26,11 +25,6 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 	private Map<AbstractElement, String> nameMappings;
 	
 	@Override
-	protected org.eclipse.osee.framework.contentassist.antlr.internal.InternalOseeTypesLexer createLexer(CharStream stream) {
-		return new org.eclipse.osee.framework.contentassist.antlr.internal.InternalOseeTypesLexer(stream);
-	}
-	
-	@Override
 	protected org.eclipse.osee.framework.contentassist.antlr.internal.InternalOseeTypesParser createParser() {
 		org.eclipse.osee.framework.contentassist.antlr.internal.InternalOseeTypesParser result = new org.eclipse.osee.framework.contentassist.antlr.internal.InternalOseeTypesParser(null);
 		result.setGrammarAccess(grammarAccess);
@@ -41,6 +35,7 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 	protected String getRuleName(AbstractElement element) {
 		if (nameMappings == null) {
 			nameMappings = new HashMap<AbstractElement, String>() {
+				private static final long serialVersionUID = 1L;
 				{
 					put(grammarAccess.getOseeTypeModelAccess().getAlternatives_1(), "rule__OseeTypeModel__Alternatives_1");
 					put(grammarAccess.getOseeElementAccess().getAlternatives(), "rule__OseeElement__Alternatives");

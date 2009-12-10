@@ -22,4 +22,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.framework.contentassist,
  org.eclipse.osee.framework.contentassist.antlr
 Bundle-Activator: org.eclipse.osee.framework.internal.OseeTypesActivator
-Import-Package: org.eclipse.osee.framework.jdk.core.util
+Import-Package: org.eclipse.osee.framework.jdk.core.util,
+ org.apache.log4j

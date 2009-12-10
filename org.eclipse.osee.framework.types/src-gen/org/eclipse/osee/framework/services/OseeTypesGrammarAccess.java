@@ -8,16 +8,16 @@ import com.google.inject.Singleton;
 import com.google.inject.Inject;
 
 import org.eclipse.xtext.*;
-
 import org.eclipse.xtext.service.GrammarProvider;
+import org.eclipse.xtext.service.AbstractElementFinder.*;
 
 import org.eclipse.xtext.common.services.TerminalsGrammarAccess;
 
 @Singleton
-public class OseeTypesGrammarAccess implements IGrammarAccess {
+public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 	
 	
-	public class OseeTypeModelElements implements IParserRuleAccess {
+	public class OseeTypeModelElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "OseeTypeModel");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cImportsAssignment_0 = (Assignment)cGroup.eContents().get(0);
@@ -86,7 +86,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public RuleCall getEnumOverridesOseeEnumOverrideParserRuleCall_1_4_0() { return cEnumOverridesOseeEnumOverrideParserRuleCall_1_4_0; }
 	}
 
-	public class ImportElements implements IParserRuleAccess {
+	public class ImportElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Import");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cImportKeyword_0 = (Keyword)cGroup.eContents().get(0);
@@ -110,7 +110,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public RuleCall getImportURISTRINGTerminalRuleCall_1_0() { return cImportURISTRINGTerminalRuleCall_1_0; }
 	}
 
-	public class NAME_REFERENCEElements implements IParserRuleAccess {
+	public class NAME_REFERENCEElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "NAME_REFERENCE");
 		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
 		
@@ -122,7 +122,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
 	}
 
-	public class QUALIFIED_NAMEElements implements IParserRuleAccess {
+	public class QUALIFIED_NAMEElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "QUALIFIED_NAME");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final RuleCall cIDTerminalRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
@@ -150,7 +150,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public RuleCall getIDTerminalRuleCall_1_1() { return cIDTerminalRuleCall_1_1; }
 	}
 
-	public class OseeElementElements implements IParserRuleAccess {
+	public class OseeElementElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "OseeElement");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final RuleCall cOseeEnumOverrideParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
@@ -170,7 +170,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public RuleCall getOseeTypeParserRuleCall_1() { return cOseeTypeParserRuleCall_1; }
 	}
 
-	public class OseeTypeElements implements IParserRuleAccess {
+	public class OseeTypeElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "OseeType");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final RuleCall cArtifactTypeParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
@@ -198,7 +198,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public RuleCall getOseeEnumTypeParserRuleCall_3() { return cOseeEnumTypeParserRuleCall_3; }
 	}
 
-	public class ArtifactTypeElements implements IParserRuleAccess {
+	public class ArtifactTypeElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ArtifactType");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cAbstractAssignment_0 = (Assignment)cGroup.eContents().get(0);
@@ -305,7 +305,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public Keyword getRightCurlyBracketKeyword_8() { return cRightCurlyBracketKeyword_8; }
 	}
 
-	public class AttributeTypeRefElements implements IParserRuleAccess {
+	public class AttributeTypeRefElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "AttributeTypeRef");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cAttributeKeyword_0 = (Keyword)cGroup.eContents().get(0);
@@ -351,7 +351,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public RuleCall getBranchGuidSTRINGTerminalRuleCall_2_1_0() { return cBranchGuidSTRINGTerminalRuleCall_2_1_0; }
 	}
 
-	public class AttributeTypeElements implements IParserRuleAccess {
+	public class AttributeTypeElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "AttributeType");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cAttributeTypeKeyword_0 = (Keyword)cGroup.eContents().get(0);
@@ -594,7 +594,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public Keyword getRightCurlyBracketKeyword_18() { return cRightCurlyBracketKeyword_18; }
 	}
 
-	public class AttributeBaseTypeElements implements IParserRuleAccess {
+	public class AttributeBaseTypeElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "AttributeBaseType");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final Keyword cBooleanAttributeKeyword_0 = (Keyword)cAlternatives.eContents().get(0);
@@ -650,7 +650,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public RuleCall getQUALIFIED_NAMEParserRuleCall_9() { return cQUALIFIED_NAMEParserRuleCall_9; }
 	}
 
-	public class OseeEnumTypeElements implements IParserRuleAccess {
+	public class OseeEnumTypeElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "OseeEnumType");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cOseeEnumTypeKeyword_0 = (Keyword)cGroup.eContents().get(0);
@@ -704,7 +704,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public Keyword getRightCurlyBracketKeyword_6() { return cRightCurlyBracketKeyword_6; }
 	}
 
-	public class OseeEnumEntryElements implements IParserRuleAccess {
+	public class OseeEnumEntryElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "OseeEnumEntry");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cEntryKeyword_0 = (Keyword)cGroup.eContents().get(0);
@@ -752,7 +752,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public RuleCall getEntryGuidSTRINGTerminalRuleCall_3_1_0() { return cEntryGuidSTRINGTerminalRuleCall_3_1_0; }
 	}
 
-	public class OseeEnumOverrideElements implements IParserRuleAccess {
+	public class OseeEnumOverrideElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "OseeEnumOverride");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cOverridesEnumKeyword_0 = (Keyword)cGroup.eContents().get(0);
@@ -806,7 +806,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public Keyword getRightCurlyBracketKeyword_5() { return cRightCurlyBracketKeyword_5; }
 	}
 
-	public class OverrideOptionElements implements IParserRuleAccess {
+	public class OverrideOptionElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "OverrideOption");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final RuleCall cAddEnumParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
@@ -826,7 +826,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public RuleCall getRemoveEnumParserRuleCall_1() { return cRemoveEnumParserRuleCall_1; }
 	}
 
-	public class AddEnumElements implements IParserRuleAccess {
+	public class AddEnumElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "AddEnum");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cAddKeyword_0 = (Keyword)cGroup.eContents().get(0);
@@ -876,7 +876,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public RuleCall getEntryGuidSTRINGTerminalRuleCall_3_1_0() { return cEntryGuidSTRINGTerminalRuleCall_3_1_0; }
 	}
 
-	public class RemoveEnumElements implements IParserRuleAccess {
+	public class RemoveEnumElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "RemoveEnum");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cRemoveKeyword_0 = (Keyword)cGroup.eContents().get(0);
@@ -904,7 +904,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public RuleCall getEnumEntryOseeEnumEntryNAME_REFERENCEParserRuleCall_1_0_1() { return cEnumEntryOseeEnumEntryNAME_REFERENCEParserRuleCall_1_0_1; }
 	}
 
-	public class RelationTypeElements implements IParserRuleAccess {
+	public class RelationTypeElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "RelationType");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cRelationTypeKeyword_0 = (Keyword)cGroup.eContents().get(0);
@@ -1036,7 +1036,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public Keyword getRightCurlyBracketKeyword_17() { return cRightCurlyBracketKeyword_17; }
 	}
 
-	public class RelationOrderTypeElements implements IParserRuleAccess {
+	public class RelationOrderTypeElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "RelationOrderType");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final Keyword cLexicographical_AscendingKeyword_0 = (Keyword)cAlternatives.eContents().get(0);
@@ -1065,7 +1065,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 	}
 	
 	
-	public class RelationMultiplicityEnumElements implements IEnumRuleAccess {
+	public class RelationMultiplicityEnumElements extends AbstractEnumRuleElementFinder {
 		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "RelationMultiplicityEnum");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final EnumLiteralDeclaration cONE_TO_ONEEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
