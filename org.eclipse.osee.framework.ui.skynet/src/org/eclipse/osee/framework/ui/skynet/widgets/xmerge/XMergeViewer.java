@@ -101,11 +101,14 @@ public class XMergeViewer extends XWidget implements IAdaptable {
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       Composite mainComp = new Composite(parent, SWT.BORDER);
-      createTaskActionBar(mainComp);
+      Composite taskComp = new Composite(mainComp, SWT.NONE);
+      taskComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+      taskComp.setLayout(ALayout.getZeroMarginLayout());
       createTextWidgets(parent);
       createMainComposite(mainComp);
       mergeXViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
       createMergeXViewer();
+      createTaskActionBar(taskComp);
       if (toolkit != null) {
          toolkit.adapt(mergeXViewer.getStatusLabel(), false, false);
       }
