@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.IOseeUser;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -196,7 +197,7 @@ public final class UserManager {
    private static synchronized void ensurePopulated() throws OseeCoreException {
       if (!userCacheIsLoaded) {
          List<Artifact> artifactsFound =
-               ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, BranchManager.getCommonBranch(), false);
+               ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON, false);
          for (Artifact artifact : artifactsFound) {
             User user = (User) artifact;
             User cachedUser = cacheByUserId(user);
