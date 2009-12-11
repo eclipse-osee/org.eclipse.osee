@@ -17,14 +17,15 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.BinaryAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.JavaObjectAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 
@@ -55,71 +56,58 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       DynamicXWidgetLayoutData defaultData = createDynamicXWidgetLayout(attributeType);
       xWidgetLayoutData.add(defaultData);
 
-      Throwable th = null;
-      Class<?> baseType = null;
+      String xWidgetName;
       try {
-         baseType = AttributeTypeManager.getAttributeBaseClass(attributeType);
+         xWidgetName = getXWidgetName(defaultData, attributeType, minOccurrence, maxOccurrence);
       } catch (OseeCoreException ex) {
-         th = ex;
-      }
-      if (baseType != null) {
-         if (baseType.equals(EnumeratedAttribute.class)) {
-            if (maxOccurrence == 1) {
-               defaultData.setXWidgetName("XComboDam(" + Collections.toString(",",
-                     AttributeTypeManager.getEnumerationValues(attributeType)) + ")");
-            } else {
-               defaultData.setXWidgetName("XSelectFromMultiChoiceDam(" + Collections.toString(",",
-                     AttributeTypeManager.getEnumerationValues(attributeType)) + ")");
-            }
-         } else if (baseType.equals(BooleanAttribute.class)) {
-            if (minOccurrence == 1) {
-               defaultData.setXWidgetName("XCheckBoxDam");
-            } else {
-               defaultData.setXWidgetName("XComboBooleanDam");
-            }
-         } else if (baseType.equals(WordAttribute.class) || CoreAttributeTypes.RELATION_ORDER.getGuid().equals(
-               attributeType.getGuid())) {
-            defaultData.setXWidgetName("XStackedDam");
-            defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
-         } else {
-            String xWidgetName = "";
-            if (maxOccurrence == 1) {
-               xWidgetName = getXWidgetName(baseType);
-            } else {
-               xWidgetName = "XStackedDam";
-            }
-            defaultData.setXWidgetName(xWidgetName);
-         }
-      } else {
-         defaultData.setXWidgetName("XTextDam");
+         xWidgetName = "XTextDam";
          StringBuilder builder = new StringBuilder();
          builder.append("Unable to determine base type for attribute type");
          builder.append(String.format("[%]", attributeType.getName()));
-         if (th != null) {
-            builder.append(org.eclipse.osee.framework.jdk.core.util.Lib.exceptionToString(th));
-         }
+         builder.append(Lib.exceptionToString(ex));
          defaultData.setDefaultValue(builder.toString());
       }
+
+      defaultData.setXWidgetName(xWidgetName);
       defaultData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
       defaultData.getXOptionHandler().add(XOption.NO_DEFAULT_VALUE);
 
       return xWidgetLayoutData;
    }
 
-   private String getXWidgetName(Class<?> baseType) {
-      String toReturn = "";
-      if (baseType.equals(DateAttribute.class)) {
-         toReturn = "XDateDam";
-      } else if (baseType.equals(IntegerAttribute.class)) {
-         toReturn = "XIntegerDam";
-      } else if (baseType.equals(FloatingPointAttribute.class)) {
-         toReturn = "XFloatDam";
-      } else if (baseType.equals(CompressedContentAttribute.class) || baseType.equals(JavaObjectAttribute.class)) {
-         toReturn = "XLabelDam";
+   private String getXWidgetName(DynamicXWidgetLayoutData defaultData, AttributeType attributeType, int minOccurrence, int maxOccurrence) throws OseeCoreException {
+      String xWidgetName = "";
+      if (AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType)) {
+         if (maxOccurrence == 1) {
+            xWidgetName =
+                  "XComboDam(" + Collections.toString(",", AttributeTypeManager.getEnumerationValues(attributeType)) + ")";
+         } else {
+            xWidgetName =
+                  "XSelectFromMultiChoiceDam(" + Collections.toString(",",
+                        AttributeTypeManager.getEnumerationValues(attributeType)) + ")";
+         }
+      } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
+         if (minOccurrence == 1) {
+            xWidgetName = "XCheckBoxDam";
+         } else {
+            xWidgetName = "XComboBooleanDam";
+         }
+      } else if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RELATION_ORDER)) {
+         xWidgetName = "XStackedDam";
+         defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
+      } else if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
+         xWidgetName = "XDateDam";
+      } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
+         xWidgetName = "XIntegerDam";
+      } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
+         xWidgetName = "XFloatDam";
+      } else if (AttributeTypeManager.isBaseTypeCompatible(BinaryAttribute.class, attributeType)) {
+         xWidgetName = "XLabelDam";
+      } else if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeType)) {
+         xWidgetName = "XTextDam";
       } else {
-         toReturn = "XTextDam";
+         xWidgetName = "XStackedDam";
       }
-      return toReturn;
+      return xWidgetName;
    }
-
 }

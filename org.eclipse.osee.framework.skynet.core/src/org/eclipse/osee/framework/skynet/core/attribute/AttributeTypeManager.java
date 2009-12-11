@@ -161,11 +161,11 @@ public class AttributeTypeManager {
 
    @SuppressWarnings("unchecked")
    public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, String attributeTypeName) throws OseeCoreException {
-      return getAttributeBaseClass(getType(attributeTypeName)).isAssignableFrom(baseType);
+      return baseType.isAssignableFrom(getAttributeBaseClass(getType(attributeTypeName)));
    }
 
-   public static boolean isBaseTypeCompatible(Class<? extends Attribute<?>> baseType, IAttributeType attributeType) throws OseeCoreException {
-      return getAttributeBaseClass(getType(attributeType)).isAssignableFrom(baseType);
+   public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, IAttributeType attributeType) throws OseeCoreException {
+      return baseType.isAssignableFrom(getAttributeBaseClass(getType(attributeType)));
    }
 
    public static Class<? extends Attribute<?>> getAttributeBaseClass(AttributeType attributeType) throws OseeCoreException {
