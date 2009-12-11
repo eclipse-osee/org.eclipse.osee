@@ -106,7 +106,7 @@ public class AtsBranchConfigurationTest {
 
       String namespace = "org.branchTest." + TestType.BranchViaVersions.name().toLowerCase();
       // Cleanup from previous run
-      cleanupBranchTest(TestType.BranchViaVersions);
+            cleanupBranchTest(TestType.BranchViaVersions);
 
       OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring ATS for team org.branchTest.viaTeamDefs");
       // create team definition and actionable item
@@ -370,6 +370,7 @@ public class AtsBranchConfigurationTest {
       transaction.execute();
 
       try {
+         BranchManager.refreshBranches();
          // delete working branches
          for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchControlled.ALL,
                BranchType.WORKING)) {

@@ -374,13 +374,20 @@ public class ConflictTestManager {
       return artifact.getRelations(CoreRelationTypes.Dependency__Dependency).get(0);
    }
 
-   public static void cleanUpConflictTest() throws OseeCoreException {
+   public static void cleanUpConflictTest() throws OseeCoreException, InterruptedException {
+      BranchManager.refreshBranches();
       Branch sBranch = getArchivedBranch(SOURCE_BRANCH);
       Branch dBranch = getArchivedBranch(DEST_BRANCH);
-      Branch mBranch = BranchManager.getMergeBranch(sBranch, dBranch);
-      purgeBranch(sBranch);
+      Branch mBranch = null;
+      if (sBranch != null && dBranch != null) {
+         mBranch = BranchManager.getMergeBranch(sBranch, dBranch);
+      }
       purgeBranch(mBranch);
+      Thread.sleep(10000);
+      purgeBranch(sBranch);
+      Thread.sleep(10000);
       purgeBranch(dBranch);
+      Thread.sleep(10000);
    }
 
    private static Branch getArchivedBranch(String branchName) throws OseeCoreException {

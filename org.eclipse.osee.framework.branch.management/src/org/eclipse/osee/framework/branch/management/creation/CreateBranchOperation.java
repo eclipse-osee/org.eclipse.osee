@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
@@ -151,6 +152,11 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
          branch.setSourceTransaction(systemTx);
       } else {
          branch.setSourceTransaction(txCache.getOrLoad(request.getSourceTransactionId()));
+      }
+
+      if (branch.getBranchType().isMergeBranch()) {
+         ((MergeBranch) branch).setSourceBranch(branchCache.getById(request.getParentBranchId()));
+         ((MergeBranch) branch).setDestinationBranch(branchCache.getById(request.getDestinationBranchId()));
       }
 
       branchCache.cache(branch);

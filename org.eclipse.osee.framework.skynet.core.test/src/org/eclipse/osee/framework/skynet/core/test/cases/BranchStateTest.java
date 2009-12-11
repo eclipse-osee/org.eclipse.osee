@@ -42,6 +42,7 @@ public class BranchStateTest {
    public void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse(ClientSessionManager.isProductionDataStore());
+      BranchManager.refreshBranches();
    }
 
    @org.junit.Test

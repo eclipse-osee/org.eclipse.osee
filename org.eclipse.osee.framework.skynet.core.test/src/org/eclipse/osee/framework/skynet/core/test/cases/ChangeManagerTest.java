@@ -65,6 +65,7 @@ public class ChangeManagerTest {
       newArtifact = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch);
       newArtifact.persist();
       sleep(5000);
+      BranchManager.refreshBranches();
    }
 
    @org.junit.Test
