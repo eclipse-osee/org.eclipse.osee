@@ -75,4 +75,11 @@ public class FileChangeDetector {
 		return true;
 	}
 
+	/**
+	 * 
+	 */
+	public void clear() {
+		bundleNameToMd5Map.clear();
+	}
+
 }

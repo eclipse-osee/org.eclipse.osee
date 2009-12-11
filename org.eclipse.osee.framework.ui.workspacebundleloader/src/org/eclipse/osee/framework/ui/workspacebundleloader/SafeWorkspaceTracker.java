@@ -141,6 +141,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements
 			}
 		}
 		refreshPackages();
+		detector.clear();
 		stoppedBundles.clear();
 		runningBundles.clear();
 		installedBundles.clear();
