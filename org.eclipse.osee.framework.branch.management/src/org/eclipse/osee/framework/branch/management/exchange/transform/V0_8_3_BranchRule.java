@@ -36,7 +36,7 @@ public class V0_8_3_BranchRule extends Rule {
                guid = branch.getGuid();
             }
          }
-         changeSet.insertBefore(branchMatcher.end(1), "branch_guid=\"" + guid + "\" branch_state=\"2\" ");
+         changeSet.insertBefore(branchMatcher.end(1), "branch_guid=\"" + guid + "\" branch_state=\"-1\" ");
          ruleWasApplicable = true;
       }
 
