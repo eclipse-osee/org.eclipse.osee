@@ -19,11 +19,11 @@ import org.xml.sax.SAXException;
 /**
  * @author Ryan D. Brooks
  */
-public class V0_9_0TypeTransformer extends SaxTransformer {
+public class V0_9_0ItemTransformer extends SaxTransformer {
    private final HashMap<Integer, String> typeIdMap;
    private final String typeIdColumn;
 
-   public V0_9_0TypeTransformer(HashMap<Integer, String> typeIdMap, String typeIdColumn) {
+   public V0_9_0ItemTransformer(HashMap<Integer, String> typeIdMap, String typeIdColumn) {
       this.typeIdMap = typeIdMap;
       this.typeIdColumn = typeIdColumn;
    }

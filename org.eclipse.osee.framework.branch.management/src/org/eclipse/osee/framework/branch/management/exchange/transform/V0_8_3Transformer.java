@@ -30,4 +30,8 @@ public class V0_8_3Transformer implements IOseeDbExportTransformer {
    public boolean isApplicable(String exportVersion) throws OseeCoreException {
       return exportVersion == null;
    }
+
+   @Override
+   public void finalizeTransform(ImportController importController) throws Exception {
+   }
 }

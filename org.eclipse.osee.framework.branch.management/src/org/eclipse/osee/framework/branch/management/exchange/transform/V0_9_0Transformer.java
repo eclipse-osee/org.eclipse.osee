@@ -42,12 +42,12 @@ public class V0_9_0Transformer implements IOseeDbExportTransformer {
 
          SaxTransformer txsTransformer = new V0_9_0TxsTransformer(txdHandler.getBranchIdMap());
          importController.transformExportItem(ExportItem.OSEE_TXS_DATA, txsTransformer);
-
          txsTransformer.finish();
       } catch (XMLStreamException ex) {
          throw new OseeWrappedException(ex);
       }
 
+      importController.deleteExportItem("osee.branch.definitions.xml");
       importController.transformExportItem(ExportItem.EXPORT_MANIFEST, new V0_9_0_ManifestRule());
 
       return "0.9.0";
@@ -57,7 +57,7 @@ public class V0_9_0Transformer implements IOseeDbExportTransformer {
       V0_9_0TypeHandler typeHandler = new V0_9_0TypeHandler(cache, typeIdColumn, typeNameColumn);
       importController.parseExportItem(exportItem + ".type.xml", typeHandler);
       HashMap<Integer, String> typeIdMap = typeHandler.getTypeIdMap();
-      SaxTransformer typeTransformer = new V0_9_0TypeTransformer(typeIdMap, typeIdColumn);
+      SaxTransformer typeTransformer = new V0_9_0ItemTransformer(typeIdMap, typeIdColumn);
       importController.transformExportItem(exportItem, typeTransformer);
       typeTransformer.finish();
    }
@@ -65,5 +65,9 @@ public class V0_9_0Transformer implements IOseeDbExportTransformer {
    @Override
    public boolean isApplicable(String exportVersion) throws OseeCoreException {
       return exportVersion.startsWith("0.8.3");
+   }
+
+   @Override
+   public void finalizeTransform(ImportController importController) throws Exception {
    }
 }

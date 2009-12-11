@@ -77,6 +77,7 @@ public final class ImportController {
    private final Options options;
    private final int[] branchesToImport;
    private final Map<String, SavePoint> savePoints;
+   private final List<IOseeDbExportTransformer> transformers = new ArrayList<IOseeDbExportTransformer>();
 
    private TranslationManager translator;
    private ManifestSaxHandler manifestHandler;
@@ -133,6 +134,10 @@ public final class ImportController {
       }
    }
 
+   public void deleteExportItem(String fileName) {
+      new File(exportDataProvider.getExportedDataRoot(), fileName).delete();
+   }
+
    public void parseExportItem(IExportItem exportItem, ContentHandler handler) throws Exception {
       exportDataProvider.saxParse(exportItem, handler);
    }
@@ -173,11 +178,12 @@ public final class ImportController {
       String version = versionRule.getVersion();
       versionRule.setReplaceVersion(true);
 
-      for (IOseeDbExportTransformer transform : transforms) {
-         if (transform.isApplicable(version)) {
-            version = transform.applyTransform(this);
+      for (IOseeDbExportTransformer transformer : transforms) {
+         if (transformer.isApplicable(version)) {
+            version = transformer.applyTransform(this);
             versionRule.setVersion(version);
             transformExportItem(ExportItem.EXPORT_MANIFEST, versionRule);
+            transformers.add(transformer);
          }
       }
    }
@@ -216,6 +222,8 @@ public final class ImportController {
 
          importBranchesTx.updateBranchParentTransactionId();
 
+         applyFinalTransforms();
+
          currentSavePoint = "stop";
          addSavePoint(currentSavePoint);
       } catch (Throwable ex) {
@@ -223,6 +231,12 @@ public final class ImportController {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       } finally {
          cleanup();
+      }
+   }
+
+   private void applyFinalTransforms() throws Exception {
+      for (IOseeDbExportTransformer transform : transformers) {
+         transform.finalizeTransform(this);
       }
    }
 

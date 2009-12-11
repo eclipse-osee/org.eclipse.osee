@@ -20,4 +20,6 @@ public interface IOseeDbExportTransformer {
    public abstract String applyTransform(ImportController importController) throws Exception;
 
    public abstract boolean isApplicable(String exportVersion) throws OseeCoreException;
+
+   public abstract void finalizeTransform(ImportController importController) throws Exception;
 }
