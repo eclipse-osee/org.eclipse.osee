@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
-import org.eclipse.osee.framework.core.model.IOseeStorableType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,7 +31,7 @@ import org.junit.Test;
  * 
  * @author Roberto E. Escobar
  */
-public abstract class AbstractOseeCacheTest<T extends IOseeStorableType> {
+public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
    private final List<T> data;
    private final AbstractOseeCache<T> cache;
    private final TypeComparator comparator;

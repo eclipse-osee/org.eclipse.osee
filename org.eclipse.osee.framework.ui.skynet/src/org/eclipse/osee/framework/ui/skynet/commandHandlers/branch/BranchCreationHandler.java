@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -75,10 +76,10 @@ public class BranchCreationHandler extends CommandHandler {
          IExceptionableRunnable runnable = new IExceptionableRunnable() {
             public IStatus run(IProgressMonitor monitor) throws Exception {
                Branch branch = parentTransactionId.getBranch();
-               if (branch != null && branch.getBranchType().isSystemRootBranch()) {
-                  BranchManager.createTopLevelBranch(dialog.getEntry(), dialog.getEntry(), null);
+               if (branch.equals(CoreBranches.SYSTEM_ROOT)) {
+                  BranchManager.createTopLevelBranch(dialog.getEntry());
                } else {
-                  BranchManager.createWorkingBranch(parentTransactionId, dialog.getEntry(), null);
+                  BranchManager.createWorkingBranch(parentTransactionId, dialog.getEntry(), null, null);
                }
                return Status.OK_STATUS;
             }

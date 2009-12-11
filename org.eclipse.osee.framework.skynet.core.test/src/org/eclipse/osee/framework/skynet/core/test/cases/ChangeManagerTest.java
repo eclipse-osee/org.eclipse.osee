@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -57,7 +58,7 @@ public class ChangeManagerTest {
       String branchName = "Change Manager Test Branch" + GUID.create();
 
       branch =
-            BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), branchName,
+            BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, branchName,
                   UserManager.getUser(SystemUser.OseeSystem));
       sleep(5000);
 

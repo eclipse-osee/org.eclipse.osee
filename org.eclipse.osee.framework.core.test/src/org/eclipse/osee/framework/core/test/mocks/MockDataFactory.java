@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.core.data.BranchCreationResponse;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.data.DefaultBasicArtifact;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
-import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -143,7 +143,7 @@ public final class MockDataFactory {
    }
 
    public static ArtifactType createBaseArtifactType() {
-      IOseeType baseType = CoreArtifactTypes.Artifact;
+      IArtifactType baseType = CoreArtifactTypes.Artifact;
       return new ArtifactType(baseType.getGuid(), baseType.getName(), true);
    }
 
@@ -192,7 +192,6 @@ public final class MockDataFactory {
       int parentBranchId = index;
       int associatedArtifactId = index * 3;
       int sourceTransactionId = index * 7;
-      String staticBranchName = "static_name_" + index;
       String branchGuid = GUID.create();
 
       int authorId = index * 7;
@@ -203,8 +202,7 @@ public final class MockDataFactory {
       int destinationBranchId = -1;
 
       return new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName,
-            associatedArtifactId, staticBranchName, authorId, creationComment, populateBaseTxFromAddressingQueryId,
-            destinationBranchId);
+            associatedArtifactId, authorId, creationComment, populateBaseTxFromAddressingQueryId, destinationBranchId);
    }
 
    public static Object createBranchCreateResponse(int index) {

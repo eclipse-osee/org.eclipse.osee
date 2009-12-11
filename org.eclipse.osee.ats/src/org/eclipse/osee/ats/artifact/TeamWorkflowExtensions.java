@@ -18,6 +18,8 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -39,18 +41,19 @@ public class TeamWorkflowExtensions {
       return instance;
    }
 
-   public Set<String> getAllTeamWorkflowArtifactNames() throws OseeCoreException {
-      Set<String> artifactNames = new HashSet<String>();
-      artifactNames.add(TeamWorkFlowArtifact.ARTIFACT_NAME);
+   public Set<IArtifactType> getAllTeamWorkflowArtifactTypes() throws OseeCoreException {
+      Set<IArtifactType> artifactTypes = new HashSet<IArtifactType>();
+      artifactTypes.add(AtsArtifactTypes.TeamWorkflow);
       for (IAtsTeamWorkflow ext : getAtsTeamWorkflowExtensions()) {
-         artifactNames.addAll(ext.getTeamWorkflowArtifactNames());
+         artifactTypes.addAll(ext.getTeamWorkflowArtifactNames());
       }
-      return artifactNames;
+      return artifactTypes;
    }
 
-   /* due to lazy initialization, this function is non-reentrant
-    * therefore, the synchronized keyword is necessary */
-   //   @SuppressWarnings( {"unchecked"})
+   /*
+    * due to lazy initialization, this function is non-reentrant
+    * therefore, the synchronized keyword is necessary
+    */
    public synchronized Set<IAtsTeamWorkflow> getAtsTeamWorkflowExtensions() {
       if (teamWorkflowExtensionItems != null) {
          return teamWorkflowExtensionItems;

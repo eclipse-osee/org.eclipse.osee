@@ -10,17 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
  * @author Ryan D. Brooks
  */
-public enum CoreArtifactTypes implements IOseeType {
+public enum CoreArtifactTypes implements IArtifactType {
    AbstractSoftwareRequirement("Abstract Software Requirement", "ABNAYPwV6H4EkjQ3+QQA"),
    AbstractTestResult("Abstract Test Result", "ATkaanWmHH3PkhGNVjwA"),
    Artifact("Artifact", "AAMFDh6S7gRLupAMwywA"),
    CodeUnit("Code Unit", "AAMFDkEh216dzK1mTZgA"),
    Folder("Folder", "AAMFDg_wmiYHHY5swJwA"),
+   GeneralDocument("General Document", "AAMFDhCjkTvP+VBpBCQA"),
    GlobalPreferences("Global Preferences", "AAMFDho2kBqyoOZEw+gA"),
    Heading("Heading", "AAMFDhEzni8FpFb5yHwA"),
    IndirectSoftwareRequirement("Indirect Software Requirement", "AAMFDiC7HRQMqr5S0QwA"),
@@ -38,6 +39,9 @@ public enum CoreArtifactTypes implements IOseeType {
    User("User", "AAMFDhmr+Dqqe5pn3kAA"),
    UserGroup("User Group", "AAMFDhrEbXqZKPfWkwAA"),
    WorkFlowDefinition("Work Flow Definition", "AAMFDh16eQ1GIHPWlYQA"),
+   WorkPageDefinition("Work Page Definition", "AAMFDhzuyizN4qu7tXgA"),
+   WorkRuleDefinition("Work Rule Definition", "AAMFDhxjHC2RUV2RkcQA"),
+   WorkWidgetDefinition("Work Widget Definition", "AAMFDh4IVzqPgVTpLrwA"),
    XViewerGlobalCustomization("XViewer Global Customization", "AAMFDhtN7T4of30iYhAA");
 
    private final String name;

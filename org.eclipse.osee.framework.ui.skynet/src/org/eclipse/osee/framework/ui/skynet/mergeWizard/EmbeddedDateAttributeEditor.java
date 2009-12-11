@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.Collection;
 import java.util.Date;
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,14 +37,14 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
 
-   protected String attributeName;
+   protected IAttributeType attributeType;
    protected String displayName;
    protected Collection<?> attributeHolder;
    protected boolean persist;
    protected EmbeddedDateEditor editor;
 
-   public EmbeddedDateAttributeEditor(String notUsed, Collection<?> attributeHolder, String displayName, IOseeType attributeType, boolean persist) {
-      this.attributeName = attributeName;
+   public EmbeddedDateAttributeEditor(String notUsed, Collection<?> attributeHolder, String displayName, IAttributeType attributeType, boolean persist) {
+      this.attributeType = attributeType;
       this.displayName = displayName;
       this.attributeHolder = attributeHolder;
       this.persist = persist;
@@ -75,7 +75,7 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
       Date date = new Date();
       if (obj instanceof Artifact) {
          try {
-            Object object = ((Artifact) obj).getSoleAttributeValue(attributeName);
+            Object object = ((Artifact) obj).getSoleAttributeValue(attributeType);
             if (object instanceof Date) {
                date = (Date) object;
             }
@@ -109,9 +109,9 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
          for (Object object : attributeHolder) {
             if (object instanceof Artifact) {
                if (selected == null) {
-                  ((Artifact) object).setSoleAttributeValue(attributeName, "");
+                  ((Artifact) object).setSoleAttributeValue(attributeType, "");
                } else {
-                  ((Artifact) object).setSoleAttributeValue(attributeName, selected.getTime() + "");
+                  ((Artifact) object).setSoleAttributeValue(attributeType, selected.getTime() + "");
                }
                if (persist) {
                   ((Artifact) object).persist();

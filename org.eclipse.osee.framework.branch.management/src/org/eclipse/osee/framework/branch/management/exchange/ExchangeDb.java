@@ -94,9 +94,6 @@ public class ExchangeDb {
    private static final String BRANCH_TABLE_QUERY =
          "SELECT br1.* FROM osee_branch br1, osee_join_export_import jex1 WHERE br1.branch_id = jex1.id1 AND jex1.query_id=? ORDER BY br1.branch_id";
 
-   private static final String BRANCH_DEFINITION_QUERY =
-         "SELECT br1.* FROM osee_branch_definitions br1, osee_join_export_import jex1 WHERE br1.mapped_branch_id = jex1.id1 AND jex1.query_id=? ORDER BY br1.mapped_branch_id";
-
    private static final String TX_DETAILS_TABLE_QUERY =
          "SELECT txd1.TRANSACTION_ID, txd1.TIME, txd1.AUTHOR, txd1.OSEE_COMMENT, txd1.BRANCH_ID, txd1.COMMIT_ART_ID, txd1.TX_TYPE FROM osee_tx_details txd1, osee_join_export_import jex1 WHERE txd1.branch_id = jex1.id1 AND jex1.query_id=? %s ORDER BY txd1.transaction_id";
 
@@ -132,7 +129,6 @@ public class ExchangeDb {
       items.add(new ManifestExportItem(items));
       items.add(new MetadataExportItem(items));
       items.add(new RelationalExportItem(ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItem.OSEE_BRANCH_DEFINITIONS, BRANCH_DEFINITION_QUERY));
       items.add(new RelationalExportItem(ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY));
       items.add(new RelationalExportItem(ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY));
       items.add(new RelationalExportItem(ExportItem.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY));
@@ -165,9 +161,6 @@ public class ExchangeDb {
       translators.add(new IdTranslator(IOseeSequence.GAMMA_ID_SEQ, GAMMA_ID_ALIASES));
       translators.add(new IdTranslator(IOseeSequence.TRANSACTION_ID_SEQ, TRANSACTION_ID_ALIASES));
       translators.add(new IdTranslator(IOseeSequence.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));
-      translators.add(new IdTranslator(IOseeSequence.ART_TYPE_ID_SEQ, ARTIFACT_TYPE_ID));
-      translators.add(new IdTranslator(IOseeSequence.ATTR_TYPE_ID_SEQ, ATTRIBUTE_TYPE_ID));
-      translators.add(new IdTranslator(IOseeSequence.REL_LINK_TYPE_ID_SEQ, RELATION_TYPE_ID));
       translators.add(new IdTranslator(IOseeSequence.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
       translators.add(new IdTranslator(IOseeSequence.ATTR_ID_SEQ, ATTRIBUTE_ID));
       translators.add(new IdTranslator(IOseeSequence.REL_LINK_ID_SEQ, RELATION_ID));

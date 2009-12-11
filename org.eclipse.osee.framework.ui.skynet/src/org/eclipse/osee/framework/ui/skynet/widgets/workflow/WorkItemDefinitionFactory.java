@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -69,13 +70,13 @@ public class WorkItemDefinitionFactory {
          }
 
          // This load is faster than loading each by artifact type
-         Collection<String> artifactTypeNames = new ArrayList<String>(4);
-         artifactTypeNames.add(WorkRuleDefinition.ARTIFACT_NAME);
-         artifactTypeNames.add(WorkPageDefinition.ARTIFACT_NAME);
-         artifactTypeNames.add(WorkFlowDefinition.ARTIFACT_NAME);
-         artifactTypeNames.add(WorkWidgetDefinition.ARTIFACT_NAME);
-         for (Artifact art : ArtifactQuery.getArtifactListFromTypes(artifactTypeNames, BranchManager.getCommonBranch(),
-               false)) {
+         Collection<IArtifactType> artifactTypeNames = new ArrayList<IArtifactType>(4);
+         artifactTypeNames.add(CoreArtifactTypes.WorkRuleDefinition);
+         artifactTypeNames.add(CoreArtifactTypes.WorkPageDefinition);
+         artifactTypeNames.add(CoreArtifactTypes.WorkFlowDefinition);
+         artifactTypeNames.add(CoreArtifactTypes.WorkWidgetDefinition);
+         for (Artifact art : ArtifactQuery.getArtifactListFromArtifactTypes(artifactTypeNames,
+               BranchManager.getCommonBranch(), false)) {
             if (art.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
                addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
             } else if (art.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
@@ -122,9 +123,13 @@ public class WorkItemDefinitionFactory {
    }
 
    private static void addItemDefinition(WriteType writeType, WorkItemDefinition workItemDefinition) {
-      if (workItemDefinition.getId() == null) throw new IllegalArgumentException("Item Id can't be null");
-      if (writeType == WriteType.New && itemIdToDefinition.containsKey(workItemDefinition.getId())) throw new IllegalArgumentException(
-            "Item Id must be unique.  Already work item with id \"" + workItemDefinition.getId() + "\"");
+      if (workItemDefinition.getId() == null) {
+         throw new IllegalArgumentException("Item Id can't be null");
+      }
+      if (writeType == WriteType.New && itemIdToDefinition.containsKey(workItemDefinition.getId())) {
+         throw new IllegalArgumentException(
+               "Item Id must be unique.  Already work item with id \"" + workItemDefinition.getId() + "\"");
+      }
       itemIdToDefinition.put(workItemDefinition.getId(), workItemDefinition);
    }
 
@@ -155,7 +160,9 @@ public class WorkItemDefinitionFactory {
    }
 
    public static WorkItemDefinition getWorkItemDefinition(String id) throws OseeCoreException {
-      if (id == null) throw new IllegalStateException("WorkItemDefinition id can't be null");
+      if (id == null) {
+         throw new IllegalStateException("WorkItemDefinition id can't be null");
+      }
       loadDefinitions();
       WorkItemDefinition wid = itemIdToDefinition.get(id);
       if (wid == null) {
@@ -167,7 +174,9 @@ public class WorkItemDefinitionFactory {
    }
 
    public static Artifact getWorkItemDefinitionArtifact(String id) throws OseeCoreException {
-      if (id == null) throw new IllegalStateException("WorkItemDefinition id can't be null");
+      if (id == null) {
+         throw new IllegalStateException("WorkItemDefinition id can't be null");
+      }
       loadDefinitions();
       Artifact art = itemIdToWidArtifact.get(id);
       if (art == null) {
@@ -183,7 +192,9 @@ public class WorkItemDefinitionFactory {
       List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();
       for (String id : ids) {
          WorkItemDefinition def = getWorkItemDefinition(id);
-         if (def == null) throw new IllegalArgumentException("Work Item Id \"" + id + "\" is not a defined work item");
+         if (def == null) {
+            throw new IllegalArgumentException("Work Item Id \"" + id + "\" is not a defined work item");
+         }
          defs.add(def);
       }
       return defs;
@@ -221,7 +232,9 @@ public class WorkItemDefinitionFactory {
       List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();
       for (String itemId : pageids) {
          WorkItemDefinition def = getWorkItemDefinition(itemId);
-         if (def == null) throw new IllegalArgumentException("Item Id \"" + itemId + "\" is not a defined item");
+         if (def == null) {
+            throw new IllegalArgumentException("Item Id \"" + itemId + "\" is not a defined item");
+         }
          defs.add(def);
       }
       return defs;

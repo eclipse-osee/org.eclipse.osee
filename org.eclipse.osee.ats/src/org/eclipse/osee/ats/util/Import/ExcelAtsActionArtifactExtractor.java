@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsPriority;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -83,7 +84,7 @@ public class ExcelAtsActionArtifactExtractor {
          }
          if (!aData.version.equals("")) {
             try {
-               if (AtsCacheManager.getSoleArtifactByName(ArtifactTypeManager.getType(VersionArtifact.ARTIFACT_NAME),
+               if (AtsCacheManager.getSoleArtifactByName(ArtifactTypeManager.getType(AtsArtifactTypes.Version),
                      aData.version) == null) {
                   rd.logError("Row " + rowNum + ": Can't find single version \"" + aData.version + "\"");
                }
@@ -126,7 +127,7 @@ public class ExcelAtsActionArtifactExtractor {
             if (!aData.version.equals("")) {
                VersionArtifact verArt =
                      (VersionArtifact) AtsCacheManager.getSoleArtifactByName(
-                           ArtifactTypeManager.getType(VersionArtifact.ARTIFACT_NAME), aData.version);
+                           ArtifactTypeManager.getType(AtsArtifactTypes.Version), aData.version);
 
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
                   verArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, team);

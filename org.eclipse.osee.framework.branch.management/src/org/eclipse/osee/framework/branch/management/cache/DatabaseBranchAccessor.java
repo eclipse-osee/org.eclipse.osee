@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -52,9 +51,6 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
          "SELECT ob.*, txd.transaction_id FROM osee_branch ob, osee_tx_details txd WHERE ob.branch_id = txd.branch_id and txd.tx_type = " + TransactionDetailsType.Baselined.getId();
 
    private static final String SELECT_MERGE_BRANCHES = "SELECT * FROM osee_merge";
-
-   private static final String SELECT_BRANCH_ALIASES =
-         "select * from osee_branch_definitions order by mapped_branch_id";
 
    private final TransactionCache txCache;
    private final IBranchUpdateEvent eventSender;
@@ -77,7 +73,6 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
       loadBranches(brCache, childToParent, branchToBaseTx, branchToSourceTx, associatedArtifact);
       loadBranchHierarchy(brCache, childToParent);
       loadMergeBranches(brCache);
-      loadBranchAliases(brCache);
       loadAssociatedArtifacts(brCache, associatedArtifact);
       loadBranchRelatedTransactions(brCache, branchToBaseTx, branchToSourceTx);
 
@@ -180,28 +175,6 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
          chStmt.close();
       }
 
-   }
-
-   private void loadBranchAliases(BranchCache branchCache) throws OseeCoreException {
-      HashCollection<Integer, String> aliasMap = new HashCollection<Integer, String>();
-      IOseeStatement chStmt = getDatabaseService().getStatement();
-      try {
-         chStmt.runPreparedQuery(SELECT_BRANCH_ALIASES);
-         while (chStmt.next()) {
-            int branchId = chStmt.getInt("mapped_branch_id");
-            String alias = chStmt.getString("static_branch_name").toLowerCase();
-            aliasMap.put(branchId, alias);
-         }
-      } finally {
-         chStmt.close();
-      }
-      for (Integer branchId : aliasMap.keySet()) {
-         Branch branch = branchCache.getById(branchId);
-         Collection<String> aliases = aliasMap.getValues(branchId);
-         if (aliases != null) {
-            branch.setAliases(aliases.toArray(new String[aliases.size()]));
-         }
-      }
    }
 
    @Override

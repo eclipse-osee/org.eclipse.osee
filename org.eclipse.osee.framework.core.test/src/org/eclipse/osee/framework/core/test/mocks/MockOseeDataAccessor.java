@@ -15,12 +15,12 @@ import junit.framework.Assert;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IOseeStorableType;
+import org.eclipse.osee.framework.core.model.IOseeStorable;
 
 /**
  * @author Roberto E. Escobar
  */
-public class MockOseeDataAccessor<T extends IOseeStorableType> implements IOseeDataAccessor<T> {
+public class MockOseeDataAccessor<T extends IOseeStorable> implements IOseeDataAccessor<T> {
 
    private boolean wasLoadCalled = false;
    private boolean wasStoreCalled = false;

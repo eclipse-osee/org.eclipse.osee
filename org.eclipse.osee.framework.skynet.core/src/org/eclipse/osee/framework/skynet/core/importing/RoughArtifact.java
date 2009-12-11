@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 
 /**
@@ -83,7 +83,7 @@ public class RoughArtifact {
       attributes.put(name, value);
    }
 
-   public void addAttribute(IOseeType attrType, String value) {
+   public void addAttribute(IAttributeType attrType, String value) {
       attributes.put(attrType.getName(), value);
    }
 

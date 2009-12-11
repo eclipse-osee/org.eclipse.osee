@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -59,7 +60,6 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
-import org.eclipse.osee.support.test.util.ITestBranch;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -71,7 +71,7 @@ import org.junit.Before;
  */
 public class AtsBranchConfigurationTest {
 
-   public enum TestType implements ITestBranch {
+   public enum TestType implements IOseeBranch {
       BranchViaTeamDef("AyH_e6damwQgvDhKfAAA"),
       BranchViaVersions("AyH_e6damwQgvDhKfBBB"),
       BranchViaParallelVersions("AyH_e6damwQgvDhKfCCC");
@@ -84,6 +84,10 @@ public class AtsBranchConfigurationTest {
 
       public String getGuid() {
          return guid;
+      }
+
+      public String getName() {
+         return name();
       }
    }
 
@@ -115,7 +119,7 @@ public class AtsBranchConfigurationTest {
       // create main branch
       OseeLog.log(AtsPlugin.class, Level.INFO, "Creating root branch");
       // Create SAW_Bld_2 branch off SAW_Bld_1
-      Branch viaTeamDefBranch = createRootBranch(TestType.BranchViaVersions);
+      Branch viaTeamDefBranch = BranchManager.createTopLevelBranch(TestType.BranchViaVersions);
 
       TestUtil.sleep(2000);
 
@@ -221,7 +225,7 @@ public class AtsBranchConfigurationTest {
       // create main branch
       OseeLog.log(AtsPlugin.class, Level.INFO, "Creating root branch");
       // Create SAW_Bld_2 branch off SAW_Bld_1
-      Branch viaTeamDefBranch = createRootBranch(TestType.BranchViaTeamDef);
+      Branch viaTeamDefBranch = BranchManager.createTopLevelBranch(TestType.BranchViaTeamDef);
 
       TestUtil.sleep(2000);
 
@@ -301,10 +305,6 @@ public class AtsBranchConfigurationTest {
       assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
    }
 
-   private Branch createRootBranch(ITestBranch branch) throws Exception {
-      return BranchManager.createTopLevelBranch(branch.name(), branch.name(), branch.getGuid());
-   }
-
    private void cleanupBranchTest(TestType testType) throws Exception {
       String namespace = "org.branchTest." + testType.name().toLowerCase();
       OseeLog.log(AtsPlugin.class, Level.INFO, "Cleanup from previous run of ATS for team " + namespace);
@@ -323,7 +323,7 @@ public class AtsBranchConfigurationTest {
 
       // Delete VersionArtifacts
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
-      for (Artifact verArt : ArtifactQuery.getArtifactListFromType(VersionArtifact.ARTIFACT_NAME,
+      for (Artifact verArt : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.Version,
             AtsUtil.getAtsBranch())) {
          if (verArt.getName().contains(testType.name())) {
             verArt.deleteAndPersist(transaction);

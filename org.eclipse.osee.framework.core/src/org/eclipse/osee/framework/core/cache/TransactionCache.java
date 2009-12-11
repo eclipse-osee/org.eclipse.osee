@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IOseeStorableType;
+import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Conditions;
 
@@ -82,7 +82,7 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
    public void decache(TransactionRecord type) throws OseeCoreException {
       Conditions.checkNotNull(type, "type to de-cache");
       ensurePopulated();
-      if (type.getId() != IOseeStorableType.UNPERSISTTED_VALUE) {
+      if (type.getId() != IOseeStorable.UNPERSISTTED_VALUE) {
          transactionIdCache.remove(type.getId());
       }
    }

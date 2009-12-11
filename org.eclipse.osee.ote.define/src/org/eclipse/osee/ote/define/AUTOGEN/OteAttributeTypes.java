@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.define.AUTOGEN;
 
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 
-public enum OteAttributeTypes implements IOseeType {
+public enum OteAttributeTypes implements IAttributeType {
    BUILD_ID("Build Id", "AAMFEXG6_W9diA9nUXAA"),
    CHECKSUM("Checksum", "AAMFEXJbaHt5uKG9kogA"),
    ELAPSED_DATE("Elapsed Date", "AAMFEWuD6yH04y89M3wA"),

@@ -22,7 +22,6 @@ public class BranchCreationRequest {
 
    private final BranchType branchType;
    private final int sourceTransactionId;
-   private final String staticBranchName;
    private final String branchGuid;
 
    private final int authorId;
@@ -31,13 +30,12 @@ public class BranchCreationRequest {
    private final int populateBaseTxFromAddressingQueryId;
    private final int destinationBranchId;
 
-   public BranchCreationRequest(BranchType branchType, int sourceTransactionId, int parentBranchId, String branchGuid, String branchName, int associatedArtifactId, String staticBranchName, int authorId, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) {
+   public BranchCreationRequest(BranchType branchType, int sourceTransactionId, int parentBranchId, String branchGuid, String branchName, int associatedArtifactId, int authorId, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) {
       this.parentBranchId = parentBranchId;
       this.branchName = branchName;
       this.associatedArtifactId = associatedArtifactId;
       this.branchType = branchType;
       this.sourceTransactionId = sourceTransactionId;
-      this.staticBranchName = staticBranchName;
       this.branchGuid = branchGuid;
       this.authorId = authorId;
       this.creationComment = creationComment;
@@ -65,10 +63,6 @@ public class BranchCreationRequest {
       return sourceTransactionId;
    }
 
-   public String getStaticBranchName() {
-      return staticBranchName;
-   }
-
    public String getBranchGuid() {
       return branchGuid;
    }
@@ -91,6 +85,6 @@ public class BranchCreationRequest {
 
    @Override
    public String toString() {
-      return "Branch [associatedArtifactId=" + associatedArtifactId + ", branchGuid=" + branchGuid + ", branchType=" + branchType + ", name=" + branchName + ", parentBranchId=" + parentBranchId + ", parentTransactionId=" + sourceTransactionId + ", staticBranchName=" + staticBranchName + "]";
+      return "Branch [associatedArtifactId=" + associatedArtifactId + ", branchGuid=" + branchGuid + ", branchType=" + branchType + ", name=" + branchName + ", parentBranchId=" + parentBranchId + ", parentTransactionId=" + sourceTransactionId + "]";
    }
 }

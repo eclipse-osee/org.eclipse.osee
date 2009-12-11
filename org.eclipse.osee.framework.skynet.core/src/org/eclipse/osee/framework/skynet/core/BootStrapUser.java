@@ -26,7 +26,7 @@ public class BootStrapUser extends User {
     * @param guid
     * @param humanReadableId
     * @param tagId
- * @throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     */
    private BootStrapUser() throws OseeDataStoreException {
       super(null, null, null, null, null);
@@ -34,16 +34,15 @@ public class BootStrapUser extends User {
 
    /**
     * @return the instance
- * @throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     */
    public static BootStrapUser getInstance() throws OseeDataStoreException {
-      if (instance == null) instance = new BootStrapUser();
+      if (instance == null) {
+         instance = new BootStrapUser();
+      }
       return instance;
    }
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = 1L;
 
    @Override

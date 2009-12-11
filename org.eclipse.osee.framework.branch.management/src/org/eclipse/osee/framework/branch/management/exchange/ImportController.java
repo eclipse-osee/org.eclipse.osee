@@ -28,7 +28,6 @@ import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDataSaxHandler;
-import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDefinitionsSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.IExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.IOseeDbExportDataProvider;
@@ -371,21 +370,7 @@ public final class ImportController {
                   currentSavePoint));
             branchesStored = branchHandler.store(false, branchesToImport);
          }
-
-         // Import Branch Definitions
-         currentSavePoint = manifestHandler.getBranchDefinitionsFile().getSource();
-         if (!doesSavePointExist(currentSavePoint)) {
-            BranchDefinitionsSaxHandler definitionsHandler = BranchDefinitionsSaxHandler.createWithCacheAll();
-            definitionsHandler.setStoredBranches(branchesStored);
-            process(definitionsHandler, connection, manifestHandler.getBranchDefinitionsFile());
-            definitionsHandler.store();
-            addSavePoint(currentSavePoint);
-         } else {
-            OseeLog.log(this.getClass(), Level.INFO, String.format("Save point found for: [%s] - skipping",
-                  currentSavePoint));
-         }
       }
-
    }
 
    private final class CommitImportSavePointsTx extends DbTransaction {

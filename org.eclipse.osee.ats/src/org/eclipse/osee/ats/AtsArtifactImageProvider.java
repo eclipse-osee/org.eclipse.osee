@@ -15,7 +15,8 @@ import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -41,18 +42,18 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ImageManager.registerBaseImage("Goal", AtsImage.GOAL, this);
       ImageManager.registerBaseImage("PeerToPeer Review", AtsImage.REVIEW, this);
 
-      ImageManager.registerOverrideImageProvider(this, VersionArtifact.ARTIFACT_NAME);
+      ImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Version.getName());
       ImageManager.registerOverrideImageProvider(this, TaskArtifact.ARTIFACT_NAME);
       ImageManager.registerOverrideImageProvider(this, PeerToPeerReviewArtifact.ARTIFACT_NAME);
       ImageManager.registerOverrideImageProvider(this, DecisionReviewArtifact.ARTIFACT_NAME);
-      for (String artName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
-         ImageManager.registerOverrideImageProvider(this, artName);
+      for (IArtifactType artifactType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()) {
+         ImageManager.registerOverrideImageProvider(this, artifactType.getName());
       }
    }
 
    @Override
    public String setupImage(Artifact artifact) throws OseeCoreException {
-      if (artifact.isOfType(VersionArtifact.ARTIFACT_NAME)) {
+      if (artifact.isOfType(AtsArtifactTypes.Version)) {
          if (artifact.getSoleAttributeValue("ats.Next Version", false)) {
             return ImageManager.setupImage(artifact, AtsImage.NEXT, Location.BOT_RIGHT);
          }

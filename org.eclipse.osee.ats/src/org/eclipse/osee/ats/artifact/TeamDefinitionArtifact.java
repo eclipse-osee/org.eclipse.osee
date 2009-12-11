@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -57,7 +58,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public static String ARTIFACT_NAME = "Team Definition";
    public static Set<TeamDefinitionArtifact> EMPTY_SET = new HashSet<TeamDefinitionArtifact>();
    public static enum TeamDefinitionOptions {
-      TeamUsesVersions, RequireTargetedVersion
+      TeamUsesVersions,
+      RequireTargetedVersion
    };
 
    /**
@@ -424,8 +426,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
    public VersionArtifact createVersion(String name) throws OseeCoreException {
       VersionArtifact versionArt =
-            (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch(),
-                  name);
+            (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), name);
       addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, versionArt);
       return versionArt;
    }

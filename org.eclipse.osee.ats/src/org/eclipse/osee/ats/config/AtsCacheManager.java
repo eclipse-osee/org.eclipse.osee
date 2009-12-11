@@ -16,11 +16,10 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -63,7 +62,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
       OseeEventManager.addListener(this);
    }
 
-   public static List<Artifact> getArtifactsByName(ArtifactType artifactType, String name) {
+   public static List<Artifact> getArtifactsByName(IArtifactType artifactType, String name) throws OseeCoreException {
       AtsBulkLoadCache.run(true);
       return ArtifactCache.getArtifactsByName(artifactType, name);
    }
@@ -83,7 +82,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
       return ArtifactCache.getArtifactsByType(artifactType, active);
    }
 
-   public static Artifact getSoleArtifactByName(ArtifactType artifactType, String name) throws MultipleArtifactsExist, ArtifactDoesNotExist {
+   public static Artifact getSoleArtifactByName(IArtifactType artifactType, String name) throws OseeCoreException {
       AtsBulkLoadCache.run(true);
       List<Artifact> arts = ArtifactCache.getArtifactsByName(artifactType, name);
       if (arts.size() == 1) {
@@ -100,10 +99,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
       }
       try {
          for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
-            if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME) || artifact.isOfType(
-                  WorkPageDefinition.ARTIFACT_NAME) || artifact.isOfType(
-                  CoreArtifactTypes.WorkFlowDefinition) || artifact.isOfType(
-                  WorkWidgetDefinition.ARTIFACT_NAME)) {
+            if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME) || artifact.isOfType(WorkPageDefinition.ARTIFACT_NAME) || artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition) || artifact.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
                WorkItemDefinitionFactory.deCache(artifact);
             }
          }
@@ -122,10 +118,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
          return;
       }
       for (Artifact artifact : transData.cacheDeletedArtifacts) {
-         if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME) || artifact.isOfType(
-               WorkPageDefinition.ARTIFACT_NAME) || artifact.isOfType(
-               CoreArtifactTypes.WorkFlowDefinition) || artifact.isOfType(
-               WorkWidgetDefinition.ARTIFACT_NAME)) {
+         if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME) || artifact.isOfType(WorkPageDefinition.ARTIFACT_NAME) || artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition) || artifact.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
             WorkItemDefinitionFactory.deCache(artifact);
          }
       }
@@ -144,8 +137,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
                   new WorkFlowDefinition(artifact), artifact);
          }
       }
-      for (Artifact artifact : transData.getArtifactsInRelations(ChangeType.All,
-            CoreRelationTypes.WorkItem__Child)) {
+      for (Artifact artifact : transData.getArtifactsInRelations(ChangeType.All, CoreRelationTypes.WorkItem__Child)) {
          if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkRuleDefinition(artifact), artifact);

@@ -56,7 +56,7 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
    }
 
    @Override
-   public void addToWhereSql(ArtifactQueryBuilder builder) {
+   public void addToWhereSql(ArtifactQueryBuilder builder) throws OseeCoreException {
       if (artifactId > 0) {
          builder.append(relAlias);
          builder.append(relationSide.isSideA() ? ".b_art_id" : ".a_art_id");

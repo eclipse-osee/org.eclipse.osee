@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2009 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,19 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.define.AUTOGEN;
+package org.eclipse.osee.ats.config.demo.artifact;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 
-public enum OteArtifactTypes implements IArtifactType {
-   TEST_RUN(Requirements.TEST_RUN, "AAMFDjqDHWo+orlSpaQA"),
-   TEST_SCRIPT(Requirements.TEST_CASE, "AAMFDikEi0TGK27TKPgA");
+/**
+ * @author Ryan D. Brooks
+ */
+public enum DemoArtifactTypes implements IArtifactType {
+   DemoCodeTeamWorkflow("Demo Code Team Workflow", "ABRNqDKnpGEKAyUm49gA"),
+   DemoReqTeamWorkflow("Demo Req Team Workflow", "ABRO5pC6kCmP35t06RwA"),
+   DemoTestTeamWorkflow("Demo Test Team Workflow", "ABRPeQO1qlCd4J7Bv5AA");
 
    private final String name;
    private final String guid;
 
-   private OteArtifactTypes(String name, String guid) {
+   private DemoArtifactTypes(String name, String guid) {
       this.name = name;
       this.guid = guid;
    }

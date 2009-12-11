@@ -60,7 +60,6 @@ public final class BranchCacheUpdateUtil {
    public Collection<Branch> updateCache(AbstractBranchCacheMessage cacheMessage, IOseeCache<Branch> cache) throws OseeCoreException {
       List<Branch> updatedItems = new ArrayList<Branch>();
 
-      Map<Integer, String[]> branchToAliases = cacheMessage.getBranchAliases();
       Map<Integer, Integer> branchToAssocArt = cacheMessage.getBranchToAssocArt();
 
       for (BranchRow srcItem : cacheMessage.getBranchRows()) {
@@ -70,11 +69,6 @@ public final class BranchCacheUpdateUtil {
                      srcItem.getBranchName(), srcItem.getBranchType(), srcItem.getBranchState(),
                      srcItem.getBranchArchived().isArchived());
          updatedItems.add(updated);
-
-         String[] aliases = branchToAliases.get(branchId);
-         if (aliases != null && aliases.length > 0) {
-            updated.setAliases(aliases);
-         }
 
          updated.setBaseTransaction(getTx(cacheMessage.getBranchToBaseTx(), branchId));
          updated.setSourceTransaction(getTx(cacheMessage.getBranchToSourceTx(), branchId));
@@ -122,19 +116,12 @@ public final class BranchCacheUpdateUtil {
          if (br.hasParentBranch()) {
             message.getChildToParent().put(branchId, br.getParentBranch().getId());
          }
-         addAliases(message.getBranchAliases(), branchId, br.getAliases());
          addTxRecord(message.getBranchToBaseTx(), branchId, br.getBaseTransaction());
          addTxRecord(message.getBranchToSourceTx(), branchId, br.getSourceTransaction());
          addAssocArtifact(message.getBranchToAssocArt(), branchId, br.getAssociatedArtifact());
          if (br.getBranchType().isMergeBranch()) {
             addMergeBranches(message.getMergeBranches(), (MergeBranch) br);
          }
-      }
-   }
-
-   private static void addAliases(Map<Integer, String[]> branchToAliases, Integer branchId, Collection<String> aliases) {
-      if (!aliases.isEmpty()) {
-         branchToAliases.put(branchId, aliases.toArray(new String[aliases.size()]));
       }
    }
 

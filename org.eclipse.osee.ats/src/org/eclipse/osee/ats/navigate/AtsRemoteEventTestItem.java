@@ -187,17 +187,17 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    }
 
    private VersionArtifact getVersion256() throws OseeCoreException {
-      return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME, "2.5.6",
+      return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "2.5.6",
             AtsUtil.getAtsBranch());
    }
 
    private VersionArtifact getVersion257() throws OseeCoreException {
-      return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME, "2.5.7",
+      return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "2.5.7",
             AtsUtil.getAtsBranch());
    }
 
    private VersionArtifact getVersion258() throws OseeCoreException {
-      return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME, "2.5.8",
+      return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "2.5.8",
             AtsUtil.getAtsBranch());
    }
 

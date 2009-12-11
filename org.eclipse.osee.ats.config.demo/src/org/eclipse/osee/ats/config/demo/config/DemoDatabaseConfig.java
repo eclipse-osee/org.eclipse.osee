@@ -20,9 +20,11 @@ import org.eclipse.osee.ats.config.demo.workflow.DemoCodeWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoReqWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoSWDesignWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoTestWorkFlowDefinition;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.vue.AtsDbConfig;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.OseeInfo;
@@ -39,7 +41,6 @@ import org.eclipse.osee.support.test.util.DemoCISBuilds;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoSubsystems;
 import org.eclipse.osee.support.test.util.DemoUsers;
-import org.eclipse.osee.support.test.util.ITestBranch;
 
 /**
  * Initialization class that will load configuration information for a sample DB.
@@ -47,6 +48,7 @@ import org.eclipse.osee.support.test.util.ITestBranch;
  * @author Donald G. Dunne
  */
 public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitializationTask {
+
    public void run() throws OseeCoreException {
 
       new DemoCodeWorkFlowDefinition().config(WriteType.New, null);
@@ -62,11 +64,11 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       createVersionArtifacts();
 
       // Create SAW_Bld_1 branch
-      createProgramBranch(DemoSawBuilds.SAW_Bld_1);
+      BranchManager.createTopLevelBranch(DemoSawBuilds.SAW_Bld_1);
       populateProgramBranch(DemoSawBuilds.SAW_Bld_1);
 
       // Create build one branch for CIS
-      createProgramBranch(DemoCISBuilds.CIS_Bld_1);
+      BranchManager.createTopLevelBranch(DemoCISBuilds.CIS_Bld_1);
       populateProgramBranch(DemoCISBuilds.CIS_Bld_1);
 
       // Map team definitions versions to their related branches
@@ -95,8 +97,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       verArt.persist(transaction);
    }
 
-   private void populateProgramBranch(ITestBranch branch) throws OseeCoreException {
-      Branch programBranch = BranchManager.getBranchByGuid(branch.getGuid());
+   private void populateProgramBranch(IOseeBranch branch) throws OseeCoreException {
+      Branch programBranch = BranchManager.getBranch(branch);
       Artifact sawProduct =
             ArtifactTypeManager.addArtifact(Requirements.COMPONENT, programBranch, "SAW Product Decomposition");
 
@@ -118,17 +120,13 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
 
    }
 
-   private void createProgramBranch(ITestBranch branch) throws OseeCoreException {
-      BranchManager.createTopLevelBranch(branch.name(), branch.name(), branch.getGuid());
-   }
-
    private void createVersionArtifacts() throws OseeCoreException {
 
       // Setup some sample builds for Widget A
       for (String verName : new String[] {DemoSawBuilds.SAW_Bld_1.name(), DemoSawBuilds.SAW_Bld_2.name(),
             DemoSawBuilds.SAW_Bld_3.name()}) {
          VersionArtifact ver =
-               (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch(),
+               (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(),
                      verName);
          if (verName.contains("1")) {
             ver.setReleased(true);
@@ -138,7 +136,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             ver.setSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), true);
             ver.setSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), true);
          }
-         DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, ver);
+         DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version,
+               ver);
          ver.persist();
       }
 
@@ -146,7 +145,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       for (String verName : new String[] {DemoCISBuilds.CIS_Bld_1.name(), DemoCISBuilds.CIS_Bld_2.name(),
             DemoCISBuilds.CIS_Bld_3.name()}) {
          VersionArtifact ver =
-               (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch(),
+               (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(),
                      verName);
          if (verName.contains("1")) {
             ver.setReleased(true);
@@ -154,7 +153,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
          if (verName.contains("2")) {
             ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
          }
-         DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, ver);
+         DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version,
+               ver);
          ver.persist();
       }
    }

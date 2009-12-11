@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.eclipse.osee.support.test.util.ITestBranch;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -50,7 +49,7 @@ import org.junit.Before;
  * @author Megumi Telles
  */
 public class ViewWordChangeAndDiffTest {
-   private boolean isWordRunning = false;
+   private final boolean isWordRunning = false;
    private Collection<Change> artifactChanges = new ArrayList<Change>();
    private final ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>();
    private final ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>();
@@ -74,7 +73,7 @@ public class ViewWordChangeAndDiffTest {
 
    @org.junit.Test
    public void testViewWordChangeReport() throws Exception {
-      Branch theBranch = BranchManager.getKeyedBranch(getTestBranch().name());
+      Branch theBranch = getTestBranch();
       artifactChanges = ChangeManager.getChangesPerBranch(theBranch, new NullProgressMonitor());
       // get the artifacts from the changed list
       artifacts = getArtifacts();
@@ -94,9 +93,7 @@ public class ViewWordChangeAndDiffTest {
 
    @org.junit.Test
    public void testSingleNativeDiff() throws Exception {
-      artifactChanges =
-            ChangeManager.getChangesPerBranch(BranchManager.getKeyedBranch(getTestBranch().name()),
-                  new NullProgressMonitor());
+      artifactChanges = ChangeManager.getChangesPerBranch(getTestBranch(), new NullProgressMonitor());
       // get the artifacts from the changed list
       artifacts = getArtifacts();
       // make sure permissions are right
@@ -112,9 +109,7 @@ public class ViewWordChangeAndDiffTest {
    public void testCompareTwoArtifacts() throws Exception {
 
       try {
-         artifactChanges =
-               ChangeManager.getChangesPerBranch(BranchManager.getKeyedBranch(getTestBranch().name()),
-                     new NullProgressMonitor());
+         artifactChanges = ChangeManager.getChangesPerBranch(getTestBranch(), new NullProgressMonitor());
          // get the artifacts from the changed list
          artifacts = getArtifacts();
          newerArtifact =
@@ -133,15 +128,12 @@ public class ViewWordChangeAndDiffTest {
 
    }
 
-   private ITestBranch getTestBranch() throws OseeCoreException {
-      ITestBranch testBranch;
+   private Branch getTestBranch() throws OseeCoreException {
       // get the changes on the specified branch
-      if (BranchManager.branchExists(DemoSawBuilds.SAW_Bld_2.name())) {
-         testBranch = DemoSawBuilds.SAW_Bld_2;
-      } else {
-         testBranch = DemoSawBuilds.SAW_Bld_1;
+      if (BranchManager.branchExists(DemoSawBuilds.SAW_Bld_2)) {
+         return BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2);
       }
-      return testBranch;
+      return BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
    }
 
    /**

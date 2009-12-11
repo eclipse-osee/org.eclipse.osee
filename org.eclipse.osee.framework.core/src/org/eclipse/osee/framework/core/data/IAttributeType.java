@@ -8,12 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.enums;
+package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.core.data.IRelationType;
-
-public interface IRelationEnumeration extends IRelationType {
-   boolean isSideA();
-
-   public RelationSide getSide();
+/**
+ * @author Ryan D. Brooks
+ */
+public interface IAttributeType extends NamedIdentity {
 }

@@ -152,9 +152,6 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       } else {
          branch.setSourceTransaction(txCache.getOrLoad(request.getSourceTransactionId()));
       }
-      if (request.getStaticBranchName() != null) {
-         branch.setAliases(request.getStaticBranchName());
-      }
 
       branchCache.cache(branch);
       branchCache.storeItems(branch);

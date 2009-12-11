@@ -44,15 +44,14 @@ public class HttpBranchCreation {
     * @param associatedArtifact
     * @return the newly created branch
     * @throws OseeCoreException
-    * @see BranchManager#getKeyedBranch(String)
     */
-   public static Branch createBranch(BranchType branchType, int sourceTransactionId, int parentBranchId, String branchName, String staticBranchName, String branchGuid, Artifact associatedArtifact, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) throws OseeCoreException {
+   public static Branch createBranch(BranchType branchType, int sourceTransactionId, int parentBranchId, String branchName, String branchGuid, Artifact associatedArtifact, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", Function.CREATE_BRANCH.name());
 
       BranchCreationRequest request =
             new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName,
-                  getAssociatedArtifactId(associatedArtifact), staticBranchName, getAuthorId(), creationComment,
+                  getAssociatedArtifactId(associatedArtifact), getAuthorId(), creationComment,
                   populateBaseTxFromAddressingQueryId, destinationBranchId);
 
       BranchCreationResponse response =

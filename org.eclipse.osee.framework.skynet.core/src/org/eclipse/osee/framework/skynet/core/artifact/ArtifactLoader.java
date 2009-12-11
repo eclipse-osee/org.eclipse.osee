@@ -21,6 +21,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -165,7 +166,7 @@ public final class ArtifactLoader {
     * @return list of the loaded artifacts
     * @throws OseeCoreException
     */
-   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, Branch branch, ArtifactLoad loadLevel, boolean reload) throws OseeCoreException {
+   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, ArtifactLoad loadLevel, boolean reload) throws OseeCoreException {
       return loadArtifacts(artIds, branch, loadLevel, null, reload);
    }
 
@@ -179,7 +180,7 @@ public final class ArtifactLoader {
     * @return list of the loaded artifacts
     * @throws OseeCoreException
     */
-   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, Branch branch, ArtifactLoad loadLevel, TransactionRecord transactionId, boolean reload) throws OseeCoreException {
+   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, ArtifactLoad loadLevel, TransactionRecord transactionId, boolean reload) throws OseeCoreException {
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 
       if (!artIds.isEmpty()) {
@@ -190,7 +191,7 @@ public final class ArtifactLoader {
          List<Object[]> insertParameters = new LinkedList<Object[]>();
 
          for (int artId : org.eclipse.osee.framework.jdk.core.util.Collections.unique(artIds)) {
-            insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getId(),
+            insertParameters.add(new Object[] {queryId, insertTime, artId, BranchManager.getBranchId(branch),
                   historical ? transactionId.getId() : SQL3DataType.INTEGER});
          }
 

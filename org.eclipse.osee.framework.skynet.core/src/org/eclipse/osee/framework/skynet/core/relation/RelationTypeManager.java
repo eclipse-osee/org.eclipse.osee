@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -92,8 +92,8 @@ public class RelationTypeManager {
       return relationType;
    }
 
-   public static RelationType getType(IOseeType relationTypeEnum) throws OseeCoreException {
-      return getByGuid(relationTypeEnum.getGuid());
+   public static RelationType getType(IRelationType relationType) throws OseeCoreException {
+      return getCache().get(relationType);
    }
 
    public static RelationType getType(String typeName) throws OseeCoreException {

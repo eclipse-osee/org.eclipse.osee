@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -250,7 +250,7 @@ public class RelationLink {
       }
    }
 
-   public boolean isOfType(IOseeType oseeType) throws OseeCoreException {
+   public boolean isOfType(IRelationType oseeType) throws OseeCoreException {
       return relationType.equals(oseeType);
    }
 

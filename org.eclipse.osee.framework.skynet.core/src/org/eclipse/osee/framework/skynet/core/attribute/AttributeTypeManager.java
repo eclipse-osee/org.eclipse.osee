@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -87,7 +87,7 @@ public class AttributeTypeManager {
       return attributeType;
    }
 
-   public static AttributeType getType(IOseeType type) throws OseeCoreException {
+   public static AttributeType getType(IAttributeType type) throws OseeCoreException {
       return getTypeByGuid(type.getGuid());
    }
 
@@ -123,7 +123,7 @@ public class AttributeTypeManager {
       return attributeType.getOseeEnumType().valuesAsOrderedStringSet();
    }
 
-   public static Set<String> getEnumerationValues(IOseeType attributeType) throws OseeCoreException {
+   public static Set<String> getEnumerationValues(IAttributeType attributeType) throws OseeCoreException {
       return getEnumerationValues(getType(attributeType));
    }
 
@@ -164,7 +164,7 @@ public class AttributeTypeManager {
       return getAttributeBaseClass(getType(attributeTypeName)).isAssignableFrom(baseType);
    }
 
-   public static boolean isBaseTypeCompatible(Class<? extends Attribute<?>> baseType, IOseeType attributeType) throws OseeCoreException {
+   public static boolean isBaseTypeCompatible(Class<? extends Attribute<?>> baseType, IAttributeType attributeType) throws OseeCoreException {
       return getAttributeBaseClass(getType(attributeType)).isAssignableFrom(baseType);
    }
 

@@ -118,7 +118,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Decision Review", "Decision Review"));
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all PeerToPeer Review", "PeerToPeer Review"));
       new SearchNavigateItem(adminItems, new ArtifactTypesSearchItem("Show all Team Workflows",
-            TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()));
+            TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()));
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", "Task"));
 
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health", FrameworkImage.LASER);

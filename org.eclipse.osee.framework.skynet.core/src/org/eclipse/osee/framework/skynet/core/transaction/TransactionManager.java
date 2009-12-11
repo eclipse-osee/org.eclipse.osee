@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -33,6 +34,7 @@ import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
@@ -132,8 +134,8 @@ public final class TransactionManager {
     * @return the largest (most recent) transaction on the given branch
     * @throws OseeCoreException
     */
-   public static TransactionRecord getLastTransaction(Branch branch) throws OseeCoreException {
-      int branchId = branch.getId();
+   public static TransactionRecord getLastTransaction(IOseeBranch branch) throws OseeCoreException {
+      int branchId = BranchManager.getBranchId(branch);
       int transactionNumber =
             ConnectionHandler.runPreparedQueryFetchInt(-1,
                   ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branchId);

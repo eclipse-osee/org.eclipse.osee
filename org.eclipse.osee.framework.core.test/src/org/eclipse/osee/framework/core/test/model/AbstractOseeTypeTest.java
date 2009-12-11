@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
-import org.eclipse.osee.framework.core.model.IOseeStorableType;
+import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Test;
 
@@ -53,7 +53,7 @@ public class AbstractOseeTypeTest<T extends AbstractOseeType> {
 
    @Test
    public void testGetId() {
-      Assert.assertEquals(IOseeStorableType.UNPERSISTTED_VALUE, Integer.valueOf(type.getId()));
+      Assert.assertEquals(IOseeStorable.UNPERSISTTED_VALUE, Integer.valueOf(type.getId()));
    }
 
    @Test(expected = OseeStateException.class)

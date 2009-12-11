@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -80,6 +81,10 @@ public class SkynetTransaction extends DbTransaction {
       this.branch = branch;
       this.comment = comment;
       txMonitor.reportTxCreation(this, branch);
+   }
+
+   public SkynetTransaction(IOseeBranch branch, String comment) throws OseeCoreException {
+      this(BranchManager.getBranch(branch), comment);
    }
 
    /**
@@ -157,7 +162,7 @@ public class SkynetTransaction extends DbTransaction {
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          String query = ClientSessionManager.getSql(transactionData.getSelectTxNotCurrentSql());
-         chStmt.runPreparedQuery(query, transactionData.getItemId(), this.branch.getId());
+         chStmt.runPreparedQuery(query, transactionData.getItemId(), branch.getId());
          while (chStmt.next()) {
             results.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
          }

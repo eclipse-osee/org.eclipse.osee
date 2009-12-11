@@ -31,11 +31,13 @@ import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -110,7 +112,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-         Branch saw1Branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
+         Branch saw1Branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
 
          // Import all requirements on SAW_Bld_1 Branch
          demoDbImportReqsTx();
@@ -188,8 +190,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create SAW_Bld_2 branch off SAW_Bld_1
          Branch parentBranch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
          Branch childBranch =
-               BranchManager.createBaselineBranch(parentBranch, DemoSawBuilds.SAW_Bld_2.name(),
-                     DemoSawBuilds.SAW_Bld_2.name(), UserManager.getUser(SystemUser.OseeSystem));
+               BranchManager.createBaselineBranch(parentBranch, DemoSawBuilds.SAW_Bld_2,
+                     UserManager.getUser(SystemUser.OseeSystem));
 
          DemoDbUtil.sleep(5000);
          // need to update the branch type;  
@@ -438,7 +440,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                teamWf.persist(transaction);
                if (versionStr != null && !versionStr.equals("")) {
                   VersionArtifact verArt =
-                        (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME,
+                        (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version,
                               versionStr, AtsUtil.getAtsBranch());
                   teamWf.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArt);
                   teamWf.persist(transaction);
@@ -451,22 +453,21 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
    private void demoDbImportReqsTx() throws OseeCoreException {
       try {
-         importRequirements(DemoSawBuilds.SAW_Bld_1.name(), Requirements.SOFTWARE_REQUIREMENT + "s",
+         importRequirements(DemoSawBuilds.SAW_Bld_1, Requirements.SOFTWARE_REQUIREMENT + "s",
                Requirements.SOFTWARE_REQUIREMENT, "support/SAW-SoftwareRequirements.xml");
-         importRequirements(DemoSawBuilds.SAW_Bld_1.name(), Requirements.SYSTEM_REQUIREMENT + "s",
+         importRequirements(DemoSawBuilds.SAW_Bld_1, Requirements.SYSTEM_REQUIREMENT + "s",
                Requirements.SYSTEM_REQUIREMENT, "support/SAW-SystemRequirements.xml");
-         importRequirements(DemoSawBuilds.SAW_Bld_1.name(), Requirements.SUBSYSTEM_REQUIREMENT + "s",
+         importRequirements(DemoSawBuilds.SAW_Bld_1, Requirements.SUBSYSTEM_REQUIREMENT + "s",
                Requirements.SUBSYSTEM_REQUIREMENT, "support/SAW-SubsystemRequirements.xml");
       } catch (Exception ex) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
       }
    }
 
-   private void importRequirements(String buildName, String rootArtifactName, String requirementArtifactName, String filename) throws Exception {
+   private void importRequirements(IOseeBranch branch, String rootArtifactName, String requirementArtifactName, String filename) throws Exception {
 
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
-            "Importing \"" + rootArtifactName + "\" requirements on branch \"" + buildName + "\"");
-      Branch branch = BranchManager.getKeyedBranch(buildName);
+            "Importing \"" + rootArtifactName + "\" requirements on branch \"" + branch.getGuid() + "\"");
       Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName("Folder", rootArtifactName, branch);
 
       File file = OseeAtsConfigDemoActivator.getInstance().getPluginFile(filename);

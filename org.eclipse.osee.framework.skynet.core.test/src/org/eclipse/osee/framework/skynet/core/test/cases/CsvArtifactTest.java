@@ -37,8 +37,7 @@ public class CsvArtifactTest {
 
    @org.junit.Test
    public void testCreateCsvArtifact() throws Exception {
-      CsvArtifact csv =
-            CsvArtifact.getCsvArtifact(id, BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), true);
+      CsvArtifact csv = CsvArtifact.getCsvArtifact(id, BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), true);
       assertEquals(csv.getCsvData(), "");
       csv.getArtifact().setName(id);
       csv.setCsvData(csvData);
@@ -47,8 +46,7 @@ public class CsvArtifactTest {
 
    @org.junit.Test
    public void testgetCsvArtifactAndAppendData() throws Exception {
-      CsvArtifact csvArt =
-            CsvArtifact.getCsvArtifact(id, BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false);
+      CsvArtifact csvArt = CsvArtifact.getCsvArtifact(id, BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), false);
       assertNotNull(csvArt);
       assertEquals(csvData, csvArt.getCsvData());
       csvArt.appendData(appendData);
@@ -57,8 +55,7 @@ public class CsvArtifactTest {
 
    @org.junit.Test
    public void testCsvGetData() throws Exception {
-      CsvArtifact csvArt =
-            CsvArtifact.getCsvArtifact(id, BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false);
+      CsvArtifact csvArt = CsvArtifact.getCsvArtifact(id, BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), false);
       assertNotNull(csvArt);
       assertEquals(csvData + "\n" + appendData, csvArt.getCsvData());
    }
@@ -70,8 +67,7 @@ public class CsvArtifactTest {
 
    private void cleanup() throws Exception {
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactListFromName(id, BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
-                  false);
+            ArtifactQuery.getArtifactListFromName(id, BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), false);
       FrameworkTestUtil.purgeArtifacts(arts);
    }
 }

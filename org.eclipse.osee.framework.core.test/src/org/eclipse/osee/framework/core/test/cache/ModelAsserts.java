@@ -13,9 +13,7 @@ package org.eclipse.osee.framework.core.test.cache;
 
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
@@ -41,29 +39,6 @@ public class ModelAsserts {
 
    private ModelAsserts() {
 
-   }
-
-   public static void checkAliases(BranchCache cache, String branchGuid, String... expectedAliases) throws OseeCoreException {
-      Branch branch = cache.getByGuid(branchGuid);
-      Assert.assertNotNull(branch);
-
-      List<String> actualAliases = new ArrayList<String>(branch.getAliases());
-      Assert.assertEquals(expectedAliases != null ? expectedAliases.length : 0, actualAliases.size());
-
-      if (expectedAliases != null) {
-         int index = 0;
-
-         List<String> expectedAliasesList = Arrays.asList(expectedAliases);
-         Collections.sort(expectedAliasesList);
-         Collections.sort(actualAliases);
-         for (String actualAlias : actualAliases) {
-            String expectedAlias = expectedAliasesList.get(index++);
-            expectedAlias = expectedAlias.toLowerCase();
-            Assert.assertEquals(expectedAlias, actualAlias);
-            //            Collection<Branch> aliasedbranch = cache.getByAlias(expectedAlias);
-            //            Assert.assertTrue(aliasedbranch.contains(branch));
-         }
-      }
    }
 
    public static void createAlias(BranchCache cache, String branchGuid, String... aliases) throws OseeCoreException {

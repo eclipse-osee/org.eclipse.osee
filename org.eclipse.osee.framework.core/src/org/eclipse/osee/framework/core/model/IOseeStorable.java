@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
-import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeStorableType extends IOseeType {
+public interface IOseeStorable {
 
    public final static Integer UNPERSISTTED_VALUE = Integer.MIN_VALUE;
 

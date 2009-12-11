@@ -65,7 +65,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Admin Cleanup");
       //      Artifact verArt =
-      //            ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME, "0.9.0", AtsUtil.getAtsBranch());
+      //            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "0.9.0", AtsUtil.getAtsBranch());
       //      for (Attribute<?> attr : verArt.getAttributes()) {
       //         if (attr.getAttributeType().getName().equals(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName())) {
       //            System.out.println("next " + attr.getValue());
@@ -74,7 +74,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       //         }
       //      }
       //      verArt.persist(transaction);
-      //      verArt = ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME, "0.8.2", AtsUtil.getAtsBranch());
+      //      verArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "0.8.2", AtsUtil.getAtsBranch());
       //      for (Attribute<?> attr : verArt.getAttributes()) {
       //         if (attr.getAttributeType().getName().equals(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName())) {
       //            System.out.println("released " + attr.getValue());

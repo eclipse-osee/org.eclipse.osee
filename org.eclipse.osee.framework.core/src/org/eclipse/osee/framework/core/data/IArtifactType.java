@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-public interface IOseeType {
-
-   public abstract String getName();
-
-   public abstract String getGuid();
+/**
+ * @author Ryan D. Brooks
+ */
+public interface IArtifactType extends NamedIdentity {
 }

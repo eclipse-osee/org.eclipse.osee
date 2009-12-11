@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -70,7 +71,7 @@ public class PurgeDeletedAttributes extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\"  defaultValue=\"Common\" displayName=\"Branch\" /><XWidget xwidgetType=\"XAttributeTypeListViewer\" displayName=\"Attribute Type(s) to purge\" multiSelect=\"true\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\"  defaultValue=\"" + CoreBranches.COMMON.getGuid() + "\" displayName=\"Branch\" /><XWidget xwidgetType=\"XAttributeTypeListViewer\" displayName=\"Attribute Type(s) to purge\" multiSelect=\"true\" /></xWidgets>";
    }
 
    @Override

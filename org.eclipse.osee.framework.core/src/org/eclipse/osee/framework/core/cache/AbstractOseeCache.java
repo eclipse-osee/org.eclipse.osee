@@ -16,19 +16,22 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.core.model.IOseeStorableType;
+import org.eclipse.osee.framework.core.model.AbstractOseeType;
+import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractOseeCache<T extends IOseeStorableType> implements IOseeCache<T> {
+public abstract class AbstractOseeCache<T extends AbstractOseeType> implements IOseeCache<T> {
    private final HashCollection<String, T> nameToTypeMap = new HashCollection<String, T>();
    private final HashMap<Integer, T> idToTypeMap = new HashMap<Integer, T>();
    private final HashMap<String, T> guidToTypeMap = new HashMap<String, T>();
@@ -96,7 +99,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> implements 
       ensurePopulated();
       guidToTypeMap.remove(type.getGuid());
       decacheByName(type);
-      if (type.getId() != IOseeStorableType.UNPERSISTTED_VALUE) {
+      if (type.getId() != IOseeStorable.UNPERSISTTED_VALUE) {
          idToTypeMap.remove(type.getId());
       }
    }
@@ -159,7 +162,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> implements 
    private void cacheById(T type) throws OseeCoreException {
       Conditions.checkNotNull(type, "type to cache");
       ensurePopulated();
-      if (type.getId() != IOseeStorableType.UNPERSISTTED_VALUE) {
+      if (type.getId() != IOseeStorable.UNPERSISTTED_VALUE) {
          idToTypeMap.put(type.getId(), type);
       }
    }
@@ -204,9 +207,16 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> implements 
       return types.iterator().next();
    }
 
-   public T getByGuid(String typeGuid) throws OseeCoreException {
+   public T getByGuid(String guid) throws OseeCoreException {
       ensurePopulated();
-      return guidToTypeMap.get(typeGuid);
+      if (!GUID.isValid(guid)) {
+         throw new OseeArgumentException(String.format("[%s] is not a valid guid", guid));
+      }
+      return guidToTypeMap.get(guid);
+   }
+
+   public T get(Identity token) throws OseeCoreException {
+      return getByGuid(token.getGuid());
    }
 
    @Override

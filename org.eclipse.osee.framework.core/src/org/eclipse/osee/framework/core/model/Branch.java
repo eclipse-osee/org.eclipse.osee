@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.core.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -20,12 +19,12 @@ import java.util.Set;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.data.IAccessControllable;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.internal.fields.AssociatedArtifactField;
-import org.eclipse.osee.framework.core.internal.fields.BranchAliasesField;
 import org.eclipse.osee.framework.core.internal.fields.CollectionField;
 import org.eclipse.osee.framework.core.internal.fields.OseeField;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -33,11 +32,10 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Roberto E. Escobar
  */
-public class Branch extends AbstractOseeType implements Comparable<Branch>, IAccessControllable, IAdaptable {
+public class Branch extends AbstractOseeType implements Comparable<Branch>, IAccessControllable, IAdaptable, IOseeBranch {
 
    private static final int SHORT_NAME_LIMIT = 25;
 
-   private final Collection<String> aliases = new HashSet<String>();
    private final Collection<Branch> childBranches = new HashSet<Branch>();
 
    public Branch(String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) {
@@ -57,7 +55,6 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
       addField(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, new OseeField<BranchArchivedState>());
 
       addField(BranchField.BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY, new AssociatedArtifactField(null));
-      addField(BranchField.BRANCH_ALIASES_FIELD_KEY, new BranchAliasesField(aliases));
       addField(BranchField.BRANCH_CHILDREN, new CollectionField<Branch>(childBranches));
    }
 
@@ -103,14 +100,6 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
 
    public TransactionRecord getSourceTransaction() throws OseeCoreException {
       return getFieldValue(BranchField.BRANCH_SOURCE_TRANSACTION);
-   }
-
-   public Collection<String> getAliases() throws OseeCoreException {
-      return getFieldValue(BranchField.BRANCH_ALIASES_FIELD_KEY);
-   }
-
-   public void setAliases(String... alias) throws OseeCoreException {
-      setField(BranchField.BRANCH_ALIASES_FIELD_KEY, Arrays.asList(alias));
    }
 
    public void setArchived(boolean isArchived) {

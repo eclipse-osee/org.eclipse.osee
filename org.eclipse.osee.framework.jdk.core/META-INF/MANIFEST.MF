@@ -28,7 +28,6 @@ Export-Package: org.eclipse.osee.framework.jdk.core.collection.tree,
  org.eclipse.osee.framework.jdk.core.util.xml.excel,
  org.eclipse.osee.framework.jdk.core.util.xml.parser,
  org.eclipse.osee.framework.jdk.core.validate
-Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.commons.codec;version="1.3.0",
  org.apache.commons.codec.binary;version="1.3.0",

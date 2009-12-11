@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IOseeStorableType;
+import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.services.ITranslatorId;
@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractClientDataAccessor<T extends IOseeStorableType> implements IOseeDataAccessor<T> {
+public abstract class AbstractClientDataAccessor<T extends IOseeStorable> implements IOseeDataAccessor<T> {
 
    private final IOseeModelFactoryServiceProvider factoryProvider;
 

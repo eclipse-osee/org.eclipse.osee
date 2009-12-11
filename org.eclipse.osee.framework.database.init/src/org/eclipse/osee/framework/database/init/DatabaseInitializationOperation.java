@@ -64,7 +64,7 @@ public class DatabaseInitializationOperation {
          ClientSessionManager.authenticate(new BaseCredentialProvider() {
             @Override
             public OseeCredential getCredential() throws OseeCoreException {
-               OseeCredential credential = new OseeCredential();
+               OseeCredential credential = super.getCredential();
                credential.setUserName(SystemUser.BootStrap.getName());
                return credential;
             }

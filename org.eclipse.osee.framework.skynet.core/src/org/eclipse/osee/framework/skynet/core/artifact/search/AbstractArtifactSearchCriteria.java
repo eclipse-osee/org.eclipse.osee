@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 
 /**
@@ -19,7 +20,7 @@ public abstract class AbstractArtifactSearchCriteria {
 
    public abstract void addToTableSql(ArtifactQueryBuilder builder) throws OseeDataStoreException;
 
-   public abstract void addToWhereSql(ArtifactQueryBuilder builder) throws OseeDataStoreException;
+   public abstract void addToWhereSql(ArtifactQueryBuilder builder) throws OseeCoreException;
 
    public abstract void addJoinArtId(ArtifactQueryBuilder builder, boolean left) throws OseeDataStoreException;
 

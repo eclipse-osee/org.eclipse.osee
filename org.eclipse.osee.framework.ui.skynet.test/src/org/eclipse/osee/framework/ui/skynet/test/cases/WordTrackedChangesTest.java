@@ -62,7 +62,7 @@ public class WordTrackedChangesTest {
    @Before
    public void setUp() throws Exception {
       assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
-      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
+      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1),
             WordTrackedChangesTest.class.getSimpleName());
       WordAttribute.setDisplayTrackedChangesErrorMessage("");
       WholeDocumentRenderer.setNoPopups(true);
@@ -80,7 +80,7 @@ public class WordTrackedChangesTest {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       FileRenderer.setWorkbenchSavePopUpDisabled(true);
-      Branch branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
+      Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       // create a new requirement artifact
       Artifact newArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch, getClass().getSimpleName());
@@ -127,7 +127,7 @@ public class WordTrackedChangesTest {
       LinkType linkType = LinkType.OSEE_SERVER_LINK;
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       FileRenderer.setWorkbenchSavePopUpDisabled(true);
-      Branch branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
+      Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       // create a new requirement artifact
       Artifact newArt = ArtifactTypeManager.addArtifact("Test Procedure WML", branch, getClass().getSimpleName());
       content = WordMlLinkHandler.unlink(linkType, newArt, content);

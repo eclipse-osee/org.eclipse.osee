@@ -3,10 +3,8 @@
 	<import file="${basedir}/osee_common_build.xml" />
 
 	<target name="build">
-	<!-- if behind a firewall then uncomment the following properties:
-		<property name="proxy_host" value="www-my-proxy.domain.com" />
-		<property name="proxy_port" value="12345" />
-	-->
+		<property name="proxy_host" value="www-slb-proxy.boeing.com" />
+		<property name="proxy_port" value="31060" />
 		<property name="topLevelElementId" value="org.eclipse.osee.client.feature" />
 		<property name="filteredDependencyCheck" value="false" />
 		<property name="p2.category.definition" value="file:${basedir}/client_category.xml" />

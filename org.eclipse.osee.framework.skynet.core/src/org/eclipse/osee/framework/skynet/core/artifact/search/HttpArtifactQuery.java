@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.MatchLocation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.XmlArtifactSearchResult;
@@ -55,10 +56,10 @@ final class HttpArtifactQuery {
    private final boolean matchWordOrder;
    private final String[] attributeTypes;
    private final boolean includeDeleted;
-   private final Branch branch;
+   private final IOseeBranch branch;
    private final boolean isCaseSensitive;
 
-   protected HttpArtifactQuery(Branch branch, String queryString, boolean matchWordOrder, boolean includeDeleted, boolean isCaseSensitive, String... attributeTypes) {
+   protected HttpArtifactQuery(IOseeBranch branch, String queryString, boolean matchWordOrder, boolean includeDeleted, boolean isCaseSensitive, String... attributeTypes) {
       this.branch = branch;
       this.matchWordOrder = matchWordOrder;
       this.includeDeleted = includeDeleted;
@@ -73,11 +74,11 @@ final class HttpArtifactQuery {
       return HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_CONTEXT, parameters);
    }
 
-   private CharBackedInputStream getSearchParameters(String sessionId, boolean withMatches, boolean findAllMatchLocations) throws IOException {
+   private CharBackedInputStream getSearchParameters(String sessionId, boolean withMatches, boolean findAllMatchLocations) throws IOException, OseeCoreException {
       CharBackedInputStream backedInputStream = new CharBackedInputStream();
 
       PropertyStore propertyStore = new PropertyStore(sessionId);
-      propertyStore.put("branchId", branch.getId());
+      propertyStore.put("branchId", BranchManager.getBranchId(branch));
       propertyStore.put("query", queryString);
       propertyStore.put("include deleted", includeDeleted);
       propertyStore.put("match word order", matchWordOrder);

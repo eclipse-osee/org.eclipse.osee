@@ -16,13 +16,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.model.ArtifactType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -35,6 +35,8 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 
 /**
@@ -48,10 +50,10 @@ public class ArtifactQueryBuilder {
    private List<String> hrids;
    private String guidOrHrid;
    private final AbstractArtifactSearchCriteria[] criteria;
-   private final int branchId;
+   private final IOseeBranch branch;
    private int artifactId;
    private Collection<Integer> artifactIds;
-   private final Collection<ArtifactType> artifactTypes;
+   private final Collection<? extends IArtifactType> artifactTypes;
    private final boolean allowDeleted;
    private final ArtifactLoad loadLevel;
    private boolean count = false;
@@ -66,7 +68,7 @@ public class ArtifactQueryBuilder {
     * @param branch
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
-   public ArtifactQueryBuilder(int artId, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(int artId, IOseeBranch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
       this(null, artId, null, null, null, branch, null, allowDeleted, loadLevel, true);
    }
 
@@ -77,17 +79,17 @@ public class ArtifactQueryBuilder {
     * @param branch
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
-   public ArtifactQueryBuilder(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(Collection<Integer> artifactIds, IOseeBranch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
       this(artifactIds, 0, null, null, null, branch, null, allowDeleted, loadLevel, true);
       emptyCriteria = artifactIds.size() == 0;
    }
 
-   public ArtifactQueryBuilder(List<String> guidOrHrids, Branch branch, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(List<String> guidOrHrids, IOseeBranch branch, ArtifactLoad loadLevel) {
       this(null, 0, guidOrHrids, null, null, branch, null, false, loadLevel, true);
       emptyCriteria = guidOrHrids.size() == 0;
    }
 
-   public ArtifactQueryBuilder(List<String> guidOrHrids, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(List<String> guidOrHrids, IOseeBranch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
       this(null, 0, guidOrHrids, null, null, branch, null, allowDeleted, loadLevel, true);
       emptyCriteria = guidOrHrids.size() == 0;
    }
@@ -101,46 +103,46 @@ public class ArtifactQueryBuilder {
       this(null, artifactId, null, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel, true);
    }
 
-   public ArtifactQueryBuilder(String guidOrHrid, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(String guidOrHrid, IOseeBranch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
       this(null, 0, null, ensureValid(guidOrHrid), null, branch, null, allowDeleted, loadLevel, true);
    }
 
-   public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
+   public ArtifactQueryBuilder(IArtifactType artifactType, IOseeBranch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
       this(null, 0, null, null, Arrays.asList(artifactType), branch, null, allowDeleted, loadLevel, true);
    }
 
-   public ArtifactQueryBuilder(Collection<ArtifactType> artifactTypes, Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
+   public ArtifactQueryBuilder(Collection<? extends IArtifactType> artifactTypes, IOseeBranch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
       this(null, 0, null, null, artifactTypes, branch, null, allowDeleted, loadLevel, true);
       emptyCriteria = artifactTypes.size() == 0;
    }
 
-   public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
+   public ArtifactQueryBuilder(IOseeBranch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
       this(null, 0, null, null, null, branch, null, allowDeleted, loadLevel, false);
    }
 
-   public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted, AbstractArtifactSearchCriteria... criteria) {
+   public ArtifactQueryBuilder(IOseeBranch branch, ArtifactLoad loadLevel, boolean allowDeleted, AbstractArtifactSearchCriteria... criteria) {
       this(null, 0, null, null, null, branch, null, allowDeleted, loadLevel, true, criteria);
       emptyCriteria = criteria.length == 0;
    }
 
-   public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
+   public ArtifactQueryBuilder(IOseeBranch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
       this(null, 0, null, null, null, branch, null, false, loadLevel, true, toArray(criteria));
       emptyCriteria = criteria.size() == 0;
    }
 
-   public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
+   public ArtifactQueryBuilder(IArtifactType artifactType, IOseeBranch branch, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
       this(null, 0, null, null, Arrays.asList(artifactType), branch, null, false, loadLevel, true, criteria);
       emptyCriteria = criteria.length == 0;
    }
 
-   public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
+   public ArtifactQueryBuilder(IArtifactType artifactType, IOseeBranch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
       this(null, 0, null, null, Arrays.asList(artifactType), branch, null, false, loadLevel, true, toArray(criteria));
       emptyCriteria = criteria.size() == 0;
    }
 
-   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<ArtifactType> artifactTypes, Branch branch, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel, boolean tableOrderForward, AbstractArtifactSearchCriteria... criteria) {
+   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<? extends IArtifactType> artifactTypes, IOseeBranch branch, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel, boolean tableOrderForward, AbstractArtifactSearchCriteria... criteria) {
       this.artifactTypes = artifactTypes;
-      this.branchId = branch.getId();
+      this.branch = branch;
       this.criteria = criteria;
       this.loadLevel = loadLevel;
       this.allowDeleted = allowDeleted;
@@ -243,11 +245,11 @@ public class ArtifactQueryBuilder {
          sql.append(".art_type_id");
          if (artifactTypes.size() == 1) {
             sql.append("=? AND ");
-            addParameter(artifactTypes.iterator().next().getId());
+            addParameter(ArtifactTypeManager.getTypeId(artifactTypes.iterator().next()));
          } else {
             sql.append(" IN (");
-            for (ArtifactType artifactType : artifactTypes) {
-               sql.append(artifactType.getId());
+            for (IArtifactType artifactType : artifactTypes) {
+               sql.append(ArtifactTypeManager.getTypeId(artifactType));
                sql.append(",");
             }
             sql.deleteCharAt(sql.length() - 1);
@@ -358,7 +360,7 @@ public class ArtifactQueryBuilder {
       queryParameters.add(data);
    }
 
-   public void addTxSql(String txsAlias, String txdAlias, boolean historical) {
+   public void addTxSql(String txsAlias, String txdAlias, boolean historical) throws OseeCoreException {
       if (!historical) {
          addCurrentTxSql(txsAlias);
       }
@@ -371,16 +373,16 @@ public class ArtifactQueryBuilder {
       sql.append(".tx_current=1 AND ");
    }
 
-   private void addBranchTxSql(String txsAlias, String txdAlias) {
+   private void addBranchTxSql(String txsAlias, String txdAlias) throws OseeCoreException {
       sql.append(txsAlias);
       sql.append(".transaction_id=");
       sql.append(txdAlias);
       sql.append(".transaction_id");
-      if (branchId > 0) {
+      if (branch != null) {
          sql.append(" AND ");
          sql.append(txdAlias);
          sql.append(".branch_id=?");
-         addParameter(branchId);
+         addParameter(BranchManager.getBranchId(branch));
       }
    }
 
@@ -545,7 +547,7 @@ public class ArtifactQueryBuilder {
          message.append("\"");
       }
       message.append(" on branch \"");
-      message.append(branchId);
+      message.append(branch.getGuid());
       message.append("\"");
       return message.toString();
    }

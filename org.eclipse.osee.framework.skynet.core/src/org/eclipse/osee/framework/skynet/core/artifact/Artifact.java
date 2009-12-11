@@ -29,7 +29,8 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.IAccessControllable;
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -325,7 +326,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return artifactType.inheritsFrom(ArtifactTypeManager.getType(artifactTypeName));
    }
 
-   public boolean isOfType(IOseeType oseeType) throws OseeCoreException {
+   public boolean isOfType(IArtifactType oseeType) throws OseeCoreException {
       return artifactType.inheritsFrom(oseeType);
    }
 
@@ -497,7 +498,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return getArtifactType().isValidAttributeType(attributeType, branch);
    }
 
-   public boolean isAttributeTypeValid(IOseeType attributeType) throws OseeCoreException {
+   public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
       return isAttributeTypeValid(attributeType.getName());
    }
 
@@ -688,7 +689,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return soleAttributes.iterator().next().getValue();
    }
 
-   public <T> T getSoleAttributeValue(IOseeType attributeType) throws OseeCoreException {
+   public <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException {
       return getSoleAttributeValue(attributeType.getName());
    }
 
@@ -757,7 +758,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       }
    }
 
-   public <T> T getSoleAttributeValue(IOseeType attributeTypeEnum, T defaultReturnValue) throws OseeCoreException {
+   public <T> T getSoleAttributeValue(IAttributeType attributeTypeEnum, T defaultReturnValue) throws OseeCoreException {
       return getSoleAttributeValue(attributeTypeEnum.getName(), defaultReturnValue);
    }
 
@@ -819,11 +820,11 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       getOrCreateSoleAttribute(attributeTypeName).setValue(value);
    }
 
-   public <T> void setSoleAttributeValue(IOseeType attributeTypeEnum, T value) throws OseeCoreException {
+   public <T> void setSoleAttributeValue(IAttributeType attributeTypeEnum, T value) throws OseeCoreException {
       getOrCreateSoleAttribute(attributeTypeEnum.getName()).setValue(value);
    }
 
-   public <T> void setSoleAttributeFromString(IOseeType attributeType, String value) throws OseeCoreException {
+   public <T> void setSoleAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
       getOrCreateSoleAttribute(attributeType.getName()).setFromString(value);
    }
 

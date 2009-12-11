@@ -200,7 +200,7 @@ public class PublishRequirements extends AbstractBlam {
       builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" />");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XLabel\" displayName=\"Diff Options:\" />");
       builder.append("<XWidget xwidgetType=\"XDate\" displayName=\"Diff Starting Point\" />");
-      builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Diff Branch\" defaultValue=\"" + BranchManager.getLastBranch().getName() + "\" />");
+      builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Diff Branch\" defaultValue=\"" + BranchManager.getLastBranch().getGuid() + "\" />");
       builder.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" />");
       builder.append("</xWidgets>");
       return builder.toString();

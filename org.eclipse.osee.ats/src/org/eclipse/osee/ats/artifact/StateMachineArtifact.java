@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -34,6 +35,7 @@ import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -937,17 +939,17 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return String.valueOf(reWork);
    }
 
-   public static Set<String> getAllSMATypeNames() throws OseeCoreException {
-      Set<String> artTypeNames = TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames();
-      artTypeNames.add(TaskArtifact.ARTIFACT_NAME);
-      artTypeNames.add(DecisionReviewArtifact.ARTIFACT_NAME);
-      artTypeNames.add(PeerToPeerReviewArtifact.ARTIFACT_NAME);
+   public static Set<IArtifactType> getAllSMAType() throws OseeCoreException {
+      Set<IArtifactType> artTypeNames = TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes();
+      artTypeNames.add(AtsArtifactTypes.Task);
+      artTypeNames.add(AtsArtifactTypes.DecisionReview);
+      artTypeNames.add(AtsArtifactTypes.PeerToPeerReview);
       return artTypeNames;
    }
 
    public static List<Artifact> getAllSMATypeArtifacts() throws OseeCoreException {
       List<Artifact> result = new ArrayList<Artifact>();
-      for (String artType : getAllSMATypeNames()) {
+      for (IArtifactType artType : getAllSMAType()) {
          result.addAll(ArtifactQuery.getArtifactListFromType(artType, AtsUtil.getAtsBranch()));
       }
       return result;
@@ -955,7 +957,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts() throws OseeCoreException {
       List<TeamWorkFlowArtifact> result = new ArrayList<TeamWorkFlowArtifact>();
-      for (String artType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
+      for (IArtifactType artType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()) {
          List<TeamWorkFlowArtifact> teamArts =
                org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromType(
                      artType, AtsUtil.getAtsBranch()));

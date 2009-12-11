@@ -46,12 +46,11 @@ public class BranchStateTest {
 
    @org.junit.Test
    public void testCreateState() throws OseeCoreException {
-      Branch mainBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       String originalBranchName = "Create State Branch";
       Branch workingBranch = null;
       try {
          User user = UserManager.getUser(SystemUser.OseeSystem);
-         workingBranch = BranchManager.createWorkingBranch(mainBranch, originalBranchName, user);
+         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
       } finally {
@@ -63,12 +62,11 @@ public class BranchStateTest {
 
    @org.junit.Test
    public void testModifiedState() throws OseeCoreException, InterruptedException {
-      Branch mainBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       String originalBranchName = "Modified State Branch";
       Branch workingBranch = null;
       try {
          User user = UserManager.getUser(SystemUser.OseeSystem);
-         workingBranch = BranchManager.createWorkingBranch(mainBranch, originalBranchName, user);
+         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
@@ -87,12 +85,11 @@ public class BranchStateTest {
 
    @org.junit.Test
    public void testDeleteState() throws OseeCoreException, InterruptedException {
-      Branch mainBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       String originalBranchName = "Deleted State Branch";
       Branch workingBranch = null;
       try {
          User user = UserManager.getUser(SystemUser.OseeSystem);
-         workingBranch = BranchManager.createWorkingBranch(mainBranch, originalBranchName, user);
+         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
@@ -111,13 +108,12 @@ public class BranchStateTest {
 
    @org.junit.Test
    public void testCommitState() throws OseeCoreException {
-      Branch mainBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       String originalBranchName = "Commit State Branch";
       Branch workingBranch = null;
       Artifact change = null;
       try {
          User user = UserManager.getUser(SystemUser.OseeSystem);
-         workingBranch = BranchManager.createWorkingBranch(mainBranch, originalBranchName, user);
+         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
@@ -127,7 +123,8 @@ public class BranchStateTest {
          assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
-         ConflictManagerExternal conflictManager = new ConflictManagerExternal(mainBranch, workingBranch);
+         ConflictManagerExternal conflictManager =
+               new ConflictManagerExternal(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), workingBranch);
          BranchManager.commitBranch(null, conflictManager, true, false);
 
          assertEquals(BranchState.COMMITTED, workingBranch.getBranchState());
@@ -142,18 +139,17 @@ public class BranchStateTest {
 
    @org.junit.Test
    public void testRebaselineWithoutConflicts() throws Exception {
-      Branch mainBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       String originalBranchName = "UpdateBranch Test 1";
       Artifact baseArtifact = null;
       Branch workingBranch = null;
       Artifact change = null;
       try {
-         baseArtifact = ArtifactTypeManager.addArtifact("Software Requirement", mainBranch, "Test Object");
+         baseArtifact = ArtifactTypeManager.addArtifact("Software Requirement", DemoSawBuilds.SAW_Bld_1, "Test Object");
          baseArtifact.setSoleAttributeFromString("Annotation", "This is the base annotation");
          baseArtifact.persist();
 
          User user = UserManager.getUser(SystemUser.OseeSystem);
-         workingBranch = BranchManager.createWorkingBranch(mainBranch, originalBranchName, user);
+         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
 
          // Add a new artifact on the working branch
          change =
@@ -198,19 +194,20 @@ public class BranchStateTest {
 
    @org.junit.Test
    public void testRebaselineWithConflicts() throws Exception {
-      Branch mainBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       String originalBranchName = "UpdateBranch Test 2";
       Artifact baseArtifact = null;
       Branch workingBranch = null;
       Branch mergeBranch = null;
       Artifact sameArtifact = null;
       try {
-         baseArtifact = ArtifactTypeManager.addArtifact("Software Requirement", mainBranch, "Test Object");
+         baseArtifact =
+               ArtifactTypeManager.addArtifact("Software Requirement",
+                     BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), "Test Object");
          baseArtifact.setSoleAttributeFromString("Annotation", "This is the base annotation");
          baseArtifact.persist();
 
          User user = UserManager.getUser(SystemUser.OseeSystem);
-         workingBranch = BranchManager.createWorkingBranch(mainBranch, originalBranchName, user);
+         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
 
          // Modify same artifact on working branch
          sameArtifact = ArtifactQuery.getArtifactFromId(baseArtifact.getGuid(), workingBranch);

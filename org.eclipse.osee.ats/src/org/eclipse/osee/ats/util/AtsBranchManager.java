@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleOption;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -742,7 +743,7 @@ public class AtsBranchManager {
     * @param parentBranch
     * @throws Exception
     */
-   public void createWorkingBranch(String pageId, final Branch parentBranch) throws OseeCoreException {
+   public void createWorkingBranch(String pageId, final IOseeBranch parentBranch) throws OseeCoreException {
       final Artifact stateMachineArtifact = smaMgr.getSma();
       String smaTitle = stateMachineArtifact.getName();
       if (smaTitle.length() > 40) {

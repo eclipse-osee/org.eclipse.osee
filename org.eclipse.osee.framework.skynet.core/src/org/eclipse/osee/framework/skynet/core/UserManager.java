@@ -84,8 +84,7 @@ public final class UserManager {
    }
 
    private static List<User> getFromCache() throws OseeCoreException {
-      ArtifactType userType = ArtifactTypeManager.getTypeByGuid(CoreArtifactTypes.User.getGuid());
-      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(userType));
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(CoreArtifactTypes.User));
    }
 
    private static List<User> getUsers(Active userStatus) throws OseeCoreException {
@@ -157,11 +156,9 @@ public final class UserManager {
     */
    public static User getUserByName(String name) throws OseeCoreException {
       ensurePopulated();
-      User user = null;
       for (User tempUser : getFromCache()) {
          if (tempUser.getName().equals(name)) {
-            user = tempUser;
-            return user;
+            return tempUser;
          }
       }
       throw new UserNotInDatabase("User requested by name \"" + name + "\" was not found.");
@@ -245,8 +242,8 @@ public final class UserManager {
          user.setActive(userEnum.isActive());
       } else {
          user =
-               (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User.getName(), BranchManager.getCommonBranch(),
-                     userEnum.getName());
+               (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User.getName(),
+                     BranchManager.getCommonBranch(), userEnum.getName());
          user.setActive(userEnum.isActive());
          user.setUserID(userEnum.getUserID());
          user.setEmail(userEnum.getEmail());

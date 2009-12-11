@@ -30,10 +30,10 @@ public abstract class XTypeListViewer extends XListViewer {
       setSorter(new ViewerSorter());
    }
 
-   public Branch resolveBranch(String keyedBranchName) {
+   public Branch resolveBranch(String branchGuid) {
       try {
-         if (keyedBranchName != null) {
-            return BranchManager.getKeyedBranch(keyedBranchName);
+         if (branchGuid != null) {
+            return BranchManager.getBranchByGuid(branchGuid);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

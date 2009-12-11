@@ -42,10 +42,17 @@ import org.eclipse.osee.support.test.util.DemoSawBuilds;
  */
 public class ConflictTestManager {
    public static enum Type {
-      RELATION, ARTIFACT, ATTRIBUTE;
+      RELATION,
+      ARTIFACT,
+      ATTRIBUTE;
    };
    public static enum Modification {
-      CREATE, DELETE, CREATE_AND_MODIFY, CREATE_AND_DELETE, MODIFY, MODIFY_AND_DELETE;
+      CREATE,
+      DELETE,
+      CREATE_AND_MODIFY,
+      CREATE_AND_DELETE,
+      MODIFY,
+      MODIFY_AND_DELETE;
    };
 
    private static final boolean DEBUG =
@@ -204,12 +211,9 @@ public class ConflictTestManager {
    }
 
    public static void initializeConflictTest() throws Exception {
-      // Create a new destination branch from the Branch with BranchID = 2
       cleanUpConflictTest();
       createConflictDefinitions();
-      Branch branch;
-      branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1.name());
-      destBranch = BranchManager.createWorkingBranch(branch, DEST_BRANCH, null);
+      destBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, DEST_BRANCH, null);
 
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute("Name", FOLDER, destBranch);
 

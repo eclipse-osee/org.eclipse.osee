@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -77,7 +77,10 @@ public class FrameworkTransactionData {
    public int branchId = -1;
 
    public static enum ChangeType {
-      Changed, Deleted, Added, All
+      Changed,
+      Deleted,
+      Added,
+      All
    };
 
    /**
@@ -89,7 +92,7 @@ public class FrameworkTransactionData {
       return branchId;
    }
 
-   public Collection<Artifact> getArtifactsInRelations(ChangeType changeType, IOseeType relationType) {
+   public Collection<Artifact> getArtifactsInRelations(ChangeType changeType, IRelationType relationType) {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       getArtifactsInRelations(changeType, relationType, artifacts, cacheAddedRelations);
       getArtifactsInRelations(changeType, relationType, artifacts, cacheDeletedRelations);
@@ -97,7 +100,7 @@ public class FrameworkTransactionData {
       return artifacts;
    }
 
-   private void getArtifactsInRelations(ChangeType changeType, IOseeType relationType, Set<Artifact> artifacts, Set<LoadedRelation> cache) {
+   private void getArtifactsInRelations(ChangeType changeType, IRelationType relationType, Set<Artifact> artifacts, Set<LoadedRelation> cache) {
       if (changeType == ChangeType.Added || changeType == ChangeType.All) {
          for (LoadedRelation loadedRelation : cache) {
             if (loadedRelation.getRelationType().equals(relationType)) {

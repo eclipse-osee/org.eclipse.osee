@@ -135,7 +135,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
    }
 
    @Override
-   public void addToWhereSql(ArtifactQueryBuilder builder) throws OseeDataStoreException {
+   public void addToWhereSql(ArtifactQueryBuilder builder) throws OseeCoreException {
       if (attributeType != null) {
          builder.append(attrAlias);
          builder.append(".attr_type_id=? AND ");

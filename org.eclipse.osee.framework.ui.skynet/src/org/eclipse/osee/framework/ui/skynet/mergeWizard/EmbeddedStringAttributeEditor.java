@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -40,16 +40,15 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
    private static final String VALIDATION_ERROR =
          "ERROR: You have entered an invalid value." + " This value can not be saved.";
    private static final String TYPE_ERROR = "All the artifacts being edited are not of the same type.";
-   private static final String SAVE_ERROR = "Could not store the string attribute";
 
-   protected IOseeType attributeType;
+   protected IAttributeType attributeType;
    protected String displayName;
    protected Collection<?> attributeHolders;
    protected boolean persist;
    protected EmbeddedStringEditor editor;
    protected String regExp;
 
-   public EmbeddedStringAttributeEditor(String regExp, Collection<?> attributeHolders, String displayName, IOseeType attributeType, boolean persist) {
+   public EmbeddedStringAttributeEditor(String regExp, Collection<?> attributeHolders, String displayName, IAttributeType attributeType, boolean persist) {
       this.regExp = regExp;
       this.attributeType = attributeType;
       this.displayName = displayName;

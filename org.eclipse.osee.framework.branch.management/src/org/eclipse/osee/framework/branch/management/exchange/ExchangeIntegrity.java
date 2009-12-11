@@ -53,7 +53,6 @@ public class ExchangeIntegrity {
          List<IExportItem> filesToCheck = new ArrayList<IExportItem>();
          filesToCheck.addAll(manifestSaxHandler.getImportFiles());
          filesToCheck.add(manifestSaxHandler.getBranchFile());
-         filesToCheck.add(manifestSaxHandler.getBranchDefinitionsFile());
 
          final List<IndexCollector> checkList = ExchangeDb.createCheckList();
          for (final IExportItem importFile : filesToCheck) {

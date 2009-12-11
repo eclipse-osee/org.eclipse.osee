@@ -130,7 +130,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
                fieldMap.put("attr_type_id", String.valueOf(typeId));
             }
 
-            if (exportItem.getSource().equals(ExportItem.OSEE_RELATION_LINK_DATA)) {
+            if (exportItem.equals(ExportItem.OSEE_RELATION_LINK_DATA)) {
                int typeId = service.getRelationTypeCache().getByGuid(fieldMap.get(ExchangeDb.TYPE_GUID)).getId();
                fieldMap.put("rel_link_type_id", String.valueOf(typeId));
             }
@@ -160,6 +160,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
                   }
                }
             }
+
             Object[] objectData = DataToSql.toDataArray(getConnection(), getMetaData(), getTranslator(), fieldMap);
             if (objectData != null) {
                addData(objectData);

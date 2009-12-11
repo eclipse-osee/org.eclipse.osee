@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -63,7 +64,7 @@ public class StaticIdManager {
    /**
     * Return non-deleted artifacts with staticId. This does a new ArtifactQuery each time it's called.
     */
-   public static Set<Artifact> getArtifactsFromArtifactQuery(String artifactTypeName, String staticId, Branch branch) throws OseeCoreException {
+   public static Set<Artifact> getArtifactsFromArtifactQuery(String artifactTypeName, String staticId, IOseeBranch branch) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       // Retrieve database artifacts if cache has none
       artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactTypeName, STATIC_ID_ATTRIBUTE,
@@ -76,7 +77,7 @@ public class StaticIdManager {
     * 
     * @param queryIfNotFound if true and artifacts with staticId art not in ArtifactCache, query to find
     */
-   public static Set<Artifact> getArtifactsFromArtifactCache(String artifactTypeName, String staticId, Branch branch, boolean queryIfNotFound) throws OseeCoreException {
+   public static Set<Artifact> getArtifactsFromArtifactCache(String artifactTypeName, String staticId, IOseeBranch branch, boolean queryIfNotFound) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       // Retrieve cached artifacts first
       for (Artifact artifact : ArtifactCache.getArtifactsByStaticId(staticId, branch)) {
@@ -109,7 +110,7 @@ public class StaticIdManager {
     * 
     * @param queryIfNotFound true will perform ArtifactQuery if not found
     */
-   public static Artifact getSingletonArtifact(String artifactTypeName, String staticId, Branch branch, boolean queryIfNotFound) throws OseeCoreException {
+   public static Artifact getSingletonArtifact(String artifactTypeName, String staticId, IOseeBranch branch, boolean queryIfNotFound) throws OseeCoreException {
       if (queryIfNotFound) {
          return getOrCreateSingletonArtifactHelper(artifactTypeName, staticId, branch, false);
       } else {
@@ -124,7 +125,7 @@ public class StaticIdManager {
    /**
     * Return first artifact with staticId (multiples may exist) or create one if non exist
     */
-   public static Artifact getOrCreateSingletonArtifact(String artifactTypeName, String staticId, Branch branch) throws OseeCoreException {
+   public static Artifact getOrCreateSingletonArtifact(String artifactTypeName, String staticId, IOseeBranch branch) throws OseeCoreException {
       return getOrCreateSingletonArtifactHelper(artifactTypeName, staticId, branch, true);
    }
 
@@ -133,7 +134,7 @@ public class StaticIdManager {
     * 
     * @param create will create artifact and add static if not found
     */
-   private static Artifact getOrCreateSingletonArtifactHelper(String artifactTypeName, String staticId, Branch branch, boolean create) throws OseeCoreException {
+   private static Artifact getOrCreateSingletonArtifactHelper(String artifactTypeName, String staticId, IOseeBranch branch, boolean create) throws OseeCoreException {
       Set<Artifact> artifacts = getArtifactsFromArtifactCache(artifactTypeName, staticId, branch, true);
       if (artifacts.size() == 0 && create) {
          Artifact artifact = ArtifactTypeManager.addArtifact(artifactTypeName, branch);

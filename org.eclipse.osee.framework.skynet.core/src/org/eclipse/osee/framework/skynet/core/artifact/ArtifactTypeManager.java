@@ -18,7 +18,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -123,8 +124,12 @@ public class ArtifactTypeManager {
       return artifactType;
    }
 
-   public static ArtifactType getType(IOseeType typeEnum) throws OseeCoreException {
-      return getTypeByGuid(typeEnum.getGuid());
+   public static ArtifactType getType(IArtifactType typeToken) throws OseeCoreException {
+      return getTypeByGuid(typeToken.getGuid());
+   }
+
+   public static int getTypeId(IArtifactType typeToken) throws OseeCoreException {
+      return getType(typeToken).getId();
    }
 
    /**
@@ -135,8 +140,8 @@ public class ArtifactTypeManager {
     * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist if any name in the artifactTypeNames does not match
     */
-   public static List<ArtifactType> getTypes(Iterable<String> artifactTypeNames) throws OseeCoreException {
-      List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
+   public static List<IArtifactType> getTypes(Iterable<String> artifactTypeNames) throws OseeCoreException {
+      List<IArtifactType> artifactTypes = new ArrayList<IArtifactType>();
       for (String artifactTypeName : artifactTypeNames) {
          artifactTypes.add(getType(artifactTypeName));
       }
@@ -162,8 +167,12 @@ public class ArtifactTypeManager {
     * @param branch
     * @throws OseeCoreException
     */
-   public static Artifact addArtifact(String artifactTypeName, Branch branch) throws OseeCoreException {
+   public static Artifact addArtifact(String artifactTypeName, IOseeBranch branch) throws OseeCoreException {
       return makeNewArtifact(getType(artifactTypeName), branch);
+   }
+
+   public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
+      return makeNewArtifact(getType(artifactType), branch);
    }
 
    /**
@@ -173,13 +182,13 @@ public class ArtifactTypeManager {
     * @param branch
     * @param name
     */
-   public static Artifact addArtifact(String artifactTypeName, Branch branch, String name) throws OseeCoreException {
+   public static Artifact addArtifact(String artifactTypeName, IOseeBranch branch, String name) throws OseeCoreException {
       Artifact artifact = addArtifact(artifactTypeName, branch);
       artifact.setName(name);
       return artifact;
    }
 
-   public static Artifact addArtifact(IOseeType artifactType, Branch branch, String name) throws OseeCoreException {
+   public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch, String name) throws OseeCoreException {
       Artifact artifact = makeNewArtifact(getType(artifactType), branch);
       artifact.setName(name);
       return artifact;
@@ -295,7 +304,7 @@ public class ArtifactTypeManager {
     * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType)
     * @use {@link ArtifactTypeManager}.addArtifact
     */
-   public static Artifact makeNewArtifact(ArtifactType artifactType, Branch branch) throws OseeCoreException {
+   public static Artifact makeNewArtifact(ArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, null, null, null);
    }
 
@@ -317,7 +326,7 @@ public class ArtifactTypeManager {
    /**
     * @return Returns the ArtifactType factory.
     */
-   public static ArtifactFactory getFactory(ArtifactType artifactType) throws OseeCoreException {
+   public static ArtifactFactory getFactory(IArtifactType artifactType) throws OseeCoreException {
       if (artifactType == null) {
          throw new OseeArgumentException("Artifact Type cannot be null");
       }

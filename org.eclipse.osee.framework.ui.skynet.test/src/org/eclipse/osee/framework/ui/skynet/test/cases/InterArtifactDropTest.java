@@ -12,12 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -54,7 +53,7 @@ public class InterArtifactDropTest {
       String destinationBranchName = "Destination Branch" + GUID.create();
 
       sourceBranch =
-            BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), sourceBranchName,
+            BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, sourceBranchName,
                   UserManager.getUser(SystemUser.OseeSystem));
       sleep(5000);
 
@@ -62,7 +61,7 @@ public class InterArtifactDropTest {
       sourceArtifact.persist();
 
       destinationBranch =
-            BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), destinationBranchName,
+            BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, destinationBranchName,
                   UserManager.getUser(SystemUser.OseeSystem));
 
       sleep(5000);
@@ -74,8 +73,9 @@ public class InterArtifactDropTest {
       OseeLog.registerLoggerListener(monitorLog);
 
       InterArtifactExplorerDropHandler dropHandler = new InterArtifactExplorerDropHandler();
-      dropHandler.dropArtifactIntoDifferentBranch(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch),
-            new Artifact[] {sourceArtifact}, false);
+      dropHandler.dropArtifactIntoDifferentBranch(
+            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch), new Artifact[] {sourceArtifact},
+            false);
 
       sleep(5000);
       //Acquire the introduced artifact

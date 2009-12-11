@@ -17,7 +17,6 @@ public enum ExportItem implements IExportItem {
    EXPORT_MANIFEST(""),
    EXPORT_DB_SCHEMA("db.metadata"),
    OSEE_BRANCH_DATA("osee_branch"),
-   OSEE_BRANCH_DEFINITIONS("osee_branch_definitions"),
    OSEE_TX_DETAILS_DATA("osee_tx_details"),
    OSEE_TXS_DATA("osee_txs"),
    OSEE_ARTIFACT_DATA("osee_artifact"),

@@ -12,12 +12,12 @@ package org.eclipse.osee.framework.core.cache;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IOseeStorableType;
+import org.eclipse.osee.framework.core.model.IOseeStorable;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeDataAccessor<T extends IOseeStorableType> {
+public interface IOseeDataAccessor<T extends IOseeStorable> {
 
    public void load(IOseeCache<T> cache) throws OseeCoreException;
 

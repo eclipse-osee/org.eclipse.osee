@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -29,16 +30,15 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
-
-   public static String ARTIFACT_NAME = "Version";
-
    public static enum VersionReleaseType {
-      Released, UnReleased, Both, VersionLocked
+      Released,
+      UnReleased,
+      Both,
+      VersionLocked
    };
 
    public VersionArtifact(ArtifactFactory parentFactory, String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
@@ -190,7 +190,6 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
     * @return Version
     */
    public static VersionArtifact getSoleVersion(String name) throws OseeCoreException {
-      return (VersionArtifact) AtsCacheManager.getArtifactsByName(
-            ArtifactTypeManager.getType(VersionArtifact.ARTIFACT_NAME), name).iterator().next();
+      return (VersionArtifact) AtsCacheManager.getArtifactsByName(AtsArtifactTypes.Version, name).iterator().next();
    }
 }

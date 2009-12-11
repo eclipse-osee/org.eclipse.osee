@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.internal.fields;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.IOseeStorableType;
+import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.util.Compare;
 
 /**
@@ -24,13 +24,13 @@ public final class UniqueIdField extends AbstractOseeField<Integer> {
 
    public UniqueIdField() {
       super();
-      this.value = IOseeStorableType.UNPERSISTTED_VALUE;
+      this.value = IOseeStorable.UNPERSISTTED_VALUE;
       isDirty = true;
    }
 
    @Override
    public void set(Integer value) throws OseeCoreException {
-      if (get() == IOseeStorableType.UNPERSISTTED_VALUE) {
+      if (get() == IOseeStorable.UNPERSISTTED_VALUE) {
          isDirty |= Compare.isDifferent(get(), value);
          this.value = value;
       } else {

@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -67,7 +67,7 @@ public class CsvArtifact {
     * @param branch
     * @throws OseeCoreException
     */
-   public static CsvArtifact generateCsvArtifact(String staticId, String artifactName, String csvData, Branch branch) throws OseeCoreException {
+   public static CsvArtifact generateCsvArtifact(String staticId, String artifactName, String csvData, IOseeBranch branch) throws OseeCoreException {
       Artifact artifact = ArtifactTypeManager.addArtifact("General Document", branch);
       artifact.setName(artifactName);
       artifact.setSoleAttributeValue("Extension", "csv");
@@ -76,7 +76,7 @@ public class CsvArtifact {
       return new CsvArtifact(artifact);
    }
 
-   public static CsvArtifact getCsvArtifact(String staticId, Branch branch, boolean create) throws OseeCoreException {
+   public static CsvArtifact getCsvArtifact(String staticId, IOseeBranch branch, boolean create) throws OseeCoreException {
       Artifact art = StaticIdManager.getSingletonArtifact("General Document", staticId, branch, true);
       if (art != null) {
          return new CsvArtifact(art);

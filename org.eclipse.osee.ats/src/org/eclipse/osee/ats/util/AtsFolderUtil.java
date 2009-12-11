@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -36,9 +36,9 @@ public class AtsFolderUtil {
       WorkPages("Work Pages", "Work Pages", CoreArtifactTypes.Folder);
       protected final String displayName;
       protected final String staticId;
-      protected final IOseeType artifactType;
+      protected final IArtifactType artifactType;
 
-      private AtsFolder(String displayName, String staticId, IOseeType artifactType) {
+      private AtsFolder(String displayName, String staticId, IArtifactType artifactType) {
          this.displayName = displayName;
          this.staticId = staticId;
          this.artifactType = artifactType;

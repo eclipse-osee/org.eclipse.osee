@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.support.test.util;
 
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+
 /**
  * @author Donald G. Dunne
  */
-public enum DemoCISBuilds implements ITestBranch {
-   CIS_Bld_1("AyH_f2sSKy3l07fIvDDD"), CIS_Bld_2("AyH_f2sSKy3l07fIvEEE"), CIS_Bld_3("AyH_f2sSKy3l07fIvFFF");
+public enum DemoCISBuilds implements IOseeBranch {
+   CIS_Bld_1("AyH_f2sSKy3l07fIvDDD"),
+   CIS_Bld_2("AyH_f2sSKy3l07fIvEEE"),
+   CIS_Bld_3("AyH_f2sSKy3l07fIvFFF");
 
    private final String guid;
 
@@ -24,5 +28,9 @@ public enum DemoCISBuilds implements ITestBranch {
 
    public String getGuid() {
       return guid;
+   }
+
+   public String getName() {
+      return name();
    }
 }

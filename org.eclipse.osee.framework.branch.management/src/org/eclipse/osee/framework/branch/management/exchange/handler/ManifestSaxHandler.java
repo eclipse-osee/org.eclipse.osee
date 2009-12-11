@@ -29,7 +29,6 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
    private final List<IExportItem> filesToImport;
    private String metadataFile;
    private IExportItem branchFile;
-   private IExportItem branchDefinitionsFile;
    private String sourceDatabaseId;
    private Date sourceExportDate;
    private String exportVersion;
@@ -39,7 +38,6 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
       this.filesToImport = new ArrayList<IExportItem>();
       this.metadataFile = null;
       this.branchFile = null;
-      this.branchDefinitionsFile = null;
       this.sourceExportDate = null;
       this.sourceDatabaseId = "UNKNOWN";
    }
@@ -67,8 +65,6 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
             ImportFile importFile = new ImportFile(fileName, source, priority);
             if (source.equals("osee_branch")) {
                branchFile = importFile;
-            } else if (source.equals("osee_branch_definitions")) {
-               branchDefinitionsFile = importFile;
             } else {
                filesToImport.add(importFile);
             }
@@ -78,10 +74,6 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
 
    public IExportItem getBranchFile() {
       return branchFile;
-   }
-
-   public IExportItem getBranchDefinitionsFile() {
-      return branchDefinitionsFile;
    }
 
    public String getMetadataFile() {

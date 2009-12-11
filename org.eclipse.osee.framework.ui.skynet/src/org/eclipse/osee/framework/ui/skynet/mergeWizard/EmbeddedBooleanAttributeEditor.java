@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -35,13 +35,13 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor {
 
-   protected IOseeType attributeType;
+   protected IAttributeType attributeType;
    protected String displayName;
    protected Collection<?> attributeHolder;
    protected boolean persist;
    protected EmbeddedBooleanEditor editor;
 
-   public EmbeddedBooleanAttributeEditor(String prompt, Collection<?> attributeHolder, String displayName, IOseeType attributeType, boolean persist) {
+   public EmbeddedBooleanAttributeEditor(String prompt, Collection<?> attributeHolder, String displayName, IAttributeType attributeType, boolean persist) {
       this.attributeType = attributeType;
       this.displayName = displayName;
       this.attributeHolder = attributeHolder;

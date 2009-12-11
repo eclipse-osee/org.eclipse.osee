@@ -51,8 +51,6 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    private static final String DELETE_FROM_ARTIFACT =
          "delete from osee_artifact art where not exists (select 1 from osee_artifact_version arv where arv.art_id = art.art_id)";
    private static final String DELETE_FROM_BRANCH_TABLE = "delete from osee_branch where branch_id = ?";
-   private static final String DELETE_FROM_BRANCH_DEFINITIONS =
-         "delete from osee_branch_definitions where mapped_branch_id=?";
    private static final String DELETE_FROM_MERGE =
          "delete from osee_merge where merge_branch_id = ? and source_branch_id=?";
    private static final String DELETE_FROM_CONFLICT = "delete from osee_conflict where merge_branch_id = ?";
@@ -109,7 +107,6 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       purgeFromTable("Tx Details", DELETE_FROM_TX_DETAILS, 0.09, branch.getId());
       purgeFromTable("Conflict", DELETE_FROM_CONFLICT, 0.01, branch.getId());
       purgeFromTable("Merge", DELETE_FROM_MERGE, 0.01, branch.getId(), branch.getParentBranch().getId());
-      purgeFromTable("Branch Definitions", DELETE_FROM_BRANCH_DEFINITIONS, 0.01, branch.getId());
       purgeFromTable("Branch", DELETE_FROM_BRANCH_TABLE, 0.01, branch.getId());
    }
 

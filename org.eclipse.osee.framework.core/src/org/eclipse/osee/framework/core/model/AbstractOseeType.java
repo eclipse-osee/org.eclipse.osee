@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -15,7 +16,7 @@ import org.eclipse.osee.framework.core.internal.fields.OseeField;
 import org.eclipse.osee.framework.core.internal.fields.UniqueIdField;
 import org.eclipse.osee.framework.logging.OseeLog;
 
-public abstract class AbstractOseeType implements IOseeStorableType {
+public abstract class AbstractOseeType implements IOseeStorable, NamedIdentity {
 
    public static final String NAME_FIELD_KEY = "osee.name.field";
    public static final String UNIQUE_ID_FIELD_KEY = "osee.unique.id.field";
@@ -95,7 +96,7 @@ public abstract class AbstractOseeType implements IOseeStorableType {
    }
 
    public final int getId() {
-      return getFieldValueLogException(IOseeStorableType.UNPERSISTTED_VALUE, UNIQUE_ID_FIELD_KEY);
+      return getFieldValueLogException(IOseeStorable.UNPERSISTTED_VALUE, UNIQUE_ID_FIELD_KEY);
    }
 
    public final String getName() {
@@ -131,8 +132,8 @@ public abstract class AbstractOseeType implements IOseeStorableType {
       if (obj == null || guid == null) {
          return false;
       }
-      if (obj instanceof IOseeType) {
-         return guid.equals(((IOseeType) obj).getGuid());
+      if (obj instanceof Identity) {
+         return guid.equals(((Identity) obj).getGuid());
       }
 
       if (getClass() != obj.getClass()) {

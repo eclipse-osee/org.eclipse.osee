@@ -5,12 +5,18 @@
  */
 package org.eclipse.osee.ats.util;
 
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 
-public enum AtsArtifactTypes implements IOseeType {
+public enum AtsArtifactTypes implements IArtifactType {
    Action("Action", "AAMFDhY_rns71KvX14QA"),
+   ActionableItem("Actionable Item", "AAMFDhW2LmhtRFsVyzwA"),
+   DecisionReview("Decision Review", "AAMFDhfrdR7BGTL7H_wA"),
+   PeerToPeerReview("PeerToPeer Review", "AAMFDhh_300dpgmNtRAA"),
+   Task("Task", "AAMFDhbTAAB6h+06fuAA"),
    TeamDefinition("Team Definition", "AAMFDhUrlytusKbaQGAA"),
-   ActionableItem("Actionable Item", "AAMFDhW2LmhtRFsVyzwA");
+   TeamWorkflow("Team Workflow", "AAMFDhSiF2OD+wiUqugA"),
+   Version("Version", "AAMFDhder0oETnv14xQA");
+
    private final String name;
    private final String guid;
 

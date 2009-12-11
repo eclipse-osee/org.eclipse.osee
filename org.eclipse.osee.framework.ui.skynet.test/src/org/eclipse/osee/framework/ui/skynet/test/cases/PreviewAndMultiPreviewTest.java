@@ -55,13 +55,13 @@ public class PreviewAndMultiPreviewTest {
    }
 
    private void init() throws Exception {
-      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
+      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1),
             PreviewAndMultiPreviewTest.class.getSimpleName());
       FileRenderer.setWorkbenchSavePopUpDisabled(true);
       FileSystemRenderer.setNoPopups(true);
       WholeDocumentRenderer.setNoPopups(true);
       WordTemplateRenderer.setNoPopups(true);
-      branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
+      branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       // create a new requirement artifact
       newArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
@@ -340,7 +340,7 @@ public class PreviewAndMultiPreviewTest {
 
    @After
    public void tearDown() throws Exception {
-      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
+      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1),
             PreviewAndMultiPreviewTest.class.getSimpleName());
       TestUtil.severeLoggingEnd(monitorLog);
    }

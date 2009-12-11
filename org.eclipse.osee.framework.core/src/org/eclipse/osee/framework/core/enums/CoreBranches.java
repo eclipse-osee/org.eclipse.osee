@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 
 /**
  * @author Roberto E. Escobar
  */
-public enum CoreBranches implements IOseeType {
+public enum CoreBranches implements IOseeBranch {
    COMMON("Common", "AyH_fDpMERA+zDfML4gA"),
    SYSTEM_ROOT("System Root Branch", "AyH_fDnM2RFEhyybolQA");
 

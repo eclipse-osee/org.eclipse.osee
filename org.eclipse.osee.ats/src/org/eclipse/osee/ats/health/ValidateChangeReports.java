@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -121,12 +122,12 @@ public class ValidateChangeReports extends XNavigateItemAction {
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       String[] columnHeaders = new String[] {"HRID", "PCR", "Results"};
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-      for (String artifactTypeName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
-         sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactTypeName, columnHeaders.length));
+      for (IArtifactType artifactType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()) {
+         sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactType.getName(), columnHeaders.length));
          try {
             int x = 1;
             Collection<Artifact> artifacts =
-                  ArtifactQuery.getArtifactListFromType(artifactTypeName, AtsUtil.getAtsBranch());
+                  ArtifactQuery.getArtifactListFromType(artifactType, AtsUtil.getAtsBranch());
             for (Artifact artifact : artifacts) {
                String resultStr = "PASS";
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
@@ -219,9 +220,11 @@ public class ValidateChangeReports extends XNavigateItemAction {
                      @Override
                      public void run() {
                         try {
-                           CompareHandler compareHandler = new CompareHandler(fStoredChangeReport.replaceAll("><", ">\n<"), currentChangeReport.replaceAll(">", ">\n"));
+                           CompareHandler compareHandler =
+                                 new CompareHandler(fStoredChangeReport.replaceAll("><", ">\n<"),
+                                       currentChangeReport.replaceAll(">", ">\n"));
                            compareHandler.compare();
-                           
+
                         } catch (Exception ex) {
                            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                         }

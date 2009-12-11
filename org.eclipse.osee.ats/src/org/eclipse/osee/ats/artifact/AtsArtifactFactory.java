@@ -38,8 +38,8 @@ public class AtsArtifactFactory extends ArtifactFactory {
    public AtsArtifactFactory() {
       super(Arrays.asList(ActionArtifact.ARTIFACT_NAME, PeerToPeerReviewArtifact.ARTIFACT_NAME,
             DecisionReviewArtifact.ARTIFACT_NAME, ActionableItemArtifact.ARTIFACT_NAME, TaskArtifact.ARTIFACT_NAME,
-            TeamWorkFlowArtifact.ARTIFACT_NAME, TeamDefinitionArtifact.ARTIFACT_NAME, VersionArtifact.ARTIFACT_NAME,
-            ActionableItemArtifact.ARTIFACT_NAME, GoalArtifact.ARTIFACT_NAME));
+            TeamWorkFlowArtifact.ARTIFACT_NAME, TeamDefinitionArtifact.ARTIFACT_NAME,
+            AtsArtifactTypes.Version.getName(), ActionableItemArtifact.ARTIFACT_NAME, GoalArtifact.ARTIFACT_NAME));
    }
 
    @Override
@@ -56,7 +56,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
       if (artifactType.getName().equals(TeamDefinitionArtifact.ARTIFACT_NAME)) {
          return new TeamDefinitionArtifact(this, guid, humandReadableId, branch, artifactType);
       }
-      if (artifactType.getName().equals(VersionArtifact.ARTIFACT_NAME)) {
+      if (artifactType.equals(AtsArtifactTypes.Version)) {
          return new VersionArtifact(this, guid, humandReadableId, branch, artifactType);
       }
       if (artifactType.getName().equals(ActionableItemArtifact.ARTIFACT_NAME)) {
@@ -78,7 +78,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
    public Collection<ArtifactType> getEternalArtifactTypes() throws OseeCoreException {
       List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
       try {
-         artifactTypes.add(ArtifactTypeManager.getType(VersionArtifact.ARTIFACT_NAME));
+         artifactTypes.add(ArtifactTypeManager.getType(AtsArtifactTypes.Version));
          artifactTypes.add(ArtifactTypeManager.getType(TeamDefinitionArtifact.ARTIFACT_NAME));
          artifactTypes.add(ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME));
          artifactTypes.add(ArtifactTypeManager.getType(WorkRuleDefinition.ARTIFACT_NAME));

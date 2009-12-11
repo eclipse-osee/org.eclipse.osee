@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.internal.fields.ArtifactSuperTypeField;
 import org.eclipse.osee.framework.core.internal.fields.ArtifactTypeAttributesField;
@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.internal.fields.OseeField;
 /**
  * @author Robert A. Fisher
  */
-public final class ArtifactType extends AbstractOseeType implements Comparable<ArtifactType> {
+public final class ArtifactType extends AbstractOseeType implements Comparable<ArtifactType>, IArtifactType {
 
    public static final String ARTIFACT_IS_ABSTRACT_FIELD_KEY = "osee.artifact.type.is.abstract.field";
    public static final String ARTIFACT_INHERITANCE_FIELD_KEY = "osee.artifact.type.inheritance.field";
@@ -151,7 +151,7 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
     * @param otherType artifact type to check against
     * @return whether this artifact type inherits from otherType
     */
-   public boolean inheritsFrom(IOseeType otherType) {
+   public boolean inheritsFrom(IArtifactType otherType) {
       if (this.equals(otherType)) {
          return true;
       }

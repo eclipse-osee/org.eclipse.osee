@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -108,8 +109,8 @@ public class AtsConfigManager {
       if (versionNames != null) {
          for (String name : versionNames) {
             VersionArtifact version =
-                  (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                        AtsUtil.getAtsBranch(), name);
+                  (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(),
+                        name);
             teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, version);
             versions.add(version);
             version.persist(transaction);

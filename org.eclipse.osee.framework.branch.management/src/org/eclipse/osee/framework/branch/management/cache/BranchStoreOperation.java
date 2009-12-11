@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.branch.management.cache;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,7 +26,6 @@ import org.eclipse.osee.framework.core.model.BranchField;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -43,11 +41,6 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
          "update osee_branch SET branch_name = ?, parent_branch_id = ?, parent_transaction_id = ?, archived = ?, associated_art_id = ?, branch_type = ?, branch_state = ? where branch_id = ?";
 
    private static final String DELETE_BRANCH = "DELETE from osee_branch where branch_id = ?";
-
-   private static final String INSERT_BRANCH_ALIASES =
-         "insert into osee_branch_definitions (mapped_branch_id, static_branch_name) VALUES (?, ?)";
-
-   private static final String DELETE_BRANCH_ALIASES = "delete from osee_branch_definitions where mapped_branch_id = ?";
 
    private static final String INSERT_ADDRESSING =
          "insert into %s (transaction_id, gamma_id, tx_current, mod_type, branch_id) select transaction_id, gamma_id, tx_current, mod_type, branch_id from osee_txs where branch_id = ?";
@@ -85,8 +78,6 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
 
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
-      Collection<Branch> dirtyAliases = new HashSet<Branch>();
-
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> updateData = new ArrayList<Object[]>();
       List<Object[]> deleteData = new ArrayList<Object[]>();
@@ -103,14 +94,10 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
                   break;
                case DELETED:
                   deleteData.add(toDeleteValues(branch));
-                  dirtyAliases.add(branch);
                   break;
                default:
                   break;
             }
-         }
-         if (branch.isFieldDirty(BranchField.BRANCH_ALIASES_FIELD_KEY)) {
-            dirtyAliases.add(branch);
          }
          if (branch.isFieldDirty(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY)) {
             moveBranchAddressing(connection, branch, branch.getArchiveState().isArchived());
@@ -119,9 +106,6 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       }
       getDatabaseService().runBatchUpdate(connection, INSERT_BRANCH, insertData);
       getDatabaseService().runBatchUpdate(connection, UPDATE_BRANCH, updateData);
-
-      storeAliases(connection, dirtyAliases);
-
       getDatabaseService().runBatchUpdate(connection, DELETE_BRANCH, deleteData);
 
       for (Branch branch : branches) {
@@ -157,24 +141,4 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
             BranchField.BRANCH_TYPE_FIELD_KEY, //
             BranchField.BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY);
    }
-
-   private void storeAliases(OseeConnection connection, Collection<Branch> branches) throws OseeCoreException {
-      List<Object[]> deleteData = new ArrayList<Object[]>();
-      List<Object[]> insertData = new ArrayList<Object[]>();
-      for (Branch branch : branches) {
-         deleteData.add(new Object[] {branch.getId()});
-         if (!branch.getModificationType().isDeleted()) {
-            for (String alias : branch.getAliases()) {
-               if (Strings.isValid(alias)) {
-                  insertData.add(new Object[] {branch.getId(), alias});
-               }
-            }
-         }
-      }
-      getDatabaseService().runBatchUpdate(connection, DELETE_BRANCH_ALIASES, deleteData);
-      if (!insertData.isEmpty()) {
-         getDatabaseService().runBatchUpdate(connection, INSERT_BRANCH_ALIASES, insertData);
-      }
-   }
-
 }

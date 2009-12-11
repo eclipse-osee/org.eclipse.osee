@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 
 /**
  * @author Roberto E. Escobar
  */
-public enum CoreAttributeTypes implements IOseeType {
+public enum CoreAttributeTypes implements IAttributeType {
    ACTIVE("Active", "AAMFEbImQyR38BY8A5QA"),
    EMAIL("Email", "AAMFEbaZjEVoecDFCCQA"),
    FAVORITE_BRANCH("Favorite Branch", "AAMFEbMnzS7P92knZKAA"),

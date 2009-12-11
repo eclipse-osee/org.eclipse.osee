@@ -25,10 +25,10 @@ import org.eclipse.osee.framework.core.data.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.data.PurgeBranchRequest;
 import org.eclipse.osee.framework.core.data.TableData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IOseeStorableType;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Compare;
@@ -80,10 +80,9 @@ public final class DataAsserts {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         assertEquals((IOseeStorableType) expected, (IOseeStorableType) actual);
+         assertEquals((AbstractOseeType) expected, (AbstractOseeType) actual);
          Assert.assertEquals(expected.getShortName(), actual.getShortName());
          Assert.assertEquals(expected.getAccessControlBranch(), actual.getAccessControlBranch());
-         Assert.assertEquals(expected.getAliases(), actual.getAliases());
          Assert.assertEquals(expected.getAncestors(), actual.getAncestors());
          Assert.assertEquals(expected.getArchiveState(), actual.getArchiveState());
          Assert.assertEquals(expected.getAssociatedArtifact(), actual.getAssociatedArtifact());
@@ -150,7 +149,7 @@ public final class DataAsserts {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         assertEquals((IOseeStorableType) expected, (IOseeStorableType) actual);
+         assertEquals((AbstractOseeType) expected, (AbstractOseeType) actual);
          Assert.assertEquals(expected.getSideAName(), actual.getSideAName());
          Assert.assertEquals(expected.getSideBName(), actual.getSideBName());
          Assert.assertEquals(expected.getMultiplicity(), actual.getMultiplicity());
@@ -160,7 +159,7 @@ public final class DataAsserts {
       }
    }
 
-   public static void assertEquals(IOseeStorableType expected, IOseeStorableType actual) {
+   public static void assertEquals(AbstractOseeType expected, AbstractOseeType actual) {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
@@ -186,7 +185,6 @@ public final class DataAsserts {
          Assert.assertEquals(expected.getPopulateBaseTxFromAddressingQueryId(),
                actual.getPopulateBaseTxFromAddressingQueryId());
          Assert.assertEquals(expected.getSourceTransactionId(), actual.getSourceTransactionId());
-         Assert.assertEquals(expected.getStaticBranchName(), actual.getStaticBranchName());
          Assert.assertEquals(expected.getBranchType(), actual.getBranchType());
       }
    }

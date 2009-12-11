@@ -17,9 +17,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -43,18 +44,18 @@ public class ArtifactCache {
    private static final CompositeKeyHashMap<String, Integer, Object> artifactGuidCache =
          new CompositeKeyHashMap<String, Integer, Object>(2000, true);
 
-   private static final CompositeKeyHashMap<String, Branch, Object> keyedArtifactCache =
-         new CompositeKeyHashMap<String, Branch, Object>(10, true);
+   private static final CompositeKeyHashMap<String, IOseeBranch, Object> keyedArtifactCache =
+         new CompositeKeyHashMap<String, IOseeBranch, Object>(10, true);
 
    private static final HashCollection<String, Object> staticIdArtifactCache =
          new HashCollection<String, Object>(true, HashSet.class, 100);
 
-   private static final CompositeKeyHashMap<ArtifactType, ArtifactKey, Object> byArtifactTypeCache =
-         new CompositeKeyHashMap<ArtifactType, ArtifactKey, Object>(2000, true);
+   private static final CompositeKeyHashMap<IArtifactType, ArtifactKey, Object> byArtifactTypeCache =
+         new CompositeKeyHashMap<IArtifactType, ArtifactKey, Object>(2000, true);
 
    //   private static final Set<Artifact> nomoreWeakReferences = new HashSet<Artifact>();
 
-   public static List<Artifact> getArtifactsByName(ArtifactType artifactType, String name) {
+   public static List<Artifact> getArtifactsByName(IArtifactType artifactType, String name) throws OseeCoreException {
       List<Artifact> arts = new ArrayList<Artifact>();
       for (Artifact artifact : getArtifactsByType(artifactType)) {
          if (artifact.getName().equals(name)) {
@@ -203,7 +204,7 @@ public class ArtifactCache {
       return artifacts;
    }
 
-   public static Collection<Artifact> getArtifactsByStaticId(String staticId, Branch branch) {
+   public static Collection<Artifact> getArtifactsByStaticId(String staticId, IOseeBranch branch) {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       Collection<Object> cachedArts = staticIdArtifactCache.getValues(staticId);
       if (cachedArts == null) {
@@ -226,9 +227,9 @@ public class ArtifactCache {
       return getArtifact(historicalArtifactGuidCache.get(guid, transactionNumber));
    }
 
-   public static List<Artifact> getArtifactsByType(ArtifactType artifactType) {
+   public static List<Artifact> getArtifactsByType(IArtifactType artifactType) throws OseeCoreException {
       List<Artifact> items = new ArrayList<Artifact>();
-      Collection<Object> cachedItems = byArtifactTypeCache.getValues(artifactType);
+      Collection<Object> cachedItems = byArtifactTypeCache.getValues(ArtifactTypeManager.getType(artifactType));
       if (cachedItems != null) {
          for (Object obj : cachedItems) {
             Artifact artifact = getArtifact(obj);
@@ -240,7 +241,7 @@ public class ArtifactCache {
       return items;
    }
 
-   public static List<Artifact> getArtifactsByType(ArtifactType artifactType, Active active) throws OseeCoreException {
+   public static List<Artifact> getArtifactsByType(IArtifactType artifactType, Active active) throws OseeCoreException {
       return Artifacts.getActive(getArtifactsByType(artifactType), active, null);
    }
 
@@ -250,6 +251,10 @@ public class ArtifactCache {
     */
    public static Artifact getActive(Integer artId, Branch branch) {
       return getActive(artId, branch.getId());
+   }
+
+   public static Artifact getActive(Integer artId, IOseeBranch branch) throws OseeCoreException {
+      return getActive(artId, BranchManager.getBranchId(branch));
    }
 
    /**
@@ -268,10 +273,14 @@ public class ArtifactCache {
       return getArtifact(artifactGuidCache.get(artGuid, branchId));
    }
 
+   public static Artifact getActive(String artGuid, IOseeBranch branch) throws OseeCoreException {
+      return getArtifact(artifactGuidCache.get(artGuid, BranchManager.getBranchId(branch)));
+   }
+
    /**
     * returns the active artifact based on the previously provided text key and branch
     */
-   public static Artifact getByTextId(String key, Branch branch) {
+   public static Artifact getByTextId(String key, IOseeBranch branch) {
       return getArtifact(keyedArtifactCache.get(key, branch));
    }
 

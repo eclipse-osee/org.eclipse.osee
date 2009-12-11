@@ -27,7 +27,6 @@ public class BranchCreationRequestTranslator implements ITranslator<BranchCreati
 
       BRANCH_TYPE,
       SOURCE_TX_ID,
-      STATIC_BRANCH_NAME,
       BRANCH_GUID,
 
       AUTHOR_ID,
@@ -45,7 +44,6 @@ public class BranchCreationRequestTranslator implements ITranslator<BranchCreati
 
       BranchType branchType = BranchType.valueOf(store.get(Fields.BRANCH_TYPE.name()));
       int sourceTransactionId = store.getInt(Fields.SOURCE_TX_ID.name());
-      String staticBranchName = store.get(Fields.STATIC_BRANCH_NAME.name());
       String branchGuid = store.get(Fields.BRANCH_GUID.name());
 
       int authorId = store.getInt(Fields.AUTHOR_ID.name());
@@ -56,8 +54,7 @@ public class BranchCreationRequestTranslator implements ITranslator<BranchCreati
       int destinationBranchId = store.getInt(Fields.DESTINATION_BRANCH_ID.name());
 
       return new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName,
-            associatedArtifactId, staticBranchName, authorId, creationComment, populateBaseTxFromAddressingQueryId,
-            destinationBranchId);
+            associatedArtifactId, authorId, creationComment, populateBaseTxFromAddressingQueryId, destinationBranchId);
    }
 
    @Override
@@ -68,7 +65,6 @@ public class BranchCreationRequestTranslator implements ITranslator<BranchCreati
       store.put(Fields.ASSOCIATED_ART_ID.name(), object.getAssociatedArtifactId());
       store.put(Fields.BRANCH_TYPE.name(), object.getBranchType().name());
       store.put(Fields.SOURCE_TX_ID.name(), object.getSourceTransactionId());
-      store.put(Fields.STATIC_BRANCH_NAME.name(), object.getStaticBranchName());
       store.put(Fields.BRANCH_GUID.name(), object.getBranchGuid());
       store.put(Fields.AUTHOR_ID.name(), object.getAuthorId());
       store.put(Fields.CREATION_COMMENT.name(), object.getCreationComment());

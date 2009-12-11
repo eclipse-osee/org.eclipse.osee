@@ -516,7 +516,7 @@
    
 	<!-- __________________________________________________________ -->
 	<!--                                                            -->
-	<!--                                  OSEE SEQUENCES-->
+	<!--                                  OSEE SEQUENCES and INFO   -->
 	<!--                                                            -->
 	<!-- __________________________________________________________ -->
 	
@@ -526,20 +526,6 @@
 		<Constraint schema="OSEE" id="SEQUENCE_ID_UN" type="UNIQUE" appliesTo="SEQUENCE_NAME" />
 	</Table>
 
-	<!-- __________________________________________________________ -->
-	<!--                                                            -->
-	<!--                                  OSEE Branch Table         -->
-	<!--                                                            -->
-	<!-- __________________________________________________________ -->
-	
-	<Table name="OSEE_BRANCH_DEFINITIONS" schema="OSEE" tablespace="osee_data">
-		<Column id="MAPPED_BRANCH_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="STATIC_BRANCH_NAME"  defaultValue="not null" type="VARCHAR" limits="128" />
-		<Constraint schema="OSEE" id="BRANCH_DEFINITIONS_SBN_PK" type="PRIMARY KEY" appliesTo="STATIC_BRANCH_NAME" />
-		<Constraint schema="OSEE" id="OSEE_BRANCH_DEF__OBD_FK" type="FOREIGN KEY" appliesTo="MAPPED_BRANCH_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_BRANCH" column="BRANCH_ID"  />
-		</Constraint>
-	</Table>
 
   <Table name="OSEE_INFO" schema="OSEE" tablespace="osee_data">
     <Column defaultValue="not null" id="OSEE_VALUE" type="VARCHAR" limits="1000" />
