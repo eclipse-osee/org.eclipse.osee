@@ -48,6 +48,5 @@ Import-Package: org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osgi.util;version="1.1.0",
  org.osgi.framework;version="1.5.0",
- org.osgi.util.tracker,
- org.apache.log4j
+ org.osgi.util.tracker
 Bundle-Activator: org.eclipse.osee.framework.internal.InternalTypesActivator
