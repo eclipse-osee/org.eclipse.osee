@@ -11,8 +11,11 @@
 package org.eclipse.osee.ote.ui.markers;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,6 +28,9 @@ import org.eclipse.osee.ote.core.framework.saxparse.IBaseSaxElementListener;
 import org.eclipse.osee.ote.core.framework.saxparse.OteSaxHandler;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.StacktraceData;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
@@ -63,11 +69,45 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
       }
 
       monitor.setTaskName(String.format("Computing overview information for [%s].", file.getName()));
+
+      InputStream contents = file.getContents();
+      
+      parseContents(contents);
+
+      OteMarkerHelper helper = new OteMarkerHelper(this.testPointDatas);
+      plugin.updateMarkerInfo(file, helper.getMarkers());
+
+      return Status.OK_STATUS;
+   }
+
+   /**
+    * @param contents
+    * @throws SAXException
+    * @throws Exception
+    * @throws SAXNotRecognizedException
+    * @throws SAXNotSupportedException
+    * @throws IOException
+    */
+   private void parseContents(InputStream contents) throws SAXException, Exception, SAXNotRecognizedException, SAXNotSupportedException, IOException {
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       OteSaxHandler handler = new OteSaxHandler();
       xmlReader.setContentHandler(handler);
       xmlReader.setProperty("http://xml.org/sax/properties/lexical-handler", handler); // This is the important part
 
+      final Stack<String> elementStack = new Stack<String>();
+      handler.getHandler("*").addListener(new IBaseSaxElementListener() {
+         
+         @Override
+         public void onStartElement(Object obj) {
+            elementStack.push((String)obj);
+         }
+         
+         @Override
+         public void onEndElement(Object obj) {
+            elementStack.pop();
+         }
+      });
+      
       handler.getHandler("TestPoint").addListener(new IBaseSaxElementListener() {
          @Override
          public void onEndElement(Object obj) {
@@ -109,7 +149,7 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
 
             if (currentCheckPoint != null) {
                currentCheckPoint.setFailed(failed);
-            } else if (currentData != null) {
+            } else if (currentData != null && elementStack.peek().equals("TestPoint")) {
                currentData.setFailed(failed);
             }
          }
@@ -196,12 +236,7 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
          }
       });
 
-      xmlReader.parse(new InputSource(file.getContents()));
-
-      OteMarkerHelper helper = new OteMarkerHelper(this.testPointDatas);
-      plugin.updateMarkerInfo(file, helper.getMarkers());
-
-      return Status.OK_STATUS;
+      xmlReader.parse(new InputSource(contents));
    }
 
    private String spaceProcessing(String expected) {
