@@ -18,7 +18,8 @@ import org.osgi.framework.BundleContext;
  * @author Robert A. Fisher
  */
 public class RuntimeManager implements BundleActivator {
-   private static RuntimeManager instance;
+   public static final String BUNDLE_ID = "org.eclipse.osee.ote.runtimeManager";
+private static RuntimeManager instance;
    private BundleContext context;
    
    public static RuntimeManager getDefault() {
