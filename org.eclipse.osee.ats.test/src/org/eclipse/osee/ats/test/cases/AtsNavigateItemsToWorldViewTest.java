@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.test.cases;
 
 import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
@@ -72,6 +74,7 @@ import org.eclipse.osee.support.test.util.AtsUserCommunity;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.swt.widgets.TreeItem;
+import org.junit.Ignore;
 
 /**
  * @author Donald G. Dunne
@@ -397,6 +400,7 @@ public class AtsNavigateItemsToWorldViewTest {
       runGeneralTeamWorkflowSearchTest(item, expectedNum);
    }
 
+   @Ignore
    @org.junit.Test
    public void testUserCommunitySearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("User Community Search");
