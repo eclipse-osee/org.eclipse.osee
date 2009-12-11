@@ -24,6 +24,7 @@ public class SaxTransformer extends AbstractSaxHandler {
    @Override
    public void endElementFound(String uri, String localName, String qName) throws SAXException {
       try {
+         writer.writeCharacters(getContents());
          writer.writeEndElement();
       } catch (XMLStreamException ex) {
          throw new SAXException(ex);
