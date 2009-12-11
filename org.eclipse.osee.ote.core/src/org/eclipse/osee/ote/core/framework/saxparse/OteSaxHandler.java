@@ -27,6 +27,7 @@ import org.eclipse.osee.ote.core.framework.saxparse.elements.Environment;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.ExecutedBy;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.ExecutionDate;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Expected;
+import org.eclipse.osee.ote.core.framework.saxparse.elements.Global;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.GroupName;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Info;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.InfoGroup;
@@ -88,6 +89,7 @@ public class OteSaxHandler extends AbstractSaxHandler {
 
    public OteSaxHandler() throws Exception {
       handlers = new HashMap<String, ElementHandlers>();
+      addHandlers(new Global());
       addHandlers(new AdditionalInfo());
       addHandlers(new Actual());
       addHandlers(new Argument());
@@ -150,7 +152,14 @@ public class OteSaxHandler extends AbstractSaxHandler {
 
    @Override
    public void endElementFound(String uri, String localName, String name) throws SAXException {
-      ElementHandlers handler = handlers.get(name);
+      ElementHandlers handler;
+
+      handler = handlers.get("*");
+      if(handler != null){
+         handler.endElementFound(uri, localName, name, stripCData(getContents().trim()));
+      }
+      
+      handler = handlers.get(name);
       if(handler != null){
          handler.endElementFound(uri, localName, name, stripCData(getContents().trim()));
       }
@@ -167,7 +176,14 @@ public class OteSaxHandler extends AbstractSaxHandler {
    
    @Override
    public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
-      ElementHandlers handler = handlers.get(name);
+      ElementHandlers handler;
+      
+      handler = handlers.get("*");
+      if(handler != null){
+         handler.startElementFound(uri, localName, name, attributes);
+      }
+      
+      handler = handlers.get(name);
       if(handler != null){
          handler.startElementFound(uri, localName, name, attributes);
       } else {
