@@ -106,7 +106,7 @@ public class AtsBranchConfigurationTest {
 
       String namespace = "org.branchTest." + TestType.BranchViaVersions.name().toLowerCase();
       // Cleanup from previous run
-            cleanupBranchTest(TestType.BranchViaVersions);
+      cleanupBranchTest(TestType.BranchViaVersions);
 
       OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring ATS for team org.branchTest.viaTeamDefs");
       // create team definition and actionable item
@@ -323,8 +323,7 @@ public class AtsBranchConfigurationTest {
 
       // Delete VersionArtifacts
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
-      for (Artifact verArt : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.Version,
-            AtsUtil.getAtsBranch())) {
+      for (Artifact verArt : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.Version, AtsUtil.getAtsBranch())) {
          if (verArt.getName().contains(testType.name())) {
             verArt.deleteAndPersist(transaction);
          }
@@ -406,12 +405,14 @@ public class AtsBranchConfigurationTest {
          result.popup();
          return;
       }
-      TestUtil.sleep(2000);
+      TestUtil.sleep(4000);
    }
 
-   private void verifyXWidgetsExistInEditor(TeamWorkFlowArtifact teamWf) throws OseeCoreException {
+   private void verifyXWidgetsExistInEditor(TeamWorkFlowArtifact teamWf) throws Exception {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Verify XWorkingBranch and XCommitManger widgets exist in editor");
       SMAEditor smaEditor = SMAEditor.getSmaEditor(teamWf);
+      TestUtil.sleep(4000);
+
       assertNotNull("Can't retrieve SMAEditor for workflow " + teamWf, smaEditor);
 
       Collection<XWidget> xWidgets =
