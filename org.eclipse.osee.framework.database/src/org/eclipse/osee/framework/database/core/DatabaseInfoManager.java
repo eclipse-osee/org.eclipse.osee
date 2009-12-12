@@ -13,16 +13,16 @@ package org.eclipse.osee.framework.database.core;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
+import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.internal.InternalActivator;
 import org.eclipse.osee.framework.database.internal.parser.DbConfigParser;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 public class DatabaseInfoManager {
 
@@ -37,21 +37,15 @@ public class DatabaseInfoManager {
       return InternalActivator.getInstance().getConnectionInfos().getDatabaseInfo(id);
    }
 
-   public static IDatabaseInfo[] readFromXml(InputStream inputStream) throws OseeCoreException {
+   public static IDatabaseInfo[] readFromXml(InputStream inputStream) throws IOException, ParserConfigurationException, SAXException {
       try {
          OseeLog.log(InternalActivator.class, Level.INFO, "in readFromXml");
          Document document = Jaxp.readXmlDocument(inputStream);
          Element rootElement = document.getDocumentElement();
          return DbConfigParser.parse(rootElement);
-      } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
       } finally {
          if (inputStream != null) {
-            try {
-               inputStream.close();
-            } catch (IOException ex) {
-               throw new OseeWrappedException(ex);
-            }
+            inputStream.close();
          }
       }
    }
