@@ -40,7 +40,7 @@ public class DbConnectionInformation implements IDbConnectionInformation {
          if (dbConnectionId != null && dbConnectionId.length() > 0) {
             selectedDbInfo = getDatabaseInfo(dbConnectionId);
             if (selectedDbInfo == null) {
-               long endTime = System.currentTimeMillis() + (1000 * 20);
+               long endTime = System.currentTimeMillis() + 1000 * 20;
                long timeLeft = 1000 * 20;
                while (timeLeft > 0 && selectedDbInfo == null) {
                   synchronized (myWait) {
@@ -66,11 +66,12 @@ public class DbConnectionInformation implements IDbConnectionInformation {
    }
 
    @Override
-   public void bind(IDbConnectionInformationContributor obj) {
-      IDbConnectionInformationContributor contributor = (IDbConnectionInformationContributor) obj;
+   public void bind(IDbConnectionInformationContributor contributor) {
+      OseeLog.log(InternalActivator.class, Level.INFO, "binding " + contributor);
       try {
          for (IDatabaseInfo info : contributor.getDbInformation()) {
             dbInfo.put(info.getId(), info);
+            OseeLog.log(InternalActivator.class, Level.INFO, info.getId() + ": " + info);
          }
       } catch (Exception ex) {
          OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
@@ -82,7 +83,7 @@ public class DbConnectionInformation implements IDbConnectionInformation {
 
    @Override
    public void unbind(IDbConnectionInformationContributor obj) {
-      IDbConnectionInformationContributor contributor = (IDbConnectionInformationContributor) obj;
+      IDbConnectionInformationContributor contributor = obj;
       try {
          for (IDatabaseInfo info : contributor.getDbInformation()) {
             dbInfo.remove(info.getDatabaseName());

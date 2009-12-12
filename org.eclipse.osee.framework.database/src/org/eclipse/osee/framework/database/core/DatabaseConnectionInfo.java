@@ -80,4 +80,9 @@ public class DatabaseConnectionInfo implements IDatabaseInfo {
    public boolean isProduction() {
       return isProduction;
    }
+
+   @Override
+   public String toString() {
+      return getId() + ": " + getConnectionUrl();
+   }
 }
