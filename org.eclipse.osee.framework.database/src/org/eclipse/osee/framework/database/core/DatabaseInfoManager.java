@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.database.core;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -19,6 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.internal.InternalActivator;
 import org.eclipse.osee.framework.database.internal.parser.DbConfigParser;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -37,6 +39,7 @@ public class DatabaseInfoManager {
 
    public static IDatabaseInfo[] readFromXml(InputStream inputStream) throws OseeCoreException {
       try {
+         OseeLog.log(InternalActivator.class, Level.INFO, "in readFromXml");
          Document document = Jaxp.readXmlDocument(inputStream);
          Element rootElement = document.getDocumentElement();
          return DbConfigParser.parse(rootElement);
