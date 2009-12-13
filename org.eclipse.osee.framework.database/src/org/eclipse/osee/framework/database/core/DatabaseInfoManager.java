@@ -39,9 +39,11 @@ public class DatabaseInfoManager {
 
    public static IDatabaseInfo[] readFromXml(InputStream inputStream) throws IOException, ParserConfigurationException, SAXException {
       try {
-         OseeLog.log(InternalActivator.class, Level.INFO, "in readFromXml");
+         OseeLog.log(InternalActivator.class, Level.INFO, "in readFromXml 1");
          Document document = Jaxp.readXmlDocument(inputStream);
+         OseeLog.log(InternalActivator.class, Level.INFO, "in readFromXml 2");
          Element rootElement = document.getDocumentElement();
+         OseeLog.log(InternalActivator.class, Level.INFO, "in readFromXml 3");
          return DbConfigParser.parse(rootElement);
       } finally {
          if (inputStream != null) {
