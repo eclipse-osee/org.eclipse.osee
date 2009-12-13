@@ -11,8 +11,10 @@
 package org.eclipse.osee.demo.db.connection;
 
 import java.net.URL;
+import java.util.Properties;
 import org.eclipse.osee.demo.db.connection.internal.Activator;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
+import org.eclipse.osee.framework.database.core.DatabaseConnectionInfo;
 import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
 import org.eclipse.osee.framework.database.core.IDbConnectionInformationContributor;
 
@@ -23,7 +25,15 @@ public class DemoDbConnectionInfo implements IDbConnectionInformationContributor
 
    @Override
    public IDatabaseInfo[] getDbInformation() throws Exception {
-      URL url = Activator.getEntry("/support/osee.demo.db.connection.xml");
-      return DatabaseInfoManager.readFromXml(url.openStream());
+      if (false) {
+         URL url = Activator.getEntry("/support/osee.demo.db.connection.xml");
+         return DatabaseInfoManager.readFromXml(url.openStream());
+      } else {
+         Properties properties = new Properties();
+         properties.setProperty("password", "osee");
+
+         return new IDatabaseInfo[] {new DatabaseConnectionInfo("osee", "jdbc:postgresql://localhost:5432/OSEE",
+               "OSEE", "org.postgresql.Driver", "postgresqlLocalhost", properties, false)};
+      }
    }
 }
