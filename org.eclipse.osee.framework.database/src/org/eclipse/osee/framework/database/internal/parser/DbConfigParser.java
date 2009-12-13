@@ -41,11 +41,8 @@ public class DbConfigParser {
    public static DbInformation[] parse(Element rootElement) {
       DbConfigParser worker = new DbConfigParser();
       worker.parseDbInfo(rootElement);
-      OseeLog.log(InternalActivator.class, Level.INFO, "in parse 1");
       worker.parseDbService(rootElement);
-      OseeLog.log(InternalActivator.class, Level.INFO, "in parse 2");
       worker.parseDbConnection(rootElement);
-      OseeLog.log(InternalActivator.class, Level.INFO, "in parse 3");
       return worker.getAllDbServices();
    }
 

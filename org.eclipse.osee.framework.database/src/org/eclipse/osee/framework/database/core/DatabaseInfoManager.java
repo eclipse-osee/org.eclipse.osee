@@ -12,14 +12,12 @@ package org.eclipse.osee.framework.database.core;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.internal.InternalActivator;
 import org.eclipse.osee.framework.database.internal.parser.DbConfigParser;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -39,11 +37,8 @@ public class DatabaseInfoManager {
 
    public static IDatabaseInfo[] readFromXml(InputStream inputStream) throws IOException, ParserConfigurationException, SAXException {
       try {
-         OseeLog.log(InternalActivator.class, Level.INFO, "in readFromXml 1");
          Document document = Jaxp.readXmlDocument(inputStream);
-         OseeLog.log(InternalActivator.class, Level.INFO, "in readFromXml 2");
          Element rootElement = document.getDocumentElement();
-         OseeLog.log(InternalActivator.class, Level.INFO, "in readFromXml 3");
          return DbConfigParser.parse(rootElement);
       } finally {
          if (inputStream != null) {
