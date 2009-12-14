@@ -80,7 +80,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       }
 
       LoadTableJob job = null;
-      job = new LoadTableJob(worldEditor, worldParameterSearchItem, searchType, tableLoadOptions);
+      job = new LoadTableJob(worldEditor, worldParameterSearchItem, searchType, tableLoadOptions, forcePend);
       job.setUser(false);
       job.setPriority(Job.LONG);
       job.schedule();
@@ -99,13 +99,15 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       private final SearchType searchType;
       private final WorldEditor worldEditor;
       private final TableLoadOption[] tableLoadOptions;
+      private final boolean forcePend;
 
-      public LoadTableJob(WorldEditor worldEditor, WorldEditorParameterSearchItem worldParameterSearchItem, SearchType searchType, TableLoadOption[] tableLoadOptions) throws OseeCoreException {
+      public LoadTableJob(WorldEditor worldEditor, WorldEditorParameterSearchItem worldParameterSearchItem, SearchType searchType, TableLoadOption[] tableLoadOptions, boolean forcePend) throws OseeCoreException {
          super("Loading \"" + worldParameterSearchItem.getSelectedName(searchType) + "\"...");
          this.worldEditor = worldEditor;
          this.worldParameterSearchItem = worldParameterSearchItem;
          this.searchType = searchType;
          this.tableLoadOptions = tableLoadOptions;
+         this.forcePend = forcePend;
       }
 
       @Override
@@ -119,7 +121,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
             cancel = false;
             worldParameterSearchItem.setCancelled(cancel);
             final Collection<? extends Artifact> artifacts;
-            worldEditor.getWorldComposite().getXViewer().clear();
+            worldEditor.getWorldComposite().getXViewer().clear(forcePend);
             artifacts = worldParameterSearchItem.performSearchGetResults(searchType);
             if (artifacts.size() == 0) {
                if (worldParameterSearchItem.isCancelled()) {

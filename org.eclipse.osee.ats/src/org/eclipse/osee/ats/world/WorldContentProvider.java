@@ -50,13 +50,13 @@ public class WorldContentProvider implements ITreeContentProvider {
       return "WorldContentProvider";
    }
 
-   public void clear() {
+   public void clear(boolean forcePend) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             xViewer.setInput(Collections.emptyList());
             xViewer.refresh();
          };
-      });
+      }, forcePend);
    }
 
    public Object[] getChildren(Object parentElement) {

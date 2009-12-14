@@ -228,7 +228,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       super.createSupportWidgets(parent);
       parent.addDisposeListener(new DisposeListener() {
          public void widgetDisposed(DisposeEvent e) {
-            ((WorldContentProvider) getContentProvider()).clear();
+            ((WorldContentProvider) getContentProvider()).clear(false);
          }
       });
       createMenuActions();
@@ -681,8 +681,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       return arts;
    }
 
-   public void clear() {
-      ((WorldContentProvider) getContentProvider()).clear();
+   public void clear(boolean forcePend) {
+      ((WorldContentProvider) getContentProvider()).clear(forcePend);
    }
 
    /**

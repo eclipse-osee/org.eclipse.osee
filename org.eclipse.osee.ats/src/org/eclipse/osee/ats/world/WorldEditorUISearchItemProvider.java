@@ -83,7 +83,7 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
       }
 
       LoadTableJob job = null;
-      job = new LoadTableJob(worldEditor, worldUISearchItem, searchType);
+      job = new LoadTableJob(worldEditor, worldUISearchItem, searchType, forcePend);
       job.setUser(false);
       job.setPriority(Job.LONG);
       job.schedule();
@@ -102,12 +102,15 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
       private boolean cancel = false;
       private final SearchType searchType;
       private final WorldEditor worldEditor;
+      private final boolean forcePend;
 
-      public LoadTableJob(WorldEditor worldEditor, WorldUISearchItem worldUISearchItem, SearchType searchType) throws OseeCoreException {
+      public LoadTableJob(WorldEditor worldEditor, WorldUISearchItem worldUISearchItem, SearchType searchType, boolean forcePend) throws OseeCoreException {
          super("Loading \"" + worldUISearchItem.getSelectedName(searchType) + "\"...");
          this.worldEditor = worldEditor;
          this.worldUISearchItem = worldUISearchItem;
          this.searchType = searchType;
+         this.forcePend = forcePend;
+
       }
 
       @Override
@@ -120,7 +123,7 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
             cancel = false;
             worldUISearchItem.setCancelled(cancel);
             final Collection<Artifact> artifacts;
-            worldEditor.getWorldComposite().getXViewer().clear();
+            worldEditor.getWorldComposite().getXViewer().clear(forcePend);
             artifacts = worldUISearchItem.performSearchGetResults(false, searchType);
             if (artifacts.size() == 0) {
                if (worldUISearchItem.isCancelled()) {
