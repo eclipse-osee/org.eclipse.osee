@@ -7,5 +7,5 @@ Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/postgresql.connection.driver.provider.xml
 Import-Package: org.eclipse.osee.framework.database.core,
- org.postgresql;resolution:=optional
+ org.postgresql
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
