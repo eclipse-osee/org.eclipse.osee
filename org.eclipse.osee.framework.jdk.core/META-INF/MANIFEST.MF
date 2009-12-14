@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE JDK Core Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.jdk.core
 Bundle-Version: 0.9.0.qualifier
+Eclipse-BuddyPolicy: ext
 Eclipse-ExtensibleAPI: true
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.osee.framework.jdk.core.collection.tree,
