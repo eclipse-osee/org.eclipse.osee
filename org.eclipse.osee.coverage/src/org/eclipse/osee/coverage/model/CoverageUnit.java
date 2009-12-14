@@ -100,10 +100,14 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       return items;
    }
 
-   public CoverageItem getCoverageItem(String orderNumber) {
-      for (CoverageItem coverageItem : getCoverageItems(true)) {
-         if (coverageItem.getOrderNumber().equals(orderNumber)) {
-            return coverageItem;
+   public CoverageItem getCoverageItem(String childUnitOrderNum, String itemOrderNumber) {
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         if (coverageUnit.getOrderNumber().equals(childUnitOrderNum)) {
+            for (CoverageItem coverageItem : coverageUnit.getCoverageItems()) {
+               if (coverageItem.getOrderNumber().equals(itemOrderNumber)) {
+                  return coverageItem;
+               }
+            }
          }
       }
       return null;

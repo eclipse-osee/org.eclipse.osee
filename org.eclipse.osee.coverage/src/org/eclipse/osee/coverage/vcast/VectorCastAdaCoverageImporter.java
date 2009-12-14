@@ -95,7 +95,8 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                                  String.valueOf(lineNumToBranches.getLineNum()));
                      coverageItem.setName(lineData.getFirst());
                      if (lineData.getSecond()) {
-                        coverageItem.setCoverageMethod(CoverageMethodEnum.Exception_Handling);
+                        System.out.println("put back in");
+                        //                        coverageItem.setCoverageMethod(CoverageMethodEnum.Exception_Handling);
                      }
                      methodCoverageUnit.addCoverageItem(coverageItem);
                   }
@@ -125,7 +126,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                Set<String> executeNums = methodExecutionPair.getSecond();
                for (String executeNum : executeNums) {
                   // Find or create new coverage item for method num /execution line
-                  CoverageItem coverageItem = coverageUnit.getCoverageItem(executeNum);
+                  CoverageItem coverageItem = coverageUnit.getCoverageItem(methodNum, executeNum);
                   if (coverageItem == null) {
                      coverageImport.getLog().logError(
                            String.format("Can't retrieve method [%s] from coverageUnit [%s] for test unit [%s]",

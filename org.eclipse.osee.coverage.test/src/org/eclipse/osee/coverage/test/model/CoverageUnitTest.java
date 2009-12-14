@@ -30,6 +30,7 @@ public class CoverageUnitTest {
       ci1 = new CoverageItem(cu, CoverageMethodEnum.Test_Unit, "1");
       ci1.setName("this is text");
       childCu = new CoverageUnit(cu, "Child Coverage Unit", "C:\\UserData\\");
+      childCu.setOrderNumber("1");
       CoverageItem item = new CoverageItem(childCu, CoverageMethodEnum.Exception_Handling, "1");
       childCu.addCoverageItem(item);
       item = new CoverageItem(childCu, CoverageMethodEnum.Test_Unit, "2");
@@ -111,8 +112,9 @@ public class CoverageUnitTest {
     */
    @Test
    public void testGetCoverageItem() {
-      Assert.assertNotNull(childCu.getCoverageItem("1"));
-      Assert.assertNull(childCu.getCoverageItem("5"));
+      Assert.assertNotNull(cu.getCoverageItem("1", "1"));
+      Assert.assertNull(cu.getCoverageItem("1", "5"));
+      Assert.assertNull(cu.getCoverageItem("2", "1"));
    }
 
    /**

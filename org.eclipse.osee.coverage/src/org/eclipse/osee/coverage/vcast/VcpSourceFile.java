@@ -82,7 +82,7 @@ public class VcpSourceFile {
       if (coverageDataFile == null) {
          coverageDataFile =
                new CoverageDataFile(vcastDirectory + "/vcast/" + getValue(SourceValue.SOURCE_FILENAME).replaceAll(
-                     "(ada|adb)", "xml"));
+                     "\\.(ada|adb)", "\\.xml"));
       }
       return coverageDataFile;
    }
