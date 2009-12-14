@@ -335,7 +335,9 @@ public class XViewer extends TreeViewer {
     * @param objects
     */
    public void remove(Collection<Object> objects) {
-      super.remove(objects);
+      for (Object obj : objects) {
+         super.remove(obj);
+      }
    }
 
    public void load(Collection<Object> objects) {
