@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -65,17 +64,17 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitHandler;
-import org.eclipse.osee.framework.ui.skynet.dialogs.ListDialogSortable;
 import org.eclipse.osee.framework.ui.skynet.util.TransactionIdLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -327,12 +326,7 @@ public class AtsBranchManager {
          return transactionIds.iterator().next();
       }
       
-      
-      Shell shell = new Shell();
-      ListDialogSortable ld = new ListDialogSortable(shell);
-      ld.setContentProvider(new ArrayContentProvider());
-      ld.setLabelProvider(new TransactionIdLabelProvider());
-      ld.setSorter(new ViewerSorter() {
+      ViewerSorter sorter = new ViewerSorter() {
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
             if (e1 == null || e2 == null) {
@@ -345,21 +339,15 @@ public class AtsBranchManager {
             }
             return 0;
          }
-      });
-      ld.setTitle(title);
-      ld.setMessage("Select Commit Branch");
+      };
+      SimpleCheckFilteredTreeDialog ld = new SimpleCheckFilteredTreeDialog(title, "Select Commit Branch", new ArrayTreeContentProvider(),new TransactionIdLabelProvider(), sorter,  0, Integer.MAX_VALUE);
       ld.setInput(transactionIds);
       ld.setBlockOnOpen(true);
       
-      try {
-         if (ld.open() == 0) {
-            return (TransactionRecord) ld.getResult()[0];
-         }
-         return null;
+      if (ld.open() == 0) {
+         return (TransactionRecord) ld.getResult()[0];
       }
-      finally {
-         shell.dispose();
-      }
+      return null;
    }
 
    public Result isCreateBranchAllowed() throws OseeCoreException {
