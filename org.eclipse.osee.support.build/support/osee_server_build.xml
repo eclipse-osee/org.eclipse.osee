@@ -19,19 +19,16 @@
 			<fileset file="${basedir}/config.ini" />
 		</copy>
 		
-		 <move todir="${buildDirectory}/buildRepo/">
-		    <fileset dir="${buildDirectory}/buildRepo/plugins/">
-		      <include name="org.eclipse.osgi_*.jar"/>
-		    </fileset>
-		  </move>
-
+	<move todir="${buildDirectory}/buildRepo/">
+		<fileset dir="${buildDirectory}/buildRepo/plugins/">
+			<include name="org.eclipse.osgi_*.jar"/>
+		</fileset>
+	</move>
 	
 	</target>
 </project>
 
 <!--
-	<move file="${buildDirectory}/buildRepo/plugins/org.eclipse.osgi_*.jar" todir="dir/to/move/to"/>
 eclipsec -application org.eclipse.ant.core.antRunner -buildfile c:\UserData\workspace\org.eclipse.osee.support.build\support\osee_server_build.xml
-
-java -Xmx512m -Dosee.db.connection.id=oracle8 -jar org.eclipse.equinox.launcher_1.0.101.R34x_v20081125.jar -console
+java -Xmx512m -jar org.eclipse.osgi_3.5.1.R35x_v20090827.jar -console
 -->
