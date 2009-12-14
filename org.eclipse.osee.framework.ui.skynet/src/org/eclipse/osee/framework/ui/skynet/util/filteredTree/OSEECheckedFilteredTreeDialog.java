@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.util.filteredTree;
 
 import java.util.Collection;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
@@ -26,6 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
@@ -41,7 +43,7 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
    private final ViewerSorter viewerSorter;
 
    public OSEECheckedFilteredTreeDialog(String dialogTitle, String dialogMessage, PatternFilter patternFilter, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter) {
-      super(Display.getCurrent().getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
+      super(new Shell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
             "OK", "Cancel"}, 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;

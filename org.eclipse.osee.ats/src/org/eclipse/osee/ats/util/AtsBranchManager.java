@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -74,6 +75,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -324,7 +326,10 @@ public class AtsBranchManager {
       if (transactionIds.size() == 1) {
          return transactionIds.iterator().next();
       }
-      ListDialogSortable ld = new ListDialogSortable(Display.getCurrent().getActiveShell());
+      
+      
+      Shell shell = new Shell();
+      ListDialogSortable ld = new ListDialogSortable(shell);
       ld.setContentProvider(new ArrayContentProvider());
       ld.setLabelProvider(new TransactionIdLabelProvider());
       ld.setSorter(new ViewerSorter() {
@@ -344,10 +349,17 @@ public class AtsBranchManager {
       ld.setTitle(title);
       ld.setMessage("Select Commit Branch");
       ld.setInput(transactionIds);
-      if (ld.open() == 0) {
-         return (TransactionRecord) ld.getResult()[0];
+      ld.setBlockOnOpen(true);
+      
+      try {
+         if (ld.open() == 0) {
+            return (TransactionRecord) ld.getResult()[0];
+         }
+         return null;
       }
-      return null;
+      finally {
+         shell.dispose();
+      }
    }
 
    public Result isCreateBranchAllowed() throws OseeCoreException {
