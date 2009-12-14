@@ -90,13 +90,14 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                      CoverageItem coverageItem =
                            new CoverageItem(methodCoverageUnit, CoverageMethodEnum.Not_Covered,
                                  String.valueOf(lineNumToBranches.getLineNum()));
-                     Pair<String, Boolean> lineData =
-                           vcpSourceLisFile.getExecutionLine(String.valueOf(methodNum),
-                                 String.valueOf(lineNumToBranches.getLineNum()));
-                     coverageItem.setName(lineData.getFirst());
-                     if (lineData.getSecond()) {
-                        System.out.println("put back in");
-                        //                        coverageItem.setCoverageMethod(CoverageMethodEnum.Exception_Handling);
+                     if (vectorCastCoverageImportProvider.isResolveExceptionHandling()) {
+                        Pair<String, Boolean> lineData =
+                              vcpSourceLisFile.getExecutionLine(String.valueOf(methodNum),
+                                    String.valueOf(lineNumToBranches.getLineNum()));
+                        coverageItem.setName(lineData.getFirst());
+                        if (lineData.getSecond()) {
+                           coverageItem.setCoverageMethod(CoverageMethodEnum.Exception_Handling);
+                        }
                      }
                      methodCoverageUnit.addCoverageItem(coverageItem);
                   }

@@ -14,4 +14,8 @@ public interface IVectorCastCoverageImportProvider {
 
    public String getFileNamespace(String filename);
 
+   /**
+    * true if importer should automatically set known exception handling cases
+    */
+   public boolean isResolveExceptionHandling();
 }

@@ -18,6 +18,7 @@ import org.eclipse.osee.coverage.vcast.VcpResultsFile.ResultsValue;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -39,7 +40,9 @@ public class VcpResultsDatFile {
                resultFilename));
       }
       for (String resultsLine : AFile.readFile(resultsFile).split("\n")) {
-         addLine(resultsLine);
+         if (Strings.isValid(resultsLine)) {
+            addLine(resultsLine);
+         }
       }
    }
 
