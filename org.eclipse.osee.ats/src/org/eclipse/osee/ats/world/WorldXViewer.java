@@ -929,6 +929,10 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             modified = smaMgr.promptChangeReleaseDate();
          } else if (xCol.equals(WorldXViewerFactory.Work_Package_Col)) {
             modified = smaMgr.promptChangeAttribute(ATSAttributes.WORK_PACKAGE_ATTRIBUTE, persist, false);
+         } else if (xCol.equals(WorldXViewerFactory.Numeric1_Col)) {
+            modified = smaMgr.promptChangeFloatAttribute(ATSAttributes.NUMERIC1_ATTRIBUTE, persist);
+         } else if (xCol.equals(WorldXViewerFactory.Numeric2_Col)) {
+            modified = smaMgr.promptChangeFloatAttribute(ATSAttributes.NUMERIC2_ATTRIBUTE, persist);
          } else if (xCol.equals(WorldXViewerFactory.Category_Col)) {
             modified = smaMgr.promptChangeAttribute(ATSAttributes.CATEGORY_ATTRIBUTE, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Category2_Col)) {
