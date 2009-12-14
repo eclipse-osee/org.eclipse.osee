@@ -40,7 +40,7 @@
          id="org.apache.commons.httpclient"
          download-size="0"
          install-size="0"
-         version="3.1.0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
