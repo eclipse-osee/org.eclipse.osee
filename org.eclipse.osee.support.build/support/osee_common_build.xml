@@ -5,6 +5,10 @@
 	<target name="PdeBuild">
 		<tstamp />
 		<property name="releaseVersion" value="0.9.0" />
+		<!-- if behind a firewall then uncomment the following properties:
+			<property name="proxy_host" value="www-my-proxy.domain.com" />
+			<property name="proxy_port" value="12345" />
+		-->
 		<property name="topLevelElementType" value="feature" />
 		<property name="builder" value="${basedir}" />
 		<dirname property="baseLocation" file="${eclipse.launcher}" />
