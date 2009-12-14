@@ -14,7 +14,6 @@ import java.util.List;
 public class CoverageDataSubProgram {
 
    private final String name;
-   private int executionLines;
    private int complexity;
    private int covered;
    private int total;
@@ -23,14 +22,6 @@ public class CoverageDataSubProgram {
    public CoverageDataSubProgram(String name) {
       super();
       this.name = name;
-   }
-
-   public int getExecutionLines() {
-      return executionLines;
-   }
-
-   public void setExecutionLines(int executionLines) {
-      this.executionLines = executionLines;
    }
 
    public int getComplexity() {

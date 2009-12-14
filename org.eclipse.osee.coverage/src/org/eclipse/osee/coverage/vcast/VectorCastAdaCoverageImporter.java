@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import org.eclipse.osee.coverage.ICoverageImporter;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
@@ -63,6 +64,8 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
 
       // Create file and subprogram Coverage Units and execution line Coverage Items
       Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();
+      Map<CoverageUnit, CoverageDataSubProgram> methodCoverageUnitToCoverageDataSubProgram =
+            new HashMap<CoverageUnit, CoverageDataSubProgram>();
       for (VcpSourceFile vcpSourceFile : vCastVcp.sourceFiles) {
          try {
             CoverageDataFile coverageDataFile = vcpSourceFile.getCoverageDataFile();
@@ -84,6 +87,8 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                   methodNum++;
                   CoverageUnit methodCoverageUnit =
                         new CoverageUnit(fileCoverageUnit, coverageDataSubProgram.getName(), "");
+                  // Store this mapping so can check covered/totals later
+                  methodCoverageUnitToCoverageDataSubProgram.put(methodCoverageUnit, coverageDataSubProgram);
                   fileCoverageUnit.addCoverageUnit(methodCoverageUnit);
                   methodCoverageUnit.setOrderNumber(String.valueOf(methodNum));
                   for (LineNumToBranches lineNumToBranches : coverageDataSubProgram.getLineNumToBranches()) {
@@ -112,6 +117,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
          }
       }
 
+      // Process all results files and map to coverage units
       for (VcpResultsFile vcpResultsFile : vCastVcp.resultsFiles) {
          String testUnitName = vcpResultsFile.getValue(ResultsValue.FILENAME);
          for (String fileNum : vcpResultsFile.getVcpResultsDatFile().getFileNumbers()) {
@@ -138,6 +144,26 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                   }
                }
             }
+         }
+      }
+
+      // Validate VectorCast covered/total from <unit>.xml files with imported results files above
+      for (Entry<CoverageUnit, CoverageDataSubProgram> entry : methodCoverageUnitToCoverageDataSubProgram.entrySet()) {
+         CoverageUnit methodCoverageUnit = entry.getKey();
+         CoverageDataSubProgram coverageDataSubProgram = entry.getValue();
+         if (methodCoverageUnit.getCoverageItems(false).size() != coverageDataSubProgram.getTotal()) {
+            coverageImport.getLog().logError(
+                  String.format(
+                        "Imported number of lines [%s] doesn't match VectorCast number of lines [%s] for coverage unit [%s]",
+                        methodCoverageUnit.getCoverageItems(false).size(), coverageDataSubProgram.getTotal(),
+                        methodCoverageUnit));
+         }
+         if (methodCoverageUnit.getCoverageItemsCovered(false, CoverageMethodEnum.Test_Unit).size() != coverageDataSubProgram.getCovered()) {
+            coverageImport.getLog().logError(
+                  String.format(
+                        "Imported covered items [%s] doesn't match VectorCast covered items [%s] for coverage unit [%s]",
+                        methodCoverageUnit.getCoverageItems(false).size(), coverageDataSubProgram.getCovered(),
+                        methodCoverageUnit));
          }
       }
       return coverageImport;
