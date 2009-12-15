@@ -342,7 +342,6 @@ public class AtsBranchManager {
       };
       SimpleCheckFilteredTreeDialog ld = new SimpleCheckFilteredTreeDialog(title, "Select Commit Branch", new ArrayTreeContentProvider(),new TransactionIdLabelProvider(), sorter,  0, Integer.MAX_VALUE);
       ld.setInput(transactionIds);
-      ld.setBlockOnOpen(true);
       
       if (ld.open() == 0) {
          return (TransactionRecord) ld.getResult()[0];
