@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.util.Collection;
-
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -26,9 +25,9 @@ public class BranchCacheUpdateResponse extends AbstractBranchCacheMessage {
       super();
    }
 
-   public static BranchCacheUpdateResponse fromCache( IOseeCache<Branch> cache, Collection<Branch> types) throws OseeCoreException {
+   public static BranchCacheUpdateResponse fromCache(IOseeCache<Branch> cache, Collection<Branch> types) throws OseeCoreException {
       BranchCacheUpdateResponse request = new BranchCacheUpdateResponse();
-      BranchCacheUpdateUtil.loadFromCache(request, cache, types);
+      BranchCacheUpdateUtil.loadFromCache(request, types);
       return request;
    }
 }
