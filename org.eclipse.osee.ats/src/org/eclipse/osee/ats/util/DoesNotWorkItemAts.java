@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -25,14 +27,19 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchControlled;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -50,11 +57,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public class DoesNotWorkItemAts extends XNavigateItemAction {
 
-   /**
-    * @param parent
-    */
    public DoesNotWorkItemAts(XNavigateItem parent) {
-      super(parent, "Does Not Work - ATS - Fix Next Version Attribute", FrameworkImage.ADMIN);
+      super(parent, "Does Not Work - ATS - Fix Branch Names", FrameworkImage.ADMIN);
    }
 
    @Override
@@ -63,7 +67,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          return;
       }
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Admin Cleanup");
+      //      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Admin Cleanup");
       //      Artifact verArt =
       //            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "0.9.0", AtsUtil.getAtsBranch());
       //      for (Attribute<?> attr : verArt.getAttributes()) {
@@ -83,7 +87,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       //         }
       //      }
       //      verArt.persist(transaction);
-      transaction.execute();
+      //      transaction.execute();
 
       //      deleteDuplicateCommonBranchDuplicateRelations();
       //      convertAtsLogUserIds(transaction);
@@ -101,6 +105,59 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       // fixOseePeerReviews();
 
       AWorkbench.popup("Completed", "Complete");
+   }
+
+   private void renameBranches() throws OseeCoreException {
+      List<String> notRenamed = new ArrayList<String>();
+      Pattern traxPattern = Pattern.compile("^(..... - TRAX RPCR .*)( - TRAX RPCR .*)$");
+      Pattern shortPattern = Pattern.compile("^(..... -) +(.*?) - +(.*?)$");
+      Collection<Branch> branches =
+            BranchManager.getBranches(BranchArchivedState.ALL, BranchControlled.ALL, BranchType.WORKING);
+      int x = 0;
+      for (Branch branch : branches) {
+         System.out.println(String.format("\n%d/%d - Branch = [%s]", x++, branches.size(), branch));
+         String branchName = branch.getName();
+         boolean renamed = false;
+         Matcher m = traxPattern.matcher(branch.getName());
+         if (m.find()) {
+            String first = m.group(1);
+            String second = m.group(2);
+            String newBranchName = first;
+            if (!branchName.equals(newBranchName)) {
+               renamed = true;
+               System.out.println("Rename = " + newBranchName);
+               branch.setName(newBranchName);
+               BranchManager.persist(branch);
+            }
+         }
+         if (branchName.contains("BGJ6A")) {
+            System.out.println("here");
+         }
+         if (!renamed) {
+            m = shortPattern.matcher(branch.getName());
+            if (m.find()) {
+               String prefix = m.group(1);
+               String first = m.group(2);
+               String second = m.group(3);
+               second = second.replaceFirst("...$", "");
+               String newBranchName = prefix + " " + first;
+               if (first.equals(second) || first.startsWith(second)) {
+                  renamed = true;
+                  System.out.println("Rename = " + newBranchName);
+                  branch.setName(newBranchName);
+                  BranchManager.persist(branch);
+               }
+            }
+         }
+         if (!renamed) {
+            notRenamed.add(branchName);
+         }
+
+      }
+      for (String branchName : notRenamed) {
+         System.out.println("Not Renamed " + branchName);
+      }
+
    }
 
    private void deleteDuplicateCommonBranchDuplicateRelations() throws OseeCoreException {
