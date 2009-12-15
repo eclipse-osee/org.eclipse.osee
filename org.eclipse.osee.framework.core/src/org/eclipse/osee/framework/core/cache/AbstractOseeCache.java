@@ -37,29 +37,23 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    private final HashMap<String, T> guidToTypeMap = new HashMap<String, T>();
 
    private final IOseeDataAccessor<T> dataAccessor;
-   private boolean duringPopulate;
    private final OseeCacheEnum cacheId;
    private final boolean uniqueName;
    private boolean ensurePopulatedRanOnce;
 
    protected AbstractOseeCache(OseeCacheEnum cacheId, IOseeDataAccessor<T> dataAccessor, boolean uniqueName) {
       this.cacheId = cacheId;
-      this.duringPopulate = false;
       this.ensurePopulatedRanOnce = false;
       this.dataAccessor = dataAccessor;
       this.uniqueName = uniqueName;
    }
 
    public final synchronized void decacheAll() {
-      if (!duringPopulate) {
-         this.duringPopulate = true;
-         clearAdditionalData();
-         nameToTypeMap.clear();
-         idToTypeMap.clear();
-         guidToTypeMap.clear();
-         this.ensurePopulatedRanOnce = false;
-         this.duringPopulate = false;
-      }
+      clearAdditionalData();
+      nameToTypeMap.clear();
+      idToTypeMap.clear();
+      guidToTypeMap.clear();
+      this.ensurePopulatedRanOnce = false;
    }
 
    protected void clearAdditionalData() {
@@ -202,7 +196,8 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       ensurePopulated();
       Collection<T> types = getByName(typeName);
       if (types.size() != 1) {
-         throw new OseeArgumentException("Expected 1 type but found " + types.size() + " types for " + typeName);
+         throw new OseeArgumentException(
+               "AbstractOseeCache expected 1 type but found " + types.size() + " types for " + typeName);
       }
       return types.iterator().next();
    }
@@ -237,8 +232,8 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    }
 
    @Override
-   public void ensurePopulated() throws OseeCoreException {
-      if (!ensurePopulatedRanOnce && guidToTypeMap.isEmpty()) {
+   public synchronized void ensurePopulated() throws OseeCoreException {
+      if (!ensurePopulatedRanOnce) {
          ensurePopulatedRanOnce = true;
          reloadCache();
       }
@@ -258,12 +253,8 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       storeItems(items);
    }
 
-   public void reloadCache() throws OseeCoreException {
-      if (!duringPopulate) {
-         duringPopulate = true;
-         getDataAccessor().load(this);
-         duringPopulate = false;
-      }
+   public synchronized void reloadCache() throws OseeCoreException {
+      getDataAccessor().load(this);
    }
 
    @Override
