@@ -88,21 +88,17 @@ public final class BranchCacheUpdateUtil {
                child.setParentBranch(parent);
             }
          }
-      }
-      setMergeBranchData(cache, cacheMessage.getMergeBranches());     
-      return updatedItems;
-   }
-   
-   private static void setMergeBranchData ( IOseeCache<Branch> cache, List <Triplet<Integer, Integer, Integer>> branches) throws OseeCoreException {
-	   for (Triplet<Integer, Integer, Integer> entry : branches) {
+      }      
+      for (Triplet<Integer, Integer, Integer> entry : cacheMessage.getMergeBranches()) {
 	         Branch sourceBranch = cache.getById(entry.getFirst());
 	         Branch destinationBranch = cache.getById(entry.getSecond());
 	         MergeBranch mergeBranch = (MergeBranch) cache.getById(entry.getThird());
 	         mergeBranch.setSourceBranch(sourceBranch);
 	         mergeBranch.setDestinationBranch(destinationBranch);
 	      }
+      return updatedItems;
    }
-   
+     
 
    private TransactionRecord getTx(Map<Integer, Integer> branchToTx, Integer branchId) throws OseeCoreException {
       TransactionRecord tx = null;
@@ -125,8 +121,7 @@ public final class BranchCacheUpdateUtil {
          addTxRecord(message.getBranchToBaseTx(), branchId, br.getBaseTransaction());
          addTxRecord(message.getBranchToSourceTx(), branchId, br.getSourceTransaction());
          addAssocArtifact(message.getBranchToAssocArt(), branchId, br.getAssociatedArtifact());
-         if (br.getBranchType().isMergeBranch()) {        	 
-        	 setMergeBranchData(cache, message.getMergeBranches());
+         if (br.getBranchType().isMergeBranch()) {        	         	 
             addMergeBranches(message.getMergeBranches(), (MergeBranch) br);
          }
       }
@@ -141,8 +136,8 @@ public final class BranchCacheUpdateUtil {
    }
 
    private static void addMergeBranches(List<Triplet<Integer, Integer, Integer>> srcDestMerge, MergeBranch mergeBranch) throws OseeCoreException {
-      Integer src = mergeBranch.getSourceBranch().getId();
-      Integer dest = mergeBranch.getDestinationBranch().getId();
+      Integer src = mergeBranch.getSourceBranch() != null  ?  mergeBranch.getSourceBranch().getId() : -1;
+      Integer dest = mergeBranch.getDestinationBranch() != null ? mergeBranch.getDestinationBranch().getId() : -1;
       Integer merge = mergeBranch.getId();
       srcDestMerge.add(new Triplet<Integer, Integer, Integer>(src, dest, merge));
    }
