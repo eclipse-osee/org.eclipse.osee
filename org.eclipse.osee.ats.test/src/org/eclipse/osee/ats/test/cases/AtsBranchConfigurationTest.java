@@ -434,6 +434,8 @@ public class AtsBranchConfigurationTest {
       implementPageDef.addRelation(CoreRelationTypes.WorkItem__Child,
             WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName()));
       implementPageDef.persist();
+      WorkItemDefinitionFactory.deCache(implementPageDef);
+      WorkItemDefinitionFactory.loadDefinitions(Collections.singleton(implementPageDef));
    }
 
    @After
