@@ -200,11 +200,13 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
     */
    private String getDefaultTitle() {
       String title = "";
-      for (TeamWorkFlowArtifact teamArt : defaultTeamWorkflows) {
-         if (title.equals("")) {
-            title = teamArt.getName();
-         } else if (!title.equals(teamArt.getName())) {
-            return "";
+      if (defaultTeamWorkflows != null) {
+         for (TeamWorkFlowArtifact teamArt : defaultTeamWorkflows) {
+            if (title.equals("")) {
+               title = teamArt.getName();
+            } else if (!title.equals(teamArt.getName())) {
+               return "";
+            }
          }
       }
       return "Copy of " + title;
