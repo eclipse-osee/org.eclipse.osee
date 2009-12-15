@@ -350,7 +350,7 @@ attributeType "Workflow Definition" extends StringAttribute {
    dataProvider UriAttributeDataProvider
    min 0
    max 1
-   description "xml definition of a Blam Workflow"
+   description "xml definition of a Workflow"
    fileExtension "vue"
 }
 
