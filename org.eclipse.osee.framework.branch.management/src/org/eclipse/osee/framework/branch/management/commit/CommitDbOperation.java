@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.BranchCache;
@@ -102,11 +103,8 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       if (changes.isEmpty()) {
          throw new OseeStateException(" A branch can not be commited without any changes made.");
       }
-      checkPreconditions();
       storedBranchState = sourceBranch.getBranchState();
-      if (!sourceBranch.getBranchState().equals(BranchState.COMMITTED)) {
-         updateBranchState(BranchState.COMMIT_IN_PROGRESS);
-      }
+      checkPreconditions();
 
       try {
          txHolder.setTransaction(addCommitTransactionToDatabase(userArtId));
@@ -125,12 +123,17 @@ public class CommitDbOperation extends AbstractDbTxOperation {
             sourceBranch.getId(), destinationBranch.getId());
    }
 
-   public void checkPreconditions() throws OseeCoreException {
+   public synchronized void checkPreconditions() throws OseeCoreException {
       int count =
             getDatabaseService().runPreparedQueryFetchObject(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch.getId(),
                   BranchState.COMMIT_IN_PROGRESS.getValue());
-      if (count > 0) {
-         throw new OseeStateException(String.format("Commit already in progress for [%s]", sourceBranch));
+      if (sourceBranch.getBranchState().equals(BranchState.COMMIT_IN_PROGRESS) || sourceBranch.getArchiveState().isArchived()  || count > 0) {
+         throw new OseeStateException(String.format("Commit completed or in progress for [%s]", sourceBranch));
+      }
+      
+      if (!sourceBranch.getBranchState().equals(BranchState.COMMITTED)) {
+         updateBranchState(BranchState.COMMIT_IN_PROGRESS);
+         sourceBranch.setBranchState(BranchState.COMMIT_IN_PROGRESS);
       }
    }
 
