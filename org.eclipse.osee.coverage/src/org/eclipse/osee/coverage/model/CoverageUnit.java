@@ -327,6 +327,10 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       this.folder = folder;
    }
 
+   public List<CoverageItem> getCoverageItemsCovered(CoverageMethodEnum... coverageMethodEnum) {
+      return CoverageUtil.getCoverageItemsCovered(getCoverageItems(), coverageMethodEnum);
+   }
+
    public void updateAssigneesAndNotes(CoverageUnit coverageUnit) {
       setNotes(coverageUnit.getNotes());
       setAssignees(coverageUnit.getAssignees());

@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.coverage.util.CoverageMetrics;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -78,14 +78,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    }
 
    public List<CoverageItem> getCoverageItemsCovered(CoverageMethodEnum... coverageMethodEnum) {
-      List<CoverageMethodEnum> coverageMethods = Collections.getAggregate(coverageMethodEnum);
-      List<CoverageItem> items = new ArrayList<CoverageItem>();
-      for (CoverageItem coverageItem : getCoverageItems()) {
-         if (coverageMethods.contains(coverageItem.getCoverageMethod())) {
-            items.add(coverageItem);
-         }
-      }
-      return items;
+      return CoverageUtil.getCoverageItemsCovered(getCoverageItems(), coverageMethodEnum);
    }
 
    @Override

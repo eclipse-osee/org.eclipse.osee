@@ -16,6 +16,7 @@ import org.eclipse.osee.coverage.merge.MatchItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
@@ -183,6 +185,17 @@ public class CoverageUtil {
             printTreeRecurse(childCoverageItem, sb, pad + 1);
          }
       }
+   }
+
+   public static List<CoverageItem> getCoverageItemsCovered(List<CoverageItem> coverageItems, CoverageMethodEnum... coverageMethodEnum) {
+      List<CoverageMethodEnum> coverageMethods = Collections.getAggregate(coverageMethodEnum);
+      List<CoverageItem> items = new ArrayList<CoverageItem>();
+      for (CoverageItem coverageItem : coverageItems) {
+         if (coverageMethods.contains(coverageItem.getCoverageMethod())) {
+            items.add(coverageItem);
+         }
+      }
+      return items;
    }
 
 }
