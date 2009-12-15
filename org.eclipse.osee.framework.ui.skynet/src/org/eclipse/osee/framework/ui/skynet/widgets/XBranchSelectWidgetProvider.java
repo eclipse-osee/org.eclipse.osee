@@ -31,9 +31,9 @@ public class XBranchSelectWidgetProvider implements IXWidgetProvider {
          XBranchSelectWidget widget = new XBranchSelectWidget(name);
          widget.setToolTip(widgetLayoutData.getToolTip());
          try {
-            String branchName = widgetLayoutData.getDefaultValue();
-            if (branchName != null) {
-               widget.setSelection(BranchManager.getBranch(branchName));
+            String branchGuid = widgetLayoutData.getDefaultValue();
+            if (branchGuid != null) {
+               widget.setSelection(BranchManager.getBranchByGuid(branchGuid));
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
