@@ -24,7 +24,7 @@ public abstract class AbstractCoverageBlam extends AbstractBlam {
    public void setCoverageImport(CoverageImport coverageImport) {
       this.coverageImport = coverageImport;
       if (coverageEditor != null) {
-         coverageEditor.getCoverageEditorImportTab().setCoverageImportResults(coverageImport);
+         coverageEditor.getCoverageEditorImportTab().setCoverageImportResults(getName(), coverageImport);
       }
    }
 

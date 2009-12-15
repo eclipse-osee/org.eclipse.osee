@@ -336,14 +336,14 @@ public class CoverageEditorImportTab extends FormPage {
    /**
     * This method is called at the end of the import blam being run
     */
-   public void setCoverageImportResults(final CoverageImport coverageImport) {
+   public void setCoverageImportResults(final String blamName, final CoverageImport coverageImport) {
       this.coverageImport = coverageImport;
       showBusy(false);
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
             blamOutputSection.appendText("BLAM completed\n");
-            coverageImport.setBlamName("Blam Name Here");
+            coverageImport.setBlamName(blamName);
             createImportParts();
 
             if (isSimulateImput) {
