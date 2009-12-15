@@ -125,10 +125,6 @@ public final class TransactionManager {
       }
    }
 
-   //   public synchronized static void cacheTransaction(TransactionRecord transaction) throws OseeCoreException {
-   //      getTransactionCache().cache(transaction);
-   //   }
-
    /**
     * @param branch
     * @return the largest (most recent) transaction on the given branch
