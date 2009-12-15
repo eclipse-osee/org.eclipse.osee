@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.test;
 
 import static org.junit.Assert.assertTrue;
-
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.skynet.core.test.branch.BranchManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.branch.BranchTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactPurgeTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactTypeInheritanceTest;
@@ -35,10 +35,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {BranchTestSuite.class, RelationTestSuite.class, OseeCacheTestSuite.class, ArtifactTypeInheritanceTest.class, ArtifactPurgeTest.class,
-      BranchPurgeTest.class, Artifact_setAttributeValues.class, CsvArtifactTest.class, NativeArtifactTest.class,
-      ConflictTest.class, ChangeManagerTest.class, SevereLogMonitorTest.class, RelationDeletionTest.class,
-      StaticIdManagerTest.class, BranchStateTest.class, DuplicateHridTest.class, RelationOrderingTest.class})
+@Suite.SuiteClasses( {BranchTestSuite.class, BranchManagerTest.class, RelationTestSuite.class,
+      OseeCacheTestSuite.class, ArtifactTypeInheritanceTest.class, ArtifactPurgeTest.class, BranchPurgeTest.class,
+      Artifact_setAttributeValues.class, CsvArtifactTest.class, NativeArtifactTest.class, ConflictTest.class,
+      ChangeManagerTest.class, SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class,
+      BranchStateTest.class, DuplicateHridTest.class, RelationOrderingTest.class})
 /**
  * @author Donald G. Dunne
  */

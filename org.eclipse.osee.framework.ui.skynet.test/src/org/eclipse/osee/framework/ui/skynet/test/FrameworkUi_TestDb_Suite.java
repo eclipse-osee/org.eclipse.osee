@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test;
 
+import org.eclipse.osee.framework.skynet.core.test.branch.BranchManagerTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.PreviewAndMultiPreviewTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.ViewWordChangeAndDiffTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordEditTest;
@@ -18,8 +19,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {WordEditTest.class, WordTrackedChangesTest.class, PreviewAndMultiPreviewTest.class,
-      ViewWordChangeAndDiffTest.class})
+@Suite.SuiteClasses( {BranchManagerTest.class, WordEditTest.class, WordTrackedChangesTest.class,
+      PreviewAndMultiPreviewTest.class, ViewWordChangeAndDiffTest.class})
 /**
  * @author Megumi Telles
  */

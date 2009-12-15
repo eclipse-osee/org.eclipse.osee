@@ -132,10 +132,10 @@ public class BranchManager {
       return branches;
    }
 
-   public static List<Branch> getBranches(BranchArchivedState archivedState, BranchControlled branchControlled, BranchType... branchTypes) throws OseeCoreException {
+   public static List<Branch> getBranches(BranchArchivedState branchArchivedState, BranchControlled branchControlled, BranchType... branchTypes) throws OseeCoreException {
       List<Branch> branches = new ArrayList<Branch>(1000);
       for (Branch branch : getCache().getAll()) {
-         if (branch.getArchiveState().matches(archivedState) && //
+         if (branch.getArchiveState().matches(branchArchivedState) && //
          BranchControlled.fromBoolean(isChangeManaged(branch)).matches(branchControlled) && //
          branch.getBranchType().isOfType(branchTypes)) {
             branches.add(branch);
