@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.AbstractBranchCacheMessage;
@@ -88,15 +89,20 @@ public final class BranchCacheUpdateUtil {
             }
          }
       }
-      for (Triplet<Integer, Integer, Integer> entry : cacheMessage.getMergeBranches()) {
-         Branch sourceBranch = cache.getById(entry.getFirst());
-         Branch destinationBranch = cache.getById(entry.getSecond());
-         MergeBranch mergeBranch = (MergeBranch) cache.getById(entry.getThird());
-         mergeBranch.setSourceBranch(sourceBranch);
-         mergeBranch.setDestinationBranch(destinationBranch);
-      }
+      setMergeBranchData(cache, cacheMessage.getMergeBranches());     
       return updatedItems;
    }
+   
+   private static void setMergeBranchData ( IOseeCache<Branch> cache, List <Triplet<Integer, Integer, Integer>> branches) throws OseeCoreException {
+	   for (Triplet<Integer, Integer, Integer> entry : branches) {
+	         Branch sourceBranch = cache.getById(entry.getFirst());
+	         Branch destinationBranch = cache.getById(entry.getSecond());
+	         MergeBranch mergeBranch = (MergeBranch) cache.getById(entry.getThird());
+	         mergeBranch.setSourceBranch(sourceBranch);
+	         mergeBranch.setDestinationBranch(destinationBranch);
+	      }
+   }
+   
 
    private TransactionRecord getTx(Map<Integer, Integer> branchToTx, Integer branchId) throws OseeCoreException {
       TransactionRecord tx = null;
@@ -107,7 +113,7 @@ public final class BranchCacheUpdateUtil {
       return tx;
    }
 
-   public static void loadFromCache(AbstractBranchCacheMessage message, Collection<Branch> types) throws OseeCoreException {
+   public static void loadFromCache(AbstractBranchCacheMessage message,  IOseeCache<Branch> cache, Collection<Branch> types) throws OseeCoreException {
       for (Branch br : types) {
          Integer branchId = br.getId();
          message.getBranchRows().add(
@@ -119,7 +125,8 @@ public final class BranchCacheUpdateUtil {
          addTxRecord(message.getBranchToBaseTx(), branchId, br.getBaseTransaction());
          addTxRecord(message.getBranchToSourceTx(), branchId, br.getSourceTransaction());
          addAssocArtifact(message.getBranchToAssocArt(), branchId, br.getAssociatedArtifact());
-         if (br.getBranchType().isMergeBranch()) {
+         if (br.getBranchType().isMergeBranch()) {        	 
+        	 setMergeBranchData(cache, message.getMergeBranches());
             addMergeBranches(message.getMergeBranches(), (MergeBranch) br);
          }
       }

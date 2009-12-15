@@ -208,7 +208,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
       ITranslatorId transalatorId = null;
       switch (updateRequest.getCacheId()) {
          case BRANCH_CACHE:
-            response = BranchCacheUpdateResponse.fromCache(caching.getBranchCache().getAll());
+            response = BranchCacheUpdateResponse.fromCache(caching.getBranchCache(), caching.getBranchCache().getAll());
             transalatorId = CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE;
             break;
          case TRANSACTION_CACHE:
