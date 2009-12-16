@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -151,8 +150,7 @@ public class AtsBranchManager {
          return CommitStatus.Branch_Not_Configured;
       }
 
-      Set<Branch> branches = BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), false, false);
-      if (branches.contains(branch)) {
+      if (branch.getBranchState().isCommitted()) {
          return CommitStatus.Committed;
       }
       Collection<TransactionRecord> transactions =
@@ -325,7 +323,7 @@ public class AtsBranchManager {
       if (transactionIds.size() == 1) {
          return transactionIds.iterator().next();
       }
-      
+
       ViewerSorter sorter = new ViewerSorter() {
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
@@ -340,9 +338,11 @@ public class AtsBranchManager {
             return 0;
          }
       };
-      SimpleCheckFilteredTreeDialog ld = new SimpleCheckFilteredTreeDialog(title, "Select Commit Branch", new ArrayTreeContentProvider(),new TransactionIdLabelProvider(), sorter,  0, Integer.MAX_VALUE);
+      SimpleCheckFilteredTreeDialog ld =
+            new SimpleCheckFilteredTreeDialog(title, "Select Commit Branch", new ArrayTreeContentProvider(),
+                  new TransactionIdLabelProvider(), sorter, 0, Integer.MAX_VALUE);
       ld.setInput(transactionIds);
-      
+
       if (ld.open() == 0) {
          return (TransactionRecord) ld.getResult()[0];
       }
@@ -479,11 +479,13 @@ public class AtsBranchManager {
     * @param includeDeleted
     * @return Branch
     */
-   public Branch getWorkingBranch(boolean includeArchived, boolean includeDeleted) throws OseeCoreException {
+   public Branch getWorkingBranch(boolean includeCommitted, boolean includeDeleted) throws OseeCoreException {
       Set<Branch> branches = new HashSet<Branch>();
-      for (Branch branch : BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), includeArchived, includeDeleted)) {
-         if (!branch.getBranchState().isRebaselined()) {
-            branches.add(branch);
+      for (Branch branch : BranchManager.getNormalAllBranches()) {
+         if (branch.getAssociatedArtifact().equals(smaMgr.getSma()) && !branch.getBranchState().isRebaselined()) {
+            if ((includeCommitted || !branch.getBranchState().isCommitted()) && (includeDeleted || !branch.getBranchState().isDeleted())) {
+               branches.add(branch);
+            }
          }
       }
       if (branches.size() == 0) {
@@ -497,18 +499,6 @@ public class AtsBranchManager {
    }
 
    /**
-    * Returns true if there were ever a working branch. This could be if there is an inWork branch or an archived
-    * branch. It also handles the case where the archived branch was deleted, in which case it looks at the committedTo
-    * branches and returns true.
-    * 
-    * @return result
-    * @throws OseeCoreException
-    */
-   public boolean isWorkingBranchEverCreated() throws OseeCoreException {
-      return isWorkingBranchArchived() || isWorkingBranchEverCommitted();
-   }
-
-   /**
     * Returns true if there is a working branch that is not archived
     * 
     * @return result
@@ -516,19 +506,6 @@ public class AtsBranchManager {
     */
    public boolean isWorkingBranchInWork() throws OseeCoreException {
       return getWorkingBranch(false, false) != null;
-   }
-
-   /**
-    * Returns true if there is an archived working branch. Note, this method does not necessarily mean that there was
-    * ever a working branch cause archived branches can be deleted. Use isWorkingBranchEverCreated or
-    * isWorkingBranchEverCommitted.
-    * 
-    * @return result
-    * @throws OseeCoreException
-    */
-   public boolean isWorkingBranchArchived() throws OseeCoreException {
-      Branch branch = getWorkingBranch(true, false);
-      return branch != null && branch.getArchiveState().isArchived();
    }
 
    /**

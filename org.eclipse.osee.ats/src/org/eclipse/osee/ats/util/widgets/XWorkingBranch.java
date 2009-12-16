@@ -187,9 +187,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    public String getStatus() {
       try {
-         if (smaMgr != null && smaMgr.getBranchMgr().isWorkingBranchArchived()) {
-            return BranchStatus.Changes_NotPermitted.name();
-         } else if (smaMgr != null && smaMgr.getBranchMgr().isWorkingBranchEverCommitted()) {
+         if (smaMgr != null && smaMgr.getBranchMgr().isWorkingBranchEverCommitted()) {
             return BranchStatus.Changes_NotPermitted.name();
          } else if (smaMgr != null && smaMgr.getBranchMgr().isWorkingBranchInWork()) {
             return BranchStatus.Changes_InProgress.name();

@@ -16,10 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -84,22 +82,6 @@ public class BranchManager {
 
    public static BranchCache getCache() {
       return Activator.getInstance().getOseeCacheService().getBranchCache();
-   }
-
-   public static Set<Branch> getAssociatedArtifactBranches(Artifact associatedArtifact, boolean includeArchived, boolean includeDeleted) throws OseeCoreException {
-      Set<Branch> branches = new HashSet<Branch>();
-      Set<Branch> branchesToCheck = new HashSet<Branch>(getNormalBranches());
-      if (includeArchived) {
-         branchesToCheck.addAll(getArchivedBranches());
-      }
-      for (Branch branch : branchesToCheck) {
-         if (branch.getAssociatedArtifact().getArtId() == associatedArtifact.getArtId()) {
-            if (includeDeleted || !branch.getBranchState().isDeleted()) {
-               branches.add(branch);
-            }
-         }
-      }
-      return branches;
    }
 
    public static Branch getCommonBranch() throws OseeCoreException {
