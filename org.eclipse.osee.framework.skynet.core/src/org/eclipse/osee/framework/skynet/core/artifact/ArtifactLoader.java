@@ -470,7 +470,7 @@ public final class ArtifactLoader {
                         ArtifactLoader.class,
                         Level.WARNING,
                         String.format(
-                              "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] modType[%s]",
+                              "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
                               attrId, artifactId, branchId, previousGammaId, gammaId, previousModType, modType));
                }
             } else if (artifact != null) { //artifact will have been set to null if artifact.isAttributesLoaded() returned true
