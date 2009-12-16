@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ATSLog;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -178,6 +179,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          testVersionArtifacts(artifacts);
          testStateMachineAssignees(artifacts);
          testAtsLogs(artifacts);
+         testActionableItemToTeamDefinition(artifacts);
+         testTeamDefinitionHasWorkflow(artifacts);
          for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
             atsHealthCheck.check(artifacts, testNameToResultsMap);
          }
@@ -431,8 +434,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      resultsMap.put("checkAndResolveDuplicateAttributesForAttributeNameContains", "Fixed");
                   }
                }
-                  resultsMap.put("checkAndResolveDuplicateAttributesForAttributeNameContains", result);
-               }
+               resultsMap.put("checkAndResolveDuplicateAttributesForAttributeNameContains", result);
+            }
          }
       }
    }
@@ -512,6 +515,34 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
       if (badTasks.size() > 0) {
          TaskEditor.open(new TaskEditorSimpleProvider("ValidateATSDatabase: Tasks have !=1 parent workflows.", badTasks));
+      }
+   }
+
+   private void testActionableItemToTeamDefinition(Collection<Artifact> artifacts) throws OseeCoreException {
+      for (Artifact artifact : artifacts) {
+         if (artifact instanceof ActionableItemArtifact) {
+            ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
+            if (aia.isActionable()) {
+               if (TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).size() == 0) {
+                  testNameToResultsMap.put(
+                        "testActionableItemToTeamDefinition",
+                        "Error: ActionableItem " + XResultData.getHyperlink(artifact.getName(), artifact) + " has to related TeamDefinition and is set to Actionable");
+               }
+            }
+         }
+      }
+   }
+
+   private void testTeamDefinitionHasWorkflow(Collection<Artifact> artifacts) throws OseeCoreException {
+      for (Artifact artifact : artifacts) {
+         if (artifact instanceof TeamDefinitionArtifact) {
+            TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
+            if (teamDef.isActionable() && teamDef.getWorkFlowDefinition() == null) {
+               testNameToResultsMap.put(
+                     "testTeamDefinitionHasWorkflow",
+                     "Error: TeamDefintion " + XResultData.getHyperlink(artifact.getName(), artifact) + " has no related workflow and is set to Actionable");
+            }
+         }
       }
    }
 
@@ -650,8 +681,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         "testStateMachineAssignees",
                         "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " In Work without assignees");
                }
-               List<Artifact> relationAssigned =
-                     art.getRelatedArtifacts(CoreRelationTypes.Users_User, Artifact.class);
+               List<Artifact> relationAssigned = art.getRelatedArtifacts(CoreRelationTypes.Users_User, Artifact.class);
                if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && relationAssigned.size() > 0) {
                   testNameToResultsMap.put(
                         "testStateMachineAssignees",
