@@ -118,7 +118,11 @@ public final class TransactionRecord implements IAdaptable {
 
    @Override
    public String toString() {
-      return String.format("%s:%s", transactionNumber, getBranchId());
+      try {
+         return String.format("%s (%s:%s)", getBranch(), transactionNumber, getBranchId());
+      } catch (OseeCoreException ex) {
+         return String.format("%s:%s", transactionNumber, getBranchId());
+      }
    }
 
    public boolean isDirty() {
