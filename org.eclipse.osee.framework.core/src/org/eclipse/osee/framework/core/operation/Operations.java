@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Roberto E. Escobar
  */
-public class Operations {
+public final class Operations {
 
    private Operations() {
    }
