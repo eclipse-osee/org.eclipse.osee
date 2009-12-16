@@ -9,6 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
+
 import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
@@ -25,16 +26,17 @@ public class AtsActionableItemToTeamDefinitionTest {
    @org.junit.Test
    public void testAtsActionableItemToTeamDefinition() throws Exception {
       boolean error = false;
+      StringBuffer sb = new StringBuffer();
       for (Artifact artifact : ArtifactQuery.getArtifactListFromType(ActionableItemArtifact.ARTIFACT_NAME,
             AtsUtil.getAtsBranch())) {
          ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
          if (aia.isActionable()) {
             if (TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).size() == 0) {
-               System.err.println("Actionable Item \"" + aia + "\" has no Team Def associated and is Actionable.");
+               sb.append("Actionable Item \"" + aia + "\" has no Team Def associated and is Actionable.");
                error = true;
             }
          }
       }
-      assertFalse(error);
+      assertFalse(sb.toString(), error);
    }
 }

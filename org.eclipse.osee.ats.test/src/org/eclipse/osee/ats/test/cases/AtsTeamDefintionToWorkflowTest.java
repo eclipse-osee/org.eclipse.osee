@@ -29,15 +29,16 @@ public class AtsTeamDefintionToWorkflowTest {
    @org.junit.Test
    public void testTeamDefinitionToWorkflow() throws Exception {
       boolean error = false;
+      StringBuffer sb = new StringBuffer();
       for (Artifact artifact : ArtifactQuery.getArtifactListFromType(TeamDefinitionArtifact.ARTIFACT_NAME,
             AtsUtil.getAtsBranch())) {
          TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
          if (teamDef.isActionable() && teamDef.getWorkFlowDefinition() == null) {
-            System.err.println("Team Definition \"" + teamDef + "\" has no Work Flow associated and is Actionable.");
+            sb.append("Team Definition \"" + teamDef + "\" has no Work Flow associated and is Actionable.");
             error = true;
          }
       }
-      assertFalse("See syserr message(s)", error);
+      assertFalse(sb.toString(), error);
    }
 
 }
