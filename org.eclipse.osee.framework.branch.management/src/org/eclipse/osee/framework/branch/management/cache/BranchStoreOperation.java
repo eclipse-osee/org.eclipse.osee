@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchField;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -41,11 +42,6 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
          "update osee_branch SET branch_name = ?, parent_branch_id = ?, parent_transaction_id = ?, archived = ?, associated_art_id = ?, branch_type = ?, branch_state = ? where branch_id = ?";
 
    private static final String DELETE_BRANCH = "DELETE from osee_branch where branch_id = ?";
-
-   private static final String INSERT_ADDRESSING =
-         "insert into %s (transaction_id, gamma_id, tx_current, mod_type, branch_id) select transaction_id, gamma_id, tx_current, mod_type, branch_id from osee_txs where branch_id = ?";
-
-   public static final String DELETE_ADDRESSING = "delete from %s where branch_id = ?";
 
    private final IBranchUpdateEvent eventSender;
    private final Collection<Branch> branches;
@@ -100,7 +96,8 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
             }
          }
          if (branch.isFieldDirty(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY)) {
-            moveBranchAddressing(connection, branch, branch.getArchiveState().isArchived());
+            Operations.executeAsJob(new BranchMoveOperation(connection, branch.getArchiveState().isArchived(), branch,
+                  getDatabaseService()), false);
          }
 
       }
@@ -119,17 +116,6 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Error creating branch update relay", ex);
       }
-   }
-
-   public void moveBranchAddressing(OseeConnection connection, Branch branch, boolean archive) throws OseeDataStoreException {
-      String sourceTableName = archive ? "osee_txs" : "osee_txs_archived";
-      String destinationTableName = archive ? "osee_txs_archived" : "osee_txs";
-
-      String sql = String.format(INSERT_ADDRESSING, destinationTableName);
-      getDatabaseService().runPreparedUpdate(connection, sql, branch.getId());
-
-      sql = String.format(DELETE_ADDRESSING, sourceTableName);
-      getDatabaseService().runPreparedUpdate(connection, sql, branch.getId());
    }
 
    private boolean isDataDirty(Branch type) throws OseeCoreException {
