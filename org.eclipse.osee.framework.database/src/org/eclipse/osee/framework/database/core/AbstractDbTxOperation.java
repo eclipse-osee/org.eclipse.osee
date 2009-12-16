@@ -35,7 +35,6 @@ public abstract class AbstractDbTxOperation extends AbstractOperation {
 
    @Override
    protected final void doWork(IProgressMonitor monitor) throws Exception {
-      IOseeDatabaseService service = getDatabaseService();
       Transaction transaction = new Transaction(monitor);
       transaction.execute();
    }
