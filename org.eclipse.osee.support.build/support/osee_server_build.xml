@@ -5,7 +5,7 @@
 	<import file="${basedir}/osee_common_build.xml" />
 
 	<target name="build">
-		<property name="forceContextQualifier" value="200912110118" />
+		<property name="forceContextQualifier" value="200912161006" />
 		<property name="filteredDependencyCheck" value="true" />
 		<property name="topLevelElementId" value="org.eclipse.osee.framework.server.feature" />
 		<property name="postBuildFile"  value="${ant.file}" />
@@ -15,20 +15,17 @@
 	</target>
 
 	<target name="postBuild">
-		<copy todir="${buildDirectory}/buildRepo/configuration/">
-			<fileset file="${basedir}/config.ini" />
-		</copy>
+		<copy file="${basedir}/config.ini" todir="${buildDirectory}/buildRepo/configuration/" />
+		<copy file="${basedir}/start_osee_app_server" tofile="${buildDirectory}/buildRepo/start_osee_app_server${execext}"/>
 		
-	<move todir="${buildDirectory}/buildRepo/">
-		<fileset dir="${buildDirectory}/buildRepo/plugins/">
-			<include name="org.eclipse.osgi_*.jar"/>
-		</fileset>
-	</move>
-	
+		<move tofile="${buildDirectory}/buildRepo/org.eclipse.osgi.jar">
+			<fileset dir="${buildDirectory}/buildRepo/plugins/">
+				<include name="org.eclipse.osgi_*.jar"/>
+			</fileset>
+		</move>
 	</target>
 </project>
 
 <!--
 eclipsec -application org.eclipse.ant.core.antRunner -buildfile c:\UserData\workspace\org.eclipse.osee.support.build\support\osee_server_build.xml
-java -Xmx512m -jar org.eclipse.osgi_3.5.1.R35x_v20090827.jar -console
 -->
