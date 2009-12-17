@@ -366,8 +366,10 @@ public class ConflictManagerInternal {
       int parentTransactionNumber = Integer.MAX_VALUE;
 
       for (Branch branch : sourceBranch.getAncestors()) {
-         isValidConflict &= isAttributeConflictValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
-         parentTransactionNumber = branch.getSourceTransaction().getId();
+         if (!branch.getBranchType().isSystemRootBranch() && !branch.getParentBranch().getBranchType().isSystemRootBranch()) {
+            isValidConflict &= isAttributeConflictValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
+            parentTransactionNumber = branch.getSourceTransaction().getId();
+         }
 
          if (!isValidConflict) {
             break;
