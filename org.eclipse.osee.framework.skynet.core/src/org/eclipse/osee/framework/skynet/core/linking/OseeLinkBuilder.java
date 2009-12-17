@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.linking;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
@@ -80,7 +79,7 @@ public class OseeLinkBuilder {
    private String getLinkText(LinkType linkType, Artifact artifact) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       if (isParagraphRequired(linkType)) {
-         builder.append(getParagraphNumber(artifact));
+         builder.append(artifact.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "Undefined"));
       }
       if (isArtifactNameRequired(linkType)) {
          if (builder.length() > 0) {
@@ -92,17 +91,6 @@ public class OseeLinkBuilder {
          builder.append(" (DELETED)");
       }
       return escapeXml(builder.toString());
-   }
-
-   private String getParagraphNumber(Artifact artifact) throws OseeCoreException {
-      String paragraphNumber = null;
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.PARAGRAPH_NUMBER)) {
-         paragraphNumber = artifact.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER);
-      }
-      if (!Strings.isValid(paragraphNumber)) {
-         paragraphNumber = "Undefined";
-      }
-      return paragraphNumber;
    }
 
    private String getLinkId(LinkType destLinkType, Artifact artifact) throws OseeCoreException {
