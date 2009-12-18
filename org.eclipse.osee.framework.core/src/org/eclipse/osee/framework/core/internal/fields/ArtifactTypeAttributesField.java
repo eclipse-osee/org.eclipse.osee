@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -26,24 +27,27 @@ import org.eclipse.osee.framework.core.util.Conditions;
  */
 public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<Branch, Collection<AttributeType>>> {
 
-   private final Map<Branch, Collection<AttributeType>> attributes;
+   private final Map<Branch, Collection<AttributeType>> validityMap;
 
-   public ArtifactTypeAttributesField(Map<Branch, Collection<AttributeType>> attributes) {
+   public ArtifactTypeAttributesField(Map<Branch, Collection<AttributeType>> validityMap) {
       super();
-      this.attributes = attributes;
+      this.validityMap = validityMap;
    }
 
    @Override
    public Map<Branch, Collection<AttributeType>> get() throws OseeCoreException {
-      return new HashMap<Branch, Collection<AttributeType>>(attributes);
+      return new HashMap<Branch, Collection<AttributeType>>(validityMap);
    }
 
+   public void put(Branch branch , Collection<AttributeType> attributes){
+      validityMap.put(branch, attributes);
+   }
    @Override
    public void set(Map<Branch, Collection<AttributeType>> attributeTypeMap) throws OseeCoreException {
       Conditions.checkNotNull(attributeTypeMap, "attribute type map input");
       boolean isDifferent = Compare.isDifferent(get(), attributeTypeMap);
       if (isDifferent) {
-         attributes.clear();
+         validityMap.clear();
          for (Entry<Branch, Collection<AttributeType>> entry : attributeTypeMap.entrySet()) {
             // Ensure we are using a hash set - don't use putAll
             set(entry.getKey(), entry.getValue());
@@ -57,12 +61,12 @@ public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<Bra
       Conditions.checkNotNull(attributeTypes, "attribute types list");
 
       if (attributeTypes.isEmpty()) {
-         attributes.remove(branch);
+         validityMap.remove(branch);
       } else {
-         Collection<AttributeType> cachedItems = attributes.get(branch);
+         Collection<AttributeType> cachedItems = validityMap.get(branch);
          if (cachedItems == null) {
             cachedItems = new HashSet<AttributeType>(attributeTypes);
-            attributes.put(branch, cachedItems);
+            validityMap.put(branch, cachedItems);
          } else {
             cachedItems.clear();
             cachedItems.addAll(attributeTypes);

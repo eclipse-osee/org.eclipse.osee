@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
+
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -124,6 +125,17 @@ public class ArtifactCache {
          artifactIdCache.put(artifact.getArtId(), artifact.getBranch().getId(), obj);
          artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getId(), obj);
          byArtifactTypeCache.put(artifact.getArtifactType(), new ArtifactKey(artifact), obj);
+      }
+   }
+   
+   public static void deCache(Artifact artifact)throws OseeCoreException{
+      if (artifact.isHistorical()) {
+         historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
+         historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
+      } else {
+         artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getId());
+         artifactGuidCache.remove(artifact.getGuid(), artifact.getBranch().getId());
+         byArtifactTypeCache.remove(artifact.getArtifactType(), new ArtifactKey(artifact));
       }
    }
 

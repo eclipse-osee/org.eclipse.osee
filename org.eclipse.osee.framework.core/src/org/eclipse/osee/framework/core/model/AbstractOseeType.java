@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -43,7 +44,7 @@ public abstract class AbstractOseeType implements IOseeStorable, NamedIdentity {
    }
 
    @SuppressWarnings("unchecked")
-   private <T> IOseeField<T> getField(String key) throws OseeCoreException {
+   protected <T> IOseeField<T> getField(String key) throws OseeCoreException {
       IOseeField<T> field = (AbstractOseeField<T>) fieldMap.get(key);
       if (field == null) {
          throw new OseeArgumentException(String.format("Field [%s] was null", key));

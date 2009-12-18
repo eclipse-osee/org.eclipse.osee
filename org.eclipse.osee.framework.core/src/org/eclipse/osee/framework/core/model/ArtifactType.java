@@ -16,10 +16,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.internal.fields.ArtifactSuperTypeField;
 import org.eclipse.osee.framework.core.internal.fields.ArtifactTypeAttributesField;
+import org.eclipse.osee.framework.core.internal.fields.IOseeField;
 import org.eclipse.osee.framework.core.internal.fields.OseeField;
 
 /**
@@ -94,8 +96,9 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
    }
 
    public void setAttributeTypes(Collection<AttributeType> attributeTypes, Branch branch) throws OseeCoreException {
-      setField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY, Collections.singletonMap(branch, attributeTypes));
-   }
+      IOseeField<?> field = getField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
+      ((ArtifactTypeAttributesField)field).put(branch, attributeTypes);
+    }
 
    public boolean isValidAttributeType(AttributeType attributeType, Branch branch) throws OseeCoreException {
       return getAttributeTypes(branch).contains(attributeType);
