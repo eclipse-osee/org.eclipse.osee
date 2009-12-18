@@ -33,6 +33,10 @@ public abstract class AbstractDbTxOperation extends AbstractOperation {
       return provider.getOseeDatabaseService();
    }
 
+   protected IOseeDatabaseServiceProvider getDatabaseServiceProvider() throws OseeDataStoreException {
+      return provider;
+   }
+
    @Override
    protected final void doWork(IProgressMonitor monitor) throws Exception {
       Transaction transaction = new Transaction(monitor);
