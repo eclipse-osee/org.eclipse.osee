@@ -122,7 +122,7 @@
 	<Table name="OSEE_ARTIFACT_TYPE_ATTRIBUTES" schema="OSEE" tablespace="osee_data">
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />
 		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="smallint" />
-		<Column id="BRANCH_ID" type="INTEGER" />
+		<Column id="BRANCH_ID" type="INTEGER" defaultValue="not null" />
 		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_ATTRIB_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, ATTR_TYPE_ID, BRANCH_ID" />
 		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_ATTRIB_FK1" type="FOREIGN KEY" appliesTo="ATTR_TYPE_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_ATTRIBUTE_TYPE" column="ATTR_TYPE_ID" />
@@ -347,7 +347,7 @@
 	</Table>
 	
 	<Table name="OSEE_TXS" schema="OSEE" tablespace="osee_data">
-		<Column id="BRANCH_ID" type="INTEGER" />   <!-- make not null after 0.9.0 -->
+		<Column id="BRANCH_ID" type="INTEGER" defaultValue="not null" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="TX_CURRENT" defaultValue="not null" type="smallint" />
 		<Column id="MOD_TYPE" defaultValue="not null" type="smallint" />
