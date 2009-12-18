@@ -58,6 +58,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    public static String ARTIFACT_NAME = "Team Workflow";
    private XActionableItemsDam actionableItemsDam;
+   private boolean targetedErrorLogged = false;
    public static enum DefaultTeamState {
       Endorse, Analyze, Authorize, Implement, Completed, Cancelled
    }
@@ -267,7 +268,8 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public ActionArtifact getParentActionArtifact() throws OseeCoreException {
       if (parentAction != null) return parentAction;
-      Collection<ActionArtifact> arts = getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_Action, ActionArtifact.class);
+      Collection<ActionArtifact> arts =
+            getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_Action, ActionArtifact.class);
       if (arts.size() == 0) {
          throw new OseeStateException("Team " + getHumanReadableId() + " has no parent Action");
       } else if (arts.size() > 1) {
@@ -298,7 +300,10 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
             ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), false)) {
          String errStr =
                "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for released version, but not completed: " + verArt;
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr, null);
+         if (!targetedErrorLogged) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr, null);
+            targetedErrorLogged = true;
+         }
          return XViewerCells.getCellExceptionString(errStr);
       }
       return verArt.getName();
