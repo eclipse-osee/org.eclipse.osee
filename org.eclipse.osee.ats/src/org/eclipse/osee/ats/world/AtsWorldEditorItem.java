@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.actions.DuplicateWorkflowViaWorldEditorAction;
+import org.eclipse.osee.ats.actions.ExportChangeReportsAction;
 import org.eclipse.osee.ats.export.AtsExportManager;
 import org.eclipse.osee.ats.operation.CancelMultipleWorkflows;
 import org.eclipse.osee.ats.operation.CompleteMultipleWorkflows;
@@ -26,7 +27,8 @@ public class AtsWorldEditorItem extends AtsWorldEditorItemBase {
 
    @Override
    public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) throws OseeCoreException {
-      return Arrays.asList(new AtsExportManager(worldEditor), new DuplicateWorkflowViaWorldEditorAction(worldEditor),
-            new CompleteMultipleWorkflows(worldEditor), new CancelMultipleWorkflows(worldEditor));
+      return Arrays.asList(new AtsExportManager(worldEditor), new ExportChangeReportsAction(worldEditor),
+            new DuplicateWorkflowViaWorldEditorAction(worldEditor), new CompleteMultipleWorkflows(worldEditor),
+            new CancelMultipleWorkflows(worldEditor));
    }
 }

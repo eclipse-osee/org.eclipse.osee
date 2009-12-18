@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,6 +45,11 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
    @Override
    public Object execute(ExecutionEvent event) {
+      viewWordChangeReport(changes);
+      return null;
+   }
+
+   public void viewWordChangeReport(Collection<Change> changes) {
       ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>(changes.size());
       ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>(changes.size());
       VariableMap variableMap = new VariableMap();
@@ -52,12 +58,12 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
       for (Change artifactChange : changes) {
          try {
             Artifact baseArtifact =
-                  (artifactChange.getModificationType() == ModificationType.NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactQuery.getHistoricalArtifactFromId(
+                  artifactChange.getModificationType() == ModificationType.NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED ? null : ArtifactQuery.getHistoricalArtifactFromId(
                         artifactChange.getArtifact().getArtId(), artifactChange.getFromTransactionId(), true);
 
             Artifact newerArtifact =
-                  (artifactChange.getModificationType().isDeleted() )? null : (artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
-                        artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true) : artifactChange.getArtifact());
+                  artifactChange.getModificationType().isDeleted() ? null : artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
+                        artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true) : artifactChange.getArtifact();
 
             baseArtifacts.add(baseArtifact);
             newerArtifacts.add(newerArtifact);
@@ -69,15 +75,15 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
                   fileName =
                         baseArtifact != null ? baseArtifact.getBranch().getShortName() : newerArtifact.getBranch().getShortName();
                }
-               variableMap.setValue("fileName", fileName + "_" + (new Date()).toString().replaceAll(":", ";") + ".xml");
+               variableMap.setValue("fileName", fileName + "_" + new Date().toString().replaceAll(":", ";") + ".xml");
             }
 
-         } catch (OseeCoreException ex1) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex1);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
 
-      if (newerArtifacts.size() == 0 || (baseArtifacts.size() != newerArtifacts.size())) {
+      if (newerArtifacts.size() == 0 || baseArtifacts.size() != newerArtifacts.size()) {
          throw new IllegalArgumentException(
                "base artifacts size: " + baseArtifacts.size() + " must match newer artifacts size: " + newerArtifacts.size() + ".");
       }
@@ -93,10 +99,9 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
          renderer.setOptions(variableMap);
          renderer.compareArtifacts(baseArtifacts, newerArtifacts, new NullProgressMonitor(),
                instanceOfArtifact.getBranch(), PresentationType.DIFF);
-      } catch (OseeCoreException e) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, e);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return null;
    }
 
    @Override
@@ -117,9 +122,9 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
             List<Change> localChanges = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
             changes = new ArrayList<Change>(localChanges.size());
-            
+
             for (Change change : localChanges) {
-               if(!artifacts.contains(change.getArtifact())){
+               if (!artifacts.contains(change.getArtifact())) {
                   artifacts.add(change.getArtifact());
                   changes.add(change);
                }

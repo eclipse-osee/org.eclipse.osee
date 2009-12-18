@@ -306,7 +306,7 @@ public class AtsBranchManager {
     * @return
     * @throws OseeCoreException
     */
-   private TransactionRecord getTransactionIdOrPopupChoose(String title, boolean showMergeManager) throws OseeCoreException {
+   public TransactionRecord getTransactionIdOrPopupChoose(String title, boolean showMergeManager) throws OseeCoreException {
       Collection<TransactionRecord> transactionIds = new HashSet<TransactionRecord>();
       for (TransactionRecord id : getTransactionIds(showMergeManager)) {
          // ignore working branches that have been committed
