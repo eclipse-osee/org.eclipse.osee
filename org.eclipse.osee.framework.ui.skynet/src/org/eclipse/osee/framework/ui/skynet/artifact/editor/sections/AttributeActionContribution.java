@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
@@ -84,8 +85,8 @@ public class AttributeActionContribution implements IActionContributor {
             isAdd ? AttributeTypeUtil.getEmptyTypes(artifact) : AttributeTypeUtil.getTypesWithData(artifact);
       List<AttributeType> input = new ArrayList<AttributeType>(Arrays.asList(types));
       if (!isAdd) {
-         for (AttributeType type : types) {
-            if (type.getMinOccurrences() > 0 && artifact.getAttributeTypes().contains(type)) {
+         for (AttributeType type : artifact.getAttributeTypes()) {
+            if (artifact.getAttributes(operation).size() >= type.getMinOccurrences()) {
                input.remove(type);
             }
          }
