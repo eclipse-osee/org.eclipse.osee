@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Oracle Db Connector Plug-in (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.framework.oracle;singleton:=true
+Bundle-SymbolicName: org.eclipse.osee.framework.oracle
 Bundle-Version: 0.9.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.oracle.Activator
 Bundle-Vendor: Eclipse.org
