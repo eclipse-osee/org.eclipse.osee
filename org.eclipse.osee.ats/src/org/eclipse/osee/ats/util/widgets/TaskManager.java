@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,9 +21,11 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
+import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -40,6 +43,8 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class TaskManager {
    private final SMAManager smaMgr;
+
+   private Collection<TaskArtifact> unsortedTaskArtifacts = null, sortedTaskArtifacts = null;
 
    public TaskManager(SMAManager smaMgr) {
       super();
@@ -62,11 +67,18 @@ public class TaskManager {
    }
 
    public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {
-      return smaMgr.getSma().getRelatedArtifactsUnSorted(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
+      if (smaMgr.getSma() instanceof TaskableStateMachineArtifact) {
+         return AtsCacheManager.getTaskArtifacts((TaskableStateMachineArtifact) smaMgr.getSma());
+      }
+      return Collections.emptyList();
+
    }
 
    public Collection<TaskArtifact> getTaskArtifactsSorted() throws OseeCoreException {
-      return smaMgr.getSma().getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
+      if (smaMgr.getSma() instanceof TaskableStateMachineArtifact) {
+         return AtsCacheManager.getTaskArtifacts((TaskableStateMachineArtifact) smaMgr.getSma());
+      }
+      return Collections.emptyList();
    }
 
    public Collection<TaskArtifact> getTaskArtifactsFromCurrentState() throws OseeCoreException {

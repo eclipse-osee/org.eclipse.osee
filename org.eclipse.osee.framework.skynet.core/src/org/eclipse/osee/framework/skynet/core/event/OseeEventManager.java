@@ -155,6 +155,14 @@ public class OseeEventManager {
       InternalEventManager.kickArtifactReloadEvent(getSender(source), artifacts);
    }
 
+   /**
+    * Add a priority listener. This should only be done for caches where they need to be updated before all other
+    * listeners are called.
+    */
+   public static void addPriorityListener(IEventListener listener) {
+      InternalEventManager.addPriorityListener(listener);
+   }
+
    public static void addListener(IEventListener listener) {
       InternalEventManager.addListener(listener);
    }

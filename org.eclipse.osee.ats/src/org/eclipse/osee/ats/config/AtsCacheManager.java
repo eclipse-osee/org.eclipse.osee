@@ -10,11 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -52,14 +57,25 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
  */
 public class AtsCacheManager implements IArtifactsPurgedEventListener, IFrameworkTransactionEventListener {
 
-   public static List<String> CommonCachedArtifacts = new ArrayList<String>();
+   private static Map<TaskableStateMachineArtifact, Collection<TaskArtifact>> teamTasksCache =
+         new HashMap<TaskableStateMachineArtifact, Collection<TaskArtifact>>();
 
    public static void start() {
       new AtsCacheManager();
    }
 
    private AtsCacheManager() {
-      OseeEventManager.addListener(this);
+      OseeEventManager.addPriorityListener(this);
+   }
+
+   public static synchronized Collection<TaskArtifact> getTaskArtifacts(TaskableStateMachineArtifact sma) throws OseeCoreException {
+      if (!teamTasksCache.containsKey(sma)) {
+         Collection<TaskArtifact> taskArtifacts =
+               sma.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
+         if (taskArtifacts.size() == 0) return taskArtifacts;
+         teamTasksCache.put(sma, taskArtifacts);
+      }
+      return teamTasksCache.get(sma);
    }
 
    public static List<Artifact> getArtifactsByName(IArtifactType artifactType, String name) throws OseeCoreException {
@@ -102,6 +118,12 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
             if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME) || artifact.isOfType(WorkPageDefinition.ARTIFACT_NAME) || artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition) || artifact.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
                WorkItemDefinitionFactory.deCache(artifact);
             }
+            if (artifact instanceof TaskArtifact) {
+               teamTasksCache.remove(((TaskArtifact) artifact.getParent()));
+            }
+            if (artifact instanceof TaskableStateMachineArtifact) {
+               teamTasksCache.remove((TaskableStateMachineArtifact) artifact);
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -121,6 +143,12 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
          if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME) || artifact.isOfType(WorkPageDefinition.ARTIFACT_NAME) || artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition) || artifact.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
             WorkItemDefinitionFactory.deCache(artifact);
          }
+         if (artifact instanceof TaskArtifact) {
+            teamTasksCache.remove(((TaskArtifact) artifact.getParent()));
+         }
+         if (artifact instanceof TaskableStateMachineArtifact) {
+            teamTasksCache.remove((TaskableStateMachineArtifact) artifact);
+         }
       }
       for (Artifact artifact : transData.cacheAddedArtifacts) {
          if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
@@ -135,6 +163,20 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
          } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkFlowDefinition(artifact), artifact);
+         }
+         if (artifact instanceof TaskArtifact) {
+            teamTasksCache.remove(((TaskArtifact) artifact.getParent()));
+         }
+         if (artifact instanceof TaskableStateMachineArtifact) {
+            teamTasksCache.remove((TaskableStateMachineArtifact) artifact);
+         }
+      }
+      for (Artifact artifact : transData.getArtifactsInRelations(ChangeType.All, AtsRelationTypes.SmaToTask_Task)) {
+         if (artifact instanceof TaskArtifact) {
+            teamTasksCache.remove(((TaskArtifact) artifact.getParent()));
+         }
+         if (artifact instanceof TaskableStateMachineArtifact) {
+            teamTasksCache.remove((TaskableStateMachineArtifact) artifact);
          }
       }
       for (Artifact artifact : transData.getArtifactsInRelations(ChangeType.All, CoreRelationTypes.WorkItem__Child)) {

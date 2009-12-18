@@ -21,7 +21,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
@@ -68,6 +67,7 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
  */
 public class InternalEventManager {
 
+   private static final List<IEventListener> priorityListeners = new CopyOnWriteArrayList<IEventListener>();
    private static final List<IEventListener> listeners = new CopyOnWriteArrayList<IEventListener>();
    public static final Collection<UnloadedArtifact> EMPTY_UNLOADED_ARTIFACTS = Collections.emptyList();
    private static boolean disableEvents = false;
@@ -477,6 +477,20 @@ public class InternalEventManager {
       execute(runnable);
    }
 
+   /**
+    * Add a priority listener. This should only be done for caches where they need to be updated before all other
+    * listeners are called.
+    */
+   static void addPriorityListener(IEventListener listener) {
+      if (listener == null) {
+         throw new IllegalArgumentException("listener can not be null");
+      }
+      if (!priorityListeners.contains(listener)) {
+         priorityListeners.add(listener);
+      }
+      eventLog("OEM: addPriorityListener (" + priorityListeners.size() + ") " + listener);
+   }
+
    static void addListener(IEventListener listener) {
       if (listener == null) {
          throw new IllegalArgumentException("listener can not be null");
@@ -490,11 +504,13 @@ public class InternalEventManager {
    static void removeListeners(IEventListener listener) {
       eventLog("OEM: removeListener: (" + listeners.size() + ") " + listener);
       listeners.remove(listener);
+      priorityListeners.remove(listener);
    }
 
    // This method clears all listeners. Should only be used for testing purposes.
    public static void removeAllListeners() {
       listeners.clear();
+      priorityListeners.clear();
    }
 
    public static String getObjectSafeName(Object object) {
@@ -515,6 +531,9 @@ public class InternalEventManager {
 
    static String getListenerReport() {
       List<String> listenerStrs = new ArrayList<String>();
+      for (IEventListener listener : priorityListeners) {
+         listenerStrs.add("Priority: " + getObjectSafeName(listener));
+      }
       for (IEventListener listener : listeners) {
          listenerStrs.add(getObjectSafeName(listener));
       }
@@ -759,6 +778,19 @@ public class InternalEventManager {
    }
 
    public static void safelyInvokeListeners(Class<? extends IEventListener> c, String methodName, Object... args) {
+      for (IEventListener listener : priorityListeners) {
+         try {
+            if (c.isInstance(listener)) {
+               for (Method m : c.getMethods()) {
+                  if (m.getName().equals(methodName)) {
+                     m.invoke(listener, args);
+                  }
+               }
+            }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
       for (IEventListener listener : listeners) {
          try {
             if (c.isInstance(listener)) {
