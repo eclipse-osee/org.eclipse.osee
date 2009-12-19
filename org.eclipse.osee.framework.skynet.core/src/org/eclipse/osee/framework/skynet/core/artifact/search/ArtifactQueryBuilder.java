@@ -260,10 +260,10 @@ public class ArtifactQueryBuilder {
       if (guidOrHrid != null) {
          if (GUID.isValid(guidOrHrid)) {
             sql.append(artAlias);
-            sql.append(".guid=? AND ");
+            sql.append(".guid = ? AND ");
          } else {
             sql.append(artAlias);
-            sql.append(".human_readable_id=? AND ");
+            sql.append(".human_readable_id = ? AND ");
          }
          addParameter(guidOrHrid);
       }
@@ -271,9 +271,12 @@ public class ArtifactQueryBuilder {
       if (guids != null && guids.size() > 0) {
          addToGuidJoin();
          sql.append(artAlias);
-         sql.append(".guid= ");
+         sql.append(".guid = ");
          sql.append(jguidAlias);
          sql.append(".id AND ");
+         sql.append(jguidAlias);
+         sql.append(".query_id = ? AND ");
+         addParameter(guidJoinQuery.getQueryId());
       }
 
       if (hrids != null && hrids.size() > 0) {
@@ -302,11 +305,11 @@ public class ArtifactQueryBuilder {
       }
 
       sql.append(artAlias);
-      sql.append(".art_id=");
+      sql.append(".art_id = ");
       sql.append(artvAlias);
       sql.append(".art_id AND ");
       sql.append(artvAlias);
-      sql.append(".gamma_id=");
+      sql.append(".gamma_id = ");
       sql.append(txsAlias);
       sql.append(".gamma_id AND ");
 
