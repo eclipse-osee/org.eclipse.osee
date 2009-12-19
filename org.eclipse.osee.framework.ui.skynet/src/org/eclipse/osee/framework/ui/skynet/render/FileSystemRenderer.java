@@ -34,13 +34,6 @@ import org.eclipse.ui.part.FileEditorInput;
  * @author Ryan D. Brooks
  */
 public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
-   /**
-    * @param rendererId
-    */
-   public FileSystemRenderer() {
-      super();
-   }
-
    private static IFolder workingFolder;
    private static IFolder diffFolder;
    private static IFolder previewFolder;

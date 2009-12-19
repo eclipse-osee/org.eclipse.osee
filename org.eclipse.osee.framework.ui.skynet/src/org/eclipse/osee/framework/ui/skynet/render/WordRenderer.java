@@ -27,13 +27,6 @@ public abstract class WordRenderer extends FileRenderer {
    // We need MS Word, so look for the program that is for .doc files
    private static final Program wordApp = Program.findProgram("doc");
 
-   /**
-    * @param rendererId
-    */
-   public WordRenderer() {
-      super();
-   }
-
    @Override
    public Image getImage(Artifact artifact) throws OseeCoreException {
       return ImageManager.getProgramImage("doc");

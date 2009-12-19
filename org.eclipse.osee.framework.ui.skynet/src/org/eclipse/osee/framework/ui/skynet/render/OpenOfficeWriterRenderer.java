@@ -21,13 +21,6 @@ import org.eclipse.swt.program.Program;
  */
 public class OpenOfficeWriterRenderer extends FileRenderer implements ITemplateRenderer {
 
-   /**
-    * @param rendererId
-    */
-   public OpenOfficeWriterRenderer() {
-      super();
-   }
-
    @Override
    public OpenOfficeWriterRenderer newInstance() throws OseeCoreException {
       return new OpenOfficeWriterRenderer();

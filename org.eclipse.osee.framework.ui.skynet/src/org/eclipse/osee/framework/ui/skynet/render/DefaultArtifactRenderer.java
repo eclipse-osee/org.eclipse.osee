@@ -41,13 +41,6 @@ import org.eclipse.swt.graphics.Image;
 public class DefaultArtifactRenderer implements IRenderer {
    private VariableMap options;
 
-   /**
-    * @param rendererId
-    */
-   public DefaultArtifactRenderer() {
-      super();
-   }
-
    public String getName() {
       return "Artifact Editor";
    }

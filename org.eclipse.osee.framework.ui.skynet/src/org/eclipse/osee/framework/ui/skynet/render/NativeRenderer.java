@@ -43,13 +43,6 @@ public class NativeRenderer extends FileRenderer {
       return commandIds;
    }
 
-   /**
-    * @param rendererId
-    */
-   public NativeRenderer() {
-      super();
-   }
-
    @Override
    public String getName() {
       return "Native Editor";

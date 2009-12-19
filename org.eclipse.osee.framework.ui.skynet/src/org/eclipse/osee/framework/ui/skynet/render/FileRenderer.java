@@ -55,13 +55,6 @@ public abstract class FileRenderer extends FileSystemRenderer {
       watcher.start();
    }
 
-   /**
-    * @param rendererId
-    */
-   public FileRenderer() {
-      super();
-   }
-
    @Override
    public IFile renderToFileSystem(IFolder baseFolder, Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException {
       return renderToFile(baseFolder, getFilenameFromArtifact(artifact, presentationType), branch,
@@ -129,7 +122,7 @@ public abstract class FileRenderer extends FileSystemRenderer {
          }
 
          name.append(" ");
-         name.append((new Date()).toString().replaceAll(":", ";"));
+         name.append(new Date().toString().replaceAll(":", ";"));
          name.append("-");
          name.append(generator.nextInt(99) + 1);
          name.append(".");

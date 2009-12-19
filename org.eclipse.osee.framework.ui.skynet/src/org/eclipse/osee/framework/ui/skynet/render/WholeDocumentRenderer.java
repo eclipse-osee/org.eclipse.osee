@@ -41,13 +41,6 @@ public class WholeDocumentRenderer extends WordRenderer {
 
    private static boolean noPopups = false;
 
-   /**
-    * @param rendererId
-    */
-   public WholeDocumentRenderer() {
-      super();
-   }
-
    @Override
    public WholeDocumentRenderer newInstance() throws OseeCoreException {
       return new WholeDocumentRenderer();
