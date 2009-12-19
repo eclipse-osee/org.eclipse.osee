@@ -17,16 +17,21 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewWordChangeReportHandler;
@@ -36,9 +41,10 @@ import org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewWordChangeReport
  */
 public class ExportChangeReportsAction extends Action {
    private final WorldEditor worldEditor;
+   private Branch branch;
 
    public ExportChangeReportsAction(WorldEditor worldEditor) {
-      setText("Export Change Reports(s)");
+      setText("Export Change Report(s)");
       setImageDescriptor(getImageDescriptor());
       this.worldEditor = worldEditor;
    }
@@ -49,27 +55,42 @@ public class ExportChangeReportsAction extends Action {
 
    @Override
    public void run() {
-      ViewWordChangeReportHandler handler = new ViewWordChangeReportHandler();
+
       try {
-         for (TeamWorkFlowArtifact teamArt : getWorkflows()) {
-            AtsBranchManager atsBranchMgr = teamArt.getSmaMgr().getBranchMgr();
-            IProgressMonitor monitor = new NullProgressMonitor();
-            Collection<Change> changes = null;
-            if (atsBranchMgr.isCommittedBranchExists()) {
-               TransactionRecord transaction = atsBranchMgr.getTransactionIdOrPopupChoose("Show Change Report", false);
-               changes = ChangeManager.getChangesPerTransaction(transaction, monitor);
-            } else {
-               Branch branch = atsBranchMgr.getWorkingBranch();
-               if (branch != null) {
-                  changes = ChangeManager.getChangesPerBranch(branch, monitor);
-               }
-            }
-            if (changes != null) {
-               handler.viewWordChangeReport(changes);
-            }
-         }
+         export();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   private TransactionRecord pickTransaction(IArtifact workflow) throws OseeCoreException {
+      for (TransactionRecord transaction : TransactionManager.getCommittedArtifactTransactionIds(workflow)) {
+         if (transaction.getBranch().equals(branch)) {
+            return transaction;
+         }
+      }
+      throw new OseeStateException("no transaction record for " + branch + " found.");
+   }
+
+   private void export() throws OseeCoreException {
+      ViewWordChangeReportHandler handler = new ViewWordChangeReportHandler();
+      branch = BranchManager.getBranchByGuid("AyH_fZsqb0YXhw776ywA");
+      for (TeamWorkFlowArtifact workflow : getWorkflows()) {
+         AtsBranchManager atsBranchMgr = workflow.getSmaMgr().getBranchMgr();
+         IProgressMonitor monitor = new NullProgressMonitor();
+         Collection<Change> changes = null;
+         if (atsBranchMgr.isCommittedBranchExists()) {
+            changes = ChangeManager.getChangesPerTransaction(pickTransaction(workflow), monitor);
+         } else {
+            Branch branch = atsBranchMgr.getWorkingBranch();
+            if (branch != null) {
+               changes = ChangeManager.getChangesPerBranch(branch, monitor);
+            }
+         }
+         if (changes != null) {
+            handler.viewWordChangeReport(changes, true, workflow.getSoleAttributeValueAsString(
+                  AtsAttributeTypes.LegacyPCRId, null));
+         }
       }
    }
 
