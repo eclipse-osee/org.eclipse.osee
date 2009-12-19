@@ -42,13 +42,6 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
       return "ATS Workflow Config Editor";
    }
 
-   /**
-    * @param rendererId
-    */
-   public AtsWorkflowConfigRenderer() {
-      super();
-   }
-
    @Override
    public void open(List<Artifact> artifacts) throws OseeCoreException {
       try {

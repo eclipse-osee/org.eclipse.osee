@@ -49,13 +49,6 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
       return "ATS Artifact Export";
    }
 
-   /**
-    * @param rendererId
-    */
-   public AtsExportRenderer() {
-      super();
-   }
-
    @Override
    public void open(List<Artifact> artifacts) throws OseeCoreException {
       AtsExportManager.export(artifacts, ExportOption.POPUP_DIALOG);

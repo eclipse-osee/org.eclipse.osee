@@ -51,13 +51,6 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
       return "ATS Workflow Editor";
    }
 
-   /**
-    * @param rendererId
-    */
-   public AtsWorkflowRenderer() {
-      super();
-   }
-
    @Override
    public void open(List<Artifact> artifacts) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
@@ -72,7 +65,7 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact instanceof IATSArtifact && (!artifact.isHistorical())) {
+      if (artifact instanceof IATSArtifact && !artifact.isHistorical()) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

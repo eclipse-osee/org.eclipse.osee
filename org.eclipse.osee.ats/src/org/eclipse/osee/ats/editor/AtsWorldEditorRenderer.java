@@ -29,16 +29,11 @@ import org.eclipse.swt.graphics.Image;
 public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atsworldeditor.command";
 
-   /**
-    * @param rendererId
-    */
-   public AtsWorldEditorRenderer() {
-      super();
-   }
-
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (artifact.isHistorical()) return NO_MATCH;
+      if (artifact.isHistorical()) {
+         return NO_MATCH;
+      }
       if (artifact instanceof IATSArtifact) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
