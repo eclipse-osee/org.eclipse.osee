@@ -693,6 +693,10 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return getSoleAttributeValue(attributeType.getName());
    }
 
+   public String getSoleAttributeValueAsString(IAttributeType attributeType, String defaultReturnValue) throws OseeCoreException, MultipleAttributesExist {
+      return getSoleAttributeValueAsString(attributeType.getName(), defaultReturnValue);
+   }
+
    /**
     * Return sole attribute string value for given attribute type name. Handles AttributeDoesNotExist case by returning
     * defaultReturnValue.<br>
