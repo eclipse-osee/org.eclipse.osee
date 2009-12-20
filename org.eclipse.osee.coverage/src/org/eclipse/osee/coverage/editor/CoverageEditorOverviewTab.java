@@ -71,6 +71,8 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
 
    public void refreshHtml() {
       final XResultData rd = new XResultData(false);
+      String ALL_COVERAGE_METHODS = " ALL Coverage Methods";
+      String ALL_TOP_FOLDERS = " ALL Top Folders";
       coveragePackageBase.getOverviewHtmlHeader(rd);
       rd.log("");
       rd.log(AHTML.getLabelValueStr("Total Coverage ",
@@ -83,7 +85,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       // Create headers
       List<String> headers = new ArrayList<String>();
       headers.add("");
-      headers.add(" ALL Top Folders");
+      headers.add(ALL_TOP_FOLDERS);
       Map<String, CoverageUnit> headerToCoverageUnit = new HashMap<String, CoverageUnit>();
       for (CoverageUnit coverageUnit : coveragePackageBase.getCoverageUnits()) {
          headers.add(coverageUnit.getName());
@@ -95,7 +97,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
 
       // Create rows
       List<String> rowNames = new ArrayList<String>();
-      rowNames.add(" ALL Coverage Methods");
+      rowNames.add(ALL_COVERAGE_METHODS);
       Map<String, CoverageMethodEnum> rowToCoverageMethodEnum = new HashMap<String, CoverageMethodEnum>();
       for (CoverageMethodEnum coverageMethodEnum : CoverageMethodEnum.values()) {
          rowNames.add(coverageMethodEnum.name());
@@ -111,9 +113,9 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
                values.add(AHTML.bold(rowName));
             }
             // Show totals for ALL and Each CoverageMethodEnum
-            else if (header.equals(" ALL Top Folders")) {
+            else if (header.equals(ALL_TOP_FOLDERS)) {
                // Show totals for full coverage package
-               if (rowName.equals(" ALL Coverage Methods")) {
+               if (rowName.equals(ALL_COVERAGE_METHODS)) {
                   values.add(AHTML.bold(CoverageMetrics.getPercent(
                         coveragePackageBase.getCoverageItemsCovered().size(),
                         coveragePackageBase.getCoverageItems().size()).getSecond()));
@@ -133,7 +135,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
             // Show totals for ALL by top CoverageUnit and each CoverageMethodEnum by top CoverageUnit
             else {
                CoverageUnit coverageUnit = headerToCoverageUnit.get(header);
-               if (rowName.equals("ALL")) {
+               if (rowName.equals(ALL_COVERAGE_METHODS)) {
                   int totalCoverageItems = coverageUnit.getCoverageItems(true).size();
                   if (totalCoverageItems == 0) {
                      values.add("0");

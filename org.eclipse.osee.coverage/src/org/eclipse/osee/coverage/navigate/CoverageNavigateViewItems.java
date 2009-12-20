@@ -78,6 +78,7 @@ public class CoverageNavigateViewItems extends XNavigateViewItems {
       }
       if (CoverageUtil.isAdmin()) {
          items.add(new DoesNotWorkItemCoverage());
+         items.add(new CreateTestCoverageUnits());
       }
    }
 
