@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
+import org.eclipse.osee.framework.ui.skynet.util.ElapsedTime;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -163,7 +164,10 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
 
    @Override
    public Result save() throws OseeCoreException {
-      return OseeCoverageStore.get(coveragePackageBase).save();
+      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save");
+      Result result = OseeCoverageStore.get(coveragePackageBase).save();
+      elapsedTime.end();
+      return result;
    }
 
 }

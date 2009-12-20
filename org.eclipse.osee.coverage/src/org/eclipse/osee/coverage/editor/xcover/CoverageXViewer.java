@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.util.ElapsedTime;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -251,7 +252,9 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
 
    @Override
    public void update(Object element) {
+      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - update");
       xCoverageViewer.getXViewer().update(element, null);
+      elapsedTime.end();
    }
 
    @Override
@@ -261,7 +264,10 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
 
    @Override
    public Result save() throws OseeCoreException {
-      return xCoverageViewer.getSaveable().save();
+      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save");
+      Result result = xCoverageViewer.getSaveable().save();
+      elapsedTime.end();
+      return result;
    }
 
    @Override
