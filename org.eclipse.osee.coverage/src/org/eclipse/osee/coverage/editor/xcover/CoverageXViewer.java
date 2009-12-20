@@ -264,10 +264,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
 
    @Override
    public Result save() throws OseeCoreException {
-      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save");
-      Result result = xCoverageViewer.getSaveable().save();
-      elapsedTime.end();
-      return result;
+      return xCoverageViewer.getSaveable().save();
    }
 
    @Override

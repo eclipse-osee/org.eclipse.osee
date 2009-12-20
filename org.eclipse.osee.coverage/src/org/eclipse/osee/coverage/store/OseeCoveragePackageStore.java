@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.util.ElapsedTime;
 
 /**
  * @author Donald G. Dunne
@@ -52,8 +53,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          coveragePackage.setName(artifact.getName());
          coveragePackage.setEditable(artifact.getSoleAttributeValue(CoverageAttributes.ACTIVE.getStoreName(), true));
          for (Artifact childArt : artifact.getChildren()) {
-            if (childArt.isOfType(OseeCoverageUnitStore.ARTIFACT_NAME) || childArt.isOfType(
-                  OseeCoverageUnitStore.ARTIFACT_FOLDER_NAME)) {
+            if (childArt.isOfType(OseeCoverageUnitStore.ARTIFACT_NAME) || childArt.isOfType(OseeCoverageUnitStore.ARTIFACT_FOLDER_NAME)) {
                coveragePackage.addCoverageUnit(OseeCoverageUnitStore.get(coveragePackage, childArt));
             }
          }
@@ -62,8 +62,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
 
    public Result save(SkynetTransaction transaction) throws OseeCoreException {
       getArtifact(true);
-      System.out.println("save coveragePackage " + coveragePackage.getGuid());
-
+      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save");
       artifact.setName(coveragePackage.getName());
       artifact.setSoleAttributeValue(CoverageAttributes.ACTIVE.getStoreName(), coveragePackage.isEditable().isTrue());
       for (CoverageUnit coverageUnit : coveragePackage.getCoverageUnits()) {
@@ -75,6 +74,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          }
       }
       artifact.persist(transaction);
+      elapsedTime.end();
       return Result.TrueResult;
    }
 
