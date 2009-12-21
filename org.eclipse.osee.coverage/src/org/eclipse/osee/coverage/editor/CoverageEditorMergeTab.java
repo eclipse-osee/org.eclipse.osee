@@ -28,13 +28,15 @@ import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryImport
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryPackage;
 import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.merge.MergeImportManager;
 import org.eclipse.osee.coverage.merge.IMergeItem;
+import org.eclipse.osee.coverage.merge.MergeImportManager;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.merge.MessageMergeItem;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -379,6 +381,11 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    @Override
    public Result save() throws OseeCoreException {
       return OseeCoverageStore.get(coveragePackage).save();
+   }
+
+   @Override
+   public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+      return ((OseeCoveragePackageStore) OseeCoverageStore.get(coveragePackage)).save(coverages);
    }
 
 }

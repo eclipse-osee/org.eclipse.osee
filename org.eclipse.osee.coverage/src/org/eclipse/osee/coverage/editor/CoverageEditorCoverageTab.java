@@ -9,6 +9,7 @@
  */
 package org.eclipse.osee.coverage.editor;
 
+import java.util.Collection;
 import java.util.Set;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -21,6 +22,7 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.MessageCoverageItem;
+import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
@@ -164,6 +166,11 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
    @Override
    public Result save() throws OseeCoreException {
       return OseeCoverageStore.get(coveragePackageBase).save();
+   }
+
+   @Override
+   public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+      return ((OseeCoveragePackageStore) OseeCoverageStore.get(coveragePackageBase)).save(coverages);
    }
 
 }

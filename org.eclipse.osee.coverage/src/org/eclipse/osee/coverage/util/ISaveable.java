@@ -5,6 +5,8 @@
  */
 package org.eclipse.osee.coverage.util;
 
+import java.util.Collection;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -14,6 +16,8 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 public interface ISaveable {
 
    public Result save() throws OseeCoreException;
+
+   public Result save(Collection<ICoverage> coverages) throws OseeCoreException;
 
    public Result isEditable();
 }

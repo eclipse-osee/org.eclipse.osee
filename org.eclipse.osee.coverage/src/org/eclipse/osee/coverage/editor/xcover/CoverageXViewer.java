@@ -273,4 +273,9 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       xCoverageViewer.getXViewer().reveal(new StructuredSelection(item));
    }
 
+   @Override
+   public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+      return xCoverageViewer.getSaveable().save(coverages);
+   }
+
 }

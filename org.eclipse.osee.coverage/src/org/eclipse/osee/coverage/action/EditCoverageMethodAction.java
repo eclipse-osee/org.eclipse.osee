@@ -5,6 +5,8 @@
  */
 package org.eclipse.osee.coverage.action;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -63,19 +65,20 @@ public class EditCoverageMethodAction extends Action {
 
       CoverageMethodListDialog dialog = new CoverageMethodListDialog(CoverageMethodEnum.getCollection());
       if (dialog.open() == 0) {
+         Set<ICoverage> coveragesToSave = new HashSet<ICoverage>();
          for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
             if (coverageItem instanceof CoverageItem) {
                ((CoverageItem) coverageItem).setCoverageMethod((CoverageMethodEnum) dialog.getFirstResult());
                refreshable.update(coverageItem);
+               coveragesToSave.add(coverageItem);
             }
          }
-      }
-      try {
-         saveable.save();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         return;
+         try {
+            saveable.save(coveragesToSave);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            return;
+         }
       }
    }
-
 }

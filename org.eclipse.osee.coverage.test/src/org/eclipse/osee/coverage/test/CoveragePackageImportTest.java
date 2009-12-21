@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.coverage.test;
 
+import java.util.Collection;
 import junit.framework.Assert;
 import org.eclipse.osee.coverage.merge.IMergeItem;
 import org.eclipse.osee.coverage.merge.MergeImportManager;
@@ -16,6 +17,7 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
@@ -111,6 +113,11 @@ public class CoveragePackageImportTest {
             return Result.TrueResult;
          }
 
+         @Override
+         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+            return Result.TrueResult;
+         }
+
       }, mergeManager.getMergeItems());
       Assert.assertEquals(1, resultData.getNumErrors());
 
@@ -123,6 +130,11 @@ public class CoveragePackageImportTest {
 
          @Override
          public Result save() throws OseeCoreException {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
             return Result.TrueResult;
          }
 
@@ -238,6 +250,11 @@ public class CoveragePackageImportTest {
             return Result.TrueResult;
          }
 
+         @Override
+         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+            return Result.TrueResult;
+         }
+
       }, mergeManager.getMergeItems());
       Assert.assertEquals(0, resultData.getNumErrors());
 
@@ -321,6 +338,11 @@ public class CoveragePackageImportTest {
 
          @Override
          public Result save() throws OseeCoreException {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
             return Result.TrueResult;
          }
 
@@ -422,6 +444,11 @@ public class CoveragePackageImportTest {
 
          @Override
          public Result save() throws OseeCoreException {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
             return Result.TrueResult;
          }
 

@@ -73,18 +73,20 @@ public class EditCoverageNotesAction extends Action {
          ed.setEntry(rationale.iterator().next());
       }
       if (ed.open() == 0) {
+         Set<ICoverage> coveragesToSave = new HashSet<ICoverage>();
          for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
             if (coverageItem instanceof CoverageUnit) {
                ((CoverageUnit) coverageItem).setNotes(ed.getEntry());
                refreshable.update(coverageItem);
+               coveragesToSave.add(coverageItem);
             }
          }
-      }
-      try {
-         saveable.save();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         return;
+         try {
+            saveable.save(coveragesToSave);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            return;
+         }
       }
    }
 

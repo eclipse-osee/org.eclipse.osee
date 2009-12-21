@@ -8,16 +8,18 @@ package org.eclipse.osee.coverage.test.model;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.merge.MergeImportManager;
 import org.eclipse.osee.coverage.merge.IMergeItem;
+import org.eclipse.osee.coverage.merge.MergeImportManager;
 import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.test.SampleJavaFileParser;
 import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
@@ -112,6 +114,11 @@ public class CoverageUnitPersistTest {
 
             @Override
             public Result isEditable() {
+               return Result.TrueResult;
+            }
+
+            @Override
+            public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
                return Result.TrueResult;
             }
          }, mergeItems);

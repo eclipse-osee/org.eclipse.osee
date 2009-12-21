@@ -80,13 +80,15 @@ public class EditAssigneesAction extends Action {
          uld.setMessage("Select to assign.\nDeSelect to un-assign.");
          if (uld.open() == 0) {
             Collection<User> users = uld.getUsersSelected();
+            Set<ICoverage> coveragesToSave = new HashSet<ICoverage>();
             for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
                if (coverageItem.isAssignable()) {
                   OseeCoverageUnitStore.setAssignees(((CoverageUnit) coverageItem), users);
                   refreshable.update(coverageItem);
+                  coveragesToSave.add(coverageItem);
                }
             }
-            saveable.save();
+            saveable.save(coveragesToSave);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

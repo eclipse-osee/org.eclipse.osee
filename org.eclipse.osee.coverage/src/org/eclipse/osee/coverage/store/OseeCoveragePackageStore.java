@@ -6,11 +6,17 @@
 package org.eclipse.osee.coverage.store;
 
 import java.util.Collection;
+import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -78,6 +84,24 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       return Result.TrueResult;
    }
 
+   public Result save(SkynetTransaction transaction, Collection<ICoverage> coverages) throws OseeCoreException {
+      ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save(coverages)");
+      for (ICoverage coverage : coverages) {
+         CoverageUnit coverageUnit = null;
+         if (coverage instanceof CoverageItem) {
+            coverageUnit = ((CoverageItem) coverage).getCoverageUnit();
+         } else if (coverage instanceof CoverageUnit) {
+            coverageUnit = ((CoverageUnit) coverage);
+         } else {
+            throw new OseeArgumentException("Unhandled coverage type");
+         }
+         OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit);
+         store.save(transaction);
+      }
+      elapsedTime.end();
+      return Result.TrueResult;
+   }
+
    public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
       if (getArtifact(false) != null) {
          if (purge)
@@ -97,6 +121,19 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
 
    public static Collection<Artifact> getCoveragePackageArtifacts() throws OseeCoreException {
       return ArtifactQuery.getArtifactListFromType(OseeCoveragePackageStore.ARTIFACT_NAME, CoverageUtil.getBranch());
+   }
+
+   public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+      try {
+         SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Coverage Save");
+         save(transaction, coverages);
+         transaction.execute();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         return new Result("Save Failed: " + ex.getLocalizedMessage());
+      }
+      return Result.TrueResult;
+
    }
 
 }
