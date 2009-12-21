@@ -20,8 +20,10 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -34,6 +36,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.part.ViewPart;
 
@@ -90,7 +93,36 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
       createActions();
       xNavComp.refresh();
 
+      Label label = new Label(xNavComp, SWT.None);
+      String str = getWhoAmI();
+      if (CoverageUtil.isAdmin()) {
+         str += " - Admin";
+      }
+      if (!str.equals("")) {
+         if (CoverageUtil.isAdmin()) {
+            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+         } else {
+            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+         }
+      }
+      label.setText(str);
+      label.setToolTipText(str);
+      GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_CENTER);
+      gridData.heightHint = 15;
+      label.setLayoutData(gridData);
+
       addExtensionPointListenerBecauseOfWorkspaceLoading();
+   }
+
+   private String getWhoAmI() {
+      try {
+         String userName = UserManager.getUser().getName();
+         return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
+               ClientSessionManager.getDataStoreLoginName());
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return "Exception: " + ex.getLocalizedMessage();
+      }
    }
 
    private void addExtensionPointListenerBecauseOfWorkspaceLoading() {
