@@ -45,15 +45,18 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
    @Override
    public Object execute(ExecutionEvent event) {
-      viewWordChangeReport(changes);
+      viewWordChangeReport(changes, false, null);
       return null;
    }
 
-   public void viewWordChangeReport(Collection<Change> changes) {
+   public void viewWordChangeReport(Collection<Change> changes, boolean suppressWord, String diffReportFolderName) {
       ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>(changes.size());
       ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>(changes.size());
       VariableMap variableMap = new VariableMap();
       String fileName = null;
+
+      variableMap.setValue("suppressWord", suppressWord);
+      variableMap.setValue("diffReportFolderName", diffReportFolderName);
 
       for (Change artifactChange : changes) {
          try {

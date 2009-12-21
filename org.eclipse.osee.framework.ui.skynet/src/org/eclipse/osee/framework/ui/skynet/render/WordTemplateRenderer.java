@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -87,13 +88,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    private Set<Artifact> artifacts = new HashSet<Artifact>();
 
    private final WordTemplateProcessor templateProcessor = new WordTemplateProcessor(this);
-
-   /**
-    * @param rendererId
-    */
-   public WordTemplateRenderer() {
-      super();
-   }
 
    @Override
    public List<String> getCommandId(PresentationType presentationType) {
@@ -148,7 +142,11 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                monitor.beginTask("Word Change Report ", newerArtifact.size() * 2);
                ArrayList<String> fileNames = new ArrayList<String>(newerArtifact.size());
                IFolder baseFolder = getRenderFolder(branch, PresentationType.DIFF);
-               IFolder changeReportFolder = OseeData.getFolder(".diff/" + GUID.create());
+               String reportDirName = getStringOption("diffReportFolderName");
+               if (!Strings.isValid(reportDirName)) {
+                  reportDirName = GUID.create();
+               }
+               IFolder changeReportFolder = OseeData.getFolder(".diff/" + reportDirName);
                String baseFileStr = "c:/UserData";
                String localFileName = null;
 
@@ -212,7 +210,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                }
                monitor.setTaskName("Running Diff Script");
                if (!baseFileStr.equals("c:/UserData")) {
-                  generator.finish(baseFileStr + "/compareDocs.vbs", true);
+                  generator.finish(baseFileStr + "/compareDocs.vbs", !getBooleanOption("suppressWord"));
                }
                // Let the user know that these artifacts had tracked changes on and we are not handling them
                // Also, list these artifacts in an artifact explorer

@@ -30,7 +30,8 @@ Require-Bundle: javax.mail.glassfish,
  org.eclipse.ui.views,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.update.core,
- org.eclipse.zest.core
+ org.eclipse.zest.core,
+ org.eclipse.osee.framework.jdk.core
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: com.lowagie.text,
@@ -51,6 +52,7 @@ Import-Package: com.lowagie.text,
  org.eclipse.osee.framework.database.init,
  org.eclipse.osee.framework.database.sql,
  org.eclipse.osee.framework.jdk.core.text.change,
+ org.eclipse.osee.framework.jdk.core.text.rules,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io,

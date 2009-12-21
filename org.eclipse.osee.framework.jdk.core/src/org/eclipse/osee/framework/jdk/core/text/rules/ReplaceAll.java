@@ -24,8 +24,10 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  * @author Ryan D. Brooks
  */
 public class ReplaceAll extends Rule {
-   private Pattern pattern;
-   private char[][] replacements;
+   private static Pattern backReferencePattern = Pattern.compile("\\\\(\\d)");
+   private final Pattern pattern;
+   private final String[] replacements;
+   private final Matcher backReferenceMatcher = backReferencePattern.matcher("");
 
    public ReplaceAll(Pattern pattern, String replacement) {
       this(pattern, new String[] {replacement});
@@ -34,10 +36,10 @@ public class ReplaceAll extends Rule {
    public ReplaceAll(Pattern pattern, String[] replacements) {
       super(null); // don't change extension on resulting file (i.e. overwrite the original file)
       this.pattern = pattern;
-      this.replacements = new char[replacements.length][];
+      this.replacements = new String[replacements.length];
       for (int i = 0; i < replacements.length; i++) {
          char[] chars = replacements[i].toCharArray();
-         this.replacements[i] = ChOps.embedNewLines(chars, 0, chars.length);
+         this.replacements[i] = new String(ChOps.embedNewLines(chars, 0, chars.length));
       }
    }
 
@@ -49,6 +51,7 @@ public class ReplaceAll extends Rule {
       this(Pattern.compile(patternStr), replacement);
    }
 
+   @Override
    public ChangeSet computeChanges(CharSequence seq) {
       Matcher matcher = pattern.matcher(seq);
 
@@ -64,6 +67,10 @@ public class ReplaceAll extends Rule {
             for (int i = 0; i < numGroups; i++) {
                int start = matcher.start(i + 1);
                if (start > -1) {
+                  backReferenceMatcher.reset(replacements[i]);
+                  if (backReferenceMatcher.matches()) {
+                     replacements[i] = matcher.group(Integer.parseInt(backReferenceMatcher.group(1)));
+                  }
                   changeSet.replace(start, matcher.end(i + 1), replacements[i]);
                }
             }

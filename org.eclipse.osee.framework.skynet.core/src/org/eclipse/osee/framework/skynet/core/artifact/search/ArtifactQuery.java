@@ -419,9 +419,14 @@ public class ArtifactQuery {
             30, null);
    }
 
-   public static List<Artifact> getArtifactListFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, Collection<String> attributeValues, IOseeBranch branch, int artifactCountEstimate) throws OseeCoreException {
-      return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL,
-            new AttributeCriteria(attributeTypeName, attributeValues)).getArtifacts(artifactCountEstimate, null);
+   public static List<Artifact> getArtifactListFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, Collection<String> attributeValues, IOseeBranch branch, int artifactCountEstimate) throws OseeCoreException {
+      return new ArtifactQueryBuilder(artifactType, branch, FULL, new AttributeCriteria(attributeType, attributeValues)).getArtifacts(
+            artifactCountEstimate, null);
+   }
+
+   public static List<Artifact> getArtifactListFromAttributeValues(IAttributeType attributeType, Collection<String> attributeValues, IOseeBranch branch, int artifactCountEstimate) throws OseeCoreException {
+      return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeType, attributeValues)).getArtifacts(
+            artifactCountEstimate, null);
    }
 
    /**

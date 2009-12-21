@@ -66,7 +66,9 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       return "Select parameters below and click the play button at the top right.";
    }
 
-   public abstract String getName();
+   public String getName() {
+      return getClass().getSimpleName();
+   }
 
    public void setOutput(Appendable output) {
       this.output = output;

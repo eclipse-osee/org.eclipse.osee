@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -25,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
  */
 public class AttributeCriteria extends AbstractArtifactSearchCriteria {
 
-   private final AttributeType attributeType;
+   private final IAttributeType attributeType;
    private String value;
    private Collection<String> values;
    private String txsAlias;
@@ -47,7 +48,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       this(attributeTypeName, value, false);
    }
 
-   public AttributeCriteria(AttributeType attributeType, String value) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public AttributeCriteria(IAttributeType attributeType, String value) throws OseeDataStoreException, OseeTypeDoesNotExist {
       this(attributeType, value, null, false, Operator.EQUAL);
    }
 
@@ -72,6 +73,10 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * @param values
     * @throws OseeCoreException
     */
+   public AttributeCriteria(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
+      this(attributeType, null, values, false, Operator.EQUAL);
+   }
+
    public AttributeCriteria(String attributeTypeName, Collection<String> values) throws OseeCoreException {
       this(toAttributeType(attributeTypeName), null, values, false, Operator.EQUAL);
    }
@@ -107,7 +112,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       return attributeTypeName == null ? null : AttributeTypeManager.getType(attributeTypeName);
    }
 
-   public AttributeCriteria(AttributeType attributeType, String value, Collection<String> values, boolean historical, Operator operator) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public AttributeCriteria(IAttributeType attributeType, String value, Collection<String> values, boolean historical, Operator operator) throws OseeDataStoreException, OseeTypeDoesNotExist {
       this.attributeType = attributeType;
 
       if (values == null) {
@@ -139,7 +144,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       if (attributeType != null) {
          builder.append(attrAlias);
          builder.append(".attr_type_id=? AND ");
-         builder.addParameter(attributeType.getId());
+         builder.addParameter(AttributeTypeManager.getTypeId(attributeType));
       }
       if (value != null) {
          builder.append(attrAlias);
