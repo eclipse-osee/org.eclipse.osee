@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.coverage.model.ICoverage;
-import org.eclipse.osee.coverage.util.CoverageMetrics;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
@@ -59,7 +59,7 @@ public class MergeItemGroup extends MergeItemBase {
       for (ICoverage coverage : children) {
          if (coverage.isCovered()) covered.add(coverage);
       }
-      return CoverageMetrics.getPercent(covered.size(), children.size()).getFirst();
+      return CoverageUtil.getPercent(covered.size(), children.size()).getFirst();
    }
 
    @Override
@@ -69,7 +69,7 @@ public class MergeItemGroup extends MergeItemBase {
       for (ICoverage coverage : children) {
          if (coverage.isCovered()) covered.add(coverage);
       }
-      return CoverageMetrics.getPercent(covered.size(), children.size()).getSecond();
+      return CoverageUtil.getPercent(covered.size(), children.size()).getSecond();
    }
 
    @Override

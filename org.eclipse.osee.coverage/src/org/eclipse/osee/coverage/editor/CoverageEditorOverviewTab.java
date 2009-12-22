@@ -13,7 +13,7 @@ import java.util.Map;
 import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
-import org.eclipse.osee.coverage.util.CoverageMetrics;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -76,7 +76,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       coveragePackageBase.getOverviewHtmlHeader(rd);
       rd.log("");
       rd.log(AHTML.getLabelValueStr("Total Coverage ",
-            CoverageMetrics.getPercent(coveragePackageBase.getCoverageItemsCovered().size(),
+            CoverageUtil.getPercent(coveragePackageBase.getCoverageItemsCovered().size(),
                   coveragePackageBase.getCoverageItems().size()).getSecond()));
       rd.log("");
       rd.log(AHTML.getLabelValueStr("Coverage Breakdown", ""));
@@ -116,7 +116,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
             else if (header.equals(ALL_TOP_FOLDERS)) {
                // Show totals for full coverage package
                if (rowName.equals(ALL_COVERAGE_METHODS)) {
-                  values.add(AHTML.bold(CoverageMetrics.getPercent(
+                  values.add(AHTML.bold(CoverageUtil.getPercent(
                         coveragePackageBase.getCoverageItemsCovered().size(),
                         coveragePackageBase.getCoverageItems().size()).getSecond()));
                }
@@ -127,7 +127,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
                      values.add("0");
                   } else {
                      CoverageOption CoverageOption = rowToCoverageOption.get(rowName);
-                     values.add(CoverageMetrics.getPercent(
+                     values.add(CoverageUtil.getPercent(
                            coveragePackageBase.getCoverageItemsCovered(CoverageOption).size(), totalCoverageItems).getSecond());
                   }
                }
@@ -140,7 +140,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
                   if (totalCoverageItems == 0) {
                      values.add("0");
                   } else {
-                     values.add(CoverageMetrics.getPercent(coverageUnit.getCoverageItemsCovered(true).size(),
+                     values.add(CoverageUtil.getPercent(coverageUnit.getCoverageItemsCovered(true).size(),
                            totalCoverageItems).getSecond());
                   }
                } else {
@@ -149,7 +149,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
                   if (totalCoverageItems == 0) {
                      values.add("0");
                   } else {
-                     values.add(CoverageMetrics.getPercent(
+                     values.add(CoverageUtil.getPercent(
                            coverageUnit.getCoverageItemsCovered(true, CoverageOption).size(), totalCoverageItems).getSecond());
                   }
                }

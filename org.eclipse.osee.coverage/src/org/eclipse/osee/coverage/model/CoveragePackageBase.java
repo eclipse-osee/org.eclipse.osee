@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.eclipse.osee.coverage.util.CoverageMetrics;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -62,11 +62,11 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
 
    @Override
    public String getCoveragePercentStr() {
-      return CoverageMetrics.getPercent(getCoverageItemsCovered().size(), getCoverageItems().size()).getSecond();
+      return CoverageUtil.getPercent(getCoverageItemsCovered().size(), getCoverageItems().size()).getSecond();
    }
 
    public int getCoveragePercent() {
-      return CoverageMetrics.getPercent(getCoverageItemsCovered().size(), getCoverageItems().size()).getFirst();
+      return CoverageUtil.getPercent(getCoverageItemsCovered().size(), getCoverageItems().size()).getFirst();
    }
 
    public List<CoverageItem> getCoverageItemsCovered() {

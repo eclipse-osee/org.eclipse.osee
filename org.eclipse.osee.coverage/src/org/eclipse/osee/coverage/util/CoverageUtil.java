@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -196,6 +197,18 @@ public class CoverageUtil {
          }
       }
       return items;
+   }
+
+   public static Pair<Integer, String> getPercent(int complete, int total) {
+      if (total == 0 || complete == 0) return new Pair<Integer, String>(0, getPercentString(0, complete, total));
+      Double percent = new Double(complete);
+      percent = percent / total;
+      percent = percent * 100;
+      return new Pair<Integer, String>(percent.intValue(), getPercentString(percent.intValue(), complete, total));
+   }
+
+   public static String getPercentString(int percent, int complete, int total) {
+      return String.format("%d%% %d/%d", percent, complete, total);
    }
 
 }
