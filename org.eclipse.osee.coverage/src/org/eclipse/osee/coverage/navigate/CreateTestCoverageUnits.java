@@ -13,7 +13,7 @@ package org.eclipse.osee.coverage.navigate;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -68,17 +68,21 @@ public class CreateTestCoverageUnits extends XNavigateItemAction {
             CoverageUnit test1CU = new CoverageUnit(topCoverageUnit, "test1.ada", "C:\\UserData\\");
             test1CU.setOrderNumber("1");
             test1CU.setNamespace("test");
-            CoverageItem item = new CoverageItem(test1CU, CoverageMethodEnum.Exception_Handling, "1");
+            CoverageItem item =
+                  new CoverageItem(test1CU, CoverageOptionManager.Exception_Handling, "1");
             item.setName("   System.out.println(\"this is a test\");");
-            item = new CoverageItem(test1CU, CoverageMethodEnum.Test_Unit, "2");
+            item =
+                  new CoverageItem(test1CU, CoverageOptionManager.Test_Unit, "2");
             item.setName("   System.out.println(\"this is a another test\");");
-            item = new CoverageItem(test1CU, CoverageMethodEnum.Not_Covered, "3");
+            item =
+                  new CoverageItem(test1CU, CoverageOptionManager.Not_Covered, "3");
             item.setName("   System.out.println(\"this is a third test\");");
 
             CoverageUnit test2CU = new CoverageUnit(topCoverageUnit, "test2.ada", "C:\\UserData\\");
             test2CU.setOrderNumber("2");
             test2CU.setNamespace("test");
-            item = new CoverageItem(test2CU, CoverageMethodEnum.Exception_Handling, "1");
+            item =
+                  new CoverageItem(test2CU, CoverageOptionManager.Exception_Handling, "1");
             item.setName("   System.out.println(\"this is just a test\");");
 
             store.save();

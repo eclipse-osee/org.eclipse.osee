@@ -30,9 +30,11 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    String guid = GUID.create();
    String name;
    boolean editable = true;
+   protected final CoverageOptionManager coverageOptionManager;
 
-   public CoveragePackageBase(String name) {
+   public CoveragePackageBase(String name, CoverageOptionManager coverageOptionManager) {
       this.name = name;
+      this.coverageOptionManager = coverageOptionManager;
    }
 
    public abstract Date getDate();
@@ -70,15 +72,15 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    public List<CoverageItem> getCoverageItemsCovered() {
       List<CoverageItem> items = new ArrayList<CoverageItem>();
       for (CoverageItem coverageItem : getCoverageItems()) {
-         if (coverageItem.getCoverageMethod() != CoverageMethodEnum.Not_Covered) {
+         if (coverageItem.getCoverageMethod() != CoverageOptionManager.Not_Covered) {
             items.add(coverageItem);
          }
       }
       return items;
    }
 
-   public List<CoverageItem> getCoverageItemsCovered(CoverageMethodEnum... coverageMethodEnum) {
-      return CoverageUtil.getCoverageItemsCovered(getCoverageItems(), coverageMethodEnum);
+   public List<CoverageItem> getCoverageItemsCovered(CoverageOption... CoverageOption) {
+      return CoverageUtil.getCoverageItemsCovered(getCoverageItems(), CoverageOption);
    }
 
    @Override
@@ -280,6 +282,10 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    @Override
    public String getOrderNumber() {
       return "";
+   }
+
+   public CoverageOptionManager getCoverageOptionManager() {
+      return coverageOptionManager;
    }
 
 }

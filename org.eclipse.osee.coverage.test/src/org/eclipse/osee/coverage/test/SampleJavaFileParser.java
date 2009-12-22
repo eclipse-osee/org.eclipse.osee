@@ -17,7 +17,7 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -70,7 +70,8 @@ public class SampleJavaFileParser {
                   CoverageUnit duplicateCoverageUnit = new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum);
                   duplicateCoverageUnit.setOrderNumber("2");
                   fileCoverageUnit.addCoverageUnit(duplicateCoverageUnit);
-                  CoverageItem item = new CoverageItem(duplicateCoverageUnit, CoverageMethodEnum.Not_Covered, "1");
+                  CoverageItem item =
+                        new CoverageItem(duplicateCoverageUnit, CoverageOptionManager.Not_Covered, "1");
                   item.setName("return super.getColumn(index)");
                   duplicateCoverageUnit.addCoverageItem(item);
                }
@@ -85,7 +86,7 @@ public class SampleJavaFileParser {
                boolean covered = !testUnits.equals("n");
                CoverageItem coverageItem =
                      new CoverageItem(coverageUnit,
-                           covered ? CoverageMethodEnum.Test_Unit : CoverageMethodEnum.Not_Covered, executeNum);
+                           covered ? CoverageOptionManager.Test_Unit : CoverageOptionManager.Not_Covered, executeNum);
                coverageUnit.setOrderNumber(methodNum);
                coverageItem.setName(lineText);
                coverageItem.setOrderNumber(executeNum);

@@ -12,7 +12,7 @@ import junit.framework.Assert;
 import org.eclipse.osee.coverage.editor.params.CoverageParameters;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
@@ -33,9 +33,11 @@ public class CoverageParametersTest {
 
    @Test
    public void testIsAssigneeMatch() throws Exception {
-      CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
+      CoverageParameters coverageParameters =
+            new CoverageParameters(new CoverageImport("test"));
       CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData");
-      CoverageItem item = new CoverageItem(unit, CoverageMethodEnum.Test_Unit, "1");
+      CoverageItem item =
+            new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause assignee search not specified
       Assert.assertTrue(coverageParameters.isAssigneeMatch(item));
@@ -54,9 +56,11 @@ public class CoverageParametersTest {
 
    @Test
    public void testIsRationaleMatch() throws Exception {
-      CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
+      CoverageParameters coverageParameters =
+            new CoverageParameters(new CoverageImport("test"));
       CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData");
-      CoverageItem item = new CoverageItem(unit, CoverageMethodEnum.Test_Unit, "1");
+      CoverageItem item =
+            new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause Rationale search not specified
       Assert.assertTrue(coverageParameters.isRationaleMatch(item));
@@ -75,9 +79,11 @@ public class CoverageParametersTest {
 
    @Test
    public void testIsNotesMatch() throws Exception {
-      CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
+      CoverageParameters coverageParameters =
+            new CoverageParameters(new CoverageImport("test"));
       CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData");
-      CoverageItem item = new CoverageItem(unit, CoverageMethodEnum.Test_Unit, "1");
+      CoverageItem item =
+            new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause notes search not specified
       Assert.assertTrue(coverageParameters.isNotesMatch(item));
@@ -100,34 +106,38 @@ public class CoverageParametersTest {
 
    @Test
    public void testIsCoverageMethodMatch() throws Exception {
-      CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
+      CoverageParameters coverageParameters =
+            new CoverageParameters(new CoverageImport("test"));
       CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData");
-      CoverageItem item = new CoverageItem(unit, CoverageMethodEnum.Test_Unit, "1");
+      CoverageItem item =
+            new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause coverageMethod search not specified
       Assert.assertTrue(coverageParameters.isCoverageMethodMatch(item));
       Assert.assertTrue(coverageParameters.isCoverageMethodMatch(unit));
 
-      coverageParameters.setCoverageMethods(Collections.singleton(CoverageMethodEnum.Exception_Handling));
+      coverageParameters.setCoverageMethods(Collections.singleton(CoverageOptionManager.Exception_Handling));
       // Won't match item cause item coverageMethod is null
       Assert.assertFalse(coverageParameters.isCoverageMethodMatch(item));
       // Will match unit cause unit doesn't store CoverageMethods
       Assert.assertTrue(coverageParameters.isCoverageMethodMatch(unit));
 
-      item.setCoverageMethod(CoverageMethodEnum.Exception_Handling);
+      item.setCoverageMethod(CoverageOptionManager.Exception_Handling);
       // Will match unit cause unit coverageMethod contains word test
       Assert.assertTrue(coverageParameters.isCoverageMethodMatch(item));
 
-      item.setCoverageMethod(CoverageMethodEnum.Test_Unit);
+      item.setCoverageMethod(CoverageOptionManager.Test_Unit);
       // Won't match unit cause unit coverageMethod does not contain test
       Assert.assertFalse(coverageParameters.isCoverageMethodMatch(item));
    }
 
    @Test
    public void testIsNameMatch() throws Exception {
-      CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
+      CoverageParameters coverageParameters =
+            new CoverageParameters(new CoverageImport("test"));
       CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData");
-      CoverageItem item = new CoverageItem(unit, CoverageMethodEnum.Test_Unit, "1");
+      CoverageItem item =
+            new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause name search not specified
       Assert.assertTrue(coverageParameters.isNameMatch(item));
@@ -156,9 +166,11 @@ public class CoverageParametersTest {
 
    @Test
    public void testIsNamespaceMatch() throws Exception {
-      CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
+      CoverageParameters coverageParameters =
+            new CoverageParameters(new CoverageImport("test"));
       CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData");
-      CoverageItem item = new CoverageItem(unit, CoverageMethodEnum.Test_Unit, "1");
+      CoverageItem item =
+            new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause Namespace search not specified
       Assert.assertTrue(coverageParameters.isNamespaceMatch(item));
@@ -195,10 +207,10 @@ public class CoverageParametersTest {
       Assert.assertEquals(60, coverageImport.getCoverageItemsCovered().size());
       Assert.assertEquals(121, coverageImport.getCoverageItems().size());
       Assert.assertEquals(49, coverageImport.getCoveragePercent());
-      Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageMethodEnum.Deactivated_Code).size());
-      Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageMethodEnum.Exception_Handling).size());
-      Assert.assertEquals(60, coverageImport.getCoverageItemsCovered(CoverageMethodEnum.Test_Unit).size());
-      Assert.assertEquals(61, coverageImport.getCoverageItemsCovered(CoverageMethodEnum.Not_Covered).size());
+      Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
+      Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
+      Assert.assertEquals(60, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
+      Assert.assertEquals(61, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       CoverageParameters coverageParameters = new CoverageParameters(coverageImport);
       Result result = coverageParameters.isParameterSelectionValid();
@@ -211,27 +223,28 @@ public class CoverageParametersTest {
       Assert.assertEquals(4, itemsAndParents.getSecond().size());
 
       // Exception_Handling
-      coverageParameters.setCoverageMethods(Collections.singleton(CoverageMethodEnum.Exception_Handling));
+      coverageParameters.setCoverageMethods(Collections.singleton(CoverageOptionManager.Exception_Handling));
       itemsAndParents = coverageParameters.performSearchGetResults();
       Assert.assertEquals(0, itemsAndParents.getFirst().size());
       Assert.assertEquals(0, itemsAndParents.getSecond().size());
 
       // Test_Unit
-      coverageParameters.setCoverageMethods(Collections.singleton(CoverageMethodEnum.Test_Unit));
+      coverageParameters.setCoverageMethods(Collections.singleton(CoverageOptionManager.Test_Unit));
       itemsAndParents = coverageParameters.performSearchGetResults();
       Assert.assertEquals(60, itemsAndParents.getFirst().size());
       Assert.assertEquals(4, itemsAndParents.getSecond().size());
       Assert.assertEquals(12, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
 
       // Not_Covered
-      coverageParameters.setCoverageMethods(Collections.singleton(CoverageMethodEnum.Not_Covered));
+      coverageParameters.setCoverageMethods(Collections.singleton(CoverageOptionManager.Not_Covered));
       itemsAndParents = coverageParameters.performSearchGetResults();
       Assert.assertEquals(61, itemsAndParents.getFirst().size());
       Assert.assertEquals(4, itemsAndParents.getSecond().size());
       Assert.assertEquals(12, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
 
       // Test_Unit and Not_Covered
-      coverageParameters.setCoverageMethods(Arrays.asList(CoverageMethodEnum.Not_Covered, CoverageMethodEnum.Test_Unit));
+      coverageParameters.setCoverageMethods(Arrays.asList(CoverageOptionManager.Not_Covered,
+            CoverageOptionManager.Test_Unit));
       itemsAndParents = coverageParameters.performSearchGetResults();
       Assert.assertEquals(121, itemsAndParents.getFirst().size());
       Assert.assertEquals(4, itemsAndParents.getSecond().size());

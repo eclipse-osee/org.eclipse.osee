@@ -8,6 +8,7 @@ package org.eclipse.osee.coverage.editor.xmerge;
 import org.eclipse.osee.coverage.editor.xcover.CoverageContentProvider;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
 import org.eclipse.osee.coverage.merge.MergeManager;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -25,8 +26,8 @@ public class XCoverageMergeViewer extends XCoverageViewer implements IRefreshAct
    private final CoverageMergeXViewerFactory coverageMergeXViewerFactory;
    private final MergeManager mergeManager;
 
-   public XCoverageMergeViewer(MergeManager mergeManager, ISaveable saveable, CoverageMergeXViewerFactory coverageMergeXViewerFactory, TableType tableType, TableType... types) {
-      super(saveable, tableType, types);
+   public XCoverageMergeViewer(MergeManager mergeManager, ISaveable saveable, CoverageMergeXViewerFactory coverageMergeXViewerFactory, CoverageOptionManager coverageOptionManager, TableType tableType, TableType... types) {
+      super(saveable, coverageOptionManager, tableType, types);
       this.mergeManager = mergeManager;
       this.coverageMergeXViewerFactory = coverageMergeXViewerFactory;
    }

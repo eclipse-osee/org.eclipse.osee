@@ -7,7 +7,7 @@ package org.eclipse.osee.coverage.test.model;
 
 import junit.framework.Assert;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -27,15 +27,19 @@ public class CoverageUnitTest {
    public void testSetup() {
       cu = new CoverageUnit(null, "Top CU", "C:/UserData/");
       cu.setOrderNumber("33");
-      ci1 = new CoverageItem(cu, CoverageMethodEnum.Test_Unit, "1");
+      ci1 =
+            new CoverageItem(cu, CoverageOptionManager.Test_Unit, "1");
       ci1.setName("this is text");
       childCu = new CoverageUnit(cu, "Child Coverage Unit", "C:\\UserData\\");
       childCu.setOrderNumber("1");
-      CoverageItem item = new CoverageItem(childCu, CoverageMethodEnum.Exception_Handling, "1");
+      CoverageItem item =
+            new CoverageItem(childCu, CoverageOptionManager.Exception_Handling, "1");
       childCu.addCoverageItem(item);
-      item = new CoverageItem(childCu, CoverageMethodEnum.Test_Unit, "2");
+      item =
+            new CoverageItem(childCu, CoverageOptionManager.Test_Unit, "2");
       childCu.addCoverageItem(item);
-      item = new CoverageItem(childCu, CoverageMethodEnum.Not_Covered, "3");
+      item =
+            new CoverageItem(childCu, CoverageOptionManager.Not_Covered, "3");
       childCu.addCoverageItem(item);
       cu.addCoverageUnit(childCu);
    }
@@ -188,14 +192,14 @@ public class CoverageUnitTest {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageUnit#getCoverageItemsCovered(boolean, org.eclipse.osee.coverage.model.CoverageMethodEnum[])}
+    * {@link org.eclipse.osee.coverage.model.CoverageUnit#getCoverageItemsCovered(boolean, org.eclipse.osee.coverage.model.CoverageOption[])}
     * .
     */
    @Test
-   public void testGetCoverageItemsCoveredBooleanCoverageMethodEnumArray() {
-      Assert.assertEquals(1, cu.getCoverageItemsCovered(false, CoverageMethodEnum.Test_Unit).size());
-      Assert.assertEquals(2, cu.getCoverageItemsCovered(true, CoverageMethodEnum.Test_Unit).size());
-      Assert.assertEquals(1, cu.getCoverageItemsCovered(true, CoverageMethodEnum.Not_Covered).size());
+   public void testGetCoverageItemsCoveredBooleanCoverageOptionArray() {
+      Assert.assertEquals(1, cu.getCoverageItemsCovered(false, CoverageOptionManager.Test_Unit).size());
+      Assert.assertEquals(2, cu.getCoverageItemsCovered(true, CoverageOptionManager.Test_Unit).size());
+      Assert.assertEquals(1, cu.getCoverageItemsCovered(true, CoverageOptionManager.Not_Covered).size());
    }
 
    /**
@@ -204,9 +208,9 @@ public class CoverageUnitTest {
    @Test
    public void testIsCovered() {
       Assert.assertFalse(cu.isCovered());
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Test_Unit, true);
+      CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Test_Unit, true);
       Assert.assertTrue(cu.isCovered());
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Not_Covered, true);
+      CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Not_Covered, true);
    }
 
    /**
@@ -294,9 +298,9 @@ public class CoverageUnitTest {
    @Test
    public void testGetCoverageItemsCoveredBoolean() {
       Assert.assertFalse(cu.isCovered());
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Test_Unit, true);
+      CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Test_Unit, true);
       Assert.assertTrue(cu.isCovered());
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Not_Covered, true);
+      CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Not_Covered, true);
    }
 
    /**
@@ -366,11 +370,11 @@ public class CoverageUnitTest {
     */
    @Test
    public void testGetCoveragePercentAndStr() {
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Not_Covered, true);
+      CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Not_Covered, true);
       Assert.assertFalse(cu.isCovered());
       Assert.assertEquals(0, cu.getCoveragePercent());
       Assert.assertEquals("0% 0/4", cu.getCoveragePercentStr());
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Test_Unit, true);
+      CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Test_Unit, true);
       Assert.assertEquals(100, cu.getCoveragePercent());
       Assert.assertEquals("100% 4/4", cu.getCoveragePercentStr());
    }

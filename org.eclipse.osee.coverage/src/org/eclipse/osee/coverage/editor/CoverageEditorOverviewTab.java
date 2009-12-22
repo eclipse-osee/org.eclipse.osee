@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.util.CoverageMetrics;
@@ -98,10 +98,10 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       // Create rows
       List<String> rowNames = new ArrayList<String>();
       rowNames.add(ALL_COVERAGE_METHODS);
-      Map<String, CoverageMethodEnum> rowToCoverageMethodEnum = new HashMap<String, CoverageMethodEnum>();
-      for (CoverageMethodEnum coverageMethodEnum : CoverageMethodEnum.values()) {
-         rowNames.add(coverageMethodEnum.name());
-         rowToCoverageMethodEnum.put(coverageMethodEnum.name(), coverageMethodEnum);
+      Map<String, CoverageOption> rowToCoverageOption = new HashMap<String, CoverageOption>();
+      for (CoverageOption option : coveragePackageBase.getCoverageOptionManager().get()) {
+         rowNames.add(option.getName());
+         rowToCoverageOption.put(option.getName(), option);
       }
       String rowsSorted[] = rowNames.toArray(new String[rowNames.size()]);
       Arrays.sort(rowsSorted);
@@ -112,7 +112,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
             if (header.equals("")) {
                values.add(AHTML.bold(rowName));
             }
-            // Show totals for ALL and Each CoverageMethodEnum
+            // Show totals for ALL and Each CoverageOption
             else if (header.equals(ALL_TOP_FOLDERS)) {
                // Show totals for full coverage package
                if (rowName.equals(ALL_COVERAGE_METHODS)) {
@@ -126,13 +126,13 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
                   if (totalCoverageItems == 0) {
                      values.add("0");
                   } else {
-                     CoverageMethodEnum coverageMethodEnum = rowToCoverageMethodEnum.get(rowName);
+                     CoverageOption CoverageOption = rowToCoverageOption.get(rowName);
                      values.add(CoverageMetrics.getPercent(
-                           coveragePackageBase.getCoverageItemsCovered(coverageMethodEnum).size(), totalCoverageItems).getSecond());
+                           coveragePackageBase.getCoverageItemsCovered(CoverageOption).size(), totalCoverageItems).getSecond());
                   }
                }
             }
-            // Show totals for ALL by top CoverageUnit and each CoverageMethodEnum by top CoverageUnit
+            // Show totals for ALL by top CoverageUnit and each CoverageOption by top CoverageUnit
             else {
                CoverageUnit coverageUnit = headerToCoverageUnit.get(header);
                if (rowName.equals(ALL_COVERAGE_METHODS)) {
@@ -144,13 +144,13 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
                            totalCoverageItems).getSecond());
                   }
                } else {
-                  CoverageMethodEnum coverageMethodEnum = rowToCoverageMethodEnum.get(rowName);
+                  CoverageOption CoverageOption = rowToCoverageOption.get(rowName);
                   int totalCoverageItems = coverageUnit.getCoverageItems(true).size();
                   if (totalCoverageItems == 0) {
                      values.add("0");
                   } else {
                      values.add(CoverageMetrics.getPercent(
-                           coverageUnit.getCoverageItemsCovered(true, coverageMethodEnum).size(), totalCoverageItems).getSecond());
+                           coverageUnit.getCoverageItemsCovered(true, CoverageOption).size(), totalCoverageItems).getSecond());
                   }
                }
             }

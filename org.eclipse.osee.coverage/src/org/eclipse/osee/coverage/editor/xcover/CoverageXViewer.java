@@ -32,6 +32,7 @@ import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactory;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.ISaveable;
@@ -72,12 +73,16 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    public void createMenuActions() {
       if (viewSourceAction == null) {
          viewSourceAction = new ViewSourceAction(this);
-         editMethodAction = new EditCoverageMethodAction(this, this, this);
+         editMethodAction = new EditCoverageMethodAction(this, this, this, this);
          editAssigneesAction = new EditAssigneesAction(this, this, this);
          editCoverageStatusAction = new EditCoverageNotesAction(this, this, this);
          editRationaleAction = new EditRationaleAction(this, this, this);
          deleteCoverUnitAction = new DeleteCoverUnitAction(this, this, this);
       }
+   }
+
+   public CoverageOptionManager getCoverageOptionManager() {
+      return xCoverageViewer.getCoverageOptionManager();
    }
 
    private boolean isEditRationaleEnabled() {

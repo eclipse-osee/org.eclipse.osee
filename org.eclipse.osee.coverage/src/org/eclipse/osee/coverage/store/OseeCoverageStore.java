@@ -6,8 +6,7 @@
 package org.eclipse.osee.coverage.store;
 
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.model.CoveragePackage;
-import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -34,16 +33,6 @@ public abstract class OseeCoverageStore extends CoverageStore {
       this.artifactTypeName = artifactTypeName;
    }
 
-   public static OseeCoverageStore get(ICoverage coverage) {
-      if (coverage instanceof CoveragePackage) {
-         return (new OseeCoveragePackageStore((CoveragePackage) coverage));
-      }
-      if (coverage instanceof CoverageUnit) {
-         return (new OseeCoverageUnitStore((CoverageUnit) coverage));
-      }
-      return null;
-   }
-
    public Artifact getArtifact(boolean create) throws OseeCoreException {
       if (artifact == null) {
          try {
@@ -63,7 +52,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
    public abstract void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException;
 
    @Override
-   public abstract void load() throws OseeCoreException;
+   public abstract void load(CoverageOptionManager coverageOptionManager) throws OseeCoreException;
 
    @Override
    public Result save() throws OseeCoreException {

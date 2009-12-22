@@ -7,7 +7,8 @@ package org.eclipse.osee.coverage.test.model;
 
 import junit.framework.Assert;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
+import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.BeforeClass;
@@ -24,23 +25,23 @@ public class CoverageItemTest {
    @BeforeClass
    public static void testSetup() {
       parent = new CoverageUnit(null, "Top", "C:/UserData/");
-      ci1 = new CoverageItem(parent, CoverageMethodEnum.Deactivated_Code, "1");
+      ci1 = new CoverageItem(parent, CoverageOptionManager.Deactivated_Code, "1");
       ci1.setName("this is text");
    }
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageItem#CoverageItem(org.eclipse.osee.coverage.model.CoverageUnit, org.eclipse.osee.coverage.model.CoverageMethodEnum, java.lang.String)}
+    * {@link org.eclipse.osee.coverage.model.CoverageItem#CoverageItem(org.eclipse.osee.coverage.model.CoverageUnit, org.eclipse.osee.coverage.model.CoverageOption, java.lang.String)}
     * .
     */
    @Test
-   public void testCoverageItemCoverageUnitCoverageMethodEnumString() {
+   public void testCoverageItemCoverageUnitCoverageOptionString() {
       Assert.assertNotNull(ci1);
-      ci2 = new CoverageItem(parent, CoverageMethodEnum.Exception_Handling, "2");
+      ci2 = new CoverageItem(parent, CoverageOptionManager.Exception_Handling, "2");
       Assert.assertNotNull(ci2);
-      ci3 = new CoverageItem(parent, CoverageMethodEnum.Test_Unit, "3");
+      ci3 = new CoverageItem(parent, CoverageOptionManager.Test_Unit, "3");
       Assert.assertNotNull(ci3);
-      ci4 = new CoverageItem(parent, CoverageMethodEnum.Not_Covered, "4");
+      ci4 = new CoverageItem(parent, CoverageOptionManager.Not_Covered, "4");
       Assert.assertNotNull(ci4);
    }
 
@@ -54,7 +55,7 @@ public class CoverageItemTest {
    @Test
    public void testCoverageItemCoverageUnitString() throws OseeCoreException {
       String xml = ci1.toXml();
-      CoverageItem ci = new CoverageItem(parent, xml);
+      CoverageItem ci = new CoverageItem(parent, xml, CoverageOptionManagerDefault.instance());
       Assert.assertEquals(ci1.getParent(), ci.getParent());
       Assert.assertEquals(ci1.getCoverageMethod(), ci.getCoverageMethod());
       Assert.assertEquals(ci1.getOrderNumber(), ci.getOrderNumber());
@@ -75,15 +76,15 @@ public class CoverageItemTest {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageItem#setCoverageMethod(org.eclipse.osee.coverage.model.CoverageMethodEnum)}
+    * {@link org.eclipse.osee.coverage.model.CoverageItem#setCoverageMethod(org.eclipse.osee.coverage.model.CoverageOption)}
     * .
     */
    @Test
    public void testSetGetCoverageMethod() {
-      ci1.setCoverageMethod(CoverageMethodEnum.Exception_Handling);
-      Assert.assertEquals(CoverageMethodEnum.Exception_Handling, ci1.getCoverageMethod());
-      ci1.setCoverageMethod(CoverageMethodEnum.Deactivated_Code);
-      Assert.assertEquals(CoverageMethodEnum.Deactivated_Code, ci1.getCoverageMethod());
+      ci1.setCoverageMethod(CoverageOptionManager.Exception_Handling);
+      Assert.assertEquals(CoverageOptionManager.Exception_Handling, ci1.getCoverageMethod());
+      ci1.setCoverageMethod(CoverageOptionManager.Deactivated_Code);
+      Assert.assertEquals(CoverageOptionManager.Deactivated_Code, ci1.getCoverageMethod());
    }
 
    /**
@@ -145,7 +146,7 @@ public class CoverageItemTest {
     */
    @Test
    public void testEqualsObject() throws OseeCoreException {
-      CoverageItem ci = new CoverageItem(parent, ci1.toXml());
+      CoverageItem ci = new CoverageItem(parent, ci1.toXml(), CoverageOptionManagerDefault.instance());
       Assert.assertEquals(ci, ci1);
    }
 
@@ -156,7 +157,7 @@ public class CoverageItemTest {
     */
    @Test
    public void testGetGuid() throws OseeCoreException {
-      CoverageItem ci = new CoverageItem(parent, ci1.toXml());
+      CoverageItem ci = new CoverageItem(parent, ci1.toXml(), CoverageOptionManagerDefault.instance());
       Assert.assertEquals(ci1.getGuid(), ci.getGuid());
    }
 
@@ -173,7 +174,7 @@ public class CoverageItemTest {
     */
    @Test
    public void testSetGuid() throws OseeCoreException {
-      CoverageItem ci = new CoverageItem(parent, ci1.toXml());
+      CoverageItem ci = new CoverageItem(parent, ci1.toXml(), CoverageOptionManagerDefault.instance());
       ci.setGuid("asdf");
       Assert.assertEquals("asdf", ci.getGuid());
    }
@@ -219,7 +220,7 @@ public class CoverageItemTest {
     */
    @Test
    public void testToXml() throws OseeCoreException {
-      CoverageItem ci = new CoverageItem(parent, ci1.toXml());
+      CoverageItem ci = new CoverageItem(parent, ci1.toXml(), CoverageOptionManagerDefault.instance());
       Assert.assertEquals(ci1.getGuid(), ci.getGuid());
       Assert.assertEquals(ci1.getOrderNumber(), ci.getOrderNumber());
       Assert.assertEquals(ci1.getCoverageMethod(), ci.getCoverageMethod());

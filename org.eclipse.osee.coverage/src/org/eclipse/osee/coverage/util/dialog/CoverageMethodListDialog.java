@@ -17,7 +17,7 @@ import java.util.Set;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -31,27 +31,27 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
  */
 public class CoverageMethodListDialog extends CheckedTreeSelectionDialog {
 
-   public CoverageMethodListDialog(Collection<CoverageMethodEnum> values) {
-      this(values, new ArrayList<CoverageMethodEnum>());
+   public CoverageMethodListDialog(Collection<CoverageOption> values) {
+      this(values, new ArrayList<CoverageOption>());
    }
 
-   public CoverageMethodListDialog(Collection<CoverageMethodEnum> values, Collection<CoverageMethodEnum> selected) {
+   public CoverageMethodListDialog(Collection<CoverageOption> values, Collection<CoverageOption> selected) {
       super(Display.getCurrent().getActiveShell(), labelProvider, new ArrayTreeContentProvider());
       setTitle("Select Coverage Method(s)");
       setMessage("Select Coverage Method(s)");
       setComparator(new ArtifactNameSorter());
       try {
-         setInput(values.toArray(new CoverageMethodEnum[values.size()]));
+         setInput(values.toArray(new CoverageOption[values.size()]));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      setInitialSelections(selected.toArray(new CoverageMethodEnum[selected.size()]));
+      setInitialSelections(selected.toArray(new CoverageOption[selected.size()]));
    }
 
-   public Set<CoverageMethodEnum> getSelected() {
-      Set<CoverageMethodEnum> selected = new HashSet<CoverageMethodEnum>();
+   public Set<CoverageOption> getSelected() {
+      Set<CoverageOption> selected = new HashSet<CoverageOption>();
       for (Object obj : getResult())
-         selected.add((CoverageMethodEnum) obj);
+         selected.add((CoverageOption) obj);
       return selected;
    }
 
@@ -62,8 +62,8 @@ public class CoverageMethodListDialog extends CheckedTreeSelectionDialog {
       }
 
       public String getText(Object element) {
-         if (element instanceof CoverageMethodEnum) {
-            return ((CoverageMethodEnum) element).toString();
+         if (element instanceof CoverageOption) {
+            return ((CoverageOption) element).getName();
          }
          return "Unknown";
       }

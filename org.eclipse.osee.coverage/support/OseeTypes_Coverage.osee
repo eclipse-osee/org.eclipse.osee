@@ -1,10 +1,5 @@
 import
 "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
-artifactType "Coverage Package" extends "General Data" {
-   guid "AARFcyA9zyD3uEK8akgA"
-   attribute "Active"
-}
-
 attributeType "coverage.Notes" extends StringAttribute {
    guid "AARERmIjazD1udUwfLgA"
    dataProvider DefaultAttributeDataProvider
@@ -12,6 +7,20 @@ attributeType "coverage.Notes" extends StringAttribute {
    max 1
    taggerId DefaultAttributeTaggerProvider
    fileExtension "txt"
+}
+
+attributeType "coverage.Coverage Options" extends StringAttribute {
+   guid "AAF+8+sqyELZ2mdVV_AA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   fileExtension "txt"
+}
+
+artifactType "Coverage Package" extends "General Data" {
+   guid "AARFcyA9zyD3uEK8akgA"
+   attribute "Active"
+   attribute "coverage.Coverage Options"
 }
 
 attributeType "coverage.File Contents" extends StringAttribute {

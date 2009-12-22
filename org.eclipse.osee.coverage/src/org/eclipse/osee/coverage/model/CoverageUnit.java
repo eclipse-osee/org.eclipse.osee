@@ -242,15 +242,15 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    public List<CoverageItem> getCoverageItemsCovered(boolean recurse) {
       List<CoverageItem> items = new ArrayList<CoverageItem>();
       for (CoverageItem coverageItem : getCoverageItems(recurse)) {
-         if (coverageItem.getCoverageMethod() != CoverageMethodEnum.Not_Covered) {
+         if (coverageItem.isCovered()) {
             items.add(coverageItem);
          }
       }
       return items;
    }
 
-   public List<CoverageItem> getCoverageItemsCovered(boolean recurse, CoverageMethodEnum... coverageMethodEnum) {
-      List<CoverageMethodEnum> coverageMethods = Collections.getAggregate(coverageMethodEnum);
+   public List<CoverageItem> getCoverageItemsCovered(boolean recurse, CoverageOption... CoverageOption) {
+      List<CoverageOption> coverageMethods = Collections.getAggregate(CoverageOption);
       List<CoverageItem> items = new ArrayList<CoverageItem>();
       for (CoverageItem coverageItem : getCoverageItems(recurse)) {
          if (coverageMethods.contains(coverageItem.getCoverageMethod())) {
@@ -304,7 +304,9 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       coverageUnit.setLocation(location);
       if (includeItems) {
          for (CoverageItem coverageItem : coverageItems) {
-            coverageUnit.addCoverageItem(new CoverageItem(coverageUnit, coverageItem.toXml()));
+            CoverageItem newCoverageItem =
+                  new CoverageItem(coverageUnit, coverageItem.toXml(), CoverageOptionManagerDefault.instance());
+            coverageUnit.addCoverageItem(newCoverageItem);
          }
       }
       return coverageUnit;
@@ -327,8 +329,8 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       this.folder = folder;
    }
 
-   public List<CoverageItem> getCoverageItemsCovered(CoverageMethodEnum... coverageMethodEnum) {
-      return CoverageUtil.getCoverageItemsCovered(getCoverageItems(), coverageMethodEnum);
+   public List<CoverageItem> getCoverageItemsCovered(CoverageOption... CoverageOption) {
+      return CoverageUtil.getCoverageItemsCovered(getCoverageItems(), CoverageOption);
    }
 
    public void updateAssigneesAndNotes(CoverageUnit coverageUnit) {

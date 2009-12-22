@@ -89,7 +89,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale)) return coverageItem.getRationale();
          if (xCol.equals(CoverageXViewerFactory.Method_Number)) return coverageItem.getParent().getOrderNumber();
          if (xCol.equals(CoverageXViewerFactory.Execution_Number)) return coverageItem.getOrderNumber();
-         if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) return coverageItem.getCoverageMethod().toString();
+         if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) return coverageItem.getCoverageMethod().getName();
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageItem.getCoverageUnit().getName();
          if (xCol.equals(CoverageXViewerFactory.Coverage_Test_Units)) return Collections.toString(", ",
                coverageItem.getTestUnits());

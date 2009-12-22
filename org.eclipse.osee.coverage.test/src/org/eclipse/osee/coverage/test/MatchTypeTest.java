@@ -8,7 +8,8 @@ package org.eclipse.osee.coverage.test;
 import org.eclipse.osee.coverage.merge.MatchType;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
+import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
@@ -22,10 +23,12 @@ import org.junit.Test;
 public class MatchTypeTest {
 
    public CoveragePackage getCoveragePackage() {
-      CoveragePackage coveragePackage = new CoveragePackage("Package");
+      CoveragePackage coveragePackage =
+            new CoveragePackage("Package", CoverageOptionManagerDefault.instance());
       CoverageUnit packageCu = new CoverageUnit(coveragePackage, "Top", "C:/UserData/");
       packageCu.setNamespace("org.this");
-      CoverageItem packageCi = new CoverageItem(packageCu, CoverageMethodEnum.Deactivated_Code, "1");
+      CoverageItem packageCi =
+            new CoverageItem(packageCu, CoverageOptionManager.Deactivated_Code, "1");
       packageCi.setName("this is the text");
       CoverageUnit packageFolderCu = new CoverageUnit(coveragePackage, "folder", "");
       packageFolderCu.setFolder(true);
@@ -36,7 +39,8 @@ public class MatchTypeTest {
       CoverageImport coverageImport = new CoverageImport("Import");
       CoverageUnit importCu = new CoverageUnit(coverageImport, "Top", "C:/UserData/");
       importCu.setNamespace("org.this");
-      CoverageItem importCi = new CoverageItem(importCu, CoverageMethodEnum.Deactivated_Code, "1");
+      CoverageItem importCi =
+            new CoverageItem(importCu, CoverageOptionManager.Deactivated_Code, "1");
       importCi.setName("this is the text");
       CoverageUnit importFolderCu = new CoverageUnit(coverageImport, "folder", "");
       importFolderCu.setFolder(true);

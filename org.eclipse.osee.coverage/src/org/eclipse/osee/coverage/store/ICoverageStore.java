@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.coverage.store;
 
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -13,7 +14,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public interface ICoverageStore {
 
-   public abstract void load() throws OseeCoreException;
+   public abstract void load(CoverageOptionManager coverageOptionManager) throws OseeCoreException;
 
    public abstract Result save() throws OseeCoreException;
 

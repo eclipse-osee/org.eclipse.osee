@@ -12,6 +12,7 @@ package org.eclipse.osee.coverage.test.util;
 
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
+import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -34,7 +35,8 @@ public class CpCreateAndImportItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      coveragePackage = new CoveragePackage(getName() + " - #" + IncrementingNum.get());
+      coveragePackage =
+            new CoveragePackage(getName() + " - #" + IncrementingNum.get(), CoverageOptionManagerDefault.instance());
       CoverageEditor.open(new CoverageEditorInput(coveragePackage.getName(), null, coveragePackage, true));
       // Process Import 1
       CoverageEditor editor = null;

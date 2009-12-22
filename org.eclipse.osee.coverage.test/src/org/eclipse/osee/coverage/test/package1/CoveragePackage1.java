@@ -12,6 +12,7 @@ package org.eclipse.osee.coverage.test.package1;
 
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
+import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -32,7 +33,8 @@ public class CoveragePackage1 extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      CoveragePackage coveragePackage = new CoveragePackage("Coverage Package 1");
+      CoveragePackage coveragePackage =
+            new CoveragePackage("Coverage Package 1", CoverageOptionManagerDefault.instance());
       CoverageEditor.open(new CoverageEditorInput(coveragePackage.getName(), null, coveragePackage, true));
    }
 }

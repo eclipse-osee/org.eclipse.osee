@@ -17,6 +17,7 @@ import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -93,7 +94,7 @@ public class CoverageUnitPersistTest {
    @Test
    public void testASave() {
       try {
-         saveCoveragePackage = new CoveragePackage("CU Test");
+         saveCoveragePackage = new CoveragePackage("CU Test", CoverageOptionManagerDefault.instance());
          MergeManager mergeManager = new MergeManager(saveCoveragePackage, coverageImport);
          List<IMergeItem> mergeItems = new ArrayList<IMergeItem>();
          for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
@@ -104,7 +105,7 @@ public class CoverageUnitPersistTest {
 
             @Override
             public Result save() throws OseeCoreException {
-               OseeCoveragePackageStore store = new OseeCoveragePackageStore(saveCoveragePackage);
+               OseeCoveragePackageStore store = OseeCoveragePackageStore.get(saveCoveragePackage);
                store.save();
                Artifact artifact = store.getArtifact(false);
                CoverageTestUtil.registerAsTestArtifact(artifact, true);

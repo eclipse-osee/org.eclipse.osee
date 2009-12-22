@@ -22,12 +22,12 @@ public class CoveragePackage extends CoveragePackageBase implements ICoverage {
 
    Date creationDate;
 
-   public CoveragePackage(String name) {
-      this(name, new Date());
+   public CoveragePackage(String name, CoverageOptionManager coverageOptionManager) {
+      this(name, new Date(), coverageOptionManager);
    }
 
-   public CoveragePackage(String name, Date runDate) {
-      super(name);
+   public CoveragePackage(String name, Date runDate, CoverageOptionManager coverageOptionManager) {
+      super(name, coverageOptionManager);
       this.creationDate = runDate;
    }
 

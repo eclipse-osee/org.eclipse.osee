@@ -19,11 +19,11 @@ import org.eclipse.osee.coverage.editor.params.CoverageParametersTextFilter;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.MessageCoverageItem;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
-import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -97,7 +97,7 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
       coverageEditor.getToolkit().adapt(tableComp);
 
       xCoverageViewer =
-            new XCoverageViewer(this,
+            new XCoverageViewer(this, coveragePackageBase.getCoverageOptionManager(),
                   coveragePackageBase instanceof CoverageImport ? TableType.Import : TableType.Package);
       xCoverageViewer.setDisplayLabel(false);
       xCoverageViewer.createWidgets(managedForm, tableComp, 1);
@@ -165,12 +165,12 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
 
    @Override
    public Result save() throws OseeCoreException {
-      return OseeCoverageStore.get(coveragePackageBase).save();
+      return OseeCoveragePackageStore.get((CoveragePackage) coveragePackageBase).save();
    }
 
    @Override
    public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
-      return ((OseeCoveragePackageStore) OseeCoverageStore.get(coveragePackageBase)).save(coverages);
+      return ((OseeCoveragePackageStore) OseeCoveragePackageStore.get((CoveragePackage) coveragePackageBase)).save(coverages);
    }
 
 }

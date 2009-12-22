@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.OseeImage;
  */
 public class CoverageItem implements ICoverage {
 
-   CoverageMethodEnum coverageMethod = CoverageMethodEnum.Not_Covered;
+   CoverageOption coverageMethod = CoverageOptionManager.Not_Covered;
    String rationale;
    String orderNumber;
    String lineNum;
@@ -42,7 +42,7 @@ public class CoverageItem implements ICoverage {
    String guid = GUID.create();
    private static String PROPERTY_STORE_ID = "coverage.item";
 
-   public CoverageItem(CoverageUnit coverageUnit, CoverageMethodEnum coverageMethod, String orderNumber) {
+   public CoverageItem(CoverageUnit coverageUnit, CoverageOption coverageMethod, String orderNumber) {
       super();
       this.coverageUnit = coverageUnit;
       this.coverageMethod = coverageMethod;
@@ -52,9 +52,9 @@ public class CoverageItem implements ICoverage {
       }
    }
 
-   public CoverageItem(CoverageUnit parentCoverageUnit, String xml) throws OseeCoreException {
-      this(parentCoverageUnit, CoverageMethodEnum.Not_Covered, "0");
-      fromXml(xml);
+   public CoverageItem(CoverageUnit parentCoverageUnit, String xml, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
+      this(parentCoverageUnit, CoverageOptionManager.Not_Covered, "0");
+      fromXml(xml, coverageOptionManager);
    }
 
    /**
@@ -70,7 +70,7 @@ public class CoverageItem implements ICoverage {
       return coverageitem;
    }
 
-   public void fromXml(String xml) throws OseeCoreException {
+   public void fromXml(String xml, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       //      PropertyStoreRegEx store = new PropertyStoreRegEx();
       try {
@@ -81,7 +81,7 @@ public class CoverageItem implements ICoverage {
       if (!store.getId().equals(PROPERTY_STORE_ID)) {
          throw new OseeArgumentException(String.format("Invalid store id [%s] for CoverageItem", store.getId()));
       }
-      setCoverageMethod(CoverageMethodEnum.valueOf(store.get("methodType")));
+      setCoverageMethod(coverageOptionManager.get(store.get("methodType")));
       setOrderNumber(store.get("order"));
       setGuid(store.get("guid"));
       setName(store.get("name"));
@@ -102,11 +102,11 @@ public class CoverageItem implements ICoverage {
       testUnitNames.add(testUnitName);
    }
 
-   public CoverageMethodEnum getCoverageMethod() {
+   public CoverageOption getCoverageMethod() {
       return coverageMethod;
    }
 
-   public void setCoverageMethod(CoverageMethodEnum coverageMethod) {
+   public void setCoverageMethod(CoverageOption coverageMethod) {
       this.coverageMethod = coverageMethod;
    }
 
@@ -143,7 +143,7 @@ public class CoverageItem implements ICoverage {
 
    @Override
    public boolean isCovered() {
-      return getCoverageMethod() != CoverageMethodEnum.Not_Covered;
+      return !getCoverageMethod().getName().equals(CoverageOptionManager.Not_Covered.getName());
    }
 
    @Override
@@ -187,7 +187,7 @@ public class CoverageItem implements ICoverage {
          store.put("rationale", rationale);
       }
       store.put("order", orderNumber);
-      store.put("methodType", coverageMethod.toString());
+      store.put("methodType", coverageMethod.getName());
       store.put("testUnits", Collections.toString(";", testUnitNames));
       store.put("name", name);
       try {

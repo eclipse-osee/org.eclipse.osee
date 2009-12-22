@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -83,9 +83,9 @@ public class CoverageTestUtil {
             CoverageUtil.getBranch());
    }
 
-   public static void setAllCoverageMethod(CoverageUnit coverageUnit, CoverageMethodEnum coverageMethodEnum, boolean recurse) {
+   public static void setAllCoverageMethod(CoverageUnit coverageUnit, CoverageOption CoverageOption, boolean recurse) {
       for (CoverageItem item : coverageUnit.getCoverageItems(recurse)) {
-         item.setCoverageMethod(coverageMethodEnum);
+         item.setCoverageMethod(CoverageOption);
       }
    }
 }

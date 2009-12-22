@@ -34,7 +34,7 @@ public class CoverageImport extends CoveragePackageBase implements ICoverage {
    }
 
    public CoverageImport(String name, Date runDate) {
-      super(name);
+      super(name, CoverageOptionManagerDefault.instance());
       this.runDate = runDate;
    }
 

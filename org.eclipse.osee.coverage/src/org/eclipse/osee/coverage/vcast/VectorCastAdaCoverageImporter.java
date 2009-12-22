@@ -19,7 +19,7 @@ import java.util.Map.Entry;
 import org.eclipse.osee.coverage.ICoverageImporter;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.vcast.VcpResultsFile.ResultsValue;
 import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
@@ -93,7 +93,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                   methodCoverageUnit.setOrderNumber(String.valueOf(methodNum));
                   for (LineNumToBranches lineNumToBranches : coverageDataSubProgram.getLineNumToBranches()) {
                      CoverageItem coverageItem =
-                           new CoverageItem(methodCoverageUnit, CoverageMethodEnum.Not_Covered,
+                           new CoverageItem(methodCoverageUnit, CoverageOptionManager.Not_Covered,
                                  String.valueOf(lineNumToBranches.getLineNum()));
                      if (vectorCastCoverageImportProvider.isResolveExceptionHandling()) {
                         Pair<String, Boolean> lineData =
@@ -101,7 +101,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                                     String.valueOf(lineNumToBranches.getLineNum()));
                         coverageItem.setName(lineData.getFirst());
                         if (lineData.getSecond()) {
-                           coverageItem.setCoverageMethod(CoverageMethodEnum.Exception_Handling);
+                           coverageItem.setCoverageMethod(CoverageOptionManager.Exception_Handling);
                         }
                      }
                      methodCoverageUnit.addCoverageItem(coverageItem);
@@ -139,7 +139,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                            String.format("Can't retrieve method [%s] from coverageUnit [%s] for test unit [%s]",
                                  methodNum, coverageUnit, testUnitName));
                   } else {
-                     coverageItem.setCoverageMethod(CoverageMethodEnum.Test_Unit);
+                     coverageItem.setCoverageMethod(CoverageOptionManager.Test_Unit);
                      coverageItem.addTestUnitName(testUnitName);
                   }
                }
@@ -158,7 +158,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                         methodCoverageUnit.getCoverageItems(false).size(), coverageDataSubProgram.getTotal(),
                         methodCoverageUnit));
          }
-         if (methodCoverageUnit.getCoverageItemsCovered(false, CoverageMethodEnum.Test_Unit).size() != coverageDataSubProgram.getCovered()) {
+         if (methodCoverageUnit.getCoverageItemsCovered(false, CoverageOptionManager.Test_Unit).size() != coverageDataSubProgram.getCovered()) {
             coverageImport.getLog().logError(
                   String.format(
                         "Imported covered items [%s] doesn't match VectorCast covered items [%s] for coverage unit [%s]",

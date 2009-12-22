@@ -6,9 +6,10 @@
 package org.eclipse.osee.coverage.test.model;
 
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
+import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoverageUnit;
-import org.eclipse.osee.coverage.store.OseeCoverageStore;
+import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -46,7 +47,7 @@ public class CoverageItemPersistTest {
 
       parentCu = new CoverageUnit(null, "Top", "C:/UserData/");
       parentGuid = parentCu.getGuid();
-      ci = new CoverageItem(parentCu, CoverageMethodEnum.Deactivated_Code, "1");
+      ci = new CoverageItem(parentCu, CoverageOptionManager.Deactivated_Code, "1");
       for (int x = 0; x < 10; x++) {
          ci.addTestUnitName("Test Unit " + x);
       }
@@ -68,9 +69,9 @@ public class CoverageItemPersistTest {
          // do nothing
       }
 
-      Artifact artifact = OseeCoverageStore.get(parentCu).getArtifact(false);
+      Artifact artifact = (new OseeCoverageUnitStore(parentCu)).getArtifact(false);
       Assert.assertNull("Artifact should not have been created", artifact);
-      artifact = OseeCoverageStore.get(parentCu).getArtifact(true);
+      artifact = (new OseeCoverageUnitStore(parentCu)).getArtifact(true);
       CoverageTestUtil.registerAsTestArtifact(artifact);
       artifact.persist();
       Assert.assertNotNull("Artifact should have been created", artifact);
@@ -82,10 +83,10 @@ public class CoverageItemPersistTest {
     */
    @Test
    public void testSave() throws OseeCoreException {
-      Artifact artifact = OseeCoverageStore.get(parentCu).getArtifact(true);
+      Artifact artifact = (new OseeCoverageUnitStore(parentCu)).getArtifact(true);
       Assert.assertNotNull(artifact);
       SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Save CoverageItem");
-      OseeCoverageStore.get(parentCu).save(transaction);
+      (new OseeCoverageUnitStore(parentCu)).save(transaction);
       transaction.execute();
       Assert.assertEquals(10, ci.getTestUnits().size());
    }
@@ -95,11 +96,11 @@ public class CoverageItemPersistTest {
     */
    @Test
    public void testGetArtifact2() throws OseeCoreException {
-      OseeCoverageStore.get(parentCu).load();
+      OseeCoverageUnitStore.get(parentCu).load(CoverageOptionManagerDefault.instance());
       CoverageItem ci = parentCu.getCoverageItems().iterator().next();
       Assert.assertEquals(guid, ci.getGuid());
       Assert.assertEquals("1", ci.getOrderNumber());
-      Assert.assertEquals(CoverageMethodEnum.Deactivated_Code, ci.getCoverageMethod());
+      Assert.assertEquals(CoverageOptionManager.Deactivated_Code, ci.getCoverageMethod());
       Assert.assertEquals(10, ci.getTestUnits().size());
       Assert.assertEquals("this is text", ci.getFileContents());
       Assert.assertEquals("this is rationale", ci.getRationale());
@@ -113,12 +114,12 @@ public class CoverageItemPersistTest {
     */
    @Test
    public void testDelete() throws OseeCoreException {
-      Artifact artifact = OseeCoverageStore.get(parentCu).getArtifact(false);
+      Artifact artifact = (new OseeCoverageUnitStore(parentCu)).getArtifact(false);
       Assert.assertNotNull(artifact);
       SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Save CoverageItem");
-      OseeCoverageStore.get(parentCu).delete(transaction, false);
+      (new OseeCoverageUnitStore(parentCu)).delete(transaction, false);
       transaction.execute();
-      artifact = OseeCoverageStore.get(parentCu).getArtifact(false);
+      artifact = (new OseeCoverageUnitStore(parentCu)).getArtifact(false);
       Assert.assertTrue(artifact.isDeleted());
       Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
    }

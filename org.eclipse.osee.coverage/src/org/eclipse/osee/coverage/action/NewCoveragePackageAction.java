@@ -10,8 +10,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
-import org.eclipse.osee.coverage.store.OseeCoverageStore;
+import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -44,12 +45,13 @@ public class NewCoveragePackageAction extends Action {
          if (!CoverageUtil.getBranchFromUser(false)) return;
          EntryDialog dialog = new EntryDialog(getText(), "Enter Coverage Package Name");
          if (dialog.open() == 0) {
-            CoveragePackage coveragePackage = new CoveragePackage(dialog.getEntry());
+            CoveragePackage coveragePackage =
+                  new CoveragePackage(dialog.getEntry(), CoverageOptionManagerDefault.instance());
             SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Add Coverage Package");
-            OseeCoverageStore.get(coveragePackage).save(transaction);
+            OseeCoveragePackageStore.get(coveragePackage).save(transaction);
             transaction.execute();
             CoverageEditor.open(new CoverageEditorInput(dialog.getEntry(),
-                  OseeCoverageStore.get(coveragePackage).getArtifact(false), coveragePackage, false));
+                  OseeCoveragePackageStore.get(coveragePackage).getArtifact(false), coveragePackage, false));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

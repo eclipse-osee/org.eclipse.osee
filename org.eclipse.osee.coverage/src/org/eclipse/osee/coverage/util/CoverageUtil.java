@@ -16,7 +16,7 @@ import org.eclipse.osee.coverage.merge.MatchItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -187,8 +187,8 @@ public class CoverageUtil {
       }
    }
 
-   public static List<CoverageItem> getCoverageItemsCovered(List<CoverageItem> coverageItems, CoverageMethodEnum... coverageMethodEnum) {
-      List<CoverageMethodEnum> coverageMethods = Collections.getAggregate(coverageMethodEnum);
+   public static List<CoverageItem> getCoverageItemsCovered(List<CoverageItem> coverageItems, CoverageOption... CoverageOption) {
+      List<CoverageOption> coverageMethods = Collections.getAggregate(CoverageOption);
       List<CoverageItem> items = new ArrayList<CoverageItem>();
       for (CoverageItem coverageItem : coverageItems) {
          if (coverageMethods.contains(coverageItem.getCoverageMethod())) {

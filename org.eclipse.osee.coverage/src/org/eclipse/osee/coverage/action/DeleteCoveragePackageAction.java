@@ -10,7 +10,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
-import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -59,7 +58,7 @@ public class DeleteCoveragePackageAction extends Action {
                boolean purge = cDialog.isChecked();
                SkynetTransaction transaction = null;
                if (!purge) transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Delete Coverage Package");
-               OseeCoverageStore.get(coveragePackage).delete(transaction, purge);
+               OseeCoveragePackageStore.get(coveragePackage).delete(transaction, purge);
                if (!purge) transaction.execute();
             }
          }

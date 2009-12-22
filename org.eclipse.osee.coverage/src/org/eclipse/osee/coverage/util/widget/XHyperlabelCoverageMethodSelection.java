@@ -12,7 +12,8 @@ package org.eclipse.osee.coverage.util.widget;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOption;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.util.dialog.CoverageMethodListDialog;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -26,20 +27,20 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelec
 public class XHyperlabelCoverageMethodSelection extends XHyperlinkLabelCmdValueSelection {
 
    public static final String WIDGET_ID = XHyperlabelCoverageMethodSelection.class.getSimpleName();
-   Collection<CoverageMethodEnum> selectedCoverageMethods = new HashSet<CoverageMethodEnum>();
-   Collection<CoverageMethodEnum> coverageMethods;
+   Collection<CoverageOption> selectedCoverageMethods = new HashSet<CoverageOption>();
    CoverageMethodListDialog dialog = null;
+   CoverageOptionManager coverageOptionManager;
 
    public XHyperlabelCoverageMethodSelection() {
       super("Coverage Methods", true);
    }
 
-   public XHyperlabelCoverageMethodSelection(String label, Collection<CoverageMethodEnum> coverageMethods) {
+   public XHyperlabelCoverageMethodSelection(String label, CoverageOptionManager coverageOptionManager) {
       super(label, true);
-      this.coverageMethods = coverageMethods;
+      this.coverageOptionManager = coverageOptionManager;
    }
 
-   public Collection<CoverageMethodEnum> getSelectedCoverageMethods() {
+   public Collection<CoverageOption> getSelectedCoverageMethods() {
       return selectedCoverageMethods;
    }
 
@@ -48,7 +49,7 @@ public class XHyperlabelCoverageMethodSelection extends XHyperlinkLabelCmdValueS
       return Collections.toString(selectedCoverageMethods, ", ");
    }
 
-   public void setSelectedCoverageMethods(Collection<CoverageMethodEnum> selectedCoverageMethods) {
+   public void setSelectedCoverageMethods(Collection<CoverageOption> selectedCoverageMethods) {
       this.selectedCoverageMethods = selectedCoverageMethods;
       notifyXModifiedListeners();
       refresh();
@@ -64,16 +65,13 @@ public class XHyperlabelCoverageMethodSelection extends XHyperlinkLabelCmdValueS
    @Override
    public boolean handleSelection() {
       try {
-         if (coverageMethods != null && coverageMethods.size() > 0) {
-            dialog = new CoverageMethodListDialog(coverageMethods, selectedCoverageMethods);
-         } else {
-            dialog = new CoverageMethodListDialog(CoverageMethodEnum.getCollection(), selectedCoverageMethods);
-         }
+         dialog =
+               new CoverageMethodListDialog(coverageOptionManager.getEnabled(), selectedCoverageMethods);
          int result = dialog.open();
          if (result == 0) {
             selectedCoverageMethods.clear();
             for (Object obj : dialog.getSelected()) {
-               selectedCoverageMethods.add((CoverageMethodEnum) obj);
+               selectedCoverageMethods.add((CoverageOption) obj);
             }
             notifyXModifiedListeners();
          }
@@ -84,11 +82,12 @@ public class XHyperlabelCoverageMethodSelection extends XHyperlinkLabelCmdValueS
       return false;
    }
 
-   public void setCoverageMethods(Collection<CoverageMethodEnum> coverageMethods) {
-      this.coverageMethods = coverageMethods;
-      if (dialog != null) {
-         dialog.setInput(coverageMethods);
-      }
+   public CoverageOptionManager getCoverageOptionManager() {
+      return coverageOptionManager;
+   }
+
+   public void setCoverageOptionManager(CoverageOptionManager coverageOptionManager) {
+      this.coverageOptionManager = coverageOptionManager;
    }
 
 }

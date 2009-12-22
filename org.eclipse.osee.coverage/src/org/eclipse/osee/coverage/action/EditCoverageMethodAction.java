@@ -9,9 +9,10 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.coverage.editor.xcover.CoverageXViewer;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.dialog.CoverageMethodListDialog;
@@ -31,9 +32,11 @@ public class EditCoverageMethodAction extends Action {
    private final ISelectedCoverageEditorItem selectedCoverageEditorItem;
    private final ISaveable saveable;
    private final IRefreshable refreshable;
+   private final CoverageXViewer coverageXViewer;
 
-   public EditCoverageMethodAction(ISelectedCoverageEditorItem selectedCoverageEditorItem, IRefreshable refreshable, ISaveable saveable) {
+   public EditCoverageMethodAction(CoverageXViewer coverageXViewer, ISelectedCoverageEditorItem selectedCoverageEditorItem, IRefreshable refreshable, ISaveable saveable) {
       super("Edit Coverage Method");
+      this.coverageXViewer = coverageXViewer;
       this.selectedCoverageEditorItem = selectedCoverageEditorItem;
       this.refreshable = refreshable;
       this.saveable = saveable;
@@ -63,12 +66,13 @@ public class EditCoverageMethodAction extends Action {
          return;
       }
 
-      CoverageMethodListDialog dialog = new CoverageMethodListDialog(CoverageMethodEnum.getCollection());
+      CoverageMethodListDialog dialog =
+            new CoverageMethodListDialog(coverageXViewer.getCoverageOptionManager().getEnabled());
       if (dialog.open() == 0) {
          Set<ICoverage> coveragesToSave = new HashSet<ICoverage>();
          for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
             if (coverageItem instanceof CoverageItem) {
-               ((CoverageItem) coverageItem).setCoverageMethod((CoverageMethodEnum) dialog.getFirstResult());
+               ((CoverageItem) coverageItem).setCoverageMethod((CoverageOption) dialog.getFirstResult());
                refreshable.update(coverageItem);
                coveragesToSave.add(coverageItem);
             }

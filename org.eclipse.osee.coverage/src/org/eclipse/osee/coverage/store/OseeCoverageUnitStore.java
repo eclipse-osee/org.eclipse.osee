@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -31,11 +32,11 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
    public static String ARTIFACT_FOLDER_NAME = "Coverage Folder";
    private final CoverageUnit coverageUnit;
 
-   public OseeCoverageUnitStore(ICoverage parent, Artifact artifact) throws OseeCoreException {
+   public OseeCoverageUnitStore(ICoverage parent, Artifact artifact, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       super(null, artifact.getArtifactTypeName());
       this.artifact = artifact;
       this.coverageUnit = new CoverageUnit(parent, artifact.getName(), "");
-      load();
+      load(coverageOptionManager);
    }
 
    public OseeCoverageUnitStore(CoverageUnit coverageUnit) {
@@ -43,9 +44,13 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       this.coverageUnit = coverageUnit;
    }
 
-   public static CoverageUnit get(ICoverage parent, Artifact artifact) throws OseeCoreException {
-      OseeCoverageUnitStore unitStore = new OseeCoverageUnitStore(parent, artifact);
+   public static CoverageUnit get(ICoverage parent, Artifact artifact, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
+      OseeCoverageUnitStore unitStore = new OseeCoverageUnitStore(parent, artifact, coverageOptionManager);
       return unitStore.getCoverageUnit();
+   }
+
+   public static OseeCoverageUnitStore get(CoverageUnit coverageUnit) throws OseeCoreException {
+      return new OseeCoverageUnitStore(coverageUnit);
    }
 
    public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
@@ -56,11 +61,11 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
             getArtifact(false).deleteAndPersist(transaction);
       }
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
-         OseeCoverageStore.get(childCoverageUnit).delete(transaction, purge);
+         new OseeCoverageUnitStore(childCoverageUnit).delete(transaction, purge);
       }
    }
 
-   public void load() throws OseeCoreException {
+   public void load(CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       coverageUnit.clearCoverageUnits();
       coverageUnit.clearCoverageItems();
       Artifact artifact = getArtifact(false);
@@ -68,7 +73,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          coverageUnit.setName(artifact.getName());
          coverageUnit.setGuid(artifact.getGuid());
          for (String value : artifact.getAttributesToStringList(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
-            coverageUnit.addCoverageItem(new CoverageItem(coverageUnit, value));
+            coverageUnit.addCoverageItem(new CoverageItem(coverageUnit, value, coverageOptionManager));
          }
          coverageUnit.setFileContents(artifact.getSoleAttributeValueAsString(
                CoverageAttributes.FILE_CONTENTS.getStoreName(), ""));
@@ -82,7 +87,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          coverageUnit.setLocation(artifact.getSoleAttributeValueAsString(CoverageAttributes.LOCATION.getStoreName(), ""));
          for (Artifact childArt : artifact.getChildren()) {
             if (childArt.isOfType(ARTIFACT_NAME) || childArt.isOfType(ARTIFACT_FOLDER_NAME)) {
-               coverageUnit.addCoverageUnit(OseeCoverageUnitStore.get(coverageUnit, childArt));
+               coverageUnit.addCoverageUnit(OseeCoverageUnitStore.get(coverageUnit, childArt, coverageOptionManager));
             }
          }
       }
@@ -124,7 +129,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          }
       }
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
-         OseeCoverageStore.get(childCoverageUnit).save(transaction);
+         new OseeCoverageUnitStore(childCoverageUnit).save(transaction);
       }
       artifact.persist(transaction);
       return Result.TrueResult;

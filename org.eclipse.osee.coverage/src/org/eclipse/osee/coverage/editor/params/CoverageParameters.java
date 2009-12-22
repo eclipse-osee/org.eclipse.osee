@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 public class CoverageParameters {
 
    private final CoveragePackageBase coveragePackageBase;
-   private List<CoverageMethodEnum> coverageMethods = new ArrayList<CoverageMethodEnum>();
+   private List<CoverageOption> coverageMethods = new ArrayList<CoverageOption>();
    private String name;
    private String namespace;
    private String rationale;
@@ -229,7 +229,7 @@ public class CoverageParameters {
       return assignee;
    }
 
-   public Collection<CoverageMethodEnum> getSelectedCoverageMethods() {
+   public Collection<CoverageOption> getSelectedCoverageMethods() {
       return coverageMethods;
    }
 
@@ -246,11 +246,11 @@ public class CoverageParameters {
       return coveragePackageBase;
    }
 
-   public Collection<CoverageMethodEnum> getCoverageMethods() {
+   public Collection<CoverageOption> getCoverageMethods() {
       return coverageMethods;
    }
 
-   public void setCoverageMethods(Collection<CoverageMethodEnum> coverageMethods) {
+   public void setCoverageMethods(Collection<CoverageOption> coverageMethods) {
       if (coverageMethods == null) {
          this.coverageMethods.clear();
       }

@@ -15,6 +15,7 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.store.CoverageAttributes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -72,7 +73,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
          for (Attribute<?> attr : artifact.getAttributes(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
             String str = (String) attr.getValue();
             store.load(str);
-            CoverageItem item = new CoverageItem(null, str);
+            CoverageItem item = new CoverageItem(null, str, CoverageOptionManagerDefault.instance());
 
             String executeNum = store.get("executeNum");
             if (!Strings.isValid(executeNum)) {

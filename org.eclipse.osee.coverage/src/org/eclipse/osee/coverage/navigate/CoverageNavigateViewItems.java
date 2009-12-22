@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.coverage.CoverageManager;
+import org.eclipse.osee.coverage.action.ConfigureCoverageMethodsAction;
 import org.eclipse.osee.coverage.action.DeleteCoveragePackageAction;
 import org.eclipse.osee.coverage.action.NewCoveragePackageAction;
 import org.eclipse.osee.coverage.action.OpenCoveragePackageAction;
@@ -58,6 +59,8 @@ public class CoverageNavigateViewItems extends XNavigateViewItems {
       items.add(new XNavigateItemAction(null, new NewCoveragePackageAction(), NewCoveragePackageAction.OSEE_IMAGE));
       items.add(new XNavigateItemAction(null, new OpenCoveragePackageAction(), OpenCoveragePackageAction.OSEE_IMAGE));
       items.add(new XNavigateItemAction(null, new DeleteCoveragePackageAction(), DeleteCoveragePackageAction.OSEE_IMAGE));
+      items.add(new XNavigateItemAction(null, new ConfigureCoverageMethodsAction(),
+            ConfigureCoverageMethodsAction.OSEE_IMAGE));
 
       try {
          if (SystemGroup.OseeAdmin.isCurrentUserMember()) {

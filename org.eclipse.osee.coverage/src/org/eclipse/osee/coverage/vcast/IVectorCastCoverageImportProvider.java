@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.coverage.vcast;
 
+
 /**
  * @author Donald G. Dunne
  */
@@ -18,4 +19,5 @@ public interface IVectorCastCoverageImportProvider {
     * true if importer should automatically set known exception handling cases
     */
    public boolean isResolveExceptionHandling();
+
 }

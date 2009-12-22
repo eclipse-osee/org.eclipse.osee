@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -154,6 +154,8 @@ public class CoverageParametersComposite extends Composite {
                }
             }
          });
+         getCoverageMethodHyperlinkSelection().setCoverageOptionManager(
+               coverageEditor.getCoveragePackageBase().getCoverageOptionManager());
          getCoverageMethodHyperlinkSelection().addXModifiedListener(new XModifiedListener() {
 
             @Override
@@ -236,7 +238,7 @@ public class CoverageParametersComposite extends Composite {
       return getAssigeeCombo().getUser();
    }
 
-   public Collection<CoverageMethodEnum> getSelectedCoverageMethods() throws OseeArgumentException {
+   public Collection<CoverageOption> getSelectedCoverageMethods() throws OseeArgumentException {
       if (getCoverageMethodHyperlinkSelection() == null) {
          return Collections.emptyList();
       }
