@@ -16,12 +16,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -41,7 +45,7 @@ public class AtsDeleteManager {
    };
 
    public static void handleDeletePurgeAtsObject(Collection<? extends Artifact> selectedArts, DeleteOption... deleteOption) throws OseeCoreException {
-      Collection<DeleteOption> deleteOptions = Collections.getAggregate(deleteOption);
+      final Collection<DeleteOption> deleteOptions = Collections.getAggregate(deleteOption);
       ArrayList<Artifact> delArts = new ArrayList<Artifact>();
       StringBuilder artBuilder = new StringBuilder();
 
@@ -103,7 +107,7 @@ public class AtsDeleteManager {
          }
          allDeleteArts.addAll(relatedArts);
       }
-      boolean purge = deleteOptions.contains(DeleteOption.Purge);
+      final boolean purge = deleteOptions.contains(DeleteOption.Purge);
       // Get final confirmation of all seleted and related items to delete/purge
       if (deleteOptions.contains(DeleteOption.Prompt)) {
          String results =
@@ -117,18 +121,29 @@ public class AtsDeleteManager {
             return;
          }
       }
-      // perform the delete/purge
-      if (purge) {
-         purgeArtifacts(allDeleteArts);
-      } else {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete ATS Objects");
-         ArtifactPersistenceManager.deleteArtifact(transaction, false,
-               allDeleteArts.toArray(new Artifact[allDeleteArts.size()]));
-         transaction.execute();
-      }
-      if (deleteOptions.contains(DeleteOption.Prompt)) {
-         AWorkbench.popup((purge ? "Purge" : "Delete") + " Completed", (purge ? "Purge" : "Delete") + " Completed");
-      }
+      AbstractOperation operation =
+            new AbstractOperation((purge ? "Purge" : "Delete") + " ATS Objects", AtsPlugin.PLUGIN_ID) {
+
+               @Override
+               protected void doWork(IProgressMonitor monitor) throws Exception {
+                  // perform the delete/purge
+                  if (purge) {
+                     purgeArtifacts(allDeleteArts);
+                  } else {
+                     SkynetTransaction transaction =
+                           new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete ATS Objects");
+                     ArtifactPersistenceManager.deleteArtifact(transaction, false,
+                           allDeleteArts.toArray(new Artifact[allDeleteArts.size()]));
+                     transaction.execute();
+                  }
+                  if (deleteOptions.contains(DeleteOption.Prompt)) {
+                     AWorkbench.popup((purge ? "Purge" : "Delete") + " Completed",
+                           (purge ? "Purge" : "Delete") + " Completed");
+                  }
+               }
+            };
+      Operations.executeAsJob(operation, true);
+
    }
 
    private static void purgeArtifacts(Collection<Artifact> artifacts) throws OseeDataStoreException, OseeCoreException {
