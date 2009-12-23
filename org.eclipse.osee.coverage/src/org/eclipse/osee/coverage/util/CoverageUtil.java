@@ -199,15 +199,20 @@ public class CoverageUtil {
       return items;
    }
 
-   public static Pair<Integer, String> getPercent(int complete, int total) {
-      if (total == 0 || complete == 0) return new Pair<Integer, String>(0, getPercentString(0, complete, total));
+   public static Pair<Integer, String> getPercent(int complete, int total, boolean showZero) {
+      if (total == 0 || complete == 0) return new Pair<Integer, String>(0, getPercentString(0, complete, total,
+            showZero));
       Double percent = new Double(complete);
       percent = percent / total;
       percent = percent * 100;
-      return new Pair<Integer, String>(percent.intValue(), getPercentString(percent.intValue(), complete, total));
+      return new Pair<Integer, String>(percent.intValue(), getPercentString(percent.intValue(), complete, total,
+            showZero));
    }
 
-   public static String getPercentString(int percent, int complete, int total) {
+   public static String getPercentString(int percent, int complete, int total, boolean showZero) {
+      if (!showZero && percent == 0) {
+         return "0%";
+      }
       return String.format("%d%% %d/%d", percent, complete, total);
    }
 

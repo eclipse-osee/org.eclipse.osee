@@ -59,7 +59,7 @@ public class MergeItemGroup extends MergeItemBase {
       for (ICoverage coverage : children) {
          if (coverage.isCovered()) covered.add(coverage);
       }
-      return CoverageUtil.getPercent(covered.size(), children.size()).getFirst();
+      return CoverageUtil.getPercent(covered.size(), children.size(), true).getFirst();
    }
 
    @Override
@@ -69,7 +69,7 @@ public class MergeItemGroup extends MergeItemBase {
       for (ICoverage coverage : children) {
          if (coverage.isCovered()) covered.add(coverage);
       }
-      return CoverageUtil.getPercent(covered.size(), children.size()).getSecond();
+      return CoverageUtil.getPercent(covered.size(), children.size(), true).getSecond();
    }
 
    @Override

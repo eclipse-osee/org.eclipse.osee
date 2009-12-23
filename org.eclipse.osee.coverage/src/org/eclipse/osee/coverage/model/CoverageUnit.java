@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
-import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -314,11 +313,11 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
 
    @Override
    public String getCoveragePercentStr() {
-      return CoverageUtil.getPercent(getCoverageItemsCovered(true).size(), getCoverageItems(true).size()).getSecond();
+      return CoverageUtil.getPercent(getCoverageItemsCovered(true).size(), getCoverageItems(true).size(), true).getSecond();
    }
 
    public int getCoveragePercent() {
-      return CoverageUtil.getPercent(getCoverageItemsCovered(true).size(), getCoverageItems(true).size()).getFirst();
+      return CoverageUtil.getPercent(getCoverageItemsCovered(true).size(), getCoverageItems(true).size(), true).getFirst();
    }
 
    public boolean isFolder() {
