@@ -68,6 +68,10 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
       OseeEventManager.addPriorityListener(this);
    }
 
+   public static synchronized void decacheTaskArtifacts(TaskableStateMachineArtifact sma) throws OseeCoreException {
+      teamTasksCache.remove(sma);
+   }
+
    public static synchronized Collection<TaskArtifact> getTaskArtifacts(TaskableStateMachineArtifact sma) throws OseeCoreException {
       if (!teamTasksCache.containsKey(sma)) {
          Collection<TaskArtifact> taskArtifacts =

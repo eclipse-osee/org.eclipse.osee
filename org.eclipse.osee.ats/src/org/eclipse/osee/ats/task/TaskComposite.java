@@ -26,7 +26,9 @@ import org.eclipse.osee.ats.actions.TaskAddAction.ITaskAddActionHandler;
 import org.eclipse.osee.ats.actions.TaskDeleteAction.ITaskDeleteActionHandler;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
+import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -132,7 +134,12 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
       if (getTaskXViewer().getInput() == null) {
          getTaskXViewer().setInput(Collections.singleton(taskArts));
       } else {
-         ((Collection) getTaskXViewer().getInput()).addAll(taskArts);
+         Collection<TaskArtifact> currTaskArts = (Collection<TaskArtifact>) getTaskXViewer().getInput();
+         for (TaskArtifact taskArt : taskArts) {
+            if (!currTaskArts.contains(taskArt)) {
+               currTaskArts.add(taskArt);
+            }
+         }
       }
       taskXViewer.refresh();
       taskXViewer.getTree().setFocus();
