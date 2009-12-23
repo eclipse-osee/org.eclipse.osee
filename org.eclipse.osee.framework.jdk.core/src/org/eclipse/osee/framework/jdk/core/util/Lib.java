@@ -364,6 +364,18 @@ public final class Lib {
       }
    }
 
+   public static int getMatcherCount(Pattern p, String str) {
+      return getMatcherCount(p.matcher(str));
+   }
+
+   public static int getMatcherCount(Matcher m) {
+      int count = 0;
+      while (m.find()) {
+         count++;
+      }
+      return count;
+   }
+
    public static String inputStreamToString(InputStream in) throws IOException {
       return inputStreamToChangeSet(in).toString();
    }

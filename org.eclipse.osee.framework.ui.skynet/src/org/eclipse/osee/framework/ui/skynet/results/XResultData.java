@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.results;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
@@ -41,6 +42,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  */
 public class XResultData {
 
+   public static Pattern ErrorPattern = Pattern.compile("Error: ");
+   public static Pattern WarningPattern = Pattern.compile("Warning: ");
    StringBuffer sb = new StringBuffer();
    private static enum Type {
       Severe, Warning, Info;
@@ -200,6 +203,22 @@ public class XResultData {
 
    public int getNumErrors() {
       return getCount(Type.Severe);
+   }
+
+   /**
+    * XResultData counts number of errors logged with logError, however users can insert their own "Error: " strings to
+    * produce errors. This counts based on these occurences.
+    */
+   public int getNumErrorsViaSearch() {
+      return Lib.getMatcherCount(ErrorPattern, sb.toString());
+   }
+
+   /**
+    * XResultData counts number of warnings logged with logWarning, however users can insert their own "Error: " strings
+    * to produce errors. This counts based on these occurences.
+    */
+   public int getNumWarningsViaSearch() {
+      return Lib.getMatcherCount(WarningPattern, sb.toString());
    }
 
    public int getNumWarnings() {
