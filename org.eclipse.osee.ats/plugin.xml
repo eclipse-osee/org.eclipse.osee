@@ -99,6 +99,8 @@
             <perspectiveShortcut id="org.eclipse.jdt.ui.JavaPerspective"/>
             <perspectiveShortcut id="org.eclipse.ui.resourcePerspective"/>
             <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
+            <perspectiveShortcut id="org.eclipse.osee.coverage.CoveragePerspective"/>
+            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
          </perspectiveExtension>
       </extension>
 

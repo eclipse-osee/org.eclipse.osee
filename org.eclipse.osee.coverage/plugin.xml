@@ -24,21 +24,26 @@
                class="org.eclipse.osee.coverage.internal.CoveragePerspectiveFactory"
                fixed="false"
                icon="images/coverage.gif"
-               id="osee.coverage.PerspectiveFactory"
+               id="org.eclipse.osee.coverage.CoveragePerspective"
                name="Coverage"/>
       </extension>
       <extension
             point="org.eclipse.ui.perspectiveExtensions">
          <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
-            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
-         </perspectiveExtension>
-         <perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">
-            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
+            <perspectiveShortcut id="org.eclipse.osee.coverage.CoveragePerspective"/>
          </perspectiveExtension>
          <perspectiveExtension targetID="osee.define.PerspectiveFactory">
+            <perspectiveShortcut id="org.eclipse.osee.coverage.CoveragePerspective"/>
+         </perspectiveExtension>
+         <perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">
+            <perspectiveShortcut id="org.eclipse.osee.coverage.CoveragePerspective"/>
+         </perspectiveExtension>
+         <perspectiveExtension targetID="org.eclipse.osee.coverage.CoveragePerspective">
             <perspectiveShortcut id="org.eclipse.jdt.ui.JavaPerspective"/>
             <perspectiveShortcut id="org.eclipse.ui.resourcePerspective"/>
+            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
             <perspectiveShortcut id="org.eclipse.osee.ats.ATSPerspective"/>
+            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
          </perspectiveExtension>
       </extension>
       <extension
