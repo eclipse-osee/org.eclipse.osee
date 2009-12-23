@@ -5,6 +5,8 @@
  */
 package org.eclipse.osee.coverage.model;
 
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+
 /**
  * @author Donald G. Dunne
  */
@@ -30,6 +32,13 @@ public class CoverageOption {
    }
 
    public String getName() {
+      return name;
+   }
+
+   public String getNameDesc() {
+      if (Strings.isValid(description)) {
+         return String.format("%s - %s", name, description);
+      }
       return name;
    }
 

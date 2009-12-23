@@ -63,7 +63,7 @@ public class CoverageMethodListDialog extends CheckedTreeSelectionDialog {
 
       public String getText(Object element) {
          if (element instanceof CoverageOption) {
-            return ((CoverageOption) element).getName();
+            return ((CoverageOption) element).getNameDesc();
          }
          return "Unknown";
       }
