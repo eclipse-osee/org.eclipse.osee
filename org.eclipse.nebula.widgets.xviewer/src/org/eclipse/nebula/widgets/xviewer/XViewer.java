@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -332,9 +331,15 @@ public class XViewer extends TreeViewer {
     * 
     * @param objects
     */
+   @SuppressWarnings("unchecked")
    public void remove(Collection<Object> objects) {
-      for (Object obj : objects) {
-         super.remove(obj);
+      Object input = getInput();
+      if (input instanceof Collection<?>) {
+         Collection<Object> inputObj = (Collection<Object>) getInput();
+         for (Object obj : objects) {
+            super.remove(obj);
+            inputObj.remove(obj);
+         }
       }
    }
 
