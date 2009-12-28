@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.operation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -21,7 +22,9 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -130,8 +133,7 @@ public final class Operations {
 
    /**
     * Executes an operation by calling {@link #executeWork(IOperation, IProgressMonitor, double)} and checks for error
-    * status {@link #checkForErrorStatus(IStatus)}.
-    * An OseeCoreException is thrown is an error is detected
+    * status {@link #checkForErrorStatus(IStatus)}. An OseeCoreException is thrown is an error is detected
     * 
     * @param operation
     * @param monitor
@@ -154,17 +156,32 @@ public final class Operations {
       return scheduleJob(new OperationJob(operation), user, Job.LONG, null);
    }
 
+   public static Job executeAndPend(IOperation operation, boolean user) {
+      return scheduleJob(new OperationJob(operation), user, Job.LONG, null, true);
+   }
+
    public static Job executeAsJob(IOperation operation, boolean user, int priority, IJobChangeListener jobChangeListener) {
       return scheduleJob(new OperationJob(operation), user, priority, jobChangeListener);
    }
 
    public static Job scheduleJob(Job job, boolean user, int priority, IJobChangeListener jobChangeListener) {
+      return scheduleJob(job, user, priority, jobChangeListener, false);
+   }
+
+   public static Job scheduleJob(Job job, boolean user, int priority, IJobChangeListener jobChangeListener, boolean forcePend) {
       job.setUser(user);
       job.setPriority(priority);
       if (jobChangeListener != null) {
          job.addJobChangeListener(jobChangeListener);
       }
       job.schedule();
+      if (forcePend) {
+         try {
+            job.join();
+         } catch (InterruptedException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
       return job;
    }
 }

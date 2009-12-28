@@ -37,7 +37,7 @@ public class DeletePurgeAtsArtifactsAction extends Action {
    @Override
    public void run() {
       try {
-         AtsDeleteManager.handleDeletePurgeAtsObject(selectedAtsArtifacts.getSelectedSMAArtifacts(),
+         AtsDeleteManager.handleDeletePurgeAtsObject(selectedAtsArtifacts.getSelectedSMAArtifacts(), false,
                DeleteOption.Prompt);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

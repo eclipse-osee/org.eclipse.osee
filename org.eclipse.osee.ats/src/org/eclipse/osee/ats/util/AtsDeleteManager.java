@@ -44,7 +44,7 @@ public class AtsDeleteManager {
       Prompt, Delete, Purge
    };
 
-   public static void handleDeletePurgeAtsObject(Collection<? extends Artifact> selectedArts, DeleteOption... deleteOption) throws OseeCoreException {
+   public static void handleDeletePurgeAtsObject(Collection<? extends Artifact> selectedArts, boolean forcePend, DeleteOption... deleteOption) throws OseeCoreException {
       final Collection<DeleteOption> deleteOptions = Collections.getAggregate(deleteOption);
       ArrayList<Artifact> delArts = new ArrayList<Artifact>();
       StringBuilder artBuilder = new StringBuilder();
@@ -142,7 +142,11 @@ public class AtsDeleteManager {
                   }
                }
             };
-      Operations.executeAsJob(operation, true);
+      if (forcePend) {
+         Operations.executeAndPend(operation, true);
+      } else {
+         Operations.executeAsJob(operation, true);
+      }
 
    }
 
