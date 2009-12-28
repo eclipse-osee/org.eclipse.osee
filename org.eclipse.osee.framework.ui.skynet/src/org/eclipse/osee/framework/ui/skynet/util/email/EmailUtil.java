@@ -18,7 +18,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
+import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
 
 /**
  * @author Donald G. Dunne
@@ -48,4 +51,12 @@ public class EmailUtil {
       }
       return validUsers;
    }
+
+   public static void emailHtml(Collection<String> emails, String subject, String htmlBody) throws OseeCoreException {
+      OseeEmail emailMessage =
+            new OseeEmail(emails, UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject,
+                  htmlBody, BodyType.Html);
+      emailMessage.send();
+   }
+
 }
