@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.world;
 
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -22,21 +21,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemActio
  */
 public class WorldXNavigateItemAction extends XNavigateItemAction {
 
-   /**
-    * @param parent
-    * @param name
-    * @param oseeImage
-    * @throws OseeArgumentException
-    */
    public WorldXNavigateItemAction(XNavigateItem parent, String name, OseeImage oseeImage) {
       super(parent, name, oseeImage);
    }
 
-   /**
-    * @param parent
-    * @param name
-    * @throws OseeArgumentException
-    */
    public WorldXNavigateItemAction(XNavigateItem parent, String name) {
       super(parent, name, determineImage(name));
    }

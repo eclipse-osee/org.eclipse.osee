@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -71,6 +72,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.util.email.EmailUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -85,11 +87,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private boolean fixAttributeValues = true;
    private final Set<String> hrids = new HashSet<String>();
    private final Map<String, String> legacyPcrIdToParentHrid = new HashMap<String, String>();
+   private String emailOnComplete = null;
 
-   /**
-    * @param parent
-    * @throws OseeArgumentException
-    */
    public ValidateAtsDatabase(XNavigateItem parent) throws OseeArgumentException {
       this("Validate ATS Database", parent);
    }
@@ -105,6 +104,15 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
       Jobs.startJob(new Report(getName()), true);
    }
+
+   public void performTaskAndPend() throws OseeCoreException, InterruptedException {
+      Report job = new Report(getName());
+      job.setUser(true);
+      job.setPriority(Job.LONG);
+      job.schedule();
+      job.join();
+   }
+
    public class Report extends Job {
 
       public Report(String name) {
@@ -117,6 +125,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             XResultData rd = new XResultData();
             runIt(monitor, rd);
             rd.report(getName());
+            if (Strings.isValid(emailOnComplete)) {
+               String html = rd.getReport(getName()).getManipulatedHtml();
+               EmailUtil.emailHtml(java.util.Collections.singleton(emailOnComplete), String.format("Sync - %s [%s]",
+                     XDate.getDateNow(), getName()), html);
+            }
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
@@ -140,7 +153,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       artIdLists = loadAtsBranchArtifactIds(xResultData, monitor);
 
       // Un-comment to process specific artifact from common - Test Mode
-      //  artIdLists = Arrays.asList((Collection<Integer>) Arrays.asList(new Integer(524575)));
+      // artIdLists = Arrays.asList((Collection<Integer>) Arrays.asList(new Integer(524575)));
 
       if (monitor != null) {
          monitor.beginTask(getName(), artIdLists.size());
@@ -733,6 +746,13 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
     */
    public void setFixAttributeValues(boolean fixAttributeValues) {
       this.fixAttributeValues = fixAttributeValues;
+   }
+
+   /**
+    * set to email if desire email on completion
+    */
+   public void setEmailOnComplete(String emailOnComplete) {
+      this.emailOnComplete = emailOnComplete;
    }
 
 }
