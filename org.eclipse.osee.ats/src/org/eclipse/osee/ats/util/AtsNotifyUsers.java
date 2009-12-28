@@ -87,7 +87,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
          if (testing) {
             originator = UserManager.getUser();
          }
-         if (EmailUtil.isEmailValid(originator)) {
+         if (!EmailUtil.isEmailValid(originator)) {
             OseeLog.log(AtsPlugin.class, OseeLevel.INFO, String.format("Email [%s] invalid for user [%s]",
                   originator.getEmail(), originator.getName()));
          } else if (!UserManager.getUser().equals(originator)) OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
