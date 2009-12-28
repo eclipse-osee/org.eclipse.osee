@@ -32,15 +32,12 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 public class HttpBranchCreation {
 
    /**
-    * Creates a new root branch. Should NOT be used outside BranchManager. If programmatic access is necessary, setting
-    * the staticBranchName will add a key for this branch and allow access to the branch through
-    * getKeyedBranch(staticBranchName).
+    * Creates a new root branch. Should NOT be used outside BranchManager.
     * 
     * @param branchType
     * @param parentTransactionNumber
     * @param parentBranchId
     * @param branchName
-    * @param staticBranchName
     * @param associatedArtifact
     * @return the newly created branch
     * @throws OseeCoreException
