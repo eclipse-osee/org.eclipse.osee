@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.junit.Assert;
 
 /**
  * @author Ryan D. Brooks
@@ -43,6 +44,7 @@ public class ArtifactQueryTest {
 
    @org.junit.Test
    public void testGetArtifactsFromBranch() throws OseeCoreException {
+      Assert.fail("Test hangs for over 1 hour.  Needs fix'n");
       Branch common = BranchManager.getCommonBranch();
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(common, true);
 
