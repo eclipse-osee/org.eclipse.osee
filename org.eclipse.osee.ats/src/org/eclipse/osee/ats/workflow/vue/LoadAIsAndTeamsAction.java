@@ -293,17 +293,12 @@ public class LoadAIsAndTeamsAction {
       boolean getOrCreate = false;
       boolean actionable = true;
       Set<String> staticIds = new HashSet<String>();
-      Set<User> leads = new HashSet<User>();
       for (String line : page.getInstructionStr().replaceAll("\r", "\n").split("\n")) {
          if (!line.equals("")) {
             if (line.startsWith(GET_OR_CREATE)) {
                getOrCreate = true;
             } else if (line.startsWith(NOT_ACTIONABLE)) {
                actionable = false;
-            } else if (line.startsWith(LEAD)) {
-               String name = line.replaceFirst(LEAD, "");
-               User u = getUserByName(name, allowUserCreation, transaction);
-               leads.add(u);
             } else if (line.startsWith(STATIC_ID)) {
                staticIds.add(line.replaceFirst(STATIC_ID, ""));
             }
@@ -324,9 +319,6 @@ public class LoadAIsAndTeamsAction {
             aia.setName(page.getName());
             for (String staticId : staticIds) {
                StaticIdManager.setSingletonAttributeValue(aia, staticId);
-            }
-            for (User user : leads) {
-               aia.addRelation(AtsRelationTypes.TeamLead_Lead, user);
             }
 
             aia.persist(transaction);
