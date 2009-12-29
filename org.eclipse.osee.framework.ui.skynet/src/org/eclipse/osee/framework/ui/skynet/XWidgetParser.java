@@ -150,6 +150,9 @@ public class XWidgetParser {
          else if (nodeName.equals("required"))
             dynamicXWidgetLayoutData.getXOptionHandler().add(
                   Boolean.parseBoolean(node.getNodeValue()) ? XOption.REQUIRED : XOption.NONE);
+         else if (nodeName.equals("sorted"))
+            dynamicXWidgetLayoutData.getXOptionHandler().add(
+                  Boolean.parseBoolean(node.getNodeValue()) ? XOption.SORTED : XOption.NONE);
          else if (nodeName.equals("beginComposite"))
             dynamicXWidgetLayoutData.setBeginComposite(Integer.parseInt(node.getNodeValue()));
          else if (nodeName.equals("endComposite"))

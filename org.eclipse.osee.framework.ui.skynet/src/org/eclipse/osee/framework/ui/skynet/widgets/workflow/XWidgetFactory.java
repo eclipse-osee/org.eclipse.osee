@@ -236,6 +236,10 @@ public class XWidgetFactory {
                xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
          if (values.length > 0) {
             XCombo combo = new XCombo(name);
+
+            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.SORTED)) {
+               Arrays.sort(values);
+            }
             combo.setDataStrings(values);
 
             if (xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_DEFAULT_VALUE)) {
