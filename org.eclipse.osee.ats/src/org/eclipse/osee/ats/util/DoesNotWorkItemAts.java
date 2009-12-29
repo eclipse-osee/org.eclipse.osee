@@ -13,9 +13,12 @@ package org.eclipse.osee.ats.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,6 +38,8 @@ import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -58,7 +63,7 @@ import org.eclipse.swt.widgets.Display;
 public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    public DoesNotWorkItemAts(XNavigateItem parent) {
-      super(parent, "Does Not Work - ATS - Fix Branch Names", FrameworkImage.ADMIN);
+      super(parent, "Does Not Work - ATS - Fix Transaction Comments", FrameworkImage.ADMIN);
    }
 
    @Override
@@ -67,6 +72,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          return;
       }
 
+      //      renameTransactionComments();
       //      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Admin Cleanup");
       //      Artifact verArt =
       //            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "0.9.0", AtsUtil.getAtsBranch());
@@ -105,6 +111,70 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       // fixOseePeerReviews();
 
       AWorkbench.popup("Completed", "Complete");
+   }
+
+   private void renameTransactionComments() throws OseeCoreException {
+      List<String> notRenamed = new ArrayList<String>();
+      Map<String, Integer> commentToTransId = new HashMap<String, Integer>();
+      String SEARCH_TRANSACTION_COMMENTS =
+            "select transaction_id, osee_comment from osee_tx_details where osee_comment like '%Commit%'";
+
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         chStmt.runPreparedQuery(SEARCH_TRANSACTION_COMMENTS);
+         while (chStmt.next()) {
+            int transId = chStmt.getInt("transaction_id");
+            String comment = chStmt.getString("osee_comment");
+            commentToTransId.put(comment, transId);
+         }
+      } finally {
+         chStmt.close();
+      }
+
+      for (Entry<String, Integer> entry : commentToTransId.entrySet()) {
+         String comment = entry.getKey();
+         Pattern traxPattern = Pattern.compile("^(.*? - TRAX RPCR .*)( - TRAX RPCR .*)$");
+         Pattern shortPattern = Pattern.compile("^(.*? -) +(.*?) - +(.*?)$");
+         System.out.println("TransId " + entry.getValue() + " Comment = " + comment);
+
+         boolean renamed = false;
+         Matcher m = traxPattern.matcher(comment);
+         if (m.find()) {
+            String first = m.group(1);
+            String second = m.group(2);
+            String newComment = first;
+            if (!comment.equals(newComment)) {
+               renamed = true;
+               System.out.println("TransId " + entry.getValue() + " Rename1 = " + newComment);
+               //               TransactionManager.setTransactionComment(TransactionManager.getTransactionId(entry.getValue()),
+               //                     newComment);
+            }
+         }
+         if (!renamed) {
+            m = shortPattern.matcher(comment);
+            if (m.find()) {
+               String prefix = m.group(1);
+               String first = m.group(2);
+               String second = m.group(3);
+               second = second.replaceFirst("...$", "");
+               String newComment = prefix + " " + first;
+               if (first.equals(second) || first.startsWith(second)) {
+                  renamed = true;
+                  System.out.println("TransId " + entry.getValue() + " Rename2 = " + newComment);
+                  //                  TransactionManager.setTransactionComment(TransactionManager.getTransactionId(entry.getValue()),
+                  //                        newComment);
+               }
+            }
+         }
+         if (!renamed) {
+            notRenamed.add(comment);
+         }
+
+      }
+      for (String branchName : notRenamed) {
+         System.out.println("Not Renamed " + branchName);
+      }
+
    }
 
    private void renameBranches() throws OseeCoreException {

@@ -57,10 +57,34 @@ public final class TransactionManager {
    private static final String SELECT_COMMIT_TRANSACTIONS =
          "SELECT transaction_id from osee_tx_details where commit_art_id = ?";
 
+   private static final String UPDATE_TRANSACTION_COMMENTS =
+         "update osee_tx_details set osee_comment = ? where transaction_id = ?";
+
+   private static final String SELECT_TRANSACTION_COMMENTS =
+         "select transaction_id from osee_tx_details where osee_comment like ?";
+
    private static final HashMap<IArtifact, List<TransactionRecord>> commitArtifactMap =
          new HashMap<IArtifact, List<TransactionRecord>>();
 
    private TransactionManager() {
+   }
+
+   public static List<TransactionRecord> getTransaction(String comment) throws OseeCoreException {
+      ArrayList<TransactionRecord> transactions = new ArrayList<TransactionRecord>();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         chStmt.runPreparedQuery(SELECT_TRANSACTION_COMMENTS, comment);
+         while (chStmt.next()) {
+            transactions.add(getTransactionId(chStmt.getInt("transaction_id"), chStmt));
+         }
+      } finally {
+         chStmt.close();
+      }
+      return transactions;
+   }
+
+   public static void setTransactionComment(TransactionRecord transaction, String comment) throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(UPDATE_TRANSACTION_COMMENTS, comment, transaction.getId());
    }
 
    private static TransactionCache getTransactionCache() {
