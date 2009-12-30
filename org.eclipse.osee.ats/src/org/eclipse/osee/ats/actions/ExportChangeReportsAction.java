@@ -91,7 +91,7 @@ public class ExportChangeReportsAction extends Action {
       for (Artifact workflow : workflows) {
          if (workflow.getSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName()).equals(
                "AAABER+6Y+0A8O7WW_tlqA")) {
-            AtsBranchManager atsBranchMgr = ((TeamWorkFlowArtifact) workflow).getSmaMgr().getBranchMgr();
+            AtsBranchManager atsBranchMgr = ((TeamWorkFlowArtifact) workflow).getBranchMgr();
             IProgressMonitor monitor = new NullProgressMonitor();
             Collection<Change> changes = null;
             if (atsBranchMgr.isCommittedBranchExists()) {

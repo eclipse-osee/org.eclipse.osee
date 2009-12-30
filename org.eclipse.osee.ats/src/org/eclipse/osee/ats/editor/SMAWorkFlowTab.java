@@ -330,9 +330,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
       scrolledForm.getToolBarManager().removeAll();
 
-      if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && (smaMgr.getBranchMgr().isCommittedBranchExists() || smaMgr.getBranchMgr().isWorkingBranchInWork())) {
-         toolBarMgr.add(new ShowMergeManagerAction(smaMgr));
-         toolBarMgr.add(new ShowChangeReportAction(smaMgr));
+      if (smaMgr.isTeamWorkflow() && (((TeamWorkFlowArtifact) smaMgr.getSma()).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) smaMgr.getSma()).getBranchMgr().isWorkingBranchInWork())) {
+         toolBarMgr.add(new ShowMergeManagerAction((TeamWorkFlowArtifact) smaMgr.getSma()));
+         toolBarMgr.add(new ShowChangeReportAction((TeamWorkFlowArtifact) smaMgr.getSma()));
       }
       toolBarMgr.add(new FavoriteAction(smaMgr.getEditor()));
       if (smaMgr.getSma().getParentSMA() != null) {

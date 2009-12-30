@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItems;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
-import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -80,7 +79,6 @@ public class SMAManager {
    private final WeakReference<StateMachineArtifact> smaRef;
    private Collection<User> transitionAssignees;
    private static String SEPERATOR = ";  ";
-   private final AtsBranchManager branchMgr;
    private final StateManager stateMgr;
    private final DeadlineManager deadlineMgr;
    private SMAEditor editor;
@@ -101,7 +99,6 @@ public class SMAManager {
       this.smaRef = new WeakReference<StateMachineArtifact>(sma);
       this.editor = editor;
       stateMgr = new StateManager(this);
-      branchMgr = new AtsBranchManager(this);
       deadlineMgr = new DeadlineManager(this);
       atsLog = new ATSLog(sma);
       atsNote = new ATSNote(sma);
@@ -778,12 +775,12 @@ public class SMAManager {
          return new Result(errStr);
       }
       // Don't transition with existing working branch
-      if (toStateName.equals(DefaultTeamState.Cancelled.name()) && getBranchMgr().isWorkingBranchInWork()) {
+      if (toStateName.equals(DefaultTeamState.Cancelled.name()) && isTeamWorkflow() && ((TeamWorkFlowArtifact) getSma()).getBranchMgr().isWorkingBranchInWork()) {
          return new Result("Working Branch exists.  Please delete working branch before cancelling.");
       }
 
       // Don't transition with uncommitted branch if this is a commit state
-      if (AtsWorkDefinitions.isAllowCommitBranch(getWorkPageDefinition()) && getBranchMgr().isWorkingBranchInWork()) {
+      if (AtsWorkDefinitions.isAllowCommitBranch(getWorkPageDefinition()) && isTeamWorkflow() && ((TeamWorkFlowArtifact) getSma()).getBranchMgr().isWorkingBranchInWork()) {
          return new Result("Working Branch exists.  Please commit or delete working branch before transition.");
       }
 
@@ -882,9 +879,6 @@ public class SMAManager {
       }
    }
 
-   /**
-    * @return Returns the editor.
-    */
    public SMAEditor getEditor() {
       return editor;
    }
@@ -893,53 +887,31 @@ public class SMAManager {
       return getSma().getEditorTitle();
    }
 
-   /**
-    * @param editor The editor to set.
-    */
    public void setEditor(SMAEditor editor) {
       this.editor = editor;
    }
 
-   /**
-    * @return Returns the branchMgr.
-    */
-   public AtsBranchManager getBranchMgr() {
-      return branchMgr;
-   }
-
-   /**
-    * @return the stateItems
-    */
    public AtsStateItems getStateItems() {
       return stateItems;
    }
 
-   /**
-    * @return the inTransition
-    */
    public boolean isInTransition() {
       return inTransition;
    }
 
-   /**
-    * @param inTransition the inTransition to set
-    */
    public void setInTransition(boolean inTransition) {
       this.inTransition = inTransition;
    }
 
-   /**
-    * @return the deadlineMgr
-    */
    public DeadlineManager getDeadlineMgr() {
       return deadlineMgr;
    }
 
-   /**
-    * @return the stateMgr
-    */
    public StateManager getStateMgr() {
       return stateMgr;
    }
 
+   public boolean isTeamWorkflow() throws OseeStateException {
+      return getSma() instanceof TeamWorkFlowArtifact;
+   }
 }

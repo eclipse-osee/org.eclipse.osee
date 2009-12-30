@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -24,7 +23,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -73,13 +71,13 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
                   for (Artifact artifact : artifacts) {
                      if (artifact instanceof ActionArtifact) {
                         for (TeamWorkFlowArtifact team : ((ActionArtifact) artifact).getTeamWorkFlowArtifacts()) {
-                           if (team.getSmaMgr().getBranchMgr().isCommittedBranchExists() || team.getSmaMgr().getBranchMgr().isWorkingBranchInWork()) {
+                           if (team.getBranchMgr().isCommittedBranchExists() || team.getBranchMgr().isWorkingBranchInWork()) {
                               addedArts.add(team);
                            }
                         }
                      }
                      if (artifact instanceof TeamWorkFlowArtifact) {
-                        if (((TeamWorkFlowArtifact)artifact).getSmaMgr().getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact)artifact).getSmaMgr().getBranchMgr().isWorkingBranchInWork()) {
+                        if (((TeamWorkFlowArtifact) artifact).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) artifact).getBranchMgr().isWorkingBranchInWork()) {
                            addedArts.add((artifact));
                         }
                      }
@@ -89,7 +87,9 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
                         @Override
                         public void run() {
                            for (Artifact art : addedArts) {
-                              ((StateMachineArtifact) art).getSmaMgr().getBranchMgr().showChangeReport();
+                              if (art instanceof TeamWorkFlowArtifact) {
+                                 ((TeamWorkFlowArtifact) art).getBranchMgr().showChangeReport();
+                              }
                            }
                         }
                      });
@@ -112,7 +112,7 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
                                  return;
                               }
                               for (Object obj : dialog.getResult()) {
-                                 ((StateMachineArtifact) obj).getSmaMgr().getBranchMgr().showChangeReport();
+                                 ((TeamWorkFlowArtifact) obj).getBranchMgr().showChangeReport();
                               }
                            }
                         }

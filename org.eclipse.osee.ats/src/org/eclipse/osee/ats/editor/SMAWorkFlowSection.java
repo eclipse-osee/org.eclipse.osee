@@ -615,7 +615,7 @@ public class SMAWorkFlowSection extends SectionPart {
             smaMgr.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
             smaMgr.getStateMgr().addAssignee(UserManager.getUser());
          }
-         if (smaMgr.getBranchMgr().isWorkingBranchInWork()) {
+         if (smaMgr.isTeamWorkflow() && ((TeamWorkFlowArtifact) smaMgr.getSma()).getBranchMgr().isWorkingBranchInWork()) {
 
             if (((WorkPageDefinition) transitionToStateCombo.getSelected()).getPageName().equals(
                   DefaultTeamState.Cancelled.name())) {
@@ -623,7 +623,7 @@ public class SMAWorkFlowSection extends SectionPart {
                      "Working Branch exists.\n\nPlease delete working branch before transition to cancel.");
                return;
             }
-            if (smaMgr.getBranchMgr().isBranchInCommit()) {
+            if (((TeamWorkFlowArtifact) smaMgr.getSma()).getBranchMgr().isBranchInCommit()) {
                AWorkbench.popup("Transition Blocked",
                      "Working Branch is being Committed.\n\nPlease wait till commit completes to transition.");
                return;

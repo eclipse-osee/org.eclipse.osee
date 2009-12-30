@@ -566,11 +566,12 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       try {
+         if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) return;
          if (smaMgr.isInTransition()) {
             return;
          }
          if (branchModType == BranchEventType.Added || branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Purged || branchModType == BranchEventType.Committed) {
-            if (smaMgr.getBranchMgr().getId() == null || smaMgr.getBranchMgr().getId() != branchId) {
+            if (((TeamWorkFlowArtifact) smaMgr.getSma()).getBranchMgr().getId() == null || ((TeamWorkFlowArtifact) smaMgr.getSma()).getBranchMgr().getId() != branchId) {
                return;
             }
             Displays.ensureInDisplayThread(new Runnable() {

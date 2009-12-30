@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -53,8 +52,7 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class XWorkingBranch extends XWidget implements IArtifactWidget, IFrameworkTransactionEventListener, IBranchEventListener {
 
-   private Artifact artifact;
-   private SMAManager smaMgr;
+   private TeamWorkFlowArtifact teamArt;
    private Button createBranchButton;
    private Button showArtifactExplorer;
    private Button showChangeReport;
@@ -71,7 +69,6 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
-      setSMAMgr();
       if (horizontalSpan < 2) {
          horizontalSpan = 2;
       }
@@ -101,7 +98,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       createBranchButton.setToolTipText("Create Working Branch");
       createBranchButton.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
-            smaMgr.getBranchMgr().createWorkingBranch(null, true);
+            teamArt.getBranchMgr().createWorkingBranch(null, true);
          }
       });
 
@@ -131,7 +128,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       showChangeReport.setToolTipText("Show Change Report");
       showChangeReport.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
-            smaMgr.getBranchMgr().showChangeReport();
+            teamArt.getBranchMgr().showChangeReport();
          }
       });
 
@@ -146,7 +143,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       purgeBranchButton.setToolTipText("Delete Working Branch");
       purgeBranchButton.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
-            smaMgr.getBranchMgr().deleteWorkingBranch(true);
+            teamArt.getBranchMgr().deleteWorkingBranch(true);
             refresh();
          }
       });
@@ -162,15 +159,9 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       refresh();
    }
 
-   private void setSMAMgr() {
-      if (artifact instanceof TeamWorkFlowArtifact) {
-         smaMgr = ((TeamWorkFlowArtifact) artifact).getSmaMgr();
-      }
-   }
-
    private Branch getWorkingBranch() {
       try {
-         return ((IBranchArtifact) artifact).getWorkingBranch();
+         return ((IBranchArtifact) teamArt).getWorkingBranch();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
          return null;
@@ -187,9 +178,9 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    public String getStatus() {
       try {
-         if (smaMgr != null && smaMgr.getBranchMgr().isWorkingBranchEverCommitted()) {
+         if (teamArt != null && teamArt.getBranchMgr().isWorkingBranchEverCommitted()) {
             return BranchStatus.Changes_NotPermitted.name();
-         } else if (smaMgr != null && smaMgr.getBranchMgr().isWorkingBranchInWork()) {
+         } else if (teamArt != null && teamArt.getBranchMgr().isWorkingBranchInWork()) {
             return BranchStatus.Changes_InProgress.name();
          } else {
             return BranchStatus.Not_Started.name();
@@ -237,7 +228,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    @Override
    public void refresh() {
-      if (smaMgr == null || smaMgr.getBranchMgr() == null || labelWidget == null || labelWidget.isDisposed()) {
+      if (teamArt == null || teamArt.getBranchMgr() == null || labelWidget == null || labelWidget.isDisposed()) {
          return;
       }
       final boolean forcePend = OseeProperties.isInTest();
@@ -245,9 +236,9 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
          @Override
          public void run() {
             try {
-               final boolean workingBranchInWork = smaMgr.getBranchMgr().isWorkingBranchInWork();
-               final boolean committedBranchExists = smaMgr.getBranchMgr().isCommittedBranchExists();
-               final Branch workingBranch = smaMgr.getBranchMgr().getWorkingBranch();
+               final boolean workingBranchInWork = teamArt.getBranchMgr().isWorkingBranchInWork();
+               final boolean committedBranchExists = teamArt.getBranchMgr().isCommittedBranchExists();
+               final Branch workingBranch = teamArt.getBranchMgr().getWorkingBranch();
                final String status = getStatus();
                final boolean changesNotPermitted = status.equals(BranchStatus.Changes_NotPermitted.name());
                final String labelStr =
@@ -308,7 +299,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    @Override
    public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException {
-      this.artifact = artifact;
+      this.teamArt = (TeamWorkFlowArtifact) artifact;
    }
 
    @Override

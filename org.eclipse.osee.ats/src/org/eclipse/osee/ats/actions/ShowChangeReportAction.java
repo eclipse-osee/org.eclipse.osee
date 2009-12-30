@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
@@ -21,20 +21,20 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
  */
 public class ShowChangeReportAction extends Action {
 
-   private final SMAManager smaMgr;
+   private final TeamWorkFlowArtifact teamArt;
 
    // Since this service is only going to be added for the Implement state, Location.AllState will
    // work
-   public ShowChangeReportAction(SMAManager smaMgr) {
-      this.smaMgr = smaMgr;
+   public ShowChangeReportAction(TeamWorkFlowArtifact teamArt) {
+      this.teamArt = teamArt;
       setText("Show Change Report");
       setToolTipText(getText());
       boolean enabled = false;
       try {
-         if (smaMgr.getBranchMgr().isWorkingBranchInWork()) {
+         if (teamArt.getBranchMgr().isWorkingBranchInWork()) {
             enabled = true;
          } else {
-            enabled = smaMgr.getBranchMgr().isCommittedBranchExists();
+            enabled = teamArt.getBranchMgr().isCommittedBranchExists();
          }
       } catch (Exception ex) {
          // do nothing
@@ -44,7 +44,7 @@ public class ShowChangeReportAction extends Action {
 
    @Override
    public void run() {
-      smaMgr.getBranchMgr().showChangeReport();
+      teamArt.getBranchMgr().showChangeReport();
    }
 
    /* (non-Javadoc)

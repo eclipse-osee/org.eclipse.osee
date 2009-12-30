@@ -106,7 +106,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
                      teamArt.getTeamDefinition().getName()));
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
-         for (ICommitConfigArtifact commitConfigArt : teamArt.getSmaMgr().getBranchMgr().getConfigArtifactsConfiguredToCommitTo()) {
+         for (ICommitConfigArtifact commitConfigArt : teamArt.getBranchMgr().getConfigArtifactsConfiguredToCommitTo()) {
             processTeam(teamArt, commitConfigArt.getParentBranch().getShortName(), byAttribute, commitConfigArt, rd);
          }
          x++;
@@ -120,7 +120,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
 
    private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, ICommitConfigArtifact commitConfigArt, XResultData rd) throws OseeCoreException {
       String rpcrNum = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
-      ChangeData changeData = teamArt.getSmaMgr().getBranchMgr().getChangeData(commitConfigArt);
+      ChangeData changeData = teamArt.getBranchMgr().getChangeData(commitConfigArt);
       for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW, ModificationType.MODIFIED)) {
          List<String> attrStrs = modArt.getAttributesToStringList(byAttribute);
          if (attrStrs.size() == 0)

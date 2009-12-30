@@ -22,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
@@ -60,6 +61,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    public static String ARTIFACT_NAME = "Team Workflow";
    private XActionableItemsDam actionableItemsDam;
    private boolean targetedErrorLogged = false;
+   private final AtsBranchManager branchMgr;
    public static enum DefaultTeamState {
       Endorse, Analyze, Authorize, Implement, Completed, Cancelled
    }
@@ -68,6 +70,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       registerSMAEditorRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
       registerAtsWorldRelation(AtsRelationTypes.TeamWorkflowToReview_Review);
+      branchMgr = new AtsBranchManager(this);
    }
 
    @Override
@@ -507,10 +510,10 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public String getWorldViewBranchStatus() throws OseeCoreException {
       try {
-         if (getSmaMgr().getBranchMgr().isWorkingBranchInWork())
+         if (getBranchMgr().isWorkingBranchInWork())
             return "Working";
-         else if (getSmaMgr().getBranchMgr().isCommittedBranchExists()) {
-            if (!getSmaMgr().getBranchMgr().isAllObjectsToCommitToConfigured() || !getSmaMgr().getBranchMgr().isBranchesAllCommitted()) {
+         else if (getBranchMgr().isCommittedBranchExists()) {
+            if (!getBranchMgr().isAllObjectsToCommitToConfigured() || !getBranchMgr().isBranchesAllCommitted()) {
                return "Needs Commit";
             }
             return "Committed";
@@ -526,8 +529,8 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    public Branch getWorkingBranch() throws OseeCoreException {
-      if (getSmaMgr().getBranchMgr().getWorkingBranch() != null) {
-         return getSmaMgr().getBranchMgr().getWorkingBranch();
+      if (getBranchMgr().getWorkingBranch() != null) {
+         return getBranchMgr().getWorkingBranch();
       }
       return null;
    }
@@ -544,6 +547,10 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          date = getWorldViewEstimatedReleaseDate();
       }
       return date;
+   }
+
+   public AtsBranchManager getBranchMgr() {
+      return branchMgr;
    }
 
 }

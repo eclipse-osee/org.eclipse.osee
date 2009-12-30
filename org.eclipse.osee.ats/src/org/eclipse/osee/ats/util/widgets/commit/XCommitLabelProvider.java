@@ -46,7 +46,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          try {
             CommitStatus commitStatus =
-                  commitXManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().getCommitStatus(configArt);
+                  commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitStatus(configArt);
             if (commitStatus == CommitStatus.Branch_Not_Configured ||
             //
             commitStatus == CommitStatus.Branch_Commit_Disabled ||
@@ -73,7 +73,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          try {
             CommitStatus commitStatus =
-                  commitXManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().getCommitStatus(configArt);
+                  commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitStatus(configArt);
             if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Committed_With_Merge) {
                return ImageManager.getImage(FrameworkImage.OUTGOING_MERGED);
             }
@@ -91,7 +91,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       Branch branch = configArt.getParentBranch();
 
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
-         return commitXManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().getCommitStatus(configArt).getDisplayName();
+         return commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitStatus(configArt).getDisplayName();
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          return "";
       } else if (xCol.equals(CommitXManagerFactory.Version_Col)) {
@@ -106,7 +106,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          }
       } else if (xCol.equals(CommitXManagerFactory.Action_Col)) {
          CommitStatus commitStatus =
-               commitXManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().getCommitStatus(configArt);
+               commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitStatus(configArt);
          if (commitStatus == CommitStatus.Branch_Not_Configured)
             return "Configure Branch";
          else if (commitStatus == CommitStatus.Branch_Commit_Disabled)

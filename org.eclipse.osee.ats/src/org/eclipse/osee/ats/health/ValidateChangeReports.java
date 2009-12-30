@@ -139,7 +139,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
                   }
 
                   // Only validate committed branches cause working branches change too much
-                  if (!teamArt.getSmaMgr().getBranchMgr().isCommittedBranchExists()) {
+                  if (!teamArt.getBranchMgr().isCommittedBranchExists()) {
                      continue;
                   }
                   Result valid = changeReportValidated(currentDbGuid, teamArt, xResultData, false);
@@ -190,7 +190,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
                artifactForStore.getSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, null);
       }
       // Retrieve current 
-      ChangeData currentChangeData = teamArt.getSmaMgr().getBranchMgr().getChangeDataFromEarliestTransactionId();
+      ChangeData currentChangeData = teamArt.getBranchMgr().getChangeDataFromEarliestTransactionId();
       // Store 
       if (storedChangeReport == null) {
          // Reuse same artifact if already exists

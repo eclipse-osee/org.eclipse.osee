@@ -84,7 +84,7 @@ public class CommitXManager extends XViewer {
       try {
          ICommitConfigArtifact configArt = getSelectedConfigArtifacts().iterator().next();
          Branch destBranch = configArt.getParentBranch();
-         AtsBranchManager manager = xCommitManager.getTeamArt().getSmaMgr().getBranchMgr();
+         AtsBranchManager manager = xCommitManager.getTeamArt().getBranchMgr();
          CommitStatus commitStatus = manager.getCommitStatus(configArt);
          if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
             AWorkbench.popup(commitStatus.getDisplayName(), "Need to create a working branch");
@@ -96,14 +96,14 @@ public class CommitXManager extends XViewer {
                   "Talk to project lead as to why commit disabled for version [" + configArt + "]");
          } else if (commitStatus == CommitStatus.Commit_Needed) {
             destBranch = configArt.getParentBranch();
-            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch,
+            xCommitManager.getTeamArt().getBranchMgr().commitWorkingBranch(true, false, destBranch,
                   manager.isBranchesAllCommittedExcept(destBranch));
          } else if (commitStatus == CommitStatus.Merge_In_Progress) {
             destBranch = configArt.getParentBranch();
-            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().commitWorkingBranch(true, false, destBranch,
+            xCommitManager.getTeamArt().getBranchMgr().commitWorkingBranch(true, false, destBranch,
                   manager.isBranchesAllCommittedExcept(destBranch));
          } else if (commitStatus == CommitStatus.Committed) {
-            xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReportForBranch(destBranch);
+            xCommitManager.getTeamArt().getBranchMgr().showChangeReportForBranch(destBranch);
          } else if (commitStatus == CommitStatus.Committed_With_Merge) {
             destBranch = configArt.getParentBranch();
             MessageDialog dialog =
@@ -114,11 +114,11 @@ public class CommitXManager extends XViewer {
             if (result == 2) return;
             // change report
             if (result == 0) {
-               xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showChangeReportForBranch(destBranch);
+               xCommitManager.getTeamArt().getBranchMgr().showChangeReportForBranch(destBranch);
             }
             // merge manager
             else {
-               xCommitManager.getTeamArt().getSmaMgr().getBranchMgr().showMergeManager(destBranch);
+               xCommitManager.getTeamArt().getBranchMgr().showMergeManager(destBranch);
             }
          }
       } catch (OseeCoreException ex) {

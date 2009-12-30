@@ -96,7 +96,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       }
 
       try {
-         if (!teamArt.getSmaMgr().getBranchMgr().isWorkingBranchInWork() && !teamArt.getSmaMgr().getBranchMgr().isCommittedBranchExists()) {
+         if (!teamArt.getBranchMgr().isWorkingBranchInWork() && !teamArt.getBranchMgr().isCommittedBranchExists()) {
             labelWidget.setText(getLabel() + ": No working or committed branches available.");
          } else {
 
@@ -120,8 +120,8 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
                            return;
                         }
                         try {
-                           for (Branch destinationBranch : teamArt.getSmaMgr().getBranchMgr().getBranchesLeftToCommit()) {
-                              teamArt.getSmaMgr().getBranchMgr().commitWorkingBranch(false, true, destinationBranch,
+                           for (Branch destinationBranch : teamArt.getBranchMgr().getBranchesLeftToCommit()) {
+                              teamArt.getBranchMgr().commitWorkingBranch(false, true, destinationBranch,
                                     true);
                               Thread.sleep(1000);
                            }
@@ -213,7 +213,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       try {
          if (xCommitManager != null && teamArt != null && xCommitManager.getContentProvider() != null) {
             Collection<ICommitConfigArtifact> configArtSet =
-                  teamArt.getSmaMgr().getBranchMgr().getConfigArtifactsConfiguredToCommitTo();
+                  teamArt.getBranchMgr().getConfigArtifactsConfiguredToCommitTo();
             xCommitManager.setInput(configArtSet);
             xCommitManager.refresh();
             refresh();
@@ -293,14 +293,14 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       try {
          int backgroundColor = SWT.COLOR_BLACK;
          String infoStr = "Double-click item to perform Action";
-         if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr() != null && xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr() != null) {
-            if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isAllObjectsToCommitToConfigured()) {
+         if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr() != null && xCommitManager.getXCommitViewer().getTeamArt().getBranchMgr() != null) {
+            if (!xCommitManager.getXCommitViewer().getTeamArt().getBranchMgr().isAllObjectsToCommitToConfigured()) {
                infoStr = "All branches must be configured and committed - Double-click item to perform Action";
                backgroundColor = SWT.COLOR_RED;
                returnStatus =
                      new Status(IStatus.ERROR, getClass().getSimpleName(),
                            "All branches must be configured and committed.");
-            } else if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isBranchesAllCommitted()) {
+            } else if (!xCommitManager.getXCommitViewer().getTeamArt().getBranchMgr().isBranchesAllCommitted()) {
                infoStr = "All branches must be committed - Double-click item to perform Action";
                backgroundColor = SWT.COLOR_RED;
                returnStatus = new Status(IStatus.ERROR, getClass().getSimpleName(), "All branches must be committed.");

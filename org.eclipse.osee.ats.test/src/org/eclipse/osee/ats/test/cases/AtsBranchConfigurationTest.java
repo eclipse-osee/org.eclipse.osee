@@ -186,10 +186,10 @@ public class AtsBranchConfigurationTest {
       // make changes
       OseeLog.log(AtsPlugin.class, Level.INFO, "Make new requirement artifact");
       Artifact rootArtifact =
-            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getSmaMgr().getBranchMgr().getWorkingBranch());
+            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getBranchMgr().getWorkingBranch());
       Artifact blk3MainArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT,
-                  teamWf.getSmaMgr().getBranchMgr().getWorkingBranch(),
+                  teamWf.getBranchMgr().getWorkingBranch(),
                   TestType.BranchViaVersions.name() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist();
@@ -200,7 +200,7 @@ public class AtsBranchConfigurationTest {
       // test change report
       OseeLog.log(AtsPlugin.class, Level.INFO, "Test change report results");
       Collection<Artifact> newArts =
-            teamWf.getSmaMgr().getBranchMgr().getChangeDataFromEarliestTransactionId().getArtifacts(KindType.Artifact,
+            teamWf.getBranchMgr().getChangeDataFromEarliestTransactionId().getArtifacts(KindType.Artifact,
                   ModificationType.NEW);
       assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
 
@@ -286,10 +286,10 @@ public class AtsBranchConfigurationTest {
       // make changes
       OseeLog.log(AtsPlugin.class, Level.INFO, "Make new requirement artifact");
       Artifact rootArtifact =
-            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getSmaMgr().getBranchMgr().getWorkingBranch());
+            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getBranchMgr().getWorkingBranch());
       Artifact blk3MainArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT,
-                  teamWf.getSmaMgr().getBranchMgr().getWorkingBranch(),
+                  teamWf.getBranchMgr().getWorkingBranch(),
                   TestType.BranchViaTeamDef.name() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist();
@@ -300,7 +300,7 @@ public class AtsBranchConfigurationTest {
       // test change report
       OseeLog.log(AtsPlugin.class, Level.INFO, "Test change report results");
       Collection<Artifact> newArts =
-            teamWf.getSmaMgr().getBranchMgr().getChangeDataFromEarliestTransactionId().getArtifacts(KindType.Artifact,
+            teamWf.getBranchMgr().getChangeDataFromEarliestTransactionId().getArtifacts(KindType.Artifact,
                   ModificationType.NEW);
       assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
    }
@@ -392,15 +392,15 @@ public class AtsBranchConfigurationTest {
 
    private void commitBranch(TeamWorkFlowArtifact teamWf) throws Exception {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Commit Branch");
-      teamWf.getSmaMgr().getBranchMgr().commitWorkingBranch(false, true,
-            teamWf.getSmaMgr().getBranchMgr().getWorkingBranch().getParentBranch(), true);
+      teamWf.getBranchMgr().commitWorkingBranch(false, true,
+            teamWf.getBranchMgr().getWorkingBranch().getParentBranch(), true);
       TestUtil.sleep(2000);
    }
 
    private void createBranch(String namespace, TeamWorkFlowArtifact teamWf) throws Exception {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Creating working branch");
       String implementPageId = namespace + ".Implement";
-      Result result = teamWf.getSmaMgr().getBranchMgr().createWorkingBranch(implementPageId, false);
+      Result result = teamWf.getBranchMgr().createWorkingBranch(implementPageId, false);
       if (result.isFalse()) {
          result.popup();
          return;
