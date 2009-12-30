@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -80,7 +81,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                List<Artifact> arts = new ArrayList<Artifact>();
                // Convert artifacts to WorldArtifactItems
-               arts.addAll(teamArt.getSmaMgr().getReviewManager().getReviews());
+               arts.addAll(ReviewManager.getReviews(teamArt));
                arts.addAll(teamArt.getTaskArtifactsSorted());
                relatedArts.addAll(arts);
                return arts.toArray();
@@ -88,8 +89,6 @@ public class WorldContentProvider implements ITreeContentProvider {
             if (artifact instanceof ReviewSMArtifact) {
                ReviewSMArtifact reviewArt = (ReviewSMArtifact) artifact;
                List<Artifact> arts = new ArrayList<Artifact>();
-               // Convert artifacts to WorldArtifactItems
-               arts.addAll(reviewArt.getSmaMgr().getReviewManager().getReviews());
                arts.addAll(reviewArt.getTaskArtifactsSorted());
                relatedArts.addAll(arts);
                return arts.toArray();

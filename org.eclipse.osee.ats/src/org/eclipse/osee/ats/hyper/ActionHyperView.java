@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -146,7 +147,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
                ActionHyperItem teamAHI = new ActionHyperItem(team);
                teamAHI.setRelationToolTip("Team");
                topAHI.addBottom(teamAHI);
-               for (ReviewSMArtifact rev : team.getSmaMgr().getReviewManager().getReviews()) {
+               for (ReviewSMArtifact rev : ReviewManager.getReviews(team)) {
                   reviewsCreated = true;
                   ActionHyperItem reviewAHI = new ActionHyperItem(rev);
                   reviewAHI.setRelationToolTip("Review");

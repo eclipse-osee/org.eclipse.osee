@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 
@@ -44,8 +45,7 @@ public class NewPeerToPeerReviewJob extends Job {
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "New Peer To Peer Review");
          peerToPeerReviewArtifact =
-               teamParent.getSmaMgr().getReviewManager().createNewPeerToPeerReview(reviewTitle, againstState,
-                     transaction);
+               ReviewManager.createNewPeerToPeerReview(teamParent, reviewTitle, againstState, transaction);
          peerToPeerReviewArtifact.persist(transaction);
          transaction.execute();
 

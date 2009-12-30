@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
@@ -64,7 +63,6 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransactionEventListener {
 
-   private final SMAManager smaMgr;
    private final String forStateName;
    private final ArrayList<Label> labelWidgets = new ArrayList<Label>();
    private Composite destroyableComposite = null;
@@ -72,12 +70,13 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
    private final IManagedForm managedForm;
    private final int horizontalSpan;
    private final XFormToolkit toolkit;
+   private final TeamWorkFlowArtifact teamArt;
 
-   public ReviewInfoXWidget(IManagedForm managedForm, XFormToolkit toolkit, final SMAManager smaMgr, final String forStateName, Composite composite, int horizontalSpan) {
+   public ReviewInfoXWidget(IManagedForm managedForm, XFormToolkit toolkit, final TeamWorkFlowArtifact teamArt, final String forStateName, Composite composite, int horizontalSpan) {
       super("\"" + forStateName + "\" State Reviews");
       this.managedForm = managedForm;
       this.toolkit = toolkit;
-      this.smaMgr = smaMgr;
+      this.teamArt = teamArt;
       this.forStateName = forStateName;
       this.composite = composite;
       this.horizontalSpan = horizontalSpan;
@@ -101,7 +100,7 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
 
       try {
          addAdminRightClickOption();
-         Collection<ReviewSMArtifact> revArts = smaMgr.getReviewManager().getReviews(forStateName);
+         Collection<ReviewSMArtifact> revArts = ReviewManager.getReviews(teamArt, forStateName);
          if (revArts.size() == 0) {
             setValueText("No Reviews Created");
          }
@@ -120,17 +119,16 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
                   StateListAndTitleDialog dialog =
                         new StateListAndTitleDialog("Create Decision Review",
                               "Select state to that review will be associated with.",
-                              smaMgr.getWorkFlowDefinition().getPageNames());
-                  dialog.setInitialSelections(new Object[] {smaMgr.getStateMgr().getCurrentStateName()});
+                              teamArt.getSmaMgr().getWorkFlowDefinition().getPageNames());
+                  dialog.setInitialSelections(new Object[] {teamArt.getSmaMgr().getStateMgr().getCurrentStateName()});
                   if (dialog.open() == 0) {
                      if (dialog.getReviewTitle() == null || dialog.getReviewTitle().equals("")) {
                         AWorkbench.popup("ERROR", "Must enter review title");
                         return;
                      }
                      NewDecisionReviewJob job =
-                           new NewDecisionReviewJob((TeamWorkFlowArtifact) smaMgr.getSma(), null,
-                                 dialog.getReviewTitle(), dialog.getSelectedState(), null,
-                                 ReviewManager.getDefaultDecisionReviewOptions(), null);
+                           new NewDecisionReviewJob(teamArt, null, dialog.getReviewTitle(), dialog.getSelectedState(),
+                                 null, ReviewManager.getDefaultDecisionReviewOptions(), null);
                      job.setUser(true);
                      job.setPriority(Job.LONG);
                      job.schedule();
@@ -155,17 +153,16 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
                   StateListAndTitleDialog dialog =
                         new StateListAndTitleDialog("Add Peer to Peer Review",
                               "Select state to that review will be associated with.",
-                              smaMgr.getWorkFlowDefinition().getPageNames());
-                  dialog.setInitialSelections(new Object[] {smaMgr.getStateMgr().getCurrentStateName()});
-                  dialog.setReviewTitle(PeerToPeerReviewArtifact.getDefaultReviewTitle(smaMgr));
+                              teamArt.getSmaMgr().getWorkFlowDefinition().getPageNames());
+                  dialog.setInitialSelections(new Object[] {teamArt.getSmaMgr().getStateMgr().getCurrentStateName()});
+                  dialog.setReviewTitle(PeerToPeerReviewArtifact.getDefaultReviewTitle(teamArt));
                   if (dialog.open() == 0) {
                      if (dialog.getReviewTitle() == null || dialog.getReviewTitle().equals("")) {
                         AWorkbench.popup("ERROR", "Must enter review title");
                         return;
                      }
                      NewPeerToPeerReviewJob job =
-                           new NewPeerToPeerReviewJob((TeamWorkFlowArtifact) smaMgr.getSma(), dialog.getReviewTitle(),
-                                 dialog.getSelectedState());
+                           new NewPeerToPeerReviewJob(teamArt, dialog.getReviewTitle(), dialog.getSelectedState());
                      job.setUser(true);
                      job.setPriority(Job.LONG);
                      job.schedule();
@@ -196,14 +193,14 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
    @Override
    public String toString() {
       try {
-         return "ReviewInfoXWidget for SMA \"" + smaMgr.getSma() + "\"";
+         return "ReviewInfoXWidget for SMA \"" + teamArt + "\"";
       } catch (Exception ex) {
          return "ReviewInfoXWidget " + ex.getLocalizedMessage();
       }
    }
 
-   public static String toHTML(final SMAManager smaMgr, String forStateName) throws OseeCoreException {
-      if (smaMgr.getReviewManager().getReviews(forStateName).size() == 0) {
+   public static String toHTML(final TeamWorkFlowArtifact teamArt, String forStateName) throws OseeCoreException {
+      if (ReviewManager.getReviews(teamArt, forStateName).size() == 0) {
          return "";
       }
       StringBuffer html = new StringBuffer();
@@ -211,7 +208,7 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "\"" + forStateName + "\" State Reviews"));
          html.append(AHTML.startBorderTable(100, Overview.normalColor, ""));
          html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Review Type", "Title", "ID"}));
-         for (ReviewSMArtifact art : smaMgr.getReviewManager().getReviews(forStateName)) {
+         for (ReviewSMArtifact art : ReviewManager.getReviews(teamArt, forStateName)) {
             html.append(AHTML.addRowMultiColumnTable(new String[] {art.getArtifactTypeName(), art.getName(),
                   art.getHumanReadableId()}));
          }
@@ -224,7 +221,7 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
    }
 
    public String toHTML() throws OseeCoreException {
-      return ReviewInfoXWidget.toHTML(smaMgr, forStateName);
+      return ReviewInfoXWidget.toHTML(teamArt, forStateName);
    }
 
    private void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit, final int horizontalSpan, final ReviewSMArtifact revArt, String forStateName) throws OseeCoreException {
@@ -269,13 +266,13 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (smaMgr.isInTransition()) {
+      if (teamArt.getSmaMgr().isInTransition()) {
          return;
       }
       if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
          return;
       }
-      for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviews(forStateName)) {
+      for (ReviewSMArtifact reviewArt : ReviewManager.getReviews(teamArt, forStateName)) {
          if (transData.isHasEvent(reviewArt)) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
@@ -306,7 +303,7 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
                   try {
                      SkynetTransaction transaction =
                            new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Auto Complete Reviews");
-                     for (ReviewSMArtifact revArt : smaMgr.getReviewManager().getReviewsFromCurrentState()) {
+                     for (ReviewSMArtifact revArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                         if (!revArt.getSmaMgr().isCancelledOrCompleted()) {
                            if (revArt.getSmaMgr().getStateMgr().isUnAssigned()) {
                               revArt.getSmaMgr().getStateMgr().setAssignee(UserManager.getUser());

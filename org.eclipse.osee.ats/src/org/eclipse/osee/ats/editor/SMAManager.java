@@ -80,7 +80,6 @@ public class SMAManager {
    private final WeakReference<StateMachineArtifact> smaRef;
    private Collection<User> transitionAssignees;
    private static String SEPERATOR = ";  ";
-   private final ReviewManager reviewMgr;
    private final AtsBranchManager branchMgr;
    private final StateManager stateMgr;
    private final DeadlineManager deadlineMgr;
@@ -102,7 +101,6 @@ public class SMAManager {
       this.smaRef = new WeakReference<StateMachineArtifact>(sma);
       this.editor = editor;
       stateMgr = new StateManager(this);
-      reviewMgr = new ReviewManager(this);
       branchMgr = new AtsBranchManager(this);
       deadlineMgr = new DeadlineManager(this);
       atsLog = new ATSLog(sma);
@@ -861,8 +859,8 @@ public class SMAManager {
 
       stateMgr.transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, completeOrCancelReason);
 
-      if (getSma().isValidationRequired()) {
-         getReviewManager().createValidateReview(false, transaction);
+      if (getSma().isValidationRequired() && getSma() instanceof TeamWorkFlowArtifact) {
+         ReviewManager.createValidateReview((TeamWorkFlowArtifact) getSma(), false, transaction);
       }
 
       AtsNotifyUsers.notify(getSma(), AtsNotifyUsers.NotifyType.Subscribed, AtsNotifyUsers.NotifyType.Completed,
@@ -907,13 +905,6 @@ public class SMAManager {
     */
    public AtsBranchManager getBranchMgr() {
       return branchMgr;
-   }
-
-   /**
-    * @return the reviewManager
-    */
-   public ReviewManager getReviewManager() {
-      return reviewMgr;
    }
 
    /**

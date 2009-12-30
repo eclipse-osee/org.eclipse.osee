@@ -14,8 +14,10 @@ import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -88,9 +90,9 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
                breakoutNeeded = true;
             }
          }
-         if (smaMgr.getReviewManager().hasReviews()) {
-            sb.append(String.format("\n     Review Hours: %5.2f", smaMgr.getReviewManager().getHoursSpent(
-                  page.getName())));
+         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact && ReviewManager.hasReviews((TeamWorkFlowArtifact) smaMgr.getSma())) {
+            sb.append(String.format("\n     Review Hours: %5.2f", ReviewManager.getHoursSpent(
+                  (TeamWorkFlowArtifact) smaMgr.getSma(), page.getName())));
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {
@@ -104,5 +106,4 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
          return ex.getLocalizedMessage();
       }
    }
-
 }

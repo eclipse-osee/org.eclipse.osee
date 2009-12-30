@@ -430,9 +430,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                notesSb.append(note.toHTML() + AHTML.newline());
             }
          }
-         if (smaMgr.isCurrentState(page.getName()) || smaMgr.getStateMgr().isStateVisited(page.getName())) {
+         if (smaMgr.isCurrentState(page.getName()) || smaMgr.getStateMgr().isStateVisited(page.getName()) && smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
             htmlSb.append(page.getHtml(smaMgr.isCurrentState(page.getName()) ? activeColor : normalColor,
-                  notesSb.toString(), ReviewInfoXWidget.toHTML(smaMgr, page.getName())));
+                  notesSb.toString(), ReviewInfoXWidget.toHTML((TeamWorkFlowArtifact) smaMgr.getSma(), page.getName())));
             htmlSb.append(AHTML.newline());
          }
       }

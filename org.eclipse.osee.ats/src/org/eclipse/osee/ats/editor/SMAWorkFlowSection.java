@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.editor.widget.StatePercentCompleteXWidget;
 import org.eclipse.osee.ats.editor.widget.TargetVersionXWidget;
 import org.eclipse.osee.ats.editor.widget.TaskInfoXWidget;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -243,12 +244,13 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    private void createReviewFooter(Composite parent, String forStateName) throws OseeCoreException {
-      if (isShowReviewInfo()) {
+      if (isShowReviewInfo() && smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
          Composite comp = new Composite(parent, SWT.None);
          GridLayout layout = new GridLayout(1, false);
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new ReviewInfoXWidget(getManagedForm(), toolkit, smaMgr, forStateName, comp, 1));
+         allXWidgets.add(new ReviewInfoXWidget(getManagedForm(), toolkit, (TeamWorkFlowArtifact) smaMgr.getSma(),
+               forStateName, comp, 1));
       }
    }
 
@@ -715,10 +717,12 @@ public class SMAWorkFlowSection extends SectionPart {
             }
 
             // Loop through this state's blocking reviews to confirm complete
-            for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviewsFromCurrentState()) {
-               if (reviewArt.getReviewBlockType() == ReviewBlockType.Transition && !reviewArt.getSmaMgr().isCancelledOrCompleted()) {
-                  AWorkbench.popup("Transition Blocked", "All Blocking Reviews must be completed before transition.");
-                  return;
+            if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+               for (ReviewSMArtifact reviewArt : ReviewManager.getReviewsFromCurrentState((TeamWorkFlowArtifact) smaMgr.getSma())) {
+                  if (reviewArt.getReviewBlockType() == ReviewBlockType.Transition && !reviewArt.getSmaMgr().isCancelledOrCompleted()) {
+                     AWorkbench.popup("Transition Blocked", "All Blocking Reviews must be completed before transition.");
+                     return;
+                  }
                }
             }
 

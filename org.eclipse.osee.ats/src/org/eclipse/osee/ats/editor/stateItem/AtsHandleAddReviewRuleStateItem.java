@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
@@ -47,7 +48,9 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
 
    public static void runRule(SMAManager smaMgr, String toState, String ruleId, SkynetTransaction transaction) throws OseeCoreException {
       for (WorkRuleDefinition workRuleDef : smaMgr.getWorkRulesStartsWith(ruleId)) {
-         StateEventType eventType = AtsAddDecisionReviewRule.getStateEventType(smaMgr, workRuleDef);
+         if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) continue;
+         StateEventType eventType =
+               AtsAddDecisionReviewRule.getStateEventType((TeamWorkFlowArtifact) smaMgr.getSma(), workRuleDef);
          String forState = workRuleDef.getWorkDataValue(DecisionParameter.forState.name());
          if (forState == null || forState.equals("")) {
             continue;
@@ -55,12 +58,13 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
          if (eventType != null && toState.equals(forState) && eventType == StateEventType.TransitionTo) {
             if (ruleId.startsWith(AtsAddDecisionReviewRule.ID)) {
                DecisionReviewArtifact decArt =
-                     AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction, smaMgr,
-                           DecisionRuleOption.TransitionToDecision);
+                     AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction,
+                           (TeamWorkFlowArtifact) smaMgr.getSma(), DecisionRuleOption.TransitionToDecision);
                if (decArt != null) decArt.persist(transaction);
             } else if (ruleId.startsWith(AtsAddPeerToPeerReviewRule.ID)) {
                PeerToPeerReviewArtifact peerArt =
-                     AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, smaMgr, transaction);
+                     AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef,
+                           (TeamWorkFlowArtifact) smaMgr.getSma(), transaction);
                if (peerArt != null) peerArt.persist(transaction);
             }
          }

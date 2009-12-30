@@ -15,9 +15,10 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -77,32 +78,30 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
     * @return DecisionReviewArtifact
     * @throws OseeCoreException
     */
-   public static DecisionReviewArtifact createNewDecisionReview(WorkRuleDefinition atsAddDecisionReviewRule, SkynetTransaction transaction, SMAManager smaMgr, DecisionRuleOption... decisionRuleOption) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReview(WorkRuleDefinition atsAddDecisionReviewRule, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, DecisionRuleOption... decisionRuleOption) throws OseeCoreException {
       if (!atsAddDecisionReviewRule.getId().startsWith(AtsAddDecisionReviewRule.ID)) {
          throw new IllegalArgumentException("WorkRuleDefinition must be AtsAddDecisionReviewRule.ID");
       }
-      String title = getValueOrDefault(smaMgr, atsAddDecisionReviewRule, DecisionParameter.title);
-      if (Artifacts.artNames(smaMgr.getReviewManager().getReviews()).contains(title)) {
+      String title = getValueOrDefault(teamArt, atsAddDecisionReviewRule, DecisionParameter.title);
+      if (Artifacts.artNames(ReviewManager.getReviews(teamArt)).contains(title)) {
          // Already created this review
          return null;
       }
       DecisionReviewArtifact decArt = null;
       if (Collections.getAggregate(decisionRuleOption).contains(DecisionRuleOption.TransitionToDecision)) {
          decArt =
-               smaMgr.getReviewManager().createNewDecisionReviewAndTransitionToDecision(title,
-                     getValueOrDefault(smaMgr, atsAddDecisionReviewRule, DecisionParameter.description),
-                     getValueOrDefault(smaMgr, atsAddDecisionReviewRule, DecisionParameter.forState),
-                     getReviewBlockTypeOrDefault(smaMgr, atsAddDecisionReviewRule),
-                     getValueOrDefault(smaMgr, atsAddDecisionReviewRule, DecisionParameter.options),
-                     getAssigneesOrDefault(smaMgr, atsAddDecisionReviewRule), transaction);
+               ReviewManager.createNewDecisionReviewAndTransitionToDecision(teamArt, title, getValueOrDefault(teamArt,
+                     atsAddDecisionReviewRule, DecisionParameter.description), getValueOrDefault(teamArt,
+                     atsAddDecisionReviewRule, DecisionParameter.forState), getReviewBlockTypeOrDefault(teamArt,
+                     atsAddDecisionReviewRule), getValueOrDefault(teamArt, atsAddDecisionReviewRule,
+                     DecisionParameter.options), getAssigneesOrDefault(teamArt, atsAddDecisionReviewRule), transaction);
       } else {
          decArt =
-               smaMgr.getReviewManager().createNewDecisionReview(title,
-                     getValueOrDefault(smaMgr, atsAddDecisionReviewRule, DecisionParameter.description),
-                     getValueOrDefault(smaMgr, atsAddDecisionReviewRule, DecisionParameter.forState),
-                     getReviewBlockTypeOrDefault(smaMgr, atsAddDecisionReviewRule),
-                     getValueOrDefault(smaMgr, atsAddDecisionReviewRule, DecisionParameter.options),
-                     getAssigneesOrDefault(smaMgr, atsAddDecisionReviewRule), transaction);
+               ReviewManager.createNewDecisionReview(teamArt, title, getValueOrDefault(teamArt,
+                     atsAddDecisionReviewRule, DecisionParameter.description), getValueOrDefault(teamArt,
+                     atsAddDecisionReviewRule, DecisionParameter.forState), getReviewBlockTypeOrDefault(teamArt,
+                     atsAddDecisionReviewRule), getValueOrDefault(teamArt, atsAddDecisionReviewRule,
+                     DecisionParameter.options), getAssigneesOrDefault(teamArt, atsAddDecisionReviewRule), transaction);
       }
 
       decArt.getSmaMgr().getLog().addLog(LogType.Note, null,
@@ -110,7 +109,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
       return decArt;
    }
 
-   public static ReviewBlockType getReviewBlockTypeOrDefault(SMAManager smaMgr, WorkRuleDefinition workRuleDefinition) {
+   public static ReviewBlockType getReviewBlockTypeOrDefault(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition) {
       String value = getDecisionParameterValue(workRuleDefinition, DecisionParameter.reviewBlockingType);
       if (value == null || value.equals("")) {
          return null;
@@ -118,7 +117,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
       return ReviewBlockType.valueOf(value);
    }
 
-   public static StateEventType getStateEventType(SMAManager smaMgr, WorkRuleDefinition workRuleDefinition) {
+   public static StateEventType getStateEventType(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition) {
       String value = getDecisionParameterValue(workRuleDefinition, DecisionParameter.forEvent);
       if (value == null || value.equals("")) {
          return null;
@@ -126,23 +125,23 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
       return StateEventType.valueOf(value);
    }
 
-   private static String getValueOrDefault(SMAManager smaMgr, WorkRuleDefinition workRuleDefinition, DecisionParameter decisionParameter) throws OseeCoreException {
+   private static String getValueOrDefault(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition, DecisionParameter decisionParameter) throws OseeCoreException {
       String value = getDecisionParameterValue(workRuleDefinition, decisionParameter);
       if (value == null || value.equals("")) {
          if (decisionParameter == DecisionParameter.title) {
-            return "Decide on \"" + smaMgr.getSma().getName() + "\"";
+            return "Decide on \"" + teamArt.getName() + "\"";
          } else if (decisionParameter == DecisionParameter.options) {
             return "Yes;Followup;<" + UserManager.getUser().getUserId() + ">\n" + "No;Completed;";
          } else if (decisionParameter == DecisionParameter.description) {
             return null;
          } else if (decisionParameter == DecisionParameter.forState) {
-            return smaMgr.getStateMgr().getCurrentStateName();
+            return teamArt.getSmaMgr().getStateMgr().getCurrentStateName();
          }
       }
       return value;
    }
 
-   public static Collection<User> getAssigneesOrDefault(SMAManager smaMgr, WorkRuleDefinition workRuleDefinition) throws OseeCoreException {
+   public static Collection<User> getAssigneesOrDefault(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition) throws OseeCoreException {
       String value = getDecisionParameterValue(workRuleDefinition, DecisionParameter.assignees);
       if (value == null || value.equals("")) {
          return Arrays.asList(new User[] {UserManager.getUser()});

@@ -14,8 +14,10 @@ import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -89,10 +91,12 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
                breakoutNeeded = true;
             }
          }
-         if (smaMgr.getReviewManager().hasReviews()) {
-            sb.append(String.format("\n     Review Percent: %d", smaMgr.getReviewManager().getPercentComplete(
-                  page.getName())));
-            breakoutNeeded = true;
+         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+            if (ReviewManager.hasReviews((TeamWorkFlowArtifact) smaMgr.getSma())) {
+               sb.append(String.format("\n     Review Percent: %d", ReviewManager.getPercentComplete(
+                     (TeamWorkFlowArtifact) smaMgr.getSma(), page.getName())));
+               breakoutNeeded = true;
+            }
          }
          if (breakoutNeeded) {
             if (!getControl().isDisposed()) {

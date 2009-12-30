@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.commit.CommitStatus;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
@@ -660,25 +661,25 @@ public class AtsBranchManager {
       return Result.TrueResult;
    }
 
-   public static void createNecessaryBranchEventReviews(StateEventType stateEventType, SMAManager smaMgr, SkynetTransaction transaction) throws OseeCoreException {
+   public static void createNecessaryBranchEventReviews(StateEventType stateEventType, TeamWorkFlowArtifact teamArt, SkynetTransaction transaction) throws OseeCoreException {
       if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {
          throw new OseeStateException("Invalid stateEventType = " + stateEventType);
       }
       // Create any decision and peerToPeer reviews for createBranch and commitBranch
       for (String ruleId : Arrays.asList(AtsAddDecisionReviewRule.ID, AtsAddPeerToPeerReviewRule.ID)) {
-         for (WorkRuleDefinition workRuleDef : smaMgr.getWorkRulesStartsWith(ruleId)) {
-            StateEventType eventType = AtsAddDecisionReviewRule.getStateEventType(smaMgr, workRuleDef);
+         for (WorkRuleDefinition workRuleDef : teamArt.getSmaMgr().getWorkRulesStartsWith(ruleId)) {
+            StateEventType eventType = AtsAddDecisionReviewRule.getStateEventType(teamArt, workRuleDef);
             if (eventType != null && eventType == stateEventType) {
                if (ruleId.equals(AtsAddDecisionReviewRule.ID)) {
                   DecisionReviewArtifact decArt =
-                        AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction, smaMgr,
+                        AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction, teamArt,
                               DecisionRuleOption.TransitionToDecision);
                   if (decArt != null) {
                      decArt.persist(transaction);
                   }
                } else if (ruleId.equals(AtsAddPeerToPeerReviewRule.ID)) {
                   PeerToPeerReviewArtifact peerArt =
-                        AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, smaMgr, transaction);
+                        AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, teamArt, transaction);
                   if (peerArt != null) {
                      peerArt.persist(transaction);
                   }
@@ -714,10 +715,6 @@ public class AtsBranchManager {
    /**
     * Create a working branch associated with this state machine artifact. This should NOT be called by applications
     * except in test cases or automated tools. Use createWorkingBranchWithPopups
-    * 
-    * @param pageId
-    * @param parentBranch
-    * @throws Exception
     */
    public void createWorkingBranch(String pageId, final IOseeBranch parentBranch) throws OseeCoreException {
       final Artifact stateMachineArtifact = smaMgr.getSma();
@@ -733,7 +730,8 @@ public class AtsBranchManager {
             // Create reviews as necessary
             SkynetTransaction transaction =
                   new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Transition");
-            createNecessaryBranchEventReviews(StateEventType.CreateBranch, smaMgr, transaction);
+            createNecessaryBranchEventReviews(StateEventType.CreateBranch, ((TeamWorkFlowArtifact) smaMgr.getSma()),
+                  transaction);
             transaction.execute();
             return Status.OK_STATUS;
          }
@@ -776,10 +774,12 @@ public class AtsBranchManager {
 
             // Confirm that all blocking reviews are completed
             // Loop through this state's blocking reviews to confirm complete
-            for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviewsFromCurrentState()) {
-               if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.getSmaMgr().isCancelledOrCompleted()) {
-                  return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
-                        "Blocking Review must be completed before commit.");
+            if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+               for (ReviewSMArtifact reviewArt : ReviewManager.getReviewsFromCurrentState((TeamWorkFlowArtifact) smaMgr.getSma())) {
+                  if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.getSmaMgr().isCancelledOrCompleted()) {
+                     return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
+                           "Blocking Review must be completed before commit.");
+                  }
                }
             }
 
@@ -837,7 +837,8 @@ public class AtsBranchManager {
       if (branchCommitted) {
          // Create reviews as necessary
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Commit");
-         createNecessaryBranchEventReviews(StateEventType.CommitBranch, smaMgr, transaction);
+         createNecessaryBranchEventReviews(StateEventType.CommitBranch, ((TeamWorkFlowArtifact) smaMgr.getSma()),
+               transaction);
          transaction.execute();
       }
    }

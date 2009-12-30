@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -571,11 +572,17 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public double getEstimatedHoursFromReviews() throws OseeCoreException {
-      return smaMgr.getReviewManager().getEstimatedHours();
+      if (this instanceof TeamWorkFlowArtifact) {
+         return ReviewManager.getEstimatedHours((TeamWorkFlowArtifact) this);
+      }
+      return 0;
    }
 
    public double getEstimatedHoursFromReviews(String relatedToState) throws OseeCoreException {
-      return smaMgr.getReviewManager().getEstimatedHours(relatedToState);
+      if (this instanceof TeamWorkFlowArtifact) {
+         return ReviewManager.getEstimatedHours((TeamWorkFlowArtifact) this, relatedToState);
+      }
+      return 0;
    }
 
    public double getEstimatedHoursTotal(String relatedToState) throws OseeCoreException {
@@ -624,7 +631,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public double getRemainFromReviews() throws OseeCoreException {
-      return smaMgr.getReviewManager().getRemainHours();
+      if (this instanceof TeamWorkFlowArtifact) {
+         return ReviewManager.getRemainHours((TeamWorkFlowArtifact) this);
+      }
+      return 0;
    }
 
    @Override
@@ -998,9 +1008,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    /**
     * Return hours spent working ONLY the SMA stateName (not children SMAs)
-    * 
-    * @param stateName
-    * @return hours
     */
    public double getHoursSpentSMAState(String stateName) throws OseeCoreException {
       return smaMgr.getStateMgr().getHoursSpent(stateName);
@@ -1008,10 +1015,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    /**
     * Return hours spent working ONLY on tasks related to stateName
-    * 
-    * @param stateName
-    * @return hours
-    * @throws Exception
     */
    public double getHoursSpentSMAStateTasks(String stateName) throws OseeCoreException {
       if (!(this instanceof TaskableStateMachineArtifact)) return 0;
@@ -1020,21 +1023,16 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    /**
     * Return hours spent working ONLY on reviews related to stateName
-    * 
-    * @param stateName
-    * @return hours
-    * @throws Exception
     */
    public double getHoursSpentSMAStateReviews(String stateName) throws OseeCoreException {
-      return smaMgr.getReviewManager().getHoursSpent(stateName);
+      if (this instanceof TeamWorkFlowArtifact) {
+         return ReviewManager.getHoursSpent((TeamWorkFlowArtifact) this, stateName);
+      }
+      return 0;
    }
 
    /**
     * Return hours spent working on all things (including children SMAs) related to stateName
-    * 
-    * @param stateName
-    * @return hours
-    * @throws Exception
     */
    public double getHoursSpentSMAStateTotal(String stateName) throws OseeCoreException {
       return getHoursSpentSMAState(stateName) + getHoursSpentSMAStateTasks(stateName) + getHoursSpentSMAStateReviews(stateName);
@@ -1047,9 +1045,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    /**
     * Return hours spent working on all things (including children SMAs) for this SMA
-    * 
-    * @return hours
-    * @throws Exception
     */
    public double getHoursSpentSMATotal() throws OseeCoreException {
       double hours = 0.0;
@@ -1061,9 +1056,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    /**
     * Return Percent Complete working ONLY the SMA stateName (not children SMAs)
-    * 
-    * @param stateName
-    * @return percent
     */
    public int getPercentCompleteSMAState(String stateName) throws OseeCoreException {
       return smaMgr.getStateMgr().getPercentComplete(stateName);
@@ -1071,10 +1063,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    /**
     * Return Percent Complete ONLY on tasks related to stateName. Total Percent / # Tasks
-    * 
-    * @param stateName
-    * @return percent
-    * @throws Exception
     */
    public int getPercentCompleteSMAStateTasks(String stateName) throws OseeCoreException {
       if (!(this instanceof TaskableStateMachineArtifact)) return 0;
@@ -1083,22 +1071,17 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    /**
     * Return Percent Complete ONLY on reviews related to stateName. Total Percent / # Reviews
-    * 
-    * @param stateName
-    * @return percent
-    * @throws Exception
     */
    public int getPercentCompleteSMAStateReviews(String stateName) throws OseeCoreException {
-      return smaMgr.getReviewManager().getPercentComplete(stateName);
+      if (this instanceof TeamWorkFlowArtifact) {
+         return ReviewManager.getPercentComplete((TeamWorkFlowArtifact) this, stateName);
+      }
+      return 0;
    }
 
    /**
     * Return Percent Complete on all things (including children SMAs) related to stateName. Total Percent for state,
     * tasks and reviews / 1 + # Tasks + # Reviews
-    * 
-    * @param stateName
-    * @return percent
-    * @throws Exception
     */
    public int getPercentCompleteSMAStateTotal(String stateName) throws OseeCoreException {
       return getStateMetricsData(stateName).getResultingPercent();
@@ -1108,9 +1091,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * Return Percent Complete on all things (including children SMAs) for this SMA<br>
     * <br>
     * percent = all state's percents / number of states (minus completed/cancelled)
-    * 
-    * @return percent
-    * @throws Exception
     */
    public int getPercentCompleteSMATotal() throws OseeCoreException {
       if (smaMgr.isCancelledOrCompleted()) {
@@ -1183,11 +1163,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
 
       // Add percent for each review and bump objects for each review
-      Collection<ReviewSMArtifact> reviews = smaMgr.getReviewManager().getReviews(stateName);
-      for (ReviewSMArtifact reviewArt : reviews) {
-         percent += reviewArt.getPercentCompleteSMATotal();
+      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+         Collection<ReviewSMArtifact> reviews = ReviewManager.getReviews((TeamWorkFlowArtifact) this, stateName);
+         for (ReviewSMArtifact reviewArt : reviews) {
+            percent += reviewArt.getPercentCompleteSMATotal();
+         }
+         numObjects += reviews.size();
       }
-      numObjects += reviews.size();
 
       return new StateMetricsData(percent, numObjects);
    }

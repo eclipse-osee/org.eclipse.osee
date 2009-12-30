@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
@@ -245,8 +246,11 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
       super.atsDelete(deleteArts, allRelated);
-      for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviews())
-         reviewArt.atsDelete(deleteArts, allRelated);
+      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+         for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) smaMgr.getSma())) {
+            reviewArt.atsDelete(deleteArts, allRelated);
+         }
+      }
    }
 
    @Override

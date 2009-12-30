@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.SMAMetrics;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -517,10 +518,10 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                for (Artifact art : artifacts) {
                   if (art instanceof ActionArtifact) {
                      for (TeamWorkFlowArtifact team : ((ActionArtifact) art).getTeamWorkFlowArtifacts()) {
-                        arts.addAll(team.getSmaMgr().getReviewManager().getReviews());
+                        arts.addAll(ReviewManager.getReviews(team));
                      }
-                  } else if (art instanceof StateMachineArtifact) {
-                     arts.addAll(((StateMachineArtifact) art).getSmaMgr().getReviewManager().getReviews());
+                  } else if (art instanceof TeamWorkFlowArtifact) {
+                     arts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) art));
                   }
                }
                Displays.ensureInDisplayThread(new Runnable() {

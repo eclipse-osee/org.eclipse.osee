@@ -16,9 +16,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -72,34 +72,34 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
     * @return review
     * @throws OseeCoreException
     */
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(WorkRuleDefinition atsAddPeerToPeerReviewRule, SMAManager smaMgr, SkynetTransaction transaction) throws OseeCoreException {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(WorkRuleDefinition atsAddPeerToPeerReviewRule, TeamWorkFlowArtifact teamArt, SkynetTransaction transaction) throws OseeCoreException {
       if (!atsAddPeerToPeerReviewRule.getId().startsWith(AtsAddPeerToPeerReviewRule.ID)) {
          throw new IllegalArgumentException("WorkRuleDefinition must be AtsAddPeerToPeerReviewRule.ID");
       }
-      String title = getValueOrDefault(smaMgr, atsAddPeerToPeerReviewRule, PeerToPeerParameter.title);
-      if (Artifacts.artNames(smaMgr.getReviewManager().getReviews()).contains(title)) {
+      String title = getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.title);
+      if (Artifacts.artNames(ReviewManager.getReviews(teamArt)).contains(title)) {
          // Already created this review
          return null;
       }
       PeerToPeerReviewArtifact peerArt =
-            ReviewManager.createNewPeerToPeerReview(smaMgr.getSma(), title, getValueOrDefault(smaMgr,
+            ReviewManager.createNewPeerToPeerReview(teamArt, title, getValueOrDefault(teamArt,
                   atsAddPeerToPeerReviewRule, PeerToPeerParameter.forState), UserManager.getUser(), new Date(),
                   transaction);
-      String desc = getValueOrDefault(smaMgr, atsAddPeerToPeerReviewRule, PeerToPeerParameter.description);
+      String desc = getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.description);
       if (desc != null && !desc.equals("")) {
          peerArt.setSoleAttributeFromString(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
       }
       ReviewBlockType reviewBlockType =
-            AtsAddDecisionReviewRule.getReviewBlockTypeOrDefault(smaMgr, atsAddPeerToPeerReviewRule);
+            AtsAddDecisionReviewRule.getReviewBlockTypeOrDefault(teamArt, atsAddPeerToPeerReviewRule);
       if (reviewBlockType != null) {
          peerArt.setSoleAttributeFromString(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName(),
                reviewBlockType.name());
       }
-      String location = getValueOrDefault(smaMgr, atsAddPeerToPeerReviewRule, PeerToPeerParameter.location);
+      String location = getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.location);
       if (location != null && location.equals("")) {
          peerArt.setSoleAttributeFromString(ATSAttributes.LOCATION_ATTRIBUTE.getStoreName(), location);
       }
-      Collection<User> assignees = AtsAddDecisionReviewRule.getAssigneesOrDefault(smaMgr, atsAddPeerToPeerReviewRule);
+      Collection<User> assignees = AtsAddDecisionReviewRule.getAssigneesOrDefault(teamArt, atsAddPeerToPeerReviewRule);
       if (assignees.size() > 0) {
          peerArt.getSmaMgr().getStateMgr().setAssignees(assignees);
       }
@@ -108,13 +108,13 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
       return peerArt;
    }
 
-   private static String getValueOrDefault(SMAManager smaMgr, WorkRuleDefinition workRuleDefinition, PeerToPeerParameter peerToPeerParameter) throws OseeCoreException {
+   private static String getValueOrDefault(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition, PeerToPeerParameter peerToPeerParameter) throws OseeCoreException {
       String value = getPeerToPeerParameterValue(workRuleDefinition, peerToPeerParameter);
       if (value == null || value.equals("")) {
          if (peerToPeerParameter == PeerToPeerParameter.title) {
-            return PeerToPeerReviewArtifact.getDefaultReviewTitle(smaMgr);
+            return PeerToPeerReviewArtifact.getDefaultReviewTitle(teamArt);
          } else if (peerToPeerParameter == PeerToPeerParameter.forState) {
-            return smaMgr.getStateMgr().getCurrentStateName();
+            return teamArt.getSmaMgr().getStateMgr().getCurrentStateName();
          } else if (peerToPeerParameter == PeerToPeerParameter.location) {
             return null;
          }

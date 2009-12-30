@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.artifact.PeerToPeerReviewWorkflowManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
@@ -62,14 +63,13 @@ public class DoesNotWorkItemDemo extends WorldXNavigateItemAction {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Demo - Create and Persist Review");
       // Create a PeerToPeer review and leave in Prepare state
       PeerToPeerReviewArtifact reviewArt =
-            firstCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview(
-                  "Peer Review first set of code changes",
+            ReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review first set of code changes",
                   firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName(), transaction);
       reviewArt.persist(transaction);
 
       // Create a PeerToPeer review and transition to Review state
       reviewArt =
-            firstCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview(
+            ReviewManager.createNewPeerToPeerReview(firstCodeArt,
                   "Does Not Work " + AtsUtil.getAtsDeveloperIncrementingNum(),
                   firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName(), transaction);
       List<UserRole> roles = new ArrayList<UserRole>();

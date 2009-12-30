@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.demo.artifact.DemoTestTeamWorkflowArtifact;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
@@ -67,8 +68,7 @@ public class DemoDbReviews {
       TeamWorkFlowArtifact secondTestArt = getSampleReviewTestWorkflows().get(1);
 
       // Create a Decision review and transition to ReWork
-      DecisionReviewArtifact reviewArt =
-            firstTestArt.getSmaMgr().getReviewManager().createValidateReview(true, transaction);
+      DecisionReviewArtifact reviewArt = ReviewManager.createValidateReview(firstTestArt, true, transaction);
       Result result =
             DecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewArtifact.DecisionReviewState.Followup,
                   UserManager.getUser(), false, transaction);
@@ -78,7 +78,7 @@ public class DemoDbReviews {
       reviewArt.persist(transaction);
 
       // Create a Decision review and transition to Completed
-      reviewArt = secondTestArt.getSmaMgr().getReviewManager().createValidateReview(true, transaction);
+      reviewArt = ReviewManager.createValidateReview(secondTestArt, true, transaction);
       DecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewArtifact.DecisionReviewState.Completed,
             UserManager.getUser(), false, transaction);
       if (result.isFalse()) {
@@ -125,14 +125,13 @@ public class DemoDbReviews {
 
       // Create a PeerToPeer review and leave in Prepare state
       PeerToPeerReviewArtifact reviewArt =
-            firstCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview(
-                  "Peer Review first set of code changes",
+            ReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review first set of code changes",
                   firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName(), transaction);
       reviewArt.persist(transaction);
 
       // Create a PeerToPeer review and transition to Review state
       reviewArt =
-            firstCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview("Peer Review algorithm used in code",
+            ReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review algorithm used in code",
                   firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName(), transaction);
       List<UserRole> roles = new ArrayList<UserRole>();
       roles.add(new UserRole(Role.Author, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
@@ -149,7 +148,7 @@ public class DemoDbReviews {
 
       // Create a PeerToPeer review and transition to Completed
       reviewArt =
-            secondCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview("Review new logic",
+            ReviewManager.createNewPeerToPeerReview(secondCodeArt, "Review new logic",
                   firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName(),
                   DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones), new Date(), transaction);
       roles = new ArrayList<UserRole>();

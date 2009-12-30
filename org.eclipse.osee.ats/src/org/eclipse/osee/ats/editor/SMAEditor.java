@@ -29,12 +29,14 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
 import org.eclipse.osee.ats.task.TaskComposite;
 import org.eclipse.osee.ats.task.TaskTabXWidgetActionPage;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -618,10 +620,10 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
                }
             }
          });
-      } else if (smaMgr.getReviewManager().hasReviews()) {
+      } else if (smaMgr.getSma() instanceof TeamWorkFlowArtifact && ReviewManager.hasReviews((TeamWorkFlowArtifact) smaMgr.getSma())) {
          try {
             // If related review has made a change, redraw
-            for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviews()) {
+            for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) smaMgr.getSma())) {
                if (transData.isHasEvent(reviewArt)) {
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override
@@ -737,8 +739,8 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
             }
          }
       }
-      if (!reload) {
-         for (ReviewSMArtifact reviewArt : sma.getSmaMgr().getReviewManager().getReviews()) {
+      if (!reload && sma instanceof TeamWorkFlowArtifact) {
+         for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
             if (artifacts.contains(reviewArt)) {
                reload = true;
                break;
