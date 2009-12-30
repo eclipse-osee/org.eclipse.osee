@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.CursorManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -373,8 +374,18 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       return loading;
    }
 
-   public void setLoading(boolean loading) {
+   public void setLoading(final boolean loading) {
       this.loading = loading;
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (loading) {
+               taskActionPage.getTaskComposite().setCursor(CursorManager.getCursor(SWT.CURSOR_WAIT));
+            } else {
+               taskActionPage.getTaskComposite().setCursor(null);
+            }
+         }
+      });
    }
 
 }

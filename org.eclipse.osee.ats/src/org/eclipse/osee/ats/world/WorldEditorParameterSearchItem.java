@@ -29,11 +29,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private CustomizeData customizeData;
    private TableLoadOption[] tableLoadOptions;
 
-   /**
-    * @param name
-    * @param loadView
-    * @throws OseeArgumentException
-    */
    public WorldEditorParameterSearchItem(String name, OseeImage oseeImage) throws OseeArgumentException {
       super(name, LoadView.WorldEditor, oseeImage);
    }
@@ -46,10 +41,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       super(name, loadView, oseeImage);
    }
 
-   /**
-    * @param worldSearchItem
-    * @throws OseeArgumentException
-    */
    public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem) throws OseeArgumentException {
       this(worldSearchItem, null);
    }
@@ -79,16 +70,10 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       this.tableLoadOptions = tableLoadOptions;
    }
 
-   /**
-    * @return the customizeData
-    */
    public CustomizeData getCustomizeData() {
       return customizeData;
    }
 
-   /**
-    * @return the tableLoadOptions
-    */
    public TableLoadOption[] getTableLoadOptions() {
       return tableLoadOptions;
    }

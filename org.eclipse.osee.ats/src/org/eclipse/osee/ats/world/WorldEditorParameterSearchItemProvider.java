@@ -24,10 +24,14 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.CursorManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -37,6 +41,8 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    private final WorldEditorParameterSearchItem worldParameterSearchItem;
    public static String ENTER_OPTIONS_AND_SELECT_SEARCH = "Enter options and select \"Search\"";
    private boolean firstTime = true;
+   private boolean loading = false;
+   private WorldEditor worldEditor;
 
    public WorldEditorParameterSearchItemProvider(WorldEditorParameterSearchItem worldParameterSearchItem) {
       this(worldParameterSearchItem, null, TableLoadOption.None);
@@ -53,9 +59,6 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
             (WorldEditorParameterSearchItem) worldParameterSearchItem.copy(), customizeData, tableLoadOptions);
    }
 
-   /**
-    * @return the worldSearchItem
-    */
    public WorldSearchItem getWorldSearchItem() {
       return worldParameterSearchItem;
    }
@@ -66,6 +69,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    }
 
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
+      this.worldEditor = worldEditor;
       if (firstTime) {
          firstTime = false;
          worldEditor.setTableTitle(ENTER_OPTIONS_AND_SELECT_SEARCH, false);
@@ -79,6 +83,10 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
          return;
       }
 
+      if (loading) {
+         AWorkbench.popup("Already Loading, Please Wait");
+         return;
+      }
       LoadTableJob job = null;
       job = new LoadTableJob(worldEditor, worldParameterSearchItem, searchType, tableLoadOptions, forcePend);
       job.setUser(false);
@@ -112,9 +120,12 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-
+         if (loading) {
+            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Already Loading, Please Wait", null);
+         }
          String selectedName = "";
          try {
+            setLoading(true);
             selectedName = worldParameterSearchItem.getSelectedName(searchType);
             worldEditor.setEditorTitle(selectedName != null ? selectedName : worldParameterSearchItem.getName());
             worldEditor.setTableTitle("Loading \"" + (selectedName != null ? selectedName : "") + "\"...", false);
@@ -135,11 +146,13 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
                }
             }
             worldEditor.getWorldComposite().load(selectedName, artifacts, customizeData, tableLoadOptions);
+            setLoading(false);
          } catch (final Exception ex) {
             String str = "Exception occurred. Network may be down.";
             if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=
                   " => " + ex.getLocalizedMessage();
             worldEditor.getWorldComposite().setTableTitle("Searching Error - " + selectedName, false);
+            setLoading(false);
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             monitor.done();
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, str, null);
@@ -172,6 +185,25 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    @Override
    public String[] getWidgetOptions(DynamicXWidgetLayoutData widgetData) {
       return null;
+   }
+
+   public boolean isLoading() {
+      return loading;
+   }
+
+   public void setLoading(final boolean loading) {
+      this.loading = loading;
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (loading) {
+               worldEditor.getWorldComposite().setCursor(CursorManager.getCursor(SWT.CURSOR_WAIT));
+            } else {
+               worldEditor.getWorldComposite().setCursor(null);
+            }
+         }
+      });
+
    }
 
 }
