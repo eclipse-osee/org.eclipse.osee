@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.config.AtsBulkLoadCache;
+import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -78,7 +78,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          PlatformUI.getWorkbench().getActiveWorkbenchWindow().removePerspectiveListener(this);
          return;
       }
-      AtsBulkLoadCache.run(false);
+      AtsBulkLoad.run(false);
       super.createPartControl(top);
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "SkyWalker");
       AtsPlugin.getInstance().setHelp(top, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");

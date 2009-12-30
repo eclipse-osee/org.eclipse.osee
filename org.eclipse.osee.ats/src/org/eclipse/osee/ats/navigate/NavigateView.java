@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.NewGoal;
 import org.eclipse.osee.ats.actions.OpenByIdAction;
 import org.eclipse.osee.ats.actions.OpenChangeReportByIdAction;
-import org.eclipse.osee.ats.config.AtsBulkLoadCache;
+import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -132,7 +132,7 @@ public class NavigateView extends ViewPart implements IActionable {
       gridData.heightHint = 15;
       label.setLayoutData(gridData);
 
-      AtsBulkLoadCache.run(false);
+      AtsBulkLoad.run(false);
    }
 
    public void createSearchInputPart(Composite parent) {

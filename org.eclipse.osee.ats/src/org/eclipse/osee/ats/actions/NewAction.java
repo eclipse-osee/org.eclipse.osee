@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewActionWizard;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.config.AtsBulkLoadCache;
+import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -45,7 +45,7 @@ public class NewAction extends Action {
    @Override
    public void run() {
       super.run();
-      AtsBulkLoadCache.run(true);
+      AtsBulkLoad.run(true);
       NewActionWizard wizard = new NewActionWizard();
       try {
          if (actionableItem != null) {

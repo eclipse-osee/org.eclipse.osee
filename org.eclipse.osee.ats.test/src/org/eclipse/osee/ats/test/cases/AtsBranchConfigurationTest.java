@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.config.AtsBulkLoadCache;
+import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.config.AtsConfigManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.ActionManager;
@@ -96,7 +96,7 @@ public class AtsBranchConfigurationTest {
       if (AtsUtil.isProductionDb()) {
          throw new IllegalStateException("BranchConfigThroughTeamDefTest should not be run on production DB");
       }
-      AtsBulkLoadCache.run(true);
+      AtsBulkLoad.run(true);
    }
 
    @org.junit.Test

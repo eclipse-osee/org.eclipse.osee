@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.test.cases;
 import static org.junit.Assert.fail;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.config.AtsBulkLoadCache;
+import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -27,7 +27,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
 public class AtsValidateAtsDatabaseTest {
 
    public AtsValidateAtsDatabaseTest() {
-      AtsBulkLoadCache.run(true);
+      AtsBulkLoad.run(true);
    }
 
    @org.junit.Test

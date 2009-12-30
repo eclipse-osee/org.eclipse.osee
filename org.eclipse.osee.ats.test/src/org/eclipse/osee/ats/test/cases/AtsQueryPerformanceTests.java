@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.config.AtsBulkLoadCache;
+import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class AtsQueryPerformanceTests {
 
    public AtsQueryPerformanceTests() {
-      AtsBulkLoadCache.run(true);
+      AtsBulkLoad.run(true);
    }
 
    @org.junit.Test

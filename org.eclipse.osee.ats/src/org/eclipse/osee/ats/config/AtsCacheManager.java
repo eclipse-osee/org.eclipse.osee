@@ -83,27 +83,27 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
    }
 
    public static List<Artifact> getArtifactsByName(IArtifactType artifactType, String name) throws OseeCoreException {
-      AtsBulkLoadCache.run(true);
+      AtsBulkLoad.run(true);
       return ArtifactCache.getArtifactsByName(artifactType, name);
    }
 
    public static ActionableItemArtifact getActionableItemByGuid(String guid) throws OseeCoreException {
-      AtsBulkLoadCache.run(true);
+      AtsBulkLoad.run(true);
       return (ActionableItemArtifact) ArtifactCache.getActive(guid, AtsUtil.getAtsBranch().getId());
    }
 
    public static TeamDefinitionArtifact getTeamDefinitionArtifact(String guid) throws OseeCoreException {
-      AtsBulkLoadCache.run(true);
+      AtsBulkLoad.run(true);
       return (TeamDefinitionArtifact) ArtifactCache.getActive(guid, AtsUtil.getAtsBranch().getId());
    }
 
    public static List<Artifact> getArtifactsByActive(ArtifactType artifactType, Active active) throws OseeCoreException {
-      AtsBulkLoadCache.run(true);
+      AtsBulkLoad.run(true);
       return ArtifactCache.getArtifactsByType(artifactType, active);
    }
 
    public static Artifact getSoleArtifactByName(IArtifactType artifactType, String name) throws OseeCoreException {
-      AtsBulkLoadCache.run(true);
+      AtsBulkLoad.run(true);
       List<Artifact> arts = ArtifactCache.getArtifactsByName(artifactType, name);
       if (arts.size() == 1) {
          return arts.iterator().next();

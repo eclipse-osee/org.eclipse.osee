@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.GoalArtifact.GoalState;
-import org.eclipse.osee.ats.config.AtsBulkLoadCache;
+import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -41,7 +41,7 @@ public class NewGoal extends Action {
    @Override
    public void run() {
       super.run();
-      AtsBulkLoadCache.run(true);
+      AtsBulkLoad.run(true);
       try {
          EntryDialog ed = new EntryDialog("New Goal", "Enter Title");
          if (ed.open() == 0) {

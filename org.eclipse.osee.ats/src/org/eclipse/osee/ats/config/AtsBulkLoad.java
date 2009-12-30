@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -21,6 +23,7 @@ import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -29,19 +32,19 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionF
 /**
  * @author Donald G. Dunne
  */
-public class AtsBulkLoadCache extends org.eclipse.core.runtime.jobs.Job {
+public class AtsBulkLoad extends org.eclipse.core.runtime.jobs.Job {
 
-   private AtsBulkLoadCache() {
+   private AtsBulkLoad() {
       super("Bulk Loading ATS Config Artifacts");
    }
 
-   private static AtsBulkLoadCache bulkLoadAtsCacheJob;
+   private static AtsBulkLoad bulkLoadAtsCacheJob;
    private static boolean atsTypeDataLoadedStarted = false;
 
    private synchronized static void ensureBulkLoading() {
       if (atsTypeDataLoadedStarted) return;
       atsTypeDataLoadedStarted = true;
-      bulkLoadAtsCacheJob = new AtsBulkLoadCache();
+      bulkLoadAtsCacheJob = new AtsBulkLoad();
       bulkLoadAtsCacheJob.setPriority(Job.SHORT);
       bulkLoadAtsCacheJob.setSystem(true);
       bulkLoadAtsCacheJob.schedule();
@@ -77,4 +80,15 @@ public class AtsBulkLoadCache extends org.eclipse.core.runtime.jobs.Job {
 
       return Status.OK_STATUS;
    }
+
+   public static Set<Artifact> loadFromActions(Collection<? extends Artifact> actions) throws OseeCoreException {
+      return RelationManager.getRelatedArtifacts(actions, 4, AtsRelationTypes.SmaToTask_Task,
+            AtsRelationTypes.ActionToWorkflow_WorkFlow, AtsRelationTypes.TeamWorkflowToReview_Review);
+   }
+
+   public static Set<Artifact> loadFromTeamWorkflows(Collection<? extends Artifact> teams) throws OseeCoreException {
+      return RelationManager.getRelatedArtifacts(teams, 3, AtsRelationTypes.SmaToTask_Task,
+            AtsRelationTypes.TeamWorkflowToReview_Team, AtsRelationTypes.ActionToWorkflow_Action);
+   }
+
 }
