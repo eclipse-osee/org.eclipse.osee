@@ -15,7 +15,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
-import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -97,7 +97,7 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (taskableArt.getSmaMgr().isInTransition()) {
+      if (taskableArt.isInTransition()) {
          return;
       }
       if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
@@ -136,12 +136,12 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
                         SkynetTransaction transaction =
                               new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Auto Complete Tasks");
                         for (TaskArtifact taskArt : taskableArt.getTaskArtifacts(forStateName)) {
-                           if (!taskArt.getSmaMgr().isCancelledOrCompleted()) {
-                              if (taskArt.getSmaMgr().getStateMgr().isUnAssigned()) {
-                                 taskArt.getSmaMgr().getStateMgr().setAssignee(UserManager.getUser());
+                           if (!taskArt.isCancelledOrCompleted()) {
+                              if (taskArt.getStateMgr().isUnAssigned()) {
+                                 taskArt.getStateMgr().setAssignee(UserManager.getUser());
                               }
                               Result result =
-                                    taskArt.getSmaMgr().transitionToCompleted("", transaction,
+                                    taskArt.transitionToCompleted("", transaction,
                                           TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
                               if (result.isFalse()) {
                                  result.popup();

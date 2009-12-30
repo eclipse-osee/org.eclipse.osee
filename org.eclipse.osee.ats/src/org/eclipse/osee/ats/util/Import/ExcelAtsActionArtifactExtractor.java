@@ -135,7 +135,7 @@ public class ExcelAtsActionArtifactExtractor {
             }
             if (aData.assigneeStrs.size() > 0) {
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
-                  team.getSmaMgr().getStateMgr().setAssignees(aData.assignees);
+                  team.getStateMgr().setAssignees(aData.assignees);
                }
             }
             for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {

@@ -15,8 +15,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -51,7 +51,7 @@ public class CancelMultipleWorkflows extends Action {
          }
          for (StateMachineArtifact sma : smas) {
             Result result =
-                  sma.getSmaMgr().isTransitionValid(DefaultTeamState.Cancelled.name(), null, TransitionOption.None);
+                  sma.isTransitionValid(DefaultTeamState.Cancelled.name(), null, TransitionOption.None);
             if (result.isFalse()) {
                result.popup();
                return;
@@ -62,7 +62,7 @@ public class CancelMultipleWorkflows extends Action {
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Cancel Multiple Workflows");
             for (StateMachineArtifact sma : smas) {
                Result result =
-                     sma.getSmaMgr().transitionToCancelled(ed.getEntry(), transaction, TransitionOption.Persist);
+                     sma.transitionToCancelled(ed.getEntry(), transaction, TransitionOption.Persist);
                if (result.isFalse()) {
                   result.popup();
                   return;

@@ -24,13 +24,14 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.editor.widget.CurrentAssigneesXWidget;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
@@ -97,22 +98,22 @@ public class SMAWorkFlowSection extends SectionPart {
    private XComboViewer transitionToStateCombo;
    private Button transitionButton;
    private Label transitionAssigneesLabel;
-   protected final SMAManager smaMgr;
+   protected final StateMachineArtifact sma;
    private final AtsWorkPage atsWorkPage;
    private final boolean isEditable, isCurrentState, isGlobalEditable;
    private final XFormToolkit toolkit;
    private Composite mainComp;
    private final List<XWidget> allXWidgets = new ArrayList<XWidget>();
 
-   public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) throws OseeCoreException {
+   public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, StateMachineArtifact sma) throws OseeCoreException {
       super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
       this.toolkit = toolkit;
       this.atsWorkPage = page;
-      this.smaMgr = smaMgr;
+      this.sma = sma;
       isEditable = isEditable(page);
       isGlobalEditable =
-            !smaMgr.getSma().isReadOnly() && smaMgr.isAccessControlWrite() && smaMgr.getEditor().isPriviledgedEditModeEnabled();
-      isCurrentState = smaMgr.isCurrentState(page.getName());
+            !sma.isReadOnly() && sma.isAccessControlWrite() && sma.getEditor().isPriviledgedEditModeEnabled();
+      isCurrentState = sma.isCurrentState(page.getName());
       // parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_CYAN));
    }
 
@@ -123,7 +124,7 @@ public class SMAWorkFlowSection extends SectionPart {
       Section section = getSection();
       try {
          section.setText(getCurrentStateTitle());
-         if (smaMgr.isCurrentState(atsWorkPage.getName())) {
+         if (sma.isCurrentState(atsWorkPage.getName())) {
             section.setTitleBarForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN));
          }
          section.setBackground(AtsUtil.ACTIVE_COLOR);
@@ -135,7 +136,7 @@ public class SMAWorkFlowSection extends SectionPart {
          // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
          mainComp.layout();
 
-         SMAWorkFlowTab.createStateNotesHeader(mainComp, toolkit, smaMgr, 2, atsWorkPage.getName());
+         SMAWorkFlowTab.createStateNotesHeader(mainComp, toolkit, sma, 2, atsWorkPage.getName());
 
          Composite workComp = createWorkArea(mainComp, atsWorkPage, toolkit);
 
@@ -144,7 +145,7 @@ public class SMAWorkFlowSection extends SectionPart {
          workComp.setLayoutData(gridData);
 
          section.layout();
-         section.setExpanded(smaMgr.isCurrentSectionExpanded(atsWorkPage.getName()));
+         section.setExpanded(sma.isCurrentSectionExpanded(atsWorkPage.getName()));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -166,7 +167,7 @@ public class SMAWorkFlowSection extends SectionPart {
       // Add dynamic WorkItemDefinitions to atsWorkPage
       List<DynamicXWidgetLayoutData> dynamicDatas = new ArrayList<DynamicXWidgetLayoutData>();
       for (WorkItemDefinition workItemDefinition : WorkItemDefinitionFactory.getDynamicWorkItemDefintions(
-            smaMgr.getWorkFlowDefinition(), atsWorkPage.getWorkPageDefinition(), smaMgr)) {
+            sma.getWorkFlowDefinition(), atsWorkPage.getWorkPageDefinition(), sma)) {
          if (workItemDefinition instanceof WorkWidgetDefinition) {
             DynamicXWidgetLayoutData data = ((WorkWidgetDefinition) workItemDefinition).get();
             data.setDynamicXWidgetLayout(atsWorkPage.getDynamicXWidgetLayout());
@@ -175,7 +176,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
       atsWorkPage.addLayoutDatas(dynamicDatas);
 
-      atsWorkPage.setSmaMgr(smaMgr);
+      atsWorkPage.setsma(sma);
 
       // Create Page
       Composite workComp = toolkit.createContainer(comp, 1);
@@ -186,8 +187,8 @@ public class SMAWorkFlowSection extends SectionPart {
       createMetricsHeader(workComp);
 
       // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
-      for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
-         for (XWidget xWidget : item.getDynamicXWidgetsPreBody(smaMgr)) {
+      for (IAtsStateItem item : sma.getStateItems().getStateItems(atsWorkPage.getId())) {
+         for (XWidget xWidget : item.getDynamicXWidgetsPreBody(sma)) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
          }
@@ -195,13 +196,12 @@ public class SMAWorkFlowSection extends SectionPart {
 
       // Create dynamic XWidgets
       DynamicXWidgetLayout dynamicXWidgetLayout =
-            atsWorkPage.createBody(getManagedForm(), workComp, smaMgr.getSma(), xModListener,
-                  isEditable || isGlobalEditable);
+            atsWorkPage.createBody(getManagedForm(), workComp, sma, xModListener, isEditable || isGlobalEditable);
       allXWidgets.addAll(dynamicXWidgetLayout.getXWidgets());
 
       // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
-      for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
-         for (XWidget xWidget : item.getDynamicXWidgetsPostBody(smaMgr)) {
+      for (IAtsStateItem item : sma.getStateItems().getStateItems(atsWorkPage.getId())) {
+         for (XWidget xWidget : item.getDynamicXWidgetsPostBody(sma)) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
          }
@@ -218,8 +218,8 @@ public class SMAWorkFlowSection extends SectionPart {
       }
 
       // Check extension points for page creation
-      for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
-         Result result = item.pageCreated(toolkit, atsWorkPage, smaMgr, xModListener, isEditable || isGlobalEditable);
+      for (IAtsStateItem item : sma.getStateItems().getStateItems(atsWorkPage.getId())) {
+         Result result = item.pageCreated(toolkit, atsWorkPage, sma, xModListener, isEditable || isGlobalEditable);
          if (result.isFalse()) {
             result.popup();
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error in page creation => " + result.getText());
@@ -238,19 +238,19 @@ public class SMAWorkFlowSection extends SectionPart {
          layout.marginLeft = 2;
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), atsWorkPage, smaMgr, comp, 2, xModListener));
-         allXWidgets.add(new StateHoursSpentXWidget(getManagedForm(), atsWorkPage, smaMgr, comp, 2, xModListener));
+         allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), atsWorkPage, sma, comp, 2, xModListener));
+         allXWidgets.add(new StateHoursSpentXWidget(getManagedForm(), atsWorkPage, sma, comp, 2, xModListener));
       }
    }
 
    private void createReviewFooter(Composite parent, String forStateName) throws OseeCoreException {
-      if (isShowReviewInfo() && smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+      if (isShowReviewInfo() && sma instanceof TeamWorkFlowArtifact) {
          Composite comp = new Composite(parent, SWT.None);
          GridLayout layout = new GridLayout(1, false);
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new ReviewInfoXWidget(getManagedForm(), toolkit, (TeamWorkFlowArtifact) smaMgr.getSma(),
-               forStateName, comp, 1));
+         allXWidgets.add(new ReviewInfoXWidget(getManagedForm(), toolkit, (TeamWorkFlowArtifact) sma, forStateName,
+               comp, 1));
       }
    }
 
@@ -260,21 +260,21 @@ public class SMAWorkFlowSection extends SectionPart {
          GridLayout layout = new GridLayout(6, false);
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new TaskInfoXWidget(getManagedForm(), ((TaskableStateMachineArtifact) smaMgr.getSma()),
-               forStateName, comp, 2));
+         allXWidgets.add(new TaskInfoXWidget(getManagedForm(), ((TaskableStateMachineArtifact) sma), forStateName,
+               comp, 2));
       }
    }
 
    protected boolean isShowTaskInfo() throws OseeCoreException {
-      return smaMgr.isTaskable();
+      return sma.isTaskable();
    }
 
    protected boolean isShowTargetedVersion() throws OseeCoreException {
-      return smaMgr.isTargetedVersionable();
+      return sma.isTargetedVersionable();
    }
 
    protected boolean isShowReviewInfo() throws OseeCoreException {
-      return smaMgr.getSma() instanceof TeamWorkFlowArtifact;
+      return sma instanceof TeamWorkFlowArtifact;
    }
 
    public Result isXWidgetSavable() throws OseeCoreException {
@@ -291,12 +291,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
    @Override
    public String toString() {
-      try {
-         return atsWorkPage + " for " + getSmaMgr().getSma();
-      } catch (OseeStateException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-      }
-      return String.valueOf(atsWorkPage);
+      return atsWorkPage + " for " + getSma();
    }
 
    public Result isXWidgetDirty() throws OseeCoreException {
@@ -323,14 +318,13 @@ public class SMAWorkFlowSection extends SectionPart {
 
    private String getCurrentStateTitle() throws OseeCoreException {
       StringBuffer sb = new StringBuffer(atsWorkPage.getName());
-      if (isEditable && !smaMgr.isCompleted() && !smaMgr.isCancelled()) {
+      if (isEditable && !sma.isCompleted() && !sma.isCancelled()) {
          sb.append(" - Current State");
       }
-      if (smaMgr.isCancelled()) {
-         LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
+      if (sma.isCancelled()) {
+         LogItem item = sma.getLog().getStateEvent(LogType.StateCancelled);
          if (item == null) {
-            throw new OseeStateException(
-                  "ats.Log: Cancelled state has no logItem for " + smaMgr.getSma().getHumanReadableId());
+            throw new OseeStateException("ats.Log: Cancelled state has no logItem for " + sma.getHumanReadableId());
          }
          if (item.getState().equals(atsWorkPage.getName())) {
             sb.append(" - Cancelled");
@@ -340,23 +334,23 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       }
       if (isCurrentState) {
-         if (smaMgr.isCompleted()) {
+         if (sma.isCompleted()) {
             sb.append(" - ");
-            sb.append(smaMgr.getSma().getWorldViewCompletedDateStr());
-            LogItem item = smaMgr.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName());
+            sb.append(sma.getWorldViewCompletedDateStr());
+            LogItem item = sma.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName());
             sb.append(" by " + item.getUser().getName());
-         } else if (smaMgr.isCancelled()) {
+         } else if (sma.isCancelled()) {
             sb.append(" - ");
-            sb.append(smaMgr.getSma().getWorldViewCancelledDateStr());
-            LogItem item = smaMgr.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName());
+            sb.append(sma.getWorldViewCancelledDateStr());
+            LogItem item = sma.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName());
             sb.append(" by " + item.getUser().getName());
          }
-         if (smaMgr.getStateMgr().getAssignees().size() > 0) {
+         if (sma.getStateMgr().getAssignees().size() > 0) {
             sb.append(" assigned to ");
-            sb.append(smaMgr.getStateMgr().getAssigneesStr(80));
+            sb.append(sma.getStateMgr().getAssigneesStr(80));
          }
       } else {
-         LogItem item = smaMgr.getLog().getStateEvent(LogType.StateComplete, atsWorkPage.getName());
+         LogItem item = sma.getLog().getStateEvent(LogType.StateComplete, atsWorkPage.getName());
          if (item != null) {
             sb.append(" - State Completed " + item.getDate(XDate.MMDDYYHHMM));
             sb.append(" by " + item.getUser().getName());
@@ -378,11 +372,11 @@ public class SMAWorkFlowSection extends SectionPart {
    final XModifiedListener xModListener = new XModifiedListener() {
       public void widgetModified(XWidget xWidget) {
          try {
-            if (smaMgr.getSma().isDeleted()) {
+            if (sma.isDeleted()) {
                return;
             }
             // Notify extensions of widget modified
-            for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
+            for (IAtsStateItem item : sma.getStateItems().getStateItems(atsWorkPage.getId())) {
                try {
                   item.widgetModified(fSection, xWidget);
                } catch (Exception ex) {
@@ -391,7 +385,7 @@ public class SMAWorkFlowSection extends SectionPart {
             }
             updateTransitionToState();
             updateTransitionToAssignees();
-            smaMgr.getEditor().onDirtied();
+            sma.getEditor().onDirtied();
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
@@ -407,11 +401,11 @@ public class SMAWorkFlowSection extends SectionPart {
             if (toWorkPage == null) {
                transitionAssigneesLabel.setText("");
             } else {
-               transitionAssigneesLabel.setText(smaMgr.getTransitionAssigneesStr());
+               transitionAssigneesLabel.setText(sma.getTransitionAssigneesStr());
             }
             transitionAssigneesLabel.getParent().layout();
          }
-         smaMgr.getEditor().onDirtied();
+         sma.getEditor().onDirtied();
          for (XWidget xWidget : allXWidgets) {
             xWidget.refresh();
          }
@@ -425,7 +419,7 @@ public class SMAWorkFlowSection extends SectionPart {
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
       // Create Privileged Edit label
-      if (smaMgr.getEditor().isPriviledgedEditModeEnabled()) {
+      if (sma.getEditor().isPriviledgedEditModeEnabled()) {
          Label label = toolkit.createLabel(comp, "Priviledged Edit");
          label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          label.setToolTipText("Priviledged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
@@ -433,12 +427,12 @@ public class SMAWorkFlowSection extends SectionPart {
 
       // Targeted Version
       if (isShowTargetedVersion()) {
-         allXWidgets.add(new TargetVersionXWidget(getManagedForm(), smaMgr, comp, 2, xModListener));
+         allXWidgets.add(new TargetVersionXWidget(getManagedForm(), sma, comp, 2, xModListener));
       }
 
       // Current Assignees
-      if (page.isCurrentNonCompleteCancelledState(smaMgr)) {
-         allXWidgets.add(new CurrentAssigneesXWidget(getManagedForm(), smaMgr, comp, 2, xModListener, isEditable));
+      if (page.isCurrentNonCompleteCancelledState(sma)) {
+         allXWidgets.add(new CurrentAssigneesXWidget(getManagedForm(), sma, comp, 2, xModListener, isEditable));
       }
 
    }
@@ -455,7 +449,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
       UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setMessage("Select users to transition to.");
-      uld.setInitialSelections(smaMgr.getTransitionAssignees());
+      uld.setInitialSelections(sma.getTransitionAssignees());
       if (uld.open() != 0) {
          return;
       }
@@ -464,9 +458,9 @@ public class SMAWorkFlowSection extends SectionPart {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
          return;
       }
-      smaMgr.setTransitionAssignees(users);
+      sma.setTransitionAssignees(users);
       refresh();
-      smaMgr.getEditor().onDirtied();
+      sma.getEditor().onDirtied();
    }
 
    private void createCurrentPageTransitionLine(Composite parent, AtsWorkPage atsWorkPage, XFormToolkit toolkit) throws OseeCoreException {
@@ -486,7 +480,7 @@ public class SMAWorkFlowSection extends SectionPart {
       transitionToStateCombo = new XComboViewer("Transition To State Combo");
       transitionToStateCombo.setDisplayLabel(false);
       ArrayList<Object> allPages = new ArrayList<Object>();
-      for (WorkPageDefinition nextPage : smaMgr.getToWorkPages()) {
+      for (WorkPageDefinition nextPage : sma.getToWorkPages()) {
          allPages.add(nextPage);
       }
       transitionToStateCombo.setInput(allPages);
@@ -503,9 +497,9 @@ public class SMAWorkFlowSection extends SectionPart {
          transitionToStateCombo.setSelected(defaultPage);
       }
       if (atsWorkPage.isCancelledPage()) {
-         LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
+         LogItem item = sma.getLog().getStateEvent(LogType.StateCancelled);
          if (item != null) {
-            defaultPage.add(smaMgr.getWorkPageDefinitionByName(item.getState()));
+            defaultPage.add(sma.getWorkPageDefinitionByName(item.getState()));
             transitionToStateCombo.setSelected(defaultPage);
          }
       }
@@ -541,7 +535,7 @@ public class SMAWorkFlowSection extends SectionPart {
          }
 
       });
-      transitionAssigneesLabel = toolkit.createLabel(comp, smaMgr.getTransitionAssigneesStr());
+      transitionAssigneesLabel = toolkit.createLabel(comp, sma.getTransitionAssigneesStr());
       transitionAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
    }
@@ -549,16 +543,16 @@ public class SMAWorkFlowSection extends SectionPart {
    public void updateTransitionToAssignees() throws OseeCoreException {
       Collection<User> assignees = null;
       // Determine if the is an override set of assigness
-      for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
+      for (IAtsStateItem item : sma.getStateItems().getStateItems(atsWorkPage.getId())) {
          assignees = item.getOverrideTransitionToAssignees(this);
          if (assignees != null) {
             break;
          }
       }
       // If override set and isn't the same as already selected, update
-      if (assignees != null && !smaMgr.getTransitionAssignees().equals(assignees)) {
-         smaMgr.setTransitionAssignees(assignees);
-         smaMgr.getEditor().onDirtied();
+      if (assignees != null && !sma.getTransitionAssignees().equals(assignees)) {
+         sma.setTransitionAssignees(assignees);
+         sma.getEditor().onDirtied();
       }
       refresh();
    }
@@ -566,7 +560,7 @@ public class SMAWorkFlowSection extends SectionPart {
    public void updateTransitionToState() throws OseeCoreException {
       // Determine if there is a transitionToStateOverride for this page
       String transitionStateOverride = null;
-      for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
+      for (IAtsStateItem item : sma.getStateItems().getStateItems(atsWorkPage.getId())) {
          transitionStateOverride = item.getOverrideTransitionToStateName(this);
          if (transitionStateOverride != null) {
             break;
@@ -578,7 +572,7 @@ public class SMAWorkFlowSection extends SectionPart {
             return;
          }
          // Find page corresponding to override state name
-         for (WorkPageDefinition toWorkPageDefinition : smaMgr.getToWorkPages()) {
+         for (WorkPageDefinition toWorkPageDefinition : sma.getToWorkPages()) {
             if (toWorkPageDefinition.getPageName().equals(transitionStateOverride)) {
                // Reset selection
                ArrayList<Object> defaultPage = new ArrayList<Object>();
@@ -592,7 +586,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
    public void setTransitionToStateSelection(String stateName) throws OseeCoreException {
       ArrayList<Object> allPages = new ArrayList<Object>();
-      for (WorkPageDefinition nextPage : smaMgr.getToWorkPages()) {
+      for (WorkPageDefinition nextPage : sma.getToWorkPages()) {
          if (nextPage.getPageName().equals(stateName)) {
             allPages.add(nextPage);
          }
@@ -604,18 +598,18 @@ public class SMAWorkFlowSection extends SectionPart {
 
       try {
 
-         if (!isEditable && !smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))) {
+         if (!isEditable && !sma.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))) {
             AWorkbench.popup(
                   "ERROR",
                   "You must be assigned to transition this workflow.\nContact Assignee or Select Priviledged Edit for Authorized Overriders.");
             return;
          }
          // As a convenience, if assignee is UnAssigned and user selects to transition, make user current assignee
-         if (smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))) {
-            smaMgr.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
-            smaMgr.getStateMgr().addAssignee(UserManager.getUser());
+         if (sma.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))) {
+            sma.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
+            sma.getStateMgr().addAssignee(UserManager.getUser());
          }
-         if (smaMgr.isTeamWorkflow() && ((TeamWorkFlowArtifact) smaMgr.getSma()).getBranchMgr().isWorkingBranchInWork()) {
+         if (sma.isTeamWorkflow() && ((TeamWorkFlowArtifact) sma).getBranchMgr().isWorkingBranchInWork()) {
 
             if (((WorkPageDefinition) transitionToStateCombo.getSelected()).getPageName().equals(
                   DefaultTeamState.Cancelled.name())) {
@@ -623,7 +617,7 @@ public class SMAWorkFlowSection extends SectionPart {
                      "Working Branch exists.\n\nPlease delete working branch before transition to cancel.");
                return;
             }
-            if (((TeamWorkFlowArtifact) smaMgr.getSma()).getBranchMgr().isBranchInCommit()) {
+            if (((TeamWorkFlowArtifact) sma).getBranchMgr().isBranchInCommit()) {
                AWorkbench.popup("Transition Blocked",
                      "Working Branch is being Committed.\n\nPlease wait till commit completes to transition.");
                return;
@@ -636,8 +630,8 @@ public class SMAWorkFlowSection extends SectionPart {
 
          }
 
-         smaMgr.setInTransition(true);
-         smaMgr.getEditor().doSave(null);
+         sma.setInTransition(true);
+         sma.getEditor().doSave(null);
 
          // Get transition to state
          WorkPageDefinition toWorkPageDefinition = (WorkPageDefinition) transitionToStateCombo.getSelected();
@@ -653,21 +647,20 @@ public class SMAWorkFlowSection extends SectionPart {
             }
             SkynetTransaction transaction =
                   new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Transition to Cancelled");
-            Result result =
-                  smaMgr.transitionToCancelled(cancelDialog.getEntry(), transaction, TransitionOption.Persist);
+            Result result = sma.transitionToCancelled(cancelDialog.getEntry(), transaction, TransitionOption.Persist);
             transaction.execute();
             if (result.isFalse()) {
                result.popup();
                return;
             }
-            smaMgr.setInTransition(false);
-            smaMgr.getEditor().refreshPages();
+            sma.setInTransition(false);
+            sma.getEditor().refreshPages();
             return;
          }
 
          // Validate assignees
-         if (smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.OseeSystem)) || smaMgr.getStateMgr().getAssignees().contains(
-               UserManager.getUser(SystemUser.Guest)) || smaMgr.getStateMgr().getAssignees().contains(
+         if (sma.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.OseeSystem)) || sma.getStateMgr().getAssignees().contains(
+               UserManager.getUser(SystemUser.Guest)) || sma.getStateMgr().getAssignees().contains(
                UserManager.getUser(SystemUser.UnAssigned))) {
             AWorkbench.popup("Transition Blocked",
                   "Can not transition with \"Guest\", \"UnAssigned\" or \"OseeSystem\" user as assignee.");
@@ -679,11 +672,11 @@ public class SMAWorkFlowSection extends SectionPart {
          if (toWorkPageDefinition.isCancelledPage() || toWorkPageDefinition.isCompletePage()) {
             toAssignees = new HashSet<User>();
          } else {
-            toAssignees = smaMgr.getTransitionAssignees();
+            toAssignees = sma.getTransitionAssignees();
          }
 
          // If this is a return transition, don't require page/tasks to be complete
-         if (!smaMgr.isReturnPage(toWorkPageDefinition)) {
+         if (!sma.isReturnPage(toWorkPageDefinition)) {
 
             // Validate XWidgets for transition
             Result result = atsWorkPage.isPageComplete();
@@ -693,9 +686,9 @@ public class SMAWorkFlowSection extends SectionPart {
             }
 
             // Loop through this state's tasks to confirm complete
-            if (smaMgr.isTaskable()) {
-               if (smaMgr.getSma() instanceof TaskableStateMachineArtifact) {
-                  for (TaskArtifact taskArt : ((TaskableStateMachineArtifact) smaMgr.getSma()).getTaskArtifactsFromCurrentState()) {
+            if (sma.isTaskable()) {
+               if (sma instanceof TaskableStateMachineArtifact) {
+                  for (TaskArtifact taskArt : ((TaskableStateMachineArtifact) sma).getTaskArtifactsFromCurrentState()) {
                      if (taskArt.isInWork()) {
                         AWorkbench.popup(
                               "Transition Blocked",
@@ -707,9 +700,9 @@ public class SMAWorkFlowSection extends SectionPart {
             }
 
             // Don't transition without targeted version if so configured
-            if (smaMgr.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || smaMgr.getWorkPageDefinition().hasWorkRule(
+            if (sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || sma.getWorkPageDefinition().hasWorkRule(
                   AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name())) {
-               if (smaMgr.getSma().getWorldViewTargetedVersion() == null && !toWorkPageDefinition.isCancelledPage()) {
+               if (sma.getWorldViewTargetedVersion() == null && !toWorkPageDefinition.isCancelledPage()) {
                   AWorkbench.popup("Transition Blocked",
                         "Actions must be targeted for a Version.\nPlease set \"Target Version\" before transition.");
                   return;
@@ -717,9 +710,9 @@ public class SMAWorkFlowSection extends SectionPart {
             }
 
             // Loop through this state's blocking reviews to confirm complete
-            if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-               for (ReviewSMArtifact reviewArt : ReviewManager.getReviewsFromCurrentState((TeamWorkFlowArtifact) smaMgr.getSma())) {
-                  if (reviewArt.getReviewBlockType() == ReviewBlockType.Transition && !reviewArt.getSmaMgr().isCancelledOrCompleted()) {
+            if (sma instanceof TeamWorkFlowArtifact) {
+               for (ReviewSMArtifact reviewArt : ReviewManager.getReviewsFromCurrentState((TeamWorkFlowArtifact) sma)) {
+                  if (reviewArt.getReviewBlockType() == ReviewBlockType.Transition && !reviewArt.isCancelledOrCompleted()) {
                      AWorkbench.popup("Transition Blocked", "All Blocking Reviews must be completed before transition.");
                      return;
                   }
@@ -727,10 +720,10 @@ public class SMAWorkFlowSection extends SectionPart {
             }
 
             // Check extension points for valid transition
-            for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
+            for (IAtsStateItem item : sma.getStateItems().getStateItems(atsWorkPage.getId())) {
                try {
                   result =
-                        item.transitioning(smaMgr, smaMgr.getStateMgr().getCurrentStateName(),
+                        item.transitioning(sma, sma.getStateMgr().getCurrentStateName(),
                               toWorkPageDefinition.getPageName(), toAssignees);
                   if (result.isFalse()) {
                      result.popup();
@@ -748,23 +741,23 @@ public class SMAWorkFlowSection extends SectionPart {
          }
 
          // Persist must be done prior and separate from transition 
-         smaMgr.getSma().persist();
+         sma.persist();
 
          // Perform transition separate from persist of previous changes to state machine artifact
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Transition");
          Result result =
-               smaMgr.transition(toWorkPageDefinition.getPageName(), toAssignees, transaction, TransitionOption.Persist);
+               sma.transition(toWorkPageDefinition.getPageName(), toAssignees, transaction, TransitionOption.Persist);
          transaction.execute();
          if (result.isFalse()) {
             result.popup();
             return;
          }
-         smaMgr.setInTransition(false);
-         smaMgr.getEditor().refreshPages();
+         sma.setInTransition(false);
+         sma.getEditor().refreshPages();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
-         smaMgr.setInTransition(false);
+         sma.setInTransition(false);
       }
    }
 
@@ -778,7 +771,7 @@ public class SMAWorkFlowSection extends SectionPart {
    public boolean handlePopulateStateMetrics() throws OseeCoreException {
 
       // Page has the ability to override the autofill of the metrics
-      if (!atsWorkPage.isRequireStateHoursSpentPrompt() && smaMgr.getStateMgr().getHoursSpent() == 0) {
+      if (!atsWorkPage.isRequireStateHoursSpentPrompt() && sma.getStateMgr().getHoursSpent() == 0) {
          // First, try to autofill if it's only been < 5 min since creation
          double minSinceCreation = getCreationToNowDateDeltaMinutes();
          // System.out.println("minSinceCreation *" + minSinceCreation + "*");
@@ -788,27 +781,27 @@ public class SMAWorkFlowSection extends SectionPart {
          }
          // System.out.println("hoursSinceCreation *" + hoursSinceCreation + "*");
          if (minSinceCreation < 5) {
-            smaMgr.getStateMgr().updateMetrics(hoursSinceCreation, 100, true);
+            sma.getStateMgr().updateMetrics(hoursSinceCreation, 100, true);
             return true;
          }
       }
 
       // Otherwise, open dialog to ask for hours complete
       String msg =
-            smaMgr.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtil.doubleToI18nString(smaMgr.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
+            sma.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtil.doubleToI18nString(sma.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
       SMAStatusDialog tsd =
             new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enter Hours Spent",
-                  msg, false, Arrays.asList(smaMgr.getSma()));
+                  msg, false, Arrays.asList(sma));
       int result = tsd.open();
       if (result == 0) {
-         smaMgr.getStateMgr().updateMetrics(tsd.getHours().getFloat(), 100, true);
+         sma.getStateMgr().updateMetrics(tsd.getHours().getFloat(), 100, true);
          return true;
       }
       return false;
    }
 
    public int getCreationToNowDateDeltaMinutes() throws OseeCoreException {
-      Date createDate = smaMgr.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName()).getDate();
+      Date createDate = sma.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName()).getDate();
       long createDateLong = createDate.getTime();
       Date date = new Date();
       float diff = date.getTime() - createDateLong;
@@ -818,30 +811,18 @@ public class SMAWorkFlowSection extends SectionPart {
       return min.intValue();
    }
 
-   /**
-    * @return the transitionToStateCombo
-    */
    public XComboViewer getTransitionToStateCombo() {
       return transitionToStateCombo;
    }
 
-   /**
-    * @return the smaMgr
-    */
-   public SMAManager getSmaMgr() {
-      return smaMgr;
+   public StateMachineArtifact getSma() {
+      return sma;
    }
 
-   /**
-    * @return the page
-    */
    public AtsWorkPage getPage() {
       return atsWorkPage;
    }
 
-   /**
-    * @return the mainComp
-    */
    public Composite getMainComp() {
       return mainComp;
    }
@@ -858,21 +839,21 @@ public class SMAWorkFlowSection extends SectionPart {
 
    private boolean isEditable(AtsWorkPage page) throws OseeCoreException {
       // must be writeable
-      return !smaMgr.getSma().isReadOnly() &&
+      return !sma.isReadOnly() &&
       // and access control writeable
-      smaMgr.isAccessControlWrite() &&
+      sma.isAccessControlWrite() &&
       // and current state
-      smaMgr.isCurrentState(page.getName()) &&
+      sma.isCurrentState(page.getName()) &&
       // and one of these
       //
       // page is define to allow anyone to edit
-      (smaMgr.getWorkPageDefinition().hasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowEditToAll.name()) ||
+      (sma.getWorkPageDefinition().hasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowEditToAll.name()) ||
       // team definition has allowed anyone to edit
-      smaMgr.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowEditToAll.name()) ||
+      sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowEditToAll.name()) ||
       // priviledged edit mode is on
-      smaMgr.getEditor().isPriviledgedEditModeEnabled() ||
+      sma.getEditor().isPriviledgedEditModeEnabled() ||
       // current user is assigned
-      smaMgr.isAssigneeMe() ||
+      sma.isAssigneeMe() ||
       // current user is ats admin
       AtsUtil.isAtsAdmin());
    }

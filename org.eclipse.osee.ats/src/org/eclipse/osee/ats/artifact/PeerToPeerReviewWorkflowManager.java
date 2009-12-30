@@ -12,8 +12,8 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -47,8 +47,8 @@ public class PeerToPeerReviewWorkflowManager {
          return result;
       }
       result =
-            reviewArt.getSmaMgr().transition(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name(),
-                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()),
+            reviewArt.transition(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name(),
+                  (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()),
                   transaction, TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
@@ -63,8 +63,8 @@ public class PeerToPeerReviewWorkflowManager {
       }
 
       result =
-            reviewArt.getSmaMgr().transition(DefaultTeamState.Completed.name(),
-                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()),
+            reviewArt.transition(DefaultTeamState.Completed.name(),
+                  (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()),
                   transaction, TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
@@ -74,12 +74,12 @@ public class PeerToPeerReviewWorkflowManager {
    }
 
    public static Result setPrepareStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent, SkynetTransaction transaction) throws OseeCoreException {
-      if (!reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals("Prepare")) return new Result(
+      if (!reviewArt.getStateMgr().getCurrentStateName().equals("Prepare")) return new Result(
             "Action not in Prepare state");
       if (roles != null) for (UserRole role : roles)
          reviewArt.getUserRoleManager().addOrUpdateUserRole(role, false, transaction);
       reviewArt.setSoleAttributeValue(ATSAttributes.LOCATION_ATTRIBUTE.getStoreName(), reviewMaterials);
-      reviewArt.getSmaMgr().getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
@@ -94,7 +94,7 @@ public class PeerToPeerReviewWorkflowManager {
             reviewArt.getDefectManager().addOrUpdateDefectItem(defect, false, transaction);
          }
       }
-      reviewArt.getSmaMgr().getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 

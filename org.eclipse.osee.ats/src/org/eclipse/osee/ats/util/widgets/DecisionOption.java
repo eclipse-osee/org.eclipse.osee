@@ -78,7 +78,7 @@ public class DecisionOption {
    }
 
    /**
-    * Sets the assigness but DOES NOT write to SMA. This method should NOT be called outside the SMAManager.
+    * Sets the assigness but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     * 
     * @param assignees
     */
@@ -89,7 +89,7 @@ public class DecisionOption {
    }
 
    /**
-    * Sets the assignes but DOES NOT write to SMA. This method should NOT be called outside the SMAManager.
+    * Sets the assignes but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     * 
     * @param assignee
     */

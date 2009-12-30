@@ -17,10 +17,10 @@ import java.util.Collection;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
-import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.test.util.SMATestUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -144,7 +144,7 @@ public class SMAPromptChangeStatusTest {
 
       // test that if one task is cancelled, can't change status
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
-      cancelTask.getSmaMgr().transition(TaskStates.Cancelled.name(), (User) null, transaction, TransitionOption.Persist);
+      cancelTask.transition(TaskStates.Cancelled.name(), (User) null, transaction, TransitionOption.Persist);
       transaction.execute();
       SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(tasks);
       Result result = promptChangeStatus.isValidToChangeStatus();

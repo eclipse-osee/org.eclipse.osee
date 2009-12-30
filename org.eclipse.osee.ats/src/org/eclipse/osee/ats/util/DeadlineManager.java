@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.util;
 import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -24,15 +24,15 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class DeadlineManager {
 
-   private final SMAManager smaMgr;
+   private StateMachineArtifact sma;
 
-   public DeadlineManager(SMAManager smaMgr) {
-      this.smaMgr = smaMgr;
+   public DeadlineManager(StateMachineArtifact sma) {
+      this.sma = sma;
    }
 
    public Date getEcdDate() {
       try {
-         return ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewEstimatedCompletionDate();
+         return ((IWorldViewArtifact) sma).getWorldViewEstimatedCompletionDate();
       } catch (Exception ex) {
          // do nothing
       }
@@ -41,7 +41,7 @@ public class DeadlineManager {
 
    public Date getDeadlineDate() {
       try {
-         return ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewDeadlineDate();
+         return ((IWorldViewArtifact) sma).getWorldViewDeadlineDate();
       } catch (Exception ex) {
          // do nothing
       }
@@ -57,13 +57,13 @@ public class DeadlineManager {
    }
 
    public Result isDeadlineDateOverdue() throws OseeCoreException {
-      if (smaMgr.isCompleted() || smaMgr.isCancelled()) return Result.FalseResult;
+      if (sma.isCompleted() || sma.isCancelled()) return Result.FalseResult;
       if ((new Date()).after(getDeadlineDate())) return new Result(true, "Need By Date has passed.");
       return Result.FalseResult;
    }
 
    public Result isEcdDateOverdue() throws OseeCoreException {
-      if (smaMgr.isCompleted() || smaMgr.isCancelled()) return Result.FalseResult;
+      if (sma.isCompleted() || sma.isCancelled()) return Result.FalseResult;
       if (getEcdDate() == null) return Result.FalseResult;
       if ((new Date()).after(getEcdDate())) return new Result(true, "Estimated Completion Date has passed.");
       if (getDeadlineDate() == null) return Result.FalseResult;
@@ -74,10 +74,10 @@ public class DeadlineManager {
 
    public Result isDeadlinePastRelease() {
       try {
-         if (smaMgr.isCompleted() || smaMgr.isCancelled()) return Result.FalseResult;
+         if (sma.isCompleted() || sma.isCancelled()) return Result.FalseResult;
          Date deadDate = getDeadlineDate();
          if (deadDate == null) return Result.FalseResult;
-         Date releaseDate = smaMgr.getSma().getWorldViewEstimatedReleaseDate();
+         Date releaseDate = sma.getWorldViewEstimatedReleaseDate();
          if (releaseDate == null) return Result.FalseResult;
          if (releaseDate.after(deadDate)) return new Result(true, "Need By Date is past current Release Date.");
       } catch (Exception ex) {

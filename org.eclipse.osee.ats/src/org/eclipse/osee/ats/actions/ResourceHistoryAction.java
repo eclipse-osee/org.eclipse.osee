@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -26,19 +26,19 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
  */
 public class ResourceHistoryAction extends Action {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
-   public ResourceHistoryAction(SMAManager smaMgr) {
+   public ResourceHistoryAction(StateMachineArtifact sma) {
       super("Resource History");
       setToolTipText(getText());
-      this.smaMgr = smaMgr;
+      this.sma = sma;
       setToolTipText(getText());
    }
 
    @Override
    public void run() {
       try {
-         HistoryView.open(smaMgr.getSma());
+         HistoryView.open(sma);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -30,21 +30,21 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
    }
 
    @Override
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
-      super.transitioned(smaMgr, fromState, toState, toAssignees, transaction);
+   public void transitioned(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+      super.transitioned(sma, fromState, toState, toAssignees, transaction);
       if (!toState.equals(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name())) return;
       // Set Assignees to all user roles users
       Set<User> assignees = new HashSet<User>();
-      PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) smaMgr.getSma();
+      PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) sma;
       for (UserRole uRole : peerArt.getUserRoleManager().getUserRoles()) {
          if (!uRole.isCompleted()) {
             assignees.add(uRole.getUser());
          }
       }
-      assignees.addAll(smaMgr.getStateMgr().getAssignees());
+      assignees.addAll(sma.getStateMgr().getAssignees());
 
-      smaMgr.getStateMgr().setAssignees(assignees);
-      smaMgr.getSma().persist(transaction);
+      sma.getStateMgr().setAssignees(assignees);
+      sma.persist(transaction);
    }
 
    public String getDescription() throws OseeCoreException {

@@ -17,9 +17,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.LogItem;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
@@ -39,13 +39,13 @@ public class StateManager {
 
    private final XCurrentStateDam currentStateDam;
    private final XStateDam stateDam;
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
-   public StateManager(SMAManager smaMgr) throws OseeStateException {
+   public StateManager(StateMachineArtifact sma) throws OseeStateException {
       super();
-      this.smaMgr = smaMgr;
-      currentStateDam = new XCurrentStateDam(smaMgr.getSma());
-      stateDam = new XStateDam(smaMgr.getSma());
+      this.sma = sma;
+      currentStateDam = new XCurrentStateDam(sma);
+      stateDam = new XStateDam(sma);
    }
 
    /**
@@ -85,10 +85,10 @@ public class StateManager {
     * user related to > 5000 items. Since these relations are only used for searching, no need to have them for
     * "UnAssigned".
     */
-   public static void updateAssigneeRelations(SMAManager smaMgr) throws OseeCoreException {
-      Collection<User> assignees = smaMgr.getStateMgr().getAssignees();
+   public static void updateAssigneeRelations(StateMachineArtifact sma) throws OseeCoreException {
+      Collection<User> assignees = sma.getStateMgr().getAssignees();
       assignees.remove(UserManager.getUser(SystemUser.UnAssigned));
-      smaMgr.getSma().setRelations(CoreRelationTypes.Users_User, assignees);
+      sma.setRelations(CoreRelationTypes.Users_User, assignees);
    }
 
    /**
@@ -142,7 +142,7 @@ public class StateManager {
    }
 
    public String getAssigneesStr() throws OseeCoreException {
-      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees());
+      return Artifacts.toString("; ", sma.getStateMgr().getAssignees());
    }
 
    public String getAssigneesStr(int length) throws OseeCoreException {
@@ -339,7 +339,7 @@ public class StateManager {
    public long getTimeInState(String stateName) throws OseeCoreException {
       SMAState state = getSMAState(stateName, false);
       if (state == null) return 0;
-      LogItem logItem = smaMgr.getLog().getLastEvent(LogType.StateEntered);
+      LogItem logItem = sma.getLog().getLastEvent(LogType.StateEntered);
       if (logItem == null) return 0;
       return (new Date()).getTime() - logItem.getDate().getTime();
    }

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.editor.widget;
 
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -29,31 +29,31 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public class CurrentAssigneesXWidget extends XHyperlinkLabelCmdValueSelection {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
    private final boolean isEditable;
 
-   public CurrentAssigneesXWidget(IManagedForm managedForm, final SMAManager smaMgr, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isEditable) throws OseeStateException {
+   public CurrentAssigneesXWidget(IManagedForm managedForm, final StateMachineArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isEditable) throws OseeStateException {
       super("Assignee(s)");
-      this.smaMgr = smaMgr;
+      this.sma = sma;
       this.isEditable = isEditable;
       if (xModListener != null) {
          addXModifiedListener(xModListener);
       }
-      setEditable(!smaMgr.getSma().isReadOnly());
+      setEditable(!sma.isReadOnly());
       super.createWidgets(managedForm, composite, horizontalSpan);
    }
 
    private void handleChangeCurrentAssignees() throws OseeCoreException {
-      if (!isEditable && !smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && !smaMgr.getStateMgr().getAssignees().contains(
+      if (!isEditable && !sma.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && !sma.getStateMgr().getAssignees().contains(
             UserManager.getUser())) {
          AWorkbench.popup(
                "ERROR",
                "You must be assigned to modify assignees.\nContact current Assignee or Select Priviledged Edit for Authorized Overriders.");
          return;
       }
-      if (smaMgr.promptChangeAssignees(false)) {
+      if (sma.promptChangeAssignees(false)) {
          refresh();
-         smaMgr.getEditor().onDirtied();
+         sma.getEditor().onDirtied();
       }
    }
 
@@ -75,13 +75,13 @@ public class CurrentAssigneesXWidget extends XHyperlinkLabelCmdValueSelection {
    @Override
    public String getCurrentValue() {
       try {
-         if (smaMgr.getStateMgr().getAssignees().size() == 0) {
+         if (sma.getStateMgr().getAssignees().size() == 0) {
             setErrorState(true);
             return "Error: State has no assignees";
          } else {
-            setToolTip(smaMgr.getStateMgr().getAssigneesStr());
+            setToolTip(sma.getStateMgr().getAssigneesStr());
             setErrorState(false);
-            return smaMgr.getStateMgr().getAssigneesStr(80);
+            return sma.getStateMgr().getAssigneesStr(80);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

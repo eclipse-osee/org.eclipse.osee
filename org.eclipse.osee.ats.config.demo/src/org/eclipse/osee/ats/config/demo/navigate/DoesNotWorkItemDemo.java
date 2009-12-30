@@ -64,14 +64,14 @@ public class DoesNotWorkItemDemo extends WorldXNavigateItemAction {
       // Create a PeerToPeer review and leave in Prepare state
       PeerToPeerReviewArtifact reviewArt =
             ReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review first set of code changes",
-                  firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName(), transaction);
+                  firstCodeArt.getStateMgr().getCurrentStateName(), transaction);
       reviewArt.persist(transaction);
 
       // Create a PeerToPeer review and transition to Review state
       reviewArt =
             ReviewManager.createNewPeerToPeerReview(firstCodeArt,
                   "Does Not Work " + AtsUtil.getAtsDeveloperIncrementingNum(),
-                  firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName(), transaction);
+                  firstCodeArt.getStateMgr().getCurrentStateName(), transaction);
       List<UserRole> roles = new ArrayList<UserRole>();
       roles.add(new UserRole(Role.Author, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
       roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)));

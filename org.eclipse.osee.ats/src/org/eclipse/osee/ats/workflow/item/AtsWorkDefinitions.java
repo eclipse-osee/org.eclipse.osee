@@ -18,9 +18,9 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
@@ -183,14 +183,14 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
    @Override
    public Collection<WorkItemDefinition> getDynamicWorkItemDefinitionsForPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws OseeCoreException {
       List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();
-      if (data instanceof SMAManager) {
-         SMAManager smaMgr = (SMAManager) data;
+      if (data instanceof StateMachineArtifact) {
+         StateMachineArtifact sma = (StateMachineArtifact) data;
          if (workPageDefinition.isInstanceOfPage(AtsCancelledWorkPageDefinition.ID)) {
-            defs.add(new AtsCancelledFromStateWorkItem(smaMgr));
-            defs.add(new AtsCancellationReasonStateWorkItem(smaMgr));
+            defs.add(new AtsCancelledFromStateWorkItem(sma));
+            defs.add(new AtsCancellationReasonStateWorkItem(sma));
          }
          if (workPageDefinition.isInstanceOfPage(AtsCompletedWorkPageDefinition.ID)) {
-            defs.add(new AtsCompletedFromStateWorkItem(smaMgr));
+            defs.add(new AtsCompletedFromStateWorkItem(sma));
          }
       }
       return defs;

@@ -12,11 +12,7 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
@@ -27,22 +23,18 @@ import org.eclipse.swt.widgets.Display;
  */
 public class AccessControlAction extends Action {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
-   public AccessControlAction(SMAManager smaMgr) {
+   public AccessControlAction(StateMachineArtifact sma) {
       super("Access Control");
       setToolTipText(getText());
-      this.smaMgr = smaMgr;
+      this.sma = sma;
    }
 
    @Override
    public void run() {
-      try {
-         PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), smaMgr.getSma());
-         pd.open();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), sma);
+      pd.open();
    }
 
    @Override

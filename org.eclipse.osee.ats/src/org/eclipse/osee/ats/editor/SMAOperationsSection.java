@@ -87,11 +87,7 @@ public class SMAOperationsSection extends SectionPart {
    }
 
    private void createImpactsSection(Composite parent, FormToolkit toolkit) {
-      try {
-         if (!(editor.getSmaMgr().getSma() instanceof TeamWorkFlowArtifact)) return;
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      if (!(editor.getSma() instanceof TeamWorkFlowArtifact)) return;
       Section section = toolkit.createSection(parent, Section.TITLE_BAR);
       section.setText("Impacts and Workflows");
 
@@ -102,28 +98,18 @@ public class SMAOperationsSection extends SectionPart {
       sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      try {
-         if (editor.getSmaMgr().getSma() instanceof TeamWorkFlowArtifact) {
-            (new XButtonViaAction(new EditActionableItemsAction((TeamWorkFlowArtifact) editor.getSmaMgr().getSma()))).createWidgets(
-                  sectionBody, 2);
-            (new XButtonViaAction(new DuplicateWorkflowAction(
-                  Collections.singleton((TeamWorkFlowArtifact) editor.getSmaMgr().getSma())))).createWidgets(
-                  sectionBody, 2);
-            (new XButtonViaAction(new AccessControlAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      if (editor.getSma() instanceof TeamWorkFlowArtifact) {
+         (new XButtonViaAction(new EditActionableItemsAction((TeamWorkFlowArtifact) editor.getSma()))).createWidgets(
+               sectionBody, 2);
+         (new XButtonViaAction(new DuplicateWorkflowAction(
+               Collections.singleton((TeamWorkFlowArtifact) editor.getSma())))).createWidgets(sectionBody, 2);
+         (new XButtonViaAction(new AccessControlAction(editor.getSma()))).createWidgets(sectionBody, 2);
       }
-
       section.setClient(sectionBody);
    }
 
    private void createAdvancedSection(Composite parent, FormToolkit toolkit) {
-      try {
-         if (!(editor.getSmaMgr().getSma() instanceof TeamWorkFlowArtifact)) return;
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      if (!(editor.getSma() instanceof TeamWorkFlowArtifact)) return;
       Section section = toolkit.createSection(parent, Section.TITLE_BAR);
       section.setText("Advanced");
 
@@ -134,25 +120,16 @@ public class SMAOperationsSection extends SectionPart {
       sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      try {
-         if (editor.getSmaMgr().getSma() instanceof TeamWorkFlowArtifact) {
-            (new XButtonViaAction(new DirtyReportAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
-            (new XButtonViaAction(new ReloadAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
-            (new XButtonViaAction(new ConvertActionableItemsAction(editor))).createWidgets(sectionBody, 2);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      if (editor.getSma() instanceof TeamWorkFlowArtifact) {
+         (new XButtonViaAction(new DirtyReportAction(editor.getSma()))).createWidgets(sectionBody, 2);
+         (new XButtonViaAction(new ReloadAction(editor.getSma()))).createWidgets(sectionBody, 2);
+         (new XButtonViaAction(new ConvertActionableItemsAction(editor))).createWidgets(sectionBody, 2);
       }
-
       section.setClient(sectionBody);
    }
 
    private void createAdminSection(Composite parent, FormToolkit toolkit) {
-      try {
-         if (!(editor.getSmaMgr().getSma() instanceof TeamWorkFlowArtifact)) return;
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      if (!(editor.getSma() instanceof TeamWorkFlowArtifact)) return;
       Section section = toolkit.createSection(parent, Section.TITLE_BAR);
       section.setText("Admin");
 
@@ -163,7 +140,7 @@ public class SMAOperationsSection extends SectionPart {
       sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      (new XButtonViaAction(new RefreshDirtyAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
+      (new XButtonViaAction(new RefreshDirtyAction(editor.getSma()))).createWidgets(sectionBody, 2);
       (new XButtonViaAction(new DeletePurgeAtsArtifactsAction(editor))).createWidgets(sectionBody, 2);
 
       section.setClient(sectionBody);
@@ -181,11 +158,11 @@ public class SMAOperationsSection extends SectionPart {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       try {
-         (new XButtonViaAction(new OpenInAtsWorldAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
-         (new XButtonViaAction(new OpenInSkyWalkerAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
-         (new XButtonViaAction(new ResourceHistoryAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
-         if (editor.getSmaMgr().getSma().getParentSMA() != null) {
-            (new XButtonViaAction(new OpenParentAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
+         (new XButtonViaAction(new OpenInAtsWorldAction(editor.getSma()))).createWidgets(sectionBody, 2);
+         (new XButtonViaAction(new OpenInSkyWalkerAction(editor.getSma()))).createWidgets(sectionBody, 2);
+         (new XButtonViaAction(new ResourceHistoryAction(editor.getSma()))).createWidgets(sectionBody, 2);
+         if (editor.getSma().getParentSMA() != null) {
+            (new XButtonViaAction(new OpenParentAction(editor.getSma()))).createWidgets(sectionBody, 2);
          }
          if (AtsUtil.isAtsAdmin()) {
             (new XButtonViaAction(new OpenInArtifactEditorAction(editor))).createWidgets(sectionBody, 2);

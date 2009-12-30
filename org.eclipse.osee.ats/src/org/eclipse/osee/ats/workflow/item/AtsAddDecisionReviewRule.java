@@ -74,7 +74,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
     * Creates decision review if one of same name doesn't already exist
     * 
     * @param atsAddDecisionReviewRule
-    * @param smaMgr
+    * @param sma
     * @return DecisionReviewArtifact
     * @throws OseeCoreException
     */
@@ -104,7 +104,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
                      DecisionParameter.options), getAssigneesOrDefault(teamArt, atsAddDecisionReviewRule), transaction);
       }
 
-      decArt.getSmaMgr().getLog().addLog(LogType.Note, null,
+      decArt.getLog().addLog(LogType.Note, null,
             "Review auto-generated off rule " + atsAddDecisionReviewRule.getId());
       return decArt;
    }
@@ -135,7 +135,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
          } else if (decisionParameter == DecisionParameter.description) {
             return null;
          } else if (decisionParameter == DecisionParameter.forState) {
-            return teamArt.getSmaMgr().getStateMgr().getCurrentStateName();
+            return teamArt.getStateMgr().getCurrentStateName();
          }
       }
       return value;

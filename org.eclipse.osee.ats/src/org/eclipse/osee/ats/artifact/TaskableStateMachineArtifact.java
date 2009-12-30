@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.artifact;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +59,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
 
    @Override
    public boolean showTaskTab() throws OseeCoreException {
-      return (isTaskable() || smaMgr.isCompleted() || smaMgr.isCancelled());
+      return (isTaskable() || isCompleted() || isCancelled());
    }
 
    @Override
@@ -98,22 +97,15 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
    }
 
    public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {
-      if (smaMgr.getSma() instanceof TaskableStateMachineArtifact) {
-         return AtsCacheManager.getTaskArtifacts((TaskableStateMachineArtifact) smaMgr.getSma());
-      }
-      return Collections.emptyList();
-
+      return AtsCacheManager.getTaskArtifacts(this);
    }
 
    public Collection<TaskArtifact> getTaskArtifactsSorted() throws OseeCoreException {
-      if (smaMgr.getSma() instanceof TaskableStateMachineArtifact) {
-         return AtsCacheManager.getTaskArtifacts((TaskableStateMachineArtifact) smaMgr.getSma());
-      }
-      return Collections.emptyList();
+      return AtsCacheManager.getTaskArtifacts(this);
    }
 
    public Collection<TaskArtifact> getTaskArtifactsFromCurrentState() throws OseeCoreException {
-      return getTaskArtifacts(smaMgr.getStateMgr().getCurrentStateName());
+      return getTaskArtifacts(getStateMgr().getCurrentStateName());
    }
 
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
@@ -129,7 +121,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
 
    public boolean hasTaskArtifacts() {
       try {
-         return smaMgr.getSma().getRelatedArtifactsCount(AtsRelationTypes.SmaToTask_Task) > 0;
+         return getRelatedArtifactsCount(AtsRelationTypes.SmaToTask_Task) > 0;
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return false;
@@ -148,17 +140,17 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
       TaskArtifact taskArt = null;
       taskArt =
             (TaskArtifact) ArtifactTypeManager.addArtifact(TaskArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch(), title);
-      taskArt.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
+      taskArt.getLog().addLog(LogType.Originated, "", "");
 
       // Initialize state machine
-      taskArt.getSmaMgr().getStateMgr().initializeStateMachine(TaskStates.InWork.name(), assignees);
-      taskArt.getSmaMgr().getLog().addLog(LogType.StateEntered, "InWork", "");
+      taskArt.getStateMgr().initializeStateMachine(TaskStates.InWork.name(), assignees);
+      taskArt.getLog().addLog(LogType.StateEntered, "InWork", "");
 
       // Set parent state task is related to
       taskArt.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
-            smaMgr.getStateMgr().getCurrentStateName());
+            getStateMgr().getCurrentStateName());
 
-      smaMgr.getSma().addRelation(AtsRelationTypes.SmaToTask_Task, taskArt);
+      addRelation(AtsRelationTypes.SmaToTask_Task, taskArt);
 
       return taskArt;
    }
@@ -304,7 +296,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
             for (User art : assignees) {
                users.add(art);
             }
-            taskArt.getSmaMgr().getStateMgr().setAssignees(users);
+            taskArt.getStateMgr().setAssignees(users);
          }
          tasks.add(taskArt);
          taskArt.persist(transaction);

@@ -21,26 +21,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.editor.stateItem.AtsStateItems;
+import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.Overview;
+import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.ats.util.widgets.dialog.AtsPriorityDialog;
+import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -48,29 +60,38 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
+import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.group.IGroupExplorerProvider;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroup;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeTypeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinitionFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
  */
 public abstract class StateMachineArtifact extends ATSArtifact implements IGroupExplorerProvider, IWorldViewArtifact, ISubscribableArtifact, IFavoriteableArtifact {
 
-   protected SMAManager smaMgr;
    private final Set<IRelationEnumeration> smaEditorRelations = new HashSet<IRelationEnumeration>();
    private final Set<IRelationEnumeration> atsWorldRelations = new HashSet<IRelationEnumeration>();
    private Collection<User> preSaveStateAssignees;
@@ -81,14 +102,23 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    protected StateMachineArtifact parentSma;
    protected TeamWorkFlowArtifact parentTeamArt;
    protected ActionArtifact parentAction;
+   private Collection<User> transitionAssignees;
+   private static String SEPERATOR = ";  ";
+   private StateManager stateMgr;
+   private DeadlineManager deadlineMgr;
+   private SMAEditor editor;
+   private ATSLog atsLog;
+   private ATSNote atsNote;
+   private static final AtsStateItems stateItems = new AtsStateItems();
+   private boolean inTransition = false;
+   public static enum TransitionOption {
+      None, Persist,
+      // Override check whether workflow allows transition to state
+      OverrideTransitionValidityCheck,
+      // Allows transition to occur with UnAssigned, OseeSystem or Guest
+      OverrideAssigneeCheck
+   };
 
-   /**
-    * @param parentFactory
-    * @param guid
-    * @param humanReadableId
-    * @param branch
-    * @throws OseeDataStoreException
-    */
    public StateMachineArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
@@ -117,12 +147,15 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public void initalizePreSaveCache() {
       try {
-         smaMgr = new SMAManager(this);
-         preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
-         if (smaMgr.getOriginator() == null) {
+         deadlineMgr = new DeadlineManager(this);
+         stateMgr = new StateManager(this);
+         atsLog = new ATSLog(this);
+         atsNote = new ATSNote(this);
+         preSaveStateAssignees = getStateMgr().getAssignees();
+         if (getOriginator() == null) {
             preSaveOriginator = UserManager.getUser();
          } else {
-            preSaveOriginator = smaMgr.getOriginator();
+            preSaveOriginator = getOriginator();
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -167,11 +200,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public Collection<User> getImplementersByState(String stateName) throws OseeCoreException {
-      if (smaMgr.isCancelled()) {
-         return Arrays.asList(smaMgr.getLog().getCancelledLogItem().getUser());
+      if (isCancelled()) {
+         return Arrays.asList(getLog().getCancelledLogItem().getUser());
       }
-      Collection<User> users = new HashSet<User>(smaMgr.getStateMgr().getAssignees(stateName));
-      LogItem item = smaMgr.getLog().getCompletedLogItem();
+      Collection<User> users = new HashSet<User>(getStateMgr().getAssignees(stateName));
+      LogItem item = getLog().getCompletedLogItem();
       if (item != null) {
          users.add(item.getUser());
       }
@@ -219,21 +252,21 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * @throws OseeCoreException
     */
    public boolean isCurrentSectionExpanded(String stateName) throws OseeCoreException {
-      return smaMgr.getStateMgr().getCurrentStateName().equals(stateName);
+      return getStateMgr().getCurrentStateName().equals(stateName);
    }
 
    public void notifyNewAssigneesAndReset() throws OseeCoreException {
       if (preSaveStateAssignees == null) {
-         preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
+         preSaveStateAssignees = getStateMgr().getAssignees();
          return;
       }
       Set<User> newAssignees = new HashSet<User>();
-      for (User user : smaMgr.getStateMgr().getAssignees()) {
+      for (User user : getStateMgr().getAssignees()) {
          if (!preSaveStateAssignees.contains(user)) {
             newAssignees.add(user);
          }
       }
-      preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
+      preSaveStateAssignees = getStateMgr().getAssignees();
       if (newAssignees.size() == 0) {
          return;
       }
@@ -246,11 +279,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public void notifyOriginatorAndReset() throws OseeCoreException {
-      if (preSaveOriginator != null && smaMgr.getOriginator() != null && !smaMgr.getOriginator().equals(
-            preSaveOriginator)) {
+      if (preSaveOriginator != null && getOriginator() != null && !getOriginator().equals(preSaveOriginator)) {
          AtsNotifyUsers.notify(this, AtsNotifyUsers.NotifyType.Originator);
       }
-      preSaveOriginator = smaMgr.getOriginator();
+      preSaveOriginator = getOriginator();
    }
 
    public boolean isValidationRequired() throws OseeCoreException {
@@ -266,11 +298,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public ArrayList<EmailGroup> getEmailableGroups() throws OseeCoreException {
       ArrayList<EmailGroup> groupNames = new ArrayList<EmailGroup>();
       ArrayList<String> emails = new ArrayList<String>();
-      emails.add(smaMgr.getOriginator().getEmail());
+      emails.add(getOriginator().getEmail());
       groupNames.add(new EmailGroup("Originator", emails));
-      if (smaMgr.getStateMgr().getAssignees().size() > 0) {
+      if (getStateMgr().getAssignees().size() > 0) {
          emails = new ArrayList<String>();
-         for (User u : smaMgr.getStateMgr().getAssignees()) {
+         for (User u : getStateMgr().getAssignees()) {
             emails.add(u.getEmail());
          }
          groupNames.add(new EmailGroup("Assignees", emails));
@@ -303,12 +335,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public boolean isUnCancellable() {
       try {
-         LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
+         LogItem item = getLog().getStateEvent(LogType.StateCancelled);
          if (item == null) {
             throw new IllegalArgumentException("No Cancelled Event");
          }
-         for (WorkPageDefinition toWorkPageDefinition : smaMgr.getWorkFlowDefinition().getToPages(
-               smaMgr.getWorkPageDefinition())) {
+         for (WorkPageDefinition toWorkPageDefinition : getWorkFlowDefinition().getToPages(getWorkPageDefinition())) {
             if (toWorkPageDefinition.getPageName().equals(item.getState())) {
                return true;
             }
@@ -320,7 +351,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public boolean isTaskable() throws OseeCoreException {
-      if (smaMgr.isCompleted() || smaMgr.isCancelled()) {
+      if (isCompleted() || isCancelled()) {
          return false;
       }
       return true;
@@ -360,7 +391,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       if (isDeleted()) {
          return null;
       }
-      return FrameworkArtifactImageProvider.getUserImage(smaMgr.getStateMgr().getAssignees());
+      return FrameworkArtifactImageProvider.getUserImage(getStateMgr().getAssignees());
    }
 
    /**
@@ -457,21 +488,21 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public String getWorldViewState() throws OseeCoreException {
-      return smaMgr.getStateMgr().getCurrentStateName();
+      return getStateMgr().getCurrentStateName();
    }
 
    public String implementersStr = null;
 
    public String getWorldViewActivePoc() throws OseeCoreException {
-      if (smaMgr.isCancelledOrCompleted()) {
+      if (isCancelledOrCompleted()) {
          if (implementersStr == null) {
-            if (smaMgr.getSma().getImplementers().size() > 0) {
-               implementersStr = "(" + Artifacts.toString("; ", smaMgr.getSma().getImplementers()) + ")";
+            if (getImplementers().size() > 0) {
+               implementersStr = "(" + Artifacts.toString("; ", getImplementers()) + ")";
             }
          }
          return implementersStr;
       }
-      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees());
+      return Artifacts.toString("; ", getStateMgr().getAssignees());
    }
 
    public String getWorldViewCreatedDateStr() throws OseeCoreException {
@@ -482,10 +513,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public String getWorldViewCompletedDateStr() throws OseeCoreException {
-      if (smaMgr.isCompleted()) {
+      if (isCompleted()) {
          if (getWorldViewCompletedDate() == null) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
-                  "Completed with no date => " + smaMgr.getSma().getHumanReadableId());
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Completed with no date => " + getHumanReadableId());
             return XViewerCells.getCellExceptionString("Completed with no date.");
          }
          return new XDate(getWorldViewCompletedDate()).getMMDDYYHHMM();
@@ -494,10 +524,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public String getWorldViewCancelledDateStr() throws OseeCoreException {
-      if (smaMgr.isCancelled()) {
+      if (isCancelled()) {
          if (getWorldViewCancelledDate() == null) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE,
-                  "Cancelled with no date => " + smaMgr.getSma().getHumanReadableId());
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Cancelled with no date => " + getHumanReadableId());
             return XViewerCells.getCellExceptionString("Cancelled with no date.");
          }
          return new XDate(getWorldViewCancelledDate()).getMMDDYYHHMM();
@@ -506,11 +535,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public Date getWorldViewCreatedDate() throws OseeCoreException {
-      return smaMgr.getLog().getCreationDate();
+      return getLog().getCreationDate();
    }
 
    public String getWorldViewOriginator() throws OseeCoreException {
-      return smaMgr.getOriginator().getName();
+      return getOriginator().getName();
    }
 
    public String getWorldViewID() throws OseeCoreException {
@@ -525,7 +554,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public Date getWorldViewCompletedDate() throws OseeCoreException {
-      LogItem item = smaMgr.getLog().getCompletedLogItem();
+      LogItem item = getLog().getCompletedLogItem();
       if (item != null) {
          return item.getDate();
       }
@@ -533,7 +562,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public Date getWorldViewCancelledDate() throws OseeCoreException {
-      LogItem item = smaMgr.getLog().getCancelledLogItem();
+      LogItem item = getLog().getCancelledLogItem();
       if (item != null) {
          return item.getDate();
       }
@@ -563,12 +592,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public double getEstimatedHoursFromTasks(String relatedToState) throws OseeCoreException {
       if (!(this instanceof TaskableStateMachineArtifact)) return 0;
-      return ((TaskableStateMachineArtifact) smaMgr.getSma()).getEstimatedHoursFromTasks(relatedToState);
+      return ((TaskableStateMachineArtifact) this).getEstimatedHoursFromTasks(relatedToState);
    }
 
    public double getEstimatedHoursFromTasks() throws OseeCoreException {
       if (!(this instanceof TaskableStateMachineArtifact)) return 0;
-      return ((TaskableStateMachineArtifact) smaMgr.getSma()).getEstimatedHoursFromTasks();
+      return ((TaskableStateMachineArtifact) this).getEstimatedHoursFromTasks();
    }
 
    public double getEstimatedHoursFromReviews() throws OseeCoreException {
@@ -610,7 +639,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public double getRemainHoursFromArtifact() throws OseeCoreException {
-      if (smaMgr.isCompleted() || smaMgr.isCancelled()) {
+      if (isCompleted() || isCancelled()) {
          return 0;
       }
       double est = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), 0.0);
@@ -648,7 +677,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
       try {
          Double value = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), null);
-         if (getSmaMgr().isCancelled()) {
+         if (isCancelled()) {
             return Result.TrueResult;
          }
          if (value == null) {
@@ -750,7 +779,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public int getWorldViewStatePercentComplete() throws OseeCoreException {
-      return getPercentCompleteSMAStateTotal(smaMgr.getStateMgr().getCurrentStateName());
+      return getPercentCompleteSMAStateTotal(getStateMgr().getCurrentStateName());
    }
 
    public String getWorldViewNumberOfTasks() throws OseeCoreException {
@@ -869,14 +898,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return new XDate(getWorldViewReleaseDate()).getMMDDYYHHMM();
    }
 
-   public boolean isReleased() {
-      try {
-         return getWorldViewReleaseDate() != null;
-      } catch (Exception ex) {
-         return false;
-      }
-   }
-
    /**
     * Called at the end of a transition just before transaction manager persist. SMAs can override to perform tasks due
     * to transition.
@@ -900,7 +921,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public String getHyperState() {
       try {
-         return smaMgr.getStateMgr().getCurrentStateName();
+         return getStateMgr().getCurrentStateName();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -909,7 +930,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public String getHyperAssignee() {
       try {
-         return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees());
+         return Artifacts.toString("; ", getStateMgr().getAssignees());
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -917,7 +938,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public Image getHyperAssigneeImage() throws OseeCoreException {
-      return smaMgr.getAssigneeImage();
+      return getAssigneeImage();
    }
 
    public Artifact getHyperArtifact() {
@@ -986,10 +1007,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return "";
    }
 
-   public SMAManager getSmaMgr() {
-      return smaMgr;
-   }
-
    public String getWorldViewReviewAuthor() throws OseeCoreException {
       return "";
    }
@@ -1010,7 +1027,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * Return hours spent working ONLY the SMA stateName (not children SMAs)
     */
    public double getHoursSpentSMAState(String stateName) throws OseeCoreException {
-      return smaMgr.getStateMgr().getHoursSpent(stateName);
+      return getStateMgr().getHoursSpent(stateName);
    }
 
    /**
@@ -1018,7 +1035,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     */
    public double getHoursSpentSMAStateTasks(String stateName) throws OseeCoreException {
       if (!(this instanceof TaskableStateMachineArtifact)) return 0;
-      return ((TaskableStateMachineArtifact) smaMgr.getSma()).getHoursSpentFromTasks(stateName);
+      return ((TaskableStateMachineArtifact) this).getHoursSpentFromTasks(stateName);
    }
 
    /**
@@ -1040,7 +1057,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public double getWorldViewHoursSpentStateTotal() throws OseeCoreException {
-      return getHoursSpentSMAStateTotal(smaMgr.getStateMgr().getCurrentStateName());
+      return getHoursSpentSMAStateTotal(getStateMgr().getCurrentStateName());
    }
 
    /**
@@ -1048,7 +1065,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     */
    public double getHoursSpentSMATotal() throws OseeCoreException {
       double hours = 0.0;
-      for (String stateName : smaMgr.getStateMgr().getVisitedStateNames()) {
+      for (String stateName : getStateMgr().getVisitedStateNames()) {
          hours += getHoursSpentSMAStateTotal(stateName);
       }
       return hours;
@@ -1058,7 +1075,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * Return Percent Complete working ONLY the SMA stateName (not children SMAs)
     */
    public int getPercentCompleteSMAState(String stateName) throws OseeCoreException {
-      return smaMgr.getStateMgr().getPercentComplete(stateName);
+      return getStateMgr().getPercentComplete(stateName);
    }
 
    /**
@@ -1066,7 +1083,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     */
    public int getPercentCompleteSMAStateTasks(String stateName) throws OseeCoreException {
       if (!(this instanceof TaskableStateMachineArtifact)) return 0;
-      return ((TaskableStateMachineArtifact) smaMgr.getSma()).getPercentCompleteFromTasks(stateName);
+      return ((TaskableStateMachineArtifact) this).getPercentCompleteFromTasks(stateName);
    }
 
    /**
@@ -1093,14 +1110,14 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * percent = all state's percents / number of states (minus completed/cancelled)
     */
    public int getPercentCompleteSMATotal() throws OseeCoreException {
-      if (smaMgr.isCancelledOrCompleted()) {
+      if (isCancelledOrCompleted()) {
          return 100;
       }
       Map<String, Double> stateToWeightMap = getStatePercentCompleteWeight();
       if (stateToWeightMap.size() > 0) {
          // Calculate total percent using configured weighting
          int percent = 0;
-         for (String stateName : smaMgr.getWorkFlowDefinition().getPageNames()) {
+         for (String stateName : getWorkFlowDefinition().getPageNames()) {
             if (!stateName.equals(DefaultTeamState.Completed.name()) && !stateName.equals(DefaultTeamState.Cancelled.name())) {
                Double weight = stateToWeightMap.get(stateName);
                if (weight == null) {
@@ -1113,7 +1130,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       } else {
          int percent = 0;
          int numStates = 0;
-         for (String stateName : smaMgr.getWorkFlowDefinition().getPageNames()) {
+         for (String stateName : getWorkFlowDefinition().getPageNames()) {
             if (!stateName.equals(DefaultTeamState.Completed.name()) && !stateName.equals(DefaultTeamState.Cancelled.name())) {
                percent += getPercentCompleteSMAStateTotal(stateName);
                numStates++;
@@ -1132,8 +1149,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public Map<String, Double> getStatePercentCompleteWeight() throws OseeCoreException {
       if (stateToWeight == null) {
          stateToWeight = new HashMap<String, Double>();
-         Collection<WorkRuleDefinition> workRuleDefs =
-               smaMgr.getWorkRulesStartsWith(AtsStatePercentCompleteWeightRule.ID);
+         Collection<WorkRuleDefinition> workRuleDefs = getWorkRulesStartsWith(AtsStatePercentCompleteWeightRule.ID);
          // Log error if multiple of same rule found, but keep going
          if (workRuleDefs.size() > 1) {
             OseeLog.log(
@@ -1154,8 +1170,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       int numObjects = 1; // the state itself is one object
 
       // Add percent for each task and bump objects for each task
-      if (smaMgr.getSma() instanceof TaskableStateMachineArtifact) {
-         Collection<TaskArtifact> tasks = ((TaskableStateMachineArtifact) smaMgr.getSma()).getTaskArtifacts(stateName);
+      if (this instanceof TaskableStateMachineArtifact) {
+         Collection<TaskArtifact> tasks = ((TaskableStateMachineArtifact) this).getTaskArtifacts(stateName);
          for (TaskArtifact taskArt : tasks) {
             percent += taskArt.getPercentCompleteSMATotal();
          }
@@ -1163,7 +1179,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
 
       // Add percent for each review and bump objects for each review
-      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+      if (isTeamWorkflow()) {
          Collection<ReviewSMArtifact> reviews = ReviewManager.getReviews((TeamWorkFlowArtifact) this, stateName);
          for (ReviewSMArtifact reviewArt : reviews) {
             percent += reviewArt.getPercentCompleteSMATotal();
@@ -1195,17 +1211,17 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public double getWorldViewHoursSpentState() throws OseeCoreException {
-      return getHoursSpentSMAState(smaMgr.getStateMgr().getCurrentStateName());
+      return getHoursSpentSMAState(getStateMgr().getCurrentStateName());
    }
 
    @Override
    public double getWorldViewHoursSpentStateReview() throws OseeCoreException {
-      return getHoursSpentSMAStateReviews(smaMgr.getStateMgr().getCurrentStateName());
+      return getHoursSpentSMAStateReviews(getStateMgr().getCurrentStateName());
    }
 
    @Override
    public double getWorldViewHoursSpentStateTask() throws OseeCoreException {
-      return getHoursSpentSMAStateTasks(smaMgr.getStateMgr().getCurrentStateName());
+      return getHoursSpentSMAStateTasks(getStateMgr().getCurrentStateName());
    }
 
    @Override
@@ -1215,17 +1231,17 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public int getWorldViewPercentCompleteState() throws OseeCoreException {
-      return getPercentCompleteSMAState(smaMgr.getStateMgr().getCurrentStateName());
+      return getPercentCompleteSMAState(getStateMgr().getCurrentStateName());
    }
 
    @Override
    public int getWorldViewPercentCompleteStateReview() throws OseeCoreException {
-      return getPercentCompleteSMAStateReviews(smaMgr.getStateMgr().getCurrentStateName());
+      return getPercentCompleteSMAStateReviews(getStateMgr().getCurrentStateName());
    }
 
    @Override
    public int getWorldViewPercentCompleteStateTask() throws OseeCoreException {
-      return getPercentCompleteSMAStateTasks(smaMgr.getStateMgr().getCurrentStateName());
+      return getPercentCompleteSMAStateTasks(getStateMgr().getCurrentStateName());
    }
 
    @Override
@@ -1249,7 +1265,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public String getWorldViewLastStatused() throws OseeCoreException {
-      return XDate.getDateStr(smaMgr.getLog().getLastStatusedDate(), XDate.MMDDYYHHMM);
+      return XDate.getDateStr(getLog().getLastStatusedDate(), XDate.MMDDYYHHMM);
    }
 
    public String getWorldViewSWEnhancement() throws OseeCoreException {
@@ -1274,7 +1290,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public String getWorldViewDaysInCurrentState() throws OseeCoreException {
-      double timeInCurrState = smaMgr.getStateMgr().getTimeInState();
+      double timeInCurrState = getStateMgr().getTimeInState();
       if (timeInCurrState == 0) {
          return "0.0";
       }
@@ -1284,13 +1300,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    @Override
    public String getWorldViewParentState() throws OseeCoreException {
       if (getParentSMA() != null) {
-         return getParentSMA().getSmaMgr().getStateMgr().getCurrentStateName();
+         return getParentSMA().getStateMgr().getCurrentStateName();
       }
       return "";
    }
 
    public String getGroupExplorerName() throws OseeCoreException {
-      return String.format("[%s] %s", getSmaMgr().getStateMgr().getCurrentStateName(), getName());
+      return String.format("[%s] %s", getStateMgr().getCurrentStateName(), getName());
    }
 
    @Override
@@ -1305,6 +1321,771 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public String getWorldViewNumberOfTasksRemaining() throws OseeCoreException {
       return "";
+   }
+
+   public void closeEditors(boolean save) throws OseeStateException {
+      SMAEditor.close(java.util.Collections.singleton(this), save);
+   }
+
+   public ATSLog getLog() {
+      return atsLog;
+   }
+
+   public ATSNote getNotes() {
+      return atsNote;
+   }
+
+   public Result getUserInputNeeded() {
+      return Result.FalseResult;
+   }
+
+   public WorkPageDefinition getWorkPageDefinition() throws OseeCoreException {
+      if (getStateMgr().getCurrentStateName() == null) {
+         return null;
+      }
+      return getWorkFlowDefinition().getWorkPageDefinitionByName(getStateMgr().getCurrentStateName());
+   }
+
+   public WorkPageDefinition getWorkPageDefinitionByName(String name) throws OseeCoreException {
+      return getWorkFlowDefinition().getWorkPageDefinitionByName(name);
+   }
+
+   public WorkPageDefinition getWorkPageDefinitionById(String id) throws OseeCoreException {
+      return getWorkFlowDefinition().getWorkPageDefinitionById(id);
+   }
+
+   public boolean isHistoricalVersion() throws OseeStateException {
+      return isHistorical();
+   }
+
+   public List<WorkPageDefinition> getToWorkPages() throws OseeCoreException {
+      return getWorkFlowDefinition().getToPages(getWorkPageDefinition());
+   }
+
+   public List<WorkPageDefinition> getReturnPages() throws OseeCoreException {
+      return getWorkFlowDefinition().getReturnPages(getWorkPageDefinition());
+   }
+
+   public boolean isReturnPage(WorkPageDefinition workPageDefinition) throws OseeCoreException {
+      return getWorkFlowDefinition().isReturnPage(getWorkPageDefinition(), workPageDefinition);
+   }
+
+   public boolean isAccessControlWrite() throws OseeCoreException {
+      return AccessControlManager.hasPermission(this, PermissionEnum.WRITE);
+   }
+
+   public User getOriginator() throws OseeCoreException {
+      return atsLog.getOriginator();
+   }
+
+   public void setOriginator(User user) throws OseeCoreException {
+      atsLog.addLog(LogType.Originated, "", "Changed by " + UserManager.getUser().getName(), user);
+   }
+
+   /**
+    * @return true if this is a TeamWorkflow and it uses versions
+    * @throws OseeStateException
+    */
+   public boolean isTeamUsesVersions() throws OseeStateException {
+      if (!isTeamWorkflow()) {
+         return false;
+      }
+      try {
+         return ((TeamWorkFlowArtifact) this).getTeamDefinition().isTeamUsesVersions();
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         return false;
+      }
+   }
+
+   /**
+    * Return true if sma is TeamWorkflowArtifact and it's TeamDefinitionArtifact has rule set
+    * 
+    * @param ruleId
+    * @return if has rule
+    * @throws OseeCoreException
+    * @throws
+    */
+   public boolean teamDefHasWorkRule(String ruleId) throws OseeCoreException {
+      if (!isTeamWorkflow()) {
+         return false;
+      }
+      try {
+         return ((TeamWorkFlowArtifact) this).getTeamDefinition().hasWorkRule(ruleId);
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         return false;
+      }
+   }
+
+   public boolean workPageHasWorkRule(String ruleId) throws OseeCoreException {
+      return getWorkPageDefinition().hasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
+   }
+
+   public Collection<WorkRuleDefinition> getWorkRulesStartsWith(String ruleId) throws OseeCoreException {
+      Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
+      if (ruleId == null || ruleId.equals("")) {
+         return workRules;
+      }
+      if (isTeamWorkflow()) {
+         // Get rules from team definition
+         workRules.addAll(((TeamWorkFlowArtifact) this).getTeamDefinition().getWorkRulesStartsWith(ruleId));
+      }
+      // Get work rules from workflow
+      WorkFlowDefinition workFlowDefinition = getWorkFlowDefinition();
+      if (workFlowDefinition != null) {
+         // Get rules from workflow definitions
+         workRules.addAll(getWorkFlowDefinition().getWorkRulesStartsWith(ruleId));
+      }
+      // Add work rules from page
+      for (WorkItemDefinition wid : getWorkPageDefinition().getWorkItems(false)) {
+         if (!wid.getId().equals("") && wid.getId().startsWith(ruleId)) {
+            workRules.add((WorkRuleDefinition) wid);
+         }
+      }
+      return workRules;
+   }
+
+   /**
+    * @return true if this is a TeamWorkflow and the version it's been targeted for has been released
+    */
+   public boolean isReleased() {
+      try {
+         VersionArtifact verArt = getTargetedForVersion();
+         if (verArt != null) {
+            return verArt.isReleased();
+         }
+      } catch (Exception ex) {
+         // Do Nothing
+      }
+      return false;
+   }
+
+   public boolean isVersionLocked() {
+      try {
+         VersionArtifact verArt = getTargetedForVersion();
+         if (verArt != null) {
+            return verArt.isVersionLocked();
+         }
+      } catch (Exception ex) {
+         // Do Nothing
+      }
+      return false;
+   }
+
+   public VersionArtifact getTargetedForVersion() throws OseeCoreException {
+      return getWorldViewTargetedVersion();
+   }
+
+   public boolean promptChangeAssignees(boolean persist) throws OseeCoreException {
+      return promptChangeAssignees(Arrays.asList(this), persist);
+   }
+
+   public static boolean promptChangeAssignees(final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
+      for (StateMachineArtifact sma : smas) {
+         if (sma.isCompleted()) {
+            AWorkbench.popup("ERROR",
+                  "Can't assign completed " + sma.getArtifactTypeName() + " (" + sma.getHumanReadableId() + ")");
+            return false;
+         } else if (sma.isCancelled()) {
+            AWorkbench.popup("ERROR",
+                  "Can't assign cancelled " + sma.getArtifactTypeName() + " (" + sma.getHumanReadableId() + ")");
+            return false;
+         }
+      }
+      UserCheckTreeDialog uld = new UserCheckTreeDialog();
+      uld.setMessage("Select to assign.\nDeSelect to un-assign.");
+      if (smas.size() == 1) {
+         uld.setInitialSelections(smas.iterator().next().getStateMgr().getAssignees());
+      }
+      if (uld.open() != 0) {
+         return false;
+      }
+      Collection<User> users = uld.getUsersSelected();
+      if (users.size() == 0) {
+         AWorkbench.popup("ERROR", "Must have at least one assignee");
+         return false;
+      }
+      // As a convenience, remove the UnAssigned user if another user is selected
+      if (users.size() > 1) {
+         users.remove(UserManager.getUser(SystemUser.UnAssigned));
+      }
+      for (StateMachineArtifact sma : smas) {
+         sma.getStateMgr().setAssignees(users);
+      }
+      if (persist) {
+         Artifacts.persistInTransaction(smas);
+      }
+      return true;
+   }
+
+   public boolean promptChangeOriginator() throws OseeCoreException {
+      return promptChangeOriginator(Arrays.asList(this));
+   }
+
+   public static boolean promptChangeOriginator(final Collection<? extends StateMachineArtifact> smas) throws OseeCoreException {
+      UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New Originator");
+      int result = ld.open();
+      if (result == 0) {
+         User selectedUser = ld.getSelection();
+         for (StateMachineArtifact sma : smas) {
+            sma.setOriginator(selectedUser);
+         }
+         return true;
+      }
+      return false;
+   }
+
+   public boolean promptChangeVersion(VersionReleaseType versionReleaseType, boolean persist) throws OseeCoreException {
+      if (AtsUtil.isAtsAdmin() && !isTeamWorkflow()) {
+         AWorkbench.popup("ERROR ", "Cannot set version for: \n\n" + getName());
+         return false;
+      }
+      return promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) this), versionReleaseType, persist);
+   }
+
+   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, VersionReleaseType versionReleaseType, final boolean persist) throws OseeCoreException {
+      TeamDefinitionArtifact teamDefHoldingVersions = null;
+      for (TeamWorkFlowArtifact teamArt : smas) {
+         if (!teamArt.getTeamDefinition().isTeamUsesVersions()) {
+            AWorkbench.popup("ERROR", "Team \"" + teamArt.getTeamDefinition().getName() + "\" doesn't use versions.");
+            return false;
+         }
+         if (teamArt.isReleased() || teamArt.isVersionLocked()) {
+            String error =
+                  "Team Workflow\n \"" + teamArt.getName() + "\"\n targeted version is locked or already released.";
+            if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+                  "Change Version", error + "\n\nOverride?")) {
+               return false;
+            } else if (!AtsUtil.isAtsAdmin()) {
+               AWorkbench.popup("ERROR", error);
+            }
+         }
+         if (teamDefHoldingVersions != null) {
+            if (teamDefHoldingVersions != teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()) {
+               AWorkbench.popup("ERROR", "Can't change version on Workflows that have different release version sets.");
+               return false;
+            }
+         }
+         if (teamDefHoldingVersions == null) {
+            teamDefHoldingVersions = teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions();
+         }
+      }
+      if (teamDefHoldingVersions == null) {
+         AWorkbench.popup("ERROR", "No versions configured for impacted team(s).");
+         return false;
+      }
+      final VersionListDialog vld =
+            new VersionListDialog("Select Version", "Select Version",
+                  teamDefHoldingVersions.getVersionsArtifacts(versionReleaseType));
+      if (smas.size() == 1 && smas.iterator().next().getWorldViewTargetedVersion() != null) {
+         Object[] objs = new Object[1];
+         objs[0] = smas.iterator().next().getWorldViewTargetedVersion();
+         vld.setInitialSelections(objs);
+      }
+      int result = vld.open();
+      if (result != 0) {
+         return false;
+      }
+      Object obj = vld.getResult()[0];
+      VersionArtifact newVersion = (VersionArtifact) obj;
+      //now check selected version
+      if (newVersion.isVersionLocked()) {
+         String error = "Version \"" + newVersion.getFullDisplayName() + "\" is locked or already released.";
+         if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+               "Change Version", error + "\n\nOverride?")) {
+            return false;
+         } else if (!AtsUtil.isAtsAdmin()) {
+            AWorkbench.popup("ERROR", error);
+         }
+      }
+
+      for (TeamWorkFlowArtifact teamArt : smas) {
+         teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
+               java.util.Collections.singleton(newVersion));
+      }
+      if (persist) {
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Version");
+         for (TeamWorkFlowArtifact teamArt : smas) {
+            teamArt.persist(transaction);
+         }
+         transaction.execute();
+      }
+      return true;
+   }
+
+   public boolean promptChangeType(boolean persist) throws OseeStateException {
+      if (isTeamWorkflow()) {
+         return promptChangeType(Arrays.asList((TeamWorkFlowArtifact) this), persist);
+      }
+      return false;
+   }
+
+   public static boolean promptChangeType(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) throws OseeStateException {
+
+      for (TeamWorkFlowArtifact team : teams) {
+         if (team.isReleased() || team.isVersionLocked()) {
+            AWorkbench.popup("ERROR",
+                  "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
+            return false;
+         }
+      }
+      final ChangeTypeDialog dialog = new ChangeTypeDialog(Display.getCurrent().getActiveShell());
+      try {
+         if (teams.size() == 1) {
+            dialog.setSelected(teams.iterator().next().getChangeType());
+         }
+         if (dialog.open() == 0) {
+
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Type");
+
+            for (TeamWorkFlowArtifact team : teams) {
+               if (team.getChangeType() != dialog.getSelection()) {
+                  team.setChangeType(dialog.getSelection());
+                  team.saveSMA(transaction);
+               }
+            }
+            transaction.execute();
+         }
+         return true;
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't change priority", ex);
+         return false;
+      }
+   }
+
+   public boolean promptChangePriority(boolean persist) throws OseeStateException {
+      if (isTeamWorkflow()) {
+         return promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) this), persist);
+      }
+      return false;
+   }
+
+   public static boolean promptChangePriority(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
+
+      for (TeamWorkFlowArtifact team : teams) {
+         if (team.isReleased() || team.isVersionLocked()) {
+            AWorkbench.popup("ERROR",
+                  "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
+            return false;
+         }
+      }
+      final AtsPriorityDialog ald = new AtsPriorityDialog(Display.getCurrent().getActiveShell());
+      try {
+         if (teams.size() == 1) {
+            ald.setSelected(teams.iterator().next().getPriority());
+         }
+         if (ald.open() == 0) {
+
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Priority");
+            for (TeamWorkFlowArtifact team : teams) {
+               if (team.getPriority() != ald.getSelection()) {
+                  team.setPriority(ald.getSelection());
+                  team.saveSMA(transaction);
+               }
+            }
+            transaction.execute();
+         }
+         return true;
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't change priority", ex);
+         return false;
+      }
+   }
+
+   public boolean promptChangeFloatAttribute(ATSAttributes atsAttr, boolean persist) {
+      try {
+         return ArtifactPromptChange.promptChangeFloatAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+               Arrays.asList(this), persist);
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return false;
+   }
+
+   public boolean promptChangeIntegerAttribute(ATSAttributes atsAttr, boolean persist) {
+      try {
+         return ArtifactPromptChange.promptChangeIntegerAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+               Arrays.asList(this), persist);
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return false;
+   }
+
+   public boolean promptChangePercentAttribute(ATSAttributes atsAttr, boolean persist) {
+      try {
+         return ArtifactPromptChange.promptChangePercentAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+               Arrays.asList(new Artifact[] {this}), persist);
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return false;
+   }
+
+   public boolean promptChangeBoolean(ATSAttributes atsAttr, String toggleMessage, boolean persist) {
+      try {
+         return ArtifactPromptChange.promptChangeBoolean(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+               Arrays.asList(this), toggleMessage, persist);
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return false;
+   }
+
+   public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Collection<? extends StateMachineArtifact> smas, boolean persist, boolean multiLine) throws OseeCoreException {
+      return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(), smas,
+            persist, multiLine);
+   }
+
+   public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Artifact sma, boolean persist, boolean multiLine) {
+      try {
+         return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+               Arrays.asList(new Artifact[] {sma}), persist, multiLine);
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return false;
+   }
+
+   public boolean promptChangeAttribute(ATSAttributes atsAttr, final boolean persist, boolean multiLine) {
+      try {
+         return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+               Arrays.asList(this), persist, multiLine);
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return false;
+   }
+
+   public boolean promptChangeDate(ATSAttributes atsAttr, boolean persist) throws OseeStateException {
+      try {
+         return ArtifactPromptChange.promptChangeDate(atsAttr.getStoreName(), atsAttr.getDisplayName(), this, persist);
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
+               "Can't save " + atsAttr.getDisplayName() + " date to artifact " + getHumanReadableId(), ex);
+      }
+      return false;
+   }
+
+   public boolean promptChangeReleaseDate() throws OseeStateException {
+      if (isReleased() || isVersionLocked()) {
+         AWorkbench.popup("ERROR", "Team Workflow\n \"" + getName() + "\"\n version is locked or already released.");
+         return false;
+      }
+      try {
+         VersionArtifact verArt = getTargetedForVersion();
+         if (verArt != null) {
+            // prompt that this object is assigned to a version that is targeted
+            // for release xxx - want to change?
+            DateSelectionDialog diag =
+                  new DateSelectionDialog(
+                        "Select Release Date Date",
+                        "Warning: " + getArtifactTypeName() + "'s release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
+                        verArt.getReleaseDate());
+            if (verArt.getReleaseDate() != null) {
+               diag.setSelectedDate(verArt.getReleaseDate());
+            }
+            if (diag.open() == 0) {
+               verArt.setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), diag.getSelectedDate());
+               verArt.persist();
+               return true;
+            }
+         } else {
+            // prompt that current release is (get from attribute) - want to change?
+            DateSelectionDialog diag =
+                  new DateSelectionDialog("Select Release Date", "Select Release Date", getWorldViewReleaseDate());
+            if (getWorldViewReleaseDate() != null) {
+               diag.setSelectedDate(getWorldViewReleaseDate());
+            }
+            if (diag.open() == 0) {
+               setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), diag.getSelectedDate());
+               persist();
+               return true;
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't save release date " + getHumanReadableId(), ex);
+      }
+      return false;
+   }
+
+   public boolean promptChangeEstimatedReleaseDate() throws OseeStateException {
+      try {
+         VersionArtifact verArt = getTargetedForVersion();
+         if (verArt != null) {
+            // prompt that this object is assigned to a version that is targeted for release xxx -
+            // want to change?
+            DateSelectionDialog diag =
+                  new DateSelectionDialog(
+                        "Select Estimated Release Date Date",
+                        "Warning: " + getArtifactTypeName() + "'s estimated release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
+                        verArt.getEstimatedReleaseDate());
+            if (verArt.getEstimatedReleaseDate() != null) {
+               diag.setSelectedDate(verArt.getEstimatedReleaseDate());
+            }
+            if (diag.open() == 0) {
+               verArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
+                     diag.getSelectedDate());
+               verArt.persist();
+               return true;
+            }
+         } else {
+            // prompt that current est release is (get from attribute); want to
+            // change
+            DateSelectionDialog diag =
+                  new DateSelectionDialog("Select Estimate Release Date", "Select Estimated Release Date",
+                        getWorldViewEstimatedReleaseDate());
+            if (getWorldViewEstimatedReleaseDate() != null) {
+               diag.setSelectedDate(getWorldViewEstimatedReleaseDate());
+            }
+            if (diag.open() == 0) {
+               setSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
+                     diag.getSelectedDate());
+               persist();
+               return true;
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't save est release date " + getHumanReadableId(), ex);
+      }
+      return false;
+   }
+
+   public boolean isCompleted() throws OseeCoreException {
+      return stateMgr.getCurrentStateName().equals(DefaultTeamState.Completed.name());
+   }
+
+   public boolean isCancelled() throws OseeCoreException {
+      return stateMgr.getCurrentStateName().equals(DefaultTeamState.Cancelled.name());
+   }
+
+   public boolean isCancelledOrCompleted() throws OseeCoreException {
+      return isCompleted() || isCancelled();
+   }
+
+   public boolean isCurrentState(String stateName) throws OseeCoreException {
+      return stateName.equals(stateMgr.getCurrentStateName());
+   }
+
+   public void setTransitionAssignees(Collection<User> assignees) throws OseeCoreException {
+      if (assignees.contains(UserManager.getUser(SystemUser.OseeSystem)) || assignees.contains(UserManager.getUser(SystemUser.Guest))) {
+         throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");
+      }
+      if (assignees.size() > 1 && assignees.contains(UserManager.getUser(SystemUser.UnAssigned))) {
+         throw new OseeArgumentException("Can not assign to user and UnAssigned");
+      }
+      transitionAssignees = assignees;
+   }
+
+   public boolean isAssigneeMe() throws OseeCoreException {
+      return stateMgr.getAssignees().contains(UserManager.getUser());
+   }
+
+   public Collection<User> getTransitionAssignees() throws OseeCoreException {
+      if (transitionAssignees != null) {
+         if (transitionAssignees.size() > 0 && transitionAssignees.contains(UserManager.getUser(SystemUser.UnAssigned))) {
+            transitionAssignees.remove(UserManager.getUser(SystemUser.UnAssigned));
+         }
+         if (transitionAssignees.size() > 0) {
+            return transitionAssignees;
+         }
+      }
+      return stateMgr.getAssignees();
+   }
+
+   public String getTransitionAssigneesStr() throws OseeCoreException {
+      StringBuffer sb = new StringBuffer();
+      for (User u : getTransitionAssignees()) {
+         sb.append(u.getName() + SEPERATOR);
+      }
+      return sb.toString().replaceFirst(SEPERATOR + "$", "");
+   }
+
+   public Result transitionToCancelled(String reason, SkynetTransaction transaction, TransitionOption... transitionOption) {
+      Result result =
+            transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), reason, transaction,
+                  transitionOption);
+      return result;
+   }
+
+   public Result transitionToCompleted(String reason, SkynetTransaction transaction, TransitionOption... transitionOption) {
+      Result result =
+            transition(DefaultTeamState.Completed.name(), Arrays.asList(new User[] {}), reason, transaction,
+                  transitionOption);
+      return result;
+   }
+
+   public Result isTransitionValid(final String toStateName, final Collection<User> toAssignees, TransitionOption... transitionOption) throws OseeCoreException {
+      boolean overrideTransitionCheck =
+            org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(transitionOption).contains(
+                  TransitionOption.OverrideTransitionValidityCheck);
+      boolean overrideAssigneeCheck =
+            org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(transitionOption).contains(
+                  TransitionOption.OverrideAssigneeCheck);
+      // Validate assignees
+      if (!overrideAssigneeCheck && (getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.OseeSystem)) || getStateMgr().getAssignees().contains(
+            UserManager.getUser(SystemUser.Guest)) || getStateMgr().getAssignees().contains(
+            UserManager.getUser(SystemUser.UnAssigned)))) {
+         return new Result("Can not transition with \"Guest\", \"UnAssigned\" or \"OseeSystem\" user as assignee.");
+      }
+
+      // Validate toState name
+      final WorkPageDefinition fromWorkPageDefinition = getWorkPageDefinition();
+      final WorkPageDefinition toWorkPageDefinition = getWorkPageDefinitionByName(toStateName);
+      if (toWorkPageDefinition == null) {
+         return new Result("Invalid toState \"" + toStateName + "\"");
+      }
+
+      // Validate transition from fromPage to toPage
+      if (!overrideTransitionCheck && !getWorkFlowDefinition().getToPages(fromWorkPageDefinition).contains(
+            toWorkPageDefinition)) {
+         String errStr =
+               "Not configured to transition to \"" + toStateName + "\" from \"" + fromWorkPageDefinition.getPageName() + "\"";
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr);
+         return new Result(errStr);
+      }
+      // Don't transition with existing working branch
+      if (toStateName.equals(DefaultTeamState.Cancelled.name()) && isTeamWorkflow() && ((TeamWorkFlowArtifact) this).getBranchMgr().isWorkingBranchInWork()) {
+         return new Result("Working Branch exists.  Please delete working branch before cancelling.");
+      }
+
+      // Don't transition with uncommitted branch if this is a commit state
+      if (AtsWorkDefinitions.isAllowCommitBranch(getWorkPageDefinition()) && isTeamWorkflow() && ((TeamWorkFlowArtifact) this).getBranchMgr().isWorkingBranchInWork()) {
+         return new Result("Working Branch exists.  Please commit or delete working branch before transition.");
+      }
+
+      // Check extension points for valid transition
+      List<IAtsStateItem> atsStateItems = stateItems.getStateItems(fromWorkPageDefinition.getId());
+      for (IAtsStateItem item : atsStateItems) {
+         Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
+         if (result.isFalse()) {
+            return result;
+         }
+      }
+      for (IAtsStateItem item : atsStateItems) {
+         Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
+         if (result.isFalse()) {
+            return result;
+         }
+      }
+      return Result.TrueResult;
+   }
+
+   public Result transition(String toStateName, User toAssignee, SkynetTransaction transaction, TransitionOption... transitionOption) {
+      List<User> users = new ArrayList<User>();
+      if (toAssignee != null && !toStateName.equals(DefaultTeamState.Completed.name()) && !toStateName.equals(DefaultTeamState.Cancelled.name())) {
+         users.add(toAssignee);
+      }
+      return transition(toStateName, users, transaction, transitionOption);
+   }
+
+   public boolean isTargetedVersionable() throws OseeCoreException {
+      if (!(this instanceof TeamWorkFlowArtifact)) {
+         return false;
+      }
+      return ((TeamWorkFlowArtifact) this).getTeamDefinition().getTeamDefinitionHoldingVersions() != null && ((TeamWorkFlowArtifact) this).getTeamDefinition().getTeamDefinitionHoldingVersions().isTeamUsesVersions();
+   }
+
+   public Result transition(String toStateName, Collection<User> toAssignees, SkynetTransaction transaction, TransitionOption... transitionOption) {
+      return transition(toStateName, toAssignees, null, transaction, transitionOption);
+   }
+
+   private Result transition(final String toStateName, final Collection<User> toAssignees, final String completeOrCancelReason, SkynetTransaction transaction, TransitionOption... transitionOption) {
+      try {
+         final boolean persist =
+               org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(transitionOption).contains(
+                     TransitionOption.Persist);
+
+         Result result = isTransitionValid(toStateName, toAssignees, transitionOption);
+         if (result.isFalse()) {
+            return result;
+         }
+
+         final WorkPageDefinition fromWorkPageDefinition = getWorkPageDefinition();
+         final WorkPageDefinition toWorkPageDefinition = getWorkPageDefinitionByName(toStateName);
+
+         transitionHelper(toAssignees, persist, fromWorkPageDefinition, toWorkPageDefinition, toStateName,
+               completeOrCancelReason, transaction);
+         if (persist) {
+            OseeNotificationManager.sendNotifications();
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         return new Result("Transaction failed " + ex.getLocalizedMessage());
+      }
+      return Result.TrueResult;
+   }
+
+   private void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, String toStateName, String completeOrCancelReason, SkynetTransaction transaction) throws OseeCoreException {
+      // Log transition
+      if (toPage.isCancelledPage()) {
+         atsLog.addLog(LogType.StateCancelled, stateMgr.getCurrentStateName(), completeOrCancelReason);
+      } else {
+         atsLog.addLog(LogType.StateComplete, stateMgr.getCurrentStateName(),
+               (completeOrCancelReason != null ? completeOrCancelReason : ""));
+      }
+      atsLog.addLog(LogType.StateEntered, toStateName, "");
+
+      stateMgr.transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, completeOrCancelReason);
+
+      if (isValidationRequired() && isTeamWorkflow()) {
+         ReviewManager.createValidateReview((TeamWorkFlowArtifact) this, false, transaction);
+      }
+
+      AtsNotifyUsers.notify(this, AtsNotifyUsers.NotifyType.Subscribed, AtsNotifyUsers.NotifyType.Completed,
+            AtsNotifyUsers.NotifyType.Completed);
+
+      // Persist
+      if (persist) {
+         persist(transaction);
+      }
+
+      transitioned(fromPage, toPage, toAssignees, true, transaction);
+
+      // Notify extension points of transition
+      for (IAtsStateItem item : stateItems.getStateItems(fromPage.getId())) {
+         item.transitioned(this, fromPage.getPageName(), toStateName, toAssignees, transaction);
+      }
+      for (IAtsStateItem item : stateItems.getStateItems(toPage.getId())) {
+         item.transitioned(this, fromPage.getPageName(), toStateName, toAssignees, transaction);
+      }
+   }
+
+   public SMAEditor getEditor() {
+      return editor;
+   }
+
+   public void setEditor(SMAEditor editor) {
+      this.editor = editor;
+   }
+
+   public AtsStateItems getStateItems() {
+      return stateItems;
+   }
+
+   public boolean isInTransition() {
+      return inTransition;
+   }
+
+   public void setInTransition(boolean inTransition) {
+      this.inTransition = inTransition;
+   }
+
+   public DeadlineManager getDeadlineMgr() {
+      return deadlineMgr;
+   }
+
+   public StateManager getStateMgr() {
+      return stateMgr;
+   }
+
+   public boolean isTeamWorkflow() throws OseeStateException {
+      return this instanceof TeamWorkFlowArtifact;
+   }
+
+   public boolean isTask() throws OseeStateException {
+      return this instanceof TaskArtifact;
    }
 
 }

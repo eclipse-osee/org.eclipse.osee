@@ -80,13 +80,13 @@ public class SMAMetrics {
          }
          if (art instanceof StateMachineArtifact) {
             smas.add((StateMachineArtifact) art);
-            Collection<User> users = ((StateMachineArtifact) art).getSmaMgr().getStateMgr().getAssignees();
+            Collection<User> users = ((StateMachineArtifact) art).getStateMgr().getAssignees();
             assignees.addAll(users);
             assigneesAssignedOrCompleted.addAll(users);
             for (User user : users) {
                userToAssignedSmas.put(user, art);
             }
-            if (((StateMachineArtifact) art).getSmaMgr().isCompleted()) {
+            if (((StateMachineArtifact) art).isCompleted()) {
                Collection<User> implementers = ((StateMachineArtifact) art).getImplementers();
                assigneesAssignedOrCompleted.addAll(implementers);
                for (User user : implementers) {
@@ -170,7 +170,7 @@ public class SMAMetrics {
    public Collection<TeamWorkFlowArtifact> getCompletedTeamWorkflows() throws OseeCoreException {
       Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
       for (TeamWorkFlowArtifact team : getTeamArts()) {
-         if (team.getSmaMgr().isCancelledOrCompleted()) {
+         if (team.isCancelledOrCompleted()) {
             teams.add(team);
          }
       }
@@ -180,7 +180,7 @@ public class SMAMetrics {
    public Collection<StateMachineArtifact> getCompletedWorkflows() throws OseeCoreException {
       Set<StateMachineArtifact> completed = new HashSet<StateMachineArtifact>();
       for (StateMachineArtifact sma : smas) {
-         if (sma.getSmaMgr().isCancelledOrCompleted()) {
+         if (sma.isCancelledOrCompleted()) {
             completed.add(sma);
          }
       }
@@ -204,7 +204,7 @@ public class SMAMetrics {
    public Collection<TaskArtifact> getCompletedTaskWorkflows() throws OseeCoreException {
       Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
       for (TaskArtifact team : getTaskArts()) {
-         if (team.getSmaMgr().isCancelledOrCompleted()) {
+         if (team.isCancelledOrCompleted()) {
             tasks.add(team);
          }
       }

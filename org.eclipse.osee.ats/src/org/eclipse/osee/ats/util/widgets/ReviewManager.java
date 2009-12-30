@@ -25,8 +25,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
-import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -58,7 +57,7 @@ public class ReviewManager {
     */
    public static DecisionReviewArtifact createValidateReview(TeamWorkFlowArtifact teamArt, boolean force, SkynetTransaction transaction) throws OseeCoreException {
       // If not validate page, don't do anything
-      if (!force && !AtsWorkDefinitions.isValidatePage(teamArt.getSmaMgr().getWorkPageDefinition())) {
+      if (!force && !AtsWorkDefinitions.isValidatePage(teamArt.getWorkPageDefinition())) {
          return null;
       }
       // If validate review already created for this state, return
@@ -73,15 +72,14 @@ public class ReviewManager {
          DecisionReviewArtifact decRev =
                ReviewManager.createNewDecisionReview(
                      teamArt,
-                     AtsWorkDefinitions.isValidateReviewBlocking(teamArt.getSmaMgr().getWorkPageDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
+                     AtsWorkDefinitions.isValidateReviewBlocking(teamArt.getWorkPageDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
                      true);
          decRev.setName(VALIDATE_REVIEW_TITLE);
          decRev.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
                "No;Followup;" + getValidateReviewFollowupUsersStr(teamArt) + "\n" + "Yes;Completed;");
 
-         SMAManager revSmaMgr = new SMAManager(decRev);
-         revSmaMgr.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(),
-               teamArt.getSmaMgr().getOriginator(), transaction, TransitionOption.Persist);
+         decRev.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), teamArt.getOriginator(),
+               transaction, TransitionOption.Persist);
 
          return decRev;
 
@@ -104,8 +102,7 @@ public class ReviewManager {
                   options, assignees);
       decRev.persist(transaction);
 
-      SMAManager revSmaMgr = new SMAManager(decRev);
-      revSmaMgr.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), assignees, transaction,
+      decRev.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), assignees, transaction,
             TransitionOption.Persist, TransitionOption.OverrideAssigneeCheck);
       return decRev;
    }
@@ -130,15 +127,14 @@ public class ReviewManager {
                ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), againstState);
       }
 
-      peerToPeerRev.getSmaMgr().getLog().addLog(LogType.Originated, "", "", origDate, origUser);
+      peerToPeerRev.getLog().addLog(LogType.Originated, "", "", origDate, origUser);
       peerToPeerRev.setSoleAttributeValue(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName(),
             ReviewBlockType.None.name());
 
       // Initialize state machine
-      peerToPeerRev.getSmaMgr().getStateMgr().initializeStateMachine(
-            DecisionReviewArtifact.DecisionReviewState.Prepare.name());
-      peerToPeerRev.getSmaMgr().getLog().addLog(LogType.StateEntered,
-            DecisionReviewArtifact.DecisionReviewState.Prepare.name(), "", origDate, origUser);
+      peerToPeerRev.getStateMgr().initializeStateMachine(DecisionReviewArtifact.DecisionReviewState.Prepare.name());
+      peerToPeerRev.getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.DecisionReviewState.Prepare.name(),
+            "", origDate, origUser);
       peerToPeerRev.persist(transaction);
       return peerToPeerRev;
    }
@@ -194,14 +190,12 @@ public class ReviewManager {
    }
 
    public static Collection<User> getValidateReviewFollowupUsers(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Collection<User> users = teamArt.getSmaMgr().getStateMgr().getAssignees("Implement");
+      Collection<User> users = teamArt.getStateMgr().getAssignees("Implement");
       if (users.size() > 0) return users;
 
       // Else if Team Workflow , return it to the leads of this team
-      if (teamArt.getSmaMgr().getSma() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) teamArt.getSmaMgr().getSma()).getTeamDefinition().getLeads();
+      return teamArt.getTeamDefinition().getLeads();
 
-      // Else, return current user; should never hit this
-      return Arrays.asList(UserManager.getUser());
    }
 
    public static Collection<ReviewSMArtifact> getReviews(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
@@ -236,8 +230,7 @@ public class ReviewManager {
    public static Result areReviewsComplete(TeamWorkFlowArtifact teamArt, boolean popup) {
       try {
          for (ReviewSMArtifact reviewArt : getReviews(teamArt)) {
-            SMAManager smaMgr = new SMAManager(reviewArt);
-            if (!smaMgr.isCompleted() && smaMgr.isCancelled()) return new Result("Not Complete");
+            if (!reviewArt.isCompleted() && reviewArt.isCancelled()) return new Result("Not Complete");
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -280,7 +273,7 @@ public class ReviewManager {
    public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, boolean againstCurrentState) throws OseeCoreException {
       return createNewDecisionReview(teamArt, reviewBlockType,
             "Should we do this?  Yes will require followup, No will not",
-            againstCurrentState ? teamArt.getSmaMgr().getStateMgr().getCurrentStateName() : null,
+            againstCurrentState ? teamArt.getStateMgr().getCurrentStateName() : null,
             "Enter description of the decision, if any", getDefaultDecisionReviewOptions(), null);
    }
 
@@ -299,7 +292,7 @@ public class ReviewManager {
       if (relatedToState != null && !relatedToState.equals("")) {
          decRev.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), relatedToState);
       }
-      decRev.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
+      decRev.getLog().addLog(LogType.Originated, "", "");
       if (description != null && !description.equals("")) {
          decRev.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
       }
@@ -311,11 +304,10 @@ public class ReviewManager {
       }
 
       // Initialize state machine
-      decRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.DecisionReviewState.Prepare.name());
-      decRev.getSmaMgr().getLog().addLog(LogType.StateEntered,
-            DecisionReviewArtifact.DecisionReviewState.Prepare.name(), "");
+      decRev.getStateMgr().initializeStateMachine(DecisionReviewArtifact.DecisionReviewState.Prepare.name());
+      decRev.getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.DecisionReviewState.Prepare.name(), "");
       if (assignees != null && assignees.size() > 0) {
-         decRev.getSmaMgr().getStateMgr().setAssignees(assignees);
+         decRev.getStateMgr().setAssignees(assignees);
       }
 
       return decRev;

@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -33,11 +33,11 @@ public abstract class AtsStateItem implements IAtsStateItem {
 
    public static String ALL_STATE_IDS = "ALL";
 
-   public Result committing(SMAManager smaMgr) throws OseeCoreException {
+   public Result committing(StateMachineArtifact sma) throws OseeCoreException {
       return Result.TrueResult;
    }
 
-   public String getBranchShortName(SMAManager smaMgr) throws OseeCoreException {
+   public String getBranchShortName(StateMachineArtifact sma) throws OseeCoreException {
       return null;
    }
 
@@ -58,22 +58,22 @@ public abstract class AtsStateItem implements IAtsStateItem {
       return null;
    }
 
-   public List<XWidget> getDynamicXWidgetsPostBody(SMAManager smaMgr) throws OseeCoreException {
+   public List<XWidget> getDynamicXWidgetsPostBody(StateMachineArtifact sma) throws OseeCoreException {
       return Collections.emptyList();
    }
 
-   public List<XWidget> getDynamicXWidgetsPreBody(SMAManager smaMgr) throws OseeCoreException {
+   public List<XWidget> getDynamicXWidgetsPreBody(StateMachineArtifact sma) throws OseeCoreException {
       return Collections.emptyList();
    }
 
-   public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, SMAManager smaMgr, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, StateMachineArtifact sma, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       return Result.TrueResult;
    }
 
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
    }
 
-   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
+   public Result transitioning(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
       return Result.TrueResult;
    }
 

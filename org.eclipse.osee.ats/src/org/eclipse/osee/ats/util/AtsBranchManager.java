@@ -354,19 +354,19 @@ public class AtsBranchManager {
       }
 
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
-         if (teamArt.getSmaMgr().getTargetedForVersion() == null) {
+         if (teamArt.getTargetedForVersion() == null) {
             return new Result(false, "Workflow not targeted for Version");
          }
-         Result result = teamArt.getSmaMgr().getTargetedForVersion().isCreateBranchAllowed();
+         Result result = teamArt.getTargetedForVersion().isCreateBranchAllowed();
          if (result.isFalse()) {
             return result;
          }
 
-         if (teamArt.getSmaMgr().getTargetedForVersion().getParentBranch() == null) {
+         if (teamArt.getTargetedForVersion().getParentBranch() == null) {
             return new Result(false,
-                  "Parent Branch not configured for Version [" + teamArt.getSmaMgr().getTargetedForVersion() + "]");
+                  "Parent Branch not configured for Version [" + teamArt.getTargetedForVersion() + "]");
          }
-         if (!teamArt.getSmaMgr().getTargetedForVersion().getParentBranch().getBranchType().isBaselineBranch()) {
+         if (!teamArt.getTargetedForVersion().getParentBranch().getBranchType().isBaselineBranch()) {
             return new Result(false, "Parent Branch must be of Baseline branch type.  See Admin for configuration.");
          }
          return Result.TrueResult;
@@ -393,17 +393,17 @@ public class AtsBranchManager {
          return Result.FalseResult;
       }
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
-         if (teamArt.getSmaMgr().getTargetedForVersion() == null) {
+         if (teamArt.getTargetedForVersion() == null) {
             return new Result(false, "Workflow not targeted for Version");
          }
-         Result result = teamArt.getSmaMgr().getTargetedForVersion().isCommitBranchAllowed();
+         Result result = teamArt.getTargetedForVersion().isCommitBranchAllowed();
          if (result.isFalse()) {
             return result;
          }
 
-         if (teamArt.getSmaMgr().getTargetedForVersion().getParentBranch() == null) {
+         if (teamArt.getTargetedForVersion().getParentBranch() == null) {
             return new Result(false,
-                  "Parent Branch not configured for Version [" + teamArt.getSmaMgr().getTargetedForVersion() + "]");
+                  "Parent Branch not configured for Version [" + teamArt.getTargetedForVersion() + "]");
          }
          return Result.TrueResult;
 
@@ -517,9 +517,9 @@ public class AtsBranchManager {
 
    public Collection<ICommitConfigArtifact> getConfigArtifactsConfiguredToCommitTo() throws OseeCoreException {
       Set<ICommitConfigArtifact> configObjects = new HashSet<ICommitConfigArtifact>();
-      if (teamArt.getSmaMgr().isTeamUsesVersions()) {
-         if (teamArt.getSmaMgr().getTargetedForVersion() != null) {
-            teamArt.getSmaMgr().getTargetedForVersion().getParallelVersions(configObjects);
+      if (teamArt.isTeamUsesVersions()) {
+         if (teamArt.getTargetedForVersion() != null) {
+            teamArt.getTargetedForVersion().getParallelVersions(configObjects);
          }
       } else {
          if (teamArt instanceof TeamWorkFlowArtifact && ((TeamWorkFlowArtifact) teamArt).getTeamDefinition().getParentBranch() != null) {
@@ -530,9 +530,9 @@ public class AtsBranchManager {
    }
 
    public ICommitConfigArtifact getParentBranchConfigArtifactConfiguredToCommitTo() throws OseeCoreException {
-      if (teamArt.getSmaMgr().isTeamUsesVersions()) {
-         if (teamArt.getSmaMgr().getTargetedForVersion() != null) {
-            return teamArt.getSmaMgr().getTargetedForVersion();
+      if (teamArt.isTeamUsesVersions()) {
+         if (teamArt.getTargetedForVersion() != null) {
+            return teamArt.getTargetedForVersion();
          }
       } else {
          if (teamArt instanceof TeamWorkFlowArtifact && ((TeamWorkFlowArtifact) teamArt).getTeamDefinition().getParentBranch() != null) {
@@ -662,7 +662,7 @@ public class AtsBranchManager {
       }
       // Create any decision and peerToPeer reviews for createBranch and commitBranch
       for (String ruleId : Arrays.asList(AtsAddDecisionReviewRule.ID, AtsAddPeerToPeerReviewRule.ID)) {
-         for (WorkRuleDefinition workRuleDef : teamArt.getSmaMgr().getWorkRulesStartsWith(ruleId)) {
+         for (WorkRuleDefinition workRuleDef : teamArt.getWorkRulesStartsWith(ruleId)) {
             StateEventType eventType = AtsAddDecisionReviewRule.getStateEventType(teamArt, workRuleDef);
             if (eventType != null && eventType == stateEventType) {
                if (ruleId.equals(AtsAddDecisionReviewRule.ID)) {
@@ -691,8 +691,8 @@ public class AtsBranchManager {
       Branch parentBranch = null;
 
       // Check for parent branch id in Version artifact
-      if (teamArt.getSmaMgr().isTeamUsesVersions()) {
-         VersionArtifact verArt = teamArt.getSmaMgr().getTargetedForVersion();
+      if (teamArt.isTeamUsesVersions()) {
+         VersionArtifact verArt = teamArt.getTargetedForVersion();
          if (verArt != null) {
             parentBranch = verArt.getParentBranch();
          }
@@ -771,7 +771,7 @@ public class AtsBranchManager {
             // Loop through this state's blocking reviews to confirm complete
             if (teamArt instanceof TeamWorkFlowArtifact) {
                for (ReviewSMArtifact reviewArt : ReviewManager.getReviewsFromCurrentState((TeamWorkFlowArtifact) teamArt)) {
-                  if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.getSmaMgr().isCancelledOrCompleted()) {
+                  if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.isCancelledOrCompleted()) {
                      return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
                            "Blocking Review must be completed before commit.");
                   }
@@ -781,9 +781,8 @@ public class AtsBranchManager {
             if (!overrideStateValidation) {
                adminOverride = false;
                // Check extension points for valid commit
-               for (IAtsStateItem item : teamArt.getSmaMgr().getStateItems().getStateItems(
-                     teamArt.getSmaMgr().getWorkPageDefinition().getId())) {
-                  final Result tempResult = item.committing(teamArt.getSmaMgr());
+               for (IAtsStateItem item : teamArt.getStateItems().getStateItems(teamArt.getWorkPageDefinition().getId())) {
+                  final Result tempResult = item.committing(teamArt);
                   if (tempResult.isFalse()) {
                      // Allow Admin to override state validation
                      if (AtsUtil.isAtsAdmin()) {

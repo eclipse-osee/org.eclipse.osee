@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -225,12 +224,8 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
          if (editor != null && (editor instanceof SMAEditor)) {
-            try {
-               currentArtifact = ((SMAEditor) editor).getSmaMgr().getSma();
-               display();
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-            }
+            currentArtifact = ((SMAEditor) editor).getSma();
+            display();
          } else
             super.clear();
       }

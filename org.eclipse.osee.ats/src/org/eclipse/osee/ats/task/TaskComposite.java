@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
@@ -201,8 +200,7 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
                   "Enter Task Title/Description", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
-            taskArt =
-                  ((TaskableStateMachineArtifact) iXTaskViewer.getParentSmaMgr().getSma()).createNewTask(ed.getEntry());
+            taskArt = ((TaskableStateMachineArtifact) iXTaskViewer.getSma()).createNewTask(ed.getEntry());
             iXTaskViewer.getEditor().onDirtied();
             add(Collections.singleton(taskArt));
             taskXViewer.getTree().setFocus();
@@ -232,11 +230,9 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
          html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Title", "State", "POC", "%", "Hrs",
                "Resolution", "ID"}));
          for (TaskArtifact art : iXTaskViewer.getTaskArtifacts("")) {
-            SMAManager smaMgr = new SMAManager(art);
             html.append(AHTML.addRowMultiColumnTable(new String[] {art.getName(),
-                  art.getSmaMgr().getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
-                  smaMgr.getSma().getWorldViewActivePoc(), smaMgr.getSma().getPercentCompleteSMATotal() + "",
-                  smaMgr.getSma().getHoursSpentSMATotal() + "",
+                  art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""), art.getWorldViewActivePoc(),
+                  art.getPercentCompleteSMATotal() + "", art.getHoursSpentSMATotal() + "",
                   art.getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), ""),
                   art.getHumanReadableId()}));
          }
@@ -303,21 +299,20 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
    private void performDrop(DropTargetEvent e) {
       if (e.data instanceof ArtifactData) {
          try {
-            if (iXTaskViewer.getParentSmaMgr() == null) return;
-            if (iXTaskViewer.getParentSmaMgr().getSma() == null) return;
+            if (iXTaskViewer.getSma() == null) return;
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Drop Add Tasks");
             for (Artifact art : artsToRelate) {
                if (art instanceof TaskArtifact) {
                   TaskArtifact taskArt = (TaskArtifact) art;
                   // task dropped on same sma as current parent; do nothing
-                  if (taskArt.getParentSMA().equals(iXTaskViewer.getParentSmaMgr().getSma())) {
+                  if (taskArt.getParentSMA().equals(iXTaskViewer.getSma())) {
                      return;
                   }
                   if (taskArt.getParentSMA() != null) {
                      taskArt.deleteRelation(AtsRelationTypes.SmaToTask_Sma, taskArt.getParentSMA());
                   }
-                  taskArt.addRelation(AtsRelationTypes.SmaToTask_Sma, iXTaskViewer.getParentSmaMgr().getSma());
+                  taskArt.addRelation(AtsRelationTypes.SmaToTask_Sma, iXTaskViewer.getSma());
                   taskArt.persist(transaction);
                }
             }

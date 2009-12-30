@@ -46,7 +46,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
          CoreRelationTypes.Supercedes_Superceded, CoreRelationTypes.Supercedes_Supercedes,
          CoreRelationTypes.SupportingInfo_SupportedBy, CoreRelationTypes.SupportingInfo_SupportingInfo,
          CoreRelationTypes.Dependency__Artifact, CoreRelationTypes.Dependency__Dependency};
-   private SMAManager smaMgr;
+   private StateMachineArtifact sma;
    private Label actionableItemsLabel;
 
    /**
@@ -58,8 +58,8 @@ public class SMARelationsHyperlinkComposite extends Composite {
       this.toolkit = toolkit;
    }
 
-   public void create(SMAManager smaMgr) throws OseeCoreException {
-      this.smaMgr = smaMgr;
+   public void create(StateMachineArtifact sma) throws OseeCoreException {
+      this.sma = sma;
       setLayout(ALayout.getZeroMarginLayout(2, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.widthHint = 500;
@@ -67,25 +67,25 @@ public class SMARelationsHyperlinkComposite extends Composite {
       toolkit.adapt(this);
 
       // Create all hyperlinks from this artifact to others of interest
-      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is reviewed by",
+      createArtifactRelationHyperlinks("This", sma, "is reviewed by",
             AtsRelationTypes.TeamWorkflowToReview_Review);
-      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "reviews", AtsRelationTypes.TeamWorkflowToReview_Team);
-      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "supercedes",
+      createArtifactRelationHyperlinks("This", sma, "reviews", AtsRelationTypes.TeamWorkflowToReview_Team);
+      createArtifactRelationHyperlinks("This", sma, "supercedes",
             CoreRelationTypes.Supercedes_Superceded);
-      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is superceded by",
+      createArtifactRelationHyperlinks("This", sma, "is superceded by",
             CoreRelationTypes.Supercedes_Supercedes);
-      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "depends on",
+      createArtifactRelationHyperlinks("This", sma, "depends on",
             CoreRelationTypes.Dependency__Dependency);
-      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is dependency of",
+      createArtifactRelationHyperlinks("This", sma, "is dependency of",
             CoreRelationTypes.Dependency__Artifact);
-      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is supported info for",
+      createArtifactRelationHyperlinks("This", sma, "is supported info for",
             CoreRelationTypes.SupportingInfo_SupportedBy);
-      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "has supporting info",
+      createArtifactRelationHyperlinks("This", sma, "has supporting info",
             CoreRelationTypes.SupportingInfo_SupportingInfo);
 
       // Create label for review's related actionable items (if any) 
-      if (smaMgr.getSma() instanceof ReviewSMArtifact) {
-         processReviewArtifact((ReviewSMArtifact) smaMgr.getSma());
+      if (sma instanceof ReviewSMArtifact) {
+         processReviewArtifact((ReviewSMArtifact) sma);
       }
 
    }
@@ -107,8 +107,8 @@ public class SMARelationsHyperlinkComposite extends Composite {
 
    private String getCompletedCancelledString(Artifact art) throws OseeCoreException {
       if (art instanceof StateMachineArtifact) {
-         if (((StateMachineArtifact) art).getSmaMgr().isCancelledOrCompleted()) {
-            return " " + ((StateMachineArtifact) art).getSmaMgr().getStateMgr().getCurrentStateName() + " ";
+         if (((StateMachineArtifact) art).isCancelledOrCompleted()) {
+            return " " + ((StateMachineArtifact) art).getStateMgr().getCurrentStateName() + " ";
          }
       }
       return "";
@@ -160,12 +160,12 @@ public class SMARelationsHyperlinkComposite extends Composite {
    }
 
    private void refreshActionableItemsLabel() throws OseeCoreException {
-      if (actionableItemsLabel != null && smaMgr.getSma() instanceof ReviewSMArtifact) {
-         actionableItemsLabel.setText("This \"" + ((ReviewSMArtifact) smaMgr.getSma()).getArtifactTypeName() +
+      if (actionableItemsLabel != null && sma instanceof ReviewSMArtifact) {
+         actionableItemsLabel.setText("This \"" + ((ReviewSMArtifact) sma).getArtifactTypeName() +
                         //
          "\" is review of Actionable Items  \"" +
                         //
-         ((ReviewSMArtifact) smaMgr.getSma()).getActionableItemsDam().getActionableItemsStr() + "\" ");
+         ((ReviewSMArtifact) sma).getActionableItemsDam().getActionableItemsStr() + "\" ");
       }
    }
 
@@ -182,7 +182,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
             return;
          }
          reviewArt.getActionableItemsDam().setActionableItems(diag.getChecked());
-         smaMgr.getEditor().onDirtied();
+         sma.getEditor().onDirtied();
          refreshActionableItemsLabel();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

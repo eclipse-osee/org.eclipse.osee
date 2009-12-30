@@ -197,15 +197,10 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
-         try {
-            if (editor != null && editor instanceof SMAEditor) {
-               currentArtifact = ((SMAEditor) editor).getSmaMgr().getSma();
-               load(currentArtifact);
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         if (editor != null && editor instanceof SMAEditor) {
+            currentArtifact = ((SMAEditor) editor).getSma();
+            load(currentArtifact);
          }
-
       }
    }
 

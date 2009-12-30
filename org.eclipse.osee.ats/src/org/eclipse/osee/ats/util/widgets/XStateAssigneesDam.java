@@ -127,7 +127,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
          }
          // Else, doesn't exist yet, create
          getSma().addAttribute(attributeTypeName, state.toXml());
-         StateManager.updateAssigneeRelations(getSma().getSmaMgr());
+         StateManager.updateAssigneeRelations(getSma());
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error setting state data for " + getSma().getGuid(), ex);
       }

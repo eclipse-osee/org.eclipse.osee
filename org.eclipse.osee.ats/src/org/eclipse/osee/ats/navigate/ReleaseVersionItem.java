@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
@@ -73,10 +72,9 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             // Validate that all Team Workflows are Completed or Cancelled
             String errorStr = null;
             for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
-               SMAManager smaMgr = new SMAManager(team);
-               if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
+               if (!team.isCancelled() && !team.isCompleted()) {
                   errorStr =
-                        "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getHumanReadableId() + " - is in the\"" + team.getSmaMgr().getStateMgr().getCurrentStateName() + "\" state.";
+                        "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getHumanReadableId() + " - is in the\"" + team.getStateMgr().getCurrentStateName() + "\" state.";
                }
             }
             if (errorStr != null) AWorkbench.popup("ERROR", errorStr);

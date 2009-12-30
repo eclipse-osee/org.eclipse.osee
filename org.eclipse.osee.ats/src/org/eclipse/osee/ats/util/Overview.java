@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
@@ -133,24 +132,23 @@ public class Overview {
    }
 
    public void addHeader(StateMachineArtifact sma, PreviewStyle... styles) throws OseeCoreException {
-      SMAManager smaMgr = new SMAManager(sma);
       startBorderTable(100, false, "");
       addTable(getLabelValue("Title", sma.getName()));
       this.html.append(AHTML.multiColumnTable(new String[] {
-            AHTML.getLabelStr(labelFont, "State: ") + smaMgr.getStateMgr().getCurrentStateName(),
+            AHTML.getLabelStr(labelFont, "State: ") + sma.getStateMgr().getCurrentStateName(),
             AHTML.getLabelStr(labelFont, "Type: ") + sma.getArtifactTypeName(),
             AHTML.getLabelStr(labelFont, "Id: ") + sma.getHumanReadableId()}));
-      addTable(getLabelValue("Originator", smaMgr.getOriginator().getName()), getLabelValue("Creation Date",
-            XDate.getDateStr(smaMgr.getLog().getCreationDate(), XDate.MMDDYYHHMM)));
-      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-         addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamName()), getLabelValue(
-               "Assignees", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees())));
+      addTable(getLabelValue("Originator", sma.getOriginator().getName()), getLabelValue("Creation Date",
+            XDate.getDateStr(sma.getLog().getCreationDate(), XDate.MMDDYYHHMM)));
+      if (sma.isTeamWorkflow()) {
+         addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) sma).getTeamName()), getLabelValue("Assignees",
+               Artifacts.toString("; ", sma.getStateMgr().getAssignees())));
       } else {
-         addTable(getLabelValue("Assignees", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees())));
+         addTable(getLabelValue("Assignees", Artifacts.toString("; ", sma.getStateMgr().getAssignees())));
       }
-      addTable(getLabelValue("Description", smaMgr.getSma().getDescription()));
-      if (smaMgr.isCancelled()) {
-         LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
+      addTable(getLabelValue("Description", sma.getDescription()));
+      if (sma.isCancelled()) {
+         LogItem item = sma.getLog().getStateEvent(LogType.StateCancelled);
          addTable(getLabelValue("Cancelled From", item.getState()));
          addTable(getLabelValue("Cancellation Reason", item.getMsg()));
       }
@@ -158,11 +156,10 @@ public class Overview {
          StateMachineArtifact parentArt = ((TaskArtifact) sma).getParentSMA();
          if (parentArt != null) {
             this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getName()}));
-            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) sma).getSmaMgr().getStateMgr().getCurrentStateName()}));
+            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) sma).getStateMgr().getCurrentStateName()}));
          }
-         SMAManager taskSmaMgr = new SMAManager(sma);
          this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Task Owner: ") + Artifacts.toString(
-               "; ", taskSmaMgr.getStateMgr().getAssignees())}));
+               "; ", sma.getStateMgr().getAssignees())}));
       }
       endBorderTable();
    }
@@ -184,7 +181,7 @@ public class Overview {
 
    public void addNotes(Artifact artifact) {
       if (artifact instanceof StateMachineArtifact) {
-         String notesHtml = ((StateMachineArtifact) artifact).getSmaMgr().getNotes().getTable(null);
+         String notesHtml = ((StateMachineArtifact) artifact).getNotes().getTable(null);
          if (notesHtml.equals("")) {
             return;
          }
@@ -242,7 +239,7 @@ public class Overview {
       ArrayList<CellItem> cells = new ArrayList<CellItem>();
       for (TeamWorkFlowArtifact team : teams) {
          cells.add(new AHTML.CellItem(team.getHyperlinkHtml()));
-         cells.add(new AHTML.CellItem(team.getSmaMgr().getStateMgr().getCurrentStateName()));
+         cells.add(new AHTML.CellItem(team.getStateMgr().getCurrentStateName()));
          s += AHTML.addRowMultiColumnTable(cells);
          cells.clear();
       }
@@ -275,16 +272,16 @@ public class Overview {
    }
 
    public void addLog(StateMachineArtifact artifact) throws OseeCoreException {
-      ATSLog artifactLog = artifact.getSmaMgr().getLog();
+      ATSLog artifactLog = artifact.getLog();
       if (artifactLog != null && artifactLog.getLogItems().size() > 0) {
-         addTable(artifact.getSmaMgr().getLog().getTable());
+         addTable(artifact.getLog().getTable());
       }
    }
 
-   public void startStateBorderTable(SMAManager smaMgr, SMAState state) throws OseeCoreException {
+   public void startStateBorderTable(StateMachineArtifact sma, SMAState state) throws OseeCoreException {
       String caption = state.getName();
       String assgn = Artifacts.toString("; ", state.getAssignees());
-      startStateBorderTable(smaMgr.getStateMgr().getCurrentStateName().equals(state.getName()), caption, assgn);
+      startStateBorderTable(sma.getStateMgr().getCurrentStateName().equals(state.getName()), caption, assgn);
    }
 
    public void startStateBorderTable(boolean active, String name, String assignee) {

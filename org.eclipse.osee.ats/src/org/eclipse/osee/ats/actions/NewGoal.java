@@ -49,12 +49,12 @@ public class NewGoal extends Action {
             GoalArtifact goalArt =
                   (GoalArtifact) ArtifactTypeManager.addArtifact(GoalArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch());
             goalArt.setName(title);
-            goalArt.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
+            goalArt.getLog().addLog(LogType.Originated, "", "");
 
             // Initialize state machine
-            goalArt.getSmaMgr().getStateMgr().initializeStateMachine(GoalState.InWork.name(),
+            goalArt.getStateMgr().initializeStateMachine(GoalState.InWork.name(),
                   Collections.singleton(UserManager.getUser()));
-            goalArt.getSmaMgr().getLog().addLog(LogType.StateEntered, GoalState.InWork.name(), "");
+            goalArt.getLog().addLog(LogType.StateEntered, GoalState.InWork.name(), "");
 
             goalArt.persist();
             SMAEditor.editArtifact(goalArt);

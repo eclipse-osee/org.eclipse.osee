@@ -15,8 +15,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,17 +28,17 @@ import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
  */
 public class OpenTeamDefinitionAction extends Action {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
-   public OpenTeamDefinitionAction(SMAManager smaMgr) {
-      this.smaMgr = smaMgr;
+   public OpenTeamDefinitionAction(StateMachineArtifact sma) {
+      this.sma = sma;
       setText("Open Team Definition");
       setToolTipText(getText());
    }
 
    private void performOpen() {
       try {
-         AtsUtil.openAtsAction(((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition(),
+         AtsUtil.openAtsAction(((TeamWorkFlowArtifact) sma).getTeamDefinition(),
                AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

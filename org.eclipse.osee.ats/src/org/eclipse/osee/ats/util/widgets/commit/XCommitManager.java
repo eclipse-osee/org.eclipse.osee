@@ -121,8 +121,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
                         }
                         try {
                            for (Branch destinationBranch : teamArt.getBranchMgr().getBranchesLeftToCommit()) {
-                              teamArt.getBranchMgr().commitWorkingBranch(false, true, destinationBranch,
-                                    true);
+                              teamArt.getBranchMgr().commitWorkingBranch(false, true, destinationBranch, true);
                               Thread.sleep(1000);
                            }
                         } catch (Exception ex) {
@@ -293,7 +292,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       try {
          int backgroundColor = SWT.COLOR_BLACK;
          String infoStr = "Double-click item to perform Action";
-         if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr() != null && xCommitManager.getXCommitViewer().getTeamArt().getBranchMgr() != null) {
+         if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt().getBranchMgr() != null) {
             if (!xCommitManager.getXCommitViewer().getTeamArt().getBranchMgr().isAllObjectsToCommitToConfigured()) {
                infoStr = "All branches must be configured and committed - Double-click item to perform Action";
                backgroundColor = SWT.COLOR_RED;

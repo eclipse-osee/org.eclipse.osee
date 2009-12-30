@@ -65,7 +65,7 @@ public class SMADetailsSection extends SectionPart {
 
       if (Widgets.isAccessible(formText)) {
          try {
-            formText.setText(Artifacts.getDetailsFormText(editor.getSmaMgr().getSma()), true, true);
+            formText.setText(Artifacts.getDetailsFormText(editor.getSma()), true, true);
          } catch (Exception ex) {
             formText.setText(Lib.exceptionToString(ex), false, false);
          }

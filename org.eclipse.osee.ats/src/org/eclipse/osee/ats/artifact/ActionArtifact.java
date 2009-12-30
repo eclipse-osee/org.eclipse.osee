@@ -147,7 +147,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          changeType = teamArts.iterator().next().getChangeType();
       } else {
          for (TeamWorkFlowArtifact team : teamArts) {
-            if (!team.getSmaMgr().isCancelled()) {
+            if (!team.isCancelled()) {
                if (changeType == null) {
                   changeType = team.getChangeType();
                } else if (changeType != team.getChangeType()) {
@@ -169,7 +169,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          priorityType = teamArts.iterator().next().getPriority();
       } else {
          for (TeamWorkFlowArtifact team : teamArts) {
-            if (!team.getSmaMgr().isCancelled()) {
+            if (!team.isCancelled()) {
                if (priorityType == null) {
                   priorityType = team.getPriority();
                } else if (priorityType != team.getPriority()) {
@@ -187,7 +187,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    private void resetUserCommunityOffChildren() throws OseeCoreException {
       Set<String> userComs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getSmaMgr().isCancelled()) {
+         if (!team.isCancelled()) {
             userComs.addAll(team.getAttributesToStringList(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName()));
          }
       }
@@ -277,10 +277,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       Set<User> pocs = new HashSet<User>();
       Set<User> implementers = new HashSet<User>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (team.getSmaMgr().isCancelledOrCompleted()) {
+         if (team.isCancelledOrCompleted()) {
             implementers.addAll(team.getImplementers());
          } else {
-            pocs.addAll(team.getSmaMgr().getStateMgr().getAssignees());
+            pocs.addAll(team.getStateMgr().getAssignees());
          }
       }
       return Artifacts.toString("; ", pocs) + (implementers.size() > 0 ? "(" + Artifacts.toString("; ", implementers) + ")" : "");
@@ -429,7 +429,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          double percent = 0;
          int items = 0;
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (!team.getSmaMgr().isCancelled()) {
+            if (!team.isCancelled()) {
                percent += team.getWorldViewStatePercentComplete();
                items++;
             }
@@ -646,7 +646,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          if (!teamExists) {
             TeamWorkFlowArtifact teamArt = createTeamWorkflow(tda, Arrays.asList(aia), tda.getLeads(), transaction);
             if (originator != null) {
-               teamArt.getSmaMgr().getLog().setOriginator(originator);
+               teamArt.getLog().setOriginator(originator);
             }
             teamArt.persist(transaction);
             sb.append(aia.getName() + " => added team workflow \"" + tda.getName() + "\"\n");
@@ -711,7 +711,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
       setArtifactIdentifyData(this, teamArt);
 
-      teamArt.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
+      teamArt.getLog().addLog(LogType.Originated, "", "");
 
       // Relate Workflow to ActionableItems (by guid) if team is responsible
       // for that AI
@@ -722,8 +722,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
 
       // Initialize state machine
-      teamArt.getSmaMgr().getStateMgr().initializeStateMachine(DefaultTeamState.Endorse.name(), assignees);
-      teamArt.getSmaMgr().getLog().addLog(LogType.StateEntered, DefaultTeamState.Endorse.name(), "");
+      teamArt.getStateMgr().initializeStateMachine(DefaultTeamState.Endorse.name(), assignees);
+      teamArt.getLog().addLog(LogType.StateEntered, DefaultTeamState.Endorse.name(), "");
 
       // Relate WorkFlow to Team Definition (by guid due to relation loading
       // issues)
@@ -903,7 +903,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       double hours = 0;
       // Add up hours for all children
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getSmaMgr().isCompleted() && !team.getSmaMgr().isCancelled()) {
+         if (!team.isCompleted() && !team.isCancelled()) {
             hours += team.getWorldViewWeeklyBenefit();
          }
       }
@@ -914,7 +914,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       double hours = 0;
       // Add up hours for all children
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getSmaMgr().isCompleted() && !team.getSmaMgr().isCancelled()) {
+         if (!team.isCompleted() && !team.isCancelled()) {
             hours += team.getWorldViewAnnualCostAvoidance();
          }
       }
@@ -981,7 +981,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public double getWorldViewHoursSpentState() throws OseeCoreException {
       double hours = 0;
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getSmaMgr().isCancelled()) {
+         if (!team.isCancelled()) {
             hours += team.getWorldViewHoursSpentState();
          }
       }
@@ -992,7 +992,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public double getWorldViewHoursSpentStateReview() throws OseeCoreException {
       double hours = 0;
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getSmaMgr().isCancelled()) {
+         if (!team.isCancelled()) {
             hours += team.getWorldViewHoursSpentStateReview();
          }
       }
@@ -1003,7 +1003,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public double getWorldViewHoursSpentStateTask() throws OseeCoreException {
       double hours = 0;
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getSmaMgr().isCancelled()) {
+         if (!team.isCancelled()) {
             hours += team.getWorldViewHoursSpentStateTask();
          }
       }
@@ -1014,7 +1014,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public double getWorldViewHoursSpentStateTotal() throws OseeCoreException {
       double hours = 0;
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getSmaMgr().isCancelled()) {
+         if (!team.isCancelled()) {
             hours += team.getWorldViewHoursSpentStateTotal();
          }
       }
@@ -1025,7 +1025,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public double getWorldViewHoursSpentTotal() throws OseeCoreException {
       double hours = 0;
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getSmaMgr().isCancelled()) {
+         if (!team.isCancelled()) {
             hours += team.getWorldViewHoursSpentTotal();
          }
       }
@@ -1036,7 +1036,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public int getWorldViewPercentCompleteState() throws OseeCoreException {
       double percent = 0;
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getSmaMgr().isCancelled()) {
+         if (!team.isCancelled()) {
             percent += team.getWorldViewPercentCompleteState();
          }
       }
@@ -1051,7 +1051,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public int getWorldViewPercentCompleteStateReview() throws OseeCoreException {
       double percent = 0;
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getSmaMgr().isCancelled()) {
+         if (!team.isCancelled()) {
             percent += team.getWorldViewPercentCompleteStateReview();
          }
       }
@@ -1066,7 +1066,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public int getWorldViewPercentCompleteStateTask() throws OseeCoreException {
       double percent = 0;
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getSmaMgr().isCancelled()) {
+         if (!team.isCancelled()) {
             percent += team.getWorldViewPercentCompleteStateTask();
          }
       }
@@ -1081,7 +1081,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public int getWorldViewPercentCompleteTotal() throws OseeCoreException {
       double percent = 0;
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getSmaMgr().isCancelled()) {
+         if (!team.isCancelled()) {
             percent += team.getWorldViewPercentCompleteTotal();
          }
       }
@@ -1121,13 +1121,13 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public String getWorldViewActionsIntiatingWorkflow() throws OseeCoreException {
       Date earliestDate = null;
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (earliestDate == null || team.getSmaMgr().getLog().getCreationDate().before(earliestDate)) {
-            earliestDate = team.getSmaMgr().getLog().getCreationDate();
+         if (earliestDate == null || team.getLog().getCreationDate().before(earliestDate)) {
+            earliestDate = team.getLog().getCreationDate();
          }
       }
       List<String> teamNames = new ArrayList<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (team.getSmaMgr().getLog().getCreationDate().equals(earliestDate)) {
+         if (team.getLog().getCreationDate().equals(earliestDate)) {
             teamNames.add(team.getTeamName());
          }
       }
@@ -1161,7 +1161,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       Collection<TeamWorkFlowArtifact> results = new ArrayList<TeamWorkFlowArtifact>();
       Date origDate = null;
       for (TeamWorkFlowArtifact teamArt : getTeamWorkFlowArtifacts()) {
-         if (teamArt.getSmaMgr().isCancelled()) {
+         if (teamArt.isCancelled()) {
             continue;
          }
          if (origDate == null || teamArt.getWorldViewCreatedDate().before(origDate)) {

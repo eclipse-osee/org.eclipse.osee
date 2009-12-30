@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
@@ -59,7 +58,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    public boolean isRelatedToParentWorkflowCurrentState() throws OseeCoreException {
-      return getWorldViewRelatedToState().equals(getParentSMA().getSmaMgr().getStateMgr().getCurrentStateName());
+      return getWorldViewRelatedToState().equals(getParentSMA().getStateMgr().getCurrentStateName());
    }
 
    @Override
@@ -77,7 +76,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       Set<User> users = new HashSet<User>();
       StateMachineArtifact parentSma = getParentSMA();
       if (parentSma instanceof TeamWorkFlowArtifact) users.addAll(((TeamWorkFlowArtifact) parentSma).getPrivilegedUsers());
-      users.addAll(parentSma.getSmaMgr().getStateMgr().getAssignees());
+      users.addAll(parentSma.getStateMgr().getAssignees());
       return users;
    }
 
@@ -89,7 +88,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       try {
          StateMachineArtifact parentSMA = getParentSMA();
          boolean unCancellable =
-               (parentSMA.getSmaMgr().getStateMgr().getCurrentStateName().equals(getSoleAttributeValue(
+               (parentSMA.getStateMgr().getCurrentStateName().equals(getSoleAttributeValue(
                      ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "")));
          if (!unCancellable) return false;
          return super.isUnCancellable();
@@ -111,7 +110,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    public List<TaskResOptionDefinition> getTaskResolutionOptionDefintions() throws OseeCoreException {
       TeamWorkFlowArtifact team = getParentTeamWorkflow();
       if (team == null) return TaskResolutionOptionRule.EMPTY_TASK_RESOLUTION_OPTIONS;
-      return TaskResolutionOptionRule.getTaskResolutionOptions(team.getSmaMgr().getWorkPageDefinition());
+      return TaskResolutionOptionRule.getTaskResolutionOptions(team.getWorkPageDefinition());
    }
 
    public TaskResOptionDefinition getTaskResolutionOptionDefinition(String optionName) throws OseeCoreException {
@@ -124,7 +123,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    public List<TaskResOptionDefinition> getTaskResolutionOptionDefintions(String stateName) throws OseeCoreException {
       TeamWorkFlowArtifact team = getParentTeamWorkflow();
       if (team == null) return TaskResolutionOptionRule.EMPTY_TASK_RESOLUTION_OPTIONS;
-      return TaskResolutionOptionRule.getTaskResolutionOptions(team.getSmaMgr().getWorkPageDefinitionByName(stateName));
+      return TaskResolutionOptionRule.getTaskResolutionOptions(team.getWorkPageDefinitionByName(stateName));
    }
 
    public TaskResOptionDefinition getTaskResolutionOptionDefinition(String stateName, String optionName) throws OseeCoreException {
@@ -158,10 +157,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return "";
    }
 
-   public Boolean isCancelled() throws OseeCoreException {
-      return smaMgr.isCancelled();
-   }
-
    @Override
    public String getWorldViewWorkPackage() throws OseeCoreException {
       String value = super.getWorldViewWorkPackage();
@@ -184,43 +179,39 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    public Boolean isInWork() throws OseeCoreException {
-      return (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name()));
+      return (getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name()));
    }
 
-   public Boolean isCompleted() throws OseeCoreException {
-      return smaMgr.isCompleted();
-   }
-
-   public void transitionToCancelled(String reason, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
-      if (smaMgr.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Cancelled.name())) return;
+   public void transitionToCancelled(String reason, SkynetTransaction transaction, TransitionOption transitionOption) throws OseeCoreException {
+      if (getStateMgr().getCurrentStateName().equals(DefaultTeamState.Cancelled.name())) return;
       setSoleAttributeValue(ATSAttributes.CANCEL_REASON_ATTRIBUTE.getStoreName(), reason);
-      Result result = smaMgr.transition(DefaultTeamState.Cancelled.name(), (User) null, transaction, transitionOption);
+      Result result = transition(DefaultTeamState.Cancelled.name(), (User) null, transaction, transitionOption);
       if (result.isFalse()) result.popup();
    }
 
    public void transitionToCompleted(double additionalHours, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
-      if (smaMgr.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Completed.name())) return;
+      if (getStateMgr().getCurrentStateName().equals(DefaultTeamState.Completed.name())) return;
       // Assign current user if unassigned
       try {
-         if (smaMgr.getStateMgr().isUnAssigned()) {
-            smaMgr.getStateMgr().setAssignee(UserManager.getUser());
+         if (getStateMgr().isUnAssigned()) {
+            getStateMgr().setAssignee(UserManager.getUser());
          }
-         smaMgr.getStateMgr().updateMetrics(additionalHours, 100, true);
+         getStateMgr().updateMetrics(additionalHours, 100, true);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-      Result result = smaMgr.transition(DefaultTeamState.Completed.name(), (User) null, transaction, transitionOption);
+      Result result = transition(DefaultTeamState.Completed.name(), (User) null, transaction, transitionOption);
       if (result.isFalse()) result.popup();
    }
 
    public void transitionToInWork(User toUser, int percentComplete, double additionalHours, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
-      if (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name())) return;
-      Result result = smaMgr.transition(TaskStates.InWork.name(), toUser, transaction, transitionOption);
-      if (smaMgr.getStateMgr().getPercentComplete() != percentComplete || additionalHours > 0) {
-         smaMgr.getStateMgr().updateMetrics(additionalHours, percentComplete, true);
+      if (getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name())) return;
+      Result result = transition(TaskStates.InWork.name(), toUser, transaction, transitionOption);
+      if (getStateMgr().getPercentComplete() != percentComplete || additionalHours > 0) {
+         getStateMgr().updateMetrics(additionalHours, percentComplete, true);
       }
       if (Collections.getAggregate(transitionOption).contains(TransitionOption.Persist)) {
-         smaMgr.getSma().saveSMA(transaction);
+         saveSMA(transaction);
       }
       if (result.isFalse()) result.popup();
    }
@@ -243,10 +234,10 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       // Case where already completed and statusing, just add additional hours to InWork state
       else if (percentComplete == 100 && isCompleted()) {
          if (additionalHours > 0) {
-            smaMgr.getStateMgr().updateMetrics(TaskStates.InWork.name(), additionalHours, percentComplete, true);
+            getStateMgr().updateMetrics(TaskStates.InWork.name(), additionalHours, percentComplete, true);
          }
       } else {
-         smaMgr.getStateMgr().updateMetrics(additionalHours, percentComplete, true);
+         getStateMgr().updateMetrics(additionalHours, percentComplete, true);
       }
    }
 
@@ -286,10 +277,10 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
 
    @Override
    public double getWorldViewRemainHours() throws OseeCoreException {
-      if (smaMgr.isCompleted() || smaMgr.isCancelled()) return 0;
+      if (isCompleted() || isCancelled()) return 0;
       double est = getWorldViewEstimatedHours();
       if (getWorldViewStatePercentComplete() == 0) return getWorldViewEstimatedHours();
-      double percent = smaMgr.getStateMgr().getPercentComplete(TaskStates.InWork.name());
+      double percent = getStateMgr().getPercentComplete(TaskStates.InWork.name());
       if (percent == 0) return getWorldViewEstimatedHours();
       double remain = getWorldViewEstimatedHours() - (est * (percent / 100.0));
       return remain;

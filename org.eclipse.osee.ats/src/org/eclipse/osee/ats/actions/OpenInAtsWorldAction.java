@@ -16,8 +16,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -30,24 +30,24 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
  */
 public class OpenInAtsWorldAction extends Action {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
-   public OpenInAtsWorldAction(SMAManager smaMgr) {
-      this.smaMgr = smaMgr;
+   public OpenInAtsWorldAction(StateMachineArtifact sma) {
+      this.sma = sma;
       setText("Open in ATS World Editor");
    }
 
    public void performOpen() {
       try {
-         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-            ActionArtifact actionArt = ((TeamWorkFlowArtifact) smaMgr.getSma()).getParentActionArtifact();
+         if (sma instanceof TeamWorkFlowArtifact) {
+            ActionArtifact actionArt = ((TeamWorkFlowArtifact) sma).getParentActionArtifact();
             WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
                   Arrays.asList(actionArt)));
             return;
          } else {
             WorldEditor.open(new WorldEditorSimpleProvider(
-                  smaMgr.getSma().getArtifactTypeName() + ": " + smaMgr.getSma().getHumanReadableId(),
-                  Arrays.asList(smaMgr.getSma())));
+                  sma.getArtifactTypeName() + ": " + sma.getHumanReadableId(),
+                  Arrays.asList(sma)));
             return;
          }
       } catch (OseeCoreException ex) {

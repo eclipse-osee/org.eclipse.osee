@@ -15,6 +15,7 @@ import java.util.Arrays;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.NoteItem;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.task.TaskComposite;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -30,13 +31,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  */
 public class SMAPrint extends Action {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
    private final TaskComposite taskComposite;
    private final SMAWorkFlowTab workFlowTab;
 
-   public SMAPrint(SMAManager smaMgr, SMAWorkFlowTab workFlowTab, TaskComposite taskComposite) {
+   public SMAPrint(StateMachineArtifact sma, SMAWorkFlowTab workFlowTab, TaskComposite taskComposite) {
       super();
-      this.smaMgr = smaMgr;
+      this.sma = sma;
       this.workFlowTab = workFlowTab;
       this.taskComposite = taskComposite;
    }
@@ -45,7 +46,7 @@ public class SMAPrint extends Action {
    public void run() {
       try {
          XResultData xResultData = getResultData();
-         xResultData.report(smaMgr.getSma().getName(), Manipulations.RAW_HTML);
+         xResultData.report(sma.getName(), Manipulations.RAW_HTML);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -56,24 +57,24 @@ public class SMAPrint extends Action {
       XResultData resultData = new XResultData();
       resultData.addRaw(AHTML.beginMultiColumnTable(100));
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Title: ",
-            smaMgr.getSma().getName())}));
+            sma.getName())}));
       resultData.addRaw(AHTML.endMultiColumnTable());
       resultData.addRaw(AHTML.beginMultiColumnTable(100));
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
       //
             AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ",
-                  ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewState()),
+                  ((IWorldViewArtifact) sma).getWorldViewState()),
             //
             AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ",
-                  ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewTeam()),
+                  ((IWorldViewArtifact) sma).getWorldViewTeam()),
             //
             AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ",
-                  ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewActivePoc()),
+                  ((IWorldViewArtifact) sma).getWorldViewActivePoc()),
             //
             AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ",
-                  ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewOriginator()),
+                  ((IWorldViewArtifact) sma).getWorldViewOriginator()),
             //
-            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Created: ", XDate.getDateStr(smaMgr.getLog().getCreationDate(),
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Created: ", XDate.getDateStr(sma.getLog().getCreationDate(),
                   XDate.MMDDYYHHMM))
 
       }));
@@ -81,12 +82,12 @@ public class SMAPrint extends Action {
       resultData.addRaw(AHTML.beginMultiColumnTable(100));
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
             //
-            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", smaMgr.getSma().getArtifactTypeName()),
-            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "HRID: ", smaMgr.getSma().getHumanReadableId()),
-            (smaMgr.getSma().getParentActionArtifact() == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT,
-                  "Action HRID: ", smaMgr.getSma().getParentActionArtifact().getHumanReadableId()))}));
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", sma.getArtifactTypeName()),
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "HRID: ", sma.getHumanReadableId()),
+            (sma.getParentActionArtifact() == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT,
+                  "Action HRID: ", sma.getParentActionArtifact().getHumanReadableId()))}));
       resultData.addRaw(AHTML.endMultiColumnTable());
-      for (NoteItem note : smaMgr.getNotes().getNoteItems()) {
+      for (NoteItem note : sma.getNotes().getNoteItems()) {
          if (note.getState().equals("")) {
             resultData.addRaw(note.toHTML() + AHTML.newline());
          }
@@ -94,7 +95,7 @@ public class SMAPrint extends Action {
       if (workFlowTab != null) resultData.addRaw(workFlowTab.getHtml());
       if (taskComposite != null) resultData.addRaw(taskComposite.toHTML(AHTML.LABEL_FONT));
       resultData.addRaw(AHTML.newline());
-      resultData.addRaw(smaMgr.getLog().getHtml());
+      resultData.addRaw(sma.getLog().getHtml());
 
       XResultData rd = new XResultData();
       rd.addRaw(AHTML.beginMultiColumnTable(100, 1));

@@ -70,7 +70,7 @@ public class MyGoalWorkflowItem extends UserSearchItem {
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());
       for (Artifact artifact : artifacts) {
          if (artifact instanceof GoalArtifact) {
-            if (goalSearchState == GoalSearchState.All || (goalSearchState == GoalSearchState.InWork && !((StateMachineArtifact) artifact).getSmaMgr().isCancelledOrCompleted())) {
+            if (goalSearchState == GoalSearchState.All || (goalSearchState == GoalSearchState.InWork && !((StateMachineArtifact) artifact).isCancelledOrCompleted())) {
                artifactsToReturn.add(artifact);
             }
          }

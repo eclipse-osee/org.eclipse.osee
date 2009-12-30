@@ -18,7 +18,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewNoteWizard;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -33,10 +33,10 @@ import org.eclipse.ui.PlatformUI;
 public class AddNoteAction extends Action {
 
    Action action;
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
-   public AddNoteAction(SMAManager smaMgr) {
-      this.smaMgr = smaMgr;
+   public AddNoteAction(StateMachineArtifact sma) {
+      this.sma = sma;
       setText("Add Note");
       setToolTipText(getText());
    }
@@ -49,8 +49,8 @@ public class AddNoteAction extends Action {
    private void performAddNote() {
       try {
          ArrayList<String> artifactNames = new ArrayList<String>();
-         artifactNames.add("Whole \"" + smaMgr.getSma().getArtifactTypeName() + "\"");
-         for (WorkPageDefinition workPageDefinition : smaMgr.getWorkFlowDefinition().getPagesOrdered())
+         artifactNames.add("Whole \"" + sma.getArtifactTypeName() + "\"");
+         for (WorkPageDefinition workPageDefinition : sma.getWorkFlowDefinition().getPagesOrdered())
             artifactNames.add("\"" + workPageDefinition.getPageName() + "\" State");
          NewNoteWizard noteWizard = new NewNoteWizard(artifactNames);
          WizardDialog dialog =
@@ -59,11 +59,11 @@ public class AddNoteAction extends Action {
          if (dialog.open() == 0) {
             String selected = noteWizard.mainPage.artifactList.getSelected().iterator().next().getName();
             String state = "";
-            if (!selected.startsWith(smaMgr.getSma().getName() + " - ")) state = selected;
-            smaMgr.getNotes().addNote(
+            if (!selected.startsWith(sma.getName() + " - ")) state = selected;
+            sma.getNotes().addNote(
                   NoteType.getType(noteWizard.mainPage.typeList.getSelected().iterator().next().getName()), state,
                   noteWizard.mainPage.noteText.get(), UserManager.getUser());
-            smaMgr.getEditor().onDirtied();
+            sma.getEditor().onDirtied();
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

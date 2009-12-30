@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.ReadOnlyHyperlinkListener;
@@ -38,14 +39,14 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class SMATargetVersionInfoComposite extends Composite {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
    private Hyperlink link;
    private Label label;
    private final IManagedForm managedForm;
 
-   public SMATargetVersionInfoComposite(final SMAManager smaMgr, Composite parent, IManagedForm managedForm, XFormToolkit toolkit) throws OseeCoreException {
+   public SMATargetVersionInfoComposite(final StateMachineArtifact sma, Composite parent, IManagedForm managedForm, XFormToolkit toolkit) throws OseeCoreException {
       super(parent, SWT.NONE);
-      this.smaMgr = smaMgr;
+      this.sma = sma;
       this.managedForm = managedForm;
       setLayout(ALayout.getZeroMarginLayout(2, false));
       setLayoutData(new GridData());
@@ -53,10 +54,10 @@ public class SMATargetVersionInfoComposite extends Composite {
       label = toolkit.createLabel(this, "Target Version: ", SWT.NONE);
       SMAEditor.setLabelFonts(label, FontManager.getDefaultLabelFont());
 
-      if (!smaMgr.isReleased() && !smaMgr.isVersionLocked()) {
+      if (!sma.isReleased() && !sma.isVersionLocked()) {
          link = toolkit.createHyperlink(this, "", SWT.NONE);
-         if (smaMgr.getSma().isReadOnly())
-            link.addHyperlinkListener(new ReadOnlyHyperlinkListener(smaMgr));
+         if (sma.isReadOnly())
+            link.addHyperlinkListener(new ReadOnlyHyperlinkListener(sma));
          else
             link.addHyperlinkListener(new IHyperlinkListener() {
 
@@ -68,7 +69,7 @@ public class SMATargetVersionInfoComposite extends Composite {
 
                public void linkActivated(HyperlinkEvent e) {
                   try {
-                     if (smaMgr.promptChangeVersion(
+                     if (sma.promptChangeVersion(
                            AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, false)) {
                         refresh();
                      }
@@ -93,11 +94,11 @@ public class SMATargetVersionInfoComposite extends Composite {
       String str = "";
       // Don't transition without targeted version if so configured
       boolean required =
-            smaMgr.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || smaMgr.getWorkPageDefinition().hasWorkRule(
+            sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || sma.getWorkPageDefinition().hasWorkRule(
                   AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
 
-      if (smaMgr.getTargetedForVersion() != null) {
-         str = smaMgr.getTargetedForVersion() + "";
+      if (sma.getTargetedForVersion() != null) {
+         str = sma.getTargetedForVersion() + "";
       } else {
          str = "<edit>";
          if (required) {
@@ -118,7 +119,7 @@ public class SMATargetVersionInfoComposite extends Composite {
    @Override
    public String toString() {
       try {
-         return "SMATargetVersionInfoComposite for SMA \"" + smaMgr.getSma() + "\"";
+         return "SMATargetVersionInfoComposite for SMA \"" + sma + "\"";
       } catch (Exception ex) {
          return "SMATargetVersionInfoComposite " + ex.getLocalizedMessage();
       }

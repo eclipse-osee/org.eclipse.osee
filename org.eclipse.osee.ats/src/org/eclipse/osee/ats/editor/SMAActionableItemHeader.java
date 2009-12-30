@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -41,13 +42,13 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
    private static String ACTION_ACTIONABLE_ITEMS = "Actionable Items: ";
    private Hyperlink link;
    private Label label;
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
-   public SMAActionableItemHeader(Composite parent, XFormToolkit toolkit, SMAManager smaMgr) throws OseeCoreException {
+   public SMAActionableItemHeader(Composite parent, XFormToolkit toolkit, StateMachineArtifact sma) throws OseeCoreException {
       super(parent, SWT.NONE);
-      this.smaMgr = smaMgr;
+      this.sma = sma;
       try {
-         final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) smaMgr.getSma();
+         final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) sma;
 
          toolkit.adapt(this);
          setLayout(ALayout.getZeroMarginLayout(2, false));
@@ -88,8 +89,8 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
          OseeEventManager.removeListener(this);
          return;
       }
-      final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) smaMgr.getSma();
-      if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
+      final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) sma;
+      if (!sma.isCancelled() && !sma.isCompleted()) {
          if (teamWf.getParentActionArtifact().getActionableItems().size() == 0) {
             label.setText(" " + ACTION_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
             label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
@@ -124,16 +125,16 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (smaMgr.isInTransition()) return;
+      if (sma.isInTransition()) return;
       if (transData.branchId != AtsUtil.getAtsBranch().getId()) return;
-      if (smaMgr.getSma().isDeleted()) {
+      if (sma.isDeleted()) {
          OseeEventManager.removeListener(this);
          return;
       }
       // Since SMAEditor is refreshed when a sibling workflow is changed, need to refresh this
       // list of actionable items when a sibling changes
-      for (TeamWorkFlowArtifact teamWf : smaMgr.getSma().getParentActionArtifact().getTeamWorkFlowArtifacts()) {
-         if (!smaMgr.getSma().equals(teamWf) && (transData.isChanged(teamWf) || transData.isRelAdded(teamWf.getParentActionArtifact()) || transData.isRelDeleted(teamWf.getParentActionArtifact()))) {
+      for (TeamWorkFlowArtifact teamWf : sma.getParentActionArtifact().getTeamWorkFlowArtifacts()) {
+         if (!sma.equals(teamWf) && (transData.isChanged(teamWf) || transData.isRelAdded(teamWf.getParentActionArtifact()) || transData.isRelDeleted(teamWf.getParentActionArtifact()))) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {

@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
@@ -312,7 +311,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       return this;
    }
 
-   public SMAManager getParentSmaMgr() throws OseeCoreException {
+   public StateMachineArtifact getSma() throws OseeCoreException {
       return null;
    }
 

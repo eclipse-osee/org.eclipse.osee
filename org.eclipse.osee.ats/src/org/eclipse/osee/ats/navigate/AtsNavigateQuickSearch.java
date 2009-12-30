@@ -84,7 +84,7 @@ public class AtsNavigateQuickSearch extends WorldUISearchItem {
             StateMachineArtifact sma = (StateMachineArtifact) art;
             // default excludes canceled/completed
             if (this.includeCompleteCancelled == false) {
-               if (!sma.getSmaMgr().isCancelledOrCompleted()) {
+               if (!sma.isCancelledOrCompleted()) {
                   allArtifacts.add(art);
                }
             } else {

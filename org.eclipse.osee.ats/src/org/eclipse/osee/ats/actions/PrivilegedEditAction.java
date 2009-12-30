@@ -17,7 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.ReadOnlyHyperlinkListener;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -33,10 +33,10 @@ import org.eclipse.swt.widgets.Display;
  */
 public class PrivilegedEditAction extends Action {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
-   public PrivilegedEditAction(SMAManager smaMgr) {
-      this.smaMgr = smaMgr;
+   public PrivilegedEditAction(StateMachineArtifact sma) {
+      this.sma = sma;
       setText("Privileged Edit");
       setToolTipText(getText());
    }
@@ -48,16 +48,16 @@ public class PrivilegedEditAction extends Action {
 
    private void togglePriviledgedEdit() {
       try {
-         if (smaMgr.getSma().isReadOnly()) {
-            (new ReadOnlyHyperlinkListener(smaMgr)).linkActivated(null);
+         if (sma.isReadOnly()) {
+            (new ReadOnlyHyperlinkListener(sma)).linkActivated(null);
          }
-         if (smaMgr.getEditor().isPriviledgedEditModeEnabled()) {
+         if (sma.getEditor().isPriviledgedEditModeEnabled()) {
             if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Diable Privileged Edit",
                   "Privileged Edit Mode Enabled.\n\nDisable?\n\nNote: (changes will be saved)")) {
-               smaMgr.getEditor().setPriviledgedEditMode(false);
+               sma.getEditor().setPriviledgedEditMode(false);
             }
          } else {
-            Set<User> users = smaMgr.getPrivilegedUsers();
+            Set<User> users = sma.getPrivilegedUsers();
             if (AtsUtil.isAtsAdmin()) users.add(UserManager.getUser());
             StringBuffer sb = new StringBuffer();
             for (User user : users)
@@ -73,10 +73,10 @@ public class PrivilegedEditAction extends Action {
                         Display.getCurrent().getActiveShell(),
                         "Privileged Edit",
                         null,
-                        "The following users have the ability to edit this " + smaMgr.getSma().getArtifactTypeName() + " in case of emergency.\n\n" + sb.toString(),
+                        "The following users have the ability to edit this " + sma.getArtifactTypeName() + " in case of emergency.\n\n" + sb.toString(),
                         MessageDialog.QUESTION, buttons, 0);
             int result = ed.open();
-            if (iAmPrivileged && result == 0) smaMgr.getEditor().setPriviledgedEditMode(true);
+            if (iAmPrivileged && result == 0) sma.getEditor().setPriviledgedEditMode(true);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

@@ -38,7 +38,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -595,7 +594,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (art instanceof StateMachineArtifact) {
             StateMachineArtifact sma = (StateMachineArtifact) art;
             try {
-               ATSLog log = sma.getSmaMgr().getLog();
+               ATSLog log = sma.getLog();
                if (log.getOriginator() == null) {
                   try {
                      testNameToResultsMap.put(
@@ -608,7 +607,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   }
                }
                for (String stateName : Arrays.asList("Completed", "Cancelled")) {
-                  if (sma.getSmaMgr().getStateMgr().getCurrentStateName().equals(stateName)) {
+                  if (sma.getStateMgr().getCurrentStateName().equals(stateName)) {
                      LogItem logItem = log.getStateEvent(LogType.StateEntered, stateName);
                      if (logItem == null) {
                         try {
@@ -639,7 +638,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                // Generate html log which will exercise all the conversions
                log.getHtml();
                // Verify that all users are resolved
-               for (LogItem logItem : sma.getSmaMgr().getLog().getLogItems()) {
+               for (LogItem logItem : sma.getLog().getLogItems()) {
                   if (logItem.getUser() == null) {
                      testNameToResultsMap.put(
                            "testAtsLogs",
@@ -662,61 +661,60 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (art instanceof StateMachineArtifact) {
             try {
                StateMachineArtifact sma = (StateMachineArtifact) art;
-               SMAManager smaMgr = new SMAManager(sma);
-               if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && smaMgr.getStateMgr().getAssignees().size() > 0) {
+               if ((sma.isCompleted() || sma.isCancelled()) && sma.getStateMgr().getAssignees().size() > 0) {
                   testNameToResultsMap.put(
                         "testStateMachineAssignees",
                         "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " cancel/complete with attribute assignees");
                   if (fixAssignees) {
-                     smaMgr.getStateMgr().clearAssignees();
-                     smaMgr.getSma().persist();
+                     sma.getStateMgr().clearAssignees();
+                     sma.persist();
                      testNameToResultsMap.put("testStateMachineAssignees", "Fixed");
                   }
                }
-               if (smaMgr.getStateMgr().getAssignees().size() > 1 && smaMgr.getStateMgr().getAssignees().contains(
+               if (sma.getStateMgr().getAssignees().size() > 1 && sma.getStateMgr().getAssignees().contains(
                      unAssignedUser)) {
                   testNameToResultsMap.put(
                         "testStateMachineAssignees",
                         "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " is unassigned and assigned => " + Artifacts.toString(
-                              "; ", smaMgr.getStateMgr().getAssignees()));
+                              "; ", sma.getStateMgr().getAssignees()));
                   if (fixAssignees) {
-                     smaMgr.getStateMgr().removeAssignee(unAssignedUser);
+                     sma.getStateMgr().removeAssignee(unAssignedUser);
                      testNameToResultsMap.put("testStateMachineAssignees", "Fixed");
                   }
                }
-               if (smaMgr.getStateMgr().getAssignees().contains(oseeSystemUser)) {
+               if (sma.getStateMgr().getAssignees().contains(oseeSystemUser)) {
                   testNameToResultsMap.put(
                         "testStateMachineAssignees",
                         "Error: " + art.getHumanReadableId() + " is assigned to OseeSystem; invalid assignment - MANUAL FIX REQUIRED");
                }
-               if (!smaMgr.isCompleted() && !smaMgr.isCancelled() && smaMgr.getStateMgr().getAssignees().size() == 0) {
+               if (!sma.isCompleted() && !sma.isCancelled() && sma.getStateMgr().getAssignees().size() == 0) {
                   testNameToResultsMap.put(
                         "testStateMachineAssignees",
                         "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " In Work without assignees");
                }
                List<Artifact> relationAssigned = art.getRelatedArtifacts(CoreRelationTypes.Users_User, Artifact.class);
-               if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && relationAssigned.size() > 0) {
+               if ((sma.isCompleted() || sma.isCancelled()) && relationAssigned.size() > 0) {
                   testNameToResultsMap.put(
                         "testStateMachineAssignees",
                         "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " cancel/complete with related assignees");
                   if (fixAssignees) {
                      try {
-                        StateManager.updateAssigneeRelations(smaMgr);
+                        StateManager.updateAssigneeRelations(sma);
                         art.persist();
                      } catch (OseeCoreException ex) {
                         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                      }
                      testNameToResultsMap.put("testStateMachineAssignees", "Fixed");
                   }
-               } else if (smaMgr.getStateMgr().getAssignees().size() != relationAssigned.size()) {
+               } else if (sma.getStateMgr().getAssignees().size() != relationAssigned.size()) {
                   // Make sure this isn't just an UnAssigned user issue (don't relate to unassigned user anymore)
-                  if (!(smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && relationAssigned.size() == 0)) {
+                  if (!(sma.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && relationAssigned.size() == 0)) {
                      testNameToResultsMap.put(
                            "testStateMachineAssignees",
                            "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " attribute assignees doesn't match related assignees");
                      if (fixAssignees) {
                         try {
-                           StateManager.updateAssigneeRelations(smaMgr);
+                           StateManager.updateAssigneeRelations(sma);
                            art.persist();
                         } catch (OseeCoreException ex) {
                            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

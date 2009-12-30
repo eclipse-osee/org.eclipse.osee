@@ -67,7 +67,7 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
     * Creates PeerToPeer review if one of same name doesn't already exist
     * 
     * @param atsAddPeerToPeerReviewRule
-    * @param smaMgr
+    * @param sma
     * @param transaction
     * @return review
     * @throws OseeCoreException
@@ -101,9 +101,9 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
       }
       Collection<User> assignees = AtsAddDecisionReviewRule.getAssigneesOrDefault(teamArt, atsAddPeerToPeerReviewRule);
       if (assignees.size() > 0) {
-         peerArt.getSmaMgr().getStateMgr().setAssignees(assignees);
+         peerArt.getStateMgr().setAssignees(assignees);
       }
-      peerArt.getSmaMgr().getLog().addLog(LogType.Note, null,
+      peerArt.getLog().addLog(LogType.Note, null,
             "Review auto-generated off rule " + atsAddPeerToPeerReviewRule.getId());
       return peerArt;
    }
@@ -114,7 +114,7 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
          if (peerToPeerParameter == PeerToPeerParameter.title) {
             return PeerToPeerReviewArtifact.getDefaultReviewTitle(teamArt);
          } else if (peerToPeerParameter == PeerToPeerParameter.forState) {
-            return teamArt.getSmaMgr().getStateMgr().getCurrentStateName();
+            return teamArt.getStateMgr().getCurrentStateName();
          } else if (peerToPeerParameter == PeerToPeerParameter.location) {
             return null;
          }

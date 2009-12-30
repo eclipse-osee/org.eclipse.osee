@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -36,12 +37,12 @@ import org.eclipse.swt.widgets.Label;
  */
 public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTransactionEventListener {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
    private Label percentLabel, estHoursLabel, hoursSpentLabel, remainHoursLabel;
 
-   public SMAWorkflowMetricsHeader(Composite parent, XFormToolkit toolkit, SMAManager smaMgr) throws OseeCoreException {
+   public SMAWorkflowMetricsHeader(Composite parent, XFormToolkit toolkit, StateMachineArtifact sma) throws OseeCoreException {
       super(parent, SWT.NONE);
-      this.smaMgr = smaMgr;
+      this.sma = sma;
       try {
 
          toolkit.adapt(this);
@@ -75,15 +76,15 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
          return;
       }
       try {
-         if (!percentLabel.isDisposed()) percentLabel.setText(String.valueOf(smaMgr.getSma().getPercentCompleteSMATotal()));
-         if (estHoursLabel != null && !estHoursLabel.isDisposed()) estHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(smaMgr.getSma().getEstimatedHoursTotal())));
-         if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(smaMgr.getSma().getHoursSpentSMATotal())));
+         if (!percentLabel.isDisposed()) percentLabel.setText(String.valueOf(sma.getPercentCompleteSMATotal()));
+         if (estHoursLabel != null && !estHoursLabel.isDisposed()) estHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(sma.getEstimatedHoursTotal())));
+         if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(sma.getHoursSpentSMATotal())));
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
-            Result result = smaMgr.getSma().isWorldViewRemainHoursValid();
+            Result result = sma.isWorldViewRemainHoursValid();
             if (result.isFalse())
                remainHoursLabel.setText("Error" + result.getText());
             else
-               remainHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(smaMgr.getSma().getWorldViewRemainHours())));
+               remainHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(sma.getWorldViewRemainHours())));
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -95,9 +96,9 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (smaMgr.isInTransition()) return;
+      if (sma.isInTransition()) return;
       if (transData.branchId != AtsUtil.getAtsBranch().getId()) return;
-      if (smaMgr.getSma().isDeleted()) {
+      if (sma.isDeleted()) {
          OseeEventManager.removeListener(this);
          return;
       }

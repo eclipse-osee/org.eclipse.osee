@@ -44,7 +44,7 @@ public class XCurrentStateDam extends XStateAssigneesDam {
    @Override
    public void setState(SMAState state) throws OseeCoreException {
       getSma().setSoleAttributeValue(attributeTypeName, state.toXml());
-      StateManager.updateAssigneeRelations(getSma().getSmaMgr());
+      StateManager.updateAssigneeRelations(getSma());
    }
 
    public void updateMetrics(double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
@@ -75,6 +75,6 @@ public class XCurrentStateDam extends XStateAssigneesDam {
    public static void logMetrics(StateMachineArtifact sma, String percent, String hours, String stateName, User user, Date date) throws OseeCoreException {
       LogItem logItem =
             new LogItem(LogType.Metrics, date, user, stateName, String.format("Percent %s Hours %s", percent, hours));
-      sma.getSmaMgr().getLog().addLogItem(logItem);
+      sma.getLog().addLogItem(logItem);
    }
 }

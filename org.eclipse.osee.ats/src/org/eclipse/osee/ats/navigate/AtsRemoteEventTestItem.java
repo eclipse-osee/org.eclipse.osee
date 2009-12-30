@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -108,7 +108,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       TeamWorkFlowArtifact teamArt = actionArt.getTeamWorkFlowArtifacts().iterator().next();
 
       // Make current user assignee for convenience to developer
-      teamArt.getSmaMgr().getStateMgr().addAssignee(UserManager.getUser());
+      teamArt.getStateMgr().addAssignee(UserManager.getUser());
       teamArt.persist();
 
       validateActionAtStart(actionArt);
@@ -168,7 +168,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       transaction.execute();
 
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
-      teamArt.getSmaMgr().transition(DefaultTeamState.Analyze.name(), Collections.singleton(UserManager.getUser()),
+      teamArt.transition(DefaultTeamState.Analyze.name(), Collections.singleton(UserManager.getUser()),
             transaction, TransitionOption.Persist);
       teamArt.persist(transaction);
       transaction.execute();
@@ -241,9 +241,9 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
             ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), null)));
       testEquals(
             "Targeted Version",
-            (teamArt.getSmaMgr().getTargetedForVersion() != null ? teamArt.getSmaMgr().getTargetedForVersion().toString() : "not set"),
+            (teamArt.getTargetedForVersion() != null ? teamArt.getTargetedForVersion().toString() : "not set"),
             "2.5.7");
-      testEquals("State", DefaultTeamState.Analyze.name(), teamArt.getSmaMgr().getStateMgr().getCurrentStateName());
+      testEquals("State", DefaultTeamState.Analyze.name(), teamArt.getStateMgr().getCurrentStateName());
    }
 
    private void testEquals(String name, Object expected, Object actual) throws OseeCoreException {

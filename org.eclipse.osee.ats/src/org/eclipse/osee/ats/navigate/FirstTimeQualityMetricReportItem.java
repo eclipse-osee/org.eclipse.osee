@@ -165,7 +165,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             Collection<TeamWorkFlowArtifact> arts =
                   teamMet.getWorkflowsOriginatedBetween(nextReleaseStartDate, nextReleaseEndDate);
             for (TeamWorkFlowArtifact team : arts) {
-               if (!team.getSmaMgr().isCancelled() && team.getChangeType() == ChangeType.Problem && (team.getPriority() == PriorityType.Priority_1 || team.getPriority() == PriorityType.Priority_2)) {
+               if (!team.isCancelled() && team.getChangeType() == ChangeType.Problem && (team.getPriority() == PriorityType.Priority_1 || team.getPriority() == PriorityType.Priority_2)) {
                   numOrigDurningNextReleaseCycle++;
                }
             }
@@ -174,7 +174,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
          if (thisReleaseEndDate != null) {
             numNonSupportReleased = 0;
             for (TeamWorkFlowArtifact team : verMet.getTeamWorkFlows(ChangeType.Problem, ChangeType.Improvement)) {
-               if (!team.getSmaMgr().isCancelled()) {
+               if (!team.isCancelled()) {
                   numNonSupportReleased++;
                }
             }

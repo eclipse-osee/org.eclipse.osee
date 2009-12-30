@@ -65,7 +65,7 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
 
       worldComposite = new WorldComposite(this, sectionBody, SWT.BORDER);
       try {
-         worldComposite.load("Members", editor.getSmaMgr().getSma().getRelatedArtifacts(AtsRelationTypes.Goal_Member),
+         worldComposite.load("Members", editor.getSma().getRelatedArtifacts(AtsRelationTypes.Goal_Member),
                (CustomizeData) null, TableLoadOption.None);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);

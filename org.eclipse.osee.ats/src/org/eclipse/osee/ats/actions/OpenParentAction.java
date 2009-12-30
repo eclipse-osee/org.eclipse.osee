@@ -15,7 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -27,10 +27,10 @@ import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
  */
 public class OpenParentAction extends Action {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
-   public OpenParentAction(SMAManager smaMgr) {
-      this.smaMgr = smaMgr;
+   public OpenParentAction(StateMachineArtifact sma) {
+      this.sma = sma;
       setText("Open Parent");
       setToolTipText(getText());
    }
@@ -38,7 +38,7 @@ public class OpenParentAction extends Action {
    @Override
    public void run() {
       try {
-         AtsUtil.openAtsAction(smaMgr.getSma().getParentSMA(), AtsOpenOption.OpenOneOrPopupSelect);
+         AtsUtil.openAtsAction(sma.getParentSMA(), AtsOpenOption.OpenOneOrPopupSelect);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }

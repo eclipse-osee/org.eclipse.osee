@@ -34,7 +34,7 @@ public class SMAUtil {
    public static Collection<StateMachineArtifact> getCompletedCancelled(Collection<StateMachineArtifact> smas) throws OseeCoreException {
       List<StateMachineArtifact> artifactsToReturn = new ArrayList<StateMachineArtifact>(smas.size());
       for (StateMachineArtifact sma : smas) {
-         if (sma.getSmaMgr().isCancelledOrCompleted()) {
+         if (sma.isCancelledOrCompleted()) {
             artifactsToReturn.add(sma);
          }
       }
@@ -44,7 +44,7 @@ public class SMAUtil {
    public static Collection<StateMachineArtifact> getInWork(Collection<StateMachineArtifact> smas) throws OseeCoreException {
       List<StateMachineArtifact> artifactsToReturn = new ArrayList<StateMachineArtifact>(smas.size());
       for (StateMachineArtifact sma : smas) {
-         if (!sma.getSmaMgr().isCancelledOrCompleted()) {
+         if (!sma.isCancelledOrCompleted()) {
             artifactsToReturn.add(sma);
          }
       }
@@ -54,7 +54,7 @@ public class SMAUtil {
    public static Collection<StateMachineArtifact> filterOutState(Collection<StateMachineArtifact> smas, Collection<String> stateNames) throws OseeCoreException {
       List<StateMachineArtifact> artifactsToReturn = new ArrayList<StateMachineArtifact>(smas.size());
       for (StateMachineArtifact sma : smas) {
-         if (!stateNames.contains(sma.getSmaMgr().getStateMgr().getCurrentStateName())) {
+         if (!stateNames.contains(sma.getStateMgr().getCurrentStateName())) {
             artifactsToReturn.add(sma);
          }
       }
@@ -82,8 +82,8 @@ public class SMAUtil {
       for (StateMachineArtifact sma : artifacts) {
          Date createDate = sma.getWorldViewCreatedDate();
          Date completedCancelDate = null;
-         if (sma.getSmaMgr().isCancelledOrCompleted()) {
-            if (sma.getSmaMgr().isCancelled()) {
+         if (sma.isCancelledOrCompleted()) {
+            if (sma.isCancelled()) {
                completedCancelDate = sma.getWorldViewCancelledDate();
             } else {
                completedCancelDate = sma.getWorldViewCompletedDate();
@@ -100,8 +100,8 @@ public class SMAUtil {
       List<StateMachineArtifact> smas = new ArrayList<StateMachineArtifact>();
       for (StateMachineArtifact sma : artifacts) {
          Date completedCancelDate = null;
-         if (sma.getSmaMgr().isCancelledOrCompleted()) {
-            if (sma.getSmaMgr().isCancelled()) {
+         if (sma.isCancelledOrCompleted()) {
+            if (sma.isCancelled()) {
                completedCancelDate = sma.getWorldViewCancelledDate();
             } else {
                completedCancelDate = sma.getWorldViewCompletedDate();
@@ -133,8 +133,8 @@ public class SMAUtil {
             continue;
          }
          // Find state at date
-         String currentState = sma.getSmaMgr().getStateMgr().getCurrentStateName();
-         for (LogItem item : sma.getSmaMgr().getLog().getLogItems()) {
+         String currentState = sma.getStateMgr().getCurrentStateName();
+         for (LogItem item : sma.getLog().getLogItems()) {
             if (item.getDate().before(date)) {
                currentState = item.getState();
             }

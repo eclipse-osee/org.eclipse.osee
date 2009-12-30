@@ -11,14 +11,10 @@
 
 package org.eclipse.osee.ats.actions;
 
-import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -30,29 +26,21 @@ import org.eclipse.swt.dnd.Transfer;
 public class CopyActionDetailsAction extends Action {
 
    private Clipboard clipboard;
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
-   public CopyActionDetailsAction(SMAManager smaMgr) {
-      this.smaMgr = smaMgr;
+   public CopyActionDetailsAction(StateMachineArtifact sma) {
+      this.sma = sma;
       String title = "Copy";
-      try {
-         title = "Copy " + smaMgr.getSma().getArtifactTypeName() + " details to clipboard";
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
+      title = "Copy " + sma.getArtifactTypeName() + " details to clipboard";
       setText(title);
       setToolTipText(getText());
    }
 
    private void performCopy() {
-      try {
-         if (clipboard == null) this.clipboard = new Clipboard(null);
-         clipboard.setContents(
-               new Object[] {"\"" + smaMgr.getSma().getArtifactTypeName() + "\" - " + smaMgr.getSma().getHumanReadableId() + " - \"" + smaMgr.getSma().getName() + "\""},
-               new Transfer[] {TextTransfer.getInstance()});
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
+      if (clipboard == null) this.clipboard = new Clipboard(null);
+      clipboard.setContents(
+            new Object[] {"\"" + sma.getArtifactTypeName() + "\" - " + sma.getHumanReadableId() + " - \"" + sma.getName() + "\""},
+            new Transfer[] {TextTransfer.getInstance()});
    }
 
    @Override

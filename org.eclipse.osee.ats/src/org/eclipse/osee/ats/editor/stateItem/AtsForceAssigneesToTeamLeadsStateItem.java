@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.editor.stateItem;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,14 +32,14 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
    }
 
    @Override
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
-      super.transitioned(smaMgr, fromState, toState, toAssignees, transaction);
-      if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && (AtsWorkDefinitions.isForceAssigneesToTeamLeads(smaMgr.getWorkPageDefinitionByName(toState)))) {
+   public void transitioned(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+      super.transitioned(sma, fromState, toState, toAssignees, transaction);
+      if ((sma instanceof TeamWorkFlowArtifact) && (AtsWorkDefinitions.isForceAssigneesToTeamLeads(sma.getWorkPageDefinitionByName(toState)))) {
          // Set Assignees to all user roles users
          try {
-            Collection<User> teamLeads = ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getLeads();
-            smaMgr.getStateMgr().setAssignees(teamLeads);
-            smaMgr.getSma().persist(transaction);
+            Collection<User> teamLeads = ((TeamWorkFlowArtifact) sma).getTeamDefinition().getLeads();
+            sma.getStateMgr().setAssignees(teamLeads);
+            sma.persist(transaction);
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }

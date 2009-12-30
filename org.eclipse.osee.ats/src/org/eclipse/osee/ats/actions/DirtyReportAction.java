@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -27,18 +27,18 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
  */
 public class DirtyReportAction extends Action {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
-   public DirtyReportAction(SMAManager smaMgr) {
+   public DirtyReportAction(StateMachineArtifact sma) {
       super("Show Artifact Dirty Report");
-      this.smaMgr = smaMgr;
+      this.sma = sma;
       setToolTipText("Show what attribute or relation making editor dirty.");
    }
 
    @Override
    public void run() {
       try {
-         Result result = smaMgr.getEditor().isDirtyResult();
+         Result result = sma.getEditor().isDirtyResult();
          AWorkbench.popup("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -27,18 +27,18 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 public class OpenVersionArtifactAction extends Action {
 
    Action action;
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
-   public OpenVersionArtifactAction(SMAManager smaMgr) {
-      this.smaMgr = smaMgr;
+   public OpenVersionArtifactAction(StateMachineArtifact sma) {
+      this.sma = sma;
       setText("Open Targeted for Version");
       setToolTipText(getText());
    }
 
    private void performOpen() {
       try {
-         if (smaMgr.getSma().getWorldViewTargetedVersion() != null) {
-            ArtifactEditor.editArtifact(smaMgr.getSma().getWorldViewTargetedVersion());
+         if (sma.getWorldViewTargetedVersion() != null) {
+            ArtifactEditor.editArtifact(sma.getWorldViewTargetedVersion());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

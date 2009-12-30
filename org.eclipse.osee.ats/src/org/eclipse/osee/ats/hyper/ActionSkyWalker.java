@@ -139,12 +139,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
          if (editor != null && (editor instanceof SMAEditor)) {
-            try {
-               explore(((SMAEditor) editor).getSmaMgr().getSma());
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-            }
-
+            explore(((SMAEditor) editor).getSma());
          }
          clear();
       }

@@ -49,7 +49,7 @@ public class SMAPromptChangeStatus {
    public Result isValidToChangeStatus() throws OseeCoreException {
       // Don't allow statusing for any cancelled tasks
       for (StateMachineArtifact sma : smas) {
-         if (sma.getSmaMgr().isCancelled()) {
+         if (sma.isCancelled()) {
             String error =
                   "Can not status a cancelled " + sma.getArtifactTypeName() + ".\n\nTransition out of cancelled first.";
             return new Result(error);
@@ -68,7 +68,7 @@ public class SMAPromptChangeStatus {
                            //
                            "Either transition parent workflow or change Task's \"Related to State\" to perform task work.",
                            taskArt.getName(), taskArt.getWorldViewRelatedToState(),
-                           taskArt.getParentSMA().getSmaMgr().getStateMgr().getCurrentStateName()));
+                           taskArt.getParentSMA().getStateMgr().getCurrentStateName()));
             }
          }
       }
@@ -111,9 +111,9 @@ public class SMAPromptChangeStatus {
          transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Status");
       }
       for (StateMachineArtifact sma : smas) {
-         if (sma.getSmaMgr().getStateMgr().isUnAssigned()) {
-            sma.getSmaMgr().getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
-            sma.getSmaMgr().getStateMgr().addAssignee(UserManager.getUser());
+         if (sma.getStateMgr().isUnAssigned()) {
+            sma.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
+            sma.getStateMgr().addAssignee(UserManager.getUser());
          }
          if (options != null) {
             sma.setSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), selectedOption);
@@ -121,7 +121,7 @@ public class SMAPromptChangeStatus {
          if (sma instanceof TaskArtifact) {
             ((TaskArtifact) sma).statusPercentChanged(hours, percent, transaction);
          } else {
-            sma.getSmaMgr().getStateMgr().updateMetrics(hours, percent, true);
+            sma.getStateMgr().updateMetrics(hours, percent, true);
          }
          if (persist) {
             sma.persist(transaction);

@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,12 +29,12 @@ public class AtsArtifactAnnotations implements IArtifactAnnotation {
    public void getAnnotations(Artifact artifact, Set<ArtifactAnnotation> annotations) {
       try {
          if (artifact instanceof StateMachineArtifact) {
-            SMAManager smaMgr = new SMAManager((StateMachineArtifact) artifact);
-            Result result = smaMgr.getDeadlineMgr().isDeadlineDateAlerting();
+            StateMachineArtifact sma = (StateMachineArtifact) artifact;
+            Result result = sma.getDeadlineMgr().isDeadlineDateAlerting();
             if (result.isTrue()) {
                annotations.add(ArtifactAnnotation.getWarning("org.eclipse.osee.ats.deadline", result.getText()));
             }
-            result = smaMgr.getDeadlineMgr().isEcdDateAlerting();
+            result = sma.getDeadlineMgr().isEcdDateAlerting();
             if (result.isTrue()) {
                annotations.add(ArtifactAnnotation.getWarning("org.eclipse.osee.ats.ecd", result.getText()));
             }

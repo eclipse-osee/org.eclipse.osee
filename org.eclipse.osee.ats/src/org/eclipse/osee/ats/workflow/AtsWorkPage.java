@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.workflow;
 
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -38,7 +38,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class AtsWorkPage extends WorkPage {
 
    protected TaskResolutionOptionRule taskResolutionOptions;
-   private SMAManager smaMgr;
+   private StateMachineArtifact sma;
 
    public AtsWorkPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
       super(workFlowDefinition, workPageDefinition, xWidgetsXml, optionResolver, null);
@@ -48,12 +48,12 @@ public class AtsWorkPage extends WorkPage {
       this(null, null, null, optionResolver);
    }
 
-   public boolean isCurrentState(SMAManager smaMgr) throws OseeCoreException {
-      return smaMgr.isCurrentState(getName());
+   public boolean isCurrentState(StateMachineArtifact sma) throws OseeCoreException {
+      return sma.isCurrentState(getName());
    }
 
-   public boolean isCurrentNonCompleteCancelledState(SMAManager smaMgr) throws OseeCoreException {
-      return smaMgr.isCurrentState(getName()) && !isCompleteCancelledState();
+   public boolean isCurrentNonCompleteCancelledState(StateMachineArtifact sma) throws OseeCoreException {
+      return sma.isCurrentState(getName()) && !isCompleteCancelledState();
    }
 
    public boolean isCompleteCancelledState() {
@@ -64,8 +64,8 @@ public class AtsWorkPage extends WorkPage {
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       super.widgetCreated(xWidget, toolkit, art, page, xModListener, isEditable);
       // Check extenstion points for page creation
-      if (smaMgr != null) {
-         for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
+      if (sma != null) {
+         for (IAtsStateItem item : sma.getStateItems().getStateItems(page.getId())) {
             item.xWidgetCreated(xWidget, toolkit, (AtsWorkPage) page, art, xModListener, isEditable);
          }
       }
@@ -90,8 +90,8 @@ public class AtsWorkPage extends WorkPage {
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       super.widgetCreating(xWidget, toolkit, art, page, xModListener, isEditable);
       // Check extenstion points for page creation
-      if (smaMgr != null) {
-         for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
+      if (sma != null) {
+         for (IAtsStateItem item : sma.getStateItems().getStateItems(page.getId())) {
             Result result = item.xWidgetCreating(xWidget, toolkit, (AtsWorkPage) page, art, xModListener, isEditable);
             if (result.isFalse()) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error in page creation => " + result.getText());
@@ -112,16 +112,10 @@ public class AtsWorkPage extends WorkPage {
       return getName().equals(DefaultTeamState.Endorse.name());
    }
 
-   /**
-    * @return Returns the taskResolutionOptions.
-    */
    public TaskResolutionOptionRule getTaskResDef() {
       return taskResolutionOptions;
    }
 
-   /**
-    * @param taskResolutionOptions The taskResolutionOptions to set.
-    */
    public void setTaskResDef(TaskResolutionOptionRule taskResolutionOptions) {
       this.taskResolutionOptions = taskResolutionOptions;
    }
@@ -130,72 +124,42 @@ public class AtsWorkPage extends WorkPage {
       return this.taskResolutionOptions != null;
    }
 
-   /**
-    * @return the startPage
-    */
    public boolean isStartPage() throws OseeCoreException {
       return workFlowDefinition.getStartPage().getId().equals(getId());
    }
 
-   /**
-    * @return the smaMgr
-    */
-   public SMAManager getSmaMgr() {
-      return smaMgr;
+   public StateMachineArtifact getSma() {
+      return sma;
    }
 
-   /**
-    * @param smaMgr the smaMgr to set
-    */
-   public void setSmaMgr(SMAManager smaMgr) {
-      this.smaMgr = smaMgr;
+   public void setsma(StateMachineArtifact sma) {
+      this.sma = sma;
    }
 
-   /**
-    * @return the validatePage
-    */
    public boolean isValidatePage() throws OseeCoreException {
       return AtsWorkDefinitions.isValidatePage(workPageDefinition);
    }
 
-   /**
-    * @return the validateReviewBlocking
-    */
    public boolean isValidateReviewBlocking() throws OseeCoreException {
       return AtsWorkDefinitions.isValidateReviewBlocking(workPageDefinition);
    }
 
-   /**
-    * @return the forceAssigneesToTeamLeads
-    */
    public boolean isForceAssigneesToTeamLeads() throws OseeCoreException {
       return AtsWorkDefinitions.isForceAssigneesToTeamLeads(workPageDefinition);
    }
 
-   /**
-    * @return the forceAssigneesToTeamLeads
-    */
    public boolean isRequireStateHoursSpentPrompt() throws OseeCoreException {
       return AtsWorkDefinitions.isRequireStateHoursSpentPrompt(workPageDefinition);
    }
 
-   /**
-    * @return the allowCreateBranch
-    */
    public boolean isAllowTransitionWithWorkingBranch() throws OseeCoreException {
       return AtsWorkDefinitions.isAllowTransitionWithWorkingBranch(workPageDefinition);
    }
 
-   /**
-    * @return the allowCreateBranch
-    */
    public boolean isAllowCreateBranch() throws OseeCoreException {
       return AtsWorkDefinitions.isAllowCreateBranch(workPageDefinition);
    }
 
-   /**
-    * @return the allowCommitBranch
-    */
    public boolean isAllowCommitBranch() throws OseeCoreException {
       return AtsWorkDefinitions.isAllowCommitBranch(workPageDefinition);
    }

@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.task;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -32,7 +32,7 @@ public interface IXTaskViewer {
 
    public String getCurrentStateName() throws OseeCoreException;
 
-   public SMAManager getParentSmaMgr() throws OseeCoreException;
+   public StateMachineArtifact getSma() throws OseeCoreException;
 
    /**
     * Overriding flag to denote if tasks are allowed to be edited. If false, task viewer will disable all right-click

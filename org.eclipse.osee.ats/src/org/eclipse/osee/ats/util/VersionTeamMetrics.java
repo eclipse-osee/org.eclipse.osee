@@ -61,7 +61,7 @@ public class VersionTeamMetrics {
          teamWorkflowToOrigDate = new HashMap<TeamWorkFlowArtifact, Date>();
          for (VersionArtifact verArt : verTeamDef.getVersionsArtifacts()) {
             for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
-               Date origDate = team.getSmaMgr().getLog().getCreationDate();
+               Date origDate = team.getLog().getCreationDate();
                teamWorkflowToOrigDate.put(team, origDate);
             }
          }

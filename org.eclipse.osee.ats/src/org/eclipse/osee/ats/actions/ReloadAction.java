@@ -16,9 +16,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -34,30 +34,25 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ReloadAction extends Action {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
-   public ReloadAction(SMAManager smaMgr) {
-      String title = "Reload";
-      try {
-         title = "Reload \"" + smaMgr.getSma().getArtifactTypeName() + "\"";
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-      }
+   public ReloadAction(StateMachineArtifact sma) {
+      String title = "Reload \"" + sma.getArtifactTypeName() + "\"";
       setText(title);
       setToolTipText(getText());
-      this.smaMgr = smaMgr;
+      this.sma = sma;
    }
 
    @Override
    public void run() {
       try {
          Set<Artifact> relatedArts = new HashSet<Artifact>();
-         relatedArts.add(smaMgr.getSma());
-         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-            relatedArts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) smaMgr.getSma()));
+         relatedArts.add(sma);
+         if (sma instanceof TeamWorkFlowArtifact) {
+            relatedArts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) sma));
          }
-         if (smaMgr.getSma() instanceof TaskableStateMachineArtifact) {
-            relatedArts.addAll(((TaskableStateMachineArtifact) smaMgr.getSma()).getTaskArtifacts());
+         if (sma instanceof TaskableStateMachineArtifact) {
+            relatedArts.addAll(((TaskableStateMachineArtifact) sma).getTaskArtifacts());
          }
          if (!MessageDialog.openConfirm(
                Display.getCurrent().getActiveShell(),

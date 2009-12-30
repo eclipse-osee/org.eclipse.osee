@@ -162,17 +162,17 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       for (Artifact art : artifacts) {
          TaskArtifact taskArt = (TaskArtifact) art;
          // If not include completed and task is such, skip this task
-         if (!isIncludeCompletedCancelledCheckbox() && taskArt.getSmaMgr().isCancelledOrCompleted()) {
+         if (!isIncludeCompletedCancelledCheckbox() && taskArt.isCancelledOrCompleted()) {
             continue;
          }
          // If include completed and task is such and user not implementer, skip this task
-         if (isIncludeCompletedCancelledCheckbox() && taskArt.getSmaMgr().isCancelledOrCompleted() && getSelectedUser() != null && taskArt.getImplementers().contains(
+         if (isIncludeCompletedCancelledCheckbox() && taskArt.isCancelledOrCompleted() && getSelectedUser() != null && taskArt.getImplementers().contains(
                getSelectedUser())) {
             tasks.add(taskArt);
             continue;
          }
          // If user is selected and not user is assigned, skip this task
-         else if (getSelectedUser() != null && !taskArt.getSmaMgr().getStateMgr().getAssignees().contains(
+         else if (getSelectedUser() != null && !taskArt.getStateMgr().getAssignees().contains(
                getSelectedUser())) {
             continue;
          }

@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.editor.widget;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -32,22 +32,17 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
    private final AtsWorkPage page;
 
-   public StatePercentCompleteXWidget(IManagedForm managedForm, AtsWorkPage page, final SMAManager smaMgr, Composite composite, int horizontalSpan, XModifiedListener xModListener) {
+   public StatePercentCompleteXWidget(IManagedForm managedForm, AtsWorkPage page, final StateMachineArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener) {
       super("\"" + page.getName() + "\"" + " State Percent Complete");
       this.page = page;
-      this.smaMgr = smaMgr;
+      this.sma = sma;
       if (xModListener != null) {
          addXModifiedListener(xModListener);
       }
-      try {
-         setEditable(!smaMgr.getSma().isReadOnly());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-         setEditable(false);
-      }
+      setEditable(!sma.isReadOnly());
       setFillHorizontally(true);
       setToolTip(TOOLTIP);
       super.createWidgets(managedForm, composite, horizontalSpan);
@@ -56,8 +51,8 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
    @Override
    public boolean handleSelection() {
       try {
-         SMAPromptChangeStatus.promptChangeStatus(Collections.singleton(smaMgr.getSma()), false);
-         smaMgr.getEditor().onDirtied();
+         SMAPromptChangeStatus.promptChangeStatus(Collections.singleton(sma), false);
+         sma.getEditor().onDirtied();
          return true;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -79,22 +74,22 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
          return "page == null";
       }
       try {
-         setEditable(!smaMgr.getSma().isReadOnly());
+         setEditable(!sma.isReadOnly());
          StringBuffer sb =
-               new StringBuffer(String.format("        State Percent: %d", smaMgr.getStateMgr().getPercentComplete(
+               new StringBuffer(String.format("        State Percent: %d", sma.getStateMgr().getPercentComplete(
                      page.getName())));
          boolean breakoutNeeded = false;
-         if (smaMgr.getSma() instanceof TaskableStateMachineArtifact) {
-            if (((TaskableStateMachineArtifact) smaMgr.getSma()).hasTaskArtifacts()) {
+         if (sma instanceof TaskableStateMachineArtifact) {
+            if (((TaskableStateMachineArtifact) sma).hasTaskArtifacts()) {
                sb.append(String.format("\n        Task  Percent: %d",
-                     ((TaskableStateMachineArtifact) smaMgr.getSma()).getPercentCompleteFromTasks(page.getName())));
+                     ((TaskableStateMachineArtifact) sma).getPercentCompleteFromTasks(page.getName())));
                breakoutNeeded = true;
             }
          }
-         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-            if (ReviewManager.hasReviews((TeamWorkFlowArtifact) smaMgr.getSma())) {
+         if (sma instanceof TeamWorkFlowArtifact) {
+            if (ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
                sb.append(String.format("\n     Review Percent: %d", ReviewManager.getPercentComplete(
-                     (TeamWorkFlowArtifact) smaMgr.getSma(), page.getName())));
+                     (TeamWorkFlowArtifact) sma, page.getName())));
                breakoutNeeded = true;
             }
          }
@@ -102,9 +97,9 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
             if (!getControl().isDisposed()) {
                setToolTip(sb.toString() + "\n" + TOOLTIP);
             }
-            return String.valueOf(smaMgr.getSma().getPercentCompleteSMAStateTotal(page.getName()));
+            return String.valueOf(sma.getPercentCompleteSMAStateTotal(page.getName()));
          } else {
-            return String.valueOf(smaMgr.getStateMgr().getPercentComplete(page.getName()));
+            return String.valueOf(sma.getStateMgr().getPercentComplete(page.getName()));
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

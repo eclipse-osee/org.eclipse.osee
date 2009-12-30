@@ -489,7 +489,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    //            for (Artifact art : ArtifactQuery.getArtifactsFromAttribute(
    //                  ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
    //                  "%<" + SkynetAuthentication.getUser().getUserId() + ">%", AtsUtil.getAtsBranch())) {
-   //               if ((art instanceof StateMachineArtifact) && ((StateMachineArtifact) art).getSmaMgr().getStateMgr().getAssignees().contains(
+   //               if ((art instanceof StateMachineArtifact) && ((StateMachineArtifact) art).getStateMgr().getAssignees().contains(
    //                     SkynetAuthentication.getUser())) {
    //                  art.addRelation(CoreRelationEnumeration.Users_User, SkynetAuthentication.getUser());
    //               }

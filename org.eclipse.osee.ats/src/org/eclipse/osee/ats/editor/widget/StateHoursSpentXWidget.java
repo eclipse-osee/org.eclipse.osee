@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.editor.widget;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -32,22 +32,17 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
    private final AtsWorkPage page;
 
-   public StateHoursSpentXWidget(IManagedForm managedForm, AtsWorkPage page, final SMAManager smaMgr, Composite composite, int horizontalSpan, XModifiedListener xModListener) {
+   public StateHoursSpentXWidget(IManagedForm managedForm, AtsWorkPage page, final StateMachineArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener) {
       super("\"" + page.getName() + "\"" + " State Hours Spent");
       this.page = page;
-      this.smaMgr = smaMgr;
+      this.sma = sma;
       if (xModListener != null) {
          addXModifiedListener(xModListener);
       }
-      try {
-         setEditable(!smaMgr.getSma().isReadOnly());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-         setEditable(false);
-      }
+      setEditable(!sma.isReadOnly());
       setFillHorizontally(true);
       setToolTip(TOOLTIP);
       super.createWidgets(managedForm, composite, horizontalSpan);
@@ -56,8 +51,8 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
    @Override
    public boolean handleSelection() {
       try {
-         SMAPromptChangeStatus.promptChangeStatus(Collections.singleton(smaMgr.getSma()), false);
-         smaMgr.getEditor().onDirtied();
+         SMAPromptChangeStatus.promptChangeStatus(Collections.singleton(sma), false);
+         sma.getEditor().onDirtied();
          return true;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -80,26 +75,26 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
       }
       try {
          StringBuffer sb =
-               new StringBuffer(String.format("        State Hours: %5.2f", smaMgr.getStateMgr().getHoursSpent(
+               new StringBuffer(String.format("        State Hours: %5.2f", sma.getStateMgr().getHoursSpent(
                      page.getName())));
          boolean breakoutNeeded = false;
-         if (smaMgr.getSma() instanceof TaskableStateMachineArtifact) {
-            if (((TaskableStateMachineArtifact) smaMgr.getSma()).hasTaskArtifacts()) {
+         if (sma instanceof TaskableStateMachineArtifact) {
+            if (((TaskableStateMachineArtifact) sma).hasTaskArtifacts()) {
                sb.append(String.format("\n        Task  Hours: %5.2f",
-                     ((TaskableStateMachineArtifact) smaMgr.getSma()).getHoursSpentFromTasks(page.getName())));
+                     ((TaskableStateMachineArtifact) sma).getHoursSpentFromTasks(page.getName())));
                breakoutNeeded = true;
             }
          }
-         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact && ReviewManager.hasReviews((TeamWorkFlowArtifact) smaMgr.getSma())) {
+         if (sma instanceof TeamWorkFlowArtifact && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
             sb.append(String.format("\n     Review Hours: %5.2f", ReviewManager.getHoursSpent(
-                  (TeamWorkFlowArtifact) smaMgr.getSma(), page.getName())));
+                  (TeamWorkFlowArtifact) sma, page.getName())));
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {
             setToolTip(sb.toString());
-            return String.format("%5.2f", smaMgr.getSma().getHoursSpentSMAStateTotal(page.getName()));
+            return String.format("%5.2f", sma.getHoursSpentSMAStateTotal(page.getName()));
          } else {
-            return String.format("%5.2f", smaMgr.getStateMgr().getHoursSpent(page.getName()));
+            return String.format("%5.2f", sma.getStateMgr().getHoursSpent(page.getName()));
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

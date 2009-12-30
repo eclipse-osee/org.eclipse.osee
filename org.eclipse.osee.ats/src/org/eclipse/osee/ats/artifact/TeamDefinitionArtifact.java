@@ -306,7 +306,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    /**
-    * Return rules associated with team definition . Use SMAManager.getWorkRulesStartsWith to acquire these and work
+    * Return rules associated with team definition . Use StateMachineArtifact.getWorkRulesStartsWith to acquire these and work
     * page rules and workflow rules.
     * 
     * @param ruleId

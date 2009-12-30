@@ -335,7 +335,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
          try {
             double userHoursRemain = 0;
             for (TeamWorkFlowArtifact team : sMet.getTeamArts()) {
-               Collection<User> users = team.getSmaMgr().getStateMgr().getAssignees();
+               Collection<User> users = team.getStateMgr().getAssignees();
                if (users.contains(user)) {
                   double hours = team.getRemainHoursTotal();
                   if (hours > 0) {

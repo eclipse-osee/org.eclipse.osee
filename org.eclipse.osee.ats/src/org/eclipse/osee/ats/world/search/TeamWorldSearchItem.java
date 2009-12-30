@@ -164,7 +164,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       for (Artifact art : artifacts) {
          StateMachineArtifact sma = (StateMachineArtifact) art;
          // don't include if userArt specified and userArt not assignee
-         if (userArt != null && !sma.getSmaMgr().getStateMgr().getAssignees().contains(userArt)) {
+         if (userArt != null && !sma.getStateMgr().getAssignees().contains(userArt)) {
             continue;
          }
          // don't include if version specified and workflow's not targeted for version

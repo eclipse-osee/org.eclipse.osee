@@ -8,8 +8,8 @@ package org.eclipse.osee.ats.editor.widget;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -25,24 +25,19 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public class TargetVersionXWidget extends XHyperlinkLabelValueSelection {
 
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
    /**
     * @param label
     */
-   public TargetVersionXWidget(IManagedForm managedForm, final SMAManager smaMgr, Composite composite, int horizontalSpan, XModifiedListener xModListener) {
+   public TargetVersionXWidget(IManagedForm managedForm, final StateMachineArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener) {
       super("Target Version");
-      this.smaMgr = smaMgr;
+      this.sma = sma;
       if (xModListener != null) {
          addXModifiedListener(xModListener);
       }
       setFillHorizontally(false);
-      try {
-         setEditable(!smaMgr.getSma().isReadOnly());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-         setEditable(false);
-      }
+      setEditable(!sma.isReadOnly());
       super.createWidgets(managedForm, composite, horizontalSpan);
    }
 
@@ -52,10 +47,10 @@ public class TargetVersionXWidget extends XHyperlinkLabelValueSelection {
       // Don't transition without targeted version if so configured
       try {
          boolean required =
-               smaMgr.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || smaMgr.getWorkPageDefinition().hasWorkRule(
+               sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || sma.getWorkPageDefinition().hasWorkRule(
                      AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
 
-         if (required && smaMgr.getTargetedForVersion() == null) {
+         if (required && sma.getTargetedForVersion() == null) {
             status = new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Workflow must be targeted for a version.");
          }
       } catch (OseeCoreException ex) {
@@ -67,10 +62,10 @@ public class TargetVersionXWidget extends XHyperlinkLabelValueSelection {
    @Override
    public boolean handleSelection() {
       try {
-         if (smaMgr.promptChangeVersion(AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+         if (sma.promptChangeVersion(AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
                false)) {
             refresh();
-            smaMgr.getEditor().onDirtied();
+            sma.getEditor().onDirtied();
             return true;
          }
       } catch (Exception ex) {
@@ -82,8 +77,8 @@ public class TargetVersionXWidget extends XHyperlinkLabelValueSelection {
    @Override
    public String getCurrentValue() {
       try {
-         if (smaMgr.getTargetedForVersion() != null) {
-            return String.valueOf(smaMgr.getTargetedForVersion());
+         if (sma.getTargetedForVersion() != null) {
+            return String.valueOf(sma.getTargetedForVersion());
          } else {
             return "<edit>";
          }

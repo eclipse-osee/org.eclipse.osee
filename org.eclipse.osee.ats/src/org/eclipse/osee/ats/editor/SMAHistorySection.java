@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -53,7 +54,7 @@ public class SMAHistorySection extends SectionPart {
 
    private void updateText(boolean isCreate) {
       if (isCreate) {
-         SMAManager smaMgr = editor.getSmaMgr();
+         StateMachineArtifact sma = editor.getSma();
          final FormToolkit toolkit = getManagedForm().getToolkit();
          Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
          composite.setLayout(new GridLayout());
@@ -65,22 +66,18 @@ public class SMAHistorySection extends SectionPart {
          gd.heightHint = 500;
          xResultsComp.setLayoutData(gd);
          try {
-            xResultsComp.setHtmlText(smaMgr.getLog().getHtml(true), smaMgr.getSma().getArtifactTypeName() + " History");
+            xResultsComp.setHtmlText(sma.getLog().getHtml(true), sma.getArtifactTypeName() + " History");
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
          }
 
          Label button = toolkit.createLabel(composite, "   ", SWT.NONE);
          button.setText("    ");
-         final SMAManager fSmaMgr = smaMgr;
+         final StateMachineArtifact fSma = sma;
          button.addListener(SWT.MouseDoubleClick, new Listener() {
             @Override
             public void handleEvent(Event event) {
-               try {
-                  ArtifactEditor.editArtifact(fSmaMgr.getSma());
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
+               ArtifactEditor.editArtifact(fSma);
             }
          });
 

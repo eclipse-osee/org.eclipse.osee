@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -27,9 +27,9 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem {
       return "osee.ats.decisionReview.Prepare";
    }
 
-   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
+   public Result transitioning(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
       if (fromState.equals(DecisionReviewArtifact.DecisionReviewState.Prepare.name()) && toState.equals(DecisionReviewArtifact.DecisionReviewState.Decision.name())) {
-         XDecisionOptions decOptions = new XDecisionOptions(smaMgr.getSma());
+         XDecisionOptions decOptions = new XDecisionOptions(sma);
          return decOptions.validateDecisionOptions();
       }
       return Result.TrueResult;

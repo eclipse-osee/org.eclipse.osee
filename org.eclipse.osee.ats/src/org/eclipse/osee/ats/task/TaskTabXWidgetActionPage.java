@@ -87,17 +87,12 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
    @Override
    public void createPartControl(Composite parent) {
       super.createPartControl(parent);
-      try {
-         scrolledForm.setImage(ImageManager.getImage(smaEditor.getSmaMgr().getSma()));
-         String title = smaEditor.getSmaMgr().getSma().getName();
-         if (title.length() > 80) {
-            title = title.substring(0, 80 - 1) + "...";
-         }
-         scrolledForm.setText(String.format("Tasks for \"%s\"", title));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-         scrolledForm.setText("Tasks");
+      scrolledForm.setImage(ImageManager.getImage(smaEditor.getSma()));
+      String title = smaEditor.getSma().getName();
+      if (title.length() > 80) {
+         title = title.substring(0, 80 - 1) + "...";
       }
+      scrolledForm.setText(String.format("Tasks for \"%s\"", title));
 
       Result result = AtsPlugin.areOSEEServicesAvailable();
       if (result.isFalse()) {
@@ -189,9 +184,9 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
          try {
             if (taskComposite.getIXTaskViewer().isTaskable()) {
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(
-                     (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getParentSmaMgr().getSma(), null));
+                     (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getSma(), null));
                addActionToMenu(fMenu, new ImportTasksViaSimpleList(
-                     (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getParentSmaMgr().getSma(), null));
+                     (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getSma(), null));
 
             }
          } catch (OseeCoreException ex) {

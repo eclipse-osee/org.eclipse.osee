@@ -95,7 +95,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
 
    @Override
    public String getWorldViewReviewDecider() throws OseeCoreException {
-      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees(DecisionReviewState.Decision.name()));
+      return Artifacts.toString("; ", getStateMgr().getAssignees(DecisionReviewState.Decision.name()));
    }
 
 }

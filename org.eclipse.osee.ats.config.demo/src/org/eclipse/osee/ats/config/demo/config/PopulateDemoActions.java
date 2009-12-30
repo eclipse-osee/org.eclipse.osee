@@ -284,7 +284,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       DemoDbUtil.sleep(2000L);
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Committing branch");
       reqTeam.getBranchMgr().commitWorkingBranch(false, true,
-            reqTeam.getSmaMgr().getTargetedForVersion().getParentBranch(), true);
+            reqTeam.getTargetedForVersion().getParentBranch(), true);
 
       DemoDbUtil.sleep(5000);
 

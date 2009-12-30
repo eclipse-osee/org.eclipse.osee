@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -29,7 +29,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public interface IAtsStateItem {
 
-   public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, SMAManager smaMgr, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException;
+   public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, StateMachineArtifact sma, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException;
 
    public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException;
 
@@ -43,33 +43,33 @@ public interface IAtsStateItem {
 
    public String getDescription() throws OseeCoreException;
 
-   public String getBranchShortName(SMAManager smaMgr) throws OseeCoreException;
+   public String getBranchShortName(StateMachineArtifact sma) throws OseeCoreException;
 
    public boolean isAccessControlViaAssigneesEnabledForBranching() throws OseeCoreException;
 
    public Collection<String> getIds() throws OseeCoreException;
 
    /**
-    * @param smaMgr
+    * @param sma
     * @param fromState
     * @param toState
     * @param toAssignees
     * @return Result of operation. If Result.isFalse(), transition will not continue and Result.popup will occur.
     * @throws Exception
     */
-   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException;
+   public Result transitioning(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException;
 
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException;
+   public void transitioned(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException;
 
    /**
-    * @param smaMgr
+    * @param sma
     * @return Result of operation. If Result.isFalse(), commit will not continue and Result.popup will occur.
     * @throws Exception
     */
-   public Result committing(SMAManager smaMgr) throws OseeCoreException;
+   public Result committing(StateMachineArtifact sma) throws OseeCoreException;
 
-   public List<XWidget> getDynamicXWidgetsPostBody(SMAManager smaMgr) throws OseeCoreException;
+   public List<XWidget> getDynamicXWidgetsPostBody(StateMachineArtifact sma) throws OseeCoreException;
 
-   public List<XWidget> getDynamicXWidgetsPreBody(SMAManager smaMgr) throws OseeCoreException;
+   public List<XWidget> getDynamicXWidgetsPreBody(StateMachineArtifact sma) throws OseeCoreException;
 
 }

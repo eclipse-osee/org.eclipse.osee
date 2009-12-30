@@ -25,8 +25,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -64,8 +63,8 @@ public class ExcelAtsTaskArtifactExtractor {
          if (monitor == null) {
             monitor = new NullProgressMonitor();
          }
-         xmlReader.setContentHandler(new ExcelSaxHandler(new InternalRowProcessor(monitor, transaction, new SMAManager(
-               sma), emailPOCs), true));
+         xmlReader.setContentHandler(new ExcelSaxHandler(
+               new InternalRowProcessor(monitor, transaction, sma, emailPOCs), true));
          xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
@@ -96,15 +95,15 @@ public class ExcelAtsTaskArtifactExtractor {
       private String[] headerRow;
       private int rowNum;
       private final IProgressMonitor monitor;
-      private final SMAManager smaMgr;
+      private final StateMachineArtifact sma;
       private final SkynetTransaction transaction;
       private final boolean emailPOCs;
 
-      protected InternalRowProcessor(IProgressMonitor monitor, SkynetTransaction transaction, SMAManager smaMgr, boolean emailPOCs) {
+      protected InternalRowProcessor(IProgressMonitor monitor, SkynetTransaction transaction, StateMachineArtifact sma, boolean emailPOCs) {
          this.monitor = monitor;
          this.transaction = transaction;
          this.emailPOCs = emailPOCs;
-         this.smaMgr = smaMgr;
+         this.sma = sma;
       }
 
       public void processEmptyRow() {
@@ -130,7 +129,7 @@ public class ExcelAtsTaskArtifactExtractor {
          try {
             rowNum++;
             monitor.setTaskName("Processing Row " + rowNum);
-            TaskArtifact taskArt = ((TaskableStateMachineArtifact) smaMgr.getSma()).createNewTask("");
+            TaskArtifact taskArt = ((TaskableStateMachineArtifact) sma).createNewTask("");
 
             monitor.subTask("Validating...");
             boolean fullRow = false;
@@ -160,7 +159,7 @@ public class ExcelAtsTaskArtifactExtractor {
                      OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
                            "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum));
                   }
-                  taskArt.getSmaMgr().getLog().setOriginator(u);
+                  taskArt.getLog().setOriginator(u);
                } else if (headerRow[i].equalsIgnoreCase("Assignees")) {
                   Set<User> assignees = new HashSet<User>();
                   for (String userName : row[i].split(";")) {
@@ -183,7 +182,7 @@ public class ExcelAtsTaskArtifactExtractor {
                      }
                      assignees.add(user);
                   }
-                  taskArt.getSmaMgr().getStateMgr().setAssignees(assignees);
+                  taskArt.getStateMgr().setAssignees(assignees);
                } else if (headerRow[i].equalsIgnoreCase("Resolution")) {
                   String str = row[i];
                   if (str != null && !str.equals("")) {
@@ -224,7 +223,7 @@ public class ExcelAtsTaskArtifactExtractor {
                               str, rowNum));
                      }
                      int percentInt = percent.intValue();
-                     smaMgr.getStateMgr().updateMetrics(0, percentInt, true);
+                     sma.getStateMgr().updateMetrics(0, percentInt, true);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Hours Spent")) {
                   String str = row[i];
@@ -236,7 +235,7 @@ public class ExcelAtsTaskArtifactExtractor {
                         throw new IllegalArgumentException(String.format("Invalid Hours Spent \"%s\" for row %d", str,
                               rowNum));
                      }
-                     smaMgr.getStateMgr().updateMetrics(hours, smaMgr.getStateMgr().getPercentComplete(), true);
+                     sma.getStateMgr().updateMetrics(hours, sma.getStateMgr().getPercentComplete(), true);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Estimated Hours")) {
                   String str = row[i];
@@ -261,7 +260,7 @@ public class ExcelAtsTaskArtifactExtractor {
             // always persist
             taskArt.persist(transaction);
             if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
-               AtsNotifyUsers.notify(smaMgr.getSma(), AtsNotifyUsers.NotifyType.Assigned);
+               AtsNotifyUsers.notify(sma, AtsNotifyUsers.NotifyType.Assigned);
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

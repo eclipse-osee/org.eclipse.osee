@@ -89,8 +89,8 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                      new SkynetTransaction(AtsUtil.getAtsBranch(), "Re-Assign ATS Objects to User");
                for (Artifact artifact : artsToReAssign) {
                   if (artifact instanceof StateMachineArtifact) {
-                     ((StateMachineArtifact) artifact).getSmaMgr().getStateMgr().removeAssignee(fromUser);
-                     ((StateMachineArtifact) artifact).getSmaMgr().getStateMgr().addAssignee(toUser);
+                     ((StateMachineArtifact) artifact).getStateMgr().removeAssignee(fromUser);
+                     ((StateMachineArtifact) artifact).getStateMgr().addAssignee(toUser);
                   }
                   artifact.persist(transaction);
                }

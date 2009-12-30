@@ -15,8 +15,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -52,7 +52,7 @@ public class CompleteMultipleWorkflows extends Action {
          }
          for (StateMachineArtifact sma : smas) {
             Result result =
-                  sma.getSmaMgr().isTransitionValid(DefaultTeamState.Completed.name(), null, TransitionOption.None);
+                  sma.isTransitionValid(DefaultTeamState.Completed.name(), null, TransitionOption.None);
             if (result.isFalse()) {
                result.popup();
                return;
@@ -66,7 +66,7 @@ public class CompleteMultipleWorkflows extends Action {
                      new SkynetTransaction(AtsUtil.getAtsBranch(), "Complete Multiple Workflows");
                for (StateMachineArtifact sma : smas) {
                   Result result =
-                        sma.getSmaMgr().transitionToCompleted(ed.getEntry(), transaction, TransitionOption.Persist);
+                        sma.transitionToCompleted(ed.getEntry(), transaction, TransitionOption.Persist);
                   if (result.isFalse()) {
                      result.popup();
                      return;

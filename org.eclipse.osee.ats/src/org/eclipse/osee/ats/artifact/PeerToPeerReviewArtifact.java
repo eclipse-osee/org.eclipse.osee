@@ -64,8 +64,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
       if (getUserRoleManager().getUserRoles(Role.Reviewer).size() <= 0) return new Status(IStatus.ERROR, namespace,
             "Must have at least one Reviewer");
       // If in review state, all roles must have hours spent entered
-      if (smaMgr.getStateMgr().getCurrentStateName().equals(
-            PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name())) {
+      if (getStateMgr().getCurrentStateName().equals(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name())) {
          for (UserRole uRole : userRoleManager.getUserRoles()) {
             if (uRole.getHoursSpent() == null) new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
                   "Hours spent must be entered for each role.");

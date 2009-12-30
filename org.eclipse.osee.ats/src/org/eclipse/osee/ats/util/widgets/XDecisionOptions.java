@@ -14,7 +14,6 @@ import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;

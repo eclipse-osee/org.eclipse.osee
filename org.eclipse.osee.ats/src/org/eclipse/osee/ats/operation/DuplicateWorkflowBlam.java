@@ -119,7 +119,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
       for (TeamWorkFlowArtifact teamArt : teamArts) {
-         Collection<User> assignees = teamArt.getSmaMgr().getStateMgr().getAssignees();
+         Collection<User> assignees = teamArt.getStateMgr().getAssignees();
          if (!assignees.contains(UserManager.getUser())) {
             assignees.add(UserManager.getUser());
          }
@@ -148,12 +148,12 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
             dupArt.setName(getDefaultTitle());
          }
          dupArt.addRelation(AtsRelationTypes.ActionToWorkflow_Action, teamArt.getParentActionArtifact());
-         dupArt.getSmaMgr().getLog().addLog(LogType.Note, null,
+         dupArt.getLog().addLog(LogType.Note, null,
                "Workflow duplicated from " + teamArt.getHumanReadableId());
          if (duplicateTasks) {
             for (TaskArtifact taskArt : teamArt.getTaskArtifacts()) {
                TaskArtifact dupTaskArt = (TaskArtifact) taskArt.duplicate(AtsUtil.getAtsBranch());
-               dupTaskArt.getSmaMgr().getLog().addLog(LogType.Note, null,
+               dupTaskArt.getLog().addLog(LogType.Note, null,
                      "Task duplicated from " + taskArt.getHumanReadableId());
                dupArt.addRelation(AtsRelationTypes.SmaToTask_Task, dupTaskArt);
                dupArt.persist(transaction);

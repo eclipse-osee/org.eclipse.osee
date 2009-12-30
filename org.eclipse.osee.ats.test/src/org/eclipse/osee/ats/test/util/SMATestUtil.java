@@ -30,10 +30,10 @@ public class SMATestUtil {
    public static void validateSMAs(Collection<? extends StateMachineArtifact> smas, String stateName, int totalPercent, double hoursSpent) throws Exception {
       for (StateMachineArtifact sma : smas) {
          TestCase.assertEquals("Current State wronf for " + sma.getHumanReadableId(),
-               sma.getSmaMgr().getStateMgr().getCurrentStateName(), stateName);
-         if (sma.getSmaMgr().isCancelledOrCompleted()) {
+               sma.getStateMgr().getCurrentStateName(), stateName);
+         if (sma.isCancelledOrCompleted()) {
             TestCase.assertEquals("ats.CurrentState wrong " + sma.getHumanReadableId(),
-                  sma.getSmaMgr().getStateMgr().getCurrentStateName() + ";;;",
+                  sma.getStateMgr().getCurrentStateName() + ";;;",
                   sma.getSoleAttributeValue(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName()));
          }
          TestCase.assertEquals("Percent wrong for " + sma.getHumanReadableId(), sma.getWorldViewPercentCompleteTotal(),

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -35,19 +36,19 @@ public class SMAWorkFlowDebugSection extends SectionPart {
 
    private Composite workComp;
    private final XFormToolkit toolkit;
-   private final SMAManager smaMgr;
+   private final StateMachineArtifact sma;
 
    /**
     * @param parent
     * @param toolkit
     * @param style
     * @param page
-    * @param smaMgr
+    * @param sma
     * @throws Exception
     */
-   public SMAWorkFlowDebugSection(Composite parent, XFormToolkit toolkit, int style, SMAManager smaMgr) throws OseeCoreException {
+   public SMAWorkFlowDebugSection(Composite parent, XFormToolkit toolkit, int style, StateMachineArtifact sma) throws OseeCoreException {
       super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
-      this.smaMgr = smaMgr;
+      this.sma = sma;
       this.toolkit = toolkit;
    }
 
@@ -65,8 +66,8 @@ public class SMAWorkFlowDebugSection extends SectionPart {
 
       try {
          // Display team definition
-         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-            TeamDefinitionArtifact teamDef = ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition();
+         if (sma instanceof TeamWorkFlowArtifact) {
+            TeamDefinitionArtifact teamDef = ((TeamWorkFlowArtifact) sma).getTeamDefinition();
             addDebug("Team Definition: " + teamDef);
             for (WorkRuleDefinition workItemDefinition : teamDef.getWorkRules()) {
                addDebug("        " + workItemDefinition.toString());
@@ -74,15 +75,15 @@ public class SMAWorkFlowDebugSection extends SectionPart {
          }
 
          // Display workflows
-         addDebug("WorkflowId: " + smaMgr.getWorkFlowDefinition().getId());
-         if (smaMgr.getWorkFlowDefinition().getParentId() != null && !smaMgr.getWorkFlowDefinition().getParentId().equals(
-               "")) addDebug("Inherit Workflow from Parent Id: " + smaMgr.getWorkFlowDefinition().getParentId());
-         for (WorkRuleDefinition workItemDefinition : smaMgr.getWorkFlowDefinition().getWorkRules()) {
+         addDebug("WorkflowId: " + sma.getWorkFlowDefinition().getId());
+         if (sma.getWorkFlowDefinition().getParentId() != null && !sma.getWorkFlowDefinition().getParentId().equals(
+               "")) addDebug("Inherit Workflow from Parent Id: " + sma.getWorkFlowDefinition().getParentId());
+         for (WorkRuleDefinition workItemDefinition : sma.getWorkFlowDefinition().getWorkRules()) {
             addDebug("        " + workItemDefinition.toString());
          }
 
          // Display pages
-         for (WorkPageDefinition atsPage : smaMgr.getWorkFlowDefinition().getPagesOrdered()) {
+         for (WorkPageDefinition atsPage : sma.getWorkFlowDefinition().getPagesOrdered()) {
             addDebug(atsPage.toString());
             for (WorkItemDefinition wid : atsPage.getWorkItems(true)) {
                addDebug("        " + wid.toString());

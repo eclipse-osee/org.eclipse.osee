@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.workflow.item;
 
 import org.eclipse.osee.ats.artifact.LogItem;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -23,11 +23,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinitio
  */
 public class AtsCompletedFromStateWorkItem extends WorkWidgetDefinition {
 
-   protected AtsCompletedFromStateWorkItem(SMAManager smaMgr) throws OseeCoreException {
+   protected AtsCompletedFromStateWorkItem(StateMachineArtifact sma) throws OseeCoreException {
       super("Completed from State", "ats.CompletedFromState");
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
       data.setName(getName());
-      LogItem item = smaMgr.getLog().getStateEvent(LogType.StateComplete);
+      LogItem item = sma.getLog().getStateEvent(LogType.StateComplete);
       data.setDefaultValue(item.getState());
       data.setStorageName(getId());
       data.setXWidgetName("XText");

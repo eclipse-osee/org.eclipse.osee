@@ -113,7 +113,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       try {
          addPriviledgedUsersUpTeamDefinitionTree(getTeamDefinition(), users);
 
-         WorkPageDefinition workPageDefinition = smaMgr.getWorkPageDefinition();
+         WorkPageDefinition workPageDefinition = getWorkPageDefinition();
 
          // Add user if allowing privileged edit to all users
          if (!users.contains(UserManager.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToAll.name()) || getTeamDefinition().hasWorkRule(
@@ -132,7 +132,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          // Add user if team member is originator and rule exists
          if (!users.contains(UserManager.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()) || getTeamDefinition().hasWorkRule(
                RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()))) {
-            if (smaMgr.getOriginator().equals(UserManager.getUser()) && getTeamDefinition().getMembers().contains(
+            if (getOriginator().equals(UserManager.getUser()) && getTeamDefinition().getMembers().contains(
                   UserManager.getUser())) {
                users.add(UserManager.getUser());
             }
@@ -158,7 +158,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    public String getEditorTitle() throws OseeCoreException {
       try {
          if (getWorldViewTargetedVersion() != null) {
-            return smaMgr.getSma().getWorldViewType() + ": " + "[" + getWorldViewTargetedVersionStr() + "] - " + getName();
+            return getWorldViewType() + ": " + "[" + getWorldViewTargetedVersionStr() + "] - " + getName();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
@@ -249,10 +249,8 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
       super.atsDelete(deleteArts, allRelated);
-      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-         for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) smaMgr.getSma())) {
-            reviewArt.atsDelete(deleteArts, allRelated);
-         }
+      for (ReviewSMArtifact reviewArt : ReviewManager.getReviews(this)) {
+         reviewArt.atsDelete(deleteArts, allRelated);
       }
    }
 
@@ -298,15 +296,15 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       if (verArts.size() == 0) return "";
       if (verArts.size() > 1) {
          String errStr =
-               "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for multiple versions: " + Artifacts.commaArts(verArts);
+               "Workflow " + getHumanReadableId() + " targeted for multiple versions: " + Artifacts.commaArts(verArts);
          OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr, null);
          return XViewerCells.getCellExceptionString(errStr);
       }
       VersionArtifact verArt = verArts.iterator().next();
-      if (!smaMgr.isCompleted() && !smaMgr.isCancelled() && verArt.getSoleAttributeValue(
+      if (!isCompleted() && !isCancelled() && verArt.getSoleAttributeValue(
             ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), false)) {
          String errStr =
-               "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for released version, but not completed: " + verArt;
+               "Workflow " + getHumanReadableId() + " targeted for released version, but not completed: " + verArt;
          if (!targetedErrorLogged) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr, null);
             targetedErrorLogged = true;

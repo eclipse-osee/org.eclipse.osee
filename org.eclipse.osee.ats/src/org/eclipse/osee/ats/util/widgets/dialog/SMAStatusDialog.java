@@ -84,7 +84,7 @@ public class SMAStatusDialog extends MessageDialog {
          percent.setToolTip("Enter total percent complete.");
          percent.createWidgets(parent, 2);
          try {
-            if (smas.size() == 1) percent.set(smas.iterator().next().getSmaMgr().getStateMgr().getPercentComplete());
+            if (smas.size() == 1) percent.set(smas.iterator().next().getStateMgr().getPercentComplete());
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }

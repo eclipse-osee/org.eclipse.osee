@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
@@ -155,7 +155,7 @@ public class UserRoleManager {
             assignees.add(UserManager.getUser());
       }
       // Set assignees based on roles
-      getArtifact().getSmaMgr().getStateMgr().setAssignees(assignees);
+      getArtifact().getStateMgr().setAssignees(assignees);
    }
 
    public void removeUserRole(UserRole userRole, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
@@ -222,8 +222,8 @@ public class UserRoleManager {
       double hoursSpent = 0.0;
       for (UserRole role : getUserRoles())
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
-      SMAManager smaMgr = new SMAManager(getArtifact());
-      smaMgr.getStateMgr().setMetrics(hoursSpent, smaMgr.getStateMgr().getPercentComplete(), true);
+      StateMachineArtifact sma = (StateMachineArtifact) getArtifact();
+      sma.getStateMgr().setMetrics(hoursSpent, sma.getStateMgr().getPercentComplete(), true);
       if (persist) getArtifact().persist(transaction);
    }
 }

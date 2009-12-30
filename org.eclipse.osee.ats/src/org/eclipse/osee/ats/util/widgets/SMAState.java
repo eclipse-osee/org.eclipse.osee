@@ -85,7 +85,7 @@ public class SMAState {
    }
 
    /**
-    * Sets the assignees but DOES NOT write to SMA. This method should NOT be called outside the SMAManager.
+    * Sets the assignees but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     * 
     * @param assignees
     * @throws OseeCoreException
@@ -114,7 +114,7 @@ public class SMAState {
    }
 
    /**
-    * Sets the assignees but DOES NOT write to SMA. This method should NOT be called outside the SMAManager.
+    * Sets the assignees but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     * 
     * @param assignee
     * @throws OseeCoreException

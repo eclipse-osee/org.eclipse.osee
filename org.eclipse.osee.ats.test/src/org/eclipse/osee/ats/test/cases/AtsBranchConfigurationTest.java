@@ -189,8 +189,7 @@ public class AtsBranchConfigurationTest {
             OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getBranchMgr().getWorkingBranch());
       Artifact blk3MainArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT,
-                  teamWf.getBranchMgr().getWorkingBranch(),
-                  TestType.BranchViaVersions.name() + " Requirement");
+                  teamWf.getBranchMgr().getWorkingBranch(), TestType.BranchViaVersions.name() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist();
 
@@ -289,8 +288,7 @@ public class AtsBranchConfigurationTest {
             OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getBranchMgr().getWorkingBranch());
       Artifact blk3MainArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT,
-                  teamWf.getBranchMgr().getWorkingBranch(),
-                  TestType.BranchViaTeamDef.name() + " Requirement");
+                  teamWf.getBranchMgr().getWorkingBranch(), TestType.BranchViaTeamDef.name() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist();
 
@@ -416,11 +414,11 @@ public class AtsBranchConfigurationTest {
       assertNotNull("Can't retrieve SMAEditor for workflow " + teamWf, smaEditor);
 
       Collection<XWidget> xWidgets =
-            smaEditor.getXWidgetsFromState(smaEditor.getSmaMgr().getStateMgr().getCurrentStateName(),
+            smaEditor.getXWidgetsFromState(smaEditor.getSma().getStateMgr().getCurrentStateName(),
                   XWorkingBranch.class);
       assertTrue("Should be 1 XWorkingBranch widget in current state, found " + xWidgets.size(), xWidgets.size() == 1);
       xWidgets =
-            smaEditor.getXWidgetsFromState(smaEditor.getSmaMgr().getStateMgr().getCurrentStateName(),
+            smaEditor.getXWidgetsFromState(smaEditor.getSma().getStateMgr().getCurrentStateName(),
                   XCommitManager.class);
       assertTrue("Should be 1 XCommitManager widget in current state, found " + xWidgets.size(), xWidgets.size() == 1);
    }

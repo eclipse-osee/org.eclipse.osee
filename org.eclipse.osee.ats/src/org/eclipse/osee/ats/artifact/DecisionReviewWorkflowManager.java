@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.ats.artifact;
 
-import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -38,7 +38,7 @@ public class DecisionReviewWorkflowManager {
    public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewArtifact.DecisionReviewState toState, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
       Result result = Result.TrueResult;
       // If in Prepare state, set data and transition to Decision
-      if (reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals(
+      if (reviewArt.getStateMgr().getCurrentStateName().equals(
             DecisionReviewArtifact.DecisionReviewState.Prepare.name())) {
          result = setPrepareStateData(reviewArt, 100, 3, .2);
 
@@ -47,8 +47,8 @@ public class DecisionReviewWorkflowManager {
             return result;
          }
          result =
-               reviewArt.getSmaMgr().transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(),
-                     (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()),
+               reviewArt.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(),
+                     (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()),
                      transaction, TransitionOption.None);
       }
       if (result.isFalse()) {
@@ -67,8 +67,8 @@ public class DecisionReviewWorkflowManager {
       }
 
       result =
-            reviewArt.getSmaMgr().transition(toState.name(),
-                  (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()),
+            reviewArt.transition(toState.name(),
+                  (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()),
                   transaction, TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
@@ -78,19 +78,19 @@ public class DecisionReviewWorkflowManager {
    }
 
    public static Result setPrepareStateData(DecisionReviewArtifact reviewArt, int statePercentComplete, double estimateHours, double stateHoursSpent) throws OseeCoreException {
-      if (!reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals(
+      if (!reviewArt.getStateMgr().getCurrentStateName().equals(
             DecisionReviewArtifact.DecisionReviewState.Prepare.name())) return new Result("Action not in Prepare state");
       reviewArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), estimateHours);
-      reviewArt.getSmaMgr().getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
    public static Result setDecisionStateData(DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
-      if (!reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals(
+      if (!reviewArt.getStateMgr().getCurrentStateName().equals(
             DecisionReviewArtifact.DecisionReviewState.Decision.name())) return new Result(
             "Action not in Decision state");
       reviewArt.setSoleAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), decision ? "Yes" : "No");
-      reviewArt.getSmaMgr().getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
