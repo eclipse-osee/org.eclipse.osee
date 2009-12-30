@@ -124,6 +124,12 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
       }
    }
 
+   public void disposeComposite() {
+      if (taskXViewer != null && !taskXViewer.getTree().isDisposed()) {
+         taskXViewer.dispose();
+      }
+   }
+
    public IXTaskViewer getIXTaskViewer() {
       return iXTaskViewer;
    }
@@ -145,7 +151,6 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
 
    public void loadTable() throws OseeCoreException {
       getTaskXViewer().setInput(iXTaskViewer.getTaskArtifacts(""));
-      taskXViewer.refresh();
       taskXViewer.getTree().setFocus();
    }
 

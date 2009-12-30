@@ -57,6 +57,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    private TaskEditorXWidgetActionPage taskActionPage;
    private final Collection<TaskArtifact> tasks = new HashSet<TaskArtifact>();
    private AtsMetricsComposite metricsComposite;
+   private boolean loading = false;
 
    @Override
    public void doSave(IProgressMonitor monitor) {
@@ -113,7 +114,9 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    public void dispose() {
       for (TaskArtifact taskArt : tasks)
          if (taskArt != null && !taskArt.isDeleted() && taskArt.isSMAEditorDirty().isTrue()) taskArt.revertSMA();
-      if (taskActionPage.getTaskComposite() != null) taskActionPage.getTaskComposite().dispose();
+      if (taskActionPage != null && taskActionPage.getTaskComposite() != null) {
+         taskActionPage.getTaskComposite().disposeComposite();
+      }
       if (metricsComposite != null) metricsComposite.disposeComposite();
 
       super.dispose();
@@ -200,6 +203,10 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
             return;
          }
       }
+      if (loading) {
+         AWorkbench.popup("Already Loading, Please Wait");
+         return;
+      }
       LoadTableJob job = null;
       job = new LoadTableJob(provider, SearchType.ReSearch, this);
       job.setUser(false);
@@ -253,7 +260,11 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
+         if (taskEditor.isLoading()) {
+            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Already Loading, Please Wait", null);
+         }
          try {
+            taskEditor.setLoading(true);
             final List<TaskArtifact> taskArts = new ArrayList<TaskArtifact>();
             for (Artifact artifact : itaskEditorProvider.getTaskEditorTaskArtifacts()) {
                if (artifact instanceof TaskArtifact) {
@@ -274,6 +285,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
                         taskEditor.setTableTitle(itaskEditorProvider.getTaskEditorLabel(searchType), false);
                      }
                      taskEditor.getTaskActionPage().getTaskComposite().loadTable();
+                     taskEditor.setLoading(false);
                   } catch (OseeCoreException ex) {
                      OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                   }
@@ -355,6 +367,14 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    @Override
    public IActionable getActionable() throws OseeCoreException {
       return this;
+   }
+
+   public boolean isLoading() {
+      return loading;
+   }
+
+   public void setLoading(boolean loading) {
+      this.loading = loading;
    }
 
 }
