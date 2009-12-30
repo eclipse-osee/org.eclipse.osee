@@ -561,11 +561,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public double getEstimatedHoursFromTasks(String relatedToState) throws OseeCoreException {
-      return smaMgr.getTaskMgr().getEstimatedHours(relatedToState);
+      if (!(this instanceof TaskableStateMachineArtifact)) return 0;
+      return ((TaskableStateMachineArtifact) smaMgr.getSma()).getEstimatedHoursFromTasks(relatedToState);
    }
 
    public double getEstimatedHoursFromTasks() throws OseeCoreException {
-      return smaMgr.getTaskMgr().getEstimatedHours();
+      if (!(this instanceof TaskableStateMachineArtifact)) return 0;
+      return ((TaskableStateMachineArtifact) smaMgr.getSma()).getEstimatedHoursFromTasks();
    }
 
    public double getEstimatedHoursFromReviews() throws OseeCoreException {
@@ -617,7 +619,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public double getRemainFromTasks() throws OseeCoreException {
-      return smaMgr.getTaskMgr().getRemainHours();
+      if (!(this instanceof TaskableStateMachineArtifact)) return 0;
+      return ((TaskableStateMachineArtifact) this).getRemainHoursFromTasks();
    }
 
    public double getRemainFromReviews() throws OseeCoreException {
@@ -741,7 +744,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public String getWorldViewNumberOfTasks() throws OseeCoreException {
-      int num = getSmaMgr().getTaskMgr().getTaskArtifacts().size();
+      if (!(this instanceof TaskableStateMachineArtifact)) return "";
+      int num = ((TaskableStateMachineArtifact) this).getTaskArtifacts().size();
       if (num == 0) {
          return "";
       }
@@ -1010,7 +1014,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * @throws Exception
     */
    public double getHoursSpentSMAStateTasks(String stateName) throws OseeCoreException {
-      return smaMgr.getTaskMgr().getHoursSpent(stateName);
+      if (!(this instanceof TaskableStateMachineArtifact)) return 0;
+      return ((TaskableStateMachineArtifact) smaMgr.getSma()).getHoursSpentFromTasks(stateName);
    }
 
    /**
@@ -1072,7 +1077,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * @throws Exception
     */
    public int getPercentCompleteSMAStateTasks(String stateName) throws OseeCoreException {
-      return smaMgr.getTaskMgr().getPercentComplete(stateName);
+      if (!(this instanceof TaskableStateMachineArtifact)) return 0;
+      return ((TaskableStateMachineArtifact) smaMgr.getSma()).getPercentCompleteFromTasks(stateName);
    }
 
    /**
@@ -1168,11 +1174,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       int numObjects = 1; // the state itself is one object
 
       // Add percent for each task and bump objects for each task
-      Collection<TaskArtifact> tasks = smaMgr.getTaskMgr().getTaskArtifacts(stateName);
-      for (TaskArtifact taskArt : tasks) {
-         percent += taskArt.getPercentCompleteSMATotal();
+      if (smaMgr.getSma() instanceof TaskableStateMachineArtifact) {
+         Collection<TaskArtifact> tasks = ((TaskableStateMachineArtifact) smaMgr.getSma()).getTaskArtifacts(stateName);
+         for (TaskArtifact taskArt : tasks) {
+            percent += taskArt.getPercentCompleteSMATotal();
+         }
+         numObjects += tasks.size();
       }
-      numObjects += tasks.size();
 
       // Add percent for each review and bump objects for each review
       Collection<ReviewSMArtifact> reviews = smaMgr.getReviewManager().getReviews(stateName);

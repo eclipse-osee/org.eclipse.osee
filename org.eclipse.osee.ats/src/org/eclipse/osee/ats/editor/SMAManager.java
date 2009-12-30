@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
-import org.eclipse.osee.ats.util.widgets.TaskManager;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsPriorityDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -81,7 +80,6 @@ public class SMAManager {
    private final WeakReference<StateMachineArtifact> smaRef;
    private Collection<User> transitionAssignees;
    private static String SEPERATOR = ";  ";
-   private final TaskManager taskMgr;
    private final ReviewManager reviewMgr;
    private final AtsBranchManager branchMgr;
    private final StateManager stateMgr;
@@ -105,7 +103,6 @@ public class SMAManager {
       this.editor = editor;
       stateMgr = new StateManager(this);
       reviewMgr = new ReviewManager(this);
-      taskMgr = new TaskManager(this);
       branchMgr = new AtsBranchManager(this);
       deadlineMgr = new DeadlineManager(this);
       atsLog = new ATSLog(sma);
@@ -739,13 +736,6 @@ public class SMAManager {
 
    public boolean showTaskTab() throws OseeCoreException {
       return getSma().showTaskTab();
-   }
-
-   /**
-    * @return Returns the taskMgr.
-    */
-   public TaskManager getTaskMgr() {
-      return taskMgr;
    }
 
    public Result transitionToCancelled(String reason, SkynetTransaction transaction, TransitionOption... transitionOption) {

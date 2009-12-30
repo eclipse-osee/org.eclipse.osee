@@ -117,14 +117,12 @@ public class ExtendedStatusReportJob extends Job {
       for (Artifact art : arts) {
          if (art instanceof ActionArtifact) {
             ActionArtifact actionArt = (ActionArtifact) art;
-            String str =
-                  String.format("Processing %s/%s \"%s\"", x++ + "", arts.size(), actionArt.getName());
+            String str = String.format("Processing %s/%s \"%s\"", x++ + "", arts.size(), actionArt.getName());
             System.out.println(str);
             monitor.subTask(str);
             for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
                addTableRow(sb, team);
-               SMAManager teamSmaMgr = new SMAManager(team);
-               for (TaskArtifact taskArt : teamSmaMgr.getTaskMgr().getTaskArtifacts("Implement")) {
+               for (TaskArtifact taskArt : team.getTaskArtifacts("Implement")) {
                   addTableRow(sb, taskArt);
                }
             }

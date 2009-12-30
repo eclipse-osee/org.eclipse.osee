@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
@@ -523,11 +524,14 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
    }
 
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
-      if (stateName == null || stateName.equals("")) {
-         return smaMgr.getTaskMgr().getTaskArtifacts();
-      } else {
-         return smaMgr.getTaskMgr().getTaskArtifacts(stateName);
+      if (smaMgr.getSma() instanceof TaskableStateMachineArtifact) {
+         if (stateName == null || stateName.equals("")) {
+            return ((TaskableStateMachineArtifact) smaMgr.getSma()).getTaskArtifacts();
+         } else {
+            return ((TaskableStateMachineArtifact) smaMgr.getSma()).getTaskArtifacts(stateName);
+         }
       }
+      return Collections.emptyList();
    }
 
    public boolean isTaskable() throws OseeCoreException {
@@ -724,10 +728,12 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
          reload = true;
       }
       if (!reload) {
-         for (TaskArtifact taskArt : sma.getSmaMgr().getTaskMgr().getTaskArtifacts()) {
-            if (artifacts.contains(taskArt)) {
-               reload = true;
-               break;
+         if (sma instanceof TaskableStateMachineArtifact) {
+            for (TaskArtifact taskArt : ((TaskableStateMachineArtifact) sma).getTaskArtifacts()) {
+               if (artifacts.contains(taskArt)) {
+                  reload = true;
+                  break;
+               }
             }
          }
       }

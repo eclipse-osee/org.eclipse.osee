@@ -151,7 +151,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          dupArt.getSmaMgr().getLog().addLog(LogType.Note, null,
                "Workflow duplicated from " + teamArt.getHumanReadableId());
          if (duplicateTasks) {
-            for (TaskArtifact taskArt : teamArt.getSmaMgr().getTaskMgr().getTaskArtifacts()) {
+            for (TaskArtifact taskArt : teamArt.getTaskArtifacts()) {
                TaskArtifact dupTaskArt = (TaskArtifact) taskArt.duplicate(AtsUtil.getAtsBranch());
                dupTaskArt.getSmaMgr().getLog().addLog(LogType.Note, null,
                      "Task duplicated from " + taskArt.getHumanReadableId());

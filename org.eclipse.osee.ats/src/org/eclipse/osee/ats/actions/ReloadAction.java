@@ -16,6 +16,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -51,7 +52,9 @@ public class ReloadAction extends Action {
          Set<Artifact> relatedArts = new HashSet<Artifact>();
          relatedArts.add(smaMgr.getSma());
          relatedArts.addAll(smaMgr.getReviewManager().getReviews());
-         relatedArts.addAll(smaMgr.getTaskMgr().getTaskArtifacts());
+         if (smaMgr.getSma() instanceof TaskableStateMachineArtifact) {
+            relatedArts.addAll(((TaskableStateMachineArtifact) smaMgr.getSma()).getTaskArtifacts());
+         }
          if (!MessageDialog.openConfirm(
                Display.getCurrent().getActiveShell(),
                "Reload Action (Experimental)",

@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
-import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -202,7 +201,8 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
                   "Enter Task Title/Description", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
-            taskArt = iXTaskViewer.getParentSmaMgr().getTaskMgr().createNewTask(ed.getEntry());
+            taskArt =
+                  ((TaskableStateMachineArtifact) iXTaskViewer.getParentSmaMgr().getSma()).createNewTask(ed.getEntry());
             iXTaskViewer.getEditor().onDirtied();
             add(Collections.singleton(taskArt));
             taskXViewer.getTree().setFocus();

@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
-import org.eclipse.osee.ats.util.widgets.TaskManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -239,8 +238,7 @@ public class AtsDeleteManagerTest {
          }
       }
 
-      TaskManager.createTasks(teamArt, Arrays.asList(testName.name() + "Task 1", testName.name() + "Task 2"), null,
-            transaction);
+      teamArt.createTasks(Arrays.asList(testName.name() + "Task 1", testName.name() + "Task 2"), null, transaction);
 
       DecisionReviewArtifact decRev =
             ReviewManager.createNewDecisionReview(teamArt, ReviewBlockType.None, testName.name(),

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor.widget;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -81,10 +82,12 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
                new StringBuffer(String.format("        State Percent: %d", smaMgr.getStateMgr().getPercentComplete(
                      page.getName())));
          boolean breakoutNeeded = false;
-         if (smaMgr.getTaskMgr().hasTaskArtifacts()) {
-            sb.append(String.format("\n        Task  Percent: %d", smaMgr.getTaskMgr().getPercentComplete(
-                  page.getName())));
-            breakoutNeeded = true;
+         if (smaMgr.getSma() instanceof TaskableStateMachineArtifact) {
+            if (((TaskableStateMachineArtifact) smaMgr.getSma()).hasTaskArtifacts()) {
+               sb.append(String.format("\n        Task  Percent: %d",
+                     ((TaskableStateMachineArtifact) smaMgr.getSma()).getPercentCompleteFromTasks(page.getName())));
+               breakoutNeeded = true;
+            }
          }
          if (smaMgr.getReviewManager().hasReviews()) {
             sb.append(String.format("\n     Review Percent: %d", smaMgr.getReviewManager().getPercentComplete(

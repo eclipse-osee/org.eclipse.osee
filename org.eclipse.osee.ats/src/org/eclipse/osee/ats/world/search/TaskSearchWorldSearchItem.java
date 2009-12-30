@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -127,8 +127,8 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
             for (Artifact art : groupArt.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
                if (art instanceof TaskArtifact) {
                   taskArts.add((TaskArtifact) art);
-               } else if (art instanceof StateMachineArtifact) {
-                  taskArts.addAll(((StateMachineArtifact) art).getSmaMgr().getTaskMgr().getTaskArtifacts());
+               } else if (art instanceof TaskableStateMachineArtifact) {
+                  taskArts.addAll(((TaskableStateMachineArtifact) art).getTaskArtifacts());
                }
             }
          }
@@ -136,7 +136,8 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       }
 
       // Bulk load tasks related to workflows
-      Collection<Artifact> artifacts = RelationManager.getRelatedArtifacts(workflows, 1, AtsRelationTypes.SmaToTask_Task);
+      Collection<Artifact> artifacts =
+            RelationManager.getRelatedArtifacts(workflows, 1, AtsRelationTypes.SmaToTask_Task);
 
       // Apply the remaining criteria
       return filterByCompletedAndSelectedUser(artifacts);

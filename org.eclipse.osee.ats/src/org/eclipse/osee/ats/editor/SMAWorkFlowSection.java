@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
@@ -257,7 +258,8 @@ public class SMAWorkFlowSection extends SectionPart {
          GridLayout layout = new GridLayout(6, false);
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new TaskInfoXWidget(getManagedForm(), smaMgr, forStateName, comp, 2));
+         allXWidgets.add(new TaskInfoXWidget(getManagedForm(), ((TaskableStateMachineArtifact) smaMgr.getSma()),
+               forStateName, comp, 2));
       }
    }
 
@@ -690,12 +692,14 @@ public class SMAWorkFlowSection extends SectionPart {
 
             // Loop through this state's tasks to confirm complete
             if (smaMgr.isTaskable()) {
-               for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifactsFromCurrentState()) {
-                  if (taskArt.isInWork()) {
-                     AWorkbench.popup(
-                           "Transition Blocked",
-                           "Task Not Complete\n\nTitle: " + taskArt.getName() + "\n\nHRID: " + taskArt.getHumanReadableId());
-                     return;
+               if (smaMgr.getSma() instanceof TaskableStateMachineArtifact) {
+                  for (TaskArtifact taskArt : ((TaskableStateMachineArtifact) smaMgr.getSma()).getTaskArtifactsFromCurrentState()) {
+                     if (taskArt.isInWork()) {
+                        AWorkbench.popup(
+                              "Transition Blocked",
+                              "Task Not Complete\n\nTitle: " + taskArt.getName() + "\n\nHRID: " + taskArt.getHumanReadableId());
+                        return;
+                     }
                   }
                }
             }

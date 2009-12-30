@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -154,11 +153,9 @@ public class VersionReportJob extends Job {
                      team.getWorldViewPriority(), team.getWorldViewChangeTypeStr(), team.getName(),
                      team.getHumanReadableId()}, null, (x % 2 == 0 ? null : "#cccccc")));
 
-               SMAManager smaMgr = new SMAManager(team);
-               for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts()) {
-                  sb.append(AHTML.addRowMultiColumnTable(new String[] {"Task", "", "", "",
-                        taskArt.getName(), taskArt.getHumanReadableId()}, null,
-                        (x % 2 == 0 ? null : "#cccccc")));
+               for (TaskArtifact taskArt : team.getTaskArtifacts()) {
+                  sb.append(AHTML.addRowMultiColumnTable(new String[] {"Task", "", "", "", taskArt.getName(),
+                        taskArt.getHumanReadableId()}, null, (x % 2 == 0 ? null : "#cccccc")));
                }
             }
          }

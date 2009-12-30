@@ -81,7 +81,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                List<Artifact> arts = new ArrayList<Artifact>();
                // Convert artifacts to WorldArtifactItems
                arts.addAll(teamArt.getSmaMgr().getReviewManager().getReviews());
-               arts.addAll(teamArt.getSmaMgr().getTaskMgr().getTaskArtifactsSorted());
+               arts.addAll(teamArt.getTaskArtifactsSorted());
                relatedArts.addAll(arts);
                return arts.toArray();
             }
@@ -90,7 +90,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                List<Artifact> arts = new ArrayList<Artifact>();
                // Convert artifacts to WorldArtifactItems
                arts.addAll(reviewArt.getSmaMgr().getReviewManager().getReviews());
-               arts.addAll(reviewArt.getSmaMgr().getTaskMgr().getTaskArtifactsSorted());
+               arts.addAll(reviewArt.getTaskArtifactsSorted());
                relatedArts.addAll(arts);
                return arts.toArray();
             }

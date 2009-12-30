@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.artifact.ATSArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -186,11 +186,10 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    }
 
    private void addTasksAHIs(ActionHyperItem parentAHI, ATSArtifact artifact) throws OseeCoreException {
-      if (!(artifact instanceof StateMachineArtifact)) return;
-      if (((StateMachineArtifact) artifact).getSmaMgr().getTaskMgr().getTaskArtifacts().size() > 0) {
+      if (!(artifact instanceof TaskableStateMachineArtifact)) return;
+      if (((TaskableStateMachineArtifact) artifact).getTaskArtifacts().size() > 0) {
          if (artifact instanceof ReviewSMArtifact) tasksReviewsCreated = true;
-         parentAHI.addBottom(new TasksActionHyperItem(
-               ((StateMachineArtifact) artifact).getSmaMgr().getTaskMgr().getTaskArtifacts()));
+         parentAHI.addBottom(new TasksActionHyperItem(((TaskableStateMachineArtifact) artifact).getTaskArtifacts()));
       }
    }
 

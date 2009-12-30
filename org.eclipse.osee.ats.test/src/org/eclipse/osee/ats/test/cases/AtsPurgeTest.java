@@ -78,8 +78,7 @@ public class AtsPurgeTest {
 
       for (int x = 0; x < 30; x++) {
          TaskArtifact taskArt =
-               actionArt.getTeamWorkFlowArtifacts().iterator().next().getSmaMgr().getTaskMgr().createNewTask(
-                     getClass().getSimpleName() + x);
+               actionArt.getTeamWorkFlowArtifacts().iterator().next().createNewTask(getClass().getSimpleName() + x);
          taskArt.persist();
          artsToPurge.add(taskArt);
       }

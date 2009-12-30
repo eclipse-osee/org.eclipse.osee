@@ -30,7 +30,7 @@ public class DemoDbTasks {
       for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
          for (String title : getTaskTitles(firstTaskWorkflow)) {
             TaskArtifact taskArt =
-                  codeArt.getSmaMgr().getTaskMgr().createNewTask(
+                  codeArt.createNewTask(
                         (firstTaskWorkflow ? Arrays.asList(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith),
                               DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)) : Arrays.asList(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith))),
                         title);

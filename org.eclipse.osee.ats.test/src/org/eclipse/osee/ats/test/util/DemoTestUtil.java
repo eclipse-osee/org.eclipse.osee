@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
-import org.eclipse.osee.ats.util.widgets.TaskManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -115,7 +114,7 @@ public class DemoTestUtil {
       for (int x = 1; x < numTasks + 1; x++) {
          names.add(title + " " + x);
       }
-      return TaskManager.createTasks(teamArt, names, Arrays.asList(UserManager.getUser()), transaction);
+      return teamArt.createTasks(names, Arrays.asList(UserManager.getUser()), transaction);
    }
 
    public static void purgeArtifacts(Collection<Artifact> artifacts) throws Exception {

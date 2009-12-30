@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.widgets.TaskManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -86,7 +85,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   final TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                   SkynetTransaction transaction =
                         new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Simple List");
-                  TaskManager.createTasks(teamArt, titles, assignees, transaction);
+                  teamArt.createTasks(titles, assignees, transaction);
                   teamArt.persist(transaction);
                   transaction.execute();
                } catch (Exception ex) {

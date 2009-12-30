@@ -14,7 +14,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -43,14 +43,14 @@ import org.eclipse.ui.forms.IMessageManager;
  */
 public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactionEventListener {
 
-   private final SMAManager smaMgr;
    private final String forStateName;
    private final IManagedForm managedForm;
+   private final TaskableStateMachineArtifact taskableArt;
 
-   public TaskInfoXWidget(IManagedForm managedForm, final SMAManager smaMgr, final String forStateName, Composite composite, int horizontalSpan) {
+   public TaskInfoXWidget(IManagedForm managedForm, final TaskableStateMachineArtifact taskableArt, final String forStateName, Composite composite, int horizontalSpan) {
       super("\"" + forStateName + "\" State Tasks");
       this.managedForm = managedForm;
-      this.smaMgr = smaMgr;
+      this.taskableArt = taskableArt;
       this.forStateName = forStateName;
       setToolTip("Tasks must be completed before transtion.  Select \"Task\" tab to view tasks");
       setFillHorizontally(true);
@@ -62,7 +62,7 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
    @Override
    public String toString() {
       try {
-         return "TaskInfoXWidget for SMA \"" + smaMgr.getSma() + "\"";
+         return "TaskInfoXWidget for SMA \"" + taskableArt + "\"";
       } catch (Exception ex) {
          return "TaskInfoXWidget " + ex.getLocalizedMessage();
       }
@@ -74,12 +74,12 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
          dispose();
       }
       try {
-         if (smaMgr.getTaskMgr().getTaskArtifacts(forStateName).size() > 0) {
-            setValueText(smaMgr.getTaskMgr().getStatus(forStateName));
+         if (taskableArt.getTaskArtifacts(forStateName).size() > 0) {
+            setValueText(taskableArt.getStatus(forStateName));
          } else {
             setValueText("No Tasks Created");
          }
-         if (smaMgr.getTaskMgr().areTasksComplete(forStateName).isFalse()) {
+         if (taskableArt.areTasksComplete(forStateName).isFalse()) {
             IMessageManager messageManager = managedForm.getMessageManager();
             if (messageManager != null) {
                messageManager.addMessage("validation.error", "State \"" + forStateName + "\" has uncompleted Tasks",
@@ -97,13 +97,13 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (smaMgr.isInTransition()) {
+      if (taskableArt.getSmaMgr().isInTransition()) {
          return;
       }
       if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
          return;
       }
-      for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts(forStateName)) {
+      for (TaskArtifact taskArt : taskableArt.getTaskArtifacts(forStateName)) {
          if (transData.isHasEvent(taskArt)) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
@@ -135,7 +135,7 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
                      try {
                         SkynetTransaction transaction =
                               new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Auto Complete Tasks");
-                        for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts(forStateName)) {
+                        for (TaskArtifact taskArt : taskableArt.getTaskArtifacts(forStateName)) {
                            if (!taskArt.getSmaMgr().isCancelledOrCompleted()) {
                               if (taskArt.getSmaMgr().getStateMgr().isUnAssigned()) {
                                  taskArt.getSmaMgr().getStateMgr().setAssignee(UserManager.getUser());

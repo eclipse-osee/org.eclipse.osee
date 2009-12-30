@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
@@ -129,7 +130,7 @@ public class ExcelAtsTaskArtifactExtractor {
          try {
             rowNum++;
             monitor.setTaskName("Processing Row " + rowNum);
-            TaskArtifact taskArt = smaMgr.getTaskMgr().createNewTask("");
+            TaskArtifact taskArt = ((TaskableStateMachineArtifact) smaMgr.getSma()).createNewTask("");
 
             monitor.subTask("Validating...");
             boolean fullRow = false;
