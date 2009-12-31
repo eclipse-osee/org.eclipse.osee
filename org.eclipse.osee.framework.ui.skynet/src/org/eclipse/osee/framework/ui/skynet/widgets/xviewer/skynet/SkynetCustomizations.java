@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,21 +25,36 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.ui.skynet.util.ElapsedTime;
 
 /**
  * @author Donald G. Dunne
  */
-public class SkynetCustomizations implements IXViewerCustomizations {
+public class SkynetCustomizations implements IXViewerCustomizations, IFrameworkTransactionEventListener {
 
    // Artifact that stores shared/global customizations
-   private Artifact globalCustomizationsArtifact;
+   private static Artifact globalCustomizationsArtifact;
    // Collection of all customizations both from local and global storage
-   private final List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
+   private static List<CustomizeData> custDatas;
    // Storage mechanism (user's User Artifact) for storage of selected default customizations guids for each XViewer namespace
    private final SkynetUserArtifactCustomizeDefaults userArtifactDefaults;
    // Attribute name for storing customizations both locally and globally
    private static String CUSTOMIZATION_ATTRIBUTE_NAME = "XViewer Customization";
    private final SkynetXViewerFactory skynetXViewerFactory;
+   private static SkynetCustomizations instance = new SkynetCustomizations();
+
+   /**
+    * Constructor for events only
+    */
+   private SkynetCustomizations() {
+      OseeEventManager.addListener(this);
+      userArtifactDefaults = null;
+      skynetXViewerFactory = null;
+   }
 
    public SkynetCustomizations(SkynetXViewerFactory skynetXViewerFactory) throws OseeCoreException {
       this.skynetXViewerFactory = skynetXViewerFactory;
@@ -47,8 +63,14 @@ public class SkynetCustomizations implements IXViewerCustomizations {
    }
 
    public List<CustomizeData> getSavedCustDatas() throws OseeCoreException {
-      loadCustomizationData();
-      return custDatas;
+      ensurePopulated(false);
+      List<CustomizeData> thisCustDatas = new ArrayList<CustomizeData>();
+      for (CustomizeData custData : custDatas) {
+         if (custData.getNameSpace().equals(this.skynetXViewerFactory.getNamespace())) {
+            thisCustDatas.add(custData);
+         }
+      }
+      return thisCustDatas;
    }
 
    private static void saveCustomization(CustomizeData custData, Artifact saveArt) throws OseeCoreException {
@@ -73,21 +95,28 @@ public class SkynetCustomizations implements IXViewerCustomizations {
          saveCustomization(custData, UserManager.getUser());
       else
          saveCustomization(custData, globalCustomizationsArtifact);
-   }
-
-   public void loadCustomizationData() throws OseeCoreException {
-      custDatas.clear();
-      User user = UserManager.getUser();
-      if (user != null) custDatas.addAll(getArtifactCustomizations(user));
-      for (CustomizeData custData : custDatas)
-         custData.setPersonal(true);
-      custDatas.addAll(getArtifactCustomizations(getGlobalCustomizationsArtifact()));
+      ensurePopulated(true);
    }
 
    /**
-    * @return Returns the defaultCustomizationsArtifact.
+    * Load and cache all customizations
     */
-   public Artifact getGlobalCustomizationsArtifact() {
+   public static synchronized void ensurePopulated(boolean force) throws OseeCoreException {
+      if (custDatas == null || force) {
+         if (custDatas == null) custDatas = Collections.synchronizedList(new ArrayList<CustomizeData>());
+         if (force) custDatas.clear();
+         User user = UserManager.getUser();
+         if (user != null) {
+            for (CustomizeData custData : getArtifactCustomizations(user)) {
+               custData.setPersonal(true);
+               custDatas.add(custData);
+            }
+         }
+         custDatas.addAll(getArtifactCustomizations(getGlobalCustomizationsArtifact()));
+      }
+   }
+
+   public static Artifact getGlobalCustomizationsArtifact() {
       return globalCustomizationsArtifact;
    }
 
@@ -164,27 +193,33 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       userArtifactDefaults.save();
    }
 
-   private List<CustomizeData> getArtifactCustomizations(Artifact customizationArtifact) throws OseeCoreException {
+   private static List<CustomizeData> getArtifactCustomizations(Artifact customizationArtifact) throws OseeCoreException {
+      ElapsedTime time = new ElapsedTime("getArtifactCustomizations");
       List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
       if (customizationArtifact != null) {
 
          Collection<Attribute<String>> attributes = customizationArtifact.getAttributes(CUSTOMIZATION_ATTRIBUTE_NAME);
          for (Attribute<String> attr : attributes) {
-            String str = attr.getValue();
-            Matcher m =
-                  Pattern.compile("name=\"(.*?)\".*?namespace=\"" + skynetXViewerFactory.getNamespace() + "\"").matcher(
-                        str);
-            if (m.find()) {
-               CustomizeData custData = new CustomizeData(str);
-               custDatas.add(custData);
-            }
+            CustomizeData custData = new CustomizeData(attr.getValue());
+            custDatas.add(custData);
          }
       }
+      time.end();
       return custDatas;
    }
 
    public boolean isCustomizationPersistAvailable() {
       return true;
+   }
+
+   @Override
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
+      // If global customization artifact or user artifact change, clear cache so it can be loaded again
+      if (transData.cacheChangedArtifacts.size() > 0) {
+         if (transData.cacheChangedArtifacts.contains(getGlobalCustomizationsArtifact()) || transData.cacheChangedArtifacts.contains(UserManager.getUser())) {
+            ensurePopulated(true);
+         }
+      }
    }
 
 }

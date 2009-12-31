@@ -94,8 +94,10 @@ public class CustomizeData {
       return sb.toString();
    }
 
+   private static Pattern pattern = Pattern.compile("name=\"(.*?)\".*?namespace=\"(.*?)\".*?guid=\"(.*?)\"");
+
    public void setFromXml(String xml) {
-      Matcher m = Pattern.compile("name=\"(.*?)\".*?namespace=\"(.*?)\".*?guid=\"(.*?)\"").matcher(xml);
+      Matcher m = pattern.matcher(xml);
       if (m.find()) {
          name = m.group(1);
          nameSpace = m.group(2);

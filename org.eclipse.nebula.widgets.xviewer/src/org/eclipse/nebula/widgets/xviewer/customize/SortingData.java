@@ -102,15 +102,18 @@ public class SortingData {
       return sb.toString();
    }
 
+   private static Pattern pattern1 = Pattern.compile("<" + COL_NAME_TAG + ">(.*?)</" + COL_NAME_TAG + ">");
+   private static Pattern pattern2 = Pattern.compile("<" + OLD_COL_NAME_TAG + ">(.*?)</" + OLD_COL_NAME_TAG + ">");
+
    public void setFromXml(String xml) {
       // NOTE: Sorting direction is stored as part of the column data
       sortingIds.clear();
       String xmlSortStr = XmlUtil.getTagData(xml, XTREESORTER_TAG);
-      Matcher m = Pattern.compile("<" + COL_NAME_TAG + ">(.*?)</" + COL_NAME_TAG + ">").matcher(xmlSortStr);
+      Matcher m = pattern1.matcher(xmlSortStr);
       while (m.find()) {
          sortingIds.add(m.group(1));
       }
-      Matcher mOld = Pattern.compile("<" + OLD_COL_NAME_TAG + ">(.*?)</" + OLD_COL_NAME_TAG + ">").matcher(xmlSortStr);
+      Matcher mOld = pattern2.matcher(xmlSortStr);
       while (mOld.find()) {
          sortingIds.add(mOld.group(1));
       }

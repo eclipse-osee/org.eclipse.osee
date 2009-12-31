@@ -28,11 +28,12 @@ public class ColumnData {
    List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
    Map<String, XViewerColumn> idToColumn = new HashMap<String, XViewerColumn>();
 
+   private static Pattern pattern =
+         Pattern.compile("<" + XViewerColumn.XTREECOLUMN_TAG + ">(.*?)</" + XViewerColumn.XTREECOLUMN_TAG + ">");
+
    public List<XViewerColumn> setFromXml(String xml) {
       columns.clear();
-      Matcher columnMatch =
-            Pattern.compile("<" + XViewerColumn.XTREECOLUMN_TAG + ">(.*?)</" + XViewerColumn.XTREECOLUMN_TAG + ">").matcher(
-                  xml);
+      Matcher columnMatch = pattern.matcher(xml);
       while (columnMatch.find()) {
          String colXml = columnMatch.group(1);
          XViewerColumn xCol = new XViewerColumn(null, colXml);

@@ -46,9 +46,12 @@ public class SkynetUserArtifactCustomizeDefaults {
       return defaultGuids.size();
    }
 
+   private static Pattern pattern =
+         Pattern.compile("<" + DEFAULT_CUST_GUID_TAG + ">(.*?)</" + DEFAULT_CUST_GUID_TAG + ">");
+
    private void setDefaultCustomizationsFromXml(String xml) {
       defaultGuids.clear();
-      Matcher m = Pattern.compile("<" + DEFAULT_CUST_GUID_TAG + ">(.*?)</" + DEFAULT_CUST_GUID_TAG + ">").matcher(xml);
+      Matcher m = pattern.matcher(xml);
       while (m.find()) {
          defaultGuids.add(m.group(1));
       }
