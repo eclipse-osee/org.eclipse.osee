@@ -104,7 +104,11 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       } else if (AttributeTypeManager.isBaseTypeCompatible(BinaryAttribute.class, attributeType)) {
          xWidgetName = "XLabelDam";
       } else if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeType)) {
-         xWidgetName = "XTextDam";
+         if (maxOccurrence == 1) {
+            xWidgetName = "XTextDam";
+         } else {
+            xWidgetName = "XStackedDam";
+         }
       } else {
          xWidgetName = "XStackedDam";
       }
