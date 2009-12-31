@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -53,10 +52,6 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       this.oseeDatabaseProvider = oseeDatabaseProvider;
       this.factoryProvider = factoryProvider;
       this.branchCache = branchCache;
-   }
-
-   protected IOseeModelFactoryService getFactoryService() throws OseeCoreException {
-      return factoryProvider.getOseeFactoryService();
    }
 
    private synchronized void ensureDependantCachePopulated() throws OseeCoreException {
@@ -119,7 +114,6 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
 
    private TransactionRecord loadFromTransaction(TransactionCache cache, Branch branch, int fetchSize, boolean isOnlyReadFirstResult, String query, Object... parameters) throws OseeCoreException {
       IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
-      TransactionRecordFactory factory = getFactoryService().getTransactionFactory();
       TransactionRecord record = null;
       try {
          chStmt.runPreparedQuery(fetchSize, query, parameters);
@@ -133,10 +127,8 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
             record =
-                  factory.createOrUpdate(cache, transactionNumber, branchId, comment, timestamp, authorArtId,
+                  prepareTransactionRecord(cache, transactionNumber, branchId, comment, timestamp, authorArtId,
                         commitArtId, txType);
-            record.setBranchCache(branchCache);
-            record.clearDirty();
             if (isOnlyReadFirstResult) {
                break;
             }
@@ -144,6 +136,16 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       } finally {
          chStmt.close();
       }
+      return record;
+   }
+
+   private TransactionRecord prepareTransactionRecord(TransactionCache cache, int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
+      TransactionRecordFactory factory = factoryProvider.getOseeFactoryService().getTransactionFactory();
+      TransactionRecord record =
+            factory.createOrUpdate(cache, transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId,
+                  txType);
+      record.setBranchCache(branchCache);
+      record.clearDirty();
       return record;
    }
 
