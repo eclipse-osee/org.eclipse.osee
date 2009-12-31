@@ -42,6 +42,10 @@ public class V0_9_0TypeHandler extends AbstractSaxHandler {
          String typeName = attributes.getValue(typeNameColumn);
          if (typeName.equals("ats.Parent Branch Id")) {
             typeName = "ats.Baseline Branch Guid";
+         } else if (typeName.equals("Narrative")) {
+            typeName = "Heading";
+         } else if (typeName.equals("ats.Parent Branch Id")) {
+            typeName = "ats.Baseline Branch Guid";
          }
          String guid = cache.getBySoleName(typeName).getGuid();
          typeIdMap.put(Integer.parseInt(attributes.getValue(typeIdColumn)), guid);
