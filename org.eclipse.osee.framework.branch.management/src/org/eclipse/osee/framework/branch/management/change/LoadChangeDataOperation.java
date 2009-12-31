@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  */
 public class LoadChangeDataOperation extends AbstractOperation {
    private static final String SELECT_SOURCE_BRANCH_CHANGES =
-         "select gamma_id, mod_type from osee_txs txs, osee_tx_details txd where txs.branch_id = ? and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.tx_type = ?";
+         "select txs.transaction_id, gamma_id, mod_type from osee_tx_details txd, osee_txs txs where txd.branch_id = ? and txd.tx_type = ? and txd.transaction_id = txs.transaction_id and txs.tx_current <> ?";
 
    private static final String SELECT_SOURCE_TRANSACTION_CHANGES =
          "select gamma_id, mod_type from osee_txs txs where txs.transaction_id = ?";
@@ -118,7 +118,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
          switch (loadChangesEnum) {
             case FROM_ALL_BRANCH_TRANSACTIONS:
                chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
-                     TxChange.NOT_CURRENT.getValue(), TransactionDetailsType.NonBaselined.getId());
+                     TransactionDetailsType.NonBaselined.getId(), TxChange.NOT_CURRENT.getValue());
                currentTransactionNumber = sourceTransactionId.getId();
                break;
             case FROM_SINGLE_TRANSACTION:
@@ -250,8 +250,8 @@ public class LoadChangeDataOperation extends AbstractOperation {
             case FROM_ALL_BRANCH_TRANSACTIONS:
                query =
                      "select txs.transaction_id, txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
-                           + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
-                           " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ? and txd.transaction_id <= ?";
+                           + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
+                           " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
                chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
                      destinationTransaction.getBranchId(), destinationTransaction.getId());
@@ -259,8 +259,8 @@ public class LoadChangeDataOperation extends AbstractOperation {
             case FROM_SINGLE_TRANSACTION:
                query =
                      "select txs.transaction_id, txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
-                           + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
-                           " and item.gamma_id = txs.gamma_id and txs.transaction_id = txd.transaction_id and txd.branch_id = ? and txd.transaction_id <= ?";
+                           + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
+                           " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?";
 
                chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), destinationTransaction.getBranchId(),
                      destinationTransaction.getId());
