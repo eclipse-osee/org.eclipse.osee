@@ -46,9 +46,6 @@ public class AdminCommands {
       stats.setCommandInterpreter(ci);
       stats.setExecutionAllowed(true);
       Operations.executeAsJob(stats, false);
-      // Thread th = new Thread(stats);
-      // th.setName("Server Statistics");
-      // th.start();
    }
 
    public void getServerVersion(CommandInterpreter ci) {
@@ -104,6 +101,8 @@ public class AdminCommands {
       }
    }
 
+   @Deprecated
+   //this public method is never called
    public void startServerShutdown(CommandInterpreter ci) {
       if (!this.shutdownWorker.isRunning()) {
          this.shutdownWorker.setCommandInterpreter(ci);
@@ -116,6 +115,8 @@ public class AdminCommands {
       }
    }
 
+   @Deprecated
+   //this public method is never called
    public void stopServerShutdown(CommandInterpreter ci) {
       if (this.shutdownWorker.isRunning()) {
          this.shutdownWorker.setExecutionAllowed(false);
