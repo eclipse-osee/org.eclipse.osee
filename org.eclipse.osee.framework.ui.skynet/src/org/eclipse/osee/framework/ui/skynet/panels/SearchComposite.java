@@ -43,7 +43,6 @@ import org.eclipse.swt.widgets.Widget;
  * @author Roberto E. Escobar
  */
 public class SearchComposite extends Composite implements Listener {
-   private static final String CLEAR_HISTORY_TOOLTIP = "Clears search history";
    private static final String SEARCH_BUTTON_TOOLTIP = "Executes search";
    private static final String SEARCH_COMBO_TOOLTIP =
          "Enter word(s) to search for or select historical value from pull-down on the right.";
@@ -76,6 +75,8 @@ public class SearchComposite extends Composite implements Listener {
       group.setLayout(new GridLayout(2, false));
       group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       group.setText("Enter Search String");
+
+      createButtonBar(group);
 
       this.searchArea = new Combo(group, SWT.BORDER);
       this.searchArea.setFont(getFont());
@@ -111,7 +112,6 @@ public class SearchComposite extends Composite implements Listener {
       });
 
       this.searchArea.setToolTipText(SEARCH_COMBO_TOOLTIP);
-      createButtonBar(group);
    }
 
    private void createButtonBar(Composite parent) {
@@ -131,29 +131,12 @@ public class SearchComposite extends Composite implements Listener {
       this.executeSearch.setEnabled(false);
       this.executeSearch.setFont(getFont());
       this.executeSearch.setToolTipText(SEARCH_BUTTON_TOOLTIP);
+   }
 
-      Composite composite = new Composite(parent, SWT.NONE);
-      GridLayout gL = new GridLayout();
-      gL.marginWidth = 0;
-      gL.marginHeight = 0;
-      composite.setLayout(gL);
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-      this.clear = new Button(composite, SWT.NONE);
-      this.clear.setText("Clear History");
-      this.clear.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            if (searchArea.getItemCount() > 0) {
-               searchArea.removeAll();
-            }
-         }
-      });
-      this.clear.addListener(SWT.Selection, this);
-      this.clear.setEnabled(false);
-      this.clear.setFont(getFont());
-      this.clear.setToolTipText(CLEAR_HISTORY_TOOLTIP);
-
+   public void clearHistory() {
+      if (searchArea.getItemCount() > 0) {
+         searchArea.removeAll();
+      }
    }
 
    private void updateFromSourceField() {

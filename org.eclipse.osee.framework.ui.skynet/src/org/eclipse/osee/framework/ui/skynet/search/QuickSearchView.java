@@ -15,7 +15,10 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -160,6 +163,21 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
       branchLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       branchLabel.setText("");
 
+      createClearHistoryAction();
+   }
+
+   private void createClearHistoryAction() {
+      Action action = new Action("Clear Search History") {
+         @Override
+         public void run() {
+            if (searchComposite != null) {
+               searchComposite.clearHistory();
+            }
+         }
+      };
+      action.setToolTipText("Clears search history");
+      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REMOVE));
+      getViewSite().getActionBars().getMenuManager().add(action);
    }
 
    private void createActions() {
