@@ -48,7 +48,7 @@ public class ReloadAction extends Action {
       try {
          Set<Artifact> relatedArts = new HashSet<Artifact>();
          relatedArts.add(sma);
-         if (sma instanceof TeamWorkFlowArtifact) {
+         if (sma.isTeamWorkflow()) {
             relatedArts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) sma));
          }
          if (sma instanceof TaskableStateMachineArtifact) {

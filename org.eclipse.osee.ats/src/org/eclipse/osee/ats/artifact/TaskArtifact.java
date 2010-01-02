@@ -75,7 +75,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    public Set<User> getPrivilegedUsers() throws OseeCoreException {
       Set<User> users = new HashSet<User>();
       StateMachineArtifact parentSma = getParentSMA();
-      if (parentSma instanceof TeamWorkFlowArtifact) users.addAll(((TeamWorkFlowArtifact) parentSma).getPrivilegedUsers());
+      if (parentSma.isTeamWorkflow()) users.addAll(((TeamWorkFlowArtifact) parentSma).getPrivilegedUsers());
       users.addAll(parentSma.getStateMgr().getAssignees());
       return users;
    }
@@ -261,7 +261,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
 
    @Override
    public Date getWorldViewReleaseDate() throws OseeCoreException {
-      if (getParentSMA() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewReleaseDate();
+      if (getParentSMA().isTeamWorkflow()) return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewReleaseDate();
       return getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
    }
 
@@ -306,7 +306,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
       if (parentTeamArt != null) return parentTeamArt;
       StateMachineArtifact sma = getParentSMA();
-      if (sma instanceof TeamWorkFlowArtifact) parentTeamArt = ((TeamWorkFlowArtifact) sma);
+      if (sma.isTeamWorkflow()) parentTeamArt = ((TeamWorkFlowArtifact) sma);
       return parentTeamArt;
    }
 

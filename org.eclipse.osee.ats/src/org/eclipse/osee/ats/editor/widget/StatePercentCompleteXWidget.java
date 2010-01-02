@@ -86,7 +86,7 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
                breakoutNeeded = true;
             }
          }
-         if (sma instanceof TeamWorkFlowArtifact) {
+         if (sma.isTeamWorkflow()) {
             if (ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
                sb.append(String.format("\n     Review Percent: %d", ReviewManager.getPercentComplete(
                      (TeamWorkFlowArtifact) sma, page.getName())));

@@ -536,7 +536,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       try {
-         if (!(sma instanceof TeamWorkFlowArtifact)) return;
+         if (!(sma.isTeamWorkflow())) return;
          if (sma.isInTransition()) {
             return;
          }
@@ -591,7 +591,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
                }
             }
          });
-      } else if (sma instanceof TeamWorkFlowArtifact && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
+      } else if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
          try {
             // If related review has made a change, redraw
             for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
@@ -709,7 +709,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
             }
          }
       }
-      if (!reload && sma instanceof TeamWorkFlowArtifact) {
+      if (!reload && sma.isTeamWorkflow()) {
          for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
             if (artifacts.contains(reviewArt)) {
                reload = true;

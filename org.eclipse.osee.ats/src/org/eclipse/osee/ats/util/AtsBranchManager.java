@@ -349,7 +349,7 @@ public class AtsBranchManager {
    }
 
    public Result isCreateBranchAllowed() throws OseeCoreException {
-      if (!(teamArt instanceof TeamWorkFlowArtifact)) {
+      if (!(teamArt.isTeamWorkflow())) {
          return Result.FalseResult;
       }
 
@@ -389,7 +389,7 @@ public class AtsBranchManager {
    }
 
    public Result isCommitBranchAllowed(ICommitConfigArtifact configArt) throws OseeCoreException {
-      if (!(teamArt instanceof TeamWorkFlowArtifact)) {
+      if (!(teamArt.isTeamWorkflow())) {
          return Result.FalseResult;
       }
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
@@ -522,7 +522,7 @@ public class AtsBranchManager {
             teamArt.getTargetedForVersion().getParallelVersions(configObjects);
          }
       } else {
-         if (teamArt instanceof TeamWorkFlowArtifact && ((TeamWorkFlowArtifact) teamArt).getTeamDefinition().getParentBranch() != null) {
+         if (teamArt.isTeamWorkflow() && ((TeamWorkFlowArtifact) teamArt).getTeamDefinition().getParentBranch() != null) {
             configObjects.add(((TeamWorkFlowArtifact) teamArt).getTeamDefinition());
          }
       }
@@ -535,7 +535,7 @@ public class AtsBranchManager {
             return teamArt.getTargetedForVersion();
          }
       } else {
-         if (teamArt instanceof TeamWorkFlowArtifact && ((TeamWorkFlowArtifact) teamArt).getTeamDefinition().getParentBranch() != null) {
+         if (teamArt.isTeamWorkflow() && ((TeamWorkFlowArtifact) teamArt).getTeamDefinition().getParentBranch() != null) {
             return ((TeamWorkFlowArtifact) teamArt).getTeamDefinition();
          }
       }
@@ -699,7 +699,7 @@ public class AtsBranchManager {
       }
 
       // If not defined in version, check for parent branch from team definition
-      if (parentBranch == null && teamArt instanceof TeamWorkFlowArtifact) {
+      if (parentBranch == null && teamArt.isTeamWorkflow()) {
          parentBranch = ((TeamWorkFlowArtifact) teamArt).getTeamDefinition().getParentBranch();
       }
 
@@ -769,7 +769,7 @@ public class AtsBranchManager {
 
             // Confirm that all blocking reviews are completed
             // Loop through this state's blocking reviews to confirm complete
-            if (teamArt instanceof TeamWorkFlowArtifact) {
+            if (teamArt.isTeamWorkflow()) {
                for (ReviewSMArtifact reviewArt : ReviewManager.getReviewsFromCurrentState((TeamWorkFlowArtifact) teamArt)) {
                   if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.isCancelledOrCompleted()) {
                      return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,

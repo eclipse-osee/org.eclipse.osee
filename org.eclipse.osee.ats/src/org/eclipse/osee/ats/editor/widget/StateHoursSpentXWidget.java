@@ -85,7 +85,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
                breakoutNeeded = true;
             }
          }
-         if (sma instanceof TeamWorkFlowArtifact && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
+         if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
             sb.append(String.format("\n     Review Hours: %5.2f", ReviewManager.getHoursSpent(
                   (TeamWorkFlowArtifact) sma, page.getName())));
             breakoutNeeded = true;

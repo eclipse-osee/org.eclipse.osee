@@ -66,7 +66,7 @@ public class SMAWorkFlowDebugSection extends SectionPart {
 
       try {
          // Display team definition
-         if (sma instanceof TeamWorkFlowArtifact) {
+         if (sma.isTeamWorkflow()) {
             TeamDefinitionArtifact teamDef = ((TeamWorkFlowArtifact) sma).getTeamDefinition();
             addDebug("Team Definition: " + teamDef);
             for (WorkRuleDefinition workItemDefinition : teamDef.getWorkRules()) {

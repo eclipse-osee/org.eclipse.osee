@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonViaAction;
@@ -87,7 +86,7 @@ public class SMAOperationsSection extends SectionPart {
    }
 
    private void createImpactsSection(Composite parent, FormToolkit toolkit) {
-      if (!(editor.getSma() instanceof TeamWorkFlowArtifact)) return;
+      if (!(editor.getSma().isTeamWorkflow())) return;
       Section section = toolkit.createSection(parent, Section.TITLE_BAR);
       section.setText("Impacts and Workflows");
 
@@ -98,7 +97,7 @@ public class SMAOperationsSection extends SectionPart {
       sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      if (editor.getSma() instanceof TeamWorkFlowArtifact) {
+      if (editor.getSma().isTeamWorkflow()) {
          (new XButtonViaAction(new EditActionableItemsAction((TeamWorkFlowArtifact) editor.getSma()))).createWidgets(
                sectionBody, 2);
          (new XButtonViaAction(new DuplicateWorkflowAction(
@@ -109,7 +108,7 @@ public class SMAOperationsSection extends SectionPart {
    }
 
    private void createAdvancedSection(Composite parent, FormToolkit toolkit) {
-      if (!(editor.getSma() instanceof TeamWorkFlowArtifact)) return;
+      if (!(editor.getSma().isTeamWorkflow())) return;
       Section section = toolkit.createSection(parent, Section.TITLE_BAR);
       section.setText("Advanced");
 
@@ -120,7 +119,7 @@ public class SMAOperationsSection extends SectionPart {
       sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      if (editor.getSma() instanceof TeamWorkFlowArtifact) {
+      if (editor.getSma().isTeamWorkflow()) {
          (new XButtonViaAction(new DirtyReportAction(editor.getSma()))).createWidgets(sectionBody, 2);
          (new XButtonViaAction(new ReloadAction(editor.getSma()))).createWidgets(sectionBody, 2);
          (new XButtonViaAction(new ConvertActionableItemsAction(editor))).createWidgets(sectionBody, 2);
@@ -129,7 +128,7 @@ public class SMAOperationsSection extends SectionPart {
    }
 
    private void createAdminSection(Composite parent, FormToolkit toolkit) {
-      if (!(editor.getSma() instanceof TeamWorkFlowArtifact)) return;
+      if (!(editor.getSma().isTeamWorkflow())) return;
       Section section = toolkit.createSection(parent, Section.TITLE_BAR);
       section.setText("Admin");
 

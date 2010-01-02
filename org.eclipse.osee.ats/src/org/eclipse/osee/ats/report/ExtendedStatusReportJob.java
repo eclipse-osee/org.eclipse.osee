@@ -138,7 +138,7 @@ public class ExtendedStatusReportJob extends Job {
          if (col == Columns.ActionId)
             values.add(sma.getParentActionArtifact().getHumanReadableId());
          else if (col == Columns.TeamId) {
-            if (sma instanceof TeamWorkFlowArtifact)
+            if (sma.isTeamWorkflow())
                values.add(sma.getHumanReadableId());
             else
                values.add(".");
@@ -148,7 +148,7 @@ public class ExtendedStatusReportJob extends Job {
             else
                values.add(".");
          } else if (col == Columns.Team) {
-            if (sma instanceof TeamWorkFlowArtifact)
+            if (sma.isTeamWorkflow())
                values.add(((TeamWorkFlowArtifact) sma).getTeamName());
             else
                values.add(".");

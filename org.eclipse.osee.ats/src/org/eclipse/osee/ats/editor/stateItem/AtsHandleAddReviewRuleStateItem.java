@@ -48,7 +48,7 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
 
    public static void runRule(StateMachineArtifact sma, String toState, String ruleId, SkynetTransaction transaction) throws OseeCoreException {
       for (WorkRuleDefinition workRuleDef : sma.getWorkRulesStartsWith(ruleId)) {
-         if (!(sma instanceof TeamWorkFlowArtifact)) continue;
+         if (!(sma.isTeamWorkflow())) continue;
          StateEventType eventType =
                AtsAddDecisionReviewRule.getStateEventType((TeamWorkFlowArtifact) sma, workRuleDef);
          String forState = workRuleDef.getWorkDataValue(DecisionParameter.forState.name());

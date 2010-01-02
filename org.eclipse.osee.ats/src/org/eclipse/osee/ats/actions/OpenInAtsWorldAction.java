@@ -39,14 +39,13 @@ public class OpenInAtsWorldAction extends Action {
 
    public void performOpen() {
       try {
-         if (sma instanceof TeamWorkFlowArtifact) {
+         if (sma.isTeamWorkflow()) {
             ActionArtifact actionArt = ((TeamWorkFlowArtifact) sma).getParentActionArtifact();
             WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
                   Arrays.asList(actionArt)));
             return;
          } else {
-            WorldEditor.open(new WorldEditorSimpleProvider(
-                  sma.getArtifactTypeName() + ": " + sma.getHumanReadableId(),
+            WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + ": " + sma.getHumanReadableId(),
                   Arrays.asList(sma)));
             return;
          }

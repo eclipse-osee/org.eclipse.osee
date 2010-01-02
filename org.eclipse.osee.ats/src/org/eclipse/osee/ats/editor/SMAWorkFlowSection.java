@@ -244,7 +244,7 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    private void createReviewFooter(Composite parent, String forStateName) throws OseeCoreException {
-      if (isShowReviewInfo() && sma instanceof TeamWorkFlowArtifact) {
+      if (isShowReviewInfo() && sma.isTeamWorkflow()) {
          Composite comp = new Composite(parent, SWT.None);
          GridLayout layout = new GridLayout(1, false);
          comp.setLayout(layout);
@@ -274,7 +274,7 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    protected boolean isShowReviewInfo() throws OseeCoreException {
-      return sma instanceof TeamWorkFlowArtifact;
+      return sma.isTeamWorkflow();
    }
 
    public Result isXWidgetSavable() throws OseeCoreException {
@@ -710,7 +710,7 @@ public class SMAWorkFlowSection extends SectionPart {
             }
 
             // Loop through this state's blocking reviews to confirm complete
-            if (sma instanceof TeamWorkFlowArtifact) {
+            if (sma.isTeamWorkflow()) {
                for (ReviewSMArtifact reviewArt : ReviewManager.getReviewsFromCurrentState((TeamWorkFlowArtifact) sma)) {
                   if (reviewArt.getReviewBlockType() == ReviewBlockType.Transition && !reviewArt.isCancelledOrCompleted()) {
                      AWorkbench.popup("Transition Blocked", "All Blocking Reviews must be completed before transition.");

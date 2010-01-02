@@ -286,7 +286,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          FormsUtil.createLabelText(toolkit, headerComp, "Assignee(s)", sma.getStateMgr().getAssigneesStr(150));
 
          createLatestHeader(headerComp, toolkit);
-         if (sma instanceof TeamWorkFlowArtifact) {
+         if (sma.isTeamWorkflow()) {
             actionableItemHeader = new SMAActionableItemHeader(headerComp, toolkit, sma);
          }
          workflowMetricsHeader = new SMAWorkflowMetricsHeader(headerComp, toolkit, sma);
@@ -431,7 +431,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                notesSb.append(note.toHTML() + AHTML.newline());
             }
          }
-         if (sma.isCurrentState(page.getName()) || sma.getStateMgr().isStateVisited(page.getName()) && sma instanceof TeamWorkFlowArtifact) {
+         if (sma.isCurrentState(page.getName()) || sma.getStateMgr().isStateVisited(page.getName()) && sma.isTeamWorkflow()) {
             htmlSb.append(page.getHtml(sma.isCurrentState(page.getName()) ? activeColor : normalColor,
                   notesSb.toString(), ReviewInfoXWidget.toHTML((TeamWorkFlowArtifact) sma, page.getName())));
             htmlSb.append(AHTML.newline());
@@ -505,7 +505,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
 
       try {
-         if (sma instanceof TeamWorkFlowArtifact) {
+         if (sma.isTeamWorkflow()) {
             FormsUtil.createLabelText(toolkit, topLineComp, "Team: ", ((TeamWorkFlowArtifact) sma).getTeamName());
          }
       } catch (OseeCoreException ex) {

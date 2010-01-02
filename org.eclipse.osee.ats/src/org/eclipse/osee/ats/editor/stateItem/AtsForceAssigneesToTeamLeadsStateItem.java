@@ -34,7 +34,7 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
    @Override
    public void transitioned(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       super.transitioned(sma, fromState, toState, toAssignees, transaction);
-      if ((sma instanceof TeamWorkFlowArtifact) && (AtsWorkDefinitions.isForceAssigneesToTeamLeads(sma.getWorkPageDefinitionByName(toState)))) {
+      if ((sma.isTeamWorkflow()) && (AtsWorkDefinitions.isForceAssigneesToTeamLeads(sma.getWorkPageDefinitionByName(toState)))) {
          // Set Assignees to all user roles users
          try {
             Collection<User> teamLeads = ((TeamWorkFlowArtifact) sma).getTeamDefinition().getLeads();

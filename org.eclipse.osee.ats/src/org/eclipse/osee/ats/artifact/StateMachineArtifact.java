@@ -601,14 +601,14 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public double getEstimatedHoursFromReviews() throws OseeCoreException {
-      if (this instanceof TeamWorkFlowArtifact) {
+      if (isTeamWorkflow()) {
          return ReviewManager.getEstimatedHours((TeamWorkFlowArtifact) this);
       }
       return 0;
    }
 
    public double getEstimatedHoursFromReviews(String relatedToState) throws OseeCoreException {
-      if (this instanceof TeamWorkFlowArtifact) {
+      if (isTeamWorkflow()) {
          return ReviewManager.getEstimatedHours((TeamWorkFlowArtifact) this, relatedToState);
       }
       return 0;
@@ -660,7 +660,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public double getRemainFromReviews() throws OseeCoreException {
-      if (this instanceof TeamWorkFlowArtifact) {
+      if (isTeamWorkflow()) {
          return ReviewManager.getRemainHours((TeamWorkFlowArtifact) this);
       }
       return 0;
@@ -1042,7 +1042,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * Return hours spent working ONLY on reviews related to stateName
     */
    public double getHoursSpentSMAStateReviews(String stateName) throws OseeCoreException {
-      if (this instanceof TeamWorkFlowArtifact) {
+      if (isTeamWorkflow()) {
          return ReviewManager.getHoursSpent((TeamWorkFlowArtifact) this, stateName);
       }
       return 0;
@@ -1090,7 +1090,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * Return Percent Complete ONLY on reviews related to stateName. Total Percent / # Reviews
     */
    public int getPercentCompleteSMAStateReviews(String stateName) throws OseeCoreException {
-      if (this instanceof TeamWorkFlowArtifact) {
+      if (isTeamWorkflow()) {
          return ReviewManager.getPercentComplete((TeamWorkFlowArtifact) this, stateName);
       }
       return 0;
@@ -1981,7 +1981,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public boolean isTargetedVersionable() throws OseeCoreException {
-      if (!(this instanceof TeamWorkFlowArtifact)) {
+      if (!(isTeamWorkflow())) {
          return false;
       }
       return ((TeamWorkFlowArtifact) this).getTeamDefinition().getTeamDefinitionHoldingVersions() != null && ((TeamWorkFlowArtifact) this).getTeamDefinition().getTeamDefinitionHoldingVersions().isTeamUsesVersions();
@@ -2080,8 +2080,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return stateMgr;
    }
 
-   public boolean isTeamWorkflow() throws OseeStateException {
-      return this instanceof TeamWorkFlowArtifact;
+   public boolean isTeamWorkflow() {
+      return isTeamWorkflow();
    }
 
    public boolean isTask() throws OseeStateException {

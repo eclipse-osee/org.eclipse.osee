@@ -126,7 +126,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
          }
       }
       if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed)) {
-         if (((sma instanceof TeamWorkFlowArtifact) || (sma instanceof ReviewSMArtifact)) && (sma.isCompleted() || sma.isCancelled())) {
+         if (((sma.isTeamWorkflow()) || (sma instanceof ReviewSMArtifact)) && (sma.isCompleted() || sma.isCancelled())) {
             User originator = sma.getOriginator();
             if (testing) {
                originator = UserManager.getUser();
