@@ -80,7 +80,7 @@ public class SkynetTransaction extends DbTransaction {
    public SkynetTransaction(Branch branch, String comment) {
       this.branch = branch;
       this.comment = comment;
-      txMonitor.reportTxCreation(this, branch);
+      txMonitor.reportTxCreation(this, branch, comment);
    }
 
    public SkynetTransaction(IOseeBranch branch, String comment) throws OseeCoreException {
@@ -99,9 +99,6 @@ public class SkynetTransaction extends DbTransaction {
       transactionId = null;
    }
 
-   /**
-    * @return the branch
-    */
    public Branch getBranch() {
       return branch;
    }
@@ -214,18 +211,10 @@ public class SkynetTransaction extends DbTransaction {
       }
    }
 
-   /**
-    * @return the transaction number.
-    * @throws OseeDataStoreException
-    */
    public int getTransactionNumber() throws OseeCoreException {
       return internalGetTransactionId().getId();
    }
 
-   /**
-    * @return Returns the transactionId.
-    * @throws OseeDataStoreException
-    */
    TransactionRecord internalGetTransactionId() throws OseeCoreException {
       if (transactionId == null) {
          transactionId = TransactionManager.createNextTransactionId(branch, UserManager.getUser(), comment);

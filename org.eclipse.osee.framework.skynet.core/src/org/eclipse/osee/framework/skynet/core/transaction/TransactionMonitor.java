@@ -24,10 +24,9 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class TransactionMonitor {
 
+   private String lastComment;
    private enum TxState {
-      CREATED,
-      RUNNING,
-      ENDED;
+      CREATED, RUNNING, ENDED;
    }
 
    private final Map<Object, TxOperation> txMap;
@@ -36,16 +35,17 @@ public class TransactionMonitor {
       this.txMap = new WeakHashMap<Object, TxOperation>();
    }
 
-   public synchronized void reportTxCreation(final DbTransaction transaction, Object key) {
+   public synchronized void reportTxCreation(final DbTransaction transaction, Object key, String comment) {
       TxOperation currentTx = txMap.get(key);
       if (currentTx != null) {
          // This log is to support debugging the case where osee transactions are nested and should
          // use the same transaction.
          // This case may happens legitimately if an exception occurs outside this API before transaction.execute() is called,
          // so it is only notification that this is occurring.
-         OseeLog.log(Activator.class, Level.SEVERE, "New transaction created over Last transaction",
-               currentTx.getError());
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
+               "New transaction [%s] created over Last transaction [%s]", comment, lastComment), currentTx.getError());
       }
+      lastComment = comment;
       txMap.put(key, new TxOperation(transaction));
    }
 
