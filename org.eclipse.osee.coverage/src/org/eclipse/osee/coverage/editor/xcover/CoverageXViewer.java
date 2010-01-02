@@ -213,7 +213,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
             editMethodAction.run();
          } else if (xCol.equals(CoverageMergeXViewerFactory.Coverage_Rationale)) {
             editRationaleAction.run();
-         } else if (xCol.equals(CoverageMergeXViewerFactory.Name) || xCol.equals(CoverageMergeXViewerFactory.File_Contents)) {
+         } else if (xCol.equals(CoverageMergeXViewerFactory.Name)) {
             viewSourceAction.run();
          }
       } catch (Exception ex) {

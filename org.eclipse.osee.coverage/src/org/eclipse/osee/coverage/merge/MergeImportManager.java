@@ -121,10 +121,6 @@ public class MergeImportManager {
     */
    private void importCoverageUnitItem(XResultData rd, CoverageUnit importItem) {
       System.out.println("importItemsRecurse => " + importItem + " path " + CoverageUtil.getFullPath(importItem));
-      if (importItem.getName().equals("clear") && importItem.getParent() != null && importItem.getParent().getName().startsWith(
-            "AuxPowerUnit2")) {
-         System.out.println("here");
-      }
       try {
          rd.log("Processing " + importItem.getName());
          if (!(importItem instanceof CoverageUnit)) {

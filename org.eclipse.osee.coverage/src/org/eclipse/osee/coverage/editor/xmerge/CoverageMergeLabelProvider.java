@@ -63,7 +63,6 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
       if (element instanceof MessageMergeItem) return "";
       if (xCol.equals(CoverageXViewerFactory.Guid)) return coverage.getGuid();
       if (xCol.equals(CoverageXViewerFactory.Location)) return coverage.getLocation();
-      if (xCol.equals(CoverageXViewerFactory.File_Contents)) return coverage.getFileContents();
       if (xCol.equals(CoverageXViewerFactory.Namespace)) return coverage.getNamespace();
       if (xCol.equals(CoverageXViewerFactory.Notes_Col)) return coverage.getNotes();
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
