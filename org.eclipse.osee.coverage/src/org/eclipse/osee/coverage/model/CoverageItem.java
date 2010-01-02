@@ -12,9 +12,7 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -35,12 +33,11 @@ public class CoverageItem implements ICoverage {
    CoverageOption coverageMethod = CoverageOptionManager.Not_Covered;
    String rationale;
    String orderNumber;
-   String lineNum;
    String name;
    private final CoverageUnit coverageUnit;
-   final Set<String> testUnitNames = new HashSet<String>();
    String guid = GUID.create();
    private static String PROPERTY_STORE_ID = "coverage.item";
+   private ITestUnitProvider testUnitProvider;
 
    public CoverageItem(CoverageUnit coverageUnit, CoverageOption coverageMethod, String orderNumber) {
       super();
@@ -66,7 +63,7 @@ public class CoverageItem implements ICoverage {
       coverageitem.setName(name);
       coverageitem.setOrderNumber(orderNumber);
       coverageitem.setRationale(rationale);
-
+      coverageitem.setTestUnitProvider(testUnitProvider);
       return coverageitem;
    }
 
@@ -87,19 +84,24 @@ public class CoverageItem implements ICoverage {
       setName(store.get("name"));
       String rationale = store.get("rationale");
       if (Strings.isValid(rationale)) setRationale(rationale);
-      String testUnitNames = store.get("testUnits");
-      if (Strings.isValid(testUnitNames)) {
-         for (String testName : testUnitNames.split(";"))
-            addTestUnitName(testName);
+      if (testUnitProvider == null) {
+         testUnitProvider = new SimpleTestUnitProvider();
       }
+      testUnitProvider.fromXml(this, store.get("testUnits"));
    }
 
-   public Set<String> getTestUnits() {
-      return testUnitNames;
+   public Collection<String> getTestUnits() {
+      if (testUnitProvider == null) {
+         return java.util.Collections.emptyList();
+      }
+      return testUnitProvider.getTestUnits(this);
    }
 
    public void addTestUnitName(String testUnitName) {
-      testUnitNames.add(testUnitName);
+      if (testUnitProvider == null) {
+         testUnitProvider = new SimpleTestUnitProvider();
+      }
+      testUnitProvider.addTestUnitName(this, testUnitName);
    }
 
    public CoverageOption getCoverageMethod() {
@@ -182,13 +184,14 @@ public class CoverageItem implements ICoverage {
    public String toXml() throws OseeCoreException {
       PropertyStore store = new PropertyStore(PROPERTY_STORE_ID);
       store.put("guid", guid);
-      store.put("line", lineNum);
       if (Strings.isValid(getRationale())) {
          store.put("rationale", rationale);
       }
       store.put("order", orderNumber);
       store.put("methodType", coverageMethod.getName());
-      store.put("testUnits", Collections.toString(";", testUnitNames));
+      if (testUnitProvider != null) {
+         store.put("testUnits", testUnitProvider.toXml(this));
+      }
       store.put("name", name);
       try {
          return store.save();
@@ -280,7 +283,14 @@ public class CoverageItem implements ICoverage {
    }
 
    public void setOrderNumber(String orderNumber) {
-      this.orderNumber = orderNumber;
+      this.orderNumber = orderNumber.intern();
+   }
+
+   /**
+    * Provide test unit provider. SimpleTestUnitProvider will be used by default.
+    */
+   public void setTestUnitProvider(ITestUnitProvider testUnitProvider) {
+      this.testUnitProvider = testUnitProvider;
    }
 
 }

@@ -75,8 +75,8 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          for (String value : artifact.getAttributesToStringList(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
             coverageUnit.addCoverageItem(new CoverageItem(coverageUnit, value, coverageOptionManager));
          }
-         coverageUnit.setFileContents(artifact.getSoleAttributeValueAsString(
-               CoverageAttributes.FILE_CONTENTS.getStoreName(), ""));
+         // Don't load file contents until needed
+         coverageUnit.setFileContentsProvider(OseeCoverageUnitFileContentsProvider.getInstance());
          coverageUnit.setNotes(artifact.getSoleAttributeValueAsString(CoverageAttributes.NOTES.getStoreName(), ""));
          coverageUnit.setFolder(artifact.isOfType(ARTIFACT_FOLDER_NAME));
          coverageUnit.setAssignees(artifact.getSoleAttributeValueAsString(CoverageAttributes.ASSIGNEES.getStoreName(),
@@ -108,9 +108,12 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       if (Strings.isValid(coverageUnit.getNamespace())) {
          artifact.setSoleAttributeFromString(CoverageAttributes.NAMESPACE.getStoreName(), coverageUnit.getNamespace());
       }
-      if (Strings.isValid(coverageUnit.getFileContents())) {
-         artifact.setSoleAttributeFromString(CoverageAttributes.FILE_CONTENTS.getStoreName(),
-               coverageUnit.getFileContents());
+      if (coverageUnit.getFileContentsProvider() != null && coverageUnit.getFileContentsProvider() != OseeCoverageUnitFileContentsProvider.getInstance()) {
+         String fileContents = coverageUnit.getFileContents();
+         if (Strings.isValid(fileContents)) {
+            coverageUnit.setFileContentsProvider(OseeCoverageUnitFileContentsProvider.getInstance());
+            coverageUnit.setFileContents(fileContents);
+         }
       }
       if (Strings.isValid(coverageUnit.getOrderNumber())) {
          artifact.setSoleAttributeFromString(CoverageAttributes.ORDER.getStoreName(), coverageUnit.getOrderNumber());

@@ -37,12 +37,12 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    String notes;
    String assignees;
    String guid = GUID.create();
-   String fileContents;
    final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
    String location;
    String orderNumber = "";
    final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    ICoverage parent;
+   ICoverageUnitFileContentsProvider fileContentsProvider;
 
    public CoverageUnit(ICoverage parent, String name, String location) {
       super();
@@ -129,11 +129,11 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    public String getFileContents() {
-      return fileContents;
+      return fileContentsProvider.getFileContents(this);
    }
 
    public void setFileContents(String fileContents) {
-      this.fileContents = fileContents;
+      this.fileContentsProvider.setFileContents(this, fileContents);
    }
 
    public String getGuid() {
@@ -213,7 +213,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    public void setNamespace(String namespace) {
-      this.namespace = namespace;
+      this.namespace = namespace.intern();
    }
 
    public String getAssignees() {
@@ -297,7 +297,6 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       coverageUnit.setNamespace(namespace);
       coverageUnit.setNotes(notes);
       coverageUnit.setOrderNumber(orderNumber);
-      coverageUnit.setFileContents(fileContents);
       coverageUnit.setFolder(folder);
       coverageUnit.setAssignees(assignees);
       coverageUnit.setLocation(location);
@@ -308,6 +307,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
             coverageUnit.addCoverageItem(newCoverageItem);
          }
       }
+      coverageUnit.setFileContentsProvider(fileContentsProvider);
       return coverageUnit;
    }
 
@@ -346,7 +346,15 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    public void setOrderNumber(String orderNumber) {
-      this.orderNumber = orderNumber;
+      this.orderNumber = orderNumber.intern();
+   }
+
+   public void setFileContentsProvider(ICoverageUnitFileContentsProvider fileContentsProvider) {
+      this.fileContentsProvider = fileContentsProvider;
+   }
+
+   public ICoverageUnitFileContentsProvider getFileContentsProvider() {
+      return fileContentsProvider;
    }
 
 }
