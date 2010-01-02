@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.ui.skynet.util.ElapsedTime;
 
 /**
  * @author Donald G. Dunne
@@ -194,7 +193,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IFrameworkT
    }
 
    private static List<CustomizeData> getArtifactCustomizations(Artifact customizationArtifact) throws OseeCoreException {
-      ElapsedTime time = new ElapsedTime("getArtifactCustomizations");
+      //      ElapsedTime time = new ElapsedTime("getArtifactCustomizations");
       List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
       if (customizationArtifact != null) {
 
@@ -204,7 +203,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IFrameworkT
             custDatas.add(custData);
          }
       }
-      time.end();
+      //      time.end();
       return custDatas;
    }
 
