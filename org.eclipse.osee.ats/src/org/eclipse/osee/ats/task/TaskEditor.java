@@ -286,7 +286,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
                         taskEditor.setTableTitle(itaskEditorProvider.getTaskEditorLabel(searchType), false);
                      }
                      taskEditor.getTaskActionPage().getTaskComposite().loadTable();
-                     taskEditor.setLoading(false);
                   } catch (OseeCoreException ex) {
                      OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                   }
@@ -295,6 +294,8 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          } catch (final Exception ex) {
             monitor.done();
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Can't load tasks", ex);
+         } finally {
+            taskEditor.setLoading(false);
          }
          monitor.done();
          return Status.OK_STATUS;

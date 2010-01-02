@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.task;
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -28,18 +27,10 @@ public abstract class TaskEditorParameterSearchItem extends WorldSearchItem impl
 
    boolean firstTime = true;
 
-   /**
-    * @param name
-    * @throws OseeArgumentException
-    */
    public TaskEditorParameterSearchItem(String name) {
       super(name, LoadView.TaskEditor, AtsImage.TASK);
    }
 
-   /**
-    * @param worldSearchItem
-    * @throws OseeArgumentException
-    */
    public TaskEditorParameterSearchItem(WorldSearchItem worldSearchItem) {
       super(worldSearchItem, AtsImage.TASK);
    }

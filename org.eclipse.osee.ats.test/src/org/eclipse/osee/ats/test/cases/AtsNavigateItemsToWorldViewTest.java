@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.test.cases;
 
 import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
@@ -334,17 +332,17 @@ public class AtsNavigateItemsToWorldViewTest {
 
    @org.junit.Test
    public void testTeamWorkflowSearch() throws Exception {
-      List<TeamDefinitionArtifact> selectedUsers = TeamDefinitionArtifact.getTeamTopLevelDefinitions(Active.Active);
+      List<TeamDefinitionArtifact> selectedTeamDefs = TeamDefinitionArtifact.getTeamTopLevelDefinitions(Active.Active);
       WorldEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Workflow Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TeamWorkflowSearchWorkflowSearchItem);
       NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
-      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedUsers, 1);
+      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedTeamDefs, 1);
       runGeneralTeamWorkflowSearchOnCompletedCancelledTest(item, true, 2);
       runGeneralTeamWorkflowSearchOnCompletedCancelledTest(item, false, 1);
       runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Joe Smith", 0);
-      selectedUsers.clear();
-      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedUsers, 7);
+      selectedTeamDefs.clear();
+      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedTeamDefs, 7);
       runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.UnReleased, 7);
       runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Kay Jones", 6);
       runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.Released, 0);
@@ -356,8 +354,8 @@ public class AtsNavigateItemsToWorldViewTest {
       runGeneralTeamWorkflowSearchOnTeamTest(item, tda, 3);
       runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.name(), 0);
       runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_2.name(), 3);
-      selectedUsers.clear();
-      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedUsers, 6);
+      selectedTeamDefs.clear();
+      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedTeamDefs, 6);
    }
 
    public void runGeneralTeamWorkflowSearchTest(XNavigateItem item, int expectedNum) throws Exception {
@@ -374,11 +372,11 @@ public class AtsNavigateItemsToWorldViewTest {
       runGeneralTeamWorkflowSearchTest(item, expectedNum);
    }
 
-   public void runGeneralTeamWorkflowSearchOnTeamTest(XNavigateItem item, Collection<TeamDefinitionArtifact> selectedUsers, int expectedNum) throws Exception {
+   public void runGeneralTeamWorkflowSearchOnTeamTest(XNavigateItem item, Collection<TeamDefinitionArtifact> selectedTeamDefs, int expectedNum) throws Exception {
       // need to set team selected users
       WorldEditor editor = getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      ((TeamWorkflowSearchWorkflowSearchItem) dwl).setSelectedTeamDefinitions(selectedUsers);
+      ((TeamWorkflowSearchWorkflowSearchItem) dwl).setSelectedTeamDefinitions(selectedTeamDefs);
       runGeneralTeamWorkflowSearchTest(item, expectedNum);
    }
 

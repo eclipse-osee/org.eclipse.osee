@@ -81,7 +81,6 @@ import org.eclipse.ui.dialogs.ListDialog;
  */
 public class AtsUtil implements IAtsLib {
 
-   private static int atsDevNum;
    private static boolean emailEnabled = true;
    public static Color ACTIVE_COLOR = new Color(null, 206, 212, 241);
    private static OseeGroup atsAdminGroup = null;
@@ -91,6 +90,10 @@ public class AtsUtil implements IAtsLib {
 
    public AtsUtil() {
       super();
+   }
+
+   public static boolean isInTest() {
+      return Boolean.valueOf(System.getProperty("osee.isInTest"));
    }
 
    public long daysTillToday(Date date) throws OseeCoreException {

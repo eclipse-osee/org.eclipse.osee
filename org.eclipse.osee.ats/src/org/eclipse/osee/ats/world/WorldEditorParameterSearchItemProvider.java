@@ -146,16 +146,16 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
                }
             }
             worldEditor.getWorldComposite().load(selectedName, artifacts, customizeData, tableLoadOptions);
-            setLoading(false);
          } catch (final Exception ex) {
             String str = "Exception occurred. Network may be down.";
             if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=
                   " => " + ex.getLocalizedMessage();
             worldEditor.getWorldComposite().setTableTitle("Searching Error - " + selectedName, false);
-            setLoading(false);
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             monitor.done();
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, str, null);
+         } finally {
+            setLoading(false);
          }
          monitor.done();
          return Status.OK_STATUS;
