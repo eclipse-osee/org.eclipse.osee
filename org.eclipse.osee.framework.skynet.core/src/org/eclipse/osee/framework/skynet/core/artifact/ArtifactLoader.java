@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -39,6 +40,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -60,17 +63,6 @@ public final class ArtifactLoader {
 
    /**
     * (re)loads the artifacts selected by sql and then returns them in a list
-    * 
-    * @param sql
-    * @param queryParameters
-    * @param artifactCountEstimate
-    * @param loadLevel
-    * @param reload
-    * @param confirmer
-    * @param transactionId
-    * @param allowDeleted
-    * @return list of artifacts resulting for the sql query
-    * @throws OseeCoreException
     */
    public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, ISearchConfirmer confirmer, TransactionRecord transactionId, boolean allowDeleted) throws OseeCoreException {
       int queryId = getNewQueryId();
@@ -85,32 +77,12 @@ public final class ArtifactLoader {
 
    /**
     * (re)loads the artifacts selected by sql and then returns them in a list
-    * 
-    * @param sql
-    * @param queryParameters
-    * @param artifactCountEstimate
-    * @param loadLevel
-    * @param reload
-    * @param allowDeleted allow the inclusion of deleted artifacts in the results
-    * @param historical
-    * @return list of artifacts resulting for the sql query
-    * @throws OseeCoreException
     */
    public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, TransactionRecord transactionId, boolean allowDeleted) throws OseeCoreException {
       return getArtifacts(sql, queryParameters, artifactCountEstimate, loadLevel, reload, null, transactionId,
             allowDeleted);
    }
 
-   /**
-    * @param queryId
-    * @param loadLevel
-    * @param confirmer used to prompt user whether to proceed if certain conditions are met
-    * @param fetchSize
-    * @param reload
-    * @param historical
-    * @param allowDeleted allow the inclusion of deleted artifacts in the results
-    * @throws OseeCoreException
-    */
    public static List<Artifact> loadArtifactsFromQueryId(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
       List<Artifact> artifacts = new ArrayList<Artifact>(fetchSize);
       try {
@@ -157,28 +129,12 @@ public final class ArtifactLoader {
       return artifacts;
    }
 
-   /**
-    * loads or reloads artifacts based on artifact ids and branch ids
-    * 
-    * @param artIds
-    * @param branch
-    * @param loadLevel
-    * @return list of the loaded artifacts
-    * @throws OseeCoreException
-    */
    public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, ArtifactLoad loadLevel, boolean reload) throws OseeCoreException {
       return loadArtifacts(artIds, branch, loadLevel, null, reload);
    }
 
    /**
     * loads or reloads artifacts based on artifact ids and branch ids
-    * 
-    * @param artIds
-    * @param branch
-    * @param loadLevel
-    * @param transactionId
-    * @return list of the loaded artifacts
-    * @throws OseeCoreException
     */
    public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, ArtifactLoad loadLevel, TransactionRecord transactionId, boolean reload) throws OseeCoreException {
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
@@ -226,9 +182,6 @@ public final class ArtifactLoader {
 
    /**
     * must be call in a try block with a finally clause which calls clearQuery()
-    * 
-    * @param insertParameters
-    * @throws OseeDataStoreException
     */
    public static int insertIntoArtifactJoin(OseeConnection connection, List<Object[]> insertParameters) throws OseeDataStoreException {
       return ConnectionHandler.runBatchUpdate(connection, INSERT_JOIN_ARTIFACT, insertParameters);
@@ -236,9 +189,6 @@ public final class ArtifactLoader {
 
    /**
     * must be call in a try block with a finally clause which calls clearQuery()
-    * 
-    * @param insertParameters
-    * @throws OseeDataStoreException
     */
    public static int insertIntoArtifactJoin(List<Object[]> insertParameters) throws OseeDataStoreException {
       return insertIntoArtifactJoin(null, insertParameters);
@@ -269,11 +219,7 @@ public final class ArtifactLoader {
    }
 
    /**
-    * @param queryId
     * @param insertParameters will be populated by this method
-    * @param sql
-    * @param queryParameters
-    * @param artifactCountEstimate
     */
    public static void selectArtifacts(int queryId, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, String sql, Object[] queryParameters, int artifactCountEstimate, TransactionRecord transactionId) throws OseeDataStoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
@@ -474,8 +420,19 @@ public final class ArtifactLoader {
                               attrId, artifactId, branchId, previousGammaId, gammaId, previousModType, modType));
                }
             } else if (artifact != null) { //artifact will have been set to null if artifact.isAttributesLoaded() returned true
-               artifact.internalInitializeAttribute(AttributeTypeManager.getType(chStmt.getInt("attr_type_id")),
-                     attrId, gammaId, ModificationType.getMod(modType), false, chStmt.getString("value"),
+               AttributeType attributeType = AttributeTypeManager.getType(chStmt.getInt("attr_type_id"));
+               boolean isBooleanAttribute =
+                     AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType);
+               boolean isEnumAttribute =
+                     AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType);
+               // If boolean or enumerated attribute type, the string value can be shared by using .intern()
+               artifact.internalInitializeAttribute(
+                     attributeType,
+                     attrId,
+                     gammaId,
+                     ModificationType.getMod(modType),
+                     false,
+                     isBooleanAttribute || isEnumAttribute ? chStmt.getString("value").intern() : chStmt.getString("value"),
                      chStmt.getString("uri"));
             }
 

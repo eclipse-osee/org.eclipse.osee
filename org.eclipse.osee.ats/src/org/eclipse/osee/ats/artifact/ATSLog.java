@@ -107,7 +107,9 @@ public class ATSLog {
       if (!xml.equals("")) {
          Matcher m = LOG_ITEM_PATTERN.matcher(xml);
          while (m.find()) {
-            LogItem item = new LogItem(m.group(4), m.group(1), m.group(5), m.group(3), AXml.xmlToText(m.group(2)));
+            LogItem item =
+                  new LogItem(m.group(4), m.group(1), m.group(5).intern(), m.group(3).intern(),
+                        AXml.xmlToText(m.group(2)));
             logItems.add(item);
          }
 

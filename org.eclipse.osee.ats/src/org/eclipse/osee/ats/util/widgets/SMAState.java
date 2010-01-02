@@ -39,14 +39,14 @@ public class SMAState {
    }
 
    public SMAState(String name, Collection<User> assignees) {
-      this.name = name;
+      this.name = name.intern();
       if (assignees != null) {
          this.assignees = assignees;
       }
    }
 
    public SMAState(String name, User assignee) {
-      this.name = name;
+      this.name = name.intern();
       if (assignee != null) {
          this.assignees.add(assignee);
       }

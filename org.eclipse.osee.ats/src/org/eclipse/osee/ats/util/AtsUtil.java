@@ -204,6 +204,10 @@ public class AtsUtil implements IAtsLib {
    public static String doubleToI18nString(double d, boolean blankIfZero) {
       if (blankIfZero && d == 0) {
          return "";
+      }
+      // This enables java to use same string for all 0 cases instead of creating new one
+      else if (d == 0) {
+         return "0.00";
       } else {
          return String.format("%4.2f", d);
       }
