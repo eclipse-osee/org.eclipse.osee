@@ -71,7 +71,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    public List<CoverageItem> getCoverageItemsCovered() {
       List<CoverageItem> items = new ArrayList<CoverageItem>();
       for (CoverageItem coverageItem : getCoverageItems()) {
-         if (coverageItem.getCoverageMethod() != CoverageOptionManager.Not_Covered) {
+         if (!coverageItem.getCoverageMethod().getName().equals(CoverageOptionManager.Not_Covered.name)) {
             items.add(coverageItem);
          }
       }
