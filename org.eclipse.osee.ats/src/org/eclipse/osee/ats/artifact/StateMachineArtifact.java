@@ -2081,7 +2081,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public boolean isTeamWorkflow() {
-      return isTeamWorkflow();
+      return this instanceof TeamWorkFlowArtifact;
    }
 
    public boolean isTask() throws OseeStateException {
