@@ -100,7 +100,7 @@ public class CustomizeData {
       Matcher m = pattern.matcher(xml);
       if (m.find()) {
          name = m.group(1);
-         nameSpace = m.group(2);
+         nameSpace = m.group(2).intern();
          guid = m.group(3);
       } else {
          name = "Invalid customize format for " + xml.substring(0, 50);
@@ -118,9 +118,6 @@ public class CustomizeData {
       return "[" + name + "][" + nameSpace + "][" + guid + "][" + columnData + "][" + filterData + "][" + columnFilterData + "][" + sortingData + "]";
    }
 
-   /**
-    * @return the personal
-    */
    public boolean isPersonal() {
       return personal;
    }
