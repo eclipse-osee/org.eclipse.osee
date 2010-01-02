@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Display;
 public class DoesNotWorkItemCoverage extends XNavigateItemAction {
 
    public DoesNotWorkItemCoverage() {
-      super(null, "Does Not Work - Coverage - convert Coverage Artifacts", FrameworkImage.ADMIN);
+      super(null, "Does Not Work - Coverage - Load ", FrameworkImage.ADMIN);
    }
 
    @Override
@@ -49,6 +49,8 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
          return;
       }
 
+      Artifact artifact = ArtifactQuery.getArtifactFromId("AFLY_zvqoHPNSwfetyQA", BranchManager.getBranch(3308));
+      System.out.println("print got it " + artifact);
       try {
          //         fixCoverageInformation();
       } catch (Exception ex) {

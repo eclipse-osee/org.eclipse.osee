@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 
 /**
@@ -160,9 +159,13 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
 
    @Override
    public OseeImage getOseeImage() {
+      boolean covered = isCovered();
       if (isFolder()) {
-         return FrameworkImage.FOLDER;
-      } else if (isCovered()) {
+         if (covered)
+            return CoverageImage.FOLDER_GREEN;
+         else
+            return CoverageImage.FOLDER_RED;
+      } else if (covered) {
          return CoverageImage.UNIT_GREEN;
       }
       return CoverageImage.UNIT_RED;

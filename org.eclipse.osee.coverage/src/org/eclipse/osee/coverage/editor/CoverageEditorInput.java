@@ -33,6 +33,22 @@ public class CoverageEditorInput implements IEditorInput {
       this.isInTest = isInTest;
    }
 
+   @Override
+   public int hashCode() {
+      return coveragePackageBase.hashCode();
+   }
+
+   public boolean equals(Object obj) {
+      if (!(obj instanceof CoverageEditorInput)) return false;
+      CoverageEditorInput castObj = (CoverageEditorInput) obj;
+      if (castObj.getCoveragePackageBase() != null)
+         return castObj.getCoveragePackageBase().equals(this.coveragePackageBase);
+      else if (castObj.getCoveragePackageArtifact() != null) {
+         return castObj.getCoveragePackageArtifact().equals(this.coveragePackageArtifact);
+      }
+      return false;
+   }
+
    public boolean exists() {
       return false;
    }

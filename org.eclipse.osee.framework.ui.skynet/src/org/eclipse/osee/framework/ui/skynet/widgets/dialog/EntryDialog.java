@@ -15,8 +15,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.IShellCloseEvent;
 import org.eclipse.osee.framework.ui.skynet.FontManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.widgets.HyperLinkLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -34,7 +40,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 public class EntryDialog extends MessageDialog {
@@ -50,15 +58,18 @@ public class EntryDialog extends MessageDialog {
    private Button fontButton;
 
    private final List<IShellCloseEvent> closeEventListeners = new ArrayList<IShellCloseEvent>();
+   private final String dialogTitle;
 
    public EntryDialog(String dialogTitle, String dialogMessage) {
       super(Display.getCurrent().getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION,
             new String[] {"OK", "Cancel"}, 0);
+      this.dialogTitle = dialogTitle;
    }
 
    public EntryDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
       super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
             defaultIndex);
+      this.dialogTitle = dialogTitle;
    }
 
    private final ModifyListener textModifyListener = new ModifyListener() {
@@ -83,6 +94,24 @@ public class EntryDialog extends MessageDialog {
       createErrorLabel(areaComposite);
       createTextBox();
 
+      if (isFillVertically()) {
+         HyperLinkLabel edit = new HyperLinkLabel(parent, SWT.None);
+         edit.setText("open in editor");
+         edit.addListener(SWT.MouseUp, new Listener() {
+
+            @Override
+            public void handleEvent(Event event) {
+               XResultData resultData = new XResultData();
+               resultData.addRaw(entryText);
+               try {
+                  resultData.report(dialogTitle);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+               close();
+            }
+         });
+      }
       createExtendedArea(areaComposite);
       areaComposite.layout();
       parent.layout();

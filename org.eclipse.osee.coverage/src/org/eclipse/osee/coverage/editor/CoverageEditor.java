@@ -64,7 +64,6 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
    private CoverageEditorCoverageTab coverageEditorCoverageTab = null;
    private CoverageEditorOverviewTab coverageEditorOverviewTab = null;
    private CoverageEditorLoadingTab coverageEditorLoadingTab = null;
-   private Collection<Artifact> artifactLoadCache = null;
 
    @Override
    protected void addPages() {
@@ -94,21 +93,21 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         if (artifactLoadCache == null) {
-            System.out.println("Get Package Artifact " + XDate.getTimeStamp());
-            if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
-               try {
-                  ElapsedTime elapsedTime = new ElapsedTime("Coverage - bulk load");
-                  artifactLoadCache =
-                        RelationManager.getRelatedArtifacts(
-                              Collections.singleton(getCoverageEditorInput().getCoveragePackageArtifact()), 8,
-                              CoreRelationTypes.Default_Hierarchical__Child);
-                  elapsedTime.end();
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
-               }
-            } else {
-               artifactLoadCache = Collections.emptyList();
+         @SuppressWarnings("unused")
+         Collection<Artifact> artifactLoadCache = null;
+         System.out.println("Get Package Artifact " + XDate.getTimeStamp());
+         if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
+            try {
+               ElapsedTime elapsedTime = new ElapsedTime("Coverage - bulk load");
+               artifactLoadCache =
+                     RelationManager.getRelatedArtifacts(
+                           Collections.singleton(getCoverageEditorInput().getCoveragePackageArtifact()), 8,
+                           CoreRelationTypes.Default_Hierarchical__Child);
+               // TODO Need to bulk load binary attributes also; Coverage Items are all binary attributes
+               // that are not bulk loaded with attributes
+               elapsedTime.end();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
             }
          }
          if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {

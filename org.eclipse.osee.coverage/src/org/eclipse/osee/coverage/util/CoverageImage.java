@@ -23,6 +23,8 @@ public enum CoverageImage implements OseeImage {
    COVERAGE_IMPORT("coverageImport.gif"),
    COVERAGE_PACKAGE("coveragePackage.gif"),
    LINK("link.gif"),
+   FOLDER_GREEN("folderGreenPlus.gif"),
+   FOLDER_RED("folderRedX.gif"),
    UNIT("unit.gif"),
    UNIT_EDIT("unitEdit.gif"),
    UNIT_GREEN("unitGreenPlus.gif"),

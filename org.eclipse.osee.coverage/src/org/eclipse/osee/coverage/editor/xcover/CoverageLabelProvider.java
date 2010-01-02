@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.editor.xcover;
 
+import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
@@ -91,8 +92,11 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(CoverageXViewerFactory.Execution_Number)) return coverageItem.getOrderNumber();
          if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) return coverageItem.getCoverageMethod().getName();
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageItem.getCoverageUnit().getName();
-         if (xCol.equals(CoverageXViewerFactory.Coverage_Test_Units)) return Collections.toString(", ",
-               coverageItem.getTestUnits());
+         if (xCol.equals(CoverageXViewerFactory.Coverage_Test_Units)) {
+            Collection<String> testUnits = coverageItem.getTestUnits();
+            if (testUnits == null) return "";
+            return Collections.toString(", ", testUnits);
+         }
          return "";
       }
       if ((coverage instanceof CoverageUnit) || (coverage instanceof MergeItem)) {
