@@ -59,9 +59,6 @@ public class NewActionPage1 extends WizardPage {
    private static PatternFilter patternFilter = new PatternFilter();
    private static Text descriptionLabel;
 
-   /**
-    * @param actionWizard
-    */
    protected NewActionPage1(NewActionWizard actionWizard) {
       super("Create new ATS Action", "Create ATS Action", null);
       setMessage("Enter title and select impacted items.");
@@ -112,7 +109,7 @@ public class NewActionPage1 extends WizardPage {
          new Label(aiComp, SWT.NONE).setText("Description of highlighted Actionable Item (if any):");
          descriptionLabel = new Text(aiComp, SWT.BORDER | SWT.WRAP);
          GridData gd = new GridData(GridData.FILL_BOTH);
-         gd.heightHint = 30;
+         gd.heightHint = 15;
          descriptionLabel.setLayoutData(gd);
          descriptionLabel.setEnabled(false);
 

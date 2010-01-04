@@ -93,7 +93,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       NewActionJob job = null;
       job =
             new NewActionJob("tt", "description", ChangeType.Improvement, PriorityType.Priority_1, null, false,
-                  Arrays.asList("Other"), ActionableItemArtifact.getActionableItems(Arrays.asList("ATS")), null);
+                  ActionableItemArtifact.getActionableItems(Arrays.asList("ATS")), null);
       job.setUser(true);
       job.setPriority(Job.LONG);
       job.schedule();
@@ -152,7 +152,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.setSoleAttributeFromString(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ChangeType.Support.name());
       teamArt.setSoleAttributeFromString(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
             PriorityType.Priority_3.getShortName());
-      teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, Collections.singleton(getVersion258()));
+      teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
+            Collections.singleton(getVersion258()));
       teamArt.persist(transaction);
       transaction.execute();
 
@@ -162,14 +163,15 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
       // Make changes and transition
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
-      teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, Collections.singleton(getVersion257()));
+      teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
+            Collections.singleton(getVersion257()));
       teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "no");
       teamArt.persist(transaction);
       transaction.execute();
 
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
-      teamArt.transition(DefaultTeamState.Analyze.name(), Collections.singleton(UserManager.getUser()),
-            transaction, TransitionOption.Persist);
+      teamArt.transition(DefaultTeamState.Analyze.name(), Collections.singleton(UserManager.getUser()), transaction,
+            TransitionOption.Persist);
       teamArt.persist(transaction);
       transaction.execute();
 
@@ -239,10 +241,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
             ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), null));
       testEquals("Validation Required", "false", String.valueOf(teamArt.getSoleAttributeValue(
             ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), null)));
-      testEquals(
-            "Targeted Version",
-            (teamArt.getTargetedForVersion() != null ? teamArt.getTargetedForVersion().toString() : "not set"),
-            "2.5.7");
+      testEquals("Targeted Version",
+            (teamArt.getTargetedForVersion() != null ? teamArt.getTargetedForVersion().toString() : "not set"), "2.5.7");
       testEquals("State", DefaultTeamState.Analyze.name(), teamArt.getStateMgr().getCurrentStateName());
    }
 

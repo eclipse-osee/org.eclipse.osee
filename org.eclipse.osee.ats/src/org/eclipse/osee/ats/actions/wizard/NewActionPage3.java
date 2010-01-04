@@ -47,9 +47,6 @@ public class NewActionPage3 extends WizardPage {
    private final NewActionWizard wizard;
    private static Set<IAtsWizardItem> wizardExtensionItems = new HashSet<IAtsWizardItem>();
 
-   /**
-    * @param wizard -
-    */
    public NewActionPage3(NewActionWizard wizard) {
       super("Create new ATS Action", "Create ATS Action", null);
       this.wizard = wizard;
@@ -111,9 +108,6 @@ public class NewActionPage3 extends WizardPage {
       }
    }
 
-   /**
-    * createControl is called when wizard is initially created. Create a composite to use when this page is displayed.
-    */
    public void createControl(Composite parent) {
 
       comp = new Composite(parent, SWT.NONE);

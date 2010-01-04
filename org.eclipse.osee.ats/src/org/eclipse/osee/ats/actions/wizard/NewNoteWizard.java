@@ -22,9 +22,6 @@ public class NewNoteWizard extends Wizard {
    public NewNotePage mainPage;
    private final Collection<String> artifactNames;
 
-   /**
-    * 
-    */
    public NewNoteWizard(Collection<String> artifactNames) {
       super();
       this.artifactNames = artifactNames;

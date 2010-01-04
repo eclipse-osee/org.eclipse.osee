@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.actions.wizard;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 import java.util.logging.Level;
@@ -45,10 +44,9 @@ public class NewActionJob extends Job {
    private final boolean validationRequired;
    private ActionArtifact actionArt;
    private final Set<ActionableItemArtifact> actionableItems;
-   private final Collection<String> userComms;
    private final NewActionWizard wizard;
 
-   public NewActionJob(String title, String desc, ChangeType changeType, PriorityType priority, Date needByDate, boolean validationRequired, Collection<String> userComms, Set<ActionableItemArtifact> actionableItems, NewActionWizard wizard) {
+   public NewActionJob(String title, String desc, ChangeType changeType, PriorityType priority, Date needByDate, boolean validationRequired, Set<ActionableItemArtifact> actionableItems, NewActionWizard wizard) {
       super("Creating New Action");
       this.title = title;
       this.desc = desc;
@@ -56,7 +54,6 @@ public class NewActionJob extends Job {
       this.priority = priority;
       this.needByDate = needByDate;
       this.validationRequired = validationRequired;
-      this.userComms = userComms;
       this.actionableItems = actionableItems;
       this.wizard = wizard;
    }
@@ -93,37 +90,22 @@ public class NewActionJob extends Job {
       return Status.OK_STATUS;
    }
 
-   /**
-    * @return Returns the identifyStateDescription.
-    */
    public String getIdentifyStateDescription() {
       return identifyStateDescription;
    }
 
-   /**
-    * @param identifyStateDescription The identifyStateDescription to set.
-    */
    public void setIdentifyStateDescription(String identifyStateDescription) {
       this.identifyStateDescription = identifyStateDescription;
    }
 
-   /**
-    * @return Returns the saveIt.
-    */
    public boolean isSaveIt() {
       return saveIt;
    }
 
-   /**
-    * @param saveIt The saveIt to set.
-    */
    public void setSaveIt(boolean saveIt) {
       this.saveIt = saveIt;
    }
 
-   /**
-    * @return the actionArt
-    */
    public ActionArtifact getActionArt() {
       return actionArt;
    }

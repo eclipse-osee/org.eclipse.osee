@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
-import org.eclipse.osee.framework.ui.skynet.widgets.XList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -40,9 +39,6 @@ public class NewActionPage2 extends WizardPage {
    private final NewActionWizard wizard;
    private boolean debugPopulated = false;
 
-   /**
-    * @param wizard -
-    */
    protected NewActionPage2(NewActionWizard wizard) {
       super("Create new ATS Action", "Create ATS Action", null);
       this.wizard = wizard;
@@ -75,13 +71,13 @@ public class NewActionPage2 extends WizardPage {
    public void createControl(Composite parent) {
 
       try {
-         StringBuffer sb = new StringBuffer();
-         sb.append("<WorkPage><XWidget displayName=\"Description\" height=\"80\" required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\"" + ATSAttributes.DESCRIPTION_ATTRIBUTE.getDescription() + "\"/>");
+         StringBuffer sb = new StringBuffer("<WorkPage>");
+         sb.append("<XWidget displayName=\"Description\" height=\"80\" required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\"" + ATSAttributes.DESCRIPTION_ATTRIBUTE.getDescription() + "\"/>");
          sb.append("<XWidget displayName=\"Change Type\" storageName=\"ats.Change Type\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getDescription() + "\"/>");
          sb.append("<XWidget displayName=\"Priority\" storageName=\"ats.Priority\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\"/>");
          sb.append("<XWidget displayName=\"Deadline\" xwidgetType=\"XDate\" horizontalLabel=\"true\" toolTip=\"" + ATSAttributes.NEED_BY_ATTRIBUTE.getDescription() + "\"/>");
          sb.append("<XWidget displayName=\"Validation Required\" xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" toolTip=\"" + ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getDescription() + "\"/>");
-         sb.append("<XWidget displayName=\"User Community\" storageName=\"ats.User Community\" xwidgetType=\"XList(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" toolTip=\"" + ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getDescription() + "\"/></WorkPage>");
+         sb.append("</WorkPage>");
 
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(2, false));
@@ -116,7 +112,6 @@ public class NewActionPage2 extends WizardPage {
       try {
          ((XText) getXWidget("Description")).set("See title");
          // Must use skynet attribute name cause these widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
-         ((XList) getXWidget("ats.User Community")).setSelected("Other");
          ((XCombo) getXWidget("ats.Priority")).set("4");
          ((XCombo) getXWidget("ats.Change Type")).set("Improvement");
          debugPopulated = true;

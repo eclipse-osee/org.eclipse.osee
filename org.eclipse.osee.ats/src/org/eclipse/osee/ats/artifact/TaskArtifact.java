@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -291,6 +292,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (parentSma != null) return parentSma;
       Collection<StateMachineArtifact> smas =
             getRelatedArtifacts(AtsRelationTypes.SmaToTask_Sma, StateMachineArtifact.class);
+      if (smas.size() == 0) throw new OseeStateException("Task has no parent - " + getHumanReadableId());
       parentSma = smas.iterator().next();
       return parentSma;
    }

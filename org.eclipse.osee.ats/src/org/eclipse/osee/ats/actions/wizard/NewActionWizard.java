@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.actions.wizard;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -31,10 +30,8 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
-import org.eclipse.osee.framework.ui.skynet.widgets.XList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XList.XListItem;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -48,9 +45,6 @@ public class NewActionWizard extends Wizard implements INewWizard {
    private Collection<ActionableItemArtifact> initialAias;
    private String initialDescription;
 
-   /**
-    * Wizard to create a new action artifact with ONE product
-    */
    public NewActionWizard() {
       super();
    }
@@ -66,7 +60,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
          NewActionJob job = null;
          job =
                new NewActionJob(getTitle(), getDescription(), getChangeType(), getPriority(), getNeedBy(),
-                     getValidation(), getUserCommunities(), getSelectedActionableItemArtifacts(), this);
+                     getValidation(), getSelectedActionableItemArtifacts(), this);
          job.setUser(true);
          job.setPriority(Job.LONG);
          job.schedule();
@@ -116,15 +110,6 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return ((XText) page2.getXWidget("Description")).get();
    }
 
-   public Set<String> getUserCommunities() throws OseeArgumentException {
-      Set<String> items = new HashSet<String>();
-      // Must use skynet attribute name cause this widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
-      for (XListItem item : ((XList) page2.getXWidget("ats.User Community")).getSelected()) {
-         items.add(item.getName());
-      }
-      return items;
-   }
-
    public PriorityType getPriority() throws OseeCoreException {
       // Must use skynet attribute name cause this widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
       return PriorityType.getPriority(((XCombo) page2.getXWidget("ats.Priority")).get());
@@ -163,30 +148,18 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return page3.isActionValid();
    }
 
-   /**
-    * @return the initialDescription
-    */
    public String getInitialDescription() {
       return initialDescription;
    }
 
-   /**
-    * @param initialDescription the initialDescription to set
-    */
    public void setInitialDescription(String initialDescription) {
       this.initialDescription = initialDescription;
    }
 
-   /**
-    * @return the initialAias
-    */
    public Collection<ActionableItemArtifact> getInitialAias() {
       return initialAias;
    }
 
-   /**
-    * @param initialAias the initialAias to set
-    */
    public void setInitialAias(Collection<ActionableItemArtifact> initialAias) {
       this.initialAias = initialAias;
    }

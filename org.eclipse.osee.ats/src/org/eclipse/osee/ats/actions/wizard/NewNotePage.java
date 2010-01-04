@@ -31,9 +31,6 @@ public class NewNotePage extends WizardPage {
    public XList artifactList;
    private final NewNoteWizard wizard;
 
-   /**
-    * @param wizard -
-    */
    public NewNotePage(NewNoteWizard wizard) {
       super("Create new Note", "Create new Note", null);
       this.wizard = wizard;
