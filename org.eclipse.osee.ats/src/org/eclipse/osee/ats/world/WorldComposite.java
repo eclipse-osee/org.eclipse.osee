@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.util.ElapsedTime;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -134,10 +133,10 @@ public class WorldComposite extends ScrolledComposite implements IOpenNewAtsWorl
             } else {
                setTableTitle(name, false);
             }
-            ElapsedTime elapsedTime = new ElapsedTime("WorldComposite - setInput");
+            //            ElapsedTime elapsedTime = new ElapsedTime("WorldComposite - setInput");
             worldXViewer.setInput(worldArts);
             worldXViewer.updateStatusLabel();
-            elapsedTime.end();
+            //            elapsedTime.end();
             if (otherArts.size() > 0) {
                if (MessageDialog.openConfirm(
                      Display.getCurrent().getActiveShell(),
