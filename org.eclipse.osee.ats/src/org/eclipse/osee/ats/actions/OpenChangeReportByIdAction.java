@@ -27,7 +27,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 public class OpenChangeReportByIdAction extends Action {
 
    public OpenChangeReportByIdAction() {
-      super("Open Change Report by Id");
+      this("Open Change Report by Id");
+   }
+
+   public OpenChangeReportByIdAction(String name) {
+      super(name);
       setToolTipText(getText());
    }
 

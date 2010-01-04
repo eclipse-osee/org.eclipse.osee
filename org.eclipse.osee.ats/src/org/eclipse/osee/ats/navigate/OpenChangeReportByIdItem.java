@@ -48,7 +48,6 @@ import org.eclipse.swt.widgets.Display;
 public class OpenChangeReportByIdItem extends XNavigateItemAction {
 
    /**
-    * @param parent
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
    public OpenChangeReportByIdItem(XNavigateItem parent) {
