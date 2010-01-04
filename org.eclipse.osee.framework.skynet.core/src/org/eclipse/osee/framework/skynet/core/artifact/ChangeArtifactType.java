@@ -44,7 +44,7 @@ public class ChangeArtifactType {
     * @param artifacts
     * @param artifactType
     */
-   public static void changeArtifactType(Collection<Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {
+   public static void changeArtifactType(Collection<? extends Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {
       if (artifacts.isEmpty()) {
          throw new OseeArgumentException("The artifact list can not be empty");
       }
