@@ -102,13 +102,14 @@ public class BranchStateTest {
          assertTrue(workingBranch.getBranchState().isDeleted());
       } finally {
          if (workingBranch != null) {
+            Thread.sleep(5000);
             BranchManager.purgeBranch(workingBranch);
          }
       }
    }
 
    @org.junit.Test
-   public void testCommitState() throws OseeCoreException {
+   public void testCommitState() throws OseeCoreException, InterruptedException {
       String originalBranchName = "Commit State Branch";
       Branch workingBranch = null;
       Artifact change = null;
@@ -133,6 +134,7 @@ public class BranchStateTest {
          assertTrue(!workingBranch.isEditable());
       } finally {
          if (workingBranch != null) {
+            Thread.sleep(5000);
             BranchManager.purgeBranch(workingBranch);
          }
       }
