@@ -127,8 +127,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             try {
                IContentProvider contentProvider = getContentProvider();
                if (contentProvider instanceof WorldContentProvider) {
-                  remove(loadedArtifacts.getLoadedArtifacts().toArray(
-                        new Object[loadedArtifacts.getLoadedArtifacts().size()]));
+                  remove(loadedArtifacts.getLoadedArtifacts().toArray());
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

@@ -75,10 +75,6 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
    private final IXTaskViewer iXTaskViewer;
    protected Label showReleaseMetricsLabel;
 
-   /**
-    * @param label
-    * @throws Exception
-    */
    public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style) throws OseeCoreException {
       this(iXTaskViewer, parent, style, null);
    }
@@ -184,17 +180,29 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Tasks");
             // Done for concurrent modification purposes
             ArrayList<TaskArtifact> delItems = new ArrayList<TaskArtifact>();
+            ArrayList<TaskArtifact> tasksNotInDb = new ArrayList<TaskArtifact>();
             delItems.addAll(items);
             for (TaskArtifact taskArt : delItems) {
                SMAEditor.close(Collections.singleton(taskArt), false);
-               taskArt.deleteAndPersist(transaction);
+               if (taskArt.isInDb()) {
+                  taskArt.deleteAndPersist(transaction);
+               } else {
+                  tasksNotInDb.add(taskArt);
+               }
             }
             transaction.execute();
+            taskXViewer.remove(items);
+
+            if (tasksNotInDb.size() > 0) {
+               for (TaskArtifact taskArt : tasksNotInDb) {
+                  taskArt.purgeFromBranch();
+               }
+               refreshActionHandler();
+            }
+            iXTaskViewer.getEditor().onDirtied();
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
-
-         //         iXTaskViewer.handleRefreshAction();
       }
    }
 
@@ -249,9 +257,6 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
       return html.toString();
    }
 
-   /**
-    * @return Returns the xViewer.
-    */
    public TaskXViewer getTaskXViewer() {
       return taskXViewer;
    }
