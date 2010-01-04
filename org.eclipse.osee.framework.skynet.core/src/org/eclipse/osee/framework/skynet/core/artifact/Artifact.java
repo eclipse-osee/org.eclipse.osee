@@ -990,12 +990,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
 
       List<String> items = new ArrayList<String>();
       for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
-         Object object = attribute.getValue();
-         if (object instanceof String) {
-            items.add((String) object);
-         } else {
-            items.add(object.toString());
-         }
+         items.add(attribute.getDisplayableString());
       }
       return items;
    }
