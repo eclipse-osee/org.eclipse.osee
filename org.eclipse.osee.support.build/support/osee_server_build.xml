@@ -5,7 +5,8 @@
 	<import file="${basedir}/osee_common_build.xml" />
 
 	<target name="build">
-		<property name="forceContextQualifier" value="200912161006" />
+		<property name="buildId" value="oseeServer" />
+		<property name="forceContextQualifier" value="201001041027" />
 		<property name="filteredDependencyCheck" value="true" />
 		<property name="topLevelElementId" value="org.eclipse.osee.framework.server.feature" />
 		<property name="postBuildFile"  value="${ant.file}" />

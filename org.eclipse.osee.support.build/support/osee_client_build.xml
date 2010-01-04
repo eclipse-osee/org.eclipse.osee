@@ -3,6 +3,7 @@
 	<import file="${basedir}/osee_common_build.xml" />
 
 	<target name="build">
+		<property name="buildId" value="oseeClient" />
 		<property name="topLevelElementId" value="org.eclipse.osee.client.feature" />
 		<property name="filteredDependencyCheck" value="false" />
 		<property name="p2.category.definition" value="file:${basedir}/client_category.xml" />
