@@ -19,8 +19,9 @@ import org.eclipse.osee.ats.actions.MyFavoritesAction;
 import org.eclipse.osee.ats.actions.MyWorldAction;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.NewGoal;
-import org.eclipse.osee.ats.actions.OpenByIdAction;
 import org.eclipse.osee.ats.actions.OpenChangeReportByIdAction;
+import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
+import org.eclipse.osee.ats.actions.OpenWorldByIdAction;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -223,7 +224,8 @@ public class NavigateView extends ViewPart implements IActionable {
       toolbarManager.add(new CollapseAllAction(xNavComp.getFilteredTree().getViewer()));
       toolbarManager.add(new ExpandAllAction(xNavComp.getFilteredTree().getViewer()));
       toolbarManager.add(new OpenChangeReportByIdAction());
-      toolbarManager.add(new OpenByIdAction());
+      toolbarManager.add(new OpenWorldByIdAction());
+      toolbarManager.add(new OpenWorkflowByIdAction());
       if (AtsUtil.isGoalEnabled()) {
          toolbarManager.add(new NewGoal());
       }
@@ -255,8 +257,7 @@ public class NavigateView extends ViewPart implements IActionable {
    public String getActionDescription() {
       IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
       if (sel.iterator().hasNext()) {
-         return String.format("Currently Selected - %s",
-               ((XNavigateItem) sel.iterator().next()).getName());
+         return String.format("Currently Selected - %s", ((XNavigateItem) sel.iterator().next()).getName());
       }
       return "";
    }

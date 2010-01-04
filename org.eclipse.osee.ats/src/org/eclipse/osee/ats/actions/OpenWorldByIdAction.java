@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 /**
  * @author Donald G. Dunne
  */
-public class OpenByIdAction extends Action {
+public class OpenWorldByIdAction extends Action {
 
-   public OpenByIdAction() {
-      super("Open by Id");
+   public OpenWorldByIdAction() {
+      super("Open World by Id");
       setToolTipText(getText());
    }
 
