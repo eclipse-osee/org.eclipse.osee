@@ -102,6 +102,7 @@ public class BranchStateTest {
          assertTrue(workingBranch.getBranchState().isDeleted());
       } finally {
          if (workingBranch != null) {
+            // needed to allow for archiving to occur
             Thread.sleep(5000);
             BranchManager.purgeBranch(workingBranch);
          }
@@ -134,6 +135,7 @@ public class BranchStateTest {
          assertTrue(!workingBranch.isEditable());
       } finally {
          if (workingBranch != null) {
+            // needed to allow for archiving to occur
             Thread.sleep(5000);
             BranchManager.purgeBranch(workingBranch);
          }
