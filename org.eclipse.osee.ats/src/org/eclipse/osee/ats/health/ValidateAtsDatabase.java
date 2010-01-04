@@ -71,6 +71,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.util.ElapsedTime;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -149,7 +150,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       List<Collection<Integer>> artIdLists = null;
 
       // Un-comment to process whole Common branch - Normal Mode
+      ElapsedTime elapsedTime = new ElapsedTime("ValidateAtsDatabase - load ArtIds");
       artIdLists = loadAtsBranchArtifactIds(xResultData, monitor);
+      elapsedTime.end();
 
       // Un-comment to process specific artifact from common - Test Mode
       // artIdLists = Arrays.asList((Collection<Integer>) Arrays.asList(new Integer(524575)));
@@ -159,13 +162,17 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
       testNameToResultsMap = new HashCollection<String, String>();
       boolean testingTest = false;
-      int y = 0;
+      int y = 0, artSetNum = 1;
       for (Collection<Integer> artIdList : artIdLists) {
          // Don't process all lists if just trying to test this report
          if (y++ > 5 && testingTest) {
             break;
          }
+         elapsedTime =
+               new ElapsedTime(String.format("ValidateAtsDatabase - load Artifact set %d/%d", artSetNum++,
+                     artIdLists.size()));
          Collection<Artifact> artifactsTemp = ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtil.getAtsBranch());
+         elapsedTime.end();
          Collection<Artifact> artifacts = new ArrayList<Artifact>();
          // Don't process all artifacts if just trying to test this report
          if (testingTest) {
