@@ -426,10 +426,12 @@ public final class ArtifactLoader {
                boolean isEnumAttribute =
                      AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType);
                // If boolean or enumerated attribute type, the string value can be shared by using .intern()
+               String value = chStmt.getString("value");
+               if ((isBooleanAttribute || isEnumAttribute) && value != null) {
+                  value = value.intern();
+               }
                artifact.internalInitializeAttribute(attributeType, attrId, gammaId, ModificationType.getMod(modType),
-                     false,
-                     (isBooleanAttribute || isEnumAttribute) && chStmt.getString("value") != null ? chStmt.getString(
-                           "value").intern() : chStmt.getString("value"), chStmt.getString("uri"));
+                     false, value, chStmt.getString("uri"));
             }
 
             previousArtifactId = artifactId;
