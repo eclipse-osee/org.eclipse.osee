@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -58,15 +60,18 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
       variableMap.setValue("suppressWord", suppressWord);
       variableMap.setValue("diffReportFolderName", diffReportFolderName);
 
-      for (Change artifactChange : changes) {
+      for (Change change : changes) {
          try {
             Artifact baseArtifact =
-                  artifactChange.getModificationType() == ModificationType.NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED ? null : ArtifactQuery.getHistoricalArtifactFromId(
-                        artifactChange.getArtifact().getArtId(), artifactChange.getFromTransactionId(), true);
+                  (change.getModificationType() == ModificationType.NEW || change.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactQuery.getHistoricalArtifactFromId(
+                        change.getArtifact().getArtId(), change.getFromTransactionId(), true);
 
+            //Relation changes just pick artifact A and that might not correspond to the correct change modification type.
+            ModificationType newerArtifactModType = change instanceof RelationChange? change.getArtifact().getModType() : change.getModificationType();
+            
             Artifact newerArtifact =
-                  artifactChange.getModificationType().isDeleted() ? null : artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
-                        artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true) : artifactChange.getArtifact();
+               newerArtifactModType.isDeleted() ? null : (change.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
+                        change.getArtifact().getArtId(), change.getToTransactionId(), true) : change.getArtifact());
 
             baseArtifacts.add(baseArtifact);
             newerArtifacts.add(newerArtifact);
