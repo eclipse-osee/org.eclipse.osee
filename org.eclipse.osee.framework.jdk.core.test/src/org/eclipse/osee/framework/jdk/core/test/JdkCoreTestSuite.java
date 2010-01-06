@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.jdk.core.test;
 
 import org.eclipse.osee.framework.jdk.core.test.type.JdkCoreTypeTestSuite;
+import org.eclipse.osee.framework.jdk.core.test.util.HashCollectionTest;
 import org.eclipse.osee.framework.jdk.core.test.util.JdkCoreUtilTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -19,7 +20,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {JdkCoreTypeTestSuite.class, JdkCoreUtilTestSuite.class})
+@Suite.SuiteClasses( {HashCollectionTest.class, JdkCoreTypeTestSuite.class, JdkCoreUtilTestSuite.class})
 public class JdkCoreTestSuite {
 
 }
