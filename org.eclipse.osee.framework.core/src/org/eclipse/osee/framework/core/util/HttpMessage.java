@@ -47,7 +47,7 @@ public class HttpMessage {
             throw new OseeCoreException(String.format("Request [%s] failed.", urlString));
          }
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         throw new OseeWrappedException(String.format("Error with [%s]", requestId.toString()), ex);
       } finally {
          Lib.close(inputStream);
       }

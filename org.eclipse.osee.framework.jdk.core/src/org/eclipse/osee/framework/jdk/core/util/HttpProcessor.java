@@ -101,6 +101,7 @@ public class HttpProcessor {
       PutMethod method = new PutMethod(url.toString());
 
       InputStream responseInputStream = null;
+      AcquireResult result = new AcquireResult();
       try {
          method.setRequestHeader(CONTENT_ENCODING, encoding);
          method.setRequestEntity(new InputStreamRequestEntity(inputStream, contentType));
@@ -108,8 +109,12 @@ public class HttpProcessor {
          method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
          statusCode = getHttpClient().executeMethod(method);
+         responseInputStream = method.getResponseBodyAsStream();
+         result.setContentType(getContentType(method));
+         result.setEncoding(method.getResponseCharSet());
          if (statusCode != HttpURLConnection.HTTP_CREATED) {
-            throw new Exception(method.getStatusLine().toString());
+            String exceptionString = Lib.inputStreamToString(responseInputStream);
+            throw new Exception(exceptionString);
          } else {
             responseInputStream = method.getResponseBodyAsStream();
             response = Lib.inputStreamToString(responseInputStream);
@@ -145,16 +150,17 @@ public class HttpProcessor {
          method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
          statusCode = getHttpClient().executeMethod(method);
+         httpInputStream = method.getResponseBodyAsStream();
+         result.setContentType(getContentType(method));
+         result.setEncoding(method.getResponseCharSet());
          if (statusCode != HttpStatus.SC_ACCEPTED) {
-            throw new Exception(method.getStatusLine().toString());
+            String exceptionString = Lib.inputStreamToString(httpInputStream);
+            throw new Exception(exceptionString);
          } else {
-            httpInputStream = method.getResponseBodyAsStream();
-            result.setContentType(getContentType(method));
-            result.setEncoding(method.getResponseCharSet());
             Lib.inputStreamToOutputStream(httpInputStream, outputStream);
          }
       } catch (Exception ex) {
-         throw new IOException(String.format("Error during POST [%s] - status code: [%s]", url, statusCode), ex);
+         throw new IOException(String.format("Error during POST [%s] - status code: [%s] ", url, statusCode), ex);
       } finally {
          try {
             result.setCode(statusCode);
@@ -171,6 +177,7 @@ public class HttpProcessor {
    }
 
    public static String post(URL url) throws Exception {
+      AcquireResult result = new AcquireResult();
       String response = null;
       int statusCode = -1;
 
@@ -181,8 +188,12 @@ public class HttpProcessor {
          method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
          statusCode = getHttpClient().executeMethod(method);
+         responseInputStream = method.getResponseBodyAsStream();
+         result.setContentType(getContentType(method));
+         result.setEncoding(method.getResponseCharSet());
          if (statusCode != HttpStatus.SC_ACCEPTED) {
-            throw new Exception(method.getStatusLine().toString());
+            String exceptionString = Lib.inputStreamToString(responseInputStream);
+            throw new Exception(exceptionString);
          } else {
             responseInputStream = method.getResponseBodyAsStream();
             response = Lib.inputStreamToString(responseInputStream);
