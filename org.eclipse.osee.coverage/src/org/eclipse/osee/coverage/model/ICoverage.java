@@ -37,7 +37,7 @@ public interface ICoverage {
 
    public ICoverage getParent();
 
-   public String getFileContents();
+   public String getFileContents() throws OseeCoreException;
 
    public String getLocation();
 

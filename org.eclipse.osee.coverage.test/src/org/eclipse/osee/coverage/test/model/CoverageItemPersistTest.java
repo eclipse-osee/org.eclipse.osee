@@ -45,13 +45,12 @@ public class CoverageItemPersistTest {
       // If this fails, cleanup didn't happen.  Must DbInit
       Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
 
-      parentCu = new CoverageUnit(null, "Top", "C:/UserData/");
+      parentCu = new CoverageUnit(null, "Top", "C:/UserData/", null);
       parentGuid = parentCu.getGuid();
       ci = new CoverageItem(parentCu, CoverageOptionManager.Deactivated_Code, "1");
       for (int x = 0; x < 10; x++) {
          ci.addTestUnitName("Test Unit " + x);
       }
-      ci.setGuid("asdf");
       ci.setRationale("this is rationale");
       ci.setName("this is text");
       guid = ci.getGuid();
@@ -83,11 +82,15 @@ public class CoverageItemPersistTest {
     */
    @Test
    public void testSave() throws OseeCoreException {
+      // Since test units are stored through provider, ensure they are same before and after save
+      Assert.assertEquals(10, ci.getTestUnits().size());
+
       Artifact artifact = (new OseeCoverageUnitStore(parentCu)).getArtifact(true);
       Assert.assertNotNull(artifact);
       SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Save CoverageItem");
       (new OseeCoverageUnitStore(parentCu)).save(transaction);
       transaction.execute();
+
       Assert.assertEquals(10, ci.getTestUnits().size());
    }
 

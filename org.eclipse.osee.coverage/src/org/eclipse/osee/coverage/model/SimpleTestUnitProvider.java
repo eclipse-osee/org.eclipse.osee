@@ -27,12 +27,17 @@ public class SimpleTestUnitProvider implements ITestUnitProvider {
 
    @Override
    public void addTestUnitName(CoverageItem coverageItem, String testUnitName) {
-      coverageItemToTestUnits.put(coverageItem, testUnitName.intern());
+      if (!getTestUnits(coverageItem).contains(testUnitName)) {
+         coverageItemToTestUnits.put(coverageItem, testUnitName.intern());
+      }
    }
 
    @Override
    public Collection<String> getTestUnits(CoverageItem coverageItem) {
-      return coverageItemToTestUnits.getValues(coverageItem);
+      if (coverageItemToTestUnits.containsKey(coverageItem)) {
+         return coverageItemToTestUnits.getValues(coverageItem);
+      }
+      return java.util.Collections.emptyList();
    }
 
    @Override

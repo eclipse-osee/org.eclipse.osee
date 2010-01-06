@@ -122,7 +122,7 @@ public class CoverageTestUnit implements ICoverage {
    }
 
    @Override
-   public String getFileContents() {
+   public String getFileContents() throws OseeCoreException {
       return "";
    }
 

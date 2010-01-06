@@ -21,6 +21,7 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.SimpleCoverageUnitFileContentsProvider;
 import org.eclipse.osee.coverage.vcast.VcpResultsFile.ResultsValue;
 import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -41,6 +42,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
    @Override
    public CoverageImport run() {
       coverageImport = new CoverageImport("VectorCast Import");
+      coverageImport.setCoverageUnitFileContentsProvider(new SimpleCoverageUnitFileContentsProvider());
       if (!Strings.isValid(vectorCastCoverageImportProvider.getVCastDirectory())) {
          coverageImport.getLog().logError("VectorCast directory must be specified");
          return coverageImport;
@@ -71,7 +73,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
             CoverageDataFile coverageDataFile = vcpSourceFile.getCoverageDataFile();
             for (CoverageDataUnit coverageDataUnit : coverageDataFile.getCoverageDataUnits()) {
                CoverageUnit fileCoverageUnit =
-                     new CoverageUnit(null, vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME), "");
+                     coverageImport.createCoverageUnit(null, vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME), "");
                String fileNamespace = vectorCastCoverageImportProvider.getFileNamespace(coverageDataUnit.getName());
                fileCoverageUnit.setNamespace(fileNamespace);
                CoverageUnit parent = coverageImport.getOrCreateParent(fileCoverageUnit.getNamespace());
@@ -86,7 +88,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                for (CoverageDataSubProgram coverageDataSubProgram : coverageDataUnit.getSubPrograms()) {
                   methodNum++;
                   CoverageUnit methodCoverageUnit =
-                        new CoverageUnit(fileCoverageUnit, coverageDataSubProgram.getName(), "");
+                        coverageImport.createCoverageUnit(fileCoverageUnit, coverageDataSubProgram.getName(), "");
                   // Store this mapping so can check covered/totals later
                   methodCoverageUnitToCoverageDataSubProgram.put(methodCoverageUnit, coverageDataSubProgram);
                   fileCoverageUnit.addCoverageUnit(methodCoverageUnit);

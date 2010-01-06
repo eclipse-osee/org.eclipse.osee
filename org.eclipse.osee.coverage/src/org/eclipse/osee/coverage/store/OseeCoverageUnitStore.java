@@ -35,7 +35,8 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
    public OseeCoverageUnitStore(ICoverage parent, Artifact artifact, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       super(null, artifact.getArtifactTypeName());
       this.artifact = artifact;
-      this.coverageUnit = new CoverageUnit(parent, artifact.getName(), "");
+      this.coverageUnit =
+            new CoverageUnit(parent, artifact.getName(), "", OseeCoverageUnitFileContentsProvider.getInstance());
       load(coverageOptionManager);
    }
 

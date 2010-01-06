@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -43,11 +44,12 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    ICoverage parent;
    ICoverageUnitFileContentsProvider fileContentsProvider;
 
-   public CoverageUnit(ICoverage parent, String name, String location) {
+   public CoverageUnit(ICoverage parent, String name, String location, ICoverageUnitFileContentsProvider coverageUnitFileContentsProvider) {
       super();
       this.parent = parent;
       this.name = name;
       this.location = location;
+      this.fileContentsProvider = coverageUnitFileContentsProvider;
       if (parent != null && parent instanceof ICoverageUnitProvider) {
          ((ICoverageUnitProvider) parent).addCoverageUnit(this);
       }
@@ -127,11 +129,17 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       this.location = location;
    }
 
-   public String getFileContents() {
+   public String getFileContents() throws OseeCoreException {
+      if (fileContentsProvider == null) {
+         throw new OseeStateException("No File Contents Provider Specified");
+      }
       return fileContentsProvider.getFileContents(this);
    }
 
-   public void setFileContents(String fileContents) {
+   public void setFileContents(String fileContents) throws OseeStateException {
+      if (fileContentsProvider == null) {
+         throw new OseeStateException("No File Contents Provider Specified");
+      }
       this.fileContentsProvider.setFileContents(this, fileContents);
    }
 
@@ -216,7 +224,11 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    public void setNamespace(String namespace) {
-      this.namespace = namespace.intern();
+      if (namespace == null) {
+         this.namespace = null;
+      } else {
+         this.namespace = namespace.intern();
+      }
    }
 
    public String getAssignees() {
@@ -295,7 +307,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    public CoverageUnit copy(boolean includeItems) throws OseeCoreException {
-      CoverageUnit coverageUnit = new CoverageUnit(parent, name, location);
+      CoverageUnit coverageUnit = new CoverageUnit(parent, name, location, fileContentsProvider);
       coverageUnit.setGuid(guid);
       coverageUnit.setNamespace(namespace);
       coverageUnit.setNotes(notes);

@@ -13,6 +13,8 @@ import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverageUnitFileContentsProvider;
+import org.eclipse.osee.coverage.model.SimpleCoverageUnitFileContentsProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,27 +24,26 @@ import org.junit.Test;
  */
 public class MatchTypeTest {
 
+   public static ICoverageUnitFileContentsProvider fileContentsProvider = new SimpleCoverageUnitFileContentsProvider();
+
    public CoveragePackage getCoveragePackage() {
-      CoveragePackage coveragePackage =
-            new CoveragePackage("Package", CoverageOptionManagerDefault.instance());
-      CoverageUnit packageCu = new CoverageUnit(coveragePackage, "Top", "C:/UserData/");
+      CoveragePackage coveragePackage = new CoveragePackage("Package", CoverageOptionManagerDefault.instance());
+      CoverageUnit packageCu = new CoverageUnit(coveragePackage, "Top", "C:/UserData/", fileContentsProvider);
       packageCu.setNamespace("org.this");
-      CoverageItem packageCi =
-            new CoverageItem(packageCu, CoverageOptionManager.Deactivated_Code, "1");
+      CoverageItem packageCi = new CoverageItem(packageCu, CoverageOptionManager.Deactivated_Code, "1");
       packageCi.setName("this is the text");
-      CoverageUnit packageFolderCu = new CoverageUnit(coveragePackage, "folder", "");
+      CoverageUnit packageFolderCu = new CoverageUnit(coveragePackage, "folder", "", fileContentsProvider);
       packageFolderCu.setFolder(true);
       return coveragePackage;
    }
 
    public CoverageImport getCoverageImport() {
       CoverageImport coverageImport = new CoverageImport("Import");
-      CoverageUnit importCu = new CoverageUnit(coverageImport, "Top", "C:/UserData/");
+      CoverageUnit importCu = new CoverageUnit(coverageImport, "Top", "C:/UserData/", fileContentsProvider);
       importCu.setNamespace("org.this");
-      CoverageItem importCi =
-            new CoverageItem(importCu, CoverageOptionManager.Deactivated_Code, "1");
+      CoverageItem importCi = new CoverageItem(importCu, CoverageOptionManager.Deactivated_Code, "1");
       importCi.setName("this is the text");
-      CoverageUnit importFolderCu = new CoverageUnit(coverageImport, "folder", "");
+      CoverageUnit importFolderCu = new CoverageUnit(coverageImport, "folder", "", fileContentsProvider);
       importFolderCu.setFolder(true);
       return coverageImport;
    }

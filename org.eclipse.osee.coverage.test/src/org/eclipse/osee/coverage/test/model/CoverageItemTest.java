@@ -24,7 +24,7 @@ public class CoverageItemTest {
 
    @BeforeClass
    public static void testSetup() {
-      parent = new CoverageUnit(null, "Top", "C:/UserData/");
+      parent = new CoverageUnit(null, "Top", "C:/UserData/", null);
       ci1 = new CoverageItem(parent, CoverageOptionManager.Deactivated_Code, "1");
       ci1.setName("this is text");
    }
@@ -190,9 +190,11 @@ public class CoverageItemTest {
 
    /**
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#setName(java.lang.String)}.
+    * 
+    * @throws OseeCoreException
     */
    @Test
-   public void testSetGetText() {
+   public void testSetGetText() throws OseeCoreException {
       ci1.setName("this is text2");
       Assert.assertEquals("this is text2", ci1.getFileContents());
       ci1.setName("this is text");

@@ -94,7 +94,7 @@ public class MergeItem extends MergeItemBase {
    }
 
    @Override
-   public String getFileContents() {
+   public String getFileContents() throws OseeCoreException {
       return importItem.getFileContents();
    }
 

@@ -108,7 +108,7 @@ public class MergeItemGroup extends MergeItemBase {
    }
 
    @Override
-   public String getFileContents() {
+   public String getFileContents() throws OseeCoreException {
       return mergeItems.iterator().next().getFileContents();
    }
 

@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverageUnitFileContentsProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -33,7 +34,7 @@ public class SampleJavaFileParser {
          Pattern.compile("\\s+(public|private)\\s(\\w+)\\s(\\w+)\\(.*\\)\\s+\\{\\s*");
    private static final Pattern executeLine = Pattern.compile("^(.*)\\s+//\\s+(\\w+),\\s+(\\w+),\\s+([\\w\\|]+)$");
 
-   public static CoverageUnit createCodeUnit(URL url) throws OseeCoreException {
+   public static CoverageUnit createCodeUnit(URL url, ICoverageUnitFileContentsProvider fileContentsProvider) throws OseeCoreException {
       try {
          if (url == null) {
             throw new IllegalArgumentException("Valid filename must be specified");
@@ -45,7 +46,7 @@ public class SampleJavaFileParser {
          // Store file as CoverageUnit
          File file = new File(url.getFile());
          String filename = file.getCanonicalFile().getName();
-         CoverageUnit fileCoverageUnit = new CoverageUnit(null, filename, url.getFile());
+         CoverageUnit fileCoverageUnit = new CoverageUnit(null, filename, url.getFile(), fileContentsProvider);
          String fileStr = Lib.inputStreamToString(inputStream);
          Matcher m = packagePattern.matcher(fileStr);
          if (m.find()) {
@@ -62,16 +63,16 @@ public class SampleJavaFileParser {
             m = methodPattern.matcher(line);
             if (m.find()) {
                String name = m.group(3);
-               coverageUnit = new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum);
+               coverageUnit = new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum, fileContentsProvider);
                // Note: CoverageUnit's orderNumber is set by executeLine match below
                fileCoverageUnit.addCoverageUnit(coverageUnit);
                // Duplicate this method as error case for importing
                if (filename.contains("AuxPowerUnit2") && name.equals("clear")) {
-                  CoverageUnit duplicateCoverageUnit = new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum);
+                  CoverageUnit duplicateCoverageUnit =
+                        new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum, fileContentsProvider);
                   duplicateCoverageUnit.setOrderNumber("2");
                   fileCoverageUnit.addCoverageUnit(duplicateCoverageUnit);
-                  CoverageItem item =
-                        new CoverageItem(duplicateCoverageUnit, CoverageOptionManager.Not_Covered, "1");
+                  CoverageItem item = new CoverageItem(duplicateCoverageUnit, CoverageOptionManager.Not_Covered, "1");
                   item.setName("return super.getColumn(index)");
                   duplicateCoverageUnit.addCoverageItem(item);
                }

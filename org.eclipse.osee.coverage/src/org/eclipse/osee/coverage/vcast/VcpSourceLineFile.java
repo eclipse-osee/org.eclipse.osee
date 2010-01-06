@@ -10,7 +10,9 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverageUnitFileContentsProvider;
 import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 
 /**
@@ -34,13 +36,14 @@ public class VcpSourceLineFile {
       }
    }
 
-   public void createCoverageUnits(CoverageUnit parentCoverageUnit) {
+   public void createCoverageUnits(CoverageUnit parentCoverageUnit, ICoverageUnitFileContentsProvider fileContentsProvider) throws OseeStateException {
       VcpSourceLisFile vcpSourceLisFile = vcpSourceFile.getVcpSourceLisFile();
       String contents = AFile.readFile(resultsFile);
       Matcher m = pattern.matcher(contents);
       while (m.find()) {
          CoverageUnit coverageUnit =
-               new CoverageUnit(parentCoverageUnit, m.group(1), m.group(2) + ":" + m.group(3) + "-" + m.group(4));
+               new CoverageUnit(parentCoverageUnit, m.group(1), m.group(2) + ":" + m.group(3) + "-" + m.group(4),
+                     fileContentsProvider);
          String source = Arrays.toString(vcpSourceLisFile.getSection(m.group(3), m.group(4)));
          coverageUnit.setFileContents(source);
          parentCoverageUnit.addCoverageUnit(coverageUnit);

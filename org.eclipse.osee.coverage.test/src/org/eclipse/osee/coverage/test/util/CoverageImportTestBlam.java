@@ -20,6 +20,7 @@ import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.SimpleCoverageUnitFileContentsProvider;
 import org.eclipse.osee.coverage.test.SampleJavaFileParser;
 import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -82,11 +83,13 @@ public class CoverageImportTestBlam extends AbstractCoverageBlam implements ICov
    public CoverageImport run() {
 
       CoverageImport coverageImport = new CoverageImport(getName());
+      coverageImport.setCoverageUnitFileContentsProvider(new SimpleCoverageUnitFileContentsProvider());
       try {
          for (String filename : fileList) {
             System.err.println(String.format("Importing [%s]", PATH + filename));
             URL url = CoverageImport1TestBlam.class.getResource(PATH + filename);
-            CoverageUnit coverageUnit = SampleJavaFileParser.createCodeUnit(url);
+            CoverageUnit coverageUnit =
+                  SampleJavaFileParser.createCodeUnit(url, coverageImport.getCoverageUnitFileContentsProvider());
             String namespace = coverageUnit.getNamespace().replaceFirst("org.eclipse.osee.coverage.test.import..", "");
             coverageUnit.setNamespace(namespace);
             CoverageUnit parentCoverageUnit = coverageImport.getOrCreateParent(namespace);

@@ -33,11 +33,9 @@ public class CoverageParametersTest {
 
    @Test
    public void testIsAssigneeMatch() throws Exception {
-      CoverageParameters coverageParameters =
-            new CoverageParameters(new CoverageImport("test"));
-      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData");
-      CoverageItem item =
-            new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
+      CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
+      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData", null);
+      CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause assignee search not specified
       Assert.assertTrue(coverageParameters.isAssigneeMatch(item));
@@ -56,11 +54,9 @@ public class CoverageParametersTest {
 
    @Test
    public void testIsRationaleMatch() throws Exception {
-      CoverageParameters coverageParameters =
-            new CoverageParameters(new CoverageImport("test"));
-      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData");
-      CoverageItem item =
-            new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
+      CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
+      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData", null);
+      CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause Rationale search not specified
       Assert.assertTrue(coverageParameters.isRationaleMatch(item));
@@ -79,11 +75,9 @@ public class CoverageParametersTest {
 
    @Test
    public void testIsNotesMatch() throws Exception {
-      CoverageParameters coverageParameters =
-            new CoverageParameters(new CoverageImport("test"));
-      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData");
-      CoverageItem item =
-            new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
+      CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
+      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData", null);
+      CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause notes search not specified
       Assert.assertTrue(coverageParameters.isNotesMatch(item));
@@ -106,11 +100,9 @@ public class CoverageParametersTest {
 
    @Test
    public void testIsCoverageMethodMatch() throws Exception {
-      CoverageParameters coverageParameters =
-            new CoverageParameters(new CoverageImport("test"));
-      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData");
-      CoverageItem item =
-            new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
+      CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
+      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData", null);
+      CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause coverageMethod search not specified
       Assert.assertTrue(coverageParameters.isCoverageMethodMatch(item));
@@ -133,11 +125,9 @@ public class CoverageParametersTest {
 
    @Test
    public void testIsNameMatch() throws Exception {
-      CoverageParameters coverageParameters =
-            new CoverageParameters(new CoverageImport("test"));
-      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData");
-      CoverageItem item =
-            new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
+      CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
+      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData", null);
+      CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause name search not specified
       Assert.assertTrue(coverageParameters.isNameMatch(item));
@@ -166,11 +156,9 @@ public class CoverageParametersTest {
 
    @Test
    public void testIsNamespaceMatch() throws Exception {
-      CoverageParameters coverageParameters =
-            new CoverageParameters(new CoverageImport("test"));
-      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData");
-      CoverageItem item =
-            new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
+      CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
+      CoverageUnit unit = new CoverageUnit(null, "Quark", "C:/UserData", null);
+      CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause Namespace search not specified
       Assert.assertTrue(coverageParameters.isNamespaceMatch(item));

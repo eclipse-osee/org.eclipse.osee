@@ -67,29 +67,6 @@ public class CoverageItem implements ICoverage {
       return coverageitem;
    }
 
-   public void fromXml(String xml, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
-      PropertyStore store = new PropertyStore();
-      //      PropertyStoreRegEx store = new PropertyStoreRegEx();
-      try {
-         store.load(xml);
-      } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
-      }
-      if (!store.getId().equals(PROPERTY_STORE_ID)) {
-         throw new OseeArgumentException(String.format("Invalid store id [%s] for CoverageItem", store.getId()));
-      }
-      setCoverageMethod(coverageOptionManager.get(store.get("methodType")));
-      setOrderNumber(store.get("order"));
-      setGuid(store.get("guid"));
-      setName(store.get("name"));
-      String rationale = store.get("rationale");
-      if (Strings.isValid(rationale)) setRationale(rationale);
-      if (testUnitProvider == null) {
-         testUnitProvider = new SimpleTestUnitProvider();
-      }
-      testUnitProvider.fromXml(this, store.get("testUnits"));
-   }
-
    public Collection<String> getTestUnits() {
       if (testUnitProvider == null) {
          return java.util.Collections.emptyList();
@@ -148,26 +125,6 @@ public class CoverageItem implements ICoverage {
       return !getCoverageMethod().getName().equals(CoverageOptionManager.Not_Covered.getName());
    }
 
-   @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((guid == null) ? 0 : guid.hashCode());
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (obj == null) return false;
-      if (getClass() != obj.getClass()) return false;
-      CoverageItem other = (CoverageItem) obj;
-      if (guid == null) {
-         if (other.guid != null) return false;
-      } else if (!guid.equals(other.guid)) return false;
-      return true;
-   }
-
    public String getGuid() {
       return guid;
    }
@@ -179,25 +136,6 @@ public class CoverageItem implements ICoverage {
 
    public void setGuid(String guid) {
       this.guid = guid;
-   }
-
-   public String toXml() throws OseeCoreException {
-      PropertyStore store = new PropertyStore(PROPERTY_STORE_ID);
-      store.put("guid", guid);
-      if (Strings.isValid(getRationale())) {
-         store.put("rationale", rationale);
-      }
-      store.put("order", orderNumber);
-      store.put("methodType", coverageMethod.getName());
-      if (testUnitProvider != null) {
-         store.put("testUnits", testUnitProvider.toXml(this));
-      }
-      store.put("name", name);
-      try {
-         return store.save();
-      } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
-      }
    }
 
    public String getTestUnitNames(Collection<CoverageTestUnit> testUnits) {
@@ -216,7 +154,7 @@ public class CoverageItem implements ICoverage {
       this.rationale = rationale;
    }
 
-   public String getFileContents() {
+   public String getFileContents() throws OseeCoreException {
       return name;
    }
 
@@ -291,6 +229,77 @@ public class CoverageItem implements ICoverage {
     */
    public void setTestUnitProvider(ITestUnitProvider testUnitProvider) {
       this.testUnitProvider = testUnitProvider;
+   }
+
+   public void fromXml(String xml, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
+      PropertyStore store = new PropertyStore();
+      //      PropertyStoreRegEx store = new PropertyStoreRegEx();
+      try {
+         store.load(xml);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+      if (!store.getId().equals(PROPERTY_STORE_ID)) {
+         throw new OseeArgumentException(String.format("Invalid store id [%s] for CoverageItem", store.getId()));
+      }
+      setCoverageMethod(coverageOptionManager.get(store.get("methodType")));
+      if (Strings.isValid(store.get("order"))) {
+         setOrderNumber(store.get("order"));
+      }
+      setGuid(store.get("guid"));
+      if (Strings.isValid(store.get("name"))) {
+         setName(store.get("name"));
+      }
+      if (Strings.isValid(store.get("rationale"))) {
+         setRationale(store.get("rationale"));
+      }
+      if (testUnitProvider == null) {
+         testUnitProvider = new SimpleTestUnitProvider();
+         testUnitProvider.fromXml(this, store.get("testUnits"));
+      }
+   }
+
+   public String toXml() throws OseeCoreException {
+      PropertyStore store = new PropertyStore(PROPERTY_STORE_ID);
+      store.put("guid", guid);
+      if (Strings.isValid(getRationale())) {
+         store.put("rationale", rationale);
+      }
+      if (Strings.isValid(orderNumber)) {
+         store.put("order", orderNumber);
+      }
+      store.put("methodType", coverageMethod.getName());
+      if (testUnitProvider != null) {
+         store.put("testUnits", testUnitProvider.toXml(this));
+      }
+      if (Strings.isValid(name)) {
+         store.put("name", name);
+      }
+      try {
+         return store.save();
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((guid == null) ? 0 : guid.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) return true;
+      if (obj == null) return false;
+      if (getClass() != obj.getClass()) return false;
+      CoverageItem other = (CoverageItem) obj;
+      if (guid == null) {
+         if (other.guid != null) return false;
+      } else if (!guid.equals(other.guid)) return false;
+      return true;
    }
 
 }

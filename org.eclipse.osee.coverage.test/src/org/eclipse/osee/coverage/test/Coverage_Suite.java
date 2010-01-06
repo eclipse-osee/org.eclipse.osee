@@ -13,13 +13,14 @@ package org.eclipse.osee.coverage.test;
 import org.eclipse.osee.coverage.test.model.CoverageItemTest;
 import org.eclipse.osee.coverage.test.model.CoverageOptionManagerTest;
 import org.eclipse.osee.coverage.test.model.CoverageUnitTest;
+import org.eclipse.osee.coverage.test.model.SimpleTestUnitProviderTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {CoverageItemTest.class, CoverageUnitTest.class, MatchTypeTest.class,
-      CoverageOptionManagerTest.class})
+@Suite.SuiteClasses( {SimpleTestUnitProviderTest.class, CoverageItemTest.class, CoverageUnitTest.class,
+      MatchTypeTest.class, CoverageOptionManagerTest.class})
 /**
  * @author Donald G. Dunne
  */

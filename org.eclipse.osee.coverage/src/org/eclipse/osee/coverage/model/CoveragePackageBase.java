@@ -30,6 +30,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    String name;
    boolean editable = true;
    protected final CoverageOptionManager coverageOptionManager;
+   protected ICoverageUnitFileContentsProvider coverageUnitFileContentsProvider;
 
    public CoveragePackageBase(String name, CoverageOptionManager coverageOptionManager) {
       this.name = name;
@@ -113,7 +114,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
             nameStr = nameStr + "." + name;
          }
          if (getCoverageUnits().size() == 0) {
-            CoverageUnit newCoverageUnit = new CoverageUnit(this, nameStr, "");
+            CoverageUnit newCoverageUnit = new CoverageUnit(this, nameStr, "", coverageUnitFileContentsProvider);
             newCoverageUnit.setFolder(true);
             newCoverageUnit.setNamespace(nameStr);
             addCoverageUnit(newCoverageUnit);
@@ -143,7 +144,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
             parent = getOrCreateParent(parentNamespace);
          }
          // Create new coverage unit
-         CoverageUnit newCoverageUnit = new CoverageUnit(parent, nameStr, "");
+         CoverageUnit newCoverageUnit = new CoverageUnit(parent, nameStr, "", coverageUnitFileContentsProvider);
          newCoverageUnit.setNamespace(nameStr);
          newCoverageUnit.setFolder(true);
          // Add to parent
@@ -225,7 +226,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    }
 
    @Override
-   public String getFileContents() {
+   public String getFileContents() throws OseeCoreException {
       return "";
    }
 
@@ -285,6 +286,18 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
 
    public CoverageOptionManager getCoverageOptionManager() {
       return coverageOptionManager;
+   }
+
+   public ICoverageUnitFileContentsProvider getCoverageUnitFileContentsProvider() {
+      return coverageUnitFileContentsProvider;
+   }
+
+   public void setCoverageUnitFileContentsProvider(ICoverageUnitFileContentsProvider coverageUnitFileContentsProvider) {
+      this.coverageUnitFileContentsProvider = coverageUnitFileContentsProvider;
+   }
+
+   public CoverageUnit createCoverageUnit(ICoverage parent, String name, String location) {
+      return new CoverageUnit(parent, name, location, coverageUnitFileContentsProvider);
    }
 
 }

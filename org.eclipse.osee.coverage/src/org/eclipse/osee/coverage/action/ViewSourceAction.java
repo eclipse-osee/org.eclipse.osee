@@ -7,8 +7,12 @@ package org.eclipse.osee.coverage.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -41,16 +45,22 @@ public class ViewSourceAction extends Action {
          ICoverage item = selectedCoverageEditorItem.getSelectedCoverageEditorItems().iterator().next();
          EntryDialog ed = new EntryDialog(item.getName(), "");
          ed.setFillVertically(true);
-         String text = item.getFileContents();
-         if (!Strings.isValid(text)) {
-            text = item.getParent().getFileContents();
+         String text;
+         try {
+            text = item.getFileContents();
             if (!Strings.isValid(text)) {
-               AWorkbench.popup("No Text Available");
-               return;
+               text = item.getParent().getFileContents();
+               if (!Strings.isValid(text)) {
+                  AWorkbench.popup("No Text Available");
+                  return;
+               }
             }
+            ed.setEntry(text);
+            ed.open();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
-         ed.setEntry(text);
-         ed.open();
+
       }
    }
 

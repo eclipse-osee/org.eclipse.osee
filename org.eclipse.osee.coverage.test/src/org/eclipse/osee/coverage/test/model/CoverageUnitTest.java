@@ -9,6 +9,7 @@ import junit.framework.Assert;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.SimpleCoverageUnitFileContentsProvider;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -22,24 +23,22 @@ public class CoverageUnitTest {
 
    public static CoverageUnit cu = null, childCu = null;
    public static CoverageItem ci1 = null;
+   public static SimpleCoverageUnitFileContentsProvider fileContentsProvider =
+         new SimpleCoverageUnitFileContentsProvider();
 
    @Before
    public void testSetup() {
-      cu = new CoverageUnit(null, "Top CU", "C:/UserData/");
+      cu = new CoverageUnit(null, "Top CU", "C:/UserData/", fileContentsProvider);
       cu.setOrderNumber("33");
-      ci1 =
-            new CoverageItem(cu, CoverageOptionManager.Test_Unit, "1");
+      ci1 = new CoverageItem(cu, CoverageOptionManager.Test_Unit, "1");
       ci1.setName("this is text");
-      childCu = new CoverageUnit(cu, "Child Coverage Unit", "C:\\UserData\\");
+      childCu = new CoverageUnit(cu, "Child Coverage Unit", "C:\\UserData\\", fileContentsProvider);
       childCu.setOrderNumber("1");
-      CoverageItem item =
-            new CoverageItem(childCu, CoverageOptionManager.Exception_Handling, "1");
+      CoverageItem item = new CoverageItem(childCu, CoverageOptionManager.Exception_Handling, "1");
       childCu.addCoverageItem(item);
-      item =
-            new CoverageItem(childCu, CoverageOptionManager.Test_Unit, "2");
+      item = new CoverageItem(childCu, CoverageOptionManager.Test_Unit, "2");
       childCu.addCoverageItem(item);
-      item =
-            new CoverageItem(childCu, CoverageOptionManager.Not_Covered, "3");
+      item = new CoverageItem(childCu, CoverageOptionManager.Not_Covered, "3");
       childCu.addCoverageItem(item);
       cu.addCoverageUnit(childCu);
    }
@@ -155,9 +154,11 @@ public class CoverageUnitTest {
 
    /**
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#getFileContents()}.
+    * 
+    * @throws OseeCoreException
     */
    @Test
-   public void testSetGetText() {
+   public void testSetGetText() throws OseeCoreException {
       String current = cu.getFileContents();
       cu.setFileContents("New Text");
       Assert.assertEquals("New Text", cu.getFileContents());
@@ -328,7 +329,7 @@ public class CoverageUnitTest {
     */
    @Test
    public void testUpdateAssigneesAndNotes() {
-      CoverageUnit cu2 = new CoverageUnit(null, "New Coverage Unit", "location");
+      CoverageUnit cu2 = new CoverageUnit(null, "New Coverage Unit", "location", null);
       cu2.setAssignees("assignees");
       cu2.setNotes("notes");
       Assert.assertNull(cu.getAssignees());
@@ -343,7 +344,7 @@ public class CoverageUnitTest {
     */
    @Test
    public void testCopy() throws OseeCoreException {
-      CoverageUnit oldCu = new CoverageUnit(null, "This CU", "location");
+      CoverageUnit oldCu = new CoverageUnit(null, "This CU", "location", fileContentsProvider);
       oldCu.setAssignees("assignees");
       oldCu.setNotes("notes");
       oldCu.setNamespace("namespace");
