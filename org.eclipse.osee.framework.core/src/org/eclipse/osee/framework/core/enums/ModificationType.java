@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
 /**
@@ -41,7 +42,7 @@ public enum ModificationType implements Serializable {
    // Attribute or Relation: was deleted as a direct result of Artifact delete, will be marked as ARTIFACT_DELETED
    ARTIFACT_DELETED("Artifact Deleted", 5),
 
-   // Artifact, Attribute or Relation has been reflected from another branch
+   // Artifact or Attribute has been reflected from another branch
    INTRODUCED("Introduced", 6),
 
    // Previously deleted artifact, attribute, or relation has been reinstated
