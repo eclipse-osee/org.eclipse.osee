@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -457,7 +458,7 @@ public class RelationManager {
    public static void prepareRelationsForReload(Artifact artifact) {
       // weakness:  references held to links by other applications will continue to exist.
       //We do not want to drop relation links for historical artifacts because the relation manager will clobber the current artifacts relations. 
-      if (artifact.isHistorical()) {
+      if (!artifact.isHistorical()) {
          relationsByType.removeValues(threadLocalKey.get().getKey(artifact));
       }
    }
