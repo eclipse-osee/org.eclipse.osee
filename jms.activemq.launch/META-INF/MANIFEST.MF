@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Launch
+Bundle-SymbolicName: jms.activemq.launch;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: jms.activemq.launch.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ jms.libraries
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.osee.framework.logging
