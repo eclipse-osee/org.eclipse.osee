@@ -45,7 +45,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
          "select txs.transaction_id, gamma_id, mod_type from osee_tx_details txd, osee_txs txs where txd.branch_id = ? and txd.tx_type = ? and txd.transaction_id = txs.transaction_id and txs.tx_current <> ?";
 
    private static final String SELECT_SOURCE_TRANSACTION_CHANGES =
-         "select gamma_id, mod_type from osee_txs txs where txs.transaction_id = ?";
+         "select gamma_id, mod_type from osee_txs txs where txs.branch_id = ? and txs.transaction_id = ?";
 
    private final HashMap<Integer, ChangeItem> artifactChangesByItemId = new HashMap<Integer, ChangeItem>();
    private final HashMap<Integer, ChangeItem> relationChangesByItemId = new HashMap<Integer, ChangeItem>();
@@ -57,7 +57,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private final TransactionRecord sourceTransactionId;
    private final TransactionRecord destinationTransactionId;
    private final TransactionRecord mergeTransactionId;
-   private final Integer transactionNumber;
+   private final TransactionRecord transactionNumber;
    private final IOseeDatabaseServiceProvider oseeDatabaseProvider;
 
    private static enum LoadingMode {
@@ -67,8 +67,8 @@ public class LoadChangeDataOperation extends AbstractOperation {
 
    private final LoadingMode loadChangesEnum;
 
-   public LoadChangeDataOperation(IOseeDatabaseServiceProvider oseeDatabaseProvider, int transactionNumber, TransactionRecord destinationTransactionId, Collection<ChangeItem> changeData) {
-      this(oseeDatabaseProvider, null, destinationTransactionId, null, changeData, transactionNumber,
+   public LoadChangeDataOperation(IOseeDatabaseServiceProvider oseeDatabaseProvider, TransactionRecord sourceTransaction, TransactionRecord destinationTransactionId, Collection<ChangeItem> changeData) {
+      this(oseeDatabaseProvider, null, destinationTransactionId, null, changeData, sourceTransaction,
             LoadingMode.FROM_SINGLE_TRANSACTION);
    }
 
@@ -77,7 +77,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
             LoadingMode.FROM_ALL_BRANCH_TRANSACTIONS);
    }
 
-   private LoadChangeDataOperation(IOseeDatabaseServiceProvider oseeDatabaseProvider, TransactionRecord sourceTransactionId, TransactionRecord destinationTransactionId, TransactionRecord mergeTransactionId, Collection<ChangeItem> changeData, Integer transactionNumber, LoadingMode loadMode) {
+   private LoadChangeDataOperation(IOseeDatabaseServiceProvider oseeDatabaseProvider, TransactionRecord sourceTransactionId, TransactionRecord destinationTransactionId, TransactionRecord mergeTransactionId, Collection<ChangeItem> changeData, TransactionRecord transactionNumber, LoadingMode loadMode) {
       super("Load Change Data", Activator.PLUGIN_ID);
       this.oseeDatabaseProvider = oseeDatabaseProvider;
       this.mergeTransactionId = mergeTransactionId;
@@ -122,8 +122,9 @@ public class LoadChangeDataOperation extends AbstractOperation {
                currentTransactionNumber = sourceTransactionId.getId();
                break;
             case FROM_SINGLE_TRANSACTION:
-               chStmt.runPreparedQuery(10000, SELECT_SOURCE_TRANSACTION_CHANGES, transactionNumber);
-               currentTransactionNumber = transactionNumber;
+               chStmt.runPreparedQuery(10000, SELECT_SOURCE_TRANSACTION_CHANGES, transactionNumber.getBranchId(),
+                     transactionNumber.getId());
+               currentTransactionNumber = transactionNumber.getId();
                break;
             default:
                throw new UnsupportedOperationException(String.format("Invalid load changes [%s] mode not supported",

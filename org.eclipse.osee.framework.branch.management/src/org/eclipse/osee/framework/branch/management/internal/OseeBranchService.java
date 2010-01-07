@@ -117,7 +117,7 @@ public class OseeBranchService implements IOseeBranchService {
 
       List<IOperation> ops = new ArrayList<IOperation>();
       if (request.isHistorical()) {
-         ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, srcTx.getId(), destTx, response.getChangeItems()));
+         ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, srcTx, destTx, response.getChangeItems()));
       } else {
          ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, srcTx, destTx, null, response.getChangeItems()));
       }
