@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 
@@ -37,7 +38,7 @@ public class TaskEditorSimpleProvider extends TaskEditorProvider {
 
    @Override
    public String getTaskEditorLabel(SearchType searchType) throws OseeCoreException {
-      return name;
+      return Strings.truncate(name, TaskEditor.TITLE_MAX_LENGTH, true);
    }
 
    @Override

@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -67,7 +68,7 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
 
    @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
-      return worldUISearchItem.getSelectedName(searchType);
+      return Strings.truncate(worldUISearchItem.getSelectedName(searchType), WorldEditor.TITLE_MAX_LENGTH, true);
    }
 
    @Override

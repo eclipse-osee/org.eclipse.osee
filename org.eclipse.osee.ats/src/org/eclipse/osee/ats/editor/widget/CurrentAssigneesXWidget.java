@@ -33,7 +33,7 @@ public class CurrentAssigneesXWidget extends XHyperlinkLabelCmdValueSelection {
    private final boolean isEditable;
 
    public CurrentAssigneesXWidget(IManagedForm managedForm, final StateMachineArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isEditable) throws OseeStateException {
-      super("Assignee(s)");
+      super("Assignee(s)", false, 80);
       this.sma = sma;
       this.isEditable = isEditable;
       if (xModListener != null) {
@@ -81,7 +81,7 @@ public class CurrentAssigneesXWidget extends XHyperlinkLabelCmdValueSelection {
          } else {
             setToolTip(sma.getStateMgr().getAssigneesStr());
             setErrorState(false);
-            return sma.getStateMgr().getAssigneesStr(80);
+            return sma.getStateMgr().getAssigneesStr();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

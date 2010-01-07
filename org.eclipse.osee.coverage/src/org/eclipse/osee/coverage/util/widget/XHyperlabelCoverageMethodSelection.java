@@ -32,11 +32,11 @@ public class XHyperlabelCoverageMethodSelection extends XHyperlinkLabelCmdValueS
    CoverageOptionManager coverageOptionManager;
 
    public XHyperlabelCoverageMethodSelection() {
-      super("Coverage Methods", true);
+      super("Coverage Methods", true, 80);
    }
 
    public XHyperlabelCoverageMethodSelection(String label, CoverageOptionManager coverageOptionManager) {
-      super(label, true);
+      super(label, true, 80);
       this.coverageOptionManager = coverageOptionManager;
    }
 
@@ -65,8 +65,7 @@ public class XHyperlabelCoverageMethodSelection extends XHyperlinkLabelCmdValueS
    @Override
    public boolean handleSelection() {
       try {
-         dialog =
-               new CoverageMethodListDialog(coverageOptionManager.getEnabled(), selectedCoverageMethods);
+         dialog = new CoverageMethodListDialog(coverageOptionManager.getEnabled(), selectedCoverageMethods);
          int result = dialog.open();
          if (result == 0) {
             selectedCoverageMethods.clear();

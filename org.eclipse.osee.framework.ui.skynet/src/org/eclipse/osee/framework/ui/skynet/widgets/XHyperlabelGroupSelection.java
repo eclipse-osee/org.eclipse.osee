@@ -32,7 +32,7 @@ public class XHyperlabelGroupSelection extends XHyperlinkLabelCmdValueSelection 
     * @param label
     */
    public XHyperlabelGroupSelection(String label) {
-      super(label, true);
+      super(label, true, 80);
    }
 
    public Set<Artifact> getSelectedGroups() {

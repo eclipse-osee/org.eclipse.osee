@@ -51,6 +51,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    private WorldXWidgetActionPage worldXWidgetActionPage;
    private AtsMetricsComposite metricsComposite;
    public static final String HELP_CONTEXT_ID = "atsWorldView";
+   public static int TITLE_MAX_LENGTH = 80;
 
    @Override
    public void doSave(IProgressMonitor monitor) {

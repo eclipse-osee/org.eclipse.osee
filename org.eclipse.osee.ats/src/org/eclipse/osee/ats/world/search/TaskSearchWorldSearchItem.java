@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.task.ITaskEditorProvider;
+import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorParameterSearchItem;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -172,8 +174,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
             continue;
          }
          // If user is selected and not user is assigned, skip this task
-         else if (getSelectedUser() != null && !taskArt.getStateMgr().getAssignees().contains(
-               getSelectedUser())) {
+         else if (getSelectedUser() != null && !taskArt.getStateMgr().getAssignees().contains(getSelectedUser())) {
             continue;
          }
          tasks.add(taskArt);
@@ -224,7 +225,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       if (isIncludeCompletedCancelledCheckbox()) {
          sb.append(" - Include Completed/Cancelled");
       }
-      return "Tasks" + sb.toString();
+      return Strings.truncate("Tasks" + sb.toString(), TaskEditor.TITLE_MAX_LENGTH, true);
    }
 
    @Override

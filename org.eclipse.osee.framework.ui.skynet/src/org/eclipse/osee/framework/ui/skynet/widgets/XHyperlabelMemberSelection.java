@@ -26,11 +26,8 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
 
    Set<User> selectedUsers = new HashSet<User>();
 
-   /**
-    * @param label
-    */
    public XHyperlabelMemberSelection(String label) {
-      super(label);
+      super(label, false, 80);
    }
 
    public Set<User> getSelectedUsers() {

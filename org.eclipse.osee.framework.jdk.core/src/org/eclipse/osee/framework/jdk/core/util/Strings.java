@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.jdk.core.util;
 
 /**
  * @author Jeff C. Phillips
+ * @author Don Dunne
  */
 public class Strings {
    private final static String EMPTY_STRING = "";
@@ -25,12 +26,20 @@ public class Strings {
       return EMPTY_STRING;
    }
 
-   public static String truncate(String value, int length) {
+   /**
+    * Will truncate string if necessary and add "..." to end if addDots and truncated
+    */
+   public static String truncate(String value, int length, boolean addDots) {
+      if (value == null) return "";
       String toReturn = value;
       if (Strings.isValid(value) && value.length() > length) {
-         toReturn = value.substring(0, Math.min(length, value.length()));
+         toReturn = value.substring(0, Math.min(length, value.length())) + (addDots ? "..." : "");
       }
       return toReturn;
+   }
+
+   public static String truncate(String value, int length) {
+      return truncate(value, length, false);
    }
 
 }

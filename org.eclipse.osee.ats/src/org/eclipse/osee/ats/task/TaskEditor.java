@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
+import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItemProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -59,6 +60,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    private final Collection<TaskArtifact> tasks = new HashSet<TaskArtifact>();
    private AtsMetricsComposite metricsComposite;
    private boolean loading = false;
+   public static int TITLE_MAX_LENGTH = WorldEditor.TITLE_MAX_LENGTH;
 
    @Override
    public void doSave(IProgressMonitor monitor) {
@@ -251,11 +253,11 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       private final SearchType searchType;
 
       public LoadTableJob(ITaskEditorProvider itaskEditorProvider, SearchType searchType, TaskEditor taskEditor) throws OseeCoreException {
-         super("Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"...");
+         super("Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"");
          this.searchType = searchType;
          this.taskEditor = taskEditor;
          taskEditor.setPartName(itaskEditorProvider.getTaskEditorLabel(searchType));
-         taskEditor.setTableTitle("Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"...", false);
+         taskEditor.setTableTitle("Loading \"" + itaskEditorProvider.getTaskEditorLabel(searchType) + "\"", false);
          this.itaskEditorProvider = itaskEditorProvider;
       }
 

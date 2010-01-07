@@ -34,14 +34,20 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
    Label valueLabel;
    Hyperlink selectHyperLinkLabel, clearHyperLinkLabel;
    private final boolean supportClear;
+   private Integer truncateValueLength = null;
 
    public XHyperlinkLabelCmdValueSelection(String label) {
       this(label, false);
    }
 
-   public XHyperlinkLabelCmdValueSelection(String label, boolean supportClear) {
+   public XHyperlinkLabelCmdValueSelection(String label, boolean supportClear, Integer truncateValueLength) {
       super(label);
       this.supportClear = supportClear;
+      this.truncateValueLength = truncateValueLength;
+   }
+
+   public XHyperlinkLabelCmdValueSelection(String label, boolean supportClear) {
+      this(label, supportClear, null);
    }
 
    public String getCurrentValue() {
@@ -143,7 +149,9 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
          updated = true;
       }
       if (!getCurrentValue().equals(valueLabel.getText())) {
-         valueLabel.setText(getCurrentValue());
+         valueLabel.setText(truncateValueLength == null ? getCurrentValue() : Strings.truncate(getCurrentValue(),
+               truncateValueLength, true));
+         valueLabel.setToolTipText(getCurrentValue());
          updated = true;
       }
       if (updated) {
@@ -201,6 +209,14 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
 
    @Override
    public void setXmlData(String str) {
+   }
+
+   public Integer getTruncateValueLength() {
+      return truncateValueLength;
+   }
+
+   public void setTruncateValueLength(Integer truncateValueLength) {
+      this.truncateValueLength = truncateValueLength;
    }
 
 }

@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
+import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,7 +36,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
     * @param label
     */
    public XHyperlabelTeamDefinitionSelection(String label) {
-      super(label, true);
+      super(label, true, WorldEditor.TITLE_MAX_LENGTH);
    }
 
    public Collection<TeamDefinitionArtifact> getSelectedTeamDefintions() {
