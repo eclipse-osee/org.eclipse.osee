@@ -110,8 +110,8 @@ public class AttributeExtensionManager {
          for (IConfigurationElement element : elements) {
             IExtension extension = (IExtension) element.getParent();
             String name = extension.getUniqueIdentifier();
-            String className = element.getAttribute(classNameAttribute);
-            String bundleName = element.getContributor().getName();
+            String className = element.getAttribute(classNameAttribute).intern();
+            String bundleName = element.getContributor().getName().intern();
 
             if (Strings.isValid(bundleName) && Strings.isValid(className)) {
                toReturn.put(name, new Pair<String, String>(bundleName, className));

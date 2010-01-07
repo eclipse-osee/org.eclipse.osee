@@ -31,7 +31,7 @@ public class NoteItem {
    public NoteItem(NoteType type, String state, String date, User user, String msg) {
       Long l = new Long(date);
       this.date = new Date(l.longValue());
-      this.state = state;
+      this.state = state != null ? state.intern() : state;
       this.msg = msg;
       this.user = user;
       this.type = type;
@@ -88,7 +88,7 @@ public class NoteItem {
    }
 
    public void setState(String state) {
-      this.state = state;
+      this.state = state != null ? state.intern() : state;
    }
 
    /**

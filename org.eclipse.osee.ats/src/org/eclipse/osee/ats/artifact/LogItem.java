@@ -30,9 +30,6 @@ public class LogItem {
    private LogType type = LogType.None;
    private String userId;
 
-   /**
-    * @return the userId
-    */
    public String getUserId() {
       return userId;
    }
@@ -48,8 +45,8 @@ public class LogItem {
       Long l = new Long(date);
       this.date = new Date(l.longValue());
       this.msg = msg;
-      this.state = state;
-      this.userId = userId;
+      this.state = state != null ? state.intern() : state;
+      this.userId = userId != null ? userId.intern() : userId;
       this.user = UserManager.getUserByUserId(userId);
       this.type = type;
    }
@@ -108,24 +105,15 @@ public class LogItem {
       return "NOTE (" + type + "): " + msg + " (" + user.getName() + ")";
    }
 
-   /**
-    * @param user The user to set.
-    */
    public void setUser(User user) {
       this.user = user;
    }
 
-   /**
-    * @return Returns the state.
-    */
    public String getState() {
       return state;
    }
 
-   /**
-    * @param state The state to set.
-    */
    public void setState(String state) {
-      this.state = state;
+      this.state = state != null ? state.intern() : state;
    }
 }
