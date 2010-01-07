@@ -240,55 +240,25 @@
 		<Column id="A_ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="B_ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="RATIONALE" limits="4000" type="VARCHAR" />
-		<Constraint schema="OSEE" id="OSEE_REL_LINK_G_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID" />
-		<Constraint schema="OSEE" id="OSEE_FOREIGN_B_ART" type="FOREIGN KEY" appliesTo="B_ART_ID" deferrable="true">
+		<Constraint schema="OSEE" id="OSEE_RELATION__G_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID" />
+		<Constraint schema="OSEE" id="OSEE_RELATION__ART_B_FK" type="FOREIGN KEY" appliesTo="B_ART_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_ARTIFACT" column="ART_ID"  />
 		</Constraint>
-		<Constraint schema="OSEE" id="OSEE_FOREIGN_A_ART" type="FOREIGN KEY" appliesTo="A_ART_ID" deferrable="true">
+		<Constraint schema="OSEE" id="OSEE_RELATION__ART_A_FK" type="FOREIGN KEY" appliesTo="A_ART_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_ARTIFACT" column="ART_ID"  />
 		</Constraint>
-		<Constraint schema="OSEE" id="REL_TYPE_ID1_FK" type="FOREIGN KEY" appliesTo="REL_LINK_TYPE_ID" deferrable="true">
+		<Constraint schema="OSEE" id="OSEE_RELATION__REL_TYPE_FK" type="FOREIGN KEY" appliesTo="REL_LINK_TYPE_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_RELATION_LINK_TYPE" column="REL_LINK_TYPE_ID"  />
 		</Constraint>
-		<Index id="OSEE_REL_LINK_RL_IDX" tablespace="osee_index">
-			<AppliesTo id="REL_LINK_ID"/>
-		</Index>
-		<Index id="OSEE_REL_LINK_RL_G_IDX" type="UNIQUE" tablespace="osee_index">
+		<Index id="OSEE_RELATION__R_G_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="REL_LINK_ID"/>
 			<AppliesTo id="GAMMA_ID"/>
 		</Index>
-		<Index id="OSEE_REL_LINK_AA_IDX" tablespace="osee_index">
+		<Index id="OSEE_RELATION__A_IDX" tablespace="osee_index">
 			<AppliesTo id="A_ART_ID"/>
 		</Index>
-		<Index id="OSEE_REL_LINK_BA_IDX" tablespace="osee_index">
+		<Index id="OSEE_RELATION__B_IDX" tablespace="osee_index">
 			<AppliesTo id="B_ART_ID"/>
-		</Index>
-		<Index id="OSEE_REL_LINK_BA_RL_IDX" tablespace="osee_index">
-			<AppliesTo id="B_ART_ID"/>
-			<AppliesTo id="REL_LINK_ID"/>
-		</Index>
-		<Index id="OSEE_REL_LINK_RL_AA_IDX" tablespace="osee_index">
-			<AppliesTo id="REL_LINK_ID"/>
-			<AppliesTo id="A_ART_ID"/>
-		</Index>
-		<Index id="OSEE_REL_LINK_AA_BA_IDX" tablespace="osee_index">
-			<AppliesTo id="A_ART_ID"/>
-			<AppliesTo id="B_ART_ID"/>
-		</Index>
-		<Index id="OSEE_REL_LINK_BA_AA_IDX" tablespace="osee_index">
-			<AppliesTo id="B_ART_ID"/>
-			<AppliesTo id="A_ART_ID"/>
-		</Index>
-		<Index id="OSEE_REL_LINK_AA_G_IDX" type="UNIQUE" tablespace="osee_index">
-			<AppliesTo id="A_ART_ID"/>
-			<AppliesTo id="GAMMA_ID"/>
-		</Index>
-		<Index id="OSEE_REL_LINK_BA_G_IDX" type="UNIQUE" tablespace="osee_index">
-			<AppliesTo id="B_ART_ID"/>
-			<AppliesTo id="GAMMA_ID"/>
-		</Index>
-		<Index id="OSEE_REL_LINK_RT_IDX" tablespace="osee_index">
-			<AppliesTo id="REL_LINK_TYPE_ID"/>
 		</Index>
 	</Table>
 	
