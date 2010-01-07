@@ -5,9 +5,11 @@
  */
 package org.eclipse.osee.framework.jdk.core.test.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Test;
 
 /**
@@ -15,101 +17,164 @@ import org.junit.Test;
  */
 public class HashCollectionTest {
 
+   /**
+    * Test method for
+    * {@link org.eclipse.osee.framework.jdk.core.type.HashCollection#put(java.lang.Object, java.lang.Object)}.
+    */
    @Test
-   public void testHashCollectionString() {
-      HashCollection<String, String> hashCollection = new HashCollection<String, String>();
+   public void testPutKV() {
+      HashCollection<String, String> collection = new HashCollection<String, String>();
 
-      Assert.assertEquals(0, hashCollection.size());
-      Assert.assertEquals(0, hashCollection.getValues().size());
-      Assert.assertNull(hashCollection.getValues("this"));
+      Assert.assertEquals(0, collection.size());
+      Assert.assertEquals(0, collection.getValues().size());
+      Assert.assertNull(collection.getValues("this"));
 
       for (int x = 1; x <= 5; x++) {
-         hashCollection.put("key", "value " + x);
+         collection.put("key", "value " + x);
       }
 
-      Assert.assertEquals(5, hashCollection.size());
-      Assert.assertEquals(5, hashCollection.getValues().size());
-      Assert.assertNull(hashCollection.getValues("this"));
-      Assert.assertEquals(5, hashCollection.getValues("key").size());
+      Assert.assertEquals(5, collection.size());
+      Assert.assertEquals(5, collection.getValues().size());
+      Assert.assertNull(collection.getValues("this"));
+      Assert.assertEquals(5, collection.getValues("key").size());
    }
 
+   /**
+    * Test method for
+    * {@link org.eclipse.osee.framework.jdk.core.type.HashCollection#put(java.lang.Object, java.util.Collection)} .
+    */
    @Test
-   public void testGuidObject() {
+   public void testPutKCollectionOfV() {
+      HashCollection<String, String> collection = new HashCollection<String, String>();
+      List<String> values = new ArrayList<String>();
 
-      // test GuidObject that will be used for next test
-      GuidObject keyObjectA = new GuidObject();
-      GuidObject keyObjectB = new GuidObject();
-      GuidObject keyObjectA1 = new GuidObject();
+      for (int x = 1; x <= 5; x++) {
+         values.add("value " + x);
+      }
+      collection.put("key", values);
 
-      Assert.assertTrue(keyObjectA.equals(keyObjectA));
-      Assert.assertFalse(keyObjectA.equals(keyObjectB));
-      Assert.assertFalse(keyObjectA.equals(keyObjectA1));
+      Assert.assertEquals(5, collection.size());
+      Assert.assertEquals(5, collection.getValues().size());
+      Assert.assertNull(collection.getValues("this"));
+      Assert.assertEquals(5, collection.getValues("key").size());
+   }
 
-      // This should make them equal
-      keyObjectA1.setGuid(keyObjectA.getGuid());
+   /**
+    * Test method for
+    * {@link org.eclipse.osee.framework.jdk.core.type.HashCollection#removeValue(java.lang.Object, java.lang.Object)} .
+    */
+   @Test
+   public void testRemoveValue() {
+      HashCollection<String, String> collection = new HashCollection<String, String>();
+      for (int x = 1; x <= 5; x++) {
+         collection.put("key", "value " + x);
+      }
 
-      Assert.assertTrue(keyObjectA.equals(keyObjectA));
-      Assert.assertTrue(keyObjectA.equals(keyObjectA1));
+      Assert.assertEquals(5, collection.getValues("key").size());
+      collection.removeValue("key", "value 3");
+      Assert.assertEquals(4, collection.getValues("key").size());
+   }
+
+   /**
+    * Test method for {@link org.eclipse.osee.framework.jdk.core.type.HashCollection#removeValues(java.lang.Object)} .
+    */
+   @Test
+   public void testRemoveValues() {
+      HashCollection<String, String> collection = new HashCollection<String, String>();
+      for (int x = 1; x <= 5; x++) {
+         collection.put("key", "value " + x);
+      }
+      Assert.assertEquals(5, collection.getValues("key").size());
+      Collection<String> removedValues = collection.removeValues("key");
+      Assert.assertNull(collection.getValues("key"));
+      Assert.assertEquals(5, removedValues.size());
+   }
+
+   /**
+    * Test method for {@link org.eclipse.osee.framework.jdk.core.type.HashCollection#keySet()}.
+    */
+   @Test
+   public void testKeySet() {
+      HashCollection<String, String> collection = new HashCollection<String, String>();
+      for (int x = 1; x <= 5; x++) {
+         collection.put("key", "value " + x);
+      }
+      for (int x = 1; x <= 3; x++) {
+         collection.put("key2", "value " + x);
+      }
+      Assert.assertEquals(2, collection.keySet().size());
+   }
+
+   /**
+    * Test method for {@link org.eclipse.osee.framework.jdk.core.type.HashCollection#clear()}.
+    */
+   @Test
+   public void testClear() {
+      HashCollection<String, String> collection = new HashCollection<String, String>();
+      for (int x = 1; x <= 5; x++) {
+         collection.put("key", "value " + x);
+      }
+      Assert.assertEquals(5, collection.getValues().size());
+      collection.clear();
+      Assert.assertEquals(0, collection.getValues().size());
+      Assert.assertEquals(0, collection.keySet().size());
+   }
+
+   /**
+    * Test method for {@link org.eclipse.osee.framework.jdk.core.type.HashCollection#containsKey(java.lang.Object)}.
+    */
+   @Test
+   public void testContainsKey() {
+      HashCollection<String, String> collection = new HashCollection<String, String>();
+      for (int x = 1; x <= 5; x++) {
+         collection.put("key", "value " + x);
+      }
+      Assert.assertTrue(collection.containsKey("key"));
+   }
+
+   /**
+    * Test method for {@link org.eclipse.osee.framework.jdk.core.type.HashCollection#isEmpty()}.
+    */
+   @Test
+   public void testIsEmpty() {
+      HashCollection<String, String> collection = new HashCollection<String, String>();
+      Assert.assertTrue(collection.isEmpty());
+      collection.put("key", "value 1");
+      Assert.assertFalse(collection.isEmpty());
+      collection.clear();
+      Assert.assertTrue(collection.isEmpty());
+   }
+
+   /**
+    * Test method for {@link org.eclipse.osee.framework.jdk.core.type.HashCollection#containsValue(java.lang.Object)}.
+    */
+   @Test
+   public void testContainsValue() {
+      HashCollection<String, String> collection = new HashCollection<String, String>();
+      for (int x = 1; x <= 5; x++) {
+         collection.put("key", "value " + x);
+      }
+      Assert.assertTrue(collection.containsValue("value 3"));
+
    }
 
    @Test
    public void testHashCollectionObject() {
-      HashCollection<GuidObject, String> hashCollection = new HashCollection<GuidObject, String>();
+      HashCollection<GuidObject, String> collection = new HashCollection<GuidObject, String>();
 
-      Assert.assertEquals(0, hashCollection.size());
-      Assert.assertEquals(0, hashCollection.getValues().size());
-      Assert.assertNull(hashCollection.getValues(new GuidObject()));
+      Assert.assertEquals(0, collection.size());
+      Assert.assertEquals(0, collection.getValues().size());
+      Assert.assertNull(collection.getValues(new GuidObject()));
 
       GuidObject keyObject = new GuidObject();
       for (int x = 1; x <= 5; x++) {
-         hashCollection.put(keyObject, "value " + x);
+         collection.put(keyObject, "value " + x);
       }
 
-      Assert.assertEquals(5, hashCollection.size());
-      Assert.assertEquals(5, hashCollection.getValues().size());
-      Assert.assertNull(hashCollection.getValues(new GuidObject()));
-      Assert.assertEquals(5, hashCollection.getValues(keyObject).size());
+      Assert.assertEquals(5, collection.size());
+      Assert.assertEquals(5, collection.getValues().size());
+      Assert.assertNull(collection.getValues(new GuidObject()));
+      Assert.assertEquals(5, collection.getValues(keyObject).size());
    }
-   public class GuidObject {
-      private String guid = GUID.create();
 
-      public String getGuid() {
-         return guid;
-      }
-
-      public void setGuid(String guid) {
-         this.guid = guid;
-      }
-
-      public String toString() {
-         return guid;
-      }
-
-      @Override
-      public int hashCode() {
-         final int prime = 31;
-         int result = 1;
-         result = prime * result + getOuterType().hashCode();
-         result = prime * result + ((guid == null) ? 0 : guid.hashCode());
-         return result;
-      }
-
-      @Override
-      public boolean equals(Object obj) {
-         if (this == obj) return true;
-         if (obj == null) return false;
-         if (getClass() != obj.getClass()) return false;
-         GuidObject other = (GuidObject) obj;
-         if (!getOuterType().equals(other.getOuterType())) return false;
-         if (guid == null) {
-            if (other.guid != null) return false;
-         } else if (!guid.equals(other.guid)) return false;
-         return true;
-      }
-
-      private HashCollectionTest getOuterType() {
-         return HashCollectionTest.this;
-      }
-
-   }
 }

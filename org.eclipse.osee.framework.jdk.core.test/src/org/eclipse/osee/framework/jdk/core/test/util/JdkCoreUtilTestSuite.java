@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {HumanReadableIdTest.class, GUIDTest.class})
+@Suite.SuiteClasses( {GuidObject.class, HashCollectionTest.class, HumanReadableIdTest.class, GUIDTest.class})
 public class JdkCoreUtilTestSuite {
 
 }
