@@ -24,12 +24,12 @@ import org.eclipse.swt.widgets.Combo;
 public class RevertDeletionCheck {
 
    public static boolean relationWillBeReverted(Artifact artifact) throws OseeCoreException {
-      RelationLink link;
+      RelationLink relation;
       boolean linkToDelete = false;
       List<RelationLink> childLinks = artifact.getRelations(CoreRelationTypes.Default_Hierarchical__Parent);
       if (childLinks != null && !childLinks.isEmpty()) {
-         link = childLinks.get(0);
-         linkToDelete = ArtifactPersistenceManager.isRelationNewOnBranch(link, artifact.getBranch());
+         relation = childLinks.get(0);
+         linkToDelete = ArtifactPersistenceManager.isRelationNewOnBranch(relation);
       }
       return linkToDelete;
    }
