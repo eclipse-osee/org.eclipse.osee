@@ -59,9 +59,10 @@ public class ArtifactPersistenceManager {
          "SELECT " + SkynetDatabase.ARTIFACT_TABLE.columns("art_id") + " FROM " + SkynetDatabase.ARTIFACT_TABLE + " WHERE ";
 
    private static final String ARTIFACT_NEW_ON_BRANCH =
-         "Select det.tx_type from osee_tx_details det, osee_txs txs, osee_artifact_version art WHERE det.branch_id = ? AND det.tx_type = 1 AND det.transaction_id = txs.transaction_id AND txs.gamma_id = art.gamma_id AND art.art_id = ?";
+         "select txd.tx_type from osee_artifact_version arv, osee_txs txs, osee_tx_details txd WHERE arv.art_id = ? and arv.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id = txd.transaction_id and txd.tx_type = 1";
+
    private static final String RELATION_NEW_ON_BRANCH =
-         "Select det.tx_type from osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE det.branch_id = ? AND det.tx_type = 1 AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_id = ?";
+         "select txd.tx_type from osee_relation_link rel, osee_txs txs, osee_tx_details txd WHERE rel.a_art_id = ? and rel.b_art_id = ? and rel.rel_link_type_id = ? and rel.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id = txd.transaction_id and txd.tx_type = 1";
 
    public static CharSequence getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, Branch branch) {
       return getSelectArtIdSql(searchCriteria, dataList, null, branch);
@@ -282,8 +283,8 @@ public class ArtifactPersistenceManager {
             artifact.getArtId()) == -1;
    }
 
-   public static boolean isRelationNewOnBranch(RelationLink relation, Branch branch) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedQueryFetchInt(-1, RELATION_NEW_ON_BRANCH, branch.getId(),
-            relation.getRelationId()) == -1;
+   public static boolean isRelationNewOnBranch(RelationLink relation) throws OseeDataStoreException {
+      return ConnectionHandler.runPreparedQueryFetchInt(-1, RELATION_NEW_ON_BRANCH, relation.getAArtifactId(),
+            relation.getBArtifactId(), relation.getRelationType().getId(), relation.getABranch().getId()) == -1;
    }
 }
