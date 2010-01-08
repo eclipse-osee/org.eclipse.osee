@@ -65,7 +65,7 @@ public class RelationManager {
          new CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>>(1024, true);
 
    private static final String GET_DELETED_ARTIFACT =
-         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) (SELECT DISTINCT ?, sysdate, %sart_id, det.branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND %sart_id = ? AND tx_current in (2, 3))";
+         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) (SELECT DISTINCT ?, sysdate, %s_art_id, det.branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND %s_art_id = ? AND tx_current in (2, 3))";
 
    private static RelationSorterProvider relationSorterProvider = new RelationSorterProvider();
    private static RelationOrderFactory relationOrderFactory = new RelationOrderFactory();
