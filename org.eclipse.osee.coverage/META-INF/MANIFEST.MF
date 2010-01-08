@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Define Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.coverage;singleton:=true
-Bundle-Version: 0.9.0.qualifier
+Bundle-Version: 0.9.1.qualifier
 Bundle-Activator: org.eclipse.osee.coverage.internal.Activator
 Bundle-Vendor: Eclipse.org
 Eclipse-ExtensibleAPI: true

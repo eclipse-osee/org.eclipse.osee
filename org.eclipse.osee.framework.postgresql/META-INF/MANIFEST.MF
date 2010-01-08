@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Postgresql Db Connector Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.postgresql
-Bundle-Version: 0.9.0.qualifier
+Bundle-Version: 0.9.1.qualifier
 Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/postgresql.connection.driver.provider.xml
