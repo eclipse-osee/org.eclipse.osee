@@ -43,7 +43,7 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
       } else if (teamDef.getName().contains("SAW HW")) {
          return DemoReqTeamWorkflowArtifact.ARTIFACT_NAME;
       }
-      return AtsArtifactTypes.TeamWorkflow.name();
+      return AtsArtifactTypes.TeamWorkflow.getName();
    }
 
    public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {

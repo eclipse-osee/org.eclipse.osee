@@ -35,4 +35,5 @@ public enum CoverageArtifactTypes implements IArtifactType {
    public String getGuid() {
       return guid;
    }
+
 }

@@ -383,7 +383,8 @@ public class ArtifactQuery {
    }
 
    private static ArtifactQueryBuilder queryFromTypeAndAttribute(IArtifactType artifactType, String attributeTypeName, String attributeValue, IOseeBranch branch) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactType, attributeTypeName, attributeValue, branch);
+      return queryFromTypeAndAttribute(ArtifactTypeManager.getType(artifactType), attributeTypeName, attributeValue,
+            branch);
    }
 
    private static ArtifactQueryBuilder queryFromTypeAndAttribute(ArtifactType artifactType, String attributeTypeName, String attributeValue, IOseeBranch branch) throws OseeCoreException {

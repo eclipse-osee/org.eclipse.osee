@@ -23,9 +23,10 @@ public class CoverageArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
    public void init() throws OseeCoreException {
-      ImageManager.registerBaseImage(CoverageArtifactTypes.CoveragePackage.name(), CoverageImage.COVERAGE_PACKAGE, this);
-      ImageManager.registerBaseImage(CoverageArtifactTypes.CoverageUnit.name(), CoverageImage.COVERAGE, this);
-      ImageManager.registerBaseImage(CoverageArtifactTypes.CoverageFolder.name(), FrameworkImage.FOLDER, this);
+      ImageManager.registerBaseImage(CoverageArtifactTypes.CoveragePackage.getName(), CoverageImage.COVERAGE_PACKAGE,
+            this);
+      ImageManager.registerBaseImage(CoverageArtifactTypes.CoverageUnit.getName(), CoverageImage.COVERAGE, this);
+      ImageManager.registerBaseImage(CoverageArtifactTypes.CoverageFolder.getName(), FrameworkImage.FOLDER, this);
    }
 
 }
