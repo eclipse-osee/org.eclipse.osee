@@ -657,7 +657,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
-      String teamWorkflowArtifactName = AtsArtifactTypes.TeamWorkflow.name();
+      String teamWorkflowArtifactName = AtsArtifactTypes.TeamWorkflow.getName();
       IAtsTeamWorkflow teamExt = null;
 
       // Check if any plugins want to create the team workflow themselves

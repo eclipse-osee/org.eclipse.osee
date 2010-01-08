@@ -36,10 +36,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinitio
 public class AtsArtifactFactory extends ArtifactFactory {
 
    public AtsArtifactFactory() {
-      super(Arrays.asList(AtsArtifactTypes.Action.name(), AtsArtifactTypes.PeerToPeerReview.name(),
-            AtsArtifactTypes.DecisionReview.name(), AtsArtifactTypes.ActionableItem.name(),
-            AtsArtifactTypes.Task.name(), AtsArtifactTypes.TeamWorkflow.name(), AtsArtifactTypes.TeamDefinition.name(),
-            AtsArtifactTypes.Version.getName(), AtsArtifactTypes.Goal.name()));
+      super(Arrays.asList(AtsArtifactTypes.Action.getName(), AtsArtifactTypes.PeerToPeerReview.getName(),
+            AtsArtifactTypes.DecisionReview.getName(), AtsArtifactTypes.ActionableItem.getName(),
+            AtsArtifactTypes.Task.getName(), AtsArtifactTypes.TeamWorkflow.getName(),
+            AtsArtifactTypes.TeamDefinition.getName(), AtsArtifactTypes.Version.getName(),
+            AtsArtifactTypes.Goal.getName()));
    }
 
    @Override

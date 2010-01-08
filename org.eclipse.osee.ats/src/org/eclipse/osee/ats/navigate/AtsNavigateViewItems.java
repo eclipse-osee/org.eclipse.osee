@@ -133,16 +133,16 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          XNavigateItem reviewItem = new XNavigateItem(null, "Reviews", AtsImage.REVIEW);
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
-               "Show Open " + AtsArtifactTypes.DecisionReview.name() + "s", AtsArtifactTypes.DecisionReview, false,
+               "Show Open " + AtsArtifactTypes.DecisionReview.getName() + "s", AtsArtifactTypes.DecisionReview, false,
                false, AtsImage.REVIEW));
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
-               "Show Workflows Waiting " + AtsArtifactTypes.DecisionReview.name() + "s",
+               "Show Workflows Waiting " + AtsArtifactTypes.DecisionReview.getName() + "s",
                AtsArtifactTypes.DecisionReview, false, true, AtsImage.REVIEW));
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
-               "Show Open " + AtsArtifactTypes.PeerToPeerReview.name() + "s", AtsArtifactTypes.PeerToPeerReview, false,
-               false, AtsImage.REVIEW));
+               "Show Open " + AtsArtifactTypes.PeerToPeerReview.getName() + "s", AtsArtifactTypes.PeerToPeerReview,
+               false, false, AtsImage.REVIEW));
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
-               "Show Workflows Waiting " + AtsArtifactTypes.PeerToPeerReview.name() + "s",
+               "Show Workflows Waiting " + AtsArtifactTypes.PeerToPeerReview.getName() + "s",
                AtsArtifactTypes.PeerToPeerReview, false, true, AtsImage.REVIEW));
          new NewPeerToPeerReviewItem(reviewItem);
          new GenerateReviewParticipationReport(reviewItem);
