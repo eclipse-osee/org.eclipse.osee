@@ -38,9 +38,8 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
             "maxOccurences can not be less than minOccurences");
 
       String checkedGuid = Conditions.checkGuidCreateIfNeeded(guid);
-      return new AttributeType(checkedGuid, name, baseAttributeTypeId.intern(), attributeProviderNameId.intern(),
-            fileTypeExtension.intern(), defaultValue, minOccurrences, maxOccurrences, tipText,
-            taggerId != null ? taggerId.intern() : taggerId);
+      return new AttributeType(checkedGuid, name, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,
+            defaultValue, minOccurrences, maxOccurrences, tipText, taggerId);
    }
 
    public AttributeType createOrUpdate(AttributeTypeCache cache, String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
