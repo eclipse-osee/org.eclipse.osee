@@ -56,7 +56,7 @@ public class AtsQueryPerformanceTests {
       System.out.println(String.format("testTeamWorldSearchItem took %dms for %d artifacts", elapsedTime,
             artifacts.size()));
       assertTrue("No artifacts found", artifacts.size() > 0);
-      assertTrue("testTeamWorldSearchItem should take less than 9000ms", elapsedTime < 9000);
+      assertTrue("testTeamWorldSearchItem should take less than 9000ms; took " + elapsedTime + "ms", elapsedTime < 9000);
    }
 
    private User getAUser() throws OseeCoreException {
