@@ -76,16 +76,16 @@ public final class RevisionChangeLoader {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(
-               "SELECT /*+ ordered FIRST_ROWS */ td1.transaction_id from osee_tx_details td1, osee_txs tx1, osee_artifact_version av1 where td1.branch_id = ? and td1.transaction_id = tx1.transaction_id and td1.transaction_id <=? and tx1.gamma_id = av1.gamma_id and av1.art_id = ?",
-               branch.getId(), transactionId.getId(), artifact.getArtId());
+               "SELECT /*+ ordered */ txs.transaction_id from osee_artifact_version arv, osee_txs txs where arv.art_id = ? and arv.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <=?",
+               artifact.getArtId(), branch.getId(), transactionId.getId());
 
          while (chStmt.next()) {
             transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
          }
 
          chStmt.runPreparedQuery(
-               "SELECT /*+ ordered FIRST_ROWS */ td1.transaction_id from osee_tx_details td1, osee_txs tx1, osee_relation_link rel where td1.branch_id = ? and td1.transaction_id = tx1.transaction_id and td1.transaction_id <=? and tx1.gamma_id = rel.gamma_id and (rel.a_art_id = ? or rel.b_art_id = ?)",
-               branch.getId(), transactionId.getId(), artifact.getArtId(), artifact.getArtId());
+               "SELECT /*+ ordered */ txs.transaction_id from osee_relation_link rel, osee_txs txs where (rel.a_art_id = ? or rel.b_art_id = ?) and rel.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <=?",
+               artifact.getArtId(), artifact.getArtId(), branch.getId(), transactionId.getId());
 
          while (chStmt.next()) {
             transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
