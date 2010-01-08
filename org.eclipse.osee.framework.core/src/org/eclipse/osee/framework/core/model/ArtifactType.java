@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.internal.fields.ArtifactSuperTypeField;
@@ -97,8 +96,8 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
 
    public void setAttributeTypes(Collection<AttributeType> attributeTypes, Branch branch) throws OseeCoreException {
       IOseeField<?> field = getField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
-      ((ArtifactTypeAttributesField)field).put(branch, attributeTypes);
-    }
+      ((ArtifactTypeAttributesField) field).put(branch, attributeTypes);
+   }
 
    public boolean isValidAttributeType(AttributeType attributeType, Branch branch) throws OseeCoreException {
       return getAttributeTypes(branch).contains(attributeType);
@@ -148,8 +147,8 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
    }
 
    /**
-    * Determines if this artifact type equals, or is a sub-type of,
-    * the artifact type specified by the <code>otherType</code> parameter.
+    * Determines if this artifact type equals, or is a sub-type of, the artifact type specified by the
+    * <code>otherType</code> parameter.
     * 
     * @param otherType artifact type to check against
     * @return whether this artifact type inherits from otherType

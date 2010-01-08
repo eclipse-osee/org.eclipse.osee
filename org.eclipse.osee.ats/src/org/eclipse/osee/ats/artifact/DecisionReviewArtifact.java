@@ -31,19 +31,11 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
  */
 public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewArtifact, IWorldViewArtifact, IATSStateMachineArtifact {
 
-   public static String ARTIFACT_NAME = "Decision Review";
    public XDecisionOptions decisionOptions;
    public static enum DecisionReviewState {
       Prepare, Decision, Followup, Completed
    };
 
-   /**
-    * @param parentFactory
-    * @param guid
-    * @param humanReadableId
-    * @param branch
-    * @throws OseeDataStoreException
-    */
    public DecisionReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       decisionOptions = new XDecisionOptions(this);

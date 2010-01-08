@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
  */
 public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IReviewArtifact, IWorldViewArtifact, IATSStateMachineArtifact {
 
-   public static String ARTIFACT_NAME = "PeerToPeer Review";
    public static enum PeerToPeerReviewState {
       Prepare, Review, Completed
    };

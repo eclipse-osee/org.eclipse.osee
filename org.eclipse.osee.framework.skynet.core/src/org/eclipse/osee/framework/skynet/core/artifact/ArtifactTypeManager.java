@@ -203,8 +203,8 @@ public class ArtifactTypeManager {
     * @throws OseeCoreException
     * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType, String, String, ArtifactProcessor)
     */
-   public static Artifact addArtifact(String artifactTypeName, Branch branch, String guid, String humandReadableId) throws OseeCoreException {
-      return makeNewArtifact(getType(artifactTypeName), branch, guid, humandReadableId);
+   public static Artifact addArtifact(IArtifactType artifactType, Branch branch, String guid, String humandReadableId) throws OseeCoreException {
+      return makeNewArtifact(ArtifactTypeManager.getType(artifactType), branch, guid, humandReadableId);
    }
 
    private static final String DELETE_VALID_ATTRIBUTE =

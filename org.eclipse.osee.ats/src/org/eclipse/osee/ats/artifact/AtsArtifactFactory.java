@@ -36,10 +36,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinitio
 public class AtsArtifactFactory extends ArtifactFactory {
 
    public AtsArtifactFactory() {
-      super(Arrays.asList(ActionArtifact.ARTIFACT_NAME, PeerToPeerReviewArtifact.ARTIFACT_NAME,
-            DecisionReviewArtifact.ARTIFACT_NAME, ActionableItemArtifact.ARTIFACT_NAME, TaskArtifact.ARTIFACT_NAME,
-            TeamWorkFlowArtifact.ARTIFACT_NAME, TeamDefinitionArtifact.ARTIFACT_NAME,
-            AtsArtifactTypes.Version.getName(), ActionableItemArtifact.ARTIFACT_NAME, GoalArtifact.ARTIFACT_NAME));
+      super(Arrays.asList(AtsArtifactTypes.Action.name(), AtsArtifactTypes.PeerToPeerReview.name(),
+            AtsArtifactTypes.DecisionReview.name(), AtsArtifactTypes.ActionableItem.name(),
+            AtsArtifactTypes.Task.name(), AtsArtifactTypes.TeamWorkflow.name(), AtsArtifactTypes.TeamDefinition.name(),
+            AtsArtifactTypes.Version.getName(), AtsArtifactTypes.Goal.name()));
    }
 
    @Override
@@ -47,28 +47,28 @@ public class AtsArtifactFactory extends ArtifactFactory {
       if (artifactType.equals(AtsArtifactTypes.Action)) {
          return new ActionArtifact(this, guid, humandReadableId, branch, artifactType);
       }
-      if (artifactType.getName().equals(TaskArtifact.ARTIFACT_NAME)) {
+      if (artifactType.equals(AtsArtifactTypes.Task)) {
          return new TaskArtifact(this, guid, humandReadableId, branch, artifactType);
       }
-      if (artifactType.getName().equals(TeamWorkFlowArtifact.ARTIFACT_NAME)) {
+      if (artifactType.equals(AtsArtifactTypes.TeamWorkflow)) {
          return new TeamWorkFlowArtifact(this, guid, humandReadableId, branch, artifactType);
       }
-      if (artifactType.getName().equals(TeamDefinitionArtifact.ARTIFACT_NAME)) {
+      if (artifactType.equals(AtsArtifactTypes.TeamDefinition)) {
          return new TeamDefinitionArtifact(this, guid, humandReadableId, branch, artifactType);
       }
       if (artifactType.equals(AtsArtifactTypes.Version)) {
          return new VersionArtifact(this, guid, humandReadableId, branch, artifactType);
       }
-      if (artifactType.getName().equals(ActionableItemArtifact.ARTIFACT_NAME)) {
+      if (artifactType.equals(AtsArtifactTypes.ActionableItem)) {
          return new ActionableItemArtifact(this, guid, humandReadableId, branch, artifactType);
       }
-      if (artifactType.getName().equals(DecisionReviewArtifact.ARTIFACT_NAME)) {
+      if (artifactType.equals(AtsArtifactTypes.DecisionReview)) {
          return new DecisionReviewArtifact(this, guid, humandReadableId, branch, artifactType);
       }
-      if (artifactType.getName().equals(PeerToPeerReviewArtifact.ARTIFACT_NAME)) {
+      if (artifactType.equals(AtsArtifactTypes.PeerToPeerReview)) {
          return new PeerToPeerReviewArtifact(this, guid, humandReadableId, branch, artifactType);
       }
-      if (artifactType.getName().equals(GoalArtifact.ARTIFACT_NAME)) {
+      if (artifactType.equals(AtsArtifactTypes.Goal)) {
          return new GoalArtifact(this, guid, humandReadableId, branch, artifactType);
       }
       throw new OseeArgumentException("did not recognize the artifact type: " + artifactType.getName());
@@ -79,8 +79,8 @@ public class AtsArtifactFactory extends ArtifactFactory {
       List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
       try {
          artifactTypes.add(ArtifactTypeManager.getType(AtsArtifactTypes.Version));
-         artifactTypes.add(ArtifactTypeManager.getType(TeamDefinitionArtifact.ARTIFACT_NAME));
-         artifactTypes.add(ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME));
+         artifactTypes.add(ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition));
+         artifactTypes.add(ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem));
          artifactTypes.add(ArtifactTypeManager.getType(WorkRuleDefinition.ARTIFACT_NAME));
          artifactTypes.add(ArtifactTypeManager.getType(CoreArtifactTypes.WorkFlowDefinition));
          artifactTypes.add(ArtifactTypeManager.getType(WorkWidgetDefinition.ARTIFACT_NAME));

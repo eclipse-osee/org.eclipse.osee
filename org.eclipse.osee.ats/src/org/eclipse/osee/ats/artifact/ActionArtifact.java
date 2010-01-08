@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -656,7 +657,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
-      String teamWorkflowArtifactName = TeamWorkFlowArtifact.ARTIFACT_NAME;
+      String teamWorkflowArtifactName = AtsArtifactTypes.TeamWorkflow.name();
       IAtsTeamWorkflow teamExt = null;
 
       // Check if any plugins want to create the team workflow themselves
@@ -675,8 +676,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
       // NOTE: The persist of the workflow will auto-email the assignees
       TeamWorkFlowArtifact teamArt =
-            createTeamWorkflow(teamDef, actionableItems, assignees, teamWorkflowArtifactName, transaction,
-                  createTeamOption);
+            createTeamWorkflow(teamDef, actionableItems, assignees,
+                  ArtifactTypeManager.getType(teamWorkflowArtifactName), transaction, createTeamOption);
       // Notify extension that workflow was created
       if (teamExt != null) {
          teamExt.teamWorkflowCreated(teamArt);
@@ -684,12 +685,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return teamArt;
    }
 
-   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String artifactName, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
-      return createTeamWorkflow(teamDef, actionableItems, assignees, null, null, artifactName, transaction,
+   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, IArtifactType artifactType, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
+      return createTeamWorkflow(teamDef, actionableItems, assignees, null, null, artifactType, transaction,
             createTeamOption);
    }
 
-   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String guid, String hrid, String artifactName, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String guid, String hrid, IArtifactType artifactType, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
 
       if (!Collections.getAggregate(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist
@@ -704,10 +705,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
       TeamWorkFlowArtifact teamArt = null;
       if (guid == null) {
-         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, AtsUtil.getAtsBranch());
+         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtil.getAtsBranch());
       } else {
          teamArt =
-               (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, AtsUtil.getAtsBranch(), guid, hrid);
+               (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtil.getAtsBranch(), guid, hrid);
       }
       setArtifactIdentifyData(this, teamArt);
 

@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.GoalArtifact.GoalState;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -47,7 +48,7 @@ public class NewGoal extends Action {
          if (ed.open() == 0) {
             String title = ed.getEntry();
             GoalArtifact goalArt =
-                  (GoalArtifact) ArtifactTypeManager.addArtifact(GoalArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch());
+                  (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal, AtsUtil.getAtsBranch());
             goalArt.setName(title);
             goalArt.getLog().addLog(LogType.Originated, "", "");
 

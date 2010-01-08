@@ -28,12 +28,10 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class OseeCoverageUnitStore extends OseeCoverageStore {
 
-   public static String ARTIFACT_NAME = "Coverage Unit";
-   public static String ARTIFACT_FOLDER_NAME = "Coverage Folder";
    private final CoverageUnit coverageUnit;
 
    public OseeCoverageUnitStore(ICoverage parent, Artifact artifact, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
-      super(null, artifact.getArtifactTypeName());
+      super(null, artifact.getArtifactType());
       this.artifact = artifact;
       this.coverageUnit =
             new CoverageUnit(parent, artifact.getName(), "", OseeCoverageUnitFileContentsProvider.getInstance());
@@ -41,7 +39,8 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
    }
 
    public OseeCoverageUnitStore(CoverageUnit coverageUnit) {
-      super(coverageUnit, coverageUnit.isFolder() ? ARTIFACT_FOLDER_NAME : ARTIFACT_NAME);
+      super(coverageUnit,
+            coverageUnit.isFolder() ? CoverageArtifactTypes.CoverageFolder : CoverageArtifactTypes.CoverageUnit);
       this.coverageUnit = coverageUnit;
    }
 
@@ -79,7 +78,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          // Don't load file contents until needed
          coverageUnit.setFileContentsProvider(OseeCoverageUnitFileContentsProvider.getInstance());
          coverageUnit.setNotes(artifact.getSoleAttributeValueAsString(CoverageAttributes.NOTES.getStoreName(), ""));
-         coverageUnit.setFolder(artifact.isOfType(ARTIFACT_FOLDER_NAME));
+         coverageUnit.setFolder(artifact.isOfType(CoverageArtifactTypes.CoverageFolder));
          coverageUnit.setAssignees(artifact.getSoleAttributeValueAsString(CoverageAttributes.ASSIGNEES.getStoreName(),
                ""));
          coverageUnit.setNamespace(artifact.getSoleAttributeValueAsString(CoverageAttributes.NAMESPACE.getStoreName(),
@@ -87,7 +86,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          coverageUnit.setOrderNumber(artifact.getSoleAttributeValueAsString(CoverageAttributes.ORDER.getStoreName(), ""));
          coverageUnit.setLocation(artifact.getSoleAttributeValueAsString(CoverageAttributes.LOCATION.getStoreName(), ""));
          for (Artifact childArt : artifact.getChildren()) {
-            if (childArt.isOfType(ARTIFACT_NAME) || childArt.isOfType(ARTIFACT_FOLDER_NAME)) {
+            if (childArt.isOfType(CoverageArtifactTypes.CoverageUnit) || childArt.isOfType(CoverageArtifactTypes.CoverageFolder)) {
                coverageUnit.addCoverageUnit(OseeCoverageUnitStore.get(coverageUnit, childArt, coverageOptionManager));
             }
          }

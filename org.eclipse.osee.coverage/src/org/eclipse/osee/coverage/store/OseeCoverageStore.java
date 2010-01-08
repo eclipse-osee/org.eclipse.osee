@@ -9,6 +9,7 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -24,13 +25,13 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public abstract class OseeCoverageStore extends CoverageStore {
    protected Artifact artifact;
-   private final String artifactTypeName;
+   private final IArtifactType artifactType;
    private final ICoverage coverage;
 
-   public OseeCoverageStore(ICoverage coverage, String artifactTypeName) {
+   public OseeCoverageStore(ICoverage coverage, IArtifactType artifactType) {
       super(coverage);
       this.coverage = coverage;
-      this.artifactTypeName = artifactTypeName;
+      this.artifactType = artifactType;
    }
 
    public Artifact getArtifact(boolean create) throws OseeCoreException {
@@ -42,7 +43,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
          }
          if (artifact == null && create) {
             artifact =
-                  ArtifactTypeManager.addArtifact(artifactTypeName, CoverageUtil.getBranch(), coverage.getGuid(), null);
+                  ArtifactTypeManager.addArtifact(artifactType, CoverageUtil.getBranch(), coverage.getGuid(), null);
          }
       }
       return artifact;

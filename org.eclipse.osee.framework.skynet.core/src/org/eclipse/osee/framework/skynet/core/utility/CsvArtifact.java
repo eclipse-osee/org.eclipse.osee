@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.utility;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -77,7 +78,7 @@ public class CsvArtifact {
    }
 
    public static CsvArtifact getCsvArtifact(String staticId, IOseeBranch branch, boolean create) throws OseeCoreException {
-      Artifact art = StaticIdManager.getSingletonArtifact("General Document", staticId, branch, true);
+      Artifact art = StaticIdManager.getSingletonArtifact(CoreArtifactTypes.GeneralDocument, staticId, branch, true);
       if (art != null) {
          return new CsvArtifact(art);
       }

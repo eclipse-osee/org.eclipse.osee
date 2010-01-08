@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -42,7 +43,7 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
       } else if (teamDef.getName().contains("SAW HW")) {
          return DemoReqTeamWorkflowArtifact.ARTIFACT_NAME;
       }
-      return TeamWorkFlowArtifact.ARTIFACT_NAME;
+      return AtsArtifactTypes.TeamWorkflow.name();
    }
 
    public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {

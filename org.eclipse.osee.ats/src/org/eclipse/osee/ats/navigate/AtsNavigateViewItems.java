@@ -25,8 +25,6 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.CompareTwoStringsAction;
 import org.eclipse.osee.ats.actions.NewAction;
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
@@ -34,6 +32,7 @@ import org.eclipse.osee.ats.health.ValidateChangeReportByHrid;
 import org.eclipse.osee.ats.health.ValidateChangeReports;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.notify.AtsNotificationNavigateItem;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
@@ -134,17 +133,17 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          XNavigateItem reviewItem = new XNavigateItem(null, "Reviews", AtsImage.REVIEW);
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
-               "Show Open " + DecisionReviewArtifact.ARTIFACT_NAME + "s", DecisionReviewArtifact.ARTIFACT_NAME, false,
+               "Show Open " + AtsArtifactTypes.DecisionReview.name() + "s", AtsArtifactTypes.DecisionReview, false,
                false, AtsImage.REVIEW));
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
-               "Show Workflows Waiting " + DecisionReviewArtifact.ARTIFACT_NAME + "s",
-               DecisionReviewArtifact.ARTIFACT_NAME, false, true, AtsImage.REVIEW));
+               "Show Workflows Waiting " + AtsArtifactTypes.DecisionReview.name() + "s",
+               AtsArtifactTypes.DecisionReview, false, true, AtsImage.REVIEW));
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
-               "Show Open " + PeerToPeerReviewArtifact.ARTIFACT_NAME + "s", PeerToPeerReviewArtifact.ARTIFACT_NAME,
-               false, false, AtsImage.REVIEW));
+               "Show Open " + AtsArtifactTypes.PeerToPeerReview.name() + "s", AtsArtifactTypes.PeerToPeerReview, false,
+               false, AtsImage.REVIEW));
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
-               "Show Workflows Waiting " + PeerToPeerReviewArtifact.ARTIFACT_NAME + "s",
-               PeerToPeerReviewArtifact.ARTIFACT_NAME, false, true, AtsImage.REVIEW));
+               "Show Workflows Waiting " + AtsArtifactTypes.PeerToPeerReview.name() + "s",
+               AtsArtifactTypes.PeerToPeerReview, false, true, AtsImage.REVIEW));
          new NewPeerToPeerReviewItem(reviewItem);
          new GenerateReviewParticipationReport(reviewItem);
          items.add(reviewItem);

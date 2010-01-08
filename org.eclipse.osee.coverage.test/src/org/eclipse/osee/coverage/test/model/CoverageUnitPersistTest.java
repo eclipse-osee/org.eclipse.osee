@@ -22,6 +22,7 @@ import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.SimpleCoverageUnitFileContentsProvider;
+import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.test.SampleJavaFileParser;
 import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
@@ -134,7 +135,7 @@ public class CoverageUnitPersistTest {
    @Test
    public void testBLoad() throws OseeCoreException {
       Artifact artifact =
-            ArtifactQuery.getArtifactFromTypeAndName(OseeCoveragePackageStore.ARTIFACT_NAME, "CU Test",
+            ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
                   CoverageUtil.getBranch());
       loadCoveragePackage = OseeCoveragePackageStore.get(artifact);
       Assert.assertEquals(saveCoveragePackage.getName(), loadCoveragePackage.getName());
@@ -148,14 +149,14 @@ public class CoverageUnitPersistTest {
    @Test
    public void testCDelete() throws OseeCoreException {
       Artifact artifact =
-            ArtifactQuery.getArtifactFromTypeAndName(OseeCoveragePackageStore.ARTIFACT_NAME, "CU Test",
+            ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
                   CoverageUtil.getBranch());
       Assert.assertNotNull(artifact);
       OseeCoveragePackageStore store = new OseeCoveragePackageStore(artifact);
       store.delete(false);
       try {
          artifact =
-               ArtifactQuery.getArtifactFromTypeAndName(OseeCoveragePackageStore.ARTIFACT_NAME, "CU Test",
+               ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
                      CoverageUtil.getBranch());
          Assert.assertNotNull("CU Test should not have been found", artifact);
       } catch (ArtifactDoesNotExist ex) {

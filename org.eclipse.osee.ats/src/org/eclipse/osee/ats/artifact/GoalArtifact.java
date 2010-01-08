@@ -27,8 +27,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
  */
 public class GoalArtifact extends StateMachineArtifact {
 
-   public static String ARTIFACT_NAME = "Goal";
-
    public static enum GoalState {
       InWork, Completed, Cancelled
    };

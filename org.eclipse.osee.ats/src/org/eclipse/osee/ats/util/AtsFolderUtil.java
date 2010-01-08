@@ -65,7 +65,7 @@ public class AtsFolderUtil {
    public static Artifact getFolder(AtsFolder atsFolder) throws OseeCoreException {
       if (!folderMap.containsKey(atsFolder)) {
          Artifact artifact =
-               StaticIdManager.getSingletonArtifact(atsFolder.artifactType.getName(), atsFolder.staticId,
+               StaticIdManager.getSingletonArtifact(CoreArtifactTypes.Folder, atsFolder.staticId,
                      AtsUtil.getAtsBranch(), true);
          if (artifact == null) {
             throw new OseeStateException(String.format("Can't retrieve Ats folder [%s]", atsFolder.displayName));

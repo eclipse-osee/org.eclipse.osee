@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
@@ -31,20 +32,20 @@ import org.eclipse.osee.framework.ui.skynet.OseeImage;
  */
 public class ShowOpenWorkflowsByArtifactType extends WorldUISearchItem {
 
-   private final String artifactTypeName;
+   private final IArtifactType artifactType;
    private final boolean showFinished;
    private final boolean showWorkflow;
 
-   public ShowOpenWorkflowsByArtifactType(String displayName, String artifactTypeName, boolean showFinished, boolean showWorkflow, OseeImage oseeImage) {
+   public ShowOpenWorkflowsByArtifactType(String displayName, IArtifactType artifactType, boolean showFinished, boolean showWorkflow, OseeImage oseeImage) {
       super(displayName, oseeImage);
-      this.artifactTypeName = artifactTypeName;
+      this.artifactType = artifactType;
       this.showFinished = showFinished;
       this.showWorkflow = showWorkflow;
    }
 
    public ShowOpenWorkflowsByArtifactType(ShowOpenWorkflowsByArtifactType showOpenWorkflowsByArtifactType) {
       super(showOpenWorkflowsByArtifactType);
-      this.artifactTypeName = showOpenWorkflowsByArtifactType.artifactTypeName;
+      this.artifactType = showOpenWorkflowsByArtifactType.artifactType;
       this.showFinished = showOpenWorkflowsByArtifactType.showFinished;
       this.showWorkflow = showOpenWorkflowsByArtifactType.showWorkflow;
    }
@@ -60,9 +61,9 @@ public class ShowOpenWorkflowsByArtifactType extends WorldUISearchItem {
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
          criteria.add(new AttributeCriteria(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), cancelOrComplete,
                Operator.NOT_EQUAL));
-         artifacts = ArtifactQuery.getArtifactListFromTypeAnd(artifactTypeName, AtsUtil.getAtsBranch(), 500, criteria);
+         artifacts = ArtifactQuery.getArtifactListFromTypeAnd(artifactType, AtsUtil.getAtsBranch(), 500, criteria);
       } else {
-         artifacts = ArtifactQuery.getArtifactListFromType(artifactTypeName, AtsUtil.getAtsBranch());
+         artifacts = ArtifactQuery.getArtifactListFromType(artifactType, AtsUtil.getAtsBranch());
       }
 
       if (showWorkflow) {

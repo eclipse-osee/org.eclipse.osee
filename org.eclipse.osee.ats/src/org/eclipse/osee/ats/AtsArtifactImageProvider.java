@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats;
 
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
@@ -32,7 +30,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
    public void init() throws OseeCoreException {
-      ImageManager.registerBaseImage(DecisionReviewArtifact.ARTIFACT_NAME, AtsImage.REVIEW, this);
+      ImageManager.registerBaseImage(AtsArtifactTypes.DecisionReview.getName(), AtsImage.REVIEW, this);
       ImageManager.registerBaseImage("Action", AtsImage.ACTION, this);
       ImageManager.registerBaseImage("Version", FrameworkImage.VERSION, this);
       ImageManager.registerBaseImage("Task", AtsImage.TASK, this);
@@ -44,8 +42,8 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
 
       ImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Version.getName());
       ImageManager.registerOverrideImageProvider(this, TaskArtifact.ARTIFACT_NAME);
-      ImageManager.registerOverrideImageProvider(this, PeerToPeerReviewArtifact.ARTIFACT_NAME);
-      ImageManager.registerOverrideImageProvider(this, DecisionReviewArtifact.ARTIFACT_NAME);
+      ImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.PeerToPeerReview.getName());
+      ImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.DecisionReview.getName());
       for (IArtifactType artifactType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()) {
          ImageManager.registerOverrideImageProvider(this, artifactType.getName());
       }

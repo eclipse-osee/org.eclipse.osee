@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
@@ -125,7 +124,7 @@ public class AtsUtil implements IAtsLib {
          return false;
       }
       try {
-         if (ArtifactTypeManager.getType(GoalArtifact.ARTIFACT_NAME) != null) {
+         if (ArtifactTypeManager.getType(AtsArtifactTypes.Goal) != null) {
             return goalEnabled;
          }
       } catch (OseeCoreException ex) {

@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsDeleteManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
@@ -222,8 +223,8 @@ public class AtsDeleteManagerTest {
       assertTrue("Should be " + numTasks + " TaskArtifacts, found " + numArts.get(TaskArtifact.ARTIFACT_NAME),
             numArts.get(TaskArtifact.ARTIFACT_NAME) == numTasks);
       assertTrue(
-            "Should be " + numReviews + " DecisionReviewArtifact, found " + numArts.get(DecisionReviewArtifact.ARTIFACT_NAME),
-            numArts.get(DecisionReviewArtifact.ARTIFACT_NAME) == numReviews);
+            "Should be " + numReviews + " DecisionReviewArtifact, found " + numArts.get(AtsArtifactTypes.DecisionReview.getName()),
+            numArts.get(AtsArtifactTypes.DecisionReview.getName()) == numReviews);
    }
 
    private TeamWorkFlowArtifact createAction(TestNames testName, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {

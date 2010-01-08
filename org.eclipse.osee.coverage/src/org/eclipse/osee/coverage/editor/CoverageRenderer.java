@@ -12,7 +12,7 @@ package org.eclipse.osee.coverage.editor;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
+import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -56,7 +56,7 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
    @Override
    public void open(List<Artifact> artifacts) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
-         if (artifact.isOfType(OseeCoveragePackageStore.ARTIFACT_NAME)) {
+         if (artifact.isOfType(CoverageArtifactTypes.CoveragePackage)) {
             CoverageEditor.open(new CoverageEditorInput(artifact.getName(), artifact, null, false));
          }
       }
@@ -69,7 +69,7 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (artifact.isOfType(OseeCoveragePackageStore.ARTIFACT_NAME) && !artifact.isHistorical()) {
+      if (artifact.isOfType(CoverageArtifactTypes.CoveragePackage) && !artifact.isHistorical()) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

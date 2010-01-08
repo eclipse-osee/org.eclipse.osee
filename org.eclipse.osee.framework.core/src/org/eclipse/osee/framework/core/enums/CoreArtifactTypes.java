@@ -21,6 +21,7 @@ public enum CoreArtifactTypes implements IArtifactType {
    Artifact("Artifact", "AAMFDh6S7gRLupAMwywA"),
    CodeUnit("Code Unit", "AAMFDkEh216dzK1mTZgA"),
    Folder("Folder", "AAMFDg_wmiYHHY5swJwA"),
+   GeneralData("General Data", "AAMFDhQXfyb2m+jCwlwA"),
    GeneralDocument("General Document", "AAMFDhCjkTvP+VBpBCQA"),
    GlobalPreferences("Global Preferences", "AAMFDho2kBqyoOZEw+gA"),
    Heading("Heading", "AAMFDhEzni8FpFb5yHwA"),

@@ -58,7 +58,6 @@ import org.eclipse.swt.widgets.Display;
  */
 public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implements IWorldViewArtifact, IBranchArtifact, IATSStateMachineArtifact {
 
-   public static String ARTIFACT_NAME = "Team Workflow";
    private XActionableItemsDam actionableItemsDam;
    private boolean targetedErrorLogged = false;
    private final AtsBranchManager branchMgr;

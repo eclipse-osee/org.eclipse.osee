@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
@@ -121,7 +121,7 @@ public abstract class ImageManagerTest {
    @org.junit.Test
    public void testGetImageByArtifact() throws Exception {
       Artifact folder =
-            StaticIdManager.getOrCreateSingletonArtifact(Requirements.FOLDER, "user.groups",
+            StaticIdManager.getOrCreateSingletonArtifact(CoreArtifactTypes.Folder, "user.groups",
                   BranchManager.getCommonBranch());
       assertTrue("Image returned not a folder image.", ImageManager.getImage(folder).equals(
             ImageManager.getImage(FrameworkImage.FOLDER)));
@@ -131,7 +131,7 @@ public abstract class ImageManagerTest {
    public void testSetArtifactTypeImageInDb() throws Exception {
 
       Artifact folder =
-            StaticIdManager.getOrCreateSingletonArtifact(Requirements.FOLDER, "user.groups",
+            StaticIdManager.getOrCreateSingletonArtifact(CoreArtifactTypes.Folder, "user.groups",
                   BranchManager.getCommonBranch());
 
       // Check folder image

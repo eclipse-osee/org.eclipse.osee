@@ -15,7 +15,8 @@ public enum AtsArtifactTypes implements IArtifactType {
    Task("Task", "AAMFDhbTAAB6h+06fuAA"),
    TeamDefinition("Team Definition", "AAMFDhUrlytusKbaQGAA"),
    TeamWorkflow("Team Workflow", "AAMFDhSiF2OD+wiUqugA"),
-   Version("Version", "AAMFDhder0oETnv14xQA");
+   Version("Version", "AAMFDhder0oETnv14xQA"),
+   Goal("Goal", "ABMgU119UjI_Q23Yu+gA");
 
    private final String name;
    private final String guid;
