@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsBranchManager;
@@ -76,7 +75,7 @@ public class ExportChangeReportsAction extends Action {
 
    private void export() throws OseeCoreException {
       ViewWordChangeReportHandler handler = new ViewWordChangeReportHandler();
-      branch = BranchManager.getBranchByGuid("AyH_f0s_+FWZSkpHNPAA");
+      branch = BranchManager.getBranchByGuid("NBdJRXpKwHF0bAvVHSwA");
       //      Collection<String> legacyIds =
       //            Arrays.asList("10594", "10599", "11129", "11224", "11233", "11327", "11329", "11382", "11408", "11416",
       //                  "11420", "11435", "11464", "11495", "11499", "11556", "11558", "11576", "11648", "11778");
@@ -84,24 +83,24 @@ public class ExportChangeReportsAction extends Action {
       //            ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.LegacyPCRId, legacyIds,
       //                  CoreBranches.COMMON, legacyIds.size());
       for (Artifact workflow : getWorkflows()) {
-         if (workflow.getSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName()).equals(
-               "AAABIBFe5KAARwQiIYZIcA")) {
-            AtsBranchManager atsBranchMgr = ((TeamWorkFlowArtifact) workflow).getBranchMgr();
-            IProgressMonitor monitor = new NullProgressMonitor();
-            Collection<Change> changes = null;
-            if (atsBranchMgr.isCommittedBranchExists()) {
-               changes = ChangeManager.getChangesPerTransaction(pickTransaction(workflow), monitor);
-            } else {
-               Branch branch = atsBranchMgr.getWorkingBranch();
-               if (branch != null) {
-                  changes = ChangeManager.getChangesPerBranch(branch, monitor);
-               }
-            }
-            if (changes != null) {
-               handler.viewWordChangeReport(changes, true, workflow.getSoleAttributeValueAsString(
-                     AtsAttributeTypes.LegacyPCRId, null));
+         // if (workflow.getSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName()).equals(
+         //               "AAABIBFe5KAARwQiIYZIcA")) {
+         AtsBranchManager atsBranchMgr = ((TeamWorkFlowArtifact) workflow).getBranchMgr();
+         IProgressMonitor monitor = new NullProgressMonitor();
+         Collection<Change> changes = null;
+         if (atsBranchMgr.isCommittedBranchExists()) {
+            changes = ChangeManager.getChangesPerTransaction(pickTransaction(workflow), monitor);
+         } else {
+            Branch branch = atsBranchMgr.getWorkingBranch();
+            if (branch != null) {
+               changes = ChangeManager.getChangesPerBranch(branch, monitor);
             }
          }
+         if (changes != null) {
+            handler.viewWordChangeReport(changes, true, workflow.getSoleAttributeValueAsString(
+                  AtsAttributeTypes.LegacyPCRId, null));
+         }
+         //}
       }
    }
 
