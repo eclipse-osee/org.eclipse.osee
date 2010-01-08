@@ -16,11 +16,13 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
@@ -50,18 +52,20 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
    }
 
    private static final String NO_ADDRESSING_ARTIFACTS_A =
-         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 as deleted_tran FROM osee_txs tx1, osee_tx_details td1, osee_relation_link rel1 WHERE td1.transaction_id = tx1.transaction_id AND tx1.gamma_id = rel1.gamma_id AND not exists (select 'x' from osee_txs tx2, osee_tx_details td2, osee_artifact_version av1 where td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and av1.art_id = rel1.a_art_id)";
+         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, tx1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 AS deleted_tran FROM osee_txs tx1, osee_relation_link rel1 WHERE tx1.gamma_id = rel1.gamma_id AND NOT EXISTS (SELECT 'x' FROM osee_txs tx2, osee_artifact_version av1 WHERE tx1.branch_id = tx2.branch_id AND tx2.gamma_id = av1.gamma_id AND av1.art_id = rel1.a_art_id UNION ALL SELECT 'x' FROM osee_txs_archived ta, osee_artifact_version av1 WHERE tx1.branch_id = ta.branch_id AND ta.gamma_id = av1.gamma_id AND av1.art_id = rel1.a_art_id)";
 
    private static final String NO_ADDRESSING_ARTIFACTS_B =
-         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 as deleted_tran from osee_txs tx1, osee_tx_details td1, osee_relation_link rel1 where td1.transaction_id = tx1.transaction_id AND tx1.gamma_id = rel1.gamma_id AND not exists (select 'x' from osee_txs tx2, osee_tx_details td2, osee_artifact_version av1 where td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and av1.art_id = rel1.b_art_id)";
+         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, tx1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 AS deleted_tran FROM osee_txs tx1, osee_relation_link rel1 WHERE tx1.gamma_id = rel1.gamma_id AND NOT EXISTS (SELECT 'x' FROM osee_txs tx2, osee_artifact_version av1 WHERE tx1.branch_id = tx2.branch_id AND tx2.gamma_id = av1.gamma_id AND av1.art_id = rel1.b_art_id UNION ALL SELECT 'x' FROM osee_txs_archived ta, osee_artifact_version av1 WHERE tx1.branch_id = ta.branch_id AND ta.gamma_id = av1.gamma_id AND av1.art_id = rel1.b_art_id)";
 
    private static final String DELETED_A_ARTIFACTS =
-         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, tx2.transaction_id as deleted_tran from osee_txs tx1, osee_txs tx2, osee_tx_details td1, osee_tx_details td2, osee_relation_link rel1, osee_artifact_version av1 WHERE tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rel1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rel1.a_art_id";
+         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, tx1.branch_id, rel1.a_art_id, rel1.b_art_id, tx2.transaction_id AS deleted_tran FROM osee_txs tx1, osee_txs tx2, osee_relation_link rel1, osee_artifact_version av1 WHERE tx1.gamma_id = rel1.gamma_id AND tx1.tx_current = 1 AND tx1.branch_id = tx2.branch_id AND tx2.gamma_id = av1.gamma_id AND tx2.tx_current = 2 AND av1.art_id = rel1.a_art_id";
 
    private static final String DELETED_B_ARTIFACTS =
-         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, tx2.transaction_id as deleted_tran from osee_txs tx1, osee_txs tx2, osee_tx_details td1, osee_tx_details td2, osee_relation_link rel1, osee_artifact_version av1 WHERE tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rel1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rel1.b_art_id";
+         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, tx1.branch_id, rel1.a_art_id, rel1.b_art_id, tx2.transaction_id AS deleted_tran FROM osee_txs tx1, osee_txs tx2, osee_relation_link rel1, osee_artifact_version av1 WHERE tx1.gamma_id = rel1.gamma_id AND tx1.tx_current = 1 AND tx1.branch_id = tx2.branch_id AND tx2.gamma_id = av1.gamma_id AND tx2.tx_current = 2 AND av1.art_id = rel1.b_art_id";
 
-   private static final String DELETE_FROM_TXS = "DELETE FROM osee_txs where gamma_id = ? AND  transaction_id = ?";
+   private static final String DELETE_FROM_TXS = "DELETE FROM osee_txs where gamma_id = ? AND transaction_id = ?";
+   private static final String DELETE_FROM_TX_ARCHIVED =
+         "DELETE FROM osee_tx_archived where gamma_id = ? AND transaction_id = ?";
 
    private static final String UPDATE_TXS =
          "UPDATE osee_txs SET tx_current = 0 WHERE gamma_id = ? AND transaction_id = ?";
@@ -77,7 +81,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
                "Transaction ID of Deleted Artifact"};
 
    private static final String[] DESCRIPTION =
-         {" Relation Links with non existant Artifacts on the Branch\n",
+         {" Relation Links with non existent Artifacts on the Branch\n",
                " Relation Links with deleted Artifacts on the Branch\n"};
 
    private static final String[] HEADER =
@@ -86,109 +90,119 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
 
    private DoubleKeyHashMap<Integer, Integer, LocalRelationLink> deleteMap = null;
    private DoubleKeyHashMap<Integer, Integer, LocalRelationLink> updateMap = null;
+   private IProgressMonitor monitor;
+   private StringBuffer sbFull = null;
+   private boolean fix;
+   private boolean verify;
+
+   @Override
+   protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
+      init(monitor);
+      loadBrokenRelations();
+      createReport();
+      setItemsToFix(updateMap.size() + deleteMap.size());
+
+      if (fix) {
+         fix();
+      } else {
+         monitor.worked(calculateWork(0.40));
+      }
+
+      endReport();
+   }
+
+   private void init(IProgressMonitor monitor) {
+      this.monitor = monitor;
+      sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
+      fix = isFixOperationEnabled();
+      verify = !fix;
+   }
 
    public RelationDatabaseIntegrityCheck() {
       super("Relation Integrity Errors");
    }
 
-   @Override
-   protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
-      StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
-      boolean fix = isFixOperationEnabled();
-      boolean verify = !fix;
-
-      if (verify || deleteMap == null) {
+   private void loadBrokenRelations() throws OseeCoreException {
+      if (isLoadingBrokenRelationsNecessary()) {
          deleteMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
-         monitor.subTask("Loading Relations with non existant artifacts on the A side");
-         loadData(NO_ADDRESSING_ARTIFACTS_A, true);
-         checkForCancelledStatus(monitor);
-         monitor.worked(calculateWork(0.10));
-
-         monitor.subTask("Loading Relations with non existant artifacts on the B side");
-         loadData(NO_ADDRESSING_ARTIFACTS_B, true);
-         checkForCancelledStatus(monitor);
-         monitor.worked(calculateWork(0.10));
-      } else {
-         checkForCancelledStatus(monitor);
-         monitor.worked(calculateWork(0.20));
-      }
-
-      if (verify || updateMap == null) {
          updateMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
-         monitor.subTask("Loading Relations with Deleted artifacts on the A side");
-         loadData(DELETED_A_ARTIFACTS, false);
-         checkForCancelledStatus(monitor);
-         monitor.worked(calculateWork(0.10));
 
-         monitor.subTask("Loading Relations with Deleted artifacts on the B side");
-         loadData(DELETED_B_ARTIFACTS, false);
-         checkForCancelledStatus(monitor);
-         monitor.worked(calculateWork(0.10));
+         loadData("Loading Relations with nonexistent artifacts on the A side", NO_ADDRESSING_ARTIFACTS_A, true);
+         loadData("Loading Relations with nonexistent artifacts on the B side", NO_ADDRESSING_ARTIFACTS_B, true);
+         loadData("Loading Relations with Deleted artifacts on the A side", DELETED_A_ARTIFACTS, false);
+         loadData("Loading Relations with Deleted artifacts on the B side", DELETED_B_ARTIFACTS, false);
       } else {
          checkForCancelledStatus(monitor);
-         monitor.worked(calculateWork(0.20));
+         monitor.worked(calculateWork(0.40));
       }
+   }
 
+   private boolean isLoadingBrokenRelationsNecessary() {
+      return verify || isFirstRun();
+   }
+
+   private boolean isFirstRun() {
+      return updateMap == null || deleteMap == null;
+   }
+
+   private void createReport() throws IOException {
       sbFull.append(AHTML.beginMultiColumnTable(100, 1));
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
       displayData(0, sbFull, getSummary(), verify, deleteMap);
       displayData(1, sbFull, getSummary(), verify, updateMap);
-
       monitor.worked(calculateWork(0.10));
       checkForCancelledStatus(monitor);
+   }
 
-      int updateItemCount = updateMap != null ? updateMap.size() : 0;
-      int deleteItemCount = deleteMap != null ? deleteMap.size() : 0;
-      setItemsToFix(updateItemCount + deleteItemCount);
-
-      if (fix) {
-         List<Object[]> insertParameters = new LinkedList<Object[]>();
-         for (LocalRelationLink relLink : deleteMap.allValues()) {
-            insertParameters.add(new Object[] {relLink.gammaId, relLink.transactionId});
-         }
-
-         monitor.subTask("Deleting Relation Addressing with non existant Artifacts");
-         if (insertParameters.size() != 0) {
-            ConnectionHandler.runBatchUpdate(DELETE_FROM_TXS, insertParameters);
-         }
-         deleteMap = null;
-
-         monitor.worked(calculateWork(0.10));
-
-         insertParameters.clear();
-         List<Object[]> insertParametersInsert = new LinkedList<Object[]>();
-         List<Object[]> insertParametersTransaction = new LinkedList<Object[]>();
-         for (LocalRelationLink relLink : updateMap.allValues()) {
-            insertParameters.add(new Object[] {relLink.gammaId, relLink.transactionId});
-            if (relLink.transactionId == relLink.transIdForArtifactDeletion) {
-               insertParametersTransaction.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion});
-            } else if (relLink.transactionId > relLink.transIdForArtifactDeletion) {
-               insertParametersTransaction.add(new Object[] {relLink.gammaId, relLink.transactionId});
-            } else {
-               insertParametersInsert.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion});
-            }
-         }
-         monitor.worked(calculateWork(0.10));
-
-         monitor.subTask("Inserting Addressing for Deleted Artifacts");
-         if (insertParametersInsert.size() != 0) {
-            ConnectionHandler.runBatchUpdate(INSERT_TXS, insertParametersInsert);
-         }
-         monitor.worked(calculateWork(0.10));
-
-         monitor.subTask("Updating Addressing for Deleted Artifacts");
-         if (insertParameters.size() != 0) {
-            ConnectionHandler.runBatchUpdate(UPDATE_TXS, insertParameters);
-         }
-         if (insertParametersTransaction.size() != 0) {
-            ConnectionHandler.runBatchUpdate(UPDATE_TXS_SAME, insertParametersTransaction);
-         }
-         monitor.worked(calculateWork(0.10));
-         updateMap = null;
-      } else {
-         monitor.worked(calculateWork(0.40));
+   private void deleteInvalidRelationAddressing() throws OseeDataStoreException {
+      List<Object[]> rowsToDelete = new LinkedList<Object[]>();
+      for (LocalRelationLink relLink : deleteMap.allValues()) {
+         rowsToDelete.add(new Object[] {relLink.gammaId, relLink.transactionId});
       }
 
+      monitor.subTask("Deleting Relation Addressing with non existent Artifacts");
+      if (rowsToDelete.size() != 0) {
+         ConnectionHandler.runBatchUpdate(DELETE_FROM_TXS, rowsToDelete);
+         ConnectionHandler.runBatchUpdate(DELETE_FROM_TX_ARCHIVED, rowsToDelete);
+      }
+      deleteMap = null;
+
+      monitor.worked(calculateWork(0.10));
+   }
+
+   private void fix() throws OseeCoreException {
+      deleteInvalidRelationAddressing();
+
+      List<Object[]> insertArtifactDeleted = new LinkedList<Object[]>();
+      List<Object[]> updateCurrentAddressing = new LinkedList<Object[]>();
+      List<Object[]> updatePreviousAddressing = new LinkedList<Object[]>();
+      for (LocalRelationLink relLink : updateMap.allValues()) {
+         if (BranchManager.getBranch(relLink.branchId).getArchiveState().isUnArchived()) {
+            updateCurrentAddressing.add(new Object[] {relLink.gammaId, relLink.transactionId});
+            if (relLink.transactionId >= relLink.transIdForArtifactDeletion) {
+               updatePreviousAddressing.add(new Object[] {relLink.gammaId, relLink.transactionId});
+            } else {
+               insertArtifactDeleted.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion});
+            }
+         }
+      }
+
+      runInsert(insertArtifactDeleted, INSERT_TXS, "Inserting Addressing for Deleted Artifacts");
+      runInsert(updateCurrentAddressing, UPDATE_TXS, "Updating Addressing for Deleted Artifacts");
+      runInsert(updatePreviousAddressing, UPDATE_TXS_SAME, "Updating Addressing for Deleted Artifacts");
+      updateMap = null;
+   }
+
+   private void runInsert(List<Object[]> insertParameters, String sql, String taskName) throws OseeDataStoreException {
+      monitor.subTask(taskName);
+      if (insertParameters.size() != 0) {
+         ConnectionHandler.runBatchUpdate(sql, insertParameters);
+      }
+      monitor.worked(calculateWork(0.10));
+
+   }
+
+   private void endReport() throws OseeCoreException {
       sbFull.append(AHTML.endMultiColumnTable());
       XResultData rd = new XResultData();
       rd.addRaw(sbFull.toString());
@@ -213,7 +227,8 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
       builder.append(DESCRIPTION[x]);
    }
 
-   private void loadData(String sql, boolean forDelete) throws OseeDataStoreException {
+   private void loadData(String description, String sql, boolean forDelete) throws OseeDataStoreException {
+      monitor.subTask(description);
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map = forDelete ? deleteMap : updateMap;
       try {
@@ -225,11 +240,15 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
                      chStmt.getInt("rel_link_id"), chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id"),
                      chStmt.getInt("branch_id"), chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"),
                      chStmt.getInt("deleted_tran")));
+            } else {
+               System.out.print("");
             }
          }
       } finally {
          chStmt.close();
       }
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(0.10));
    }
 
    @Override
