@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
@@ -39,14 +40,14 @@ public class SMAState {
    }
 
    public SMAState(String name, Collection<User> assignees) {
-      this.name = name.intern();
+      this.name = Strings.intern(name);
       if (assignees != null) {
          this.assignees = assignees;
       }
    }
 
    public SMAState(String name, User assignee) {
-      this.name = name.intern();
+      this.name = Strings.intern(name);
       if (assignee != null) {
          this.assignees.add(assignee);
       }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import static org.eclipse.osee.framework.jdk.core.util.Strings.intern;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
@@ -45,8 +46,8 @@ public class LogItem {
       Long l = new Long(date);
       this.date = new Date(l.longValue());
       this.msg = msg;
-      this.state = state != null ? state.intern() : state;
-      this.userId = userId != null ? userId.intern() : userId;
+      this.state = intern(state);
+      this.userId = intern(userId);
       this.user = UserManager.getUserByUserId(userId);
       this.type = type;
    }
@@ -64,7 +65,9 @@ public class LogItem {
    }
 
    public String getDate(String pattern) {
-      if (pattern != null) return (new SimpleDateFormat(pattern)).format(date);
+      if (pattern != null) {
+         return new SimpleDateFormat(pattern).format(date);
+      }
       return date.toString();
    }
 
@@ -114,6 +117,6 @@ public class LogItem {
    }
 
    public void setState(String state) {
-      this.state = state != null ? state.intern() : state;
+      this.state = state;
    }
 }

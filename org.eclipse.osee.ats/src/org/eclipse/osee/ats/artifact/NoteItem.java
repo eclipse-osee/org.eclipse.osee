@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.artifact;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.ats.NoteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -31,7 +32,7 @@ public class NoteItem {
    public NoteItem(NoteType type, String state, String date, User user, String msg) {
       Long l = new Long(date);
       this.date = new Date(l.longValue());
-      this.state = state != null ? state.intern() : state;
+      this.state = Strings.intern(state);
       this.msg = msg;
       this.user = user;
       this.type = type;
@@ -46,7 +47,9 @@ public class NoteItem {
    }
 
    public String getDate(String pattern) {
-      if (pattern != null) return (new SimpleDateFormat(pattern)).format(date);
+      if (pattern != null) {
+         return new SimpleDateFormat(pattern).format(date);
+      }
       return date.toString();
    }
 
@@ -87,15 +90,7 @@ public class NoteItem {
       return state;
    }
 
-   public void setState(String state) {
-      this.state = state != null ? state.intern() : state;
-   }
-
-   /**
-    * @param user the user to set
-    */
    public void setUser(User user) {
       this.user = user;
    }
-
 }

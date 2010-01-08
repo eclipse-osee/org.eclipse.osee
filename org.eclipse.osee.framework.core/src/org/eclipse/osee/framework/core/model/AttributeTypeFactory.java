@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -38,8 +39,10 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
             "maxOccurences can not be less than minOccurences");
 
       String checkedGuid = Conditions.checkGuidCreateIfNeeded(guid);
-      return new AttributeType(checkedGuid, name, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,
-            defaultValue, minOccurrences, maxOccurrences, tipText, taggerId);
+      return new AttributeType(checkedGuid, name, Strings.intern(baseAttributeTypeId),
+            Strings.intern(attributeProviderNameId), Strings.intern(fileTypeExtension), defaultValue, minOccurrences,
+            maxOccurrences, tipText, Strings.intern(taggerId));
+
    }
 
    public AttributeType createOrUpdate(AttributeTypeCache cache, String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {

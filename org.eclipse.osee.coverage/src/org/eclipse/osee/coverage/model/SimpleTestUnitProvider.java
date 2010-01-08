@@ -28,7 +28,7 @@ public class SimpleTestUnitProvider implements ITestUnitProvider {
    @Override
    public void addTestUnitName(CoverageItem coverageItem, String testUnitName) {
       if (!getTestUnits(coverageItem).contains(testUnitName)) {
-         coverageItemToTestUnits.put(coverageItem, testUnitName.intern());
+         coverageItemToTestUnits.put(coverageItem, Strings.intern(testUnitName));
       }
    }
 

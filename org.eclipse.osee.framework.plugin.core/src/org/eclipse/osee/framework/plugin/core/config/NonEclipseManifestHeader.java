@@ -35,23 +35,32 @@ public class NonEclipseManifestHeader extends Dictionary<Object, Object> {
    private int getIndex(Object key) {
       boolean stringKey = key instanceof String;
       for (int i = 0; i < size; i++) {
-         if (headers[i].equals(key)) return i;
-         if (stringKey && (headers[i] instanceof String) && ((String) headers[i]).equalsIgnoreCase((String) key)) return i;
+         if (headers[i].equals(key)) {
+            return i;
+         }
+         if (stringKey && headers[i] instanceof String && ((String) headers[i]).equalsIgnoreCase((String) key)) {
+            return i;
+         }
       }
       return -1;
    }
 
+   @Override
    public Object remove(Object key) {
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public Object put(Object key, Object value) {
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public synchronized Object get(Object key) {
       int i = -1;
-      if ((i = getIndex(key)) != -1) return values[i];
+      if ((i = getIndex(key)) != -1) {
+         return values[i];
+      }
       return null;
    }
 
@@ -66,20 +75,27 @@ public class NonEclipseManifestHeader extends Dictionary<Object, Object> {
             values[i] = values[i + 1];
          }
       }
-      if (remove < size) size--;
+      if (remove < size) {
+         size--;
+      }
       return removed;
    }
 
    public synchronized Object set(Object key, Object value) {
-      if (key instanceof String) key = ((String) key).intern();
+      if (key instanceof String) {
+         key = ((String) key).intern();
+      }
       int i = getIndex(key);
       if (value == null) /* remove */
       {
-         if (i != -1) return remove(i);
+         if (i != -1) {
+            return remove(i);
+         }
       } else /* put */
       {
-         if (i != -1) /* duplicate key */
-         throw new IllegalArgumentException("Duplicate key found" + key);
+         if (i != -1) {
+            throw new IllegalArgumentException("Duplicate key found" + key);
+         }
          add(key, value);
       }
       return null;
@@ -122,7 +138,7 @@ public class NonEclipseManifestHeader extends Dictionary<Object, Object> {
              * BundleException for duplicate manifest headers.
              */
 
-            if ((line == null) || (line.length() == 0)) /* EOF or empty line */
+            if (line == null || line.length() == 0) /* EOF or empty line */
             {
                if (!firstLine) /* flush last line */
                {
@@ -168,22 +184,27 @@ public class NonEclipseManifestHeader extends Dictionary<Object, Object> {
       }
    }
 
+   @Override
    public synchronized Enumeration<Object> keys() {
       return new ArrayEnumeration(headers, size);
    }
 
+   @Override
    public synchronized Enumeration<Object> elements() {
       return new ArrayEnumeration(values, size);
    }
 
+   @Override
    public synchronized int size() {
       return size;
    }
 
+   @Override
    public synchronized boolean isEmpty() {
       return size == 0;
    }
 
+   @Override
    public String toString() {
       String toReturn = "[";
       for (int index = 0; index < size; index++) {
@@ -194,7 +215,7 @@ public class NonEclipseManifestHeader extends Dictionary<Object, Object> {
    }
 
    class ArrayEnumeration implements Enumeration<Object> {
-      private Object[] array;
+      private final Object[] array;
       int cur = 0;
 
       public ArrayEnumeration(Object[] array, int size) {

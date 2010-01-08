@@ -26,11 +26,20 @@ public class Strings {
       return EMPTY_STRING;
    }
 
+   public static String intern(String str) {
+      if (str == null) {
+         return null;
+      }
+      return str.intern();
+   }
+
    /**
     * Will truncate string if necessary and add "..." to end if addDots and truncated
     */
    public static String truncate(String value, int length, boolean addDots) {
-      if (value == null) return "";
+      if (value == null) {
+         return "";
+      }
       String toReturn = value;
       if (Strings.isValid(value) && value.length() > length) {
          toReturn = value.substring(0, Math.min(length, value.length())) + (addDots ? "..." : "");

@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 
@@ -75,7 +76,9 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    public List<CoverageUnit> getCoverageUnits(boolean recurse) {
-      if (!recurse) return coverageUnits;
+      if (!recurse) {
+         return coverageUnits;
+      }
       List<CoverageUnit> units = new ArrayList<CoverageUnit>(coverageUnits);
       for (CoverageUnit coverageUnit : coverageUnits) {
          units.addAll(coverageUnit.getCoverageUnits(recurse));
@@ -169,10 +172,11 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    public OseeImage getOseeImage() {
       boolean covered = isCovered();
       if (isFolder()) {
-         if (covered)
+         if (covered) {
             return CoverageImage.FOLDER_GREEN;
-         else
+         } else {
             return CoverageImage.FOLDER_RED;
+         }
       } else if (covered) {
          return CoverageImage.UNIT_GREEN;
       }
@@ -182,7 +186,9 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    @Override
    public boolean isCovered() {
       for (CoverageItem coverageItem : getCoverageItems(true)) {
-         if (!coverageItem.isCovered()) return false;
+         if (!coverageItem.isCovered()) {
+            return false;
+         }
       }
       return true;
    }
@@ -191,19 +197,29 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((guid == null) ? 0 : guid.hashCode());
+      result = prime * result + (guid == null ? 0 : guid.hashCode());
       return result;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (obj == null) return false;
-      if (getClass() != obj.getClass()) return false;
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
       CoverageUnit other = (CoverageUnit) obj;
       if (guid == null) {
-         if (other.guid != null) return false;
-      } else if (!guid.equals(other.guid)) return false;
+         if (other.guid != null) {
+            return false;
+         }
+      } else if (!guid.equals(other.guid)) {
+         return false;
+      }
       return true;
    }
 
@@ -227,7 +243,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       if (namespace == null) {
          this.namespace = null;
       } else {
-         this.namespace = namespace.intern();
+         this.namespace = Strings.intern(namespace);
       }
    }
 
@@ -361,7 +377,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    public void setOrderNumber(String orderNumber) {
-      this.orderNumber = orderNumber.intern();
+      this.orderNumber = Strings.intern(orderNumber);
    }
 
    public void setFileContentsProvider(ICoverageUnitFileContentsProvider fileContentsProvider) {
