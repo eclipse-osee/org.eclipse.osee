@@ -306,65 +306,75 @@ public class AtsBranchConfigurationTest {
    private void cleanupBranchTest(TestType testType) throws Exception {
       String namespace = "org.branchTest." + testType.name().toLowerCase();
       OseeLog.log(AtsPlugin.class, Level.INFO, "Cleanup from previous run of ATS for team " + namespace);
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       ActionArtifact aArt =
             (ActionArtifact) ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.Action,
                   testType.name() + " Req Changes", AtsUtil.getAtsBranch());
       if (aArt != null) {
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (TeamWorkFlowArtifact teamArt : aArt.getTeamWorkFlowArtifacts()) {
             SMAEditor.close(Collections.singleton(teamArt), false);
             teamArt.deleteAndPersist(transaction);
          }
          aArt.deleteAndPersist(transaction);
+         transaction.execute();
       }
-      transaction.execute();
 
       // Delete VersionArtifacts
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
-      for (Artifact verArt : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.Version, AtsUtil.getAtsBranch())) {
-         if (verArt.getName().contains(testType.name())) {
-            verArt.deleteAndPersist(transaction);
+      Collection<Artifact> arts =
+            ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.Version, AtsUtil.getAtsBranch());
+      if (arts.size() > 0) {
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         for (Artifact verArt : arts) {
+            if (verArt.getName().contains(testType.name())) {
+               verArt.deleteAndPersist(transaction);
+            }
          }
+         transaction.execute();
       }
-      transaction.execute();
 
       // Delete Team Definitions
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       Artifact art =
             ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, testType.name(),
                   AtsUtil.getAtsBranch());
       if (art != null) {
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          art.deleteAndPersist(transaction);
+         transaction.execute();
       }
-      transaction.execute();
 
       // Delete AIs
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       art =
             ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.ActionableItem, testType.name(),
                   AtsUtil.getAtsBranch());
       if (art != null) {
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact childArt : art.getChildren()) {
             childArt.deleteAndPersist(transaction);
          }
          art.deleteAndPersist(transaction);
+         transaction.execute();
       }
-      transaction.execute();
 
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
-      for (Artifact workArt : ArtifactQuery.getArtifactListFromType(WorkPageDefinition.ARTIFACT_NAME,
-            AtsUtil.getAtsBranch())) {
-         if (workArt.getName().startsWith(namespace)) {
-            workArt.deleteAndPersist(transaction);
+      arts = ArtifactQuery.getArtifactListFromType(WorkPageDefinition.ARTIFACT_NAME, AtsUtil.getAtsBranch());
+      if (arts.size() > 0) {
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         for (Artifact workArt : arts) {
+            if (workArt.getName().startsWith(namespace)) {
+               workArt.deleteAndPersist(transaction);
+            }
          }
+         transaction.execute();
       }
-      for (Artifact workArt : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.WorkFlowDefinition,
-            AtsUtil.getAtsBranch())) {
-         if (workArt.getName().startsWith(namespace)) {
-            workArt.deleteAndPersist(transaction);
+      arts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.WorkFlowDefinition, AtsUtil.getAtsBranch());
+      if (arts.size() > 0) {
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         for (Artifact workArt : arts) {
+            if (workArt.getName().startsWith(namespace)) {
+               workArt.deleteAndPersist(transaction);
+            }
          }
+         transaction.execute();
       }
-      transaction.execute();
 
       try {
          BranchManager.refreshBranches();
@@ -414,12 +424,10 @@ public class AtsBranchConfigurationTest {
       assertNotNull("Can't retrieve SMAEditor for workflow " + teamWf, smaEditor);
 
       Collection<XWidget> xWidgets =
-            smaEditor.getXWidgetsFromState(smaEditor.getSma().getStateMgr().getCurrentStateName(),
-                  XWorkingBranch.class);
+            smaEditor.getXWidgetsFromState(smaEditor.getSma().getStateMgr().getCurrentStateName(), XWorkingBranch.class);
       assertTrue("Should be 1 XWorkingBranch widget in current state, found " + xWidgets.size(), xWidgets.size() == 1);
       xWidgets =
-            smaEditor.getXWidgetsFromState(smaEditor.getSma().getStateMgr().getCurrentStateName(),
-                  XCommitManager.class);
+            smaEditor.getXWidgetsFromState(smaEditor.getSma().getStateMgr().getCurrentStateName(), XCommitManager.class);
       assertTrue("Should be 1 XCommitManager widget in current state, found " + xWidgets.size(), xWidgets.size() == 1);
    }
 
