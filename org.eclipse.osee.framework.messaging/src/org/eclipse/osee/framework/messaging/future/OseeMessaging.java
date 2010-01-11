@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.future;
 
-
 /**
- * @author b1528444
- *
+ * @author Andrew M. Finkbeiner
  */
 public interface OseeMessaging {
-   
+
    public void addListener(Component component, String topic, OseeMessagingListener listener) throws Exception;
-   
+
    public void sendMessage(Component component, String topic, Object body);
-   
+
 }

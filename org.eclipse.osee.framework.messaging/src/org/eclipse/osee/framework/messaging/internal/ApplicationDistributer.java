@@ -17,9 +17,6 @@ import org.eclipse.osee.framework.messaging.Message;
  */
 public interface ApplicationDistributer {
 
-   /**
-    * @param message
-    */
    void distribute(Message message);
 
 }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.internal;
 
-import java.util.Hashtable;
 import org.eclipse.osee.framework.messaging.MessagingGateway;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -26,7 +25,7 @@ public class Activator implements BundleActivator {
 
    public void start(BundleContext context) throws Exception {
       messaging = new MessagingGatewayImpl();
-      registration = context.registerService(MessagingGateway.class.getName(), messaging, new Hashtable());
+      registration = context.registerService(MessagingGateway.class.getName(), messaging, null);
    }
 
    public void stop(BundleContext context) throws Exception {

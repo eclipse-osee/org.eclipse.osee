@@ -13,8 +13,7 @@ package org.eclipse.osee.framework.messaging.future;
 import java.util.Properties;
 
 /**
- * @author b1528444
- *
+ * @author Andrew M. Finkbeiner
  */
 public interface OseeMessagingListener {
    public void process(Properties message);

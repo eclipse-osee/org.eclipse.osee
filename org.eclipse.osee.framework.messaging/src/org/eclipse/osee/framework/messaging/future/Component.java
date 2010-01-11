@@ -11,18 +11,17 @@
 package org.eclipse.osee.framework.messaging.future;
 
 /**
- * @author b1528444
- *
+ * @author Andrew M. Finkbeiner
  */
 public enum Component {
 
    VM("vm"),
    JMS("osee-jms");
-   
+
    private String name;
    private String nameWithColon;
-   
-   private Component(String name){
+
+   private Component(String name) {
       this.name = name;
       this.nameWithColon = name + ":";
    }
@@ -31,12 +30,12 @@ public enum Component {
    public String toString() {
       return name + ":";
    }
-   
-   public String getComponentName(){
+
+   public String getComponentName() {
       return name;
    }
-   
-   public String getComponentNameForRoutes(){
+
+   public String getComponentNameForRoutes() {
       return nameWithColon;
    }
 }
