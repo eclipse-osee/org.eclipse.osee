@@ -65,4 +65,5 @@ Import-Package: org.apache.commons.lang,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.coverage,
  org.eclipse.osee.coverage.blam,
+ org.eclipse.osee.coverage.util,
  org.eclipse.osee.coverage.vcast

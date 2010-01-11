@@ -76,6 +76,11 @@ public class MergeManager {
             importItemToMatchItem.put(childCoverage, childMatchItem);
          }
 
+         // Print out match results
+         //         for (Entry<ICoverage, MatchItem> entry : importItemToMatchItem.entrySet()) {
+         //            System.out.println(String.format("MatchItem[%s]-Coverage[%s]", entry.getValue(), entry.getKey()));
+         //         }
+
          // Case A - All match and package # children == import # children
          // Action: continue and check children's children
          if (packageItemChildren.size() == importItemChildren.size() && MatchItem.isAllMatchType(MatchType.FullMatches,
@@ -88,7 +93,7 @@ public class MergeManager {
 
          // Addition/Move - Import children all full match except Import has more that don't match, items added and moved
          else if (MatchItem.isAllMatchType(Arrays.asList(MatchType.Match__Name_And_Order_Num,
-               MatchType.No_Match__Name_Or_Order_Num), importItemToMatchItem.values()) && importItemChildren.size() > packageItemChildren.size()) {
+               MatchType.No_Match__Name_Or_Order_Num, MatchType.Match__Folder), importItemToMatchItem.values()) && importItemChildren.size() > packageItemChildren.size()) {
 
             // Determine number of No_Match items that are name-only match
             Map<ICoverage, ICoverage> nameOnlyImportToPackageCoverage = new HashMap<ICoverage, ICoverage>();
