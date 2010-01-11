@@ -1357,16 +1357,15 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       }
    }
 
+   /**
+    * Creates new relations that don't already exist and removes relations to artifacts that are not in collection
+    */
    public void setRelations(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts) throws OseeCoreException {
       setRelations(null, relationSide, artifacts);
    }
 
    /**
     * Creates new relations that don't already exist and removes relations to artifacts that are not in collection
-    * 
-    * @param relationSide
-    * @param artifacts
-    * @throws OseeCoreException
     */
    public void setRelationsOfTypeUseCurrentOrder(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts, Class<?> clazz) throws OseeCoreException {
       RelationTypeSideSorter sorter =

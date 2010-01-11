@@ -198,7 +198,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn(COLUMN_NAMESPACE + ".reviewModerator", "Review Moderator", 100, SWT.LEFT, false,
                SortDataType.String, false, "Review Moderator(s)");
    public static final XViewerColumn Groups_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".groups", "Groups", 100, SWT.LEFT, false, SortDataType.String, false,
+         new XViewerColumn(COLUMN_NAMESPACE + ".groups", "Groups", 100, SWT.LEFT, false, SortDataType.String, true,
                "Groups");
    public static final XViewerColumn Review_Reviewer_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".reviewReviewer", "Review Reviewer", 100, SWT.LEFT, false,

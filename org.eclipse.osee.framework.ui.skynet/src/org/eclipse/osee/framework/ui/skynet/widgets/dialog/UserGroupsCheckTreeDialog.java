@@ -25,10 +25,6 @@ import org.eclipse.swt.widgets.Control;
  */
 public class UserGroupsCheckTreeDialog extends ArtifactCheckTreeDialog {
 
-   /**
-    * @param parent
-    * @param artifacts
-    */
    public UserGroupsCheckTreeDialog(Collection<Artifact> artifacts) {
       super(artifacts);
    }

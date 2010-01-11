@@ -47,6 +47,14 @@ public class ArtifactCheckTreeDialog extends CheckedTreeSelectionDialog {
       return arts;
    }
 
+   public void setInitialSelections(Collection<? extends Artifact> initialSel) {
+      ArrayList<Object> objs = new ArrayList<Object>();
+      for (Artifact sel : initialSel) {
+         objs.add(sel);
+      }
+      super.setInitialSelections(objs.toArray(new Object[objs.size()]));
+   }
+
    @Override
    protected Control createDialogArea(Composite container) {
       Control c = super.createDialogArea(container);

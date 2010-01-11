@@ -279,7 +279,6 @@ public class XViewer extends TreeViewer {
 
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       if (!isColumnMultiEditEnabled()) return false;
-      if (!(treeColumn.getData() instanceof XViewerColumn)) return false;
       return (!((XViewerColumn) treeColumn.getData()).isMultiColumnEditable());
    }
 
@@ -447,9 +446,6 @@ public class XViewer extends TreeViewer {
       return statusLabel;
    }
 
-   /**
-    * @return the textFilterComp
-    */
    public FilterDataUI getFilterDataUI() {
       return filterDataUI;
    }

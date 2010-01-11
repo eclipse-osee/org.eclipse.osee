@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,15 +40,6 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
 
    public UserCheckTreeDialog() throws OseeCoreException {
       this(UserManager.getUsers());
-   }
-
-   public void setInitialSelections(Collection<User> initialSel) {
-      this.initialSel = initialSel;
-      ArrayList<Object> objs = new ArrayList<Object>();
-      for (Artifact sel : initialSel) {
-         objs.add(sel);
-      }
-      super.setInitialSelections(objs.toArray(new Object[objs.size()]));
    }
 
    public Collection<User> getUsersSelected() {

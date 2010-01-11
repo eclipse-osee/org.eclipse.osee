@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -38,6 +39,16 @@ public class UniversalGroup {
          artifacts = new LinkedList<Artifact>();
       }
       return artifacts;
+   }
+
+   public static Collection<Artifact> getGroupsNotRoot(Branch branch) {
+      Collection<Artifact> groups = new HashSet<Artifact>();
+      for (Artifact group : UniversalGroup.getGroups(branch)) {
+         if (!group.getName().equals("Root Artifact")) {
+            groups.add(group);
+         }
+      }
+      return groups;
    }
 
    public static Collection<Artifact> getGroups(String groupName, Branch branch) {

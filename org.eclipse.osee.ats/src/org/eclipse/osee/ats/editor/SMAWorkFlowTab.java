@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
@@ -252,8 +253,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                AtsWorkPage atsWorkPage =
                      new AtsWorkPage(sma.getWorkFlowDefinition(), workPageDefinition, null,
                            ATSXWidgetOptionResolver.getInstance());
-               if (sma.isCurrentState(atsWorkPage.getName()) || sma.getStateMgr().isStateVisited(
-                     atsWorkPage.getName())) {
+               if (sma.isCurrentState(atsWorkPage.getName()) || sma.getStateMgr().isStateVisited(atsWorkPage.getName())) {
                   // Don't show completed or cancelled state if not currently those state
                   if (atsWorkPage.isCompletePage() && !sma.isCompleted()) continue;
                   if (atsWorkPage.isCancelledPage() && !sma.isCancelled()) continue;
@@ -492,8 +492,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       try {
          FormsUtil.createLabelText(toolkit, topLineComp, "Current State: ", sma.getStateMgr().getCurrentStateName());
-         FormsUtil.createLabelText(toolkit, topLineComp, "Created: ", XDate.getDateStr(
-               sma.getLog().getCreationDate(), XDate.MMDDYYHHMM));
+         FormsUtil.createLabelText(toolkit, topLineComp, "Created: ", XDate.getDateStr(sma.getLog().getCreationDate(),
+               XDate.MMDDYYHHMM));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
@@ -577,7 +577,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
             public void linkActivated(HyperlinkEvent e) {
                try {
-                  if (sma.promptChangeOriginator()) {
+                  if (PromptChangeUtil.promptChangeOriginator(sma)) {
                      updateOrigLabel();
                      sma.getEditor().onDirtied();
                   }

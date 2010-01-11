@@ -11,6 +11,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -62,8 +63,8 @@ public class TargetVersionXWidget extends XHyperlinkLabelValueSelection {
    @Override
    public boolean handleSelection() {
       try {
-         if (sma.promptChangeVersion(AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
-               false)) {
+         if (PromptChangeUtil.promptChangeVersion(sma,
+               AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, false)) {
             refresh();
             sma.getEditor().onDirtied();
             return true;

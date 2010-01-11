@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor.widget;
 
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -51,7 +52,7 @@ public class CurrentAssigneesXWidget extends XHyperlinkLabelCmdValueSelection {
                "You must be assigned to modify assignees.\nContact current Assignee or Select Priviledged Edit for Authorized Overriders.");
          return;
       }
-      if (sma.promptChangeAssignees(false)) {
+      if (PromptChangeUtil.promptChangeAssignees(sma, false)) {
          refresh();
          sma.getEditor().onDirtied();
       }
