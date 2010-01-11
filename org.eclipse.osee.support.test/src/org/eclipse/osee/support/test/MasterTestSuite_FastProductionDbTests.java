@@ -13,9 +13,8 @@ package org.eclipse.osee.support.test;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.test.AtsTest_Config_Suite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.skynet.core.test.FrameworkCore_Production_Suite;
+import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactQueryTest;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Production_Suite;
-import org.eclipse.osee.framework.ui.skynet.test.cases.DatabaseIntegrityTest;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -23,8 +22,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {AtsTest_Config_Suite.class, FrameworkCore_Production_Suite.class,
-      FrameworkUi_Production_Suite.class, DatabaseIntegrityTest.class})
+@Suite.SuiteClasses( {AtsTest_Config_Suite.class, ArtifactQueryTest.class, FrameworkUi_Production_Suite.class})
 /**
  * This suite should contain any test that can be run against a deployed OSEE database.<br>
  * <br>
@@ -32,7 +30,7 @@ import org.junit.runners.Suite;
  * 
  * @author Donald G. Dunne
  */
-public class MasterTestSuite_ProductionDbTests {
+public class MasterTestSuite_FastProductionDbTests {
    @BeforeClass
    public static void setUp() throws Exception {
       assertTrue("Should be run on production datbase.", TestUtil.isProductionDb());
