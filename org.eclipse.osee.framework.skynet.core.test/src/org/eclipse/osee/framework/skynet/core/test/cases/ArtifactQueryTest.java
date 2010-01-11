@@ -11,15 +11,12 @@
 package org.eclipse.osee.framework.skynet.core.test.cases;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.junit.Assert;
 
 /**
  * @author Ryan D. Brooks
@@ -40,18 +37,5 @@ public class ArtifactQueryTest {
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(common);
       Artifact artifact = ArtifactQuery.getArtifactFromId(root.getGuid(), common);
       assertEquals(root.getGuid(), artifact.getGuid());
-   }
-
-   @org.junit.Test
-   public void testGetArtifactsFromBranch() throws OseeCoreException {
-      Assert.fail("Test hangs for over 1 hour.  Needs fix'n");
-      Branch common = BranchManager.getCommonBranch();
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(common, true);
-
-      assertTrue(artifacts.size() > 0);
-      for (Artifact artifact : artifacts) {
-         assertTrue(artifact.getName().length() > 0);
-         artifact.isOrphan(); // this is good exercise - like doing push-ups
-      }
    }
 }

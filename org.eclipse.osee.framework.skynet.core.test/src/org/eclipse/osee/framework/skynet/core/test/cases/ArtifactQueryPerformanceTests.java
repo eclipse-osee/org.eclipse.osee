@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryType;
-import org.junit.Assert;
 
 /**
  * @author Andrew M Finkbeiner
@@ -164,7 +163,6 @@ public class ArtifactQueryPerformanceTests {
 
    @org.junit.Test
    public void testLoadAllBranch() throws OseeCoreException {
-      Assert.fail("This test hangs on load for over 30min - needs fix'n");
       Branch common = BranchManager.getCommonBranch();
       ArtifactQueryBuilder builder = new ArtifactQueryBuilder(common, FULL, false);
       long startTime = System.currentTimeMillis();
@@ -174,5 +172,12 @@ public class ArtifactQueryPerformanceTests {
       assertTrue("No artifacts found", result.size() > 0);
       assertTrue(String.format("Elapsed time for loadAllBranch took %dms.  It should take less than 500000ms.",
             elapsedTime), elapsedTime < 500000);
+
+      // check for exceptions
+      assertTrue(result.size() > 0);
+      for (Artifact artifact : result) {
+         assertTrue(artifact.getName().length() > 0);
+         artifact.isOrphan();
+      }
    }
 }
