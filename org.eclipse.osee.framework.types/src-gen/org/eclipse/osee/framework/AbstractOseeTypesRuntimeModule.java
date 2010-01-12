@@ -24,7 +24,7 @@ public abstract class AbstractOseeTypesRuntimeModule extends DefaultRuntimeModul
 	}
 	
 	protected void bindProperties(Binder binder) {
-		bindProperties(binder, "/org/eclipse/osee/framework/OseeTypes.properties");
+		bindProperties(binder, "org/eclipse/osee/framework/OseeTypes.properties");
 	}
 	
 	
