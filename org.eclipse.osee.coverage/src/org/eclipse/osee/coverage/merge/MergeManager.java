@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -112,6 +113,7 @@ public class MergeManager {
             // Case B - All match, some added, and none moved (name-only)
             // Action: just add new ones and process all children
             if (nameOnlyImportToPackageCoverage.size() == 0) {
+               List<IMergeItem> groupMergeItems = new ArrayList<IMergeItem>();
                for (ICoverage childCoverage : importItemChildren) {
                   MatchItem childMatchItem = importItemToMatchItem.get(childCoverage);
                   // This child matches, just process children
@@ -120,9 +122,16 @@ public class MergeManager {
                   }
                   // This child is new, mark as added; no need to process children cause their new
                   if (childMatchItem.getMatchType() == MatchType.No_Match__Name_Or_Order_Num) {
-                     mergeItems.add(new MergeItem(MergeType.Add, null, childMatchItem.getImportItem(), true));
+                     if (childMatchItem.getImportItem() instanceof CoverageItem) {
+                        groupMergeItems.add(new MergeItem(MergeType.Add, null, childMatchItem.getImportItem(), false));
+                     } else {
+                        mergeItems.add(new MergeItem(MergeType.Add, null, childMatchItem.getImportItem(), true));
+                     }
                      processedImportCoverages.add(childMatchItem.getImportItem());
                   }
+               }
+               if (groupMergeItems.size() > 0) {
+                  mergeItems.add(new MergeItemGroup(MergeType.Add, groupMergeItems, true));
                }
             }
 
@@ -159,7 +168,7 @@ public class MergeManager {
             }
          }
 
-         // Case Else - unhandled case
+         // Case Else - unhandled cases
          else {
             mergeItems.add(new MergeItem(MergeType.Error__UnMergable, null, importCoverage, false));
          }

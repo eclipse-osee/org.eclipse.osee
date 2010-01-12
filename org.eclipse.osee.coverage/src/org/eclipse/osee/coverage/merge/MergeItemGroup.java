@@ -84,7 +84,7 @@ public class MergeItemGroup extends MergeItemBase {
 
    @Override
    public String getName() {
-      return getMergeType().toString() + " - " + getParent().getParent().getName();
+      return getMergeType().toString() + " - " + CoverageUtil.getFullPath(mergeItems.iterator().next());
    }
 
    @Override

@@ -99,7 +99,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
          }
          return "";
       }
-      if ((coverage instanceof CoverageUnit) || (coverage instanceof MergeItem)) {
+      if ((coverage instanceof CoverageUnit) || (coverage instanceof MergeItem && (((MergeItem) coverage).getImportItem() instanceof CoverageUnit))) {
          CoverageUnit coverageUnit = null;
          if (coverage instanceof CoverageUnit) {
             coverageUnit = (CoverageUnit) coverage;
@@ -108,6 +108,16 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
          }
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageUnit.getParentCoverageUnit() == null ? "" : coverageUnit.getParentCoverageUnit().getName();
          if (xCol.equals(CoverageXViewerFactory.Method_Number)) return coverageUnit.getOrderNumber();
+      }
+      if ((coverage instanceof CoverageItem) || (coverage instanceof MergeItem && (((MergeItem) coverage).getImportItem() instanceof CoverageItem))) {
+         CoverageItem coverageItem = null;
+         if (coverage instanceof CoverageItem) {
+            coverageItem = (CoverageItem) coverage;
+         } else {
+            coverageItem = (CoverageItem) ((MergeItem) coverage).getImportItem();
+         }
+         if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageItem.getParent() == null ? "" : coverageItem.getParent().getName();
+         if (xCol.equals(CoverageXViewerFactory.Method_Number)) return coverageItem.getOrderNumber();
       }
       return "";
 
