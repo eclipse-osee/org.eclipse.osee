@@ -57,7 +57,8 @@ import org.eclipse.osee.framework.services.OseeTypesGrammarAccess;
 
 
 // Entry rule entryRuleOseeTypeModel
-entryRuleOseeTypeModel :
+entryRuleOseeTypeModel 
+:
 { before(grammarAccess.getOseeTypeModelRule()); }
 	 ruleOseeTypeModel
 { after(grammarAccess.getOseeTypeModelRule()); } 
@@ -69,7 +70,7 @@ ruleOseeTypeModel
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getOseeTypeModelAccess().getGroup()); }
 (rule__OseeTypeModel__Group__0)
@@ -84,7 +85,8 @@ finally {
 
 
 // Entry rule entryRuleImport
-entryRuleImport :
+entryRuleImport 
+:
 { before(grammarAccess.getImportRule()); }
 	 ruleImport
 { after(grammarAccess.getImportRule()); } 
@@ -96,7 +98,7 @@ ruleImport
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getImportAccess().getGroup()); }
 (rule__Import__Group__0)
@@ -111,7 +113,8 @@ finally {
 
 
 // Entry rule entryRuleNAME_REFERENCE
-entryRuleNAME_REFERENCE :
+entryRuleNAME_REFERENCE 
+:
 { before(grammarAccess.getNAME_REFERENCERule()); }
 	 ruleNAME_REFERENCE
 { after(grammarAccess.getNAME_REFERENCERule()); } 
@@ -123,7 +126,7 @@ ruleNAME_REFERENCE
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getNAME_REFERENCEAccess().getSTRINGTerminalRuleCall()); }
 	RULE_STRING
@@ -138,7 +141,8 @@ finally {
 
 
 // Entry rule entryRuleQUALIFIED_NAME
-entryRuleQUALIFIED_NAME :
+entryRuleQUALIFIED_NAME 
+:
 { before(grammarAccess.getQUALIFIED_NAMERule()); }
 	 ruleQUALIFIED_NAME
 { after(grammarAccess.getQUALIFIED_NAMERule()); } 
@@ -150,7 +154,7 @@ ruleQUALIFIED_NAME
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getQUALIFIED_NAMEAccess().getGroup()); }
 (rule__QUALIFIED_NAME__Group__0)
@@ -167,7 +171,8 @@ finally {
 
 
 // Entry rule entryRuleOseeType
-entryRuleOseeType :
+entryRuleOseeType 
+:
 { before(grammarAccess.getOseeTypeRule()); }
 	 ruleOseeType
 { after(grammarAccess.getOseeTypeRule()); } 
@@ -179,7 +184,7 @@ ruleOseeType
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getOseeTypeAccess().getAlternatives()); }
 (rule__OseeType__Alternatives)
@@ -194,7 +199,8 @@ finally {
 
 
 // Entry rule entryRuleArtifactType
-entryRuleArtifactType :
+entryRuleArtifactType 
+:
 { before(grammarAccess.getArtifactTypeRule()); }
 	 ruleArtifactType
 { after(grammarAccess.getArtifactTypeRule()); } 
@@ -206,7 +212,7 @@ ruleArtifactType
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getArtifactTypeAccess().getGroup()); }
 (rule__ArtifactType__Group__0)
@@ -221,7 +227,8 @@ finally {
 
 
 // Entry rule entryRuleAttributeTypeRef
-entryRuleAttributeTypeRef :
+entryRuleAttributeTypeRef 
+:
 { before(grammarAccess.getAttributeTypeRefRule()); }
 	 ruleAttributeTypeRef
 { after(grammarAccess.getAttributeTypeRefRule()); } 
@@ -233,7 +240,7 @@ ruleAttributeTypeRef
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getAttributeTypeRefAccess().getGroup()); }
 (rule__AttributeTypeRef__Group__0)
@@ -248,7 +255,8 @@ finally {
 
 
 // Entry rule entryRuleAttributeType
-entryRuleAttributeType :
+entryRuleAttributeType 
+:
 { before(grammarAccess.getAttributeTypeRule()); }
 	 ruleAttributeType
 { after(grammarAccess.getAttributeTypeRule()); } 
@@ -260,7 +268,7 @@ ruleAttributeType
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getAttributeTypeAccess().getGroup()); }
 (rule__AttributeType__Group__0)
@@ -275,7 +283,8 @@ finally {
 
 
 // Entry rule entryRuleAttributeBaseType
-entryRuleAttributeBaseType :
+entryRuleAttributeBaseType 
+:
 { before(grammarAccess.getAttributeBaseTypeRule()); }
 	 ruleAttributeBaseType
 { after(grammarAccess.getAttributeBaseTypeRule()); } 
@@ -287,7 +296,7 @@ ruleAttributeBaseType
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getAttributeBaseTypeAccess().getAlternatives()); }
 (rule__AttributeBaseType__Alternatives)
@@ -302,7 +311,8 @@ finally {
 
 
 // Entry rule entryRuleOseeEnumType
-entryRuleOseeEnumType :
+entryRuleOseeEnumType 
+:
 { before(grammarAccess.getOseeEnumTypeRule()); }
 	 ruleOseeEnumType
 { after(grammarAccess.getOseeEnumTypeRule()); } 
@@ -314,7 +324,7 @@ ruleOseeEnumType
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getOseeEnumTypeAccess().getGroup()); }
 (rule__OseeEnumType__Group__0)
@@ -329,7 +339,8 @@ finally {
 
 
 // Entry rule entryRuleOseeEnumEntry
-entryRuleOseeEnumEntry :
+entryRuleOseeEnumEntry 
+:
 { before(grammarAccess.getOseeEnumEntryRule()); }
 	 ruleOseeEnumEntry
 { after(grammarAccess.getOseeEnumEntryRule()); } 
@@ -341,7 +352,7 @@ ruleOseeEnumEntry
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getOseeEnumEntryAccess().getGroup()); }
 (rule__OseeEnumEntry__Group__0)
@@ -356,7 +367,8 @@ finally {
 
 
 // Entry rule entryRuleOseeEnumOverride
-entryRuleOseeEnumOverride :
+entryRuleOseeEnumOverride 
+:
 { before(grammarAccess.getOseeEnumOverrideRule()); }
 	 ruleOseeEnumOverride
 { after(grammarAccess.getOseeEnumOverrideRule()); } 
@@ -368,7 +380,7 @@ ruleOseeEnumOverride
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getOseeEnumOverrideAccess().getGroup()); }
 (rule__OseeEnumOverride__Group__0)
@@ -383,7 +395,8 @@ finally {
 
 
 // Entry rule entryRuleOverrideOption
-entryRuleOverrideOption :
+entryRuleOverrideOption 
+:
 { before(grammarAccess.getOverrideOptionRule()); }
 	 ruleOverrideOption
 { after(grammarAccess.getOverrideOptionRule()); } 
@@ -395,7 +408,7 @@ ruleOverrideOption
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getOverrideOptionAccess().getAlternatives()); }
 (rule__OverrideOption__Alternatives)
@@ -410,7 +423,8 @@ finally {
 
 
 // Entry rule entryRuleAddEnum
-entryRuleAddEnum :
+entryRuleAddEnum 
+:
 { before(grammarAccess.getAddEnumRule()); }
 	 ruleAddEnum
 { after(grammarAccess.getAddEnumRule()); } 
@@ -422,7 +436,7 @@ ruleAddEnum
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getAddEnumAccess().getGroup()); }
 (rule__AddEnum__Group__0)
@@ -437,7 +451,8 @@ finally {
 
 
 // Entry rule entryRuleRemoveEnum
-entryRuleRemoveEnum :
+entryRuleRemoveEnum 
+:
 { before(grammarAccess.getRemoveEnumRule()); }
 	 ruleRemoveEnum
 { after(grammarAccess.getRemoveEnumRule()); } 
@@ -449,7 +464,7 @@ ruleRemoveEnum
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getRemoveEnumAccess().getGroup()); }
 (rule__RemoveEnum__Group__0)
@@ -464,7 +479,8 @@ finally {
 
 
 // Entry rule entryRuleRelationType
-entryRuleRelationType :
+entryRuleRelationType 
+:
 { before(grammarAccess.getRelationTypeRule()); }
 	 ruleRelationType
 { after(grammarAccess.getRelationTypeRule()); } 
@@ -476,7 +492,7 @@ ruleRelationType
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getRelationTypeAccess().getGroup()); }
 (rule__RelationType__Group__0)
@@ -491,7 +507,8 @@ finally {
 
 
 // Entry rule entryRuleRelationOrderType
-entryRuleRelationOrderType :
+entryRuleRelationOrderType 
+:
 { before(grammarAccess.getRelationOrderTypeRule()); }
 	 ruleRelationOrderType
 { after(grammarAccess.getRelationOrderTypeRule()); } 
@@ -503,7 +520,7 @@ ruleRelationOrderType
     @init {
 		int stackSize = keepStackSize();
     }
- :
+	:
 (
 { before(grammarAccess.getRelationOrderTypeAccess().getAlternatives()); }
 (rule__RelationOrderType__Alternatives)

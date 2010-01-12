@@ -63,6 +63,7 @@ public class AddEnumItemProvider
 
          addEnumEntryPropertyDescriptor(object);
          addOrdinalPropertyDescriptor(object);
+         addEntryGuidPropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
@@ -112,6 +113,28 @@ public class AddEnumItemProvider
    }
 
    /**
+    * This adds a property descriptor for the Entry Guid feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected void addEntryGuidPropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_AddEnum_entryGuid_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_AddEnum_entryGuid_feature", "_UI_AddEnum_type"),
+             OseeTypesPackage.Literals.ADD_ENUM__ENTRY_GUID,
+             true,
+             false,
+             false,
+             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
+   }
+
+   /**
     * This returns AddEnum.gif.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
@@ -150,6 +173,7 @@ public class AddEnumItemProvider
       switch (notification.getFeatureID(AddEnum.class)) {
          case OseeTypesPackage.ADD_ENUM__ENUM_ENTRY:
          case OseeTypesPackage.ADD_ENUM__ORDINAL:
+         case OseeTypesPackage.ADD_ENUM__ENTRY_GUID:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
       }

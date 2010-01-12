@@ -54,7 +54,9 @@ public class OseeTypesProposalProvider extends AbstractOseeTypesProposalProvider
 
    private void completeGuidGeneration(RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
       if (acceptor.canAcceptMoreProposals()) {
-         ICompletionProposal proposal = createCompletionProposal(String.format("\"%s\"", GUID.create()), context);
+         String generatedGUID = String.format("\"%s\"", GUID.create());
+         String displayProposalAs = generatedGUID + "- GUID";
+         ICompletionProposal proposal = createCompletionProposal(generatedGUID, displayProposalAs, null, context);
          acceptor.accept(proposal);
       }
    }

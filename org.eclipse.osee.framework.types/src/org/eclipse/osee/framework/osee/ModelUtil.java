@@ -16,9 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.diff.metamodel.ComparisonSnapshot;
@@ -45,18 +43,18 @@ public final class ModelUtil {
    private ModelUtil() {
    }
 
-   private void loadDependencies(OseeTypeModel baseModel, List<OseeTypeModel> models) throws OseeCoreException, URISyntaxException {
-      // This is commented out cause we're using a combined file.  Once combined files
-      // are no longer generated, this should be uncommented.
-      //      for (Import dependant : baseModel.getImports()) {
-      //         OseeTypeModel childModel = OseeTypeModelUtil.loadModel(context, new URI(dependant.getImportURI()));
-      //         loadDependencies(childModel, models);
-      //         System.out.println("depends on: " + dependant.getImportURI());
-      //      }
-      //      System.out.println("Added on: " + baseModel.eResource().getURI());
-      models.add(baseModel);
-
-   }
+   //   private void loadDependencies(OseeTypeModel baseModel, List<OseeTypeModel> models) throws OseeCoreException, URISyntaxException {
+   //      // This is commented out cause we're using a combined file.  Once combined files
+   //      // are no longer generated, this should be uncommented.
+   //      //      for (Import dependant : baseModel.getImports()) {
+   //      //         OseeTypeModel childModel = OseeTypeModelUtil.loadModel(context, new URI(dependant.getImportURI()));
+   //      //         loadDependencies(childModel, models);
+   //      //         System.out.println("depends on: " + dependant.getImportURI());
+   //      //      }
+   //      //      System.out.println("Added on: " + baseModel.eResource().getURI());
+   //      models.add(baseModel);
+   //
+   //   }
 
    //   OseeTypeModel targetModel = null;
    //   try {
@@ -173,7 +171,16 @@ public final class ModelUtil {
       }
    }
 
-   public static ComparisonSnapshot loadComparisonSnapshot(String compareName, String compareData) {
-      return null;
+   public static ComparisonSnapshot loadComparisonSnapshot(String compareName, String compareData) throws OseeCoreException {
+      ComparisonSnapshot snapshot = null;
+      try {
+         ResourceSet resourceSet = new ResourceSetImpl();
+         Resource resource = resourceSet.createResource(URI.createURI(compareName));
+         resource.load(new ByteArrayInputStream(compareData.getBytes("UTF-8")), resourceSet.getLoadOptions());
+         snapshot = (ComparisonSnapshot) resource.getContents().get(0);
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      }
+      return snapshot;
    }
 }

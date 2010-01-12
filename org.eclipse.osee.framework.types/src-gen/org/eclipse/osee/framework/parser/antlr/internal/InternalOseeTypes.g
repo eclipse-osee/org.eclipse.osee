@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.services.OseeTypesGrammarAccess;
 }
 
 @parser::members {
- 
+
  	private OseeTypesGrammarAccess grammarAccess;
  	
     public InternalOseeTypesParser(TokenStream input, IAstFactory factory, OseeTypesGrammarAccess grammarAccess) {
@@ -70,7 +70,8 @@ import org.eclipse.osee.framework.services.OseeTypesGrammarAccess;
 
 
 // Entry rule entryRuleOseeTypeModel
-entryRuleOseeTypeModel returns [EObject current=null] :
+entryRuleOseeTypeModel returns [EObject current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getOseeTypeModelRule(), currentNode); }
 	 iv_ruleOseeTypeModel=ruleOseeTypeModel 
 	 { $current=$iv_ruleOseeTypeModel.current; } 
@@ -232,14 +233,16 @@ ruleOseeTypeModel returns [EObject current=null]
 	    }
 
 )
-))*);
+))*)
+;
 
 
 
 
 
 // Entry rule entryRuleImport
-entryRuleImport returns [EObject current=null] :
+entryRuleImport returns [EObject current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getImportRule(), currentNode); }
 	 iv_ruleImport=ruleImport 
 	 { $current=$iv_ruleImport.current; } 
@@ -253,7 +256,7 @@ ruleImport returns [EObject current=null]
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-('import' 
+(	'import' 
     {
         createLeafNode(grammarAccess.getImportAccess().getImportKeyword_0(), null); 
     }
@@ -281,14 +284,16 @@ ruleImport returns [EObject current=null]
 	    }
 
 )
-));
+))
+;
 
 
 
 
 
 // Entry rule entryRuleNAME_REFERENCE
-entryRuleNAME_REFERENCE returns [String current=null] :
+entryRuleNAME_REFERENCE returns [String current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getNAME_REFERENCERule(), currentNode); } 
 	 iv_ruleNAME_REFERENCE=ruleNAME_REFERENCE 
 	 { $current=$iv_ruleNAME_REFERENCE.current.getText(); }  
@@ -317,7 +322,8 @@ ruleNAME_REFERENCE returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRule
 
 
 // Entry rule entryRuleQUALIFIED_NAME
-entryRuleQUALIFIED_NAME returns [String current=null] :
+entryRuleQUALIFIED_NAME returns [String current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getQUALIFIED_NAMERule(), currentNode); } 
 	 iv_ruleQUALIFIED_NAME=ruleQUALIFIED_NAME 
 	 { $current=$iv_ruleQUALIFIED_NAME.current.getText(); }  
@@ -361,7 +367,8 @@ ruleQUALIFIED_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRule
 
 
 // Entry rule entryRuleOseeType
-entryRuleOseeType returns [EObject current=null] :
+entryRuleOseeType returns [EObject current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getOseeTypeRule(), currentNode); }
 	 iv_ruleOseeType=ruleOseeType 
 	 { $current=$iv_ruleOseeType.current; } 
@@ -414,14 +421,16 @@ ruleOseeType returns [EObject current=null]
         $current = $this_OseeEnumType_3.current; 
         currentNode = currentNode.getParent();
     }
-);
+)
+;
 
 
 
 
 
 // Entry rule entryRuleArtifactType
-entryRuleArtifactType returns [EObject current=null] :
+entryRuleArtifactType returns [EObject current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getArtifactTypeRule(), currentNode); }
 	 iv_ruleArtifactType=ruleArtifactType 
 	 { $current=$iv_ruleArtifactType.current; } 
@@ -437,7 +446,7 @@ ruleArtifactType returns [EObject current=null]
     }:
 ((
 (
-		lv_abstract_0_0='abstract' 
+		lv_abstract_0_0=	'abstract' 
     {
         createLeafNode(grammarAccess.getArtifactTypeAccess().getAbstractAbstractKeyword_0_0(), "abstract"); 
     }
@@ -456,7 +465,7 @@ ruleArtifactType returns [EObject current=null]
 	    }
 
 )
-)?'artifactType' 
+)?	'artifactType' 
     {
         createLeafNode(grammarAccess.getArtifactTypeAccess().getArtifactTypeKeyword_1(), null); 
     }
@@ -484,7 +493,7 @@ ruleArtifactType returns [EObject current=null]
 	    }
 
 )
-)('extends' 
+)(	'extends' 
     {
         createLeafNode(grammarAccess.getArtifactTypeAccess().getExtendsKeyword_3_0(), null); 
     }
@@ -504,7 +513,7 @@ ruleArtifactType returns [EObject current=null]
 	    }
 
 )
-)(',' 
+)(	',' 
     {
         createLeafNode(grammarAccess.getArtifactTypeAccess().getCommaKeyword_3_2_0(), null); 
     }
@@ -524,11 +533,11 @@ ruleArtifactType returns [EObject current=null]
 	    }
 
 )
-))*)?'{' 
+))*)?	'{' 
     {
         createLeafNode(grammarAccess.getArtifactTypeAccess().getLeftCurlyBracketKeyword_4(), null); 
     }
-'guid' 
+	'guid' 
     {
         createLeafNode(grammarAccess.getArtifactTypeAccess().getGuidKeyword_5(), null); 
     }
@@ -580,18 +589,20 @@ ruleArtifactType returns [EObject current=null]
 	    }
 
 )
-)*'}' 
+)*	'}' 
     {
         createLeafNode(grammarAccess.getArtifactTypeAccess().getRightCurlyBracketKeyword_8(), null); 
     }
-);
+)
+;
 
 
 
 
 
 // Entry rule entryRuleAttributeTypeRef
-entryRuleAttributeTypeRef returns [EObject current=null] :
+entryRuleAttributeTypeRef returns [EObject current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getAttributeTypeRefRule(), currentNode); }
 	 iv_ruleAttributeTypeRef=ruleAttributeTypeRef 
 	 { $current=$iv_ruleAttributeTypeRef.current; } 
@@ -605,7 +616,7 @@ ruleAttributeTypeRef returns [EObject current=null]
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-('attribute' 
+(	'attribute' 
     {
         createLeafNode(grammarAccess.getAttributeTypeRefAccess().getAttributeKeyword_0(), null); 
     }
@@ -625,7 +636,7 @@ ruleAttributeTypeRef returns [EObject current=null]
 	    }
 
 )
-)('branchGuid' 
+)(	'branchGuid' 
     {
         createLeafNode(grammarAccess.getAttributeTypeRefAccess().getBranchGuidKeyword_2_0(), null); 
     }
@@ -653,14 +664,16 @@ ruleAttributeTypeRef returns [EObject current=null]
 	    }
 
 )
-))?);
+))?)
+;
 
 
 
 
 
 // Entry rule entryRuleAttributeType
-entryRuleAttributeType returns [EObject current=null] :
+entryRuleAttributeType returns [EObject current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getAttributeTypeRule(), currentNode); }
 	 iv_ruleAttributeType=ruleAttributeType 
 	 { $current=$iv_ruleAttributeType.current; } 
@@ -674,7 +687,7 @@ ruleAttributeType returns [EObject current=null]
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-('attributeType' 
+(	'attributeType' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getAttributeTypeKeyword_0(), null); 
     }
@@ -702,7 +715,7 @@ ruleAttributeType returns [EObject current=null]
 	    }
 
 )
-)('extends' 
+)(	'extends' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getExtendsKeyword_2_0(), null); 
     }
@@ -730,7 +743,7 @@ ruleAttributeType returns [EObject current=null]
 	    }
 
 )
-))('overrides' 
+))(	'overrides' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getOverridesKeyword_3_0(), null); 
     }
@@ -750,11 +763,11 @@ ruleAttributeType returns [EObject current=null]
 	    }
 
 )
-))?'{' 
+))?	'{' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getLeftCurlyBracketKeyword_4(), null); 
     }
-'guid' 
+	'guid' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getGuidKeyword_5(), null); 
     }
@@ -782,14 +795,14 @@ ruleAttributeType returns [EObject current=null]
 	    }
 
 )
-)'dataProvider' 
+)	'dataProvider' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getDataProviderKeyword_7(), null); 
     }
 (
 (
 (
-		lv_dataProvider_10_1='DefaultAttributeDataProvider' 
+		lv_dataProvider_10_1=	'DefaultAttributeDataProvider' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getDataProviderDefaultAttributeDataProviderKeyword_8_0_0(), "dataProvider"); 
     }
@@ -807,7 +820,7 @@ ruleAttributeType returns [EObject current=null]
 	        }
 	    }
 
-    |		lv_dataProvider_10_2='UriAttributeDataProvider' 
+    |		lv_dataProvider_10_2=	'UriAttributeDataProvider' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getDataProviderUriAttributeDataProviderKeyword_8_0_1(), "dataProvider"); 
     }
@@ -849,7 +862,7 @@ ruleAttributeType returns [EObject current=null]
 )
 
 )
-)'min' 
+)	'min' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getMinKeyword_9(), null); 
     }
@@ -877,7 +890,7 @@ ruleAttributeType returns [EObject current=null]
 	    }
 
 )
-)'max' 
+)	'max' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getMaxKeyword_11(), null); 
     }
@@ -905,7 +918,7 @@ ruleAttributeType returns [EObject current=null]
 	        }
 	    }
 
-    |		lv_max_14_2='unlimited' 
+    |		lv_max_14_2=	'unlimited' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getMaxUnlimitedKeyword_12_0_1(), "max"); 
     }
@@ -926,14 +939,14 @@ ruleAttributeType returns [EObject current=null]
 )
 
 )
-)('taggerId' 
+)(	'taggerId' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getTaggerIdKeyword_13_0(), null); 
     }
 (
 (
 (
-		lv_taggerId_16_1='DefaultAttributeTaggerProvider' 
+		lv_taggerId_16_1=	'DefaultAttributeTaggerProvider' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getTaggerIdDefaultAttributeTaggerProviderKeyword_13_1_0_0(), "taggerId"); 
     }
@@ -975,7 +988,7 @@ ruleAttributeType returns [EObject current=null]
 )
 
 )
-))?('enumType' 
+))?(	'enumType' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getEnumTypeKeyword_14_0(), null); 
     }
@@ -995,7 +1008,7 @@ ruleAttributeType returns [EObject current=null]
 	    }
 
 )
-))?('description' 
+))?(	'description' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getDescriptionKeyword_15_0(), null); 
     }
@@ -1023,7 +1036,7 @@ ruleAttributeType returns [EObject current=null]
 	    }
 
 )
-))?('defaultValue' 
+))?(	'defaultValue' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getDefaultValueKeyword_16_0(), null); 
     }
@@ -1051,7 +1064,7 @@ ruleAttributeType returns [EObject current=null]
 	    }
 
 )
-))?('fileExtension' 
+))?(	'fileExtension' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getFileExtensionKeyword_17_0(), null); 
     }
@@ -1079,18 +1092,20 @@ ruleAttributeType returns [EObject current=null]
 	    }
 
 )
-))?'}' 
+))?	'}' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getRightCurlyBracketKeyword_18(), null); 
     }
-);
+)
+;
 
 
 
 
 
 // Entry rule entryRuleAttributeBaseType
-entryRuleAttributeBaseType returns [String current=null] :
+entryRuleAttributeBaseType returns [String current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getAttributeBaseTypeRule(), currentNode); } 
 	 iv_ruleAttributeBaseType=ruleAttributeBaseType 
 	 { $current=$iv_ruleAttributeBaseType.current.getText(); }  
@@ -1186,7 +1201,8 @@ ruleAttributeBaseType returns [AntlrDatatypeRuleToken current=new AntlrDatatypeR
 
 
 // Entry rule entryRuleOseeEnumType
-entryRuleOseeEnumType returns [EObject current=null] :
+entryRuleOseeEnumType returns [EObject current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getOseeEnumTypeRule(), currentNode); }
 	 iv_ruleOseeEnumType=ruleOseeEnumType 
 	 { $current=$iv_ruleOseeEnumType.current; } 
@@ -1200,7 +1216,7 @@ ruleOseeEnumType returns [EObject current=null]
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-('oseeEnumType' 
+(	'oseeEnumType' 
     {
         createLeafNode(grammarAccess.getOseeEnumTypeAccess().getOseeEnumTypeKeyword_0(), null); 
     }
@@ -1228,11 +1244,11 @@ ruleOseeEnumType returns [EObject current=null]
 	    }
 
 )
-)'{' 
+)	'{' 
     {
         createLeafNode(grammarAccess.getOseeEnumTypeAccess().getLeftCurlyBracketKeyword_2(), null); 
     }
-'guid' 
+	'guid' 
     {
         createLeafNode(grammarAccess.getOseeEnumTypeAccess().getGuidKeyword_3(), null); 
     }
@@ -1284,18 +1300,20 @@ ruleOseeEnumType returns [EObject current=null]
 	    }
 
 )
-)*'}' 
+)*	'}' 
     {
         createLeafNode(grammarAccess.getOseeEnumTypeAccess().getRightCurlyBracketKeyword_6(), null); 
     }
-);
+)
+;
 
 
 
 
 
 // Entry rule entryRuleOseeEnumEntry
-entryRuleOseeEnumEntry returns [EObject current=null] :
+entryRuleOseeEnumEntry returns [EObject current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getOseeEnumEntryRule(), currentNode); }
 	 iv_ruleOseeEnumEntry=ruleOseeEnumEntry 
 	 { $current=$iv_ruleOseeEnumEntry.current; } 
@@ -1309,7 +1327,7 @@ ruleOseeEnumEntry returns [EObject current=null]
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-('entry' 
+(	'entry' 
     {
         createLeafNode(grammarAccess.getOseeEnumEntryAccess().getEntryKeyword_0(), null); 
     }
@@ -1361,7 +1379,7 @@ ruleOseeEnumEntry returns [EObject current=null]
 	    }
 
 )
-)?('entryGuid' 
+)?(	'entryGuid' 
     {
         createLeafNode(grammarAccess.getOseeEnumEntryAccess().getEntryGuidKeyword_3_0(), null); 
     }
@@ -1389,14 +1407,16 @@ ruleOseeEnumEntry returns [EObject current=null]
 	    }
 
 )
-))?);
+))?)
+;
 
 
 
 
 
 // Entry rule entryRuleOseeEnumOverride
-entryRuleOseeEnumOverride returns [EObject current=null] :
+entryRuleOseeEnumOverride returns [EObject current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getOseeEnumOverrideRule(), currentNode); }
 	 iv_ruleOseeEnumOverride=ruleOseeEnumOverride 
 	 { $current=$iv_ruleOseeEnumOverride.current; } 
@@ -1410,7 +1430,7 @@ ruleOseeEnumOverride returns [EObject current=null]
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-('overrides enum' 
+(	'overrides enum' 
     {
         createLeafNode(grammarAccess.getOseeEnumOverrideAccess().getOverridesEnumKeyword_0(), null); 
     }
@@ -1430,13 +1450,13 @@ ruleOseeEnumOverride returns [EObject current=null]
 	    }
 
 )
-)'{' 
+)	'{' 
     {
         createLeafNode(grammarAccess.getOseeEnumOverrideAccess().getLeftCurlyBracketKeyword_2(), null); 
     }
 (
 (
-		lv_inheritAll_3_0='inheritAll' 
+		lv_inheritAll_3_0=	'inheritAll' 
     {
         createLeafNode(grammarAccess.getOseeEnumOverrideAccess().getInheritAllInheritAllKeyword_3_0(), "inheritAll"); 
     }
@@ -1479,18 +1499,20 @@ ruleOseeEnumOverride returns [EObject current=null]
 	    }
 
 )
-)*'}' 
+)*	'}' 
     {
         createLeafNode(grammarAccess.getOseeEnumOverrideAccess().getRightCurlyBracketKeyword_5(), null); 
     }
-);
+)
+;
 
 
 
 
 
 // Entry rule entryRuleOverrideOption
-entryRuleOverrideOption returns [EObject current=null] :
+entryRuleOverrideOption returns [EObject current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getOverrideOptionRule(), currentNode); }
 	 iv_ruleOverrideOption=ruleOverrideOption 
 	 { $current=$iv_ruleOverrideOption.current; } 
@@ -1523,14 +1545,16 @@ ruleOverrideOption returns [EObject current=null]
         $current = $this_RemoveEnum_1.current; 
         currentNode = currentNode.getParent();
     }
-);
+)
+;
 
 
 
 
 
 // Entry rule entryRuleAddEnum
-entryRuleAddEnum returns [EObject current=null] :
+entryRuleAddEnum returns [EObject current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getAddEnumRule(), currentNode); }
 	 iv_ruleAddEnum=ruleAddEnum 
 	 { $current=$iv_ruleAddEnum.current; } 
@@ -1544,7 +1568,7 @@ ruleAddEnum returns [EObject current=null]
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-('add' 
+(	'add' 
     {
         createLeafNode(grammarAccess.getAddEnumAccess().getAddKeyword_0(), null); 
     }
@@ -1596,7 +1620,7 @@ ruleAddEnum returns [EObject current=null]
 	    }
 
 )
-)?('entryGuid' 
+)?(	'entryGuid' 
     {
         createLeafNode(grammarAccess.getAddEnumAccess().getEntryGuidKeyword_3_0(), null); 
     }
@@ -1624,14 +1648,16 @@ ruleAddEnum returns [EObject current=null]
 	    }
 
 )
-))?);
+))?)
+;
 
 
 
 
 
 // Entry rule entryRuleRemoveEnum
-entryRuleRemoveEnum returns [EObject current=null] :
+entryRuleRemoveEnum returns [EObject current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getRemoveEnumRule(), currentNode); }
 	 iv_ruleRemoveEnum=ruleRemoveEnum 
 	 { $current=$iv_ruleRemoveEnum.current; } 
@@ -1645,7 +1671,7 @@ ruleRemoveEnum returns [EObject current=null]
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-('remove' 
+(	'remove' 
     {
         createLeafNode(grammarAccess.getRemoveEnumAccess().getRemoveKeyword_0(), null); 
     }
@@ -1665,14 +1691,16 @@ ruleRemoveEnum returns [EObject current=null]
 	    }
 
 )
-));
+))
+;
 
 
 
 
 
 // Entry rule entryRuleRelationType
-entryRuleRelationType returns [EObject current=null] :
+entryRuleRelationType returns [EObject current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getRelationTypeRule(), currentNode); }
 	 iv_ruleRelationType=ruleRelationType 
 	 { $current=$iv_ruleRelationType.current; } 
@@ -1686,7 +1714,7 @@ ruleRelationType returns [EObject current=null]
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-('relationType' 
+(	'relationType' 
     {
         createLeafNode(grammarAccess.getRelationTypeAccess().getRelationTypeKeyword_0(), null); 
     }
@@ -1714,11 +1742,11 @@ ruleRelationType returns [EObject current=null]
 	    }
 
 )
-)'{' 
+)	'{' 
     {
         createLeafNode(grammarAccess.getRelationTypeAccess().getLeftCurlyBracketKeyword_2(), null); 
     }
-'guid' 
+	'guid' 
     {
         createLeafNode(grammarAccess.getRelationTypeAccess().getGuidKeyword_3(), null); 
     }
@@ -1746,7 +1774,7 @@ ruleRelationType returns [EObject current=null]
 	    }
 
 )
-)'sideAName' 
+)	'sideAName' 
     {
         createLeafNode(grammarAccess.getRelationTypeAccess().getSideANameKeyword_5(), null); 
     }
@@ -1774,7 +1802,7 @@ ruleRelationType returns [EObject current=null]
 	    }
 
 )
-)'sideAArtifactType' 
+)	'sideAArtifactType' 
     {
         createLeafNode(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeKeyword_7(), null); 
     }
@@ -1794,7 +1822,7 @@ ruleRelationType returns [EObject current=null]
 	    }
 
 )
-)'sideBName' 
+)	'sideBName' 
     {
         createLeafNode(grammarAccess.getRelationTypeAccess().getSideBNameKeyword_9(), null); 
     }
@@ -1822,7 +1850,7 @@ ruleRelationType returns [EObject current=null]
 	    }
 
 )
-)'sideBArtifactType' 
+)	'sideBArtifactType' 
     {
         createLeafNode(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeKeyword_11(), null); 
     }
@@ -1842,7 +1870,7 @@ ruleRelationType returns [EObject current=null]
 	    }
 
 )
-)'defaultOrderType' 
+)	'defaultOrderType' 
     {
         createLeafNode(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeKeyword_13(), null); 
     }
@@ -1870,7 +1898,7 @@ ruleRelationType returns [EObject current=null]
 	    }
 
 )
-)'multiplicity' 
+)	'multiplicity' 
     {
         createLeafNode(grammarAccess.getRelationTypeAccess().getMultiplicityKeyword_15(), null); 
     }
@@ -1898,18 +1926,20 @@ ruleRelationType returns [EObject current=null]
 	    }
 
 )
-)'}' 
+)	'}' 
     {
         createLeafNode(grammarAccess.getRelationTypeAccess().getRightCurlyBracketKeyword_17(), null); 
     }
-);
+)
+;
 
 
 
 
 
 // Entry rule entryRuleRelationOrderType
-entryRuleRelationOrderType returns [String current=null] :
+entryRuleRelationOrderType returns [String current=null] 
+	:
 	{ currentNode = createCompositeNode(grammarAccess.getRelationOrderTypeRule(), currentNode); } 
 	 iv_ruleRelationOrderType=ruleRelationOrderType 
 	 { $current=$iv_ruleRelationOrderType.current.getText(); }  
