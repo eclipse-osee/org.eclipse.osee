@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,7 +29,7 @@ import org.eclipse.osee.ote.define.parser.IDataListener;
 public class OutfileDataCollector implements IDataListener {
    private static final OteToAttributeMap oteToAttributeMap = OteToAttributeMap.getInstance();
 
-   private Map<String, String> collectedData;
+   private final Map<String, String> collectedData;
 
    public OutfileDataCollector() {
       this.collectedData = new HashMap<String, String>();
@@ -39,7 +40,7 @@ public class OutfileDataCollector implements IDataListener {
    }
 
    public void populate(Artifact artifact) throws OseeCoreException {
-      checkForNull(artifact);
+      Conditions.checkNotNull(artifact, "artifact");
       for (String fieldName : collectedData.keySet()) {
          String attribute = oteToAttributeMap.getAttributeName(fieldName);
          if (Strings.isValid(attribute) && artifact.isAttributeTypeValid(attribute)) {
@@ -58,11 +59,5 @@ public class OutfileDataCollector implements IDataListener {
    public String getField(String name) {
       String toReturn = collectedData.get(name);
       return Strings.isValid(toReturn) ? toReturn : "";
-   }
-
-   private void checkForNull(Object object) {
-      if (object == null) {
-         throw new IllegalArgumentException(String.format("Argument was null [%s]", object.getClass().getName()));
-      }
    }
 }
