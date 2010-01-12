@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.osee.ats.feature_0.9.0.qualifier.jar" id="org.eclipse.osee.ats.feature" version="0.9.0.qualifier">
+   <feature url="features/org.eclipse.osee.ats.feature_0.9.1.qualifier.jar" id="org.eclipse.osee.ats.feature" version="0.9.1.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.client.feature_0.9.0.qualifier.jar" id="org.eclipse.osee.client.feature" version="0.9.0.qualifier">
+   <feature url="features/org.eclipse.osee.client.feature_0.9.1.qualifier.jar" id="org.eclipse.osee.client.feature" version="0.9.1.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.define.feature_0.9.0.qualifier.jar" id="org.eclipse.osee.define.feature" version="0.9.0.qualifier">
+   <feature url="features/org.eclipse.osee.define.feature_0.9.1.qualifier.jar" id="org.eclipse.osee.define.feature" version="0.9.1.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.demo.feature_0.9.0.qualifier.jar" id="org.eclipse.osee.demo.feature" version="0.9.0.qualifier">
+   <feature url="features/org.eclipse.osee.demo.feature_0.9.1.qualifier.jar" id="org.eclipse.osee.demo.feature" version="0.9.1.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.external.feature_0.9.0.qualifier.jar" id="org.eclipse.osee.external.feature" version="0.9.0.qualifier">
+   <feature url="features/org.eclipse.osee.external.feature_0.9.1.qualifier.jar" id="org.eclipse.osee.external.feature" version="0.9.1.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.framework.feature_0.9.0.qualifier.jar" id="org.eclipse.osee.framework.feature" version="0.9.0.qualifier">
+   <feature url="features/org.eclipse.osee.framework.feature_0.9.1.qualifier.jar" id="org.eclipse.osee.framework.feature" version="0.9.1.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.framework.ui.feature_0.9.0.qualifier.jar" id="org.eclipse.osee.framework.ui.feature" version="0.9.0.qualifier">
+   <feature url="features/org.eclipse.osee.framework.ui.feature_0.9.1.qualifier.jar" id="org.eclipse.osee.framework.ui.feature" version="0.9.1.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ote.feature_0.9.0.qualifier.jar" id="org.eclipse.osee.ote.feature" version="0.9.0.qualifier">
+   <feature url="features/org.eclipse.osee.ote.feature_0.9.1.qualifier.jar" id="org.eclipse.osee.ote.feature" version="0.9.1.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ats.feature.source_0.9.0.qualifier.jar" id="org.eclipse.osee.ats.feature.source" version="0.9.0.qualifier">
+   <feature url="features/org.eclipse.osee.ats.feature.source_0.9.1.qualifier.jar" id="org.eclipse.osee.ats.feature.source" version="0.9.1.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.define.feature.source_0.9.0.qualifier.jar" id="org.eclipse.osee.define.feature.source" version="0.9.0.qualifier">
+   <feature url="features/org.eclipse.osee.define.feature.source_0.9.1.qualifier.jar" id="org.eclipse.osee.define.feature.source" version="0.9.1.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.framework.feature.source_0.9.0.qualifier.jar" id="org.eclipse.osee.framework.feature.source" version="0.9.0.qualifier">
+   <feature url="features/org.eclipse.osee.framework.feature.source_0.9.1.qualifier.jar" id="org.eclipse.osee.framework.feature.source" version="0.9.1.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.framework.ui.feature.source_0.9.0.qualifier.jar" id="org.eclipse.osee.framework.ui.feature.source" version="0.9.0.qualifier">
+   <feature url="features/org.eclipse.osee.framework.ui.feature.source_0.9.1.qualifier.jar" id="org.eclipse.osee.framework.ui.feature.source" version="0.9.1.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ote.feature.source_0.9.0.qualifier.jar" id="org.eclipse.osee.ote.feature.source" version="0.9.0.qualifier">
+   <feature url="features/org.eclipse.osee.ote.feature.source_0.9.1.qualifier.jar" id="org.eclipse.osee.ote.feature.source" version="0.9.1.qualifier">
       <category name="osee"/>
    </feature>
    <category-def name="osee" label="Open System Engineering Environment"/>
