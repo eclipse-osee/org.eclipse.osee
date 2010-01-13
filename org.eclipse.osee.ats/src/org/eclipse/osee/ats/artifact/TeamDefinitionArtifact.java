@@ -58,17 +58,9 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public static String ARTIFACT_NAME = "Team Definition";
    public static Set<TeamDefinitionArtifact> EMPTY_SET = new HashSet<TeamDefinitionArtifact>();
    public static enum TeamDefinitionOptions {
-      TeamUsesVersions,
-      RequireTargetedVersion
+      TeamUsesVersions, RequireTargetedVersion
    };
 
-   /**
-    * @param parentFactory
-    * @param guid
-    * @param humanReadableId
-    * @param branch
-    * @throws OseeDataStoreException
-    */
    public TeamDefinitionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
@@ -306,12 +298,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    /**
-    * Return rules associated with team definition . Use StateMachineArtifact.getWorkRulesStartsWith to acquire these and work
-    * page rules and workflow rules.
-    * 
-    * @param ruleId
-    * @return rule definitions
-    * @throws OseeCoreException
+    * Return rules associated with team definition . Use StateMachineArtifact.getWorkRulesStartsWith to acquire these
+    * and work page rules and workflow rules.
     */
    public Collection<WorkRuleDefinition> getWorkRulesStartsWith(String ruleId) throws OseeCoreException {
       Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
@@ -408,6 +396,11 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return leads;
    }
 
+   @SuppressWarnings("unchecked")
+   public Collection<User> getMembersAndLeads() throws OseeCoreException {
+      return Collections.setUnion(getMembers(), getLeads());
+   }
+
    public Collection<User> getMembers() throws OseeCoreException {
       return getRelatedArtifacts(AtsRelationTypes.TeamMember_Member, User.class);
    }
@@ -489,8 +482,6 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     * the parent of a team is not a team. <br/>
     * <br/>
     * If no branch is associated then null will be returned.
-    * 
-    * @throws BranchDoesNotExist
     */
    public Branch getTeamBranch() throws OseeCoreException {
       String guid = getSoleAttributeValue(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(), null);

@@ -14,12 +14,15 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -28,12 +31,8 @@ import org.eclipse.swt.widgets.Control;
  */
 public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
 
-   private Collection<User> initialSel;
+   private Collection<User> teamMembers;
 
-   /**
-    * @param parent
-    * @param artifacts
-    */
    public UserCheckTreeDialog(Collection<User> artifacts) {
       super(artifacts);
    }
@@ -53,6 +52,7 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
    @Override
    protected Control createDialogArea(Composite container) {
       Control c = super.createDialogArea(container);
+      getTreeViewer().setLabelProvider(new UserCheckTreeLabelProvider());
       getTreeViewer().setSorter(new ViewerSorter() {
          @SuppressWarnings("unchecked")
          @Override
@@ -77,6 +77,17 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
                      return 1;
                   }
                }
+               if (teamMembers != null) {
+                  if (teamMembers.contains(user1) && teamMembers.contains(user2)) {
+                     return getComparator().compare(user1.getName(), user2.getName());
+                  }
+                  if (teamMembers.contains(user1)) {
+                     return -1;
+                  }
+                  if (teamMembers.contains(user2)) {
+                     return 1;
+                  }
+               }
                return getComparator().compare(user1.getName(), user2.getName());
             } catch (OseeCoreException ex) {
                return -1;
@@ -85,4 +96,44 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
       });
       return c;
    }
+
+   public Collection<User> getTeamMembers() {
+      return teamMembers;
+   }
+
+   /**
+    * If set, team members will be shown prior to rest of un-checked users
+    */
+   public void setTeamMembers(Collection<User> teamMembers) {
+      this.teamMembers = teamMembers;
+   }
+
+   public class UserCheckTreeLabelProvider implements ILabelProvider {
+
+      public Image getImage(Object arg0) {
+         return null;
+      }
+
+      public String getText(Object arg0) {
+         if (teamMembers != null && teamMembers.contains(arg0)) {
+            return ((Artifact) arg0).getName() + " (Team)";
+         }
+         return ((Artifact) arg0).getName();
+      }
+
+      public void addListener(ILabelProviderListener arg0) {
+      }
+
+      public void dispose() {
+      }
+
+      public boolean isLabelProperty(Object arg0, String arg1) {
+         return false;
+      }
+
+      public void removeListener(ILabelProviderListener arg0) {
+      }
+
+   }
+
 }

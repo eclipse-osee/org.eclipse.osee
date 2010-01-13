@@ -88,6 +88,10 @@ public class PromptChangeUtil {
       }
       UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setMessage("Select to assign.\nDeSelect to un-assign.");
+      if (smas.iterator().next().getParentTeamWorkflow() != null) {
+         uld.setTeamMembers(smas.iterator().next().getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads());
+      }
+
       if (smas.size() == 1) {
          uld.setInitialSelections(smas.iterator().next().getStateMgr().getAssignees());
       }

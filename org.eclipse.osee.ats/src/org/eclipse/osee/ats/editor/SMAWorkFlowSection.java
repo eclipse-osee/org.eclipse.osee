@@ -450,6 +450,9 @@ public class SMAWorkFlowSection extends SectionPart {
       UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setMessage("Select users to transition to.");
       uld.setInitialSelections(sma.getTransitionAssignees());
+      if (sma.getParentTeamWorkflow() != null) {
+         uld.setTeamMembers(sma.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads());
+      }
       if (uld.open() != 0) {
          return;
       }
@@ -761,9 +764,6 @@ public class SMAWorkFlowSection extends SectionPart {
       }
    }
 
-   /**
-    * @return Returns the isCurrentState.
-    */
    public boolean isCurrentState() {
       return isCurrentState;
    }

@@ -27,6 +27,8 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
  */
 public class ArtifactCheckTreeDialog extends CheckedTreeSelectionDialog {
 
+   protected Collection<? extends Artifact> initialSel;
+
    public ArtifactCheckTreeDialog(Collection<? extends Artifact> artifacts) {
       this(artifacts, new ArtifactDescriptiveLabelProvider());
    }
@@ -48,6 +50,7 @@ public class ArtifactCheckTreeDialog extends CheckedTreeSelectionDialog {
    }
 
    public void setInitialSelections(Collection<? extends Artifact> initialSel) {
+      this.initialSel = initialSel;
       ArrayList<Object> objs = new ArrayList<Object>();
       for (Artifact sel : initialSel) {
          objs.add(sel);
