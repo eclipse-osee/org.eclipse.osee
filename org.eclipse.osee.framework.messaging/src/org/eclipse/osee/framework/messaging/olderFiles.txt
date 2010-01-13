@@ -1,0 +1,11 @@
+We'll want these to be gone eventually
+
+EndpointReceive.java
+EndpointSend.java
+ExceptionHandler.java
+Message.java
+MessagingGateway.java
+ReceiveListener.java
+SendListener.java
+Source.java
+UriSource.java
