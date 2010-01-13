@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -127,7 +128,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
    @Override
    public boolean isDirty() {
-      for (TaskArtifact taskArt : tasks) {
+      for (TaskArtifact taskArt : new CopyOnWriteArrayList<TaskArtifact>(tasks)) {
          if (taskArt.isDeleted())
             continue;
          else if (taskArt.isSMAEditorDirty().isTrue()) return true;
