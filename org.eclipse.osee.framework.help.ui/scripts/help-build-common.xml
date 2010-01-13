@@ -1,22 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="help.common" basedir=".">
 	<property name="extract.style.sheet" value="${ant.file.imported}/extract-markup.xsl" />
-	<property name="eclipse.plugin.dir" value="${eclipse.home}/plugins" />
-
-	<path id="wikitext.tasks.classpath">
-		<fileset dir="${eclipse.plugin.dir}" includes="org.eclipse.mylyn.wikitext.core_*.jar" />
-		<fileset dir="${eclipse.plugin.dir}" includes="org.eclipse.mylyn.wikitext.mediawiki.core_*.jar" />
-	</path>	
-	
-	<path id="tasks.classpath">
-		<pathelement location="../org.eclipse.osee.framework.help.ui/@dot" />
-		<pathelement location="../org.eclipse.osee.framework.help.ui/bin" />
-	</path>
-
-	<taskdef classpathref="tasks.classpath" resource="org/eclipse/osee/framework/help/ui/internal/anttask/tasks.properties" />
-	<taskdef classpathref="wikitext.tasks.classpath" resource="org/eclipse/mylyn/wikitext/core/util/anttask/tasks.properties" />
 
 	<target name="init">
+		<condition property="mylyn.plugins.path" value="${eclipse.home}/plugins" else="../plugins">
+			<and>
+				<isset property="${eclipse.home}" />
+			</and>
+		</condition>
+
+		<taskdef resource="org/eclipse/osee/framework/help/ui/internal/anttask/tasks.properties">
+			<classpath>
+				<pathelement path="${classpath}" />
+				<pathelement location="../org.eclipse.osee.framework.help.ui/@dot" />
+				<pathelement location="../org.eclipse.osee.framework.help.ui/bin" />
+			</classpath>
+		</taskdef>
+
+		<taskdef resource="org/eclipse/mylyn/wikitext/core/util/anttask/tasks.properties">
+			<classpath>
+				<pathelement path="${classpath}" />
+
+				<fileset dir="${mylyn.plugins.path}" includes="org.eclipse.mylyn.wikitext.core_*.jar" />
+				<fileset dir="${mylyn.plugins.path}" includes="org.eclipse.mylyn.wikitext.mediawiki.core_*.jar" />
+			</classpath>
+		</taskdef>
+
 		<mkdir dir="tmp" />
 	</target>
 
@@ -43,8 +52,7 @@
 			<copy todir="tmp">
 				<fileset dir="images" />
 			</copy>
-			<osee-mediawiki-fetch-images src="tmp/help.doc.html" 
-				dest="tmp/" base="@{help.doc.url.base}" />
+			<osee-mediawiki-fetch-images src="tmp/help.doc.html" dest="tmp/" base="@{help.doc.url.base}" />
 
 			<xslt style="${extract.style.sheet}" in="tmp/help.doc.xml" out="tmp/@{help.doc.filenameNoExtension}.mediawiki" />
 
