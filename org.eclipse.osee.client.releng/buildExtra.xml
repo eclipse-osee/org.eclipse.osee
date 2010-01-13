@@ -29,6 +29,7 @@
 
 	<target name="preAssemble">
 		<echo message="Generating OSEE Help" />
+		<property name="mylyn.plugins.path" value="${buildDirectory}/plugins" />
 		<ant dir="${buildDirectory}/plugins/org.eclipse.osee.framework.help.ui" antfile="build-helper.xml" target="all" />
 		<ant dir="${buildDirectory}/plugins/org.eclipse.osee.framework.dev.help.ui" antfile="build-helper.xml" target="all" />
 		<ant dir="${buildDirectory}/plugins/org.eclipse.osee.ats.help.ui" antfile="build-helper.xml" target="all" />
