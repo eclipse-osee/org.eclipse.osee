@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.internal;
 
+import java.util.Hashtable;
+
 import org.eclipse.osee.framework.messaging.MessagingGateway;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -19,22 +21,46 @@ import org.osgi.framework.ServiceRegistration;
  * @author Andrew M. Finkbeiner
  */
 public class Activator implements BundleActivator {
+	private static Activator me;
+	private BundleContext context;
+	private OseeMessagingImplService oseeMessaging;
 
-   private ServiceRegistration registration;
-   private MessagingGatewayImpl messaging;
+	// old
+	private ServiceRegistration registration;
+	private MessagingGatewayImpl messaging;
 
-   public void start(BundleContext context) throws Exception {
-      messaging = new MessagingGatewayImpl();
-      registration = context.registerService(MessagingGateway.class.getName(), messaging, null);
-   }
+	public void start(BundleContext context) throws Exception {
+		this.context = context;
+		me = this;
+		oseeMessaging = new OseeMessagingImplService(context);
+		oseeMessaging.start();
 
-   public void stop(BundleContext context) throws Exception {
-      if (registration != null) {
-         registration.unregister();
-      }
+		//old
+		messaging = new MessagingGatewayImpl();
+		registration = context.registerService(
+				MessagingGateway.class.getName(), messaging, new Hashtable());
+	}
 
-      if (messaging != null) {
-         messaging.dispose();
-      }
-   }
+	public void stop(BundleContext context) throws Exception {
+		oseeMessaging.stop();
+		me = null;
+		this.context = null;
+		
+		//old
+		if (registration != null) {
+			registration.unregister();
+		}
+
+		if (messaging != null) {
+			messaging.dispose();
+		}
+	}
+	
+	public static Activator getInstance() {
+		return me;
+	}
+	
+	public BundleContext getContext(){
+		return context;
+	}
 }
