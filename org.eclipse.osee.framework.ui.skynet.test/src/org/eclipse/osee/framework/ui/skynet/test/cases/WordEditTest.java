@@ -119,7 +119,6 @@ public class WordEditTest {
 
    public static WordTemplateRenderer openArtifacts(List<Artifact> artifacts) throws OseeCoreException {
       WordTemplateRenderer renderer = new WordTemplateRenderer();
-      renderer.open(artifacts);
       return renderer;
    }
 
