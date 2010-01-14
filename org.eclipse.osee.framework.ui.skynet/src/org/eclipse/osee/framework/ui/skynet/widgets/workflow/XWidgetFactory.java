@@ -128,6 +128,8 @@ public class XWidgetFactory {
          }
       } else if (xWidgetName.equals("XMembersCombo")) {
          xWidget = new XMembersCombo(name);
+      } else if (xWidgetName.equals("XMembersComboAll")) {
+         xWidget = new XMembersCombo(name, true);
       } else if (xWidgetName.equals("XDate")) {
          xWidget = new XDate(name);
       } else if (xWidgetName.equals("XFileSelectionDialog")) {

@@ -44,9 +44,15 @@ public class XMembersCombo extends XWidget {
    private Composite composite;
    private User selectedUser;
    private Search searchControl;
+   private boolean allUsers = false;
 
    public XMembersCombo(String displayLabel) {
       this(displayLabel, "", "");
+   }
+
+   public XMembersCombo(String displayLabel, boolean allUsers) {
+      this(displayLabel, "", "");
+      this.allUsers = allUsers;
    }
 
    public XMembersCombo(String displayLabel, String xmlRoot, String xmlSubRoot) {
@@ -111,7 +117,7 @@ public class XMembersCombo extends XWidget {
       dataCombo.add(DEFAULT_SELECTION);
       dataCombo.setData(DEFAULT_SELECTION, null);
       try {
-         for (User user : UserManager.getUsersSortedByName()) {
+         for (User user : allUsers ? UserManager.getUsersAllSortedByName() : UserManager.getUsersSortedByName()) {
             dataCombo.add(user.getName());
             dataCombo.setData(user.getName(), user);
          }

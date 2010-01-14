@@ -172,8 +172,8 @@ public class PurgeUser extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
-      buffer.append("<XWidget xwidgetType=\"XMembersCombo\" displayName=\"" + FROM_USER + "\" />");
-      buffer.append("<XWidget xwidgetType=\"XMembersCombo\" displayName=\"" + TO_USER + "\" />");
+      buffer.append("<XWidget xwidgetType=\"XMembersComboAll\" displayName=\"" + FROM_USER + "\" />");
+      buffer.append("<XWidget xwidgetType=\"XMembersComboAll\" displayName=\"" + TO_USER + "\" />");
       buffer.append("</xWidgets>");
       return buffer.toString();
    }

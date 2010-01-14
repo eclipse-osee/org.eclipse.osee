@@ -84,6 +84,12 @@ public final class UserManager {
       return users;
    }
 
+   public static List<User> getUsersAllSortedByName() throws OseeCoreException {
+      List<User> users = getUsers(Active.Both);
+      Collections.sort(users);
+      return users;
+   }
+
    private static List<User> getFromCache() throws OseeCoreException {
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(CoreArtifactTypes.User));
    }

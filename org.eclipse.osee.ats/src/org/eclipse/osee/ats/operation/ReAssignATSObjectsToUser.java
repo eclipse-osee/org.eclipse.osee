@@ -106,7 +106,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
-      buffer.append("<XWidget xwidgetType=\"XMembersCombo\" displayName=\"" + FROM_ASSIGNEE + "\" />");
+      buffer.append("<XWidget xwidgetType=\"XMembersComboAll\" displayName=\"" + FROM_ASSIGNEE + "\" />");
       buffer.append("<XWidget xwidgetType=\"XMembersCombo\" displayName=\"" + TO_ASSIGNEE + "\" />");
       buffer.append("</xWidgets>");
       return buffer.toString();
