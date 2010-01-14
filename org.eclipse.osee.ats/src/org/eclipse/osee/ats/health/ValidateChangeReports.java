@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -24,6 +26,8 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import org.eclipse.osee.ats.health.change.DataChangeReportComparer;
+import org.eclipse.osee.ats.health.change.ValidateChangeReportParser;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -220,9 +224,11 @@ public class ValidateChangeReports extends XNavigateItemAction {
                      @Override
                      public void run() {
                         try {
+                           String storedChangeReportString = GetComparableString(fStoredChangeReport);
+                           String currentChangeReportString = GetComparableString(currentChangeReport);
+                           
                            CompareHandler compareHandler =
-                                 new CompareHandler(fStoredChangeReport.replaceAll("><", ">\n<"),
-                                       currentChangeReport.replaceAll(">", ">\n"));
+                                 new CompareHandler(storedChangeReportString, currentChangeReportString);
                            compareHandler.compare();
 
                         } catch (Exception ex) {
@@ -249,6 +255,19 @@ public class ValidateChangeReports extends XNavigateItemAction {
          return new Result("Exception accessing name of change report artifacts: " + ex.getLocalizedMessage());
       }
       return new Result(true, "PASS");
+   }
+   
+   private static String GetComparableString(String changeReportString) {
+      StringBuffer comparableString = new StringBuffer();
+      ValidateChangeReportParser parser = new ValidateChangeReportParser();
+      ArrayList<ArrayList<DataChangeReportComparer>> changeReport = parser.parse(changeReportString);
+
+      for (int i = 0; i < changeReport.size(); i++) {
+         for (int j = 0; j < changeReport.get(i).size(); j++) {
+            comparableString.append(changeReport.get(i).get(j).getContent());
+         }
+      }
+      return comparableString.toString().replaceAll("><", ">\n<");
    }
 
    private static String getReport(String dbGuid, ChangeData changeData) throws OseeCoreException, ParserConfigurationException {
@@ -319,14 +338,14 @@ public class ValidateChangeReports extends XNavigateItemAction {
       return AXml.addTagData("AttrChg", sb.toString());
    }
 
-   private static boolean isXmlChangeDataEqual(String data1, String data2) {
-      int checkSum1 = getCheckSum(data1);
-      int checkSum2 = getCheckSum(data2);
+   private static boolean isXmlChangeDataEqual(String currentData, String storedData) {
+      int checkSum1 = getCheckSum(currentData);
+      int checkSum2 = getCheckSum(storedData);
 
       boolean result = checkSum1 == checkSum2;
       if (!result) {
          ChangeReportComparer comparer = new ChangeReportComparer();
-         comparer.compare(data1, data2);
+         comparer.compare(currentData, storedData);
 
          OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format("Checksums not equal - stored:[%s] current:[%s]",
                checkSum1, checkSum2));

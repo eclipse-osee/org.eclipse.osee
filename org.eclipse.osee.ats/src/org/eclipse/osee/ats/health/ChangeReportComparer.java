@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.health;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.eclipse.osee.ats.health.change.DataChangeReportComparer;
+import org.eclipse.osee.ats.health.change.ValidateChangeReportParser;
 
 /**
  * 
@@ -23,32 +23,30 @@ import java.util.regex.Pattern;
  *
  */
 public class ChangeReportComparer {
-	private static final String ART = "(<ArtChg>.*?</ArtChg>)";
-	private static final String ATTR = "(<AttrChg>.*?</AttrChg>)";
-	private static final String REL = "(<RelChg>.*?</RelChg>)";
 	
 	/**
 	 * Compares two change report strings by parsing them and comparing each artifact change, attribute change and relation change.
-	 * @param changeReport1
-	 * @param changeReport2
+	 * @param currentData
+	 * @param storedData
 	 * @return Returns true if the change reports matches else false.
 	 */
-	public boolean compare(String changeReport1, String changeReport2){
+	public boolean compare(String currentData, String storedData){
 		boolean success = true;
-		ArrayList<ArrayList<String>> data1List = parse(changeReport1);
-		ArrayList<ArrayList<String>> data2List = parse(changeReport2);
+		ValidateChangeReportParser parser = new ValidateChangeReportParser();
+		ArrayList<ArrayList<DataChangeReportComparer>> currentList = parser.parse(currentData);
+		ArrayList<ArrayList<DataChangeReportComparer>> storedList = parser.parse(storedData);
 		
-		if(data1List.size() != data2List.size() || data1List.get(0).size() != data2List.get(0).size() || data1List.get(1).size() != data2List.get(1).size()
-				|| data1List.get(2).size() != data2List.get(2).size()){
+		if(currentList.size() != storedList.size() || currentList.get(0).size() != storedList.get(0).size() || currentList.get(1).size() != storedList.get(1).size()
+				|| currentList.get(2).size() != storedList.get(2).size()){
 			throw new IllegalArgumentException("The change reports must have the same number of items");
 		}
 		try{
-		for(int i = 0; i < data1List.size() ; i++){
-			for(int j = 0; j < data1List.get(i).size() ; j++){
-				if(! data1List.get(i).get(j).equals(data2List.get(i).get(j))){
+		for(int i = 0; i < currentList.size() ; i++){
+			for(int j = 0; j < currentList.get(i).size() ; j++){
+				if(! currentList.get(i).get(j).getContent().equals(storedList.get(i).get(j).getContent())){
 					success = false;
-					System.err.println(data1List.get(i).get(j));
-					System.err.println(data2List.get(i).get(j));
+					System.err.println(currentList.get(i).get(j).getContent());
+					System.err.println(storedList.get(i).get(j).getContent());
 					System.err.println("---------------------------------------------------");
 				}
 			}
@@ -57,45 +55,5 @@ public class ChangeReportComparer {
 			ex.getLocalizedMessage();
 		}
 		return success;
-	}
-	
-	/**
-	 * 
-	 * @param changeReportString
-	 * @return Returns Three ArrayLists. 0 index for artifact changes, 1 index for attribute changes and 2 index for relation changes. 
-	 */
-	public ArrayList<ArrayList<String>> parse(String changeReportString) {
-		ArrayList<ArrayList<String>> changeLists = new ArrayList<ArrayList<String>>(3);
-		ArrayList<String> artifactChanges = new ArrayList<String>();
-		ArrayList<String> attrChanges = new ArrayList<String>();
-		ArrayList<String> relChanges = new ArrayList<String>();
-
-		Matcher artChangeMatch = Pattern.compile(ART).matcher(changeReportString);
-
-		while (artChangeMatch.find()) {
-			artifactChanges.add(artChangeMatch.group(0));
-		}
-
-		Matcher attrChangeMatch = Pattern.compile(ATTR).matcher(changeReportString);
-
-		while (attrChangeMatch.find()) {
-			attrChanges.add(attrChangeMatch.group(0));
-		}
-
-		Matcher relChangeMatch = Pattern.compile(REL).matcher(changeReportString);
-
-		while (relChangeMatch.find()) {
-			relChanges.add(relChangeMatch.group(0));
-		}
-
-		Collections.sort(artifactChanges);
-		Collections.sort(attrChanges);
-		Collections.sort(relChanges);
-
-		changeLists.add(artifactChanges);
-		changeLists.add(attrChanges);
-		changeLists.add(relChanges);
-
-		return changeLists;
 	}
 }
