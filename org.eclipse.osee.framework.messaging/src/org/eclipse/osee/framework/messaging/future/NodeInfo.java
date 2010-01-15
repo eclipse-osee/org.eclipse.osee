@@ -14,18 +14,32 @@ import org.eclipse.osee.framework.messaging.Component;
 public class NodeInfo {
 
    private final URI uri;
-   private final Component component;
+   private final String name;
+   private String nameWithColon;
 
-   public NodeInfo(URI uri, Component component) {
+   public NodeInfo(String name, URI uri) {
       this.uri = uri;
-      this.component = component;
+      this.name = name;
    }
 
    public URI getUri() {
       return uri;
    }
 
-   public Component getComponent() {
-      return component;
+   @Override
+   public String toString() {
+      return name + ":" + uri;
+   }
+
+   public String getComponentName() {
+      return name;
+   }
+
+   public String getComponentNameForRoutes() {
+      return nameWithColon;
+   }
+
+   public boolean isVMComponent() {
+      return getComponentName().equals(Component.VM);
    }
 }

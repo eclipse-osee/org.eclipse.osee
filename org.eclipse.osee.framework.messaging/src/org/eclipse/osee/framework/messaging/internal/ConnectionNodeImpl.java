@@ -42,7 +42,7 @@ public class ConnectionNodeImpl implements ConnectionNode {
    }
 
    private void process(Runnable runnable) {
-      if (nodeInfo.getComponent().isVMComponent()) {
+      if (nodeInfo.isVMComponent()) {
          runnable.run();
       } else {
          executor.execute(runnable);

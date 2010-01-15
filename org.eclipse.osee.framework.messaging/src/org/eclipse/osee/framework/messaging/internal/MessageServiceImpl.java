@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.camel.CamelContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.messaging.future.ConnectionNode;
 import org.eclipse.osee.framework.messaging.future.ConnectionNodeFactory;
@@ -23,12 +22,10 @@ public class MessageServiceImpl implements MessageService {
 
    private final Map<NodeInfo, ConnectionNode> connectionNodes;
    private final ConnectionNodeFactory factory;
-   private final CamelContext context;
 
-   public MessageServiceImpl(CamelContext context, ConnectionNodeFactory factory) {
+   public MessageServiceImpl(ConnectionNodeFactory factory) {
       this.connectionNodes = new ConcurrentHashMap<NodeInfo, ConnectionNode>();
       this.factory = factory;
-      this.context = context;
    }
 
    public Collection<NodeInfo> getAvailableConnections() {

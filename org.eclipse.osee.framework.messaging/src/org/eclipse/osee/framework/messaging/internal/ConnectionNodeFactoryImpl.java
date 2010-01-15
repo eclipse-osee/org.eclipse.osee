@@ -59,7 +59,7 @@ public class ConnectionNodeFactoryImpl implements ConnectionNodeFactory {
        */
       //      camelConnectionFactory.setTransportListener(jmsTransport);
       camelConnectionFactory.setCamelContext(context);
-      camelConnectionFactory.getCamelContext().addComponent(nodeInfo.getComponent().getComponentName(),
+      camelConnectionFactory.getCamelContext().addComponent(nodeInfo.getComponentName(),
             ActiveMQComponent.jmsComponent(camelConnectionFactory));
 
       ProducerTemplate template = camelConnectionFactory.getCamelContext().createProducerTemplate();

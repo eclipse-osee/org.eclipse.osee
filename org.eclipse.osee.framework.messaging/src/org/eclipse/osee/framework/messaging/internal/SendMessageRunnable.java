@@ -24,7 +24,7 @@ class SendMessageRunnable implements Runnable {
    public void run() {
       try {
          //            checkTransport(component);
-         template.sendBody(nodeInfo.getComponent().getComponentNameForRoutes() + topic);
+         template.sendBody(nodeInfo.getComponentNameForRoutes() + topic, body);
          statusCallback.success();
       } catch (Exception ex) {
          statusCallback.fail(ex);

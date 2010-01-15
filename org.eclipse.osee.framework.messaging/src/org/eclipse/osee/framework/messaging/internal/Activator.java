@@ -54,7 +54,7 @@ public class Activator implements BundleActivator {
    }
 
    private MessageService createMessageService() {
-      return new MessageServiceImpl(camelContext, new ConnectionNodeFactoryImpl(camelContext, executor));
+      return new MessageServiceImpl(new ConnectionNodeFactoryImpl(camelContext, executor));
    }
 
    public void stop(BundleContext context) throws Exception {

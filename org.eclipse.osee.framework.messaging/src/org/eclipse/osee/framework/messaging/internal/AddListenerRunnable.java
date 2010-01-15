@@ -29,8 +29,7 @@ class AddListenerRunnable implements Runnable {
          context.addRoutes(new RouteBuilder() {
             @Override
             public void configure() {
-               from(nodeInfo.getComponent().getComponentNameForRoutes() + topic).process(
-                     new ProcessorTranslator(listener));
+               from(nodeInfo.getComponentNameForRoutes() + topic).process(new ProcessorTranslator(listener));
             }
          });
 
