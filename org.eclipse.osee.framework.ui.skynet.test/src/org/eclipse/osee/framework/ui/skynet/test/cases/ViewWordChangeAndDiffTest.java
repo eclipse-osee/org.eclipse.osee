@@ -118,7 +118,7 @@ public class ViewWordChangeAndDiffTest {
          baseArtifact =
                ArtifactQuery.getHistoricalArtifactFromId(artifacts.get(1).getArtId(),
                      artifacts.get(1).getTransactionId(), true);
-         RendererManager.diffInJob(baseArtifact, newerArtifact);
+         RendererManager.diff(baseArtifact, newerArtifact, false);
          // if we get here there were no exceptions on the diff considered successful
          assertTrue("Compare Two Artifacts test passed", true);
       } catch (Exception ex) {
@@ -188,6 +188,7 @@ public class ViewWordChangeAndDiffTest {
    private void viewWordChangeCompareArtifacts() {
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       try {
+         variableMap.setValue("suppressWord", true);
          renderer.setOptions(variableMap);
          renderer.compareArtifacts(baseArtifacts, newerArtifacts, new NullProgressMonitor(),
                instanceOfArtifact.getBranch(), PresentationType.DIFF);
@@ -199,7 +200,7 @@ public class ViewWordChangeAndDiffTest {
 
    private void singleNativeDiff(Artifact baseArtifact, Artifact newerArtifact) {
       try {
-         RendererManager.diff(baseArtifact, newerArtifact, true);
+         RendererManager.diff(baseArtifact, newerArtifact, false);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          fail("Single Native Diff test failed.");
