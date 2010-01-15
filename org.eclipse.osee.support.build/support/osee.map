@@ -19,6 +19,8 @@ feature@org.eclipse.osee.external.feature=SVN,url=https://dev.eclipse.org/svnroo
 
 feature@org.eclipse.osee.framework.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.feature
 plugin@net.jini=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=net.jini
+plugin@jms.activemq.launch=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=jms.activemq.launch
+plugin@jms.libraries=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=jms.libraries
 
 plugin@org.eclipse.osee.framework.derby=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.derby
 plugin@org.eclipse.osee.framework.core=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.core
