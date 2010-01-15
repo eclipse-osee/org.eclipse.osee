@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.enums.TrackerId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
@@ -34,12 +35,6 @@ public class InternalTypesActivator implements BundleActivator, IOseeCachingServ
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.types";
 
    private static InternalTypesActivator instance;
-
-   private enum TrackerId {
-      OSEE_MODEL_FACTORY,
-      OSEE_CACHING_SERVICE,
-      OSEE_CACHING_SERVICE_FACTORY;
-   }
 
    private final List<ServiceTracker> trackers;
    private final Map<TrackerId, ServiceTracker> mappedTrackers;

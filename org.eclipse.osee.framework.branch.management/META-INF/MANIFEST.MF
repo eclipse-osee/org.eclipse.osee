@@ -33,7 +33,8 @@ Import-Package: org.eclipse.core.runtime,
  org.osgi.framework,
  org.osgi.util.tracker
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.osee.framework.branch.management
+Export-Package: org.eclipse.osee.framework.branch.management,
+ org.eclipse.osee.framework.branch.management.cache
 Service-Component: OSGI-INF/exchange.provider.xml,
  OSGI-INF/locator.provider.exchange.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

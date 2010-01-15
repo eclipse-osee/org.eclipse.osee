@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.exchange.BranchExchange;
+import org.eclipse.osee.framework.core.enums.TrackerId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
@@ -42,19 +43,6 @@ import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator implements BundleActivator, IOseeDatabaseServiceProvider, IOseeModelFactoryServiceProvider, IOseeCachingServiceProvider, IOseeModelingServiceProvider, IDataTranslationServiceProvider, IApplicationServerLookupProvider {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.branch.management";
-
-   private enum TrackerId {
-      RESOURCE_LOCATOR,
-      RESOURCE_MANAGER,
-      BRANCH_EXCHANGE,
-      OSEE_DATABASE_SERVICE,
-      OSEE_FACTORY_SERVICE,
-      OSEE_CACHING_SERVICE,
-      OSEE_MODELING_SERVICE,
-      DATA_TRANSLATION_SERVICE,
-      MASTER_SERVICE,
-      LOOKUP_SERVICE;
-   }
 
    private static Activator instance;
 

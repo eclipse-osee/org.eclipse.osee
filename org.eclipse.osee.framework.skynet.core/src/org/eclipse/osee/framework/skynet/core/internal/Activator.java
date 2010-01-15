@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.enums.TrackerId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -37,13 +37,6 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
    private static Activator instance;
    private final Map<TrackerId, ServiceTracker> mappedTrackers;
    private final List<ServiceRegistration> services;
-
-   private enum TrackerId {
-      TRANSLATION_SERVICE,
-      OSEE_CACHING_SERVICE,
-      OSEE_FACTORY_SERVICE,
-      COMMIT_SERVICE;
-   }
 
    public Activator() {
       this.mappedTrackers = new HashMap<TrackerId, ServiceTracker>();

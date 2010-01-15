@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.enums.TrackerId;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IApplicationDatabaseManager;
 import org.eclipse.osee.framework.database.IOseeConnectionProvider;
@@ -35,13 +36,6 @@ public class InternalActivator implements BundleActivator, IOseeDatabaseServiceP
    private static final long TIMEOUT = 20000;
 
    private static InternalActivator instance = null;
-
-   private enum TrackerId {
-      CONNECTION_PROVIDER,
-      CONNECTION_INFOS,
-      DATABASE_SERVICE,
-      APPLICATION_MANAGER;
-   }
 
    private final Map<TrackerId, ServiceTracker> mappedTrackers;
    private final List<ServiceRegistration> services;
