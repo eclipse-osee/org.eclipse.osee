@@ -13,9 +13,10 @@ package org.eclipse.osee.framework.core.cache;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -32,9 +33,10 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractOseeCache<T extends AbstractOseeType> implements IOseeCache<T> {
-   private final HashCollection<String, T> nameToTypeMap = new HashCollection<String, T>();
-   private final HashMap<Integer, T> idToTypeMap = new HashMap<Integer, T>();
-   private final HashMap<String, T> guidToTypeMap = new HashMap<String, T>();
+   private final HashCollection<String, T> nameToTypeMap =
+         new HashCollection<String, T>(true, HashCollection.DEFAULT_COLLECTION_TYPE);
+   private final Map<Integer, T> idToTypeMap = new ConcurrentHashMap<Integer, T>();
+   private final Map<String, T> guidToTypeMap = new ConcurrentHashMap<String, T>();
 
    private final IOseeDataAccessor<T> dataAccessor;
    private final OseeCacheEnum cacheId;
