@@ -65,8 +65,6 @@ public class DuplicateHRID extends DatabaseHealthOperation {
    private static final String COUNT_BRANCH_NAMES_CONTAINING =
          "SELECT count(1) from osee_branch where branch_name like ?";
 
-   //   private static final String FIX_HRID = "UPDATE osee_artifact set human_readable_id=? where guid=?";
-
    public DuplicateHRID() {
       super("Duplicate HRID Errors");
    }
