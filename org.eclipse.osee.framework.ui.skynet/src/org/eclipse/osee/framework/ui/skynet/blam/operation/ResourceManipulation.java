@@ -61,10 +61,6 @@ public class ResourceManipulation extends AbstractBlam {
    private static final boolean DEBUG =
          Boolean.parseBoolean(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));
 
-   //"SELECT DISTINCT uri, human_readable_id, txs.gamma_id FROM osee_txs txs, osee_attribute t1, osee_artifact t3 WHERE t1.attr_type_id = ? AND t1.art_id = t3.art_id AND t1.uri is not null AND t1.gamma_id = txs.gamma_id and txs.tx_current = 1 AND txs.gamma_id > 4211835";
-   //   private static final String GET_ATTRS =
-   //         "SELECT DISTINCT uri, human_readable_id, txs.gamma_id FROM osee_tx_details det, osee_branch brn, osee_txs txs, osee_attribute t1, osee_artifact t3 WHERE t1.attr_type_id = ? AND t1.art_id = t3.art_id AND t1.uri is not null AND t1.gamma_id = txs.gamma_id and txs.transaction_id = det.transaction_id AND det.branch_id = brn.branch_id AND  branch_type in (1,2) AND txs.gamma_id > 4211835";
-
    private static final String GET_ATTRS =
          "SELECT * FROM osee_attribute t1, osee_artifact t3 WHERE t1.attr_type_id = ? AND t1.art_id = t3.art_id AND t1.uri is not null";
    private static final String GET_ATTRS_TEST = GET_ATTRS + " AND t1.gamma_id = 4259157";
@@ -320,7 +316,8 @@ public class ResourceManipulation extends AbstractBlam {
       }
 
       String urlString =
-            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
+            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
+                  parameterMap);
       HttpProcessor.put(new URL(urlString), new ByteArrayInputStream(toUpload), resource.result.getContentType(),
             resource.result.getEncoding());
    }
@@ -333,7 +330,8 @@ public class ResourceManipulation extends AbstractBlam {
          parameterMap.put("sessionId", ClientSessionManager.getSessionId());
          parameterMap.put("uri", resourcePath);
          String urlString =
-               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
+               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
+                     parameterMap);
 
          AcquireResult result = HttpProcessor.acquire(new URL(urlString), sourceOutputStream);
          if (result.getCode() == HttpURLConnection.HTTP_OK) {
