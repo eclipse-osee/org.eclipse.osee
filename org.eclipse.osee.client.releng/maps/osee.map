@@ -2,6 +2,8 @@ feature@org.eclipse.osee.client.feature=SVN,trunk,https://dev.eclipse.org/svnroo
 
 feature@org.eclipse.osee.framework.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.feature
 plugin@net.jini=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,net.jini
+plugin@jms.activemq.launch=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,jms.activemq.launch
+plugin@jms.libraries=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,jms.libraries
 plugin@org.eclipse.osee.framework.derby=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.derby
 plugin@org.eclipse.osee.framework.core=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.core
 plugin@org.eclipse.osee.framework.core.client=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.core.client
