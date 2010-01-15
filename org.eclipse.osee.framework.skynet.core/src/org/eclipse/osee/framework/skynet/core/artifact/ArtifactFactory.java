@@ -67,13 +67,13 @@ public abstract class ArtifactFactory {
       return artifact;
    }
 
-   public synchronized Artifact reflectExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch, ModificationType modificationType) throws OseeCoreException {
+   public synchronized Artifact reflectExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modificationType) throws OseeCoreException {
       return internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, branch, modificationType,
             false, null);
    }
 
-   private Artifact internalExistingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch, ModificationType modType, boolean historical, TransactionRecord transactionId) throws OseeCoreException {
-      Artifact artifact = getArtifactInstance(guid, humandReadableId, branch, artifactType);
+   private Artifact internalExistingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modType, boolean historical, TransactionRecord transactionId) throws OseeCoreException {
+      Artifact artifact = getArtifactInstance(guid, humandReadableId, BranchManager.getBranch(branch), artifactType);
 
       artifact.setArtId(artId);
       artifact.internalSetPersistenceData(gammaId, transactionId, modType, historical);

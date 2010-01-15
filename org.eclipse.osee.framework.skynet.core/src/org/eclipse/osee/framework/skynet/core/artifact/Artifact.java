@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.IAccessControllable;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -1494,7 +1495,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @return the newly created artifact or this artifact if the destinationBranch is this artifact's branch
     * @throws OseeCoreException
     */
-   public Artifact reflect(Branch destinationBranch) throws OseeCoreException {
+   public Artifact reflect(IOseeBranch destinationBranch) throws OseeCoreException {
       if (branch.equals(destinationBranch)) {
          return this;
       }
@@ -1503,7 +1504,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return reflectedArtifact;
    }
 
-   private Artifact reflectHelper(Branch branch) throws OseeCoreException {
+   private Artifact reflectHelper(IOseeBranch branch) throws OseeCoreException {
       Artifact reflectedArtifact =
             ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, guid, humanReadableId,
                   artifactType, gammaId, branch, ModificationType.INTRODUCED);
