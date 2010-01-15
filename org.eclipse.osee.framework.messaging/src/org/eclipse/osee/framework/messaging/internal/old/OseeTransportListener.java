@@ -3,14 +3,14 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.messaging.internal;
+package org.eclipse.osee.framework.messaging.internal.old;
 
 import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.activemq.transport.TransportListener;
 import org.eclipse.osee.framework.messaging.Component;
-import org.eclipse.osee.framework.messaging.internal.OseeMessagingImpl.StatusNotifier;
+import org.eclipse.osee.framework.messaging.internal.old.OseeMessagingImpl.StatusNotifier;
 
 /**
  * @author b1122182

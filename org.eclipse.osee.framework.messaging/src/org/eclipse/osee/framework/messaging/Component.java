@@ -7,17 +7,16 @@ package org.eclipse.osee.framework.messaging;
 
 /**
  * @author b1528444
- *
  */
 public enum Component {
 
    VM("osee-vm"),
    JMS("osee-jms");
-   
+
    private String name;
    private String nameWithColon;
-   
-   private Component(String name){
+
+   private Component(String name) {
       this.name = name;
       this.nameWithColon = name + ":";
    }
@@ -26,12 +25,16 @@ public enum Component {
    public String toString() {
       return name + ":";
    }
-   
-   public String getComponentName(){
+
+   public String getComponentName() {
       return name;
    }
-   
-   public String getComponentNameForRoutes(){
+
+   public String getComponentNameForRoutes() {
       return nameWithColon;
+   }
+
+   public boolean isVMComponent() {
+      return this.equals(Component.VM);
    }
 }

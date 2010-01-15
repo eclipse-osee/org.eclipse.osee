@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.internal.Activator;
-import org.eclipse.osee.framework.messaging.internal.ApplicationDistributer;
+import org.eclipse.osee.framework.messaging.internal.old.ApplicationDistributer;
 
 /**
  * @author Andrew M. Finkbeiner

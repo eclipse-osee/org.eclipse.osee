@@ -10,9 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.internal;
 
-import java.util.Hashtable;
-
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import org.apache.camel.CamelContext;
+import org.apache.camel.impl.DefaultCamelContext;
 import org.eclipse.osee.framework.messaging.MessagingGateway;
+import org.eclipse.osee.framework.messaging.future.MessageService;
+import org.eclipse.osee.framework.messaging.internal.old.MessagingGatewayImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -21,46 +25,62 @@ import org.osgi.framework.ServiceRegistration;
  * @author Andrew M. Finkbeiner
  */
 public class Activator implements BundleActivator {
-	private static Activator me;
-	private BundleContext context;
-	private OseeMessagingImplService oseeMessaging;
+   private static Activator me;
+   private BundleContext context;
 
-	// old
-	private ServiceRegistration registration;
-	private MessagingGatewayImpl messaging;
+   private ServiceRegistration msgServiceRegistration;
+   private MessageService messageService;
+   private CamelContext camelContext;
+   private ExecutorService executor;
 
-	public void start(BundleContext context) throws Exception {
-		this.context = context;
-		me = this;
-		oseeMessaging = new OseeMessagingImplService(context);
-		oseeMessaging.start();
+   // old
+   private ServiceRegistration registration;
+   private MessagingGatewayImpl messaging;
 
-		//old
-		messaging = new MessagingGatewayImpl();
-		registration = context.registerService(
-				MessagingGateway.class.getName(), messaging, new Hashtable());
-	}
+   public void start(BundleContext context) throws Exception {
+      this.context = context;
+      me = this;
 
-	public void stop(BundleContext context) throws Exception {
-		oseeMessaging.stop();
-		me = null;
-		this.context = null;
-		
-		//old
-		if (registration != null) {
-			registration.unregister();
-		}
+      camelContext = new DefaultCamelContext();
+      executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-		if (messaging != null) {
-			messaging.dispose();
-		}
-	}
-	
-	public static Activator getInstance() {
-		return me;
-	}
-	
-	public BundleContext getContext(){
-		return context;
-	}
+      messageService = createMessageService();
+      msgServiceRegistration = context.registerService(MessageService.class.getName(), messageService, null);
+      camelContext.start();
+
+      //old
+      messaging = new MessagingGatewayImpl();
+      registration = context.registerService(MessagingGateway.class.getName(), messaging, null);
+   }
+
+   private MessageService createMessageService() {
+      return new MessageServiceImpl(camelContext, new ConnectionNodeFactoryImpl(camelContext, executor));
+   }
+
+   public void stop(BundleContext context) throws Exception {
+      me = null;
+      this.context = null;
+
+      if (msgServiceRegistration != null) {
+         msgServiceRegistration.unregister();
+      }
+      camelContext.stop();
+
+      //old
+      if (registration != null) {
+         registration.unregister();
+      }
+
+      if (messaging != null) {
+         messaging.dispose();
+      }
+   }
+
+   public static Activator getInstance() {
+      return me;
+   }
+
+   public BundleContext getContext() {
+      return context;
+   }
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.messaging.internal;
+package org.eclipse.osee.framework.messaging.internal.old;
 
 import java.util.Collection;
 import java.util.List;

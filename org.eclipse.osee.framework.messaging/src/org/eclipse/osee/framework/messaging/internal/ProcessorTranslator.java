@@ -9,7 +9,7 @@ import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 /**
  * @author b1528444
  */
-class ProcessorTranslator implements org.apache.camel.Processor {
+public class ProcessorTranslator implements org.apache.camel.Processor {
 
    private final OseeMessagingListener listener;
 
@@ -23,8 +23,8 @@ class ProcessorTranslator implements org.apache.camel.Processor {
       Properties properties = new Properties();
       copyHeaderElements(properties, message);
       Object body = message.getBody();
-      if(body instanceof Map){
-         properties.putAll((Map<?,?>)body);
+      if (body instanceof Map) {
+         properties.putAll((Map<?, ?>) body);
       }
       properties.put("body", message.getBody());
       listener.process(properties);

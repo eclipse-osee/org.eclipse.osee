@@ -1,41 +1,33 @@
-/*
- * Created on Oct 19, 2009
- *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
 package org.eclipse.osee.framework.messaging.internal;
 
-import org.eclipse.osee.framework.messaging.Component;
+import org.apache.camel.ProducerTemplate;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
+import org.eclipse.osee.framework.messaging.future.NodeInfo;
 
-/**
- * @author b1528444
- *
- */
 class SendMessageRunnable implements Runnable {
 
-	
-	private final Component component;
-	private final String topic;
-	private final Object body;
-	private final OseeMessagingStatusCallback statusCallback;
+   private final NodeInfo nodeInfo;
+   private final String topic;
+   private final Object body;
+   private final OseeMessagingStatusCallback statusCallback;
+   private final ProducerTemplate template;
 
-	/**
-	 * @param component
-	 * @param topic
-	 * @param body
-	 * @param statusCallback
-	 */
-	public SendMessageRunnable(Component component, String topic, Object body,
-			OseeMessagingStatusCallback statusCallback) {
-		this.component = component;
-		this.topic = topic;
-		this.body = body;
-		this.statusCallback = statusCallback;
-	}
+   public SendMessageRunnable(ProducerTemplate template, NodeInfo nodeInfo, String topic, Object body, OseeMessagingStatusCallback statusCallback) {
+      this.template = template;
+      this.nodeInfo = nodeInfo;
+      this.topic = topic;
+      this.body = body;
+      this.statusCallback = statusCallback;
+   }
 
-	@Override
-	public void run() {
-	}
-
+   @Override
+   public void run() {
+      try {
+         //            checkTransport(component);
+         template.sendBody(nodeInfo.getComponent().getComponentNameForRoutes() + topic);
+         statusCallback.success();
+      } catch (Exception ex) {
+         statusCallback.fail(ex);
+      }
+   }
 }
