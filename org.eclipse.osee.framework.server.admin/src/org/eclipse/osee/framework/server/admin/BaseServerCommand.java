@@ -33,6 +33,11 @@ public abstract class BaseServerCommand extends AbstractOperation {
       this.isExecutionAllowed = true;
    }
 
+   protected BaseServerCommand(String name, CommandInterpreter ci) {
+      this(name);
+      setCommandInterpreter(ci);
+   }
+
    public boolean isRunning() {
       return isRunning;
    }

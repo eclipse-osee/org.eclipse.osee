@@ -13,7 +13,11 @@ package org.eclipse.osee.framework.server.admin;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
+import org.eclipse.osee.framework.core.enums.TrackerId;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
@@ -22,18 +26,9 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class Activator implements BundleActivator {
+public class Activator implements BundleActivator, IOseeDatabaseServiceProvider {
 
    private static Activator instance;
-
-   private enum TrackerId {
-      RESOURCE_LOCATOR,
-      RESOURCE_MANAGER,
-      BRANCH_EXCHANGE,
-      SEARCH_ENGINE,
-      SEARCH_TAGGER,
-      OSEE_CACHING_SERVICE;
-   }
 
    private final Map<TrackerId, ServiceTracker> mappedTrackers;
 
@@ -50,6 +45,7 @@ public class Activator implements BundleActivator {
       createServiceTracker(context, ISearchEngine.class, TrackerId.SEARCH_ENGINE);
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
       createServiceTracker(context, IOseeCachingService.class, TrackerId.OSEE_CACHING_SERVICE);
+      createServiceTracker(context, IOseeDatabaseService.class, TrackerId.OSEE_DATABASE_SERVICE);
    }
 
    public void stop(BundleContext context) throws Exception {
@@ -59,6 +55,11 @@ public class Activator implements BundleActivator {
       mappedTrackers.clear();
 
       instance = null;
+   }
+
+   @Override
+   public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
+      return getTracker(TrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
    }
 
    private void createServiceTracker(BundleContext context, Class<?> clazz, TrackerId trackerId) {
