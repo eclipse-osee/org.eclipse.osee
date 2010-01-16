@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.server.admin;
 
 import java.util.Arrays;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.server.admin.management.AdminCommands;
+import org.eclipse.osee.framework.server.admin.management.FinishPartiallyArchivedBranchesCommand;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 
@@ -72,7 +74,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
    }
 
    public void _finish_partial_archives(CommandInterpreter ci) {
-      adminCommands.finishPartialArchives(ci);
+      Operations.executeAsJob(new FinishPartiallyArchivedBranchesCommand(ci), false);
    }
 
    @Override

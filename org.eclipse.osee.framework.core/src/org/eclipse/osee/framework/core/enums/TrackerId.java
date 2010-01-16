@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public enum TrackerId {
    RESOURCE_LOCATOR,
    RESOURCE_MANAGER,

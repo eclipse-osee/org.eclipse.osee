@@ -16,14 +16,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
+import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**
  * @author Roberto E. Escobar
  */
 class ServerStats extends BaseServerCommand {
 
-   protected ServerStats() {
-      super("Server Stats");
+   protected ServerStats(CommandInterpreter ci) {
+      super("Server Stats", ci);
    }
 
    @Override
