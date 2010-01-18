@@ -516,7 +516,7 @@ public class CoveragePackageImportTest {
    // Re-import; Add NavigationButton.setImage coverageItems 2,3 to end
    public void testImport5() throws Exception {
       CoverageImport5TestBlam coverageImport5TestBlam = new CoverageImport5TestBlam();
-      coverageImport = coverageImport5TestBlam.run();
+      coverageImport = coverageImport5TestBlam.run(null);
       Assert.assertNotNull(coverageImport);
 
       if (testWithDb) {
