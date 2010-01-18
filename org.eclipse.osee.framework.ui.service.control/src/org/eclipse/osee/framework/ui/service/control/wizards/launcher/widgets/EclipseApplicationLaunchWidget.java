@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.ui.service.control.jobs.TextDisplayHelper;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.data.JiniGroupSelector;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.data.ServiceItem;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.swt.FormattedText;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
@@ -48,7 +48,7 @@ import org.osgi.framework.Bundle;
 public class EclipseApplicationLaunchWidget implements ILaunchWidget {
 
    private Control control;
-   private ServiceLaunchingInformation serviceInfo;
+   private final ServiceLaunchingInformation serviceInfo;
    private FormattedText serviceInfoText;
    private FormattedText executionResultText;
    private StyledText javaCompilerText;
@@ -179,14 +179,15 @@ public class EclipseApplicationLaunchWidget implements ILaunchWidget {
       fileDialog.setImage(ImageManager.getImage(ServiceControlImage.FILE));
       fileDialog.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             FileDialog dialog = new FileDialog(shell, SWT.OPEN);
 
             String defaultDir = javaCompilerText.getText();
             File dir = new File(defaultDir);
-            if (dir.isFile() || dir.isDirectory())
+            if (dir.isFile() || dir.isDirectory()) {
                dialog.setFilterPath(defaultDir);
-            else {
+            } else {
                dialog.setFilterPath(javaHome);
             }
 

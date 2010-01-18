@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeSource;
 import org.eclipse.osee.framework.ui.data.model.editor.model.InheritanceLinkModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Roberto E. Escobar
@@ -48,7 +48,9 @@ public class ODMPaletteFactory {
    private PaletteRoot paletteRoot;
 
    private enum DrawerEnum {
-      Artifact_Types, Attribute_Types, Relation_Types;
+      Artifact_Types,
+      Attribute_Types,
+      Relation_Types;
 
       public String asLabel() {
          return this.name().replaceAll("_", " ");

@@ -10,16 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.plugin.workspace;
 
-import java.util.Hashtable;
-import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
 import org.eclipse.osee.framework.ui.plugin.workspace.internal.SafeWorkspaceAccessImpl;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IStartup;
-import org.osgi.framework.BundleContext;
+import org.osgi.framework.Bundle;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 public class EarlyStartup implements IStartup {
 
@@ -28,14 +27,15 @@ public class EarlyStartup implements IStartup {
       Display.getDefault().asyncExec(new Runnable() {
          @Override
          public void run() {
-              registerWorkspaceAccessService();
+            registerWorkspaceAccessService();
          }
       });
    }
-   
-   private void registerWorkspaceAccessService(){
-      BundleContext context = OseePluginUiActivator.getInstance().getContext();
-      context.registerService(SafeWorkspaceAccess.class.getName(), new SafeWorkspaceAccessImpl(), new Hashtable());
+
+   private void registerWorkspaceAccessService() {
+      Bundle bundle = Platform.getBundle(OseePluginUiActivator.PLUGIN_ID);
+      bundle.getBundleContext().registerService(SafeWorkspaceAccess.class.getName(), new SafeWorkspaceAccessImpl(),
+            null);
    }
 
 }

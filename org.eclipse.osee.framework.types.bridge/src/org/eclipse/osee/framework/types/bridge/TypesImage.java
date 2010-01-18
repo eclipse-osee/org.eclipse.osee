@@ -2,11 +2,13 @@ package org.eclipse.osee.framework.types.bridge;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
-public enum TypesImage implements OseeImage {
-   OSEE_TYPES_IMPORT("gears.gif"), OSEE_TYPES_LINK("link_obj.gif"), MISSING("missing");
+public enum TypesImage implements KeyedImage {
+   OSEE_TYPES_IMPORT("gears.gif"),
+   OSEE_TYPES_LINK("link_obj.gif"),
+   MISSING("missing");
    private final String fileName;
 
    private TypesImage(String fileName) {

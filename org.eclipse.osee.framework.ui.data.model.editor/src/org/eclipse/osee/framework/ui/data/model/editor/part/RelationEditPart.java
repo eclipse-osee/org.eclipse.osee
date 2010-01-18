@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel.ContainerType;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Roberto E. Escobar
@@ -27,11 +27,13 @@ public class RelationEditPart extends ComponentEditPart {
       super((RelationDataType) model);
    }
 
+   @Override
    protected boolean isInherited() {
       ContainerType value = getContainerType();
       return value != null && value == ContainerType.INHERITED_RELATIONS;
    }
 
+   @Override
    protected void refreshVisuals() {
       SelectableLabel labelFigure = (SelectableLabel) getFigure();
       String text = ODMConstants.getDataTypeText(getModelAsDataType());

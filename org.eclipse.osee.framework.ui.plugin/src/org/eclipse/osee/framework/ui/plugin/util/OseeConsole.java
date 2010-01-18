@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.IConsoleInputListener;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -47,7 +47,7 @@ public class OseeConsole {
 
    private final HandleInput inputHandler;
 
-   private boolean time;
+   private final boolean time;
 
    private final Thread thread;
 
@@ -55,7 +55,7 @@ public class OseeConsole {
       this(title, true);
    }
 
-   public OseeConsole(String title, boolean time) {
+   private OseeConsole(String title, boolean time) {
       console = new IOConsole(title, null);
       this.time = time;
       this.inputHandler = new HandleInput();
@@ -145,10 +145,11 @@ public class OseeConsole {
          Calendar cal = Calendar.getInstance();
          cal.setTime(new Date());
 
-         if (cal.get(Calendar.HOUR) == 0)
+         if (cal.get(Calendar.HOUR) == 0) {
             time = "12";
-         else
+         } else {
             time = "" + cal.get(Calendar.HOUR);
+         }
          time = Lib.padLeading(time, '0', 2);
          String minute = "" + cal.get(Calendar.MINUTE);
          minute = Lib.padLeading(minute, '0', 2);
@@ -171,7 +172,9 @@ public class OseeConsole {
          }
 
          sendToStreams(type, "\n");
-         if (popup) popup();
+         if (popup) {
+            popup();
+         }
       } catch (IOException ex) {
          ex.printStackTrace();
       }

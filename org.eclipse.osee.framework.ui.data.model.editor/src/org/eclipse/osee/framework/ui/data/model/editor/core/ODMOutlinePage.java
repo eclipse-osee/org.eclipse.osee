@@ -30,7 +30,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.ui.data.model.editor.outline.OutlineTreePartFactory;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
@@ -55,10 +55,10 @@ public class ODMOutlinePage extends Page implements IContentOutlinePage {
 
    private Composite composite;
    private Canvas overview;
-   private ScalableFreeformRootEditPart rootEditPart;
+   private final ScalableFreeformRootEditPart rootEditPart;
    private Thumbnail thumbnail;
    private TreeViewer viewer;
-   private ActionRegistry registry;
+   private final ActionRegistry registry;
 
    public ODMOutlinePage(ScalableFreeformRootEditPart rootEditPart, ActionRegistry registry) {
       super();
@@ -70,6 +70,7 @@ public class ODMOutlinePage extends Page implements IContentOutlinePage {
 
    }
 
+   @Override
    public void createControl(Composite parent) {
       composite = new SashForm(parent, SWT.BORDER);
       composite.setLayout(new FillLayout(SWT.VERTICAL));
@@ -106,6 +107,7 @@ public class ODMOutlinePage extends Page implements IContentOutlinePage {
       viewer.setContents(contents);
    }
 
+   @Override
    public void dispose() {
       if (null != thumbnail) {
          thumbnail.deactivate();
@@ -113,6 +115,7 @@ public class ODMOutlinePage extends Page implements IContentOutlinePage {
       super.dispose();
    }
 
+   @Override
    public Control getControl() {
       return overview;
    }
@@ -125,6 +128,7 @@ public class ODMOutlinePage extends Page implements IContentOutlinePage {
 
    }
 
+   @Override
    public void setFocus() {
       if (getControl() != null) {
          getControl().setFocus();
@@ -134,6 +138,7 @@ public class ODMOutlinePage extends Page implements IContentOutlinePage {
    public void setSelection(ISelection selection) {
    }
 
+   @Override
    public void init(IPageSite pageSite) {
       super.init(pageSite);
 
@@ -147,6 +152,7 @@ public class ODMOutlinePage extends Page implements IContentOutlinePage {
       IToolBarManager manager = bars.getToolBarManager();
       ImageDescriptor img = ImageManager.getImageDescriptor(ODMImage.EXPAND_ALL);
       IAction action = new Action("Expand All", img) {
+         @Override
          public void run() {
             expand(((Tree) viewer.getControl()).getItems());
          }

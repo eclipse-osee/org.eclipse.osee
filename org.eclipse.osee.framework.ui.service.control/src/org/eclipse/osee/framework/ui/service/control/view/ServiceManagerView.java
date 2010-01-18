@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.ui.service.control.view;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osee.framework.ui.service.control.actions.HideLookupsAction;
 import org.eclipse.osee.framework.ui.service.control.actions.KillServiceAction;
@@ -19,8 +21,6 @@ import org.eclipse.osee.framework.ui.service.control.actions.OpenLaunchWizard;
 import org.eclipse.osee.framework.ui.service.control.actions.RefreshDataStore;
 import org.eclipse.osee.framework.ui.service.control.menu.MenuBuilder;
 import org.eclipse.osee.framework.ui.service.control.widgets.ManagerMain;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -49,7 +49,7 @@ public class ServiceManagerView extends ViewPart implements IActionable {
       this.setContentDescription("Jini Groups { " + StringUtils.join(JiniLookupGroupConfig.getOseeJiniServiceGroups(),
             ",") + " }");
 
-      OseeAts.addBugToViewToolbar(this, this, ControlPlugin.getInstance(), VIEW_ID, "Service Manager");
+      OseeUiActions.addBugToViewToolbar(this, this, ControlPlugin.getInstance(), VIEW_ID, "Service Manager");
    }
 
    private void createServicesViewerPopUp() {

@@ -13,14 +13,14 @@ package org.eclipse.osee.framework.ui.service.control.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.widgets.ManagerMain;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Roberto E. Escobar
  */
 public class HideLookupsAction extends Action {
 
-   private ManagerMain mainWindow;
+   private final ManagerMain mainWindow;
    private static String ACTION_TITLE = "non-member Lookup Servers";
 
    public HideLookupsAction(ManagerMain mainWindow) {
@@ -30,6 +30,7 @@ public class HideLookupsAction extends Action {
       setText("Display " + ACTION_TITLE);
    }
 
+   @Override
    public void run() {
       mainWindow.getLookupUpdater().filterLookupServers(isChecked());
    }

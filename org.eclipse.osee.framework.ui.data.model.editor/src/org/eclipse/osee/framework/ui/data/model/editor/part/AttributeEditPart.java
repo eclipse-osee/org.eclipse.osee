@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel.ContainerType;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Roberto E. Escobar
@@ -33,6 +33,7 @@ public class AttributeEditPart extends ComponentEditPart {
       return value != null && value == ContainerType.INHERITED_ATTRIBUTES;
    }
 
+   @Override
    protected void refreshVisuals() {
       SelectableLabel labelFigure = (SelectableLabel) getFigure();
       String displayText = ODMConstants.getDataTypeText(getModelAsDataType());

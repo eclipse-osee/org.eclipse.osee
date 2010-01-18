@@ -8,13 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.plugin;
+package org.eclipse.osee.framework.plugin.core;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.logging.ILoggerListener;
-import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
+import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
 
 public class EclipseErrorLogLogger implements ILoggerListener {
 
@@ -28,8 +27,6 @@ public class EclipseErrorLogLogger implements ILoggerListener {
       } else if (level.intValue() >= Level.WARNING.intValue()) {
          statusLevel = Status.WARNING;
       } else if (level.intValue() >= Level.INFO.intValue()) {
-         statusLevel = Status.INFO;
-      } else if (OseeCodeVersion.isDevelopment()) {
          statusLevel = Status.INFO;
       } else {
          return;

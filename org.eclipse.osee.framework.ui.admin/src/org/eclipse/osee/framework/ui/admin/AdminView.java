@@ -20,20 +20,21 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbItem;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbTableTab;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.SiteGssflRpcr;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridData;
@@ -101,7 +102,7 @@ public class AdminView extends ViewPart implements IActionable {
             }
          }
       };
-      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
 
       Action broadcastMessage = new Action("Broadcast Message") {
@@ -127,7 +128,7 @@ public class AdminView extends ViewPart implements IActionable {
       pingAction.setToolTipText("Ping OSEE Clients");
       pingAction.setEnabled(AccessControlManager.isOseeAdmin());
 
-      OseeAts.addBugToViewToolbar(this, this, AdminPlugin.getInstance(), VIEW_ID, "Admin");
+      OseeUiActions.addBugToViewToolbar(this, this, AdminPlugin.getInstance(), VIEW_ID, "Admin");
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(saveAction);
@@ -221,10 +222,11 @@ public class AdminView extends ViewPart implements IActionable {
 
    public static void setSaveNeeded(boolean needed) {
 
-      if (needed)
+      if (needed) {
          saveAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.SAVE_NEEDED));
-      else
+      } else {
          saveAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.SAVED));
+      }
    }
 
    public String getActionDescription() {

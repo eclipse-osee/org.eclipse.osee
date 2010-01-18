@@ -28,7 +28,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
+import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
 
 public class PathResourceFinder extends ResourceFinder {
 

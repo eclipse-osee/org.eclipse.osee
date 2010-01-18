@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
 import org.eclipse.osee.framework.ui.swt.IContentProviderRunnable;
 
 /**

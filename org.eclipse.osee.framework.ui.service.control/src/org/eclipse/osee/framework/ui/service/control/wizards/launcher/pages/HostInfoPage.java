@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.plugin.core.IWorkbenchUser;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchDataPersist;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
@@ -37,7 +37,7 @@ import org.eclipse.ui.PlatformUI;
 public class HostInfoPage extends DynamicWizardPage {
    private Combo hostName;
    private Text userName;
-   private ServiceLaunchingInformation serviceInfo;
+   private final ServiceLaunchingInformation serviceInfo;
    private List<String> hosts;
 
    public HostInfoPage(String pageName, String previous, String next, ServiceLaunchingInformation serviceInfo) {
@@ -120,7 +120,8 @@ public class HostInfoPage extends DynamicWizardPage {
       userName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       String name;
       try {
-         name = UserManager.getUser().getName();
+         IWorkbenchUser user = ControlPlugin.getInstance().getDirectoryService().getUser();
+         name = user.getName();
       } catch (Exception ex) {
          name = System.getProperty("user.name");
       }

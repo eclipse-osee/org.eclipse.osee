@@ -13,26 +13,27 @@ package org.eclipse.osee.framework.ui.service.control.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.service.control.managers.ReggieCache;
 import org.eclipse.osee.framework.ui.service.control.widgets.ManagerMain;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Roberto E. Escobar
  */
 public class RefreshDataStore extends Action {
 
-   private ManagerMain mainWindow;
+   private final ManagerMain mainWindow;
 
    public RefreshDataStore(ManagerMain mainWindow) {
       super();
       this.mainWindow = mainWindow;
       this.setText("Refresh");
       this.setToolTipText("Refresh Lookup Servers and Services.\n" + "NOTE: Disconnects from service when connected.");
-      this.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
+      this.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
    }
 
+   @Override
    public void run() {
       mainWindow.getLookupUpdater().clear();
       mainWindow.getServicesManager().clear();

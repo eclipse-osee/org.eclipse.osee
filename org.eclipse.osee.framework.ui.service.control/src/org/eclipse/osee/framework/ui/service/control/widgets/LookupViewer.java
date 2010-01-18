@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.service.control.widgets;
 
-import static org.eclipse.osee.framework.ui.skynet.ImageManager.getImage;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Map;
@@ -24,6 +23,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.renderer.IRenderer;
 import org.eclipse.osee.framework.ui.service.control.renderer.ReggieItemHandler;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -38,8 +38,8 @@ import org.eclipse.swt.widgets.TableItem;
  */
 public class LookupViewer extends Composite {
 
-   private static final Image LOOK_UP_IMAGE = getImage(ServiceControlImage.CONNECTION);//ControlPlugin.getInstance().getImage("connection.gif");
-   private static final Image DISCONNECTED_IMAGE = getImage(ServiceControlImage.DISCONNECTED);//ControlPlugin.getInstance().getImage("disconnected.gif");
+   private static final Image LOOK_UP_IMAGE = ImageManager.getImage(ServiceControlImage.CONNECTION);//ControlPlugin.getInstance().getImage("connection.gif");
+   private static final Image DISCONNECTED_IMAGE = ImageManager.getImage(ServiceControlImage.DISCONNECTED);//ControlPlugin.getInstance().getImage("disconnected.gif");
 
    private StructuredViewer viewer;
    private Map<ServiceID, IRenderer> handlerMap;
@@ -109,6 +109,7 @@ public class LookupViewer extends Composite {
 
    private class ListLabelProvider extends LabelProvider {
 
+      @Override
       public Image getImage(Object element) {
          if (element instanceof ServiceRegistrar) {
             if (ReggieItemHandler.isAllowed((ServiceRegistrar) element)) {
@@ -120,6 +121,7 @@ public class LookupViewer extends Composite {
          return null;
       }
 
+      @Override
       public String getText(Object element) {
          if (element instanceof ServiceRegistrar) {
             ServiceRegistrar reggie = (ServiceRegistrar) element;
@@ -134,6 +136,7 @@ public class LookupViewer extends Composite {
       }
    }
 
+   @Override
    public void dispose() {
       viewer.getControl().dispose();
    }

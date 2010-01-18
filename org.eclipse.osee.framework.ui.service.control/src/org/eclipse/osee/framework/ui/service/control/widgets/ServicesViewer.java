@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.service.control.widgets;
 
-import static org.eclipse.osee.framework.ui.skynet.ImageManager.getImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +30,7 @@ import org.eclipse.osee.framework.ui.service.control.data.CategoryParent;
 import org.eclipse.osee.framework.ui.service.control.data.GroupParent;
 import org.eclipse.osee.framework.ui.service.control.data.ServiceNode;
 import org.eclipse.osee.framework.ui.service.control.managers.ConnectionManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -45,15 +45,15 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ServicesViewer extends Composite {
 
-   private static final Image CONFIG_IMAGE = getImage(ServiceControlImage.CONFIG);
+   private static final Image CONFIG_IMAGE = ImageManager.getImage(ServiceControlImage.CONFIG);
    private static final Image FOLDER_IMAGE =
          PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
-   private static final Image GROUP_IMAGE = getImage(ServiceControlImage.GROUP);
-   private static final Image CONNECT_FOLDER_IMAGE = getImage(ServiceControlImage.CONNECT_FOLDER);
-   private static final Image CONNECTED_IMAGE = getImage(ServiceControlImage.CONNECTED_PLUG);
+   private static final Image GROUP_IMAGE = ImageManager.getImage(ServiceControlImage.GROUP);
+   private static final Image CONNECT_FOLDER_IMAGE = ImageManager.getImage(ServiceControlImage.CONNECT_FOLDER);
+   private static final Image CONNECTED_IMAGE = ImageManager.getImage(ServiceControlImage.CONNECTED_PLUG);
 
    private StructuredViewer viewer;
-   private Map<Class<?>, Image> serviceIconMap;
+   private final Map<Class<?>, Image> serviceIconMap;
 
    public ServicesViewer(Composite parent, int style) {
       super(parent, style);
@@ -79,6 +79,7 @@ public class ServicesViewer extends Composite {
 
    private class TreeLabelProvider extends LabelProvider {
 
+      @Override
       public Image getImage(Object obj) {
          Image toReturn = null;
          if (obj instanceof GroupParent) {
@@ -96,7 +97,7 @@ public class ServicesViewer extends Composite {
                }
             }
          } else if (obj instanceof ServiceNode) {
-            ServiceNode node = ((ServiceNode) obj);
+            ServiceNode node = (ServiceNode) obj;
             if (node.isConnected()) {
                toReturn = CONNECTED_IMAGE;
             } else {
@@ -116,6 +117,7 @@ public class ServicesViewer extends Composite {
          return toReturn;
       }
 
+      @Override
       public String getText(Object obj) {
          return obj.toString();
       }
@@ -137,7 +139,7 @@ public class ServicesViewer extends Composite {
       }
 
       public Object[] getElements(Object inputElement) {
-         if (inputElement != null && inputElement instanceof Collection) {
+         if (inputElement != null && inputElement instanceof Collection<?>) {
             Collection<?> elementArray = (Collection<?>) inputElement;
             return elementArray.toArray();
          }
@@ -164,6 +166,7 @@ public class ServicesViewer extends Composite {
       }
    }
 
+   @Override
    public boolean setFocus() {
       return this.viewer.getControl().setFocus();
    }
@@ -186,6 +189,7 @@ public class ServicesViewer extends Composite {
       });
    }
 
+   @Override
    public void dispose() {
       viewer.getControl().dispose();
       super.dispose();

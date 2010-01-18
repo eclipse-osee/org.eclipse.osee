@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -28,10 +28,10 @@ import org.eclipse.swt.graphics.Image;
 public class ArtifactDataType extends DataType {
 
    private Image image;
-   private TypeManager<AttributeDataType> attributes;
-   private TypeManager<RelationDataType> relations;
+   private final TypeManager<AttributeDataType> attributes;
+   private final TypeManager<RelationDataType> relations;
    private ArtifactDataType superType;
-   private Set<ArtifactDataType> subTypes;
+   private final Set<ArtifactDataType> subTypes;
 
    public ArtifactDataType() {
       this(EMPTY_STRING, EMPTY_STRING, null);

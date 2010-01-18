@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeSource;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**

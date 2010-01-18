@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.branch.graph.utility.GraphOptions;
 import org.eclipse.osee.framework.ui.branch.graph.utility.GraphOptions.ConnectionFilter;
 import org.eclipse.osee.framework.ui.branch.graph.utility.GraphOptions.TxFilter;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorPart;
@@ -135,7 +135,9 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
       }
 
       public Menu getMenu(Control parent) {
-         if (menu != null) menu.dispose();
+         if (menu != null) {
+            menu.dispose();
+         }
          menu = new Menu(parent);
          for (int index = 0; index < toggleTxFilterAction.length; index++) {
             addActionToMenu(menu, toggleTxFilterAction[index]);
@@ -172,7 +174,9 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
       }
 
       public Menu getMenu(Control parent) {
-         if (menu != null) menu.dispose();
+         if (menu != null) {
+            menu.dispose();
+         }
          menu = new Menu(parent);
          for (int index = 0; index < toggleFilterConnectionAction.length; index++) {
             addActionToMenu(menu, toggleFilterConnectionAction[index]);

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
 import org.eclipse.osee.framework.ui.data.model.editor.operation.ODMToXmlOperation;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -34,7 +34,7 @@ public class ODMExportWizard extends Wizard implements IExportWizard {
 
    private ODMSelectPage selectTypesPage;
    private ODMExportOutputPage exportOutputPage;
-   private DataTypeCache dataTypeCache;
+   private final DataTypeCache dataTypeCache;
 
    public ODMExportWizard(DataTypeCache dataTypeCache) {
       setDefaultPageImageDescriptor(ImageManager.getImageDescriptor(ODMImage.EXPORT_IMAGE));

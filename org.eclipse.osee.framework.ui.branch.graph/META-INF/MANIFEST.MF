@@ -22,6 +22,7 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.framework.logging
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.ui.swt
 Bundle-Activator: org.eclipse.osee.framework.ui.branch.graph.BranchGraphActivator
 Bundle-ActivationPolicy: lazy

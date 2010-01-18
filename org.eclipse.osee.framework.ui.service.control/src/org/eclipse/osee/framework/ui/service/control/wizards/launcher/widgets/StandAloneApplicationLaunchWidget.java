@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.service.control.wizards.launcher.widgets;
 
-import static org.eclipse.osee.framework.ui.skynet.ImageManager.getImage;
 import java.io.File;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
@@ -21,6 +20,7 @@ import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLau
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.data.JiniGroupSelector;
 import org.eclipse.osee.framework.ui.swt.FormattedText;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
@@ -48,7 +48,7 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
    private Control control;
    private StyledText scriptOutputText;
    private StyledText javaCompilerText;
-   private ServiceLaunchingInformation serviceInfo;
+   private final ServiceLaunchingInformation serviceInfo;
    // private ServiceLaunchWizard wizard;
    private Shell shell;
    private FormattedText cmdText;
@@ -188,15 +188,16 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
 
       Button fileDialog = new Button(group, SWT.NONE);
       fileDialog.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-      fileDialog.setImage(getImage(ServiceControlImage.FILE));
+      fileDialog.setImage(ImageManager.getImage(ServiceControlImage.FILE));
       fileDialog.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             DirectoryDialog dialog = new DirectoryDialog(shell, SWT.OPEN);
             String defaultDir = scriptOutputText.getText();
             File dir = new File(defaultDir);
-            if (dir.isFile() || dir.isDirectory())
+            if (dir.isFile() || dir.isDirectory()) {
                dialog.setFilterPath(defaultDir);
-            else {
+            } else {
                dialog.setFilterPath(homedir);
             }
 
@@ -230,17 +231,18 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
 
       Button fileDialog = new Button(group, SWT.NONE);
       fileDialog.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-      fileDialog.setImage(getImage(ServiceControlImage.FILE));
+      fileDialog.setImage(ImageManager.getImage(ServiceControlImage.FILE));
       fileDialog.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             FileDialog dialog = new FileDialog(shell, SWT.OPEN);
 
             String defaultDir = javaCompilerText.getText();
             File dir = new File(defaultDir);
-            if (dir.isFile() || dir.isDirectory())
+            if (dir.isFile() || dir.isDirectory()) {
                dialog.setFilterPath(defaultDir);
-            else {
+            } else {
                dialog.setFilterPath(javaHome);
             }
 

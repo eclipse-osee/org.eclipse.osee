@@ -8,13 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.client;
+package org.eclipse.osee.framework.plugin.core;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
 
 /**
  * @author Roberto E. Escobar
@@ -22,13 +22,14 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class CorePreferences {
 
    private CorePreferences() {
-
    }
-   public static final String INETADDRESS_KEY = "org.eclipse.osee.framework.core.client.preferences.InetAddressDefault";
 
+   public static final String INETADDRESS_KEY = PluginCoreActivator.PLUGIN_ID + ".preferences.InetAddressDefault";
+
+   @SuppressWarnings("deprecation")
    public static InetAddress getDefaultInetAddress() throws UnknownHostException {
-      Preferences prefStore = CoreClientActivator.getInstance().getPluginPreferences();
-      String inetaddress = prefStore.getString(CorePreferences.INETADDRESS_KEY);
+      String inetaddress =
+            PluginCoreActivator.getInstance().getPluginPreferences().getString(CorePreferences.INETADDRESS_KEY);
       if (Strings.isValid(inetaddress)) {
          return InetAddress.getByName(inetaddress);
       }

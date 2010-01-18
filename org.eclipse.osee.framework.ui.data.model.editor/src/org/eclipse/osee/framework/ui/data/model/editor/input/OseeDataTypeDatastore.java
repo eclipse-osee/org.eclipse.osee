@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -72,7 +72,7 @@ public class OseeDataTypeDatastore {
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
          ArtifactDataType artifactDataType =
                new ArtifactDataType(String.valueOf(artifactType.getId()), artifactType.getName(),
-                     ImageManager.getImage(artifactType));
+                     ArtifactImageManager.getImage(artifactType));
          artifactDataTypes.add(artifactDataType);
       }
       return artifactDataTypes;

@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.widgets.ManagerMain;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchWizard;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceWizardDialog;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -33,6 +33,7 @@ public class OpenLaunchWizard extends Action {
       this.setEnabled(false);
    }
 
+   @Override
    public void run() {
       super.run();
       ServiceLaunchWizard wizard = new ServiceLaunchWizard();

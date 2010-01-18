@@ -26,7 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
+import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
 
 public class ClassServer extends Thread {
    private ServerSocket server;

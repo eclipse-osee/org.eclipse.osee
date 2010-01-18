@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -35,14 +34,13 @@ public class AJavaProject {
 
    private static Map<IJavaProject, IClasspathEntry[]> cachedPath = new HashMap<IJavaProject, IClasspathEntry[]>();
 
-   
    private static IClasspathEntry[] localGetResolvedClasspath(IJavaProject javaProject) throws JavaModelException {
-	   IClasspathEntry[] paths = cachedPath.get(javaProject);
-       if(paths == null){
-      	 paths = javaProject.getResolvedClasspath(true);
-      	 cachedPath.put(javaProject, paths);
-       }
-       return paths;
+      IClasspathEntry[] paths = cachedPath.get(javaProject);
+      if (paths == null) {
+         paths = javaProject.getResolvedClasspath(true);
+         cachedPath.put(javaProject, paths);
+      }
+      return paths;
    }
 
    public static IJavaProject getJavaProject(File file) {
@@ -55,7 +53,7 @@ public class AJavaProject {
       ArrayList<File> files = getJavaProjectProjectDependancies(javaProject);
       for (int i = 0; i < files.size(); i++) {
          try {
-            urls.add(files.get(i).toURL());
+            urls.add(files.get(i).toURI().toURL());
          } catch (MalformedURLException ex) {
             ex.printStackTrace();
          }
@@ -66,11 +64,10 @@ public class AJavaProject {
    public static String getClassFilePath(String file) {
       String classFile = null;
       IJavaProject javaProject = getJavaProject(new File(file));
-      //ArrayList<File> urls = new ArrayList<File>();
       try {
-    	 
+
          IClasspathEntry[] paths = localGetResolvedClasspath(javaProject);
-         
+
          for (int i = 0; i < paths.length; i++) {
             if (paths[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
                File projectlocation = javaProject.getProject().getLocation().toFile();
@@ -150,7 +147,7 @@ public class AJavaProject {
          for (int i = 0; i < paths.length; i++) {
             if (paths[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
                if (paths[i].getPath().toFile().exists()) {
-        //          urls.add(paths[i].getPath().toFile());
+                  //          urls.add(paths[i].getPath().toFile());
                } else {
                   File f = null;
                   f = new File(AWorkspace.getWorkspacePath().concat(paths[i].getPath().toOSString()));

@@ -3,10 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Framework Ui Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.ui.plugin;singleton:=true
 Bundle-Version: 0.9.1.qualifier
-Bundle-Activator: org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator
+Bundle-Activator: org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator
 Bundle-Vendor: Eclipse.org
-Require-Bundle: org.apache.commons.lang,
- org.eclipse.ui,
+Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.jdk.core,
  org.eclipse.osee.framework.ui.swt,
@@ -18,20 +17,18 @@ Require-Bundle: org.apache.commons.lang,
  org.eclipse.ui.editors,
  org.eclipse.ui.console,
  org.eclipse.ui.forms,
- org.junit4,
- org.eclipse.help;bundle-version="3.4.0"
+ org.eclipse.help
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.ui.plugin.io,
  org.eclipse.osee.framework.ui.plugin.util,
  org.eclipse.osee.framework.ui.plugin.views.property,
- org.eclipse.osee.framework.ui.plugin.workspace
+ org.eclipse.osee.framework.ui.plugin.workspace,
+ org.eclipse.osee.framework.ui.plugin.xnavigate
 Import-Package: org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
- org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.database.core,
- org.eclipse.osee.framework.logging,
- org.eclipse.osee.framework.skynet.core.utility
+ org.eclipse.osee.framework.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

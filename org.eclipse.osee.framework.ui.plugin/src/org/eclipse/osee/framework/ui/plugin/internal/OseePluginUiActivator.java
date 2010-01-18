@@ -8,41 +8,45 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.plugin;
+package org.eclipse.osee.framework.ui.plugin.internal;
 
 import java.io.File;
 import java.net.URL;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.IActionReportingService;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * a The activator class controls the plug-in life cycle
  */
 public class OseePluginUiActivator extends OseeUiActivator {
-   // The plug-in ID
+
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.plugin";
 
-   // The shared instance
    private static OseePluginUiActivator plugin;
-
-   private BundleContext context;
+   private ServiceTracker tracker;
 
    public OseePluginUiActivator() {
       plugin = this;
    }
 
+   @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
-      this.context = context;
-      OseeLog.registerLoggerListener(new EclipseErrorLogLogger());
+
+      tracker = new ServiceTracker(context, IActionReportingService.class.getName(), null);
+      tracker.open();
 
       if (PlatformUI.isWorkbenchRunning()) {
          IWorkbench workbench = PlatformUI.getWorkbench();
@@ -82,8 +86,13 @@ public class OseePluginUiActivator extends OseeUiActivator {
       }
    }
 
+   @Override
    public void stop(BundleContext context) throws Exception {
       super.stop(context);
+      if (tracker != null) {
+         tracker.close();
+      }
+      tracker = null;
       plugin = null;
       context = null;
    }
@@ -92,7 +101,11 @@ public class OseePluginUiActivator extends OseeUiActivator {
       return plugin;
    }
 
-   public BundleContext getContext() {
-      return context;
+   public IActionReportingService getActionReportingService() throws OseeCoreException {
+      try {
+         return (IActionReportingService) tracker.waitForService(3000);
+      } catch (InterruptedException ex) {
+         throw new OseeWrappedException(ex);
+      }
    }
 }

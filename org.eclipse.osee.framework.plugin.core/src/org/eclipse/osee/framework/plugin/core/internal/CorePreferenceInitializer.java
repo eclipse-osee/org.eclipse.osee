@@ -9,25 +9,25 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.core.client.internal;
+package org.eclipse.osee.framework.plugin.core.internal;
 
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.osee.framework.core.client.CoreClientActivator;
-import org.eclipse.osee.framework.core.client.CorePreferences;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.CorePreferences;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CorePreferenceInitializer extends AbstractPreferenceInitializer {
 
+   @Override
    public void initializeDefaultPreferences() {
-      Preferences store = CoreClientActivator.getInstance().getPluginPreferences();
+      Preferences store = PluginCoreActivator.getInstance().getPluginPreferences();
       try {
          String defaultNetworkValue = Network.getValidIP().getHostAddress();
          store.setDefault(CorePreferences.INETADDRESS_KEY, defaultNetworkValue);
@@ -36,7 +36,7 @@ public class CorePreferenceInitializer extends AbstractPreferenceInitializer {
             store.setValue(CorePreferences.INETADDRESS_KEY, store.getDefaultString(CorePreferences.INETADDRESS_KEY));
          }
       } catch (UnknownHostException ex) {
-         OseeLog.log(CoreClientActivator.class, Level.SEVERE, "Error initializing default inet address key", ex);
+         OseeLog.log(PluginCoreActivator.class, Level.SEVERE, "Error initializing default inet address key", ex);
       }
    }
 }

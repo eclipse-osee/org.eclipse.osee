@@ -11,13 +11,13 @@
 package org.eclipse.osee.framework.ui.service.control;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public enum ServiceControlImage implements OseeImage {
+public enum ServiceControlImage implements KeyedImage {
    ANNOTATE("annotate.gif"),
    CONFIG("config.gif"),
    CONNECT_FOLDER("connect_folder.gif"),

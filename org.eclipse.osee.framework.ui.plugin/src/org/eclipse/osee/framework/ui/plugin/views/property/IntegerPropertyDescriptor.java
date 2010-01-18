@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.plugin.views.property;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 public class IntegerPropertyDescriptor extends TextPropertyDescriptor {

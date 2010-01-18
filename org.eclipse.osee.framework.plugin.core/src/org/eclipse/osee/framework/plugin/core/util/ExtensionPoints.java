@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
+import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
 import org.osgi.framework.Bundle;
 
 /**

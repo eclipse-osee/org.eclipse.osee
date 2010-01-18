@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
+import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
 import org.osgi.framework.Bundle;
 
 public class BundleResourceFinder extends ResourceFinder {

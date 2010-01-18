@@ -20,11 +20,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
-import org.eclipse.osee.framework.core.client.CorePreferences;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.CorePreferences;
 
 public class HttpServer {
    protected static final String DEFAULT_SERVICE_NAME = "osee.http.server";

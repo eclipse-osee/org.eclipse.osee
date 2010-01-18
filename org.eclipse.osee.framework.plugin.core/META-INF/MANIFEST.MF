@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Plug-in for common eclipse-based non-ui code (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.plugin.core;singleton:=true
 Bundle-Version: 0.9.1.qualifier
-Bundle-Activator: org.eclipse.osee.framework.plugin.core.PluginCoreActivator
+Bundle-Activator: org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.jdk.core
@@ -14,7 +14,8 @@ Export-Package: org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.plugin.core.server.resources,
  org.eclipse.osee.framework.plugin.core.server.task,
  org.eclipse.osee.framework.plugin.core.util
-Import-Package: org.eclipse.osee.framework.core.operation,
+Import-Package: org.eclipse.core.resources,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

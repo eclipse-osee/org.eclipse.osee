@@ -2,4 +2,10 @@
 <?eclipse version="3.2"?>
 <plugin>
 <extension-point id="logHandler" name="Log Handler" schema="schema/logHandler.exsd"/>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.osee.framework.plugin.core.internal.CorePreferenceInitializer">
+      </initializer>
+   </extension>
 </plugin>

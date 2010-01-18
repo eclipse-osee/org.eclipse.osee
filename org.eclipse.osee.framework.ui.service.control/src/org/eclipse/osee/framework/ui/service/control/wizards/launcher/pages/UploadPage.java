@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.jobs.TextDisplayHelper;
 import org.eclipse.osee.framework.ui.service.control.jobs.UploadRemoteFileJob;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.swt.DynamicWizardPage;
 import org.eclipse.osee.framework.ui.swt.FormattedText;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -41,16 +41,20 @@ import org.eclipse.ui.PlatformUI;
 public class UploadPage extends DynamicWizardPage {
 
    public enum LabelEnum {
-      Service, User, Host, Host_Upload_Location;
+      Service,
+      User,
+      Host,
+      Host_Upload_Location;
 
+      @Override
       public String toString() {
          return this.name().replaceAll("_", " ");
       }
    }
 
-   private Map<LabelEnum, Text> dataMap;
+   private final Map<LabelEnum, Text> dataMap;
 
-   private ServiceLaunchingInformation serviceInfo;
+   private final ServiceLaunchingInformation serviceInfo;
    private FormattedText cmdText;
    private ProgressBar progress;
 
@@ -139,6 +143,7 @@ public class UploadPage extends DynamicWizardPage {
       upload.setToolTipText("Uploads files to the remote host");
       upload.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
                public void run() {

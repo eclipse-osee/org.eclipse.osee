@@ -15,7 +15,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.ui.data.model.editor.core.ODMEditor;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeCache;
 import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -27,7 +27,7 @@ public class ODMImportWizard extends Wizard implements IImportWizard {
    private final ODMEditor editor;
    private ODMImportPage importPage;
    private ODMSelectPage selectTypesPage;
-   private DataTypeCache dataTypeCache;
+   private final DataTypeCache dataTypeCache;
 
    public ODMImportWizard(ODMEditor editor) {
       this.editor = editor;

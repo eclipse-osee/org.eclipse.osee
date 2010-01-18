@@ -35,4 +35,5 @@ Import-Package: org.eclipse.osee.framework.core.cache,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.xml,
- org.eclipse.osee.framework.logging
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.ui.swt

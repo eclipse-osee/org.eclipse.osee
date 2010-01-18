@@ -12,14 +12,14 @@ package org.eclipse.osee.framework.ui.data.model.editor.utility;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Roberto E. Escobar
  * @author Ryan Schmitt
  */
-public enum ODMImage implements OseeImage {
+public enum ODMImage implements KeyedImage {
 
    EXPORT_IMAGE("extractsupertype_wiz.png"),
    IMPORT_IMAGE("importsupertype_wiz.png"),

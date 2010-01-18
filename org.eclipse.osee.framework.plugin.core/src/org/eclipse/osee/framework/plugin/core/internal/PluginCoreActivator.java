@@ -8,8 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.plugin.core;
+package org.eclipse.osee.framework.plugin.core.internal;
 
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.EclipseErrorLogLogger;
+import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
@@ -18,13 +21,20 @@ import org.osgi.util.tracker.ServiceTracker;
  * The activator class controls the plug-in life cycle
  */
 public class PluginCoreActivator extends OseeActivator {
-   private static PluginCoreActivator pluginInstance; // The shared instance.
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.plugin.core";
+
+   private static PluginCoreActivator pluginInstance;
    private ServiceTracker packageAdminTracker;
 
-   public PluginCoreActivator() {
-      super();
+   @Override
+   public void start(BundleContext context) throws Exception {
+      super.start(context);
       pluginInstance = this;
+
+      OseeLog.registerLoggerListener(new EclipseErrorLogLogger());
+
+      packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
+      packageAdminTracker.open();
    }
 
    @Override
@@ -33,9 +43,6 @@ public class PluginCoreActivator extends OseeActivator {
       packageAdminTracker.close();
    }
 
-   /**
-    * Returns the shared instance.
-    */
    public static PluginCoreActivator getInstance() {
       return pluginInstance;
    }
@@ -44,11 +51,4 @@ public class PluginCoreActivator extends OseeActivator {
       return (PackageAdmin) packageAdminTracker.getService();
    }
 
-   @Override
-   public void start(BundleContext context) throws Exception {
-      super.start(context);
-
-      packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
-      packageAdminTracker.open();
-   }
 }

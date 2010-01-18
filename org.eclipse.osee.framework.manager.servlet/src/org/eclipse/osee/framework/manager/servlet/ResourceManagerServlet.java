@@ -13,10 +13,13 @@ package org.eclipse.osee.framework.manager.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -168,6 +171,23 @@ public class ResourceManagerServlet extends OseeHttpServlet {
          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
          response.setContentType("text/plain");
          handleError(response, String.format("Unable to delete resource: [%s]", request.getRequestURI()), ex);
+      }
+   }
+
+   // TODO Allow for bulk loading of resources
+   @Override
+   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+      super.doPost(req, resp); // Remove this line once implemented
+
+      Set<IResourceLocator> locators = new HashSet<IResourceLocator>();
+
+      IResourceManager resourceManager = MasterServletActivator.getInstance().getResourceManager();
+      for (IResourceLocator locator : locators) {
+         try {
+            Options options = new Options();
+            resourceManager.acquire(locator, options);
+         } catch (OseeCoreException ex) {
+         }
       }
    }
 }

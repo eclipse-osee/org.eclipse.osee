@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
 
 /**
  * @author Ryan D. Brooks

@@ -22,10 +22,10 @@ import org.eclipse.gef.tools.AbstractTool;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.ui.branch.graph.BranchGraphActivator;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -65,7 +65,7 @@ public class BranchGraphPaletteProvider {
       }
    }
 
-   private ToolEntry createComponent(String label, String description, Class<?> clazz, OseeImage smallImage, OseeImage largeImage) {
+   private ToolEntry createComponent(String label, String description, Class<?> clazz, KeyedImage smallImage, KeyedImage largeImage) {
       ToolEntry toolEntry =
             new ToolEntry(label, description, ImageManager.getImageDescriptor(smallImage),
                   ImageManager.getImageDescriptor(largeImage)) {
@@ -84,7 +84,7 @@ public class BranchGraphPaletteProvider {
       toolbar.add(new MarqueeToolEntry());
 
       final Action action =
-            OseeAts.createBugAction(BranchGraphActivator.getInstance(), editor, BranchGraphEditor.EDITOR_ID,
+            OseeUiActions.createBugAction(BranchGraphActivator.getInstance(), editor, BranchGraphEditor.EDITOR_ID,
                   "Branch Graph");
       final ImageDescriptor img = action.getImageDescriptor();
 
