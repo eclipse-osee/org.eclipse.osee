@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -46,19 +47,21 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -183,7 +186,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       manager.add(new ShowDestinationBranchChangeReportAction());
       manager.add(new Separator());
       manager.add(mergeXViewer.getCustomizeAction());
-      manager.add(OseeAts.createBugAction(SkynetGuiPlugin.getInstance(), this, MergeView.VIEW_ID, "Merge Manager"));
+      manager.add(OseeUiActions.createBugAction(SkynetGuiPlugin.getInstance(), this, MergeView.VIEW_ID, "Merge Manager"));
       manager.update(true);
    }
 
@@ -436,7 +439,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       try {
          IArtifact branchAssociatedArtifact = (IArtifact) sourceBranch.getAssociatedArtifact();
          if (branchAssociatedArtifact != null) {
-            openAssociatedArtifactAction.setImageDescriptor(ImageManager.getImageDescriptor(branchAssociatedArtifact));
+            openAssociatedArtifactAction.setImageDescriptor(ArtifactImageManager.getImageDescriptor(branchAssociatedArtifact));
             openAssociatedArtifactAction.setEnabled(true);
          }
       } catch (Exception ex) {
@@ -575,13 +578,12 @@ public class XMergeViewer extends XWidget implements IAdaptable {
             Branch sourceBranch = conflicts[0].getSourceBranch();
             Artifact branchAssociatedArtifact = (Artifact) sourceBranch.getAssociatedArtifact().getFullArtifact();
             if (branchAssociatedArtifact instanceof IATSArtifact) {
-               OseeAts.openATSArtifact(branchAssociatedArtifact);
-               return;
+               OseeAts.getInstance().openArtifact(branchAssociatedArtifact);
             } else if (!branchAssociatedArtifact.equals(UserManager.getUser(SystemUser.OseeSystem))) {
                ArtifactEditor.editArtifact(branchAssociatedArtifact);
-               return;
+            } else {
+               AWorkbench.popup("ERROR", "Unknown branch association");
             }
-            AWorkbench.popup("ERROR", "Unknown branch association");
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -621,7 +623,6 @@ public class XMergeViewer extends XWidget implements IAdaptable {
 
       public ShowDestinationBranchChangeReportAction() {
          super();
-         // setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change_dest.gif"));
          setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE_DEST));
          setToolTipText("Show Destination Branch Change Report");
       }
@@ -642,7 +643,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
 
       public RefreshAction() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
+         setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
          setToolTipText("Refresh");
          setId(REFRESH_ACTION_ID);
       }

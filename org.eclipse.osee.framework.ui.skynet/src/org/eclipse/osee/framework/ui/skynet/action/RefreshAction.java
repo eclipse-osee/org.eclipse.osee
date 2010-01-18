@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.action;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -30,7 +30,7 @@ public class RefreshAction extends Action {
 
    public RefreshAction(IRefreshActionHandler iRefreshActionHandler) {
       this.iRefreshActionHandler = iRefreshActionHandler;
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
+      setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
       setToolTipText("Refresh");
    }
 

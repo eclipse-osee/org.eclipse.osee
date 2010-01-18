@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -40,7 +41,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       } else if (element instanceof WrapperForRelationLink && columnIndex == 0) {
          WrapperForRelationLink artifact = (WrapperForRelationLink) element;
          try {
-            return ImageManager.getImage(artifact.getOther());
+            return ArtifactImageManager.getImage(artifact.getOther());
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }

@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.event.MergeBranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.compare.AttributeCompareItem;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
@@ -186,13 +186,13 @@ public class MergeXViewer extends XViewer {
                               attributeConflict,
                               attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getSourceBranch().getName(),
                               attributeConflict.getAttribute().getDisplayableString(), true,
-                              ImageManager.getImage(attributeConflict.getArtifact()));
+                              ArtifactImageManager.getImage(attributeConflict.getArtifact()));
                   AttributeCompareItem rightContributionItem =
                         new AttributeCompareItem(
                               attributeConflict,
                               attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getDestBranch().getName(),
                               attributeConflict.getDestDisplayData(), false,
-                              ImageManager.getImage(attributeConflict.getArtifact()));
+                              ArtifactImageManager.getImage(attributeConflict.getArtifact()));
 
                   CompareHandler compareHandler = new CompareHandler(leftContributionItem, rightContributionItem, null);
                   compareHandler.compare();

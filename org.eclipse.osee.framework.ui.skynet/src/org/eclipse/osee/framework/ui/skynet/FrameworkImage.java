@@ -11,13 +11,14 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Ryan D. Brooks
  */
-public enum FrameworkImage implements OseeImage {
+public enum FrameworkImage implements KeyedImage {
    ACCEPT("accept.gif"),
-   ADMIN("admin.gif"),
    ADD_GREEN("add.png"),
    ARCHIVE("archive.gif"),
    ARTIFACT_EDITOR("artifact_editor.gif"),
@@ -48,9 +49,6 @@ public enum FrameworkImage implements OseeImage {
    BRANCH_FAVORITE_OVERLAY("star_9_9.gif"),
    BRANCH_CHANGE_MANAGED("change_managed_branch.gif"),
    BRANCH_COMMIT("commitBranch.gif"),
-   BUG("bug.gif"),
-   CHECKBOX_ENABLED("chkbox_enabled.gif"),
-   CHECKBOX_DISABLED("chkbox_disabled.gif"),
    CLOCK("clock.gif"),
    COLLAPSE_ALL("collapseAll.gif"),
    CONFLICTING_Deleted("CONFLICTING_Deleted.gif"),
@@ -80,7 +78,6 @@ public enum FrameworkImage implements OseeImage {
    EXCLAIM_RED("redExclaim.gif"),
    FLASHLIGHT("flashlight.gif"),
    FILTERS("filter.gif"),
-   FOLDER("folder.gif"),
    GEAR("gear.gif"),
    GREEN_PLUS("greenPlus.gif"),
    GROUP("group.gif"),
@@ -138,7 +135,6 @@ public enum FrameworkImage implements OseeImage {
    PURPLE("purple.gif"),
    RECTANGLE_16("rectangle16.gif"),
    RECTANGLE_24("rectangle24.gif"),
-   REFRESH("refresh.gif"),
    RELATION("relate.gif"),
    RELOAD("reload.gif"),
    REMOVE("remove.gif"),
@@ -162,7 +158,6 @@ public enum FrameworkImage implements OseeImage {
    TRASH("trash.gif"),
    SKYWALKER("skywalker.gif"),
    SUPPORT("users2.gif"),
-   URL("www.gif"),
    USER("userPurple.gif"),
    USER_PURPLE("userPurple.gif"),
    USER_RED("userRed.gif"),
@@ -188,7 +183,7 @@ public enum FrameworkImage implements OseeImage {
    @Override
    public ImageDescriptor createImageDescriptor() {
       if (this == MISSING) {
-         return ImageDescriptor.getMissingImageDescriptor();
+         return ImageManager.getImageDescriptor(ImageManager.DEFAULT_IMAGE);
       }
       return ImageManager.createImageDescriptor(SkynetGuiPlugin.PLUGIN_ID, "images", fileName);
    }

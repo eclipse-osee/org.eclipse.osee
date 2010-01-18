@@ -26,11 +26,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -57,7 +58,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
       setInput(editor != null ? editor : "No Input Available");
 
       getSite().getActionBars().getToolBarManager().add(
-            new Action("Refresh", ImageManager.getImageDescriptor(FrameworkImage.REFRESH)) {
+            new Action("Refresh", ImageManager.getImageDescriptor(PluginUiImage.REFRESH)) {
                @Override
                public void run() {
                   refresh();
@@ -117,7 +118,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
             containers.clear();
             return ((BaseArtifactEditorInput) element).getImage();
          } else if (element instanceof AttributeTypeContainer) {
-            AttributeTypeContainer container = ((AttributeTypeContainer) element);
+            AttributeTypeContainer container = (AttributeTypeContainer) element;
             containers.add(container);
             return container.isEditable() ? ImageManager.getImage(FrameworkImage.EDIT_ARTIFACT) : ImageManager.getImage(FrameworkImage.ADD_GREEN);
          } else if (element instanceof AttributeType) {

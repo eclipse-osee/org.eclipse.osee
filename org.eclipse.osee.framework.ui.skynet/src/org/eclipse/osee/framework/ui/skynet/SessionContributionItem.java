@@ -25,8 +25,9 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.skynet.dialogs.AuthenticationDialog;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.OverlayImage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -78,7 +79,8 @@ public final class SessionContributionItem extends OseeContributionItem implemen
                         public void run() {
                            try {
                               OseeEventManager.kickAccessControlArtifactsEvent(this,
-                                    AccessControlEventType.UserAuthenticated, LoadedArtifacts.createEmptyLoadedArtifacts());
+                                    AccessControlEventType.UserAuthenticated,
+                                    LoadedArtifacts.createEmptyLoadedArtifacts());
                            } catch (Exception ex) {
                               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                            }

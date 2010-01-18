@@ -17,7 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 public class PolicyLabelProvider extends XViewerLabelProvider {
@@ -40,9 +40,9 @@ public class PolicyLabelProvider extends XViewerLabelProvider {
 
    private String getColumnText(XViewerColumn col, AccessControlData data) {
       String colId = col.getId();
-      if (colId.equals(PolicyTableColumns.userName.toString()))
+      if (colId.equals(PolicyTableColumns.userName.toString())) {
          return data.getSubject().getName();
-      else {
+      } else {
          PermissionEnum permissionEnum = null;
          if (colId.equals(PolicyTableColumns.totalAccess.toString())) {
             permissionEnum = data.getPermission();
@@ -54,7 +54,9 @@ public class PolicyLabelProvider extends XViewerLabelProvider {
             permissionEnum = data.getArtifactPermission();
          }
 
-         if (permissionEnum != null) return permissionEnum.getName();
+         if (permissionEnum != null) {
+            return permissionEnum.getName();
+         }
       }
 
       return "";
@@ -63,10 +65,11 @@ public class PolicyLabelProvider extends XViewerLabelProvider {
    @Override
    public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) throws Exception {
       String colId = col.getId();
-      if (colId.equals(PolicyTableColumns.delete.toString()))
+      if (colId.equals(PolicyTableColumns.delete.toString())) {
          return ImageManager.getImage(FrameworkImage.REMOVE);
-      else
+      } else {
          return null;
+      }
    }
 
    public void dispose() {

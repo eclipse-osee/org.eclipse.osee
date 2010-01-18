@@ -18,12 +18,14 @@ import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
+import org.eclipse.osee.framework.ui.swt.ProgramImage;
 import org.eclipse.swt.graphics.ImageData;
 
 /**
  * @author Ryan D. Brooks
  */
-public class BaseImage implements OseeImage {
+public class BaseImage implements KeyedImage {
    private final ArtifactType artifactType;
    private final byte[] imageData;
 
@@ -42,19 +44,19 @@ public class BaseImage implements OseeImage {
       return SkynetGuiPlugin.PLUGIN_ID + ".artifact_type." + artifactType.getName();
    }
 
-   public static OseeImage getBaseImageEnum(ArtifactType artifactType, byte[] imageData) {
-      if (ImageManager.getOverrideImageEnum() != null) {
-         return ImageManager.getOverrideImageEnum();
+   public static KeyedImage getBaseImageEnum(ArtifactType artifactType, byte[] imageData) {
+      if (ArtifactImageManager.getOverrideImageEnum() != null) {
+         return ArtifactImageManager.getOverrideImageEnum();
       }
       return new BaseImage(artifactType, imageData);
    }
 
-   public static OseeImage getBaseImageEnum(ArtifactType artifactType) {
-      if (ImageManager.getOverrideImageEnum() != null) {
-         return ImageManager.getOverrideImageEnum();
+   public static KeyedImage getBaseImageEnum(ArtifactType artifactType) {
+      if (ArtifactImageManager.getOverrideImageEnum() != null) {
+         return ArtifactImageManager.getOverrideImageEnum();
       }
       // Check extensions
-      OseeImage oseeImage = ImageManager.getArtifactTypeImage(artifactType.getName());
+      KeyedImage oseeImage = ArtifactImageManager.getArtifactTypeImage(artifactType.getName());
       if (oseeImage != null) {
          return oseeImage;
       }
@@ -62,9 +64,9 @@ public class BaseImage implements OseeImage {
       return FrameworkImage.LASER;
    }
 
-   public static OseeImage getBaseImageEnum(Artifact artifact) {
-      if (ImageManager.getOverrideImageEnum() != null) {
-         return ImageManager.getOverrideImageEnum();
+   public static KeyedImage getBaseImageEnum(Artifact artifact) {
+      if (ArtifactImageManager.getOverrideImageEnum() != null) {
+         return ArtifactImageManager.getOverrideImageEnum();
       }
       try {
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_EXTENSION.getName())) {

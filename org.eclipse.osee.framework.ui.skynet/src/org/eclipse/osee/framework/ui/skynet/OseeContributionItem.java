@@ -57,7 +57,7 @@ public abstract class OseeContributionItem extends StatusLineContributionItem {
    }
 
    public static void addTo(IStatusLineManager manager) {
-      if (OseeAts.isAtsAdmin()) {
+      if (OseeAts.getInstance().isAtsAdmin()) {
          AdminContributionItem.addTo(manager);
       }
       SkynetServiceContributionItem.addTo(manager);

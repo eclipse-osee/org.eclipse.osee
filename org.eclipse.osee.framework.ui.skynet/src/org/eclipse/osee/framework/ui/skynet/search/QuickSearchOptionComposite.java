@@ -29,11 +29,11 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.HidingComposite;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -360,12 +360,28 @@ public class QuickSearchOptionComposite extends Composite {
    }
 
    private enum SearchOption {
-      Attribute_Type_Filter("quick_search_attribute_type_filter", "When selected, searches only through the artifact's containing the selected attribute types.", true, new AttributeTypeFilterConfigHandler()),
-      By_Id("quick_search_by_id_option", "When selected, searches by GUID(s) or HRID(s). Accepts comma or space separated ids.", true),
-      Include_Deleted("quick_search_deleted_option", "When selected, does not filter out deleted artifacts from search results.", false),
+      Attribute_Type_Filter(
+            "quick_search_attribute_type_filter",
+            "When selected, searches only through the artifact's containing the selected attribute types.",
+            true,
+            new AttributeTypeFilterConfigHandler()),
+      By_Id(
+            "quick_search_by_id_option",
+            "When selected, searches by GUID(s) or HRID(s). Accepts comma or space separated ids.",
+            true),
+      Include_Deleted(
+            "quick_search_deleted_option",
+            "When selected, does not filter out deleted artifacts from search results.",
+            false),
       Match_Word_Order("quick_search_word_order_option", "When selected, search will match query word order.", false),
-      All_Match_Locations("quick_search_all_match_locations_option", "When selected, returns all match locations. NOTE: If the search matches many artifacts, performance may be slow.", false),
-      Case_Sensitive("quick_search_case_sensitive_option", "When selected, performs a case sensitive search. NOTE: This is only applicable if match word order is also selected.", false);
+      All_Match_Locations(
+            "quick_search_all_match_locations_option",
+            "When selected, returns all match locations. NOTE: If the search matches many artifacts, performance may be slow.",
+            false),
+      Case_Sensitive(
+            "quick_search_case_sensitive_option",
+            "When selected, performs a case sensitive search. NOTE: This is only applicable if match word order is also selected.",
+            false);
 
       private static String[] labels = null;
       private static String[] mutuallyExclusive = null;

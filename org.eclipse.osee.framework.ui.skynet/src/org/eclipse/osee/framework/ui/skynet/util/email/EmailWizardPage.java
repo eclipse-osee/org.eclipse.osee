@@ -29,9 +29,9 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTree;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.OSEEFilteredTree;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -94,7 +94,9 @@ public class EmailWizardPage extends WizardPage {
       ArrayList<Object> names = new ArrayList<Object>();
       if (groups != null) {
          names.addAll(groups);
-         if (groups.size() > 0) names.add(separator);
+         if (groups.size() > 0) {
+            names.add(separator);
+         }
       }
 
       try {
@@ -120,7 +122,9 @@ public class EmailWizardPage extends WizardPage {
             if (event.button == 1) {
                IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
                Object obj = sel.getFirstElement();
-               if ((obj instanceof String) && ((String) obj).equals(separator)) return;
+               if (obj instanceof String && ((String) obj).equals(separator)) {
+                  return;
+               }
                toList.add(sel.getFirstElement());
             }
          }
@@ -174,7 +178,9 @@ public class EmailWizardPage extends WizardPage {
       gd.heightHint = 75;
       gd.widthHint = 150;
       toList.getList().setLayoutData(gd);
-      if (initialAddress != null) toList.setInput(initialAddress);
+      if (initialAddress != null) {
+         toList.setInput(initialAddress);
+      }
       toList.getList().setMenu(getDeletePopup(toList));
 
       b = new Button(toComp, SWT.NONE);
@@ -281,8 +287,9 @@ public class EmailWizardPage extends WizardPage {
          @Override
          public void widgetSelected(SelectionEvent e) {
             IStructuredSelection sel = (IStructuredSelection) fListView.getSelection();
-            for (Object obj : sel.toList())
+            for (Object obj : sel.toList()) {
                fListView.remove(obj);
+            }
          }
       });
 
@@ -306,11 +313,13 @@ public class EmailWizardPage extends WizardPage {
       ArrayList<String> emails = new ArrayList<String>();
       for (int x = 0; x < list.getList().getItemCount(); x++) {
          Object obj = list.getElementAt(x);
-         if (obj instanceof User)
+         if (obj instanceof User) {
             emails.add(((User) obj).getEmail());
-         else if (obj instanceof String)
+         } else if (obj instanceof String) {
             emails.add(((String) obj));
-         else if (obj instanceof EmailGroup) emails.addAll(((EmailGroup) obj).getEmails());
+         } else if (obj instanceof EmailGroup) {
+            emails.addAll(((EmailGroup) obj).getEmails());
+         }
       }
       return emails.toArray(new String[emails.size()]);
    }
@@ -327,11 +336,13 @@ public class EmailWizardPage extends WizardPage {
 
       public String getText(Object element) {
          try {
-            if (element instanceof User)
+            if (element instanceof User) {
                return ((User) element).getName() + " (" + ((User) element).getEmail() + ")";
-            else if (element instanceof EmailGroup)
+            } else if (element instanceof EmailGroup) {
                return ((EmailGroup) element).toString();
-            else if (element instanceof String) return ((String) element).toString();
+            } else if (element instanceof String) {
+               return ((String) element).toString();
+            }
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
          }

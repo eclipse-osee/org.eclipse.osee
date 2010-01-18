@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -39,15 +40,14 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OpenWithMenuListener;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactDiffMenu;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
@@ -81,7 +81,9 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
    }
 
    public static void open(Artifact artifact) throws OseeArgumentException {
-      if (artifact == null) throw new OseeArgumentException("Artifact can't be null");
+      if (artifact == null) {
+         throw new OseeArgumentException("Artifact can't be null");
+      }
       HistoryView.openViewUpon(artifact, true);
    }
 
@@ -95,8 +97,8 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
                   try {
                      IWorkbenchPage page = AWorkbench.getActivePage();
                      HistoryView historyView =
-                           (HistoryView) page.showView(VIEW_ID,
-                                 artifact.getGuid() + artifact.getBranch().getId(), IWorkbenchPage.VIEW_ACTIVATE);
+                           (HistoryView) page.showView(VIEW_ID, artifact.getGuid() + artifact.getBranch().getId(),
+                                 IWorkbenchPage.VIEW_ACTIVATE);
 
                      historyView.explore(artifact, loadHistory);
                   } catch (Exception ex) {

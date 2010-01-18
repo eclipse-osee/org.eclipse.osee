@@ -32,11 +32,11 @@ public abstract class ArtifactImageProvider {
     * @throws OseeCoreException
     */
    public String setupImage(Artifact artifact) throws OseeCoreException {
-      return ImageManager.setupImageNoProviders(artifact);
+      return ArtifactImageManager.setupImageNoProviders(artifact);
    }
 
    public String setupImage(ArtifactType artifactType) throws OseeCoreException {
-      return ImageManager.setupImage(BaseImage.getBaseImageEnum(artifactType));
+      return ArtifactImageManager.setupImage(BaseImage.getBaseImageEnum(artifactType));
    }
 
    /**

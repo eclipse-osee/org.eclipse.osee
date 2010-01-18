@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptions.LinkName;
 import org.eclipse.swt.graphics.Image;
@@ -41,7 +41,7 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
 
    public Image getImage(Object element) {
       if (element instanceof Artifact) {
-         return ImageManager.getImage((Artifact) element);
+         return ArtifactImageManager.getImage((Artifact) element);
       }
       return null;
    }

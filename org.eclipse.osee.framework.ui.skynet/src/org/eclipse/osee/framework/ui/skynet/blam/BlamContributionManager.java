@@ -20,8 +20,9 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 
 /**
@@ -93,7 +94,7 @@ public class BlamContributionManager {
       // Create new folder category
       if (thisCategoryItem == null) {
          // Add to parentItem
-         thisCategoryItem = new XNavigateItem(parentItem, firstElement, FrameworkImage.FOLDER);
+         thisCategoryItem = new XNavigateItem(parentItem, firstElement, PluginUiImage.FOLDER);
          String catName = "";
          for (int x = 0; x <= index; x++) {
             if (!catName.equals("")) {

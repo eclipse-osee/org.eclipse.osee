@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -52,7 +52,7 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
          if (!imageFile.exists()) {
             throw new OseeArgumentException("Invalid image filename.");
          }
-         ImageManager.setArtifactTypeImageInDb(artifactSubtypeDescriptor, new ByteArrayInputStream(
+         ArtifactImageManager.setArtifactTypeImageInDb(artifactSubtypeDescriptor, new ByteArrayInputStream(
                Lib.inputStreamToBytes(new FileInputStream(imageFile))));
       } else {
          Displays.ensureInDisplayThread(new Runnable() {
@@ -61,7 +61,7 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
                try {
                   if (MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Clear Database Image?",
                         "No Image File Selected.\n\nSelect \"Ok\" to clear image from database (default image will be used).")) {
-                     ImageManager.setArtifactTypeImageInDb(artifactSubtypeDescriptor, null);
+                     ArtifactImageManager.setArtifactTypeImageInDb(artifactSubtypeDescriptor, null);
                   }
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

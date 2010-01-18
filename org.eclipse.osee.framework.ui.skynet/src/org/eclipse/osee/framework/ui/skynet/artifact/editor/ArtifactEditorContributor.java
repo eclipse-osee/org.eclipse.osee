@@ -16,7 +16,7 @@ import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.ui.IEditorPart;
@@ -48,7 +48,7 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
       Artifact artifact = (Artifact) part.getAdapter(Artifact.class);
       if (artifact != null) {
          typeStatusItem.setText(artifact.getArtifactType().getName());
-         typeStatusItem.setImage(ImageManager.getImage(artifact));
+         typeStatusItem.setImage(ArtifactImageManager.getImage(artifact));
          showInExplorerAction.setArtifact(artifact);
 
          RelationsComposite composite = (RelationsComposite) part.getAdapter(RelationsComposite.class);

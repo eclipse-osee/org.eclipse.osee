@@ -6,7 +6,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-******************************/
+ ******************************/
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.Collection;
@@ -15,6 +15,8 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -23,21 +25,21 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
    public void init() throws OseeCoreException {
-      ImageManager.registerBaseImage("Root Artifact", FrameworkImage.ROOT_HIERARCHY, this);
-      ImageManager.registerBaseImage("Heading", FrameworkImage.HEADING, this);
-      ImageManager.registerBaseImage("Narrative", FrameworkImage.NARRITIVE, this);
-      ImageManager.registerBaseImage("Blam Workflow", FrameworkImage.BLAM, this);
-      ImageManager.registerBaseImage("Folder", FrameworkImage.FOLDER, this);
-      ImageManager.registerBaseImage("User", FrameworkImage.USER, this);
-      ImageManager.registerBaseImage("Global Preferences", FrameworkImage.GEAR, this);
-      ImageManager.registerBaseImage("User Group", FrameworkImage.USERS, this);
-      ImageManager.registerBaseImage("Work Flow Definition", FrameworkImage.WORKFLOW, this);
-      ImageManager.registerBaseImage("Work Page Definition", FrameworkImage.PAGE, this);
-      ImageManager.registerBaseImage("Work Rule Definition", FrameworkImage.RULE, this);
-      ImageManager.registerBaseImage("Work Widget Definition", FrameworkImage.WIDGET, this);
-      ImageManager.registerBaseImage("Universal Group", FrameworkImage.GROUP, this);
+      ArtifactImageManager.registerBaseImage("Root Artifact", FrameworkImage.ROOT_HIERARCHY, this);
+      ArtifactImageManager.registerBaseImage("Heading", FrameworkImage.HEADING, this);
+      ArtifactImageManager.registerBaseImage("Narrative", FrameworkImage.NARRITIVE, this);
+      ArtifactImageManager.registerBaseImage("Blam Workflow", FrameworkImage.BLAM, this);
+      ArtifactImageManager.registerBaseImage("Folder", PluginUiImage.FOLDER, this);
+      ArtifactImageManager.registerBaseImage("User", FrameworkImage.USER, this);
+      ArtifactImageManager.registerBaseImage("Global Preferences", FrameworkImage.GEAR, this);
+      ArtifactImageManager.registerBaseImage("User Group", FrameworkImage.USERS, this);
+      ArtifactImageManager.registerBaseImage("Work Flow Definition", FrameworkImage.WORKFLOW, this);
+      ArtifactImageManager.registerBaseImage("Work Page Definition", FrameworkImage.PAGE, this);
+      ArtifactImageManager.registerBaseImage("Work Rule Definition", FrameworkImage.RULE, this);
+      ArtifactImageManager.registerBaseImage("Work Widget Definition", FrameworkImage.WIDGET, this);
+      ArtifactImageManager.registerBaseImage("Universal Group", FrameworkImage.GROUP, this);
 
-      ImageManager.registerOverrideImageProvider(this, "User");
+      ArtifactImageManager.registerOverrideImageProvider(this, "User");
    }
 
    @Override
@@ -64,7 +66,7 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
          } else if (UserManager.isUserCurrentUser(users)) {
             return ImageManager.getImage(FrameworkImage.USER_RED);
          } else {
-            return ImageManager.getImage(ArtifactTypeManager.getType("User"));
+            return ArtifactImageManager.getImage(ArtifactTypeManager.getType("User"));
          }
       }
       return null;

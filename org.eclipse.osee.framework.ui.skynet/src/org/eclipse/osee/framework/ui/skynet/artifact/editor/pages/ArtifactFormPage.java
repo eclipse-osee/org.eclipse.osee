@@ -18,8 +18,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.DetailsForm
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -53,7 +54,9 @@ import org.eclipse.ui.forms.widgets.Section;
 public class ArtifactFormPage extends FormPage {
 
    private enum SectionEnum {
-      Attributes, Relations, Details;
+      Attributes,
+      Relations,
+      Details;
    }
 
    private final Map<SectionEnum, SectionPart> sectionParts;
@@ -235,7 +238,7 @@ public class ArtifactFormPage extends FormPage {
 
       public RefreshAction() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
+         setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
          setToolTipText("Refresh Editor");
       }
 

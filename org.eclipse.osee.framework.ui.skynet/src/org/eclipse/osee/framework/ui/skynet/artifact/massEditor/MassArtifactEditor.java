@@ -22,21 +22,21 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -91,18 +91,20 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
                      OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
                            "The user " + UserManager.getUser() + " does not have read access to " + artifact);
                      accessControlFilteredResults = true;
-                  } else
+                  } else {
                      accessibleArts.add(artifact);
+                  }
                }
-               if (accessibleArts.size() == 0)
+               if (accessibleArts.size() == 0) {
                   AWorkbench.popup("ERROR", "No Artifacts to edit");
-               else
-
+               } else {
                   AWorkbench.getActivePage().openEditor(
                         new MassArtifactEditorInput(name, accessibleArts, new MassXViewerFactory(accessibleArts)),
                         EDITOR_ID);
-               if (accessControlFilteredResults) AWorkbench.popup("ERROR",
-                     "Some Artifacts not loaded due to access control limitations.");
+               }
+               if (accessControlFilteredResults) {
+                  AWorkbench.popup("ERROR", "Some Artifacts not loaded due to access control limitations.");
+               }
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -139,7 +141,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       ToolItem item = null;
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
+      item.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -148,7 +150,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
          }
       });
 
-      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "Mass Artifact Editor");
+      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "Mass Artifact Editor");
    }
 
    public static void editArtifacts(final MassArtifactEditorInput input) {
@@ -175,12 +177,15 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    public void dispose() {
       super.dispose();
 
-      for (Artifact taskArt : xViewer.getArtifacts())
+      for (Artifact taskArt : xViewer.getArtifacts()) {
          try {
-            if (taskArt != null && !taskArt.isDeleted() && taskArt.hasDirtyAttributes()) taskArt.reloadAttributesAndRelations();
+            if (taskArt != null && !taskArt.isDeleted() && taskArt.hasDirtyAttributes()) {
+               taskArt.reloadAttributesAndRelations();
+            }
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
+      }
    }
 
    public ArrayList<Artifact> getLoadedArtifacts() {
@@ -209,10 +214,11 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
          throw new IllegalArgumentException("Editor Input not TaskEditorInput");
       }
 
-      if (((MassArtifactEditorInput) editorInput).getName().equals(""))
+      if (((MassArtifactEditorInput) editorInput).getName().equals("")) {
          setPartName("Mass Artifact Editor");
-      else
+      } else {
          setPartName(((MassArtifactEditorInput) editorInput).getName());
+      }
 
       SkynetGuiPlugin.getInstance().setHelp(getContainer(), "mass_artifact_editor",
             "org.eclipse.osee.framework.help.ui");
@@ -249,7 +255,9 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    }
 
    public Branch getBranch() {
-      if (((MassArtifactEditorInput) getEditorInput()).getArtifacts().size() == 0) return null;
+      if (((MassArtifactEditorInput) getEditorInput()).getArtifacts().size() == 0) {
+         return null;
+      }
       return ((MassArtifactEditorInput) getEditorInput()).getArtifacts().iterator().next().getBranch();
    }
 

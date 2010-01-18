@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -124,7 +124,7 @@ public class RelationExplorerWindow {
       shell.setText("Artifact Information");
 
       // Setup Icon
-      Image image = ImageManager.getImage(ArtifactTypeManager.getType("Artifact"));
+      Image image = ArtifactImageManager.getImage(ArtifactTypeManager.getType("Artifact"));
       shell.setImage(image);
 
       // Setup Form Layout

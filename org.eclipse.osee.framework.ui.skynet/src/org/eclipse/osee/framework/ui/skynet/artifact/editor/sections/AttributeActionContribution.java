@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
@@ -32,10 +31,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
@@ -80,7 +79,7 @@ public class AttributeActionContribution implements IActionContributor {
    }
 
    private void handleAttributeTypeEdits(Artifact artifact, boolean isAdd, boolean isDefault, String title, Image image) throws OseeCoreException {
-      String operation = isAdd ? "add" : (isDefault ? "default" : "delete");
+      String operation = isAdd ? "add" : isDefault ? "default" : "delete";
       AttributeType[] types =
             isAdd ? AttributeTypeUtil.getEmptyTypes(artifact) : AttributeTypeUtil.getTypesWithData(artifact);
       List<AttributeType> input = new ArrayList<AttributeType>(Arrays.asList(types));

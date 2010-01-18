@@ -28,13 +28,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserGroupsCheckTreeDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -79,49 +79,50 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       try {
-         Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(UserManager.getUser(), groupType);
-         UserGroupsCheckTreeDialog dialog = new UserGroupsCheckTreeDialog(groupOptions);
-         dialog.setTitle("Select Groups to Email");
-         if (dialog.open() == 0) {
+      Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(UserManager.getUser(), groupType);
+      UserGroupsCheckTreeDialog dialog = new UserGroupsCheckTreeDialog(groupOptions);
+      dialog.setTitle("Select Groups to Email");
+      if (dialog.open() == 0) {
 
-            Set<String> emails = new HashSet<String>();
-            for (Artifact artifact : dialog.getSelection()) {
-               if (artifact.isOfType("Universal Group")) {
-                  for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
-                     if (userArt instanceof User) {
+         Set<String> emails = new HashSet<String>();
+         for (Artifact artifact : dialog.getSelection()) {
+            if (artifact.isOfType("Universal Group")) {
+               for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
+                  if (userArt instanceof User) {
                         if (!EmailUtil.isEmailValid((User) userArt)) {
                            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, String.format(
                                  "Invalid email [%s] for user [%s]; skipping", ((User) userArt).getEmail(), userArt));
                         } else {
-                           emails.add(((User) userArt).getEmail());
-                        }
-                     }
+                     emails.add(((User) userArt).getEmail());
                   }
-               } else if (artifact.isOfType("User Group")) {
-                  for (User user : artifact.getRelatedArtifacts(CoreRelationTypes.Users_User, User.class)) {
+               }
+                  }
+            } else if (artifact.isOfType("User Group")) {
+               for (User user : artifact.getRelatedArtifacts(CoreRelationTypes.Users_User, User.class)) {
                      if (!EmailUtil.isEmailValid(user)) {
                         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, String.format(
                               "Invalid email [%s] for user [%s]; skipping", user.getEmail(), user));
                      } else {
-                        emails.add(user.getEmail());
-                     }
-                  }
+                  emails.add(user.getEmail());
                }
             }
-            if (emails.size() == 0) {
-               AWorkbench.popup("Error", "No emails configured.");
-               return;
+         }
             }
+         if (emails.size() == 0) {
+            AWorkbench.popup("Error", "No emails configured.");
+            return;
+         }
             String emailStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(";", emails);
             if (emailStr.length() > 2048) {
                AWorkbench.popup("Email list too big for auto-open. Emails opened in editor for copy/paste.");
                ResultsEditor.open("Email Addresses", "Email Addresses", emailStr);
             } else
                Program.launch("mailto:" + emailStr);
-            AWorkbench.popup("Complete", "Configured emails openened in local email client.");
-         }
+         AWorkbench.popup("Complete", "Configured emails openened in local email client.");
+      }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
    }
+
+}
 }

@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -194,7 +194,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override
                      public void run() {
-                        setTitleImage(ImageManager.getImage(getArtifactFromEditorInput()));
+                        setTitleImage(ArtifactImageManager.getImage(getArtifactFromEditorInput()));
                      }
                   });
                }

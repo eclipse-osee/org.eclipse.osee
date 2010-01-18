@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Image;
 
@@ -186,7 +186,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          if (element instanceof Branch) {
             try {
                if (((Branch) element).getAssociatedArtifact() != null) {
-                  return ImageManager.getImage((Artifact) ((Branch) element).getAssociatedArtifact());
+                  return ArtifactImageManager.getImage((Artifact) ((Branch) element).getAssociatedArtifact());
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -200,7 +200,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
                      ArtifactQuery.getArtifactFromId(((TransactionRecord) element).getCommit(),
                            BranchManager.getCommonBranch());
                if (artifact != null) {
-                  return ImageManager.getImage(artifact);
+                  return ArtifactImageManager.getImage(artifact);
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

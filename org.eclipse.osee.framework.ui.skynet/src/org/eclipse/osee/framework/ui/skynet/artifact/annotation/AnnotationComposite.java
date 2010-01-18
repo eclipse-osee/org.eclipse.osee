@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -62,7 +62,7 @@ public class AnnotationComposite extends Composite {
                   continue;
                }
                Label iconLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);
-               iconLabel.setImage(ImageManager.getAnnotationImage(notify.getType()));
+               iconLabel.setImage(ArtifactImageManager.getAnnotationImage(notify.getType()));
 
                Label alertLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);
                alertLabel.setText(notify.getType().name() + ": " + notify.getContent());

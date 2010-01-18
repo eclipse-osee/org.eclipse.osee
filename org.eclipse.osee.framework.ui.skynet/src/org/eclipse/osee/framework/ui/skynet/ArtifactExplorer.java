@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -71,6 +72,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
@@ -78,8 +80,6 @@ import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.dialogs.ArtifactPasteSpecialDialog;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
@@ -100,6 +100,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeEntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.MenuItems;
 import org.eclipse.osee.framework.ui.swt.TreeViewerUtility;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -348,7 +349,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          new ArtifactExplorerDragAndDrop(treeViewer, VIEW_ID, this);
          getViewSite().getActionBars().updateActionBars();
 
-         OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Artifact Explorer");
+         OseeUiActions.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Artifact Explorer");
 
          OseeContributionItem.addTo(this, false);
 
@@ -446,23 +447,23 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private void addOpenQuickSearchAction(IToolBarManager toolbarManager) {
       Action openQuickSearch =
             new Action("Quick Search", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH)) {
-         @Override
-         public void run() {
-            try {
-               IViewPart viewPart =
-                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                     QuickSearchView.VIEW_ID);
-               if (viewPart != null) {
-                  Branch branch = getBranch();
-                  if (branch != null) {
-                     ((QuickSearchView) viewPart).setBranch(branch);
+               @Override
+               public void run() {
+                  try {
+                     IViewPart viewPart =
+                           PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                                 QuickSearchView.VIEW_ID);
+                     if (viewPart != null) {
+                        Branch branch = getBranch();
+                        if (branch != null) {
+                           ((QuickSearchView) viewPart).setBranch(branch);
+                        }
+                     }
+                  } catch (Exception ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
+            };
       openQuickSearch.setToolTipText("Open Quick Search View");
       toolbarManager.add(openQuickSearch);
    }
@@ -510,7 +511,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             try {
                artifactExplorer =
                      (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.create(),
-                     IWorkbenchPage.VIEW_ACTIVATE);
+                           IWorkbenchPage.VIEW_ACTIVATE);
                artifactExplorer.explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch));
                artifactExplorer.setExpandedArtifacts(treeViewer.getExpandedElements());
             } catch (Exception ex) {
@@ -579,7 +580,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                }
                ArtifactTypeFilteredTreeEntryDialog dialog =
                      new ArtifactTypeFilteredTreeEntryDialog("New Child",
-                     "Enter name and select Artifact type to create", "Artifact Name");
+                           "Enter name and select Artifact type to create", "Artifact Name");
                dialog.setInput(descriptors);
                if (dialog.open() == Window.OK) {
 

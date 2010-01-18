@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Combo;
@@ -38,9 +38,9 @@ public class RevertLabelProvider extends LabelProvider {
    @Override
    public Image getImage(Object element) {
       if (element instanceof Artifact) {
-         return ImageManager.getImage((Artifact) element);
+         return ArtifactImageManager.getImage((Artifact) element);
       } else if (element instanceof Match && ((Match) element).getElement() instanceof Artifact) {
-         return ImageManager.getImage((Artifact) ((Match) element).getElement());
+         return ArtifactImageManager.getImage((Artifact) ((Match) element).getElement());
       }
       return super.getImage(element);
    }

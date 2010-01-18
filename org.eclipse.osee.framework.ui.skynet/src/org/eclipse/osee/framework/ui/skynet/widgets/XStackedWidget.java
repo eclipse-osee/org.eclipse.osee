@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.StackedViewer;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -69,8 +69,12 @@ public abstract class XStackedWidget<T> extends XLabel {
    }
 
    protected void setPageRange(int minPage, int maxPage) throws OseeArgumentException {
-      if (minPage < 0) throw new OseeArgumentException("Min Number of Pages must be greater than 0");
-      if (maxPage < 1) throw new OseeArgumentException("Max Number of Pages must be at least 1");
+      if (minPage < 0) {
+         throw new OseeArgumentException("Min Number of Pages must be greater than 0");
+      }
+      if (maxPage < 1) {
+         throw new OseeArgumentException("Max Number of Pages must be at least 1");
+      }
 
       if (maxPage < minPage) {
          throw new OseeArgumentException(

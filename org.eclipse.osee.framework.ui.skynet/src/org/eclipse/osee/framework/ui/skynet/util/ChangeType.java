@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -22,18 +22,26 @@ import org.eclipse.swt.graphics.Image;
  */
 public enum ChangeType {
 
-   None, Support, Problem, Improvement;
+   None,
+   Support,
+   Problem,
+   Improvement;
 
    public static String[] getChangeTypes() {
       ArrayList<String> types = new ArrayList<String>();
-      for (ChangeType type : values())
-         if (type != None) types.add(type.name());
+      for (ChangeType type : values()) {
+         if (type != None) {
+            types.add(type.name());
+         }
+      }
       return types.toArray(new String[types.size()]);
    }
 
    public static ChangeType getChangeType(String name) {
       for (ChangeType type : values()) {
-         if (type.name().equals(name)) return type;
+         if (type.name().equals(name)) {
+            return type;
+         }
       }
       return None;
    }

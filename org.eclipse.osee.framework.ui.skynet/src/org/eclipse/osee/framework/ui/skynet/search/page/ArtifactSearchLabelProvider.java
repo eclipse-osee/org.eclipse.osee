@@ -23,10 +23,11 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchResult;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -69,8 +70,9 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
          return getLineElementLabel((AttributeLineElement) element);
       }
 
-      if (!(element instanceof Artifact)) return new StyledString(String.format("Undefined: %s %s", element.getClass(),
-            element));
+      if (!(element instanceof Artifact)) {
+         return new StyledString(String.format("Undefined: %s %s", element.getClass(), element));
+      }
 
       Artifact artifact = (Artifact) element;
       String name = artifact.getName();
@@ -233,7 +235,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
       if (element instanceof AttributeLineElement) {
          toReturn = ImageManager.getImage(FrameworkImage.LINE_MATCH);
       } else if (element instanceof Artifact) {
-         Image artImage = ImageManager.getImage((Artifact) element);
+         Image artImage = ArtifactImageManager.getImage((Artifact) element);
          int matchCount = getMatchCount(element);
          if (matchCount > 0) {
             toReturn = artImage;

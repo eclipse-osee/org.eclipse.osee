@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  */
 public enum XResultBrowserHyperCmd {
    openAction,
-   openArtifctBranch,
+   openArtifactBranch,
    openArtifactEditor,
    openBranch,
    openChangeReport,

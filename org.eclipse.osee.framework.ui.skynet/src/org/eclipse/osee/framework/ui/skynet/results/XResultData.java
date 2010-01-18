@@ -165,7 +165,7 @@ public class XResultData {
     * Creates hyperlink using name.  Default editor will open hrid for branchId given
     */
    public static String getHyperlink(String name, String hrid, int branchId) {
-      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifctBranch,
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch,
             hrid + "(" + branchId + ")"), name);
    }
 

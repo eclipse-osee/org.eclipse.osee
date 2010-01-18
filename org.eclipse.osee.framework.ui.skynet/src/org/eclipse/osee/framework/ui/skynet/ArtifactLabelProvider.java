@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.graphics.Image;
 
@@ -36,9 +37,9 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
    @Override
    public Image getImage(Object element) {
       if (element instanceof Artifact) {
-         return ImageManager.getImage((Artifact) element);
+         return ArtifactImageManager.getImage((Artifact) element);
       } else if (element instanceof Match && ((Match) element).getElement() instanceof Artifact) {
-         return ImageManager.getImage((Artifact) ((Match) element).getElement());
+         return ArtifactImageManager.getImage((Artifact) ((Match) element).getElement());
       }
       return ImageManager.getImage(FrameworkImage.MISSING);
    }

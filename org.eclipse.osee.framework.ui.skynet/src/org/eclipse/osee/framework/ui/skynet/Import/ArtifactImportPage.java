@@ -40,13 +40,13 @@ import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtract
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractorDelegate;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.panels.ArtifactExtractorSelectPanel;
 import org.eclipse.osee.framework.ui.skynet.panels.ArtifactSelectPanel;
 import org.eclipse.osee.framework.ui.skynet.panels.ArtifactTypeSelectPanel;
 import org.eclipse.osee.framework.ui.skynet.panels.AttributeTypeSelectPanel;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -357,8 +357,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             }
          } else {
             attributeTypeSelectPanel.setAllowedAttributeTypes(new ArrayList<AttributeType>());
+         }
       }
-   }
    }
 
    @Override

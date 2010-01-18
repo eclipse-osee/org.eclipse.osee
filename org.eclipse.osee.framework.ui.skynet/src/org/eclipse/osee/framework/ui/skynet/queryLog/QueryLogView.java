@@ -19,13 +19,14 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.database.sql.QueryLog;
 import org.eclipse.osee.framework.database.sql.QueryRecord;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.plugin.core.IActionable;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -53,7 +54,9 @@ public class QueryLogView extends ViewPart implements IActionable {
    @Override
    public void createPartControl(Composite parent) {
 
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
+         return;
+      }
 
       clipboard = new Clipboard(null);
 
@@ -87,7 +90,7 @@ public class QueryLogView extends ViewPart implements IActionable {
             viewer.refresh();
          }
       };
-      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
 
       Action clearLogAction = new Action("Delete Log") {
@@ -105,7 +108,7 @@ public class QueryLogView extends ViewPart implements IActionable {
       toolbarManager.add(refreshAction);
       toolbarManager.add(clearLogAction);
       viewer.addCustomizeToViewToolbar(this);
-      OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Query Log");
+      OseeUiActions.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Query Log");
    }
 
    private void setHelpContexts() {
@@ -115,7 +118,9 @@ public class QueryLogView extends ViewPart implements IActionable {
 
    @Override
    public void setFocus() {
-      if (viewer != null) viewer.getControl().setFocus();
+      if (viewer != null) {
+         viewer.getControl().setFocus();
+      }
    }
 
    public String getActionDescription() {

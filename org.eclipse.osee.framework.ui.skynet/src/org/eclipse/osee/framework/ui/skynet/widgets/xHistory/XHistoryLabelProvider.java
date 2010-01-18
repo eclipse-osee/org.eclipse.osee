@@ -19,8 +19,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -98,7 +99,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(HistoryXViewerFactory.transaction)) {
             return ImageManager.getImage(FrameworkImage.DB_ICON_BLUE);
          } else if (xCol.equals(HistoryXViewerFactory.itemType)) {
-            return ImageManager.getChangeTypeImage(change);
+            return ArtifactImageManager.getChangeTypeImage(change);
          }
 
       } catch (Exception ex) {

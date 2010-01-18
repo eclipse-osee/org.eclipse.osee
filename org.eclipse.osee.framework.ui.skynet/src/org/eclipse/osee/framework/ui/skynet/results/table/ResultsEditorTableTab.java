@@ -22,8 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.TableWriterAdaptor;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.OseeData;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewer;
@@ -31,6 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewe
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewerLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.HtmlExportTable;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -124,7 +124,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
          @Override
          public void widgetSelected(SelectionEvent event) {
             try {
-               (new HtmlExportTable(tabName, new XViewerTreeReport(resultsXViewer).getHtml(), true)).exportCsv();
+               new HtmlExportTable(tabName, new XViewerTreeReport(resultsXViewer).getHtml(), true).exportCsv();
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -138,7 +138,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
          @Override
          public void widgetSelected(SelectionEvent event) {
             try {
-               (new HtmlExportTable(tabName, new XViewerTreeReport(resultsXViewer).getHtml(), true)).exportTsv();
+               new HtmlExportTable(tabName, new XViewerTreeReport(resultsXViewer).getHtml(), true).exportTsv();
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
