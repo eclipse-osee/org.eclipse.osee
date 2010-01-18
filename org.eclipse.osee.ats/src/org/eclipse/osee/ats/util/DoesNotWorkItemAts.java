@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchControlled;
@@ -54,6 +55,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.util.ElapsedTime;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -65,7 +67,7 @@ import org.eclipse.swt.widgets.Display;
 public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    public DoesNotWorkItemAts(XNavigateItem parent) {
-      super(parent, "Does Not Work - ATS - Fix Notes State Names", FrameworkImage.ADMIN);
+      super(parent, "Does Not Work - ATS - Curren User Time Test", FrameworkImage.ADMIN);
    }
 
    @Override
@@ -73,6 +75,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) {
          return;
       }
+      myWorldTimeTest();
       //      fixNotesStateNames();
       //      renameTransactionComments();
       //      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Admin Cleanup");
@@ -113,6 +116,24 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       // fixOseePeerReviews();
 
       AWorkbench.popup("Completed", "Complete");
+   }
+
+   private void myWorldTimeTest() throws OseeCoreException {
+      AtsBulkLoad.run(true);
+      //      ElapsedTime time = new ElapsedTime("My World via Relations");
+      //      Set<Artifact> assigned =
+      //            RelationManager.getRelatedArtifacts(Arrays.asList(UserManager.getUser()), 1,
+      //                  CoreRelationTypes.Users_Artifact);
+      //      System.out.println("Returned " + assigned.size() + " objects");
+      //      time.end();
+
+      ElapsedTime time = new ElapsedTime("My World via Attribute Search");
+      List<Artifact> assignedList =
+            ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
+                  "%727536%", AtsUtil.getAtsBranch());
+      System.out.println("Returned " + assignedList.size() + " objects");
+      time.end();
+
    }
 
    private void fixNotesStateNames() throws OseeCoreException {
