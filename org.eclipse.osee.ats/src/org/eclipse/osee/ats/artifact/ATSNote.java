@@ -13,12 +13,14 @@ package org.eclipse.osee.ats.artifact;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -66,12 +68,11 @@ public class ATSNote {
       saveNoteItems(logItems);
    }
 
-   public List<NoteItem> getNoteItems() {
+   public static List<NoteItem> getNoteItems(String str) {
       List<NoteItem> logItems = new ArrayList<NoteItem>();
       try {
-         String xml = getArtifact().getSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(), "");
-         if (!xml.equals("")) {
-            NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);
+         if (Strings.isValid(str)) {
+            NodeList nodes = Jaxp.readXmlDocument(str).getElementsByTagName(LOG_ITEM_TAG);
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
                User user = UserManager.getUserByUserId(element.getAttribute("userId"));
@@ -85,6 +86,18 @@ public class ATSNote {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return logItems;
+   }
+
+   public List<NoteItem> getNoteItems() {
+      try {
+         String xml = getArtifact().getSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(), "");
+         if (Strings.isValid(xml)) {
+            return getNoteItems(xml);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return Collections.emptyList();
    }
 
    public void saveNoteItems(List<NoteItem> items) {

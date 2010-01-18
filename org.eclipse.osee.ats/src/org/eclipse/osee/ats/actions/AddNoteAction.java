@@ -12,6 +12,8 @@
 package org.eclipse.osee.ats.actions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -49,9 +51,13 @@ public class AddNoteAction extends Action {
    private void performAddNote() {
       try {
          ArrayList<String> artifactNames = new ArrayList<String>();
+         Map<String, String> selectedToStateName = new HashMap<String, String>();
          artifactNames.add("Whole \"" + sma.getArtifactTypeName() + "\"");
-         for (WorkPageDefinition workPageDefinition : sma.getWorkFlowDefinition().getPagesOrdered())
-            artifactNames.add("\"" + workPageDefinition.getPageName() + "\" State");
+         for (WorkPageDefinition workPageDefinition : sma.getWorkFlowDefinition().getPagesOrdered()) {
+            String displayName = "\"" + workPageDefinition.getPageName() + "\" State";
+            artifactNames.add(displayName);
+            selectedToStateName.put(displayName, workPageDefinition.getPageName());
+         }
          NewNoteWizard noteWizard = new NewNoteWizard(artifactNames);
          WizardDialog dialog =
                new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), noteWizard);
@@ -59,7 +65,9 @@ public class AddNoteAction extends Action {
          if (dialog.open() == 0) {
             String selected = noteWizard.mainPage.artifactList.getSelected().iterator().next().getName();
             String state = "";
-            if (!selected.startsWith(sma.getName() + " - ")) state = selected;
+            if (!selected.startsWith(sma.getName() + " - ")) {
+               state = selectedToStateName.get(selected);
+            }
             sma.getNotes().addNote(
                   NoteType.getType(noteWizard.mainPage.typeList.getSelected().iterator().next().getName()), state,
                   noteWizard.mainPage.noteText.get(), UserManager.getUser());

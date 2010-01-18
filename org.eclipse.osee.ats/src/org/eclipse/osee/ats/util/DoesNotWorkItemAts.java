@@ -26,7 +26,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.ATSNote;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
@@ -63,7 +65,7 @@ import org.eclipse.swt.widgets.Display;
 public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    public DoesNotWorkItemAts(XNavigateItem parent) {
-      super(parent, "Does Not Work - ATS - Fix Transaction Comments", FrameworkImage.ADMIN);
+      super(parent, "Does Not Work - ATS - Fix Notes State Names", FrameworkImage.ADMIN);
    }
 
    @Override
@@ -71,7 +73,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) {
          return;
       }
-
+      //      fixNotesStateNames();
       //      renameTransactionComments();
       //      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Admin Cleanup");
       //      Artifact verArt =
@@ -111,6 +113,44 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       // fixOseePeerReviews();
 
       AWorkbench.popup("Completed", "Complete");
+   }
+
+   private void fixNotesStateNames() throws OseeCoreException {
+      Map<String, Integer> valueToGammaId = new HashMap<String, Integer>();
+      String SELECT_QUERY = "select * from osee_attribute where value like '%quot; State%'";
+      String UPDATE_QUERY = "update osee_attribute set value = ? where gamma_id = ?";
+
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         chStmt.runPreparedQuery(SELECT_QUERY);
+         while (chStmt.next()) {
+            int gammaId = chStmt.getInt("gamma_id");
+            String value = chStmt.getString("value");
+            valueToGammaId.put(value, gammaId);
+         }
+      } finally {
+         chStmt.close();
+      }
+
+      for (Entry<String, Integer> entry : valueToGammaId.entrySet()) {
+         String value = entry.getKey();
+         int gammaId = entry.getValue();
+         System.out.println("Old GammaId " + gammaId + " Value = " + value);
+         List<NoteItem> items = ATSNote.getNoteItems(value);
+         for (NoteItem item : items) {
+            System.out.println(String.format("Pre State [%s]", item.getState()));
+         }
+
+         // Make changes
+         value = value.replaceAll("\\&quot; State", "");
+         value = value.replaceAll("state=\"\\&quot;", "state=\"");
+         System.out.println("New GammaId " + gammaId + " Value = " + value);
+         items = ATSNote.getNoteItems(value);
+         for (NoteItem item : items) {
+            System.out.println(String.format("Post State [%s]", item.getState()));
+         }
+         //         ConnectionHandler.runPreparedUpdate(UPDATE_QUERY, value, gammaId);
+      }
    }
 
    private void renameTransactionComments() throws OseeCoreException {
