@@ -28,8 +28,6 @@ import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -57,7 +55,7 @@ import org.eclipse.swt.dnd.Transfer;
  */
 public class DragDropHandler {
 
-   private XViewerDataManager viewerDataManager;
+   private final XViewerDataManager viewerDataManager;
 
    public DragDropHandler(XViewerDataManager viewerDataManager) {
       this.viewerDataManager = viewerDataManager;
@@ -70,6 +68,7 @@ public class DragDropHandler {
       dropTarget.setTransfer(new Transfer[] {LocalSelectionTransfer.getTransfer(), ArtifactTransfer.getInstance(),});
       dropTarget.addDropListener(new DropTargetAdapter() {
 
+         @Override
          public void drop(DropTargetEvent event) {
             try {
                performDrop(event);
@@ -78,6 +77,7 @@ public class DragDropHandler {
             }
          }
 
+         @Override
          public void dragOver(DropTargetEvent event) {
             event.detail = DND.DROP_COPY;
          }
@@ -116,7 +116,7 @@ public class DragDropHandler {
       if (object instanceof ArtifactData) {
          handleArtifactDrops((ArtifactData) object);
       } else if (object instanceof TreeSelection) {
-         StructuredSelection selection = ((StructuredSelection) object);
+         StructuredSelection selection = (StructuredSelection) object;
          if (selection.size() > 0) {
             URI[] iFiles = toResourceArray(selection.toArray());
             if (iFiles.length > 0) {
@@ -149,7 +149,7 @@ public class DragDropHandler {
    }
 
    private boolean isResourceAllowed(IResource resource) {
-      if ((resource.getType() == IResource.FILE) && resource.isAccessible()) {
+      if (resource.getType() == IResource.FILE && resource.isAccessible()) {
          String toCheck = resource.getFileExtension();
          try {
             for (String extension : OutfileParserExtensionManager.getInstance().getSupportedExtensions()) {
@@ -182,10 +182,11 @@ public class DragDropHandler {
          OutfileToArtifactJob artifactJob = new OutfileToArtifactJob(branch, iFiles);
          artifactJob.addJobChangeListener(new JobChangeAdapter() {
 
+            @Override
             public void done(IJobChangeEvent event) {
                IStatus status = event.getResult();
                if (status.equals(Status.OK_STATUS)) {
-                  OutfileToArtifactJob job = ((OutfileToArtifactJob) event.getJob());
+                  OutfileToArtifactJob job = (OutfileToArtifactJob) event.getJob();
                   Artifact[] results = job.getResults();
                   URI[] unparseable = job.getUnparseableFiles();
                   reportUnparseableItems(unparseable);

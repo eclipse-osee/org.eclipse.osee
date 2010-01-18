@@ -15,7 +15,7 @@ import java.io.FileInputStream;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

@@ -21,15 +21,14 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.AIFile;
+import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 import org.eclipse.osee.framework.ui.plugin.util.OseeConsole;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
-import org.eclipse.osee.ote.ui.TestCoreGuiPlugin;
 import org.eclipse.osee.ote.ui.markers.MarkerPlugin;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.connection.ScriptManager;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.models.OutputModel;
 import org.eclipse.osee.ote.ui.test.manager.pages.contributions.TestManagerStorageKeys;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask;
@@ -39,17 +38,15 @@ import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask;
  */
 public class StoreOutfileJob extends Job {
 
-   
-
    private final ScriptManager userEnvironment;
    private final ScriptTask scriptTask;
-   private boolean isValidRun;
+   private final boolean isValidRun;
    private final TestManagerEditor testManagerEditor;
    private final ITestEnvironment env;
 
-   private String clientOutfilePath;
+   private final String clientOutfilePath;
 
-   private String serverOutfilePath;
+   private final String serverOutfilePath;
 
    public StoreOutfileJob(ITestEnvironment env, TestManagerEditor testManagerEditor, ScriptManager userEnvironment, ScriptTask scriptTask, String clientOutfilePath, String serverOutfilePath, boolean isValidRun) {
       super("Store: " + scriptTask.getName());
@@ -78,18 +75,18 @@ public class StoreOutfileJob extends Job {
                return new Status(Status.ERROR, TestManagerPlugin.PLUGIN_ID, "Failed to write out file to workspace", e);
             }
          }
-//         scriptTask.computeExists();
+         //         scriptTask.computeExists();
          userEnvironment.updateScriptTableViewer(scriptTask);
          try {
             Thread.sleep(2000);
          } catch (InterruptedException e) {
             e.printStackTrace();
          }
-//         Display.getDefault().asyncExec(new Runnable() {
-//            public void run() {
-               processOutFile(scriptTask);
-//            }
-//         });
+         //         Display.getDefault().asyncExec(new Runnable() {
+         //            public void run() {
+         processOutFile(scriptTask);
+         //            }
+         //         });
       } catch (Exception ex) {
          OseeLog.log(TestManagerPlugin.class, Level.SEVERE, ex);
       }
@@ -98,12 +95,12 @@ public class StoreOutfileJob extends Job {
 
    public void processOutFile(ScriptTask task) {
       OseeLog.log(TestManagerPlugin.class, Level.INFO, "Processing Outfile: " + task.getName());
-//      task.computeExists();
+      //      task.computeExists();
       File xmlSourceFile = task.getScriptModel().getOutputModel().getFile();
       IFile javaSourceIFile = task.getScriptModel().getIFile();
 
       if (!xmlSourceFile.exists()) {
-         TestCoreGuiPlugin.getDefault().getConsole().writeError("Output File Not Created");
+         TestManagerPlugin.getInstance().getOteConsoleService().writeError("Output File Not Created");
       } else {
          // Refresh the parent so the workspace knows the new tmo file exists
          AWorkspace.refreshResource(javaSourceIFile);
@@ -112,8 +109,9 @@ public class StoreOutfileJob extends Job {
          userEnvironment.updateScriptTableViewer(scriptTask);
          if (failedPoints > 0) {
             // Print fails in red, but don't force the console to popup
-            TestCoreGuiPlugin.getDefault().getConsole().write(
-                  String.format("Test Point Failures => %s[%d]", task.getName(), failedPoints), OseeConsole.CONSOLE_ERROR, false);
+            TestManagerPlugin.getInstance().getOteConsoleService().write(
+                  String.format("Test Point Failures => %s[%d]", task.getName(), failedPoints),
+                  OseeConsole.CONSOLE_ERROR, false);
          }
       }
    }

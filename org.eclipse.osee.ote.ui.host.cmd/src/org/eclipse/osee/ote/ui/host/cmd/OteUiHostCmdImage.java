@@ -6,11 +6,13 @@
 package org.eclipse.osee.ote.ui.host.cmd;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
-public enum OteUiHostCmdImage implements OseeImage {
-   CONSOLE("console.gif"), TEST_SERVER("test_server.gif"), USER("user.gif");
+public enum OteUiHostCmdImage implements KeyedImage {
+   CONSOLE("console.gif"),
+   TEST_SERVER("test_server.gif"),
+   USER("user.gif");
 
    private final String fileName;
 

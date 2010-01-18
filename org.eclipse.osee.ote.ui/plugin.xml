@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension-point id="OteNavigateItem" name="OteNavigateItem" schema="schema/OteNavigateItem.exsd"/>
    <extension-point id="WorkspaceSetup" name="WorkspaceSetup" schema="schema/WorkspaceSetup.exsd"/>
      <extension
          point="org.eclipse.ui.views">
@@ -18,10 +17,11 @@
             name="OTE Navigator"/>
    </extension>
      <extension
-           point="org.eclipse.osee.ote.ui.OteNavigateItem">
-        <IOteNavigateItem
-              classname="org.eclipse.osee.ote.ui.navigate.WorkspaceSetupViewItems">
-        </IOteNavigateItem>
+           point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
+        <XNavigateItem
+              classname="org.eclipse.osee.ote.ui.navigate.WorkspaceSetupViewItems"
+              viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView" >
+        </XNavigateItem>
      </extension>
      <extension
            id="testnature"
@@ -56,11 +56,4 @@
             id="org.eclipse.osee.ote.ui.TestPerspective"
             name="OSEE Test"/>
    </extension>
-     <extension
-           point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">
-        <ArtifactImageProvider
-              class="org.eclipse.osee.ote.ui.OteArtifactImageProvider">
-        </ArtifactImageProvider>
-     </extension>
-     
 </plugin>

@@ -17,13 +17,13 @@ import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.ote.ui.TestCoreGuiPlugin;
+import org.eclipse.osee.framework.plugin.core.IActionable;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -46,12 +46,14 @@ public class OteNavigateView extends ViewPart implements IActionable {
    public OteNavigateView() {
    }
 
+   @Override
    public void setFocus() {
    }
 
    /*
     * @see IWorkbenchPart#createPartControl(Composite)
     */
+   @Override
    public void createPartControl(Composite parent) {
       PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.eclipse.osee.ote.ui.oteNavigator");
       xNavComp = new XNavigateComposite(new OteNavigateViewItems(), parent, SWT.NONE);
@@ -92,21 +94,23 @@ public class OteNavigateView extends ViewPart implements IActionable {
    protected void createActions() {
       Action refreshAction = new Action("Refresh") {
 
+         @Override
          public void run() {
             xNavComp.refresh();
          }
       };
-      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
 
-      OseeAts.addBugToViewToolbar(this, this, TestCoreGuiPlugin.getDefault(), VIEW_ID, "OTE Navigator");
+      OseeUiActions.addBugToViewToolbar(this, this, TestCoreGuiPlugin.getDefault(), VIEW_ID, "OTE Navigator");
 
    }
 
    public String getActionDescription() {
       IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
-      if (sel.iterator().hasNext()) return String.format("Currently Selected - %s",
-            ((XNavigateItem) sel.iterator().next()).getName());
+      if (sel.iterator().hasNext()) {
+         return String.format("Currently Selected - %s", ((XNavigateItem) sel.iterator().next()).getName());
+      }
       return "";
    }
 

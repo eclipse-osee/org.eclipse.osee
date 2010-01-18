@@ -12,10 +12,10 @@ package org.eclipse.osee.ote.ui.test.manager.configuration;
 
 import java.io.File;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.pages.ScriptPage;
 import org.eclipse.osee.ote.ui.test.manager.pages.StatusWindowWidget;
 import org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage;
@@ -37,7 +37,7 @@ public class SaveWidget {
    public static final OseeUiActivator plugin = TestManagerPlugin.getInstance();
    private StatusWindowWidget statusWindow;
    private String selectedFile;
-   private TestManagerPage tmPage;
+   private final TestManagerPage tmPage;
 
    public SaveWidget(TestManagerPage tmPage) {
       this.tmPage = tmPage;
@@ -67,10 +67,11 @@ public class SaveWidget {
             String defaultConfigDir = statusWindow.getValue(ScriptPage.UpdateableLabel.CONFIGPATHLABEL.name());
 
             File dir = new File(defaultConfigDir);
-            if (dir.isFile() || dir.isDirectory())
+            if (dir.isFile() || dir.isDirectory()) {
                fileDialog.setFilterPath(defaultConfigDir);
-            else
+            } else {
                fileDialog.setFilterPath("Y:\\");
+            }
 
             String result = fileDialog.open();
 
@@ -93,6 +94,7 @@ public class SaveWidget {
       item.setImage(ImageManager.getImage(OteTestManagerImage.SAVE_EDIT));
       item.setToolTipText("Saves current page configuration to file");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent event) {
             // If they clicked the arrow, we show the list
             if (event.detail == SWT.ARROW) {

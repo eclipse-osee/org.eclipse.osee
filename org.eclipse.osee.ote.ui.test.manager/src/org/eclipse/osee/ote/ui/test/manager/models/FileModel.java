@@ -20,7 +20,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.ui.PlatformUI;
 
 

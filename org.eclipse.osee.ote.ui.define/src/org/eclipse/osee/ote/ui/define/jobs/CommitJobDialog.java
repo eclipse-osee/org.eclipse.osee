@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
@@ -43,10 +43,10 @@ class CommitJobDialog extends UIJob {
    private String message;
    private Object[] items;
 
-   private Artifact[] allItems;
-   private Artifact[] preSelected;
-   private Artifact[] unselectable;
-   private boolean isOverrideAllowed;
+   private final Artifact[] allItems;
+   private final Artifact[] preSelected;
+   private final Artifact[] unselectable;
+   private final boolean isOverrideAllowed;
 
    public CommitJobDialog(Artifact[] allitems, Artifact[] preSelected, boolean isOverrideAllowed) {
       this(allitems, preSelected, null, isOverrideAllowed);
@@ -75,6 +75,7 @@ class CommitJobDialog extends UIJob {
       return items;
    }
 
+   @Override
    public IStatus runInUIThread(IProgressMonitor monitor) {
       IStatus toReturn = Status.CANCEL_STATUS;
       monitor.setTaskName(getName());
@@ -98,7 +99,10 @@ class CommitJobDialog extends UIJob {
 
    private enum CommitColumnEnum {
 
-      Branch, Name, Id, Outfile;
+      Branch,
+      Name,
+      Id,
+      Outfile;
 
       public static String[] toStringArray() {
 
@@ -112,7 +116,7 @@ class CommitJobDialog extends UIJob {
    }
 
    private final class TestRunTableLabelProvider extends BaseLabelProvider implements ITableLabelProvider {
-      private HashSet<Object> unselectableItems = new HashSet<Object>();
+      private final HashSet<Object> unselectableItems = new HashSet<Object>();
       private final int DUMMY_COLUMNS = 1;
 
       public TestRunTableLabelProvider() {

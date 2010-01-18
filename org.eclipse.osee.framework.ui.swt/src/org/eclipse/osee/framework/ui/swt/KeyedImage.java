@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2009 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.ui.navigate;
+package org.eclipse.osee.framework.ui.swt;
 
-import java.util.List;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
- * @author Donald G. Dunne
+ * @author Ryan D. Brooks
  */
-public interface IOteNavigateItem {
+public interface KeyedImage {
+   public abstract ImageDescriptor createImageDescriptor();
 
-   public List<XNavigateItem> getNavigateItems();
-
+   public abstract String getImageKey();
 }

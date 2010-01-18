@@ -6,14 +6,15 @@
 package org.eclipse.osee.ote.ui.test.manager;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 
 /**
  * @author Andrew M. Finkbeiner
  * @author Ryan Schmitt
  */
-public enum OteTestManagerImage implements OseeImage {
+public enum OteTestManagerImage implements KeyedImage {
    ADD("add.gif"),
    ALERT_OBJ("alert_obj.gif"),
    CHECK("check.gif"),

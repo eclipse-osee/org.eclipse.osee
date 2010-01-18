@@ -18,9 +18,9 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask.ScriptStatusEnum;
 import org.eclipse.swt.graphics.Image;
@@ -57,7 +57,7 @@ public class XScriptTableLabelProvider extends XViewerLabelProvider {
    private Image getPassFailImage(ScriptTask task) {
       Matcher m = Pattern.compile("(FAIL|ABORTED)").matcher(task.getPassFail());
       if (m.find()) {
-         return (Image) statusImage.get(ScriptStatusEnum.INVALID);
+         return statusImage.get(ScriptStatusEnum.INVALID);
       }
       return null;
    }
@@ -70,7 +70,7 @@ public class XScriptTableLabelProvider extends XViewerLabelProvider {
    }
 
    private Image getStatusImage(ScriptStatusEnum status) {
-      return (Image) statusImage.get(status);
+      return statusImage.get(status);
    }
 
    @Override
@@ -98,7 +98,9 @@ public class XScriptTableLabelProvider extends XViewerLabelProvider {
          return task.getName();
       } else if (XScriptTableFactory.TEST_LOCATION.equals(col)) {
          return task.getPath();
-      } else if (XScriptTableFactory.RUN.equals(col)) return task.getRunStatus().toString();
+      } else if (XScriptTableFactory.RUN.equals(col)) {
+         return task.getRunStatus().toString();
+      }
 
       return "";
    }

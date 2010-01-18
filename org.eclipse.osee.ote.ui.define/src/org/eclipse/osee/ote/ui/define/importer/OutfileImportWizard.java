@@ -14,7 +14,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.ui.IImportWizard;

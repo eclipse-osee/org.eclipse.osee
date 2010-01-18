@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 
 /**
  * @author Roberto E. Escobar

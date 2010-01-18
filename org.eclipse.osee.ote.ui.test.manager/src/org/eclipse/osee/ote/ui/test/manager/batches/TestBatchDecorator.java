@@ -20,10 +20,10 @@ import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.batches.util.SelectionUtil;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IDecoratorManager;
 

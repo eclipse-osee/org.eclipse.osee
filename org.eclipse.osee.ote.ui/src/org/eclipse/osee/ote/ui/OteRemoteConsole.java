@@ -20,6 +20,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
+import org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin;
 
 public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionListener {
 
@@ -27,51 +28,50 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
    private ITestEnvironment env;
 
    public OteRemoteConsole() throws RemoteException {
+   }
 
+   private boolean isOteConsoleServiceAvailable() {
+      TestCoreGuiPlugin instance = TestCoreGuiPlugin.getDefault();
+      return instance != null && instance.getOteConsoleService() != null;
+   }
+
+   private IOteConsoleService getOteConsole() {
+      return TestCoreGuiPlugin.getDefault().getOteConsoleService();
    }
 
    @Override
    public void lineRead(String line) {
       try {
          String result = remoteConsole.doCommand(line);
-         TestCoreGuiPlugin.getDefault().getConsole().write(result);
+         getOteConsole().write(result);
       } catch (RemoteException e) {
-         TestCoreGuiPlugin.log(Level.SEVERE, "exception executing command "
-		    + line, e);
-	    TestCoreGuiPlugin.getDefault().getConsole().writeError(
-		    "Exception during executing of command. See Error Log");
+         OseeLog.log(TestCoreGuiPlugin.class, Level.SEVERE, "exception executing command " + line, e);
+         getOteConsole().writeError("Exception during executing of command. See Error Log");
       }
    }
 
    public void close() throws RemoteException {
       if (env != null) {
          try {
-			env.closeCommandConsole(remoteConsole);
-		} catch (Exception e) {
-	         OseeLog.log(TestCoreGuiPlugin.class, Level.INFO,
-			    "failed to close remote terminal", e);
-		}
+            env.closeCommandConsole(remoteConsole);
+         } catch (Exception e) {
+            OseeLog.log(TestCoreGuiPlugin.class, Level.INFO, "failed to close remote terminal", e);
+         }
       }
-      if (TestCoreGuiPlugin.getDefault() != null
-		&& TestCoreGuiPlugin.getDefault().getConsole() != null) {
-	    TestCoreGuiPlugin.getDefault().getConsole().removeInputListener(
-		    this);
+      if (isOteConsoleServiceAvailable()) {
+         getOteConsole().removeInputListener(this);
       } else {
-         OseeLog.log(TestCoreGuiPlugin.class, Level.INFO,
-		    "OteRemoteConsole is null");
+         OseeLog.log(TestCoreGuiPlugin.class, Level.INFO, "OteRemoteConsole is null");
       }
       env = null;
    }
 
    @Override
    public void onConnectionLost(IServiceConnector connector, IHostTestEnvironment testHost) {
-      if (TestCoreGuiPlugin.getDefault() != null
-		&& TestCoreGuiPlugin.getDefault().getConsole() != null) {
-	    TestCoreGuiPlugin.getDefault().getConsole().removeInputListener(
-		    this);
+      if (isOteConsoleServiceAvailable()) {
+         getOteConsole().removeInputListener(this);
       } else {
-         OseeLog.log(TestCoreGuiPlugin.class, Level.INFO,
-		    "OteRemoteConsole is null");
+         OseeLog.log(TestCoreGuiPlugin.class, Level.INFO, "OteRemoteConsole is null");
       }
       env = null;
    }
@@ -81,10 +81,9 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
       try {
          env = event.getEnvironment();
          remoteConsole = env.getCommandConsole();
-         TestCoreGuiPlugin.getDefault().getConsole().addInputListener(this);
+         getOteConsole().addInputListener(this);
       } catch (RemoteException e) {
-	  TestCoreGuiPlugin.log(Level.SEVERE,
-		    "exception acquiring remote console", e);
+         OseeLog.log(TestCoreGuiPlugin.class, Level.SEVERE, "exception acquiring remote console", e);
       }
    }
 
@@ -93,8 +92,7 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
       try {
          close();
       } catch (RemoteException e) {
-	  TestCoreGuiPlugin.log(Level.SEVERE,
-		    "exception while closing remote console", e);
+         OseeLog.log(TestCoreGuiPlugin.class, Level.SEVERE, "exception while closing remote console", e);
       }
    }
 

@@ -28,15 +28,16 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.osee.ote.ui.OteNavigateItem">
-      <IOteNavigateItem
-            classname="org.eclipse.osee.ote.ui.define.views.TestRunViewNavigateItem">
-      </IOteNavigateItem>
+         point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
+      <XNavigateItem
+            classname="org.eclipse.osee.ote.ui.define.views.TestRunViewNavigateItem"
+            viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
+      </XNavigateItem>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
-            targetID="org.eclipse.osee.ote.ui.define.views.TestRunView">
+            targetID="org.eclipse.osee.ote.ui.TestPerspective">
          <viewShortcut
                id="org.eclipse.osee.ote.ui.define.views.TestRunView">
          </viewShortcut>
@@ -164,7 +165,7 @@
    <extension
          point="org.eclipse.osee.ote.ui.test.manager.AdvancedPageContribution">
       <AdvancedPageContribution
-            classname="org.eclipse.osee.ote.ui.define.test.manager.TestRunArtifactOptions">
+            classname="org.eclipse.osee.ote.ui.define.views.TestRunArtifactOptions">
       </AdvancedPageContribution>
    </extension>
    <extension
@@ -180,4 +181,10 @@
             primary="false">
       </toc>
    </extension>
+        <extension
+           point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">
+        <ArtifactImageProvider
+              class="org.eclipse.osee.ote.ui.define.OteArtifactImageProvider">
+        </ArtifactImageProvider>
+     </extension>
 </plugin>

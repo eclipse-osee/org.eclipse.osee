@@ -12,23 +12,21 @@ package org.eclipse.osee.ote.ui.mux.actions;
 
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateContainer;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.ote.ui.mux.OteMuxImage;
-import org.eclipse.osee.ote.ui.navigate.IOteNavigateItem;
 
-public class MuxViewNavigatorItem implements IOteNavigateItem {
+public class MuxViewNavigatorItem implements IXNavigateContainer {
 
-    public MuxViewNavigatorItem() {
-	// TODO Auto-generated constructor stub
-    }
+   public MuxViewNavigatorItem() {
+      // TODO Auto-generated constructor stub
+   }
 
-    @Override
-    public List<XNavigateItem> getNavigateItems() {
-	XNavigateItem action = new XNavigateItemAction(null,
-		new OpenMuxViewAction(), OteMuxImage.MUX, false);
-	
-	return Collections.singletonList(action);
-    }
+   @Override
+   public List<XNavigateItem> getNavigateItems() {
+      XNavigateItem action = new XNavigateItemAction(null, new OpenMuxViewAction(), OteMuxImage.MUX, false);
+      return Collections.singletonList(action);
+   }
 
 }

@@ -29,9 +29,10 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
-import org.eclipse.osee.framework.ui.plugin.util.OverlayImage.Location;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.OverlayImage;
+import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
@@ -210,7 +211,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IFrameworkTr
 
    private void initializeImages() throws OseeArgumentException {
       Artifact artifact = getData();
-      Image defaultImage = ImageManager.getImage(artifact);
+      Image defaultImage = ArtifactImageManager.getImage(artifact);
       DecorationOverlayIcon overlay = null;
       if (FROM_LOCAL_WS_COMMIT_ALLOWED_IMAGE == null) {
          OverlayImage overlayImage =

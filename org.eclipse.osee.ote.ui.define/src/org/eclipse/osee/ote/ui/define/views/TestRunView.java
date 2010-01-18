@@ -24,11 +24,11 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.IActionable;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.viewers.IDataChangedListener;
@@ -92,6 +92,7 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
       viewer.registerListener(this);
       viewer.getTree().addKeyListener(new KeyAdapter() {
 
+         @Override
          public void keyPressed(KeyEvent event) {
             if (event.stateMask == SWT.CTRL && (event.keyCode == 'A' || event.keyCode == 'a')) {
                Object object = event.getSource();
@@ -118,6 +119,7 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
    protected void createActions() {
       expandAction = new Action("Expand All") {
 
+         @Override
          public void run() {
             viewer.getTree().setRedraw(false);
             viewer.expandAll();
@@ -129,6 +131,7 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
 
       collapseAction = new Action("Collapse All") {
 
+         @Override
          public void run() {
             viewer.getTree().setRedraw(false);
             viewer.collapseAll();
@@ -140,6 +143,7 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
 
       refreshAction = new Action("Refresh") {
 
+         @Override
          public void run() {
             Displays.ensureInDisplayThread(new Runnable() {
                public void run() {
@@ -149,7 +153,7 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
          }
       };
       refreshAction.setToolTipText("Refresh Table");
-      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
 
    }
 
@@ -160,7 +164,7 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
       menuManager.setParent(getViewSite().getActionBars().getMenuManager());
       fillMenu(menuManager);
       getSite().setSelectionProvider(viewer);
-      OseeAts.addBugToViewToolbar(this, this, OteUiDefinePlugin.getInstance(), VIEW_ID, "Test Run View");
+      OseeUiActions.addBugToViewToolbar(this, this, OteUiDefinePlugin.getInstance(), VIEW_ID, "Test Run View");
    }
 
    private void fillMenu(IMenuManager menuManager) {
@@ -185,8 +189,8 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
    public void onDataChanged() {
       String message = BEGIN_MESSAGE;
       Object object = viewer.getInput();
-      if (object != null && object instanceof Collection) {
-         if (((Collection<?>) object).isEmpty() != true) {
+      if (object != null && object instanceof Collection<?>) {
+         if (!((Collection<?>) object).isEmpty()) {
             message = "";
          }
       }
@@ -232,12 +236,14 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
    }
 
    private final class ShowOnlyLatestRuns extends ViewerFilter {
-      private Map<String, ArtifactItem> latestMap = new HashMap<String, ArtifactItem>();
+      private final Map<String, ArtifactItem> latestMap = new HashMap<String, ArtifactItem>();
 
+      @Override
       public Object[] filter(Viewer viewer, Object parent, Object[] elements) {
          return super.filter(viewer, parent, elements);
       }
 
+      @Override
       public boolean select(Viewer viewer, Object parentElement, Object element) {
          boolean toReturn = false;
          if (element instanceof ArtifactItem) {

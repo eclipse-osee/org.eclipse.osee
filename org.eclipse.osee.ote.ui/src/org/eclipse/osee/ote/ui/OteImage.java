@@ -1,21 +1,27 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ote.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
+import org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public enum OteImage implements OseeImage {
+public enum OteImage implements KeyedImage {
    CHECKOUT("checkout.gif"),
    CONNECTED("connected_sm.gif"),
-   OTE("welcome_item3.gif"),
-   TEST_PROCEDURE("procedure.gif"),
-   TEST_CONFIG("config.gif"),
-   TEST_RUN("testrun.gif"),
-   TEST_CASE("file.gif"),
-   TEST_SUPPORT("function.gif");
+   OTE("welcome_item3.gif");
 
    private final String fileName;
 

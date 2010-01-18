@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.ui.test.manager.batches.navigate;
 
 import java.net.URI;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
 /**
  * @author Roberto E. Escobar

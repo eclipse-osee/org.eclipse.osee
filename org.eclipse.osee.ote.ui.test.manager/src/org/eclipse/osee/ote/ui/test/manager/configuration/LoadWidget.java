@@ -12,9 +12,9 @@ package org.eclipse.osee.ote.ui.test.manager.configuration;
 
 import java.io.File;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.pages.ScriptPage;
 import org.eclipse.osee.ote.ui.test.manager.pages.StatusWindowWidget;
 import org.eclipse.osee.ote.ui.test.manager.pages.TestManagerPage;
@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.ToolItem;
 public class LoadWidget {
    public static final OseeUiActivator plugin = TestManagerPlugin.getInstance();
    private StatusWindowWidget statusWindow;
-   private TestManagerPage tmPage;
+   private final TestManagerPage tmPage;
 
    public LoadWidget(TestManagerPage tmPage) {
       this.tmPage = tmPage;
@@ -51,6 +51,7 @@ public class LoadWidget {
       menuItem.setImage(ImageManager.getImage(OteTestManagerImage.FLDR_OBJ));
       menuItem.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             String[] filterExtensions = {"*.xml"};
             FileDialog fileDialog = new FileDialog(shell, SWT.OPEN);
@@ -81,6 +82,7 @@ public class LoadWidget {
       item.setImage(ImageManager.getImage(OteTestManagerImage.LOAD_CONFIG));
       item.setToolTipText("Load current page configuration from file");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent event) {
             // If they clicked the arrow, we show the list
             if (event.detail == SWT.ARROW) {

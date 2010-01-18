@@ -12,7 +12,7 @@ package org.eclipse.osee.ote.ui.test.manager.panels;
 
 import java.io.File;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.util.Dialogs;
 import org.eclipse.swt.SWT;
@@ -42,9 +42,9 @@ public class FileOrDirectorySelectionPanel extends Composite {
 
    private StyledText textField;
    private Label labelField;
-   private String labelText;
-   private String toolTipText;
-   private boolean isDirectory;
+   private final String labelText;
+   private final String toolTipText;
+   private final boolean isDirectory;
 
    public FileOrDirectorySelectionPanel(Composite parent, int style, String labelText, String toolTipText, boolean isDirectory) {
       super(parent, style);
@@ -75,6 +75,7 @@ public class FileOrDirectorySelectionPanel extends Composite {
       fileDialog.setLayoutData(new GridData(SWT.FILL, SWT.END, false, false));
       fileDialog.setImage(FILE_SELECT_IMAGE);
       fileDialog.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             createDialog();
          }

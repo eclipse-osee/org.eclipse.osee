@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

@@ -24,18 +24,19 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.svn.CheckoutProjectSetJob;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateContainer;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.ote.ui.OteImage;
-import org.eclipse.osee.ote.ui.TestCoreGuiPlugin;
+import org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin;
 import org.osgi.framework.Bundle;
 
 /**
  * @author Roberto E. Escobar
  */
-public class WorkspaceSetupViewItems implements IOteNavigateItem {
+public class WorkspaceSetupViewItems implements IXNavigateContainer {
    private static final String PARENT_FOLDER_NAME = "Workspace Operations";
 
    public WorkspaceSetupViewItems() {
@@ -44,7 +45,7 @@ public class WorkspaceSetupViewItems implements IOteNavigateItem {
 
    public List<XNavigateItem> getNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
-      XNavigateItem parentFolder = new XNavigateItem(null, PARENT_FOLDER_NAME, FrameworkImage.FOLDER);
+      XNavigateItem parentFolder = new XNavigateItem(null, PARENT_FOLDER_NAME, PluginUiImage.FOLDER);
       workspaceSetupFactory(parentFolder);
       items.add(parentFolder);
       return items;
@@ -88,7 +89,7 @@ public class WorkspaceSetupViewItems implements IOteNavigateItem {
       private URL projectSetFile;
       private String jobName;
 
-      public XNavigateItemRunnable(XNavigateItem parent, String name, OseeImage oseeImage, URL projectSetFile) {
+      public XNavigateItemRunnable(XNavigateItem parent, String name, KeyedImage oseeImage, URL projectSetFile) {
          super(parent, name, oseeImage);
          this.jobName = String.format("Workspace Configuration: [%s]", name);
          this.projectSetFile = projectSetFile;

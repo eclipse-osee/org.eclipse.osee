@@ -26,10 +26,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.batches.navigate.TestBatchRegistry;
 import org.eclipse.osee.ote.ui.test.manager.batches.navigate.TestBatchSetupViewItems;
 import org.eclipse.osee.ote.ui.test.manager.batches.util.ResourceFinder;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.swt.widgets.Display;
 
 /**

@@ -12,8 +12,8 @@ package org.eclipse.osee.ote.ui.test.manager.pages;
 
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;

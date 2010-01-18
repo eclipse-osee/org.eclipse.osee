@@ -4,7 +4,7 @@ Bundle-Name: OSEE Test Manager Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.ui.test.manager;singleton:=true
 Bundle-Version: 0.9.1.qualifier
 Bundle-ClassPath: manager.jar
-Bundle-Activator: org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin
+Bundle-Activator: org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.osee.ote.ui.test.manager,
  org.eclipse.osee.ote.ui.test.manager.actions,
@@ -32,8 +32,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.osee.framework.jdk.core,
- org.eclipse.osee.framework.ui.skynet,
- org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.ote.message,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.ui.plugin,

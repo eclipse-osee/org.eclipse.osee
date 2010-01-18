@@ -12,7 +12,7 @@ package org.eclipse.osee.ote.ui.define.dialogs;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.panels.CommentComposite;
 import org.eclipse.osee.ote.ui.define.panels.IOverrideHandler;
@@ -46,11 +46,11 @@ public class CommitDialog extends TitleAreaDialog {
 
    private SelectionComposite selectionComposite;
    private CommentComposite commentComposite;
-   private ITableLabelProvider tableLabelProvider;
+   private final ITableLabelProvider tableLabelProvider;
    private Object[] selectable;
    private Object[] unselectable;
    private Object[] selected;
-   private String[] columnNames;
+   private final String[] columnNames;
    private IOverrideHandler overrideHandler;
 
    public CommitDialog(Shell parent, String[] columnNames, ITableLabelProvider tableLabelProvider) {
@@ -62,6 +62,7 @@ public class CommitDialog extends TitleAreaDialog {
       this.overrideHandler = null;
    }
 
+   @Override
    protected Control createButtonBar(Composite parent) {
       Label separator = new Label(parent, SWT.HORIZONTAL | SWT.SEPARATOR);
       separator.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));
@@ -71,6 +72,7 @@ public class CommitDialog extends TitleAreaDialog {
    /*
     * @see Dialog#createDialogArea(Composite)
     */
+   @Override
    protected Control createDialogArea(Composite parent) {
       Composite content = (Composite) super.createDialogArea(parent);
 

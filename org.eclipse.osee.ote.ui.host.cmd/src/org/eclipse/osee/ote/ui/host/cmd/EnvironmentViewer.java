@@ -25,7 +25,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.type.TreeObject;
 import org.eclipse.osee.framework.jdk.core.type.TreeParent;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -49,7 +49,8 @@ public class EnvironmentViewer extends Composite {
    private static final Image CONSOLE_IMAGE = ImageManager.getImage(OteUiHostCmdImage.CONSOLE);
 
    protected enum ColumnEnum {
-      Service(SWT.LEFT), Users;
+      Service(SWT.LEFT),
+      Users;
 
       private int alignment;
 
@@ -94,8 +95,8 @@ public class EnvironmentViewer extends Composite {
    private void createTreeArea(Composite parent) {
       viewer = new TreeViewer(parent, SWT.SINGLE | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      ((TreeViewer) viewer).getTree().setHeaderVisible(true);
-      ((TreeViewer) viewer).getTree().setLinesVisible(true);
+      (viewer).getTree().setHeaderVisible(true);
+      (viewer).getTree().setLinesVisible(true);
       viewer.setUseHashlookup(true);
       viewer.setColumnProperties(ColumnEnum.toArray());
       viewer.setContentProvider(new TreeContentProvider());
@@ -254,6 +255,7 @@ public class EnvironmentViewer extends Composite {
       }
    }
 
+   @Override
    public boolean setFocus() {
       return this.viewer.getControl().setFocus();
    }
@@ -275,6 +277,7 @@ public class EnvironmentViewer extends Composite {
       });
    }
 
+   @Override
    public void dispose() {
       viewer.getControl().dispose();
       super.dispose();

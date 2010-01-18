@@ -11,8 +11,8 @@
 package org.eclipse.osee.ote.ui.test.manager.configuration;
 
 import java.io.File;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.pages.ScriptPage;
 import org.eclipse.osee.ote.ui.test.manager.pages.StatusWindowWidget;
 import org.eclipse.osee.ote.ui.test.manager.util.Dialogs;

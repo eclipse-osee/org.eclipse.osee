@@ -26,15 +26,15 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.OseeData;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.markers.MarkerPlugin;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.configuration.ConfigFactory;
 import org.eclipse.osee.ote.ui.test.manager.configuration.ILoadConfig;
 import org.eclipse.osee.ote.ui.test.manager.configuration.ISaveConfig;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.models.OutputModelJob;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.xscript.XScriptTable;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.xscript.XScriptTableContentProvider;
@@ -322,7 +322,7 @@ public class ScriptTableViewer {
       });
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Action("Set Selected to Run",
-            ImageManager.getImageDescriptor(FrameworkImage.CHECKBOX_ENABLED)) {
+            ImageManager.getImageDescriptor(PluginUiImage.CHECKBOX_ENABLED)) {
          @Override
          public void run() {
             IStructuredSelection sel = (IStructuredSelection) getSelection();
@@ -336,7 +336,7 @@ public class ScriptTableViewer {
          }
       });
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Action("Set Selected to Not Run",
-            ImageManager.getImageDescriptor(FrameworkImage.CHECKBOX_DISABLED)) {
+            ImageManager.getImageDescriptor(PluginUiImage.CHECKBOX_DISABLED)) {
          @Override
          public void run() {
             IStructuredSelection sel = (IStructuredSelection) getSelection();
@@ -351,14 +351,14 @@ public class ScriptTableViewer {
       });
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Action("Select All to Run",
-            ImageManager.getImageDescriptor(FrameworkImage.CHECKBOX_ENABLED)) {
+            ImageManager.getImageDescriptor(PluginUiImage.CHECKBOX_ENABLED)) {
          @Override
          public void run() {
             setAllTasksRun(true);
          }
       });
       menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Action("Deselect All to Run",
-            ImageManager.getImageDescriptor(FrameworkImage.CHECKBOX_DISABLED)) {
+            ImageManager.getImageDescriptor(PluginUiImage.CHECKBOX_DISABLED)) {
          @Override
          public void run() {
             setAllTasksRun(false);

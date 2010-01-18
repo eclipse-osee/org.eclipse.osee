@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
+import org.eclipse.osee.framework.ui.plugin.IPropertyStoreBasedControl;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 
 /**
  * @author Roberto E. Escobar
@@ -27,16 +28,16 @@ public class ExtensionContributions {
          TestManagerPlugin.PLUGIN_ID + "." + ADVANCED_PAGE_EXTENSION_ELEMENT;
    private static String EXTENSION_ATTRIBUTE = "classname";
 
-   private final ExtensionDefinedObjects<IAdvancedPageContribution> advancedPageContributions;
+   private final ExtensionDefinedObjects<IPropertyStoreBasedControl> advancedPageContributions;
 
    public ExtensionContributions() {
       this.advancedPageContributions =
-            new ExtensionDefinedObjects<IAdvancedPageContribution>(ADVANCED_PAGE_EXTENSION_ID,
+            new ExtensionDefinedObjects<IPropertyStoreBasedControl>(ADVANCED_PAGE_EXTENSION_ID,
                   ADVANCED_PAGE_EXTENSION_ELEMENT, EXTENSION_ATTRIBUTE);
    }
 
-   public List<IAdvancedPageContribution> getAdvancedPageContributions() {
-      List<IAdvancedPageContribution> toReturn = new ArrayList<IAdvancedPageContribution>();
+   public List<IPropertyStoreBasedControl> getAdvancedPageContributions() {
+      List<IPropertyStoreBasedControl> toReturn = new ArrayList<IPropertyStoreBasedControl>();
       try {
          toReturn = advancedPageContributions.getObjects();
       } catch (Exception ex) {

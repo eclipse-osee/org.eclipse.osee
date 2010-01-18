@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
@@ -35,7 +35,7 @@ import org.osgi.framework.Bundle;
  */
 public class ExtensionDefinedReports {
    private static final String EXTENSION_ID = "ITestRunReport";
-   private Map<String, ReportData> reportMap;
+   private final Map<String, ReportData> reportMap;
    private Map<String, Pair<String, String>> idsAndNameMap;
 
    private static ExtensionDefinedReports instance = null;
@@ -84,7 +84,7 @@ public class ExtensionDefinedReports {
       List<IConfigurationElement> elements =
             ExtensionPoints.getExtensionElements(OteUiDefinePlugin.getInstance(), EXTENSION_ID, EXTENSION_ID);
       for (IConfigurationElement element : elements) {
-         IExtension extension = ((IExtension) element.getParent());
+         IExtension extension = (IExtension) element.getParent();
          String identifier = extension.getUniqueIdentifier();
          String name = extension.getLabel();
          String className = element.getAttribute("classname");
@@ -110,31 +110,15 @@ public class ExtensionDefinedReports {
    }
 
    private final class ReportData {
-      private String id;
-      private String name;
-      private Image icon;
-      private ITestRunReport testRunReport;
+      private final String name;
+      private final Image icon;
+      private final ITestRunReport testRunReport;
 
       public ReportData(String id, String name, ITestRunReport testRunReport, Image icon) {
          super();
-         this.id = id;
          this.name = name;
          this.icon = icon;
          this.testRunReport = testRunReport;
-      }
-
-      /**
-       * @return the id
-       */
-      public String getId() {
-         return id;
-      }
-
-      /**
-       * @param id the id to set
-       */
-      public void setId(String id) {
-         this.id = id;
       }
 
       /**

@@ -8,89 +8,105 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.ui;
+package org.eclipse.osee.ote.ui.internal;
 
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.plugin.core.IWorkbenchUserService;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
-import org.eclipse.osee.framework.ui.plugin.util.OseeConsole;
 import org.eclipse.osee.ote.service.IOteClientService;
+import org.eclipse.osee.ote.ui.IOteConsoleService;
+import org.eclipse.osee.ote.ui.OteRemoteConsole;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The main plugin class to be used in the desktop.
  */
 public class TestCoreGuiPlugin extends OseeFormActivator {
-   private static TestCoreGuiPlugin pluginInstance; // The shared instance.
-   public static final String PLUGIN_ID = "org.eclipse.osee.ote.ui";
-   private ServiceTracker oteClientServiceTracker;
 
-   private OseeConsole console = null;
-   private OteRemoteConsole remoteConsole = null;
+   public static final String PLUGIN_ID = "org.eclipse.osee.ote.ui";
+
+   private static TestCoreGuiPlugin pluginInstance;
+
+   private ServiceRegistration oteConsoleServiceRegistration;
+   private ServiceTracker oteClientServiceTracker;
+   private ServiceTracker workbenchUserServiceTracker;
+
+   private OteRemoteConsole remoteConsole;
+   private IOteConsoleService oteConsoleService;
 
    public TestCoreGuiPlugin() {
       super();
       pluginInstance = this;
    }
 
-   private void ensureConsole() {
-      if (console == null) {
-         console = new OseeConsole("OTE Console");
-         console.popup();
-      }
-   }
-
-   public OseeConsole getConsole() {
-      ensureConsole();
-      return console;
-   }
-
-   @Override
-   public void stop(BundleContext context) throws Exception {
-      getOteClientService().removeConnectionListener(remoteConsole);
-      oteClientServiceTracker.close();
-      pluginInstance = null;
-      remoteConsole.close();
-      super.stop(context);
-   }
-
    @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
+
+      oteConsoleService = new OteConsoleServiceImpl();
+      oteConsoleServiceRegistration =
+            context.registerService(IOteConsoleService.class.getName(), oteConsoleService, null);
+
+      workbenchUserServiceTracker = new ServiceTracker(context, IWorkbenchUserService.class.getName(), null);
+      workbenchUserServiceTracker.open();
+
       oteClientServiceTracker = new ServiceTracker(context, IOteClientService.class.getName(), null);
       oteClientServiceTracker.open();
+
       remoteConsole = new OteRemoteConsole();
       getOteClientService().addConnectionListener(remoteConsole);
 
       startOTEArtifactBulkLoad();
    }
 
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      getOteClientService().removeConnectionListener(remoteConsole);
+      if (oteClientServiceTracker != null) {
+         oteClientServiceTracker.close();
+      }
+      if (workbenchUserServiceTracker != null) {
+         workbenchUserServiceTracker.close();
+      }
+      if (oteConsoleServiceRegistration != null) {
+         oteConsoleServiceRegistration.unregister();
+      }
+      pluginInstance = null;
+      remoteConsole.close();
+      super.stop(context);
+   }
+
    private void startOTEArtifactBulkLoad() {
       Jobs.runInJob("OTE Persistance Bulk Load", new IExceptionableRunnable() {
          @Override
          public IStatus run(IProgressMonitor monitor) throws Exception {
-            UserManager.getUser();
+            // Attempt to obtain current workbench User - if service is available
+            getWorkbenchUserService().getUser();
             return Status.OK_STATUS;
          }
       }, TestCoreGuiPlugin.class, "org.eclipse.osee.ote.ui", false);
    }
 
-   /**
-    * Returns the shared instance.
-    */
-   public static TestCoreGuiPlugin getDefault() {
-      return pluginInstance;
+   private IWorkbenchUserService getWorkbenchUserService() throws OseeCoreException {
+      IWorkbenchUserService service = null;
+      try {
+         service = (IWorkbenchUserService) workbenchUserServiceTracker.waitForService(3000);
+      } catch (InterruptedException ex) {
+         throw new OseeWrappedException(ex);
+      }
+      return service;
    }
 
-   public boolean runOnEventInDisplayThread() {
-      return false;
+   public static TestCoreGuiPlugin getDefault() {
+      return pluginInstance;
    }
 
    @Override
@@ -98,12 +114,8 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
       return PLUGIN_ID;
    }
 
-   public static void log(Level level, String message) {
-      log(level, message, null);
-   }
-
-   public static void log(Level level, String message, Throwable t) {
-      OseeLog.log(TestCoreGuiPlugin.class, level, message, t);
+   public IOteConsoleService getOteConsoleService() {
+      return oteConsoleService;
    }
 
    public IOteClientService getOteClientService() {

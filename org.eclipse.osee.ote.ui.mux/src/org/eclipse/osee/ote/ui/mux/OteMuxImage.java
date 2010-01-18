@@ -6,14 +6,13 @@
 package org.eclipse.osee.ote.ui.mux;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author b1528444
- *
  */
-public enum OteMuxImage implements OseeImage {
+public enum OteMuxImage implements KeyedImage {
    MUX("1553.gif");
 
    private final String fileName;

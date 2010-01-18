@@ -26,11 +26,12 @@
       </perspectiveExtension>
    </extension>
    <extension
-         point="org.eclipse.osee.ote.ui.OteNavigateItem">
-      <IOteNavigateItem
+         point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
+      <XNavigateItem
             category="Messaging"
-            classname="org.eclipse.osee.ote.ui.mux.actions.MuxViewNavigatorItem">
-      </IOteNavigateItem>
+            classname="org.eclipse.osee.ote.ui.mux.actions.MuxViewNavigatorItem"
+            viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
+      </XNavigateItem>
    </extension>
    <extension
          point="org.eclipse.help.toc">

@@ -17,9 +17,9 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.svn.CheckoutProjectSetJob;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 
 /**
  * @author Roberto E. Escobar
@@ -28,7 +28,7 @@ final class ProjectSetupItem extends XNavigateItem implements Runnable {
    private URI projectSetFile;
    private String jobName;
 
-   public ProjectSetupItem(XNavigateItem parent, String name, OseeImage oseeImage, URI projectSetFile) {
+   public ProjectSetupItem(XNavigateItem parent, String name, KeyedImage oseeImage, URI projectSetFile) {
       super(parent, name, oseeImage);
       this.jobName = String.format("Project Configuration: [%s]", name);
       this.projectSetFile = projectSetFile;

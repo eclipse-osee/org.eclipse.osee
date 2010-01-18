@@ -32,7 +32,7 @@ import org.eclipse.osee.ote.define.AUTOGEN.OteArtifactTypes;
  * @author Roberto E. Escobar
  */
 public class OteArtifactFetcher<T extends Artifact> {
-   private OteArtifactTypes oteArtifactType;
+   private final OteArtifactTypes oteArtifactType;
 
    protected OteArtifactFetcher(OteArtifactTypes oteArtifactType) {
       this.oteArtifactType = oteArtifactType;
@@ -44,6 +44,7 @@ public class OteArtifactFetcher<T extends Artifact> {
     * @param branch
     * @throws OseeCoreException
     */
+   @SuppressWarnings("unchecked")
    public T getNewArtifact(Branch branch) throws OseeCoreException {
       checkForNull(branch);
       return (T) ArtifactTypeManager.addArtifact(oteArtifactType.getName(), branch);

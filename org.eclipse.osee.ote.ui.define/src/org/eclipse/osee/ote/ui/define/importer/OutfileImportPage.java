@@ -15,9 +15,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
@@ -30,7 +28,6 @@ import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -38,7 +35,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.ote.define.TestRunStorageKey;
-import org.eclipse.osee.ote.define.utilities.OutfileParserExtensionManager;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -342,38 +338,5 @@ public class OutfileImportPage extends WizardDataTransferPage {
    public boolean finish() {
       saveWidgetValues();
       return new ImportOutfileUIOperation(branchSelect.getData(), getSelectedResources()).execute();
-   }
-
-   private final static class FileFilter extends ViewerFilter {
-
-      private static final String BIN_EXTENSION = "bin";
-
-      @Override
-      public boolean select(Viewer viewer, Object parentElement, Object element) {
-         if (element instanceof IProject) {
-            if (((IProject) element).isOpen()) {
-               return true;
-            }
-         } else if (element instanceof IContainer) {
-            IContainer container = (IContainer) element;
-            String name = container.getName();
-            if (!name.startsWith(".") && !name.equals(BIN_EXTENSION)) {
-               return true;
-            }
-         } else if (element instanceof IFile) {
-            IFile aFile = (IFile) element;
-            String currentExtension = aFile.getFileExtension();
-            try {
-               for (String value : OutfileParserExtensionManager.getInstance().getSupportedExtensions()) {
-                  if (currentExtension.equalsIgnoreCase(value)) {
-                     return true;
-                  }
-               }
-            } catch (Exception ex) {
-               // Do Nothing
-            }
-         }
-         return false;
-      }
    }
 }

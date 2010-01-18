@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.ui.test.manager.preferences;
 
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.preferences.environment.EnvironmentPreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;

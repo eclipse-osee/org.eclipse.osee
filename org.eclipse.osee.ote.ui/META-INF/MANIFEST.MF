@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Test Core Gui Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.ui;singleton:=true
 Bundle-Version: 0.9.1.qualifier
-Bundle-Activator: org.eclipse.osee.ote.ui.TestCoreGuiPlugin
+Bundle-Activator: org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin
 Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ote.ui,
@@ -11,8 +11,7 @@ Export-Package: org.eclipse.osee.ote.ui,
  org.eclipse.osee.ote.ui.testclassserver
 Bundle-ClassPath: library.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.core.commands.common,
- org.eclipse.core.resources,
+Import-Package: org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
  org.eclipse.jdt.core,
@@ -21,30 +20,23 @@ Import-Package: org.eclipse.core.commands.common,
  org.eclipse.jface.resource,
  org.eclipse.jface.viewers,
  org.eclipse.osee.connection.service,
- org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.core.operation,
- org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.plugin.core.server,
  org.eclipse.osee.framework.plugin.core.util,
- org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.svn,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.ui.plugin.util,
+ org.eclipse.osee.framework.ui.plugin.xnavigate,
  org.eclipse.osee.framework.ui.service.control.view,
- org.eclipse.osee.framework.ui.skynet,
- org.eclipse.osee.framework.ui.skynet.ats,
- org.eclipse.osee.framework.ui.skynet.widgets.xnavigate,
+ org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.ote.core.environment.interfaces,
  org.eclipse.osee.ote.runtimemanager,
  org.eclipse.osee.ote.service,
  org.eclipse.swt,
  org.eclipse.swt.widgets,
- org.eclipse.ui,
- org.eclipse.ui.dialogs,
- org.eclipse.ui.help,
- org.eclipse.ui.part,
  org.osgi.framework,
  org.osgi.util.tracker
+Require-Bundle: org.eclipse.ui;bundle-version="3.5.1"

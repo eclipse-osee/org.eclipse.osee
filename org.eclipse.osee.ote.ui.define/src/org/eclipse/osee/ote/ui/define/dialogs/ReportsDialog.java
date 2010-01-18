@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.ote.define.jobs.RemoteResourceRequestJob;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;

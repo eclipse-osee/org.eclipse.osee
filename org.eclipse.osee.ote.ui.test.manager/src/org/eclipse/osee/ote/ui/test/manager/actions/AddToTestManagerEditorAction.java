@@ -16,7 +16,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.operations.AddIFileToTestManager;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorInput;

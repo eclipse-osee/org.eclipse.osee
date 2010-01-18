@@ -12,15 +12,15 @@ package org.eclipse.osee.ote.ui.test.manager.batches.navigate;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.ote.ui.navigate.IOteNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateContainer;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.ote.ui.test.manager.batches.TestBatchProjectNature;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TestBatchSetupViewItems implements IOteNavigateItem {
+public class TestBatchSetupViewItems implements IXNavigateContainer {
    private static final String PARENT_FOLDER_NAME = "Test Batch Setup";
 
    private static TestBatchSetupViewItems instance = null;
@@ -28,7 +28,7 @@ public class TestBatchSetupViewItems implements IOteNavigateItem {
    private XNavigateItem parentFolder;
 
    public TestBatchSetupViewItems() {
-      this.parentFolder = new XNavigateItem(null, PARENT_FOLDER_NAME, FrameworkImage.FOLDER);
+      this.parentFolder = new XNavigateItem(null, PARENT_FOLDER_NAME, PluginUiImage.FOLDER);
       this.registry = new TestBatchRegistry(parentFolder);
       this.registry.addListener(new RefreshOteNavigator());
 

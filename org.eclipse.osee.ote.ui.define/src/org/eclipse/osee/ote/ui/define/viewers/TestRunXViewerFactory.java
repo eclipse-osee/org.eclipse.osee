@@ -14,7 +14,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
 import org.eclipse.osee.ote.ui.define.views.TestRunView;
 import org.eclipse.swt.SWT;
 
@@ -23,7 +22,6 @@ import org.eclipse.swt.SWT;
  */
 public class TestRunXViewerFactory extends SkynetXViewerFactory {
 
-   private static XViewerArtifactNameColumn nameCol = new XViewerArtifactNameColumn("Name");
    public static final XViewerColumn DISPOSITION =
          new XViewerColumn("ote.test.run.view.Disposition", "Disposition", 300, SWT.LEFT, true, SortDataType.String,
                true, null);

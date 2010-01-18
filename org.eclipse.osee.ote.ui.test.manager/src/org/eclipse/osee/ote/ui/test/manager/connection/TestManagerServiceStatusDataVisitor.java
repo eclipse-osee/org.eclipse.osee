@@ -33,9 +33,8 @@ import org.eclipse.osee.ote.core.environment.status.TestServerCommandComplete;
 import org.eclipse.osee.ote.core.environment.status.TestStart;
 import org.eclipse.osee.ote.core.framework.command.ITestCommandResult;
 import org.eclipse.osee.ote.core.framework.command.TestCommandStatus;
-import org.eclipse.osee.ote.ui.TestCoreGuiPlugin;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask.ScriptStatusEnum;
 import org.eclipse.swt.widgets.Display;
@@ -47,13 +46,13 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
 
    private final ScriptManager scriptManager;
    private final TestManagerEditor testManagerEditor;
-   private ExecutorService executor;
+   private final ExecutorService executor;
 
    protected TestManagerServiceStatusDataVisitor(ScriptManager scriptManager, TestManagerEditor testManagerEditor) {
       this.scriptManager = scriptManager;
       this.testManagerEditor = testManagerEditor;
       executor = Executors.newSingleThreadExecutor();
-      
+
    }
 
    public void asCommandAdded(final CommandAdded commandAdded) {
@@ -197,9 +196,9 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
 
    private synchronized void logOnConsole(final Level level, final String msg) {
       if (level.equals(Level.SEVERE)) {
-         TestCoreGuiPlugin.getDefault().getConsole().writeError(msg);
+         TestManagerPlugin.getInstance().getOteConsoleService().writeError(msg);
       } else {
-         TestCoreGuiPlugin.getDefault().getConsole().write(msg);
+         TestManagerPlugin.getInstance().getOteConsoleService().write(msg);
       }
    }
 
@@ -213,7 +212,7 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
       Display.getDefault().asyncExec(new Runnable() {
 
          public void run() {
-            TestCoreGuiPlugin.getDefault().getConsole().writeError(cause);
+            TestManagerPlugin.getInstance().getOteConsoleService().writeError(cause);
          }
       });
    }
@@ -345,10 +344,11 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
       });
       logExecutorSize();
    }
-   
-   private void logExecutorSize(){
-      if(executor instanceof ThreadPoolExecutor){
-         OseeLog.log(TestManagerServiceStatusDataVisitor.class, Level.FINE, String.format("Current StatusBoard Executor Size [%d]", ((ThreadPoolExecutor)executor).getQueue().size()));
+
+   private void logExecutorSize() {
+      if (executor instanceof ThreadPoolExecutor) {
+         OseeLog.log(TestManagerServiceStatusDataVisitor.class, Level.FINE, String.format(
+               "Current StatusBoard Executor Size [%d]", ((ThreadPoolExecutor) executor).getQueue().size()));
       }
    }
 }

@@ -14,15 +14,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.plugin.IPropertyStoreBasedControl;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
-import org.eclipse.osee.ote.ui.test.manager.pages.contributions.IAdvancedPageContribution;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -49,16 +48,16 @@ public class AdvancedPage extends TestManagerPage {
       extensionPanel.setLayout(gL);
       extensionPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 
-      List<IAdvancedPageContribution> contributions =
+      List<IPropertyStoreBasedControl> contributions =
             getTestManager().getContributions().getAdvancedPageContributions();
-      Collections.sort(contributions, new Comparator<IAdvancedPageContribution>() {
+      Collections.sort(contributions, new Comparator<IPropertyStoreBasedControl>() {
 
          @Override
-         public int compare(IAdvancedPageContribution o1, IAdvancedPageContribution o2) {
+         public int compare(IPropertyStoreBasedControl o1, IPropertyStoreBasedControl o2) {
             return Integer.valueOf(o1.getPriority()).compareTo(Integer.valueOf(o2.getPriority()));
          }
       });
-      for (IAdvancedPageContribution widget : contributions) {
+      for (IPropertyStoreBasedControl widget : contributions) {
 	  
          try {
 		widget.createControl(extensionPanel);
@@ -102,9 +101,9 @@ public class AdvancedPage extends TestManagerPage {
    @Override
    public void saveData() {
       IPropertyStore propertyStore = getTestManager().getPropertyStore();
-      List<IAdvancedPageContribution> contributions =
+      List<IPropertyStoreBasedControl> contributions =
             getTestManager().getContributions().getAdvancedPageContributions();
-      for (IAdvancedPageContribution contribution : contributions) {
+      for (IPropertyStoreBasedControl contribution : contributions) {
          contribution.save(propertyStore);
       }
    }
@@ -112,9 +111,9 @@ public class AdvancedPage extends TestManagerPage {
    @Override
    public void restoreData() {
       IPropertyStore propertyStore = getTestManager().getPropertyStore();
-      List<IAdvancedPageContribution> contributions =
+      List<IPropertyStoreBasedControl> contributions =
             getTestManager().getContributions().getAdvancedPageContributions();
-      for (IAdvancedPageContribution contribution : contributions) {
+      for (IPropertyStoreBasedControl contribution : contributions) {
          contribution.load(propertyStore);
       }
    }
@@ -122,10 +121,10 @@ public class AdvancedPage extends TestManagerPage {
    @Override
    public boolean areSettingsValidForRun() {
       boolean result = true;
-      List<IAdvancedPageContribution> contributions =
+      List<IPropertyStoreBasedControl> contributions =
             getTestManager().getContributions().getAdvancedPageContributions();
-      for (IAdvancedPageContribution contribution : contributions) {
-         result &= contribution.areSettingsValidForRun();
+      for (IPropertyStoreBasedControl contribution : contributions) {
+         result &= contribution.areSettingsValid();
       }
       return result;
    }
@@ -133,9 +132,9 @@ public class AdvancedPage extends TestManagerPage {
    @Override
    public String getErrorMessage() {
       StringBuilder builder = new StringBuilder();
-      List<IAdvancedPageContribution> contributions =
+      List<IPropertyStoreBasedControl> contributions =
             getTestManager().getContributions().getAdvancedPageContributions();
-      for (IAdvancedPageContribution contribution : contributions) {
+      for (IPropertyStoreBasedControl contribution : contributions) {
          String message = contribution.getErrorMessage();
          if (Strings.isValid(message)) {
             if (builder.length() > 0) {

@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
 
 /**
@@ -91,7 +91,7 @@ public class TestBatchRegistry {
 
    private TestBatchData createNewTestBatchItem(String id, URI projectSetFile, URI testBatchFile) {
       // Chain Items
-      XNavigateItem parentFolder = new XNavigateItem(parent, id, FrameworkImage.FOLDER);
+      XNavigateItem parentFolder = new XNavigateItem(parent, id, PluginUiImage.FOLDER);
       new ProjectSetupItem(parentFolder, id + " Checkout", OteTestManagerImage.PROJECT_SET_IMAGE, projectSetFile);
       new TestBatchSetupItem(parentFolder, id + " Test Manager Batch Config", OteTestManagerImage.TEST_BATCH_IMAGE, testBatchFile);
 

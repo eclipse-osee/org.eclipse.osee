@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.ui.test.manager.pages.contributions;
 
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
+import org.eclipse.osee.framework.ui.plugin.IPropertyStoreBasedControl;
 import org.eclipse.osee.ote.ui.test.manager.panels.FileOrDirectorySelectionPanel;
 import org.eclipse.osee.ote.ui.test.manager.panels.LoggingPanel;
 import org.eclipse.osee.ote.ui.test.manager.panels.ScriptExecutionOptionsPanel;
@@ -24,7 +25,7 @@ import org.eclipse.swt.widgets.Group;
 /**
  * @author Roberto E. Escobar
  */
-public class ScriptExecutionContribution implements IAdvancedPageContribution {
+public class ScriptExecutionContribution implements IPropertyStoreBasedControl {
    private static final String GROUP_TITLE = "Script Execution Options";
    private static final String LOGGING_GROUP = "Select a logging level";
    private static final String EXECUTION_OPTIONS_GROUP = "Execution Options";
@@ -88,7 +89,7 @@ public class ScriptExecutionContribution implements IAdvancedPageContribution {
    }
 
    @Override
-   public boolean areSettingsValidForRun() {
+   public boolean areSettingsValid() {
       return scriptDirectoryPanel.isValid();
    }
 

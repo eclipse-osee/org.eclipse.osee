@@ -16,11 +16,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.ote.ui.test.manager.configuration.LoadConfigurationOperation;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.util.PluginUtil;
 import org.eclipse.osee.ote.ui.test.manager.util.TestManagerSelectDialog;
 import org.eclipse.ui.progress.UIJob;
@@ -32,7 +32,7 @@ final class TestBatchSetupItem extends XNavigateItem implements Runnable {
    private URI testBatchFile;
    private String jobName;
 
-   public TestBatchSetupItem(XNavigateItem parent, String name, OseeImage oseeImage, URI testBatchFile) {
+   public TestBatchSetupItem(XNavigateItem parent, String name, KeyedImage oseeImage, URI testBatchFile) {
       super(parent, name, oseeImage);
       this.jobName = String.format("Test Manager Configuration: [%s]", name);
       this.testBatchFile = testBatchFile;

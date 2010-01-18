@@ -40,7 +40,9 @@ public class DataItemContentProvider implements ITreeContentProvider {
    }
 
    public boolean hasChildren(Object element) {
-      if (element instanceof Collection) return true;
+      if (element instanceof Collection<?>) {
+         return true;
+      }
       if (element instanceof DataItem) {
          return ((DataItem) element).hasChildren();
       }
@@ -48,7 +50,9 @@ public class DataItemContentProvider implements ITreeContentProvider {
    }
 
    public Object[] getElements(Object inputElement) {
-      if (inputElement instanceof String) return new Object[] {inputElement};
+      if (inputElement instanceof String) {
+         return new Object[] {inputElement};
+      }
       return getChildren(inputElement);
    }
 

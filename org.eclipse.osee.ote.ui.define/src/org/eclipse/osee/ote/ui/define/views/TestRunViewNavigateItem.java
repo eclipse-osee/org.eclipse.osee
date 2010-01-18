@@ -13,17 +13,17 @@ package org.eclipse.osee.ote.ui.define.views;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.ViewPartUtil;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateContainer;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
-import org.eclipse.osee.ote.ui.navigate.IOteNavigateItem;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TestRunViewNavigateItem implements IOteNavigateItem {
+public class TestRunViewNavigateItem implements IXNavigateContainer {
 
    public TestRunViewNavigateItem() {
       super();
@@ -32,7 +32,7 @@ public class TestRunViewNavigateItem implements IOteNavigateItem {
    public List<XNavigateItem> getNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
-      XNavigateItem msgItem = new XNavigateItem(null, "Test Analysis", FrameworkImage.FOLDER);
+      XNavigateItem msgItem = new XNavigateItem(null, "Test Analysis", PluginUiImage.FOLDER);
       new XNavigateItemAction(msgItem, new OpenTestRunView(), OteDefineImage.TEST_RUN_VIEW, false);
       items.add(msgItem);
 

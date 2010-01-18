@@ -20,7 +20,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 

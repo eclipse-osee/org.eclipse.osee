@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;

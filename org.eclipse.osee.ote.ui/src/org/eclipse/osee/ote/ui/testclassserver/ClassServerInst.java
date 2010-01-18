@@ -24,14 +24,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.osee.framework.core.client.CorePreferences;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.CorePreferences;
 import org.eclipse.osee.framework.plugin.core.server.ClassServer;
 import org.eclipse.osee.framework.plugin.core.server.PathResourceFinder;
 import org.eclipse.osee.framework.ui.plugin.util.AJavaProject;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 import org.eclipse.osee.ote.runtimemanager.UserLibResourceFinder;
-import org.eclipse.osee.ote.ui.TestCoreGuiPlugin;
+import org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin;
 
 public class ClassServerInst {
    private ClassServer classServer;
@@ -56,12 +56,12 @@ public class ClassServerInst {
       try {
          InetAddress useHostAddress = CorePreferences.getDefaultInetAddress();
          classServer = new ClassServer(0, InetAddress.getLocalHost())//;
-         {
-            @Override
-            protected void fileDownloaded(String fp, InetAddress addr) {
-               System.out.println("ClassServerInst: File " + fp + " downloaded to " + addr);
-            }
-         };
+               {
+                  @Override
+                  protected void fileDownloaded(String fp, InetAddress addr) {
+                     System.out.println("ClassServerInst: File " + fp + " downloaded to " + addr);
+                  }
+               };
          pathResourceFinder = new PathResourceFinder(new String[] {}, false);
          classServer.addResourceFinder(new UserLibResourceFinder());
          classServer.addResourceFinder(pathResourceFinder);
@@ -93,7 +93,7 @@ public class ClassServerInst {
          OseeLog.log(TestCoreGuiPlugin.class, Level.SEVERE, "Class Server not started.", ex);
       }
    }
-   
+
    /**
     * Adds any newly created or checked out projects in the workspace to the ClassServer.
     */
@@ -125,15 +125,18 @@ public class ClassServerInst {
          // If the project start with a '.', (i.e. a hidden project) do not include it in the class
          // server
          // This will keep .osee.data and others from being served
-         if (!project.isOpen()) continue;
+         if (!project.isOpen()) {
+            continue;
+         }
 
          IProjectDescription description;
          try {
             description = project.getDescription();
             if (!project.getName().startsWith(".") && description.hasNature("org.eclipse.jdt.core.javanature")) {
                List<File> fileList = AJavaProject.getJavaProjectProjectDependancies(JavaCore.create(project));
-               for (File file : fileList)
+               for (File file : fileList) {
                   list.add(file.getAbsolutePath());
+               }
             }
          } catch (CoreException ex) {
             ex.printStackTrace();

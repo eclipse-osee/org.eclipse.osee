@@ -36,7 +36,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.swt.SWT;
@@ -61,15 +61,15 @@ public class SelectionComposite extends Composite {
    private static Image CHECK_OVERRIDEN_IMAGE = null;
    private static Image UNCHECKED_OVERRIDEN_IMAGE = null;
 
-   private ITableLabelProvider tableLabelProvider;
+   private final ITableLabelProvider tableLabelProvider;
    private TableViewer tableViewer;
-   private Object[] resources;
-   private boolean isSelectAllByDefault;
-   private Map<Object, MutableBoolean> selectableMap;
-   private Set<Object> userSelectedResources = new HashSet<Object>();
-   private Set<Object> notSelectableResources = new HashSet<Object>();
-   private Set<Object> overridable = new HashSet<Object>();
-   private String[] columnNames;
+   private final Object[] resources;
+   private final boolean isSelectAllByDefault;
+   private final Map<Object, MutableBoolean> selectableMap;
+   private final Set<Object> userSelectedResources = new HashSet<Object>();
+   private final Set<Object> notSelectableResources = new HashSet<Object>();
+   private final Set<Object> overridable = new HashSet<Object>();
+   private final String[] columnNames;
    private Label lblSelectedResourcesNumber;
    private IOverrideHandler overrideHandler;
    private boolean areOverridesAllowed;
@@ -180,6 +180,7 @@ public class SelectionComposite extends Composite {
       selectButton.setText("Select All");
       selectButton.setLayoutData(new GridData());
       selectButton.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             setAllItemsChecked(true);
          }
@@ -189,6 +190,7 @@ public class SelectionComposite extends Composite {
       deselectButton.setText("Deselect All");
       deselectButton.setLayoutData(new GridData());
       deselectButton.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             setAllItemsChecked(false);
          }
@@ -200,6 +202,7 @@ public class SelectionComposite extends Composite {
          overrideButton.setToolTipText(overrideHandler.getToolTipText());
          overrideButton.setLayoutData(new GridData());
          overrideButton.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                areOverridesAllowed = overrideButton.getSelection();
                if (areOverridesAllowed != false) {
@@ -337,7 +340,7 @@ public class SelectionComposite extends Composite {
 
    private final class CheckColumnEditingSupport extends EditingSupport {
 
-      private CheckboxCellEditor editor;
+      private final CheckboxCellEditor editor;
 
       public CheckColumnEditingSupport(ColumnViewer viewer) {
          super(viewer);

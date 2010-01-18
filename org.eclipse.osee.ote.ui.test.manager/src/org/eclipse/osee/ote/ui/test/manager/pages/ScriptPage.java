@@ -19,16 +19,15 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
-import org.eclipse.osee.ote.ui.TestCoreGuiPlugin;
 import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
-import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.configuration.LoadWidget;
 import org.eclipse.osee.ote.ui.test.manager.configuration.SaveWidget;
 import org.eclipse.osee.ote.ui.test.manager.connection.ScriptManager;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
+import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.jobs.ScriptRunJob;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTableViewer;
 import org.eclipse.swt.SWT;
@@ -54,7 +53,8 @@ public abstract class ScriptPage extends TestManagerPage {
    private static final String NOT_CONNECTED = "<< NOT_CONNECTED >>";
 
    public enum UpdateableLabel {
-      HOSTLABEL, CONFIGPATHLABEL;
+      HOSTLABEL,
+      CONFIGPATHLABEL;
    }
 
    public static final OseeUiActivator plugin = TestManagerPlugin.getInstance();
@@ -69,7 +69,7 @@ public abstract class ScriptPage extends TestManagerPage {
    private SaveWidget saveWidget;
    private ScriptTableViewer scriptTable;
    private StatusWindowWidget statusWindow;
-   private TestManagerEditor testManagerEditor;
+   private final TestManagerEditor testManagerEditor;
 
    public ScriptPage(Composite parent, int style, TestManagerEditor parentTestManager) {
       super(parent, style, parentTestManager);
@@ -80,6 +80,7 @@ public abstract class ScriptPage extends TestManagerPage {
       scriptTable.addFile(fullPath);
    }
 
+   @Override
    public void createPage() {
       super.createPage();
       Composite parent = (Composite) getContent();
@@ -121,7 +122,9 @@ public abstract class ScriptPage extends TestManagerPage {
    }
 
    public String getOFP() {
-      if (hostConnectLabel == null) return "";
+      if (hostConnectLabel == null) {
+         return "";
+      }
       return hostConnectLabel.getText();
    }
 
@@ -131,9 +134,11 @@ public abstract class ScriptPage extends TestManagerPage {
    }
 
    public String getScripts() {
-      if (scriptTable == null)
+      if (scriptTable == null) {
          return "";
-      else if (scriptTable.getTaskList() == null) return "";
+      } else if (scriptTable.getTaskList() == null) {
+         return "";
+      }
       return scriptTable.getTaskList().toString();
    }
 
@@ -180,6 +185,7 @@ public abstract class ScriptPage extends TestManagerPage {
       deleteButton.setImage(ImageManager.getImage(OteTestManagerImage.FILE_DELETE));
       deleteButton.setToolTipText("Deletes Selected (highlighted) Scripts");
       deleteButton.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             handleDeleteButton();
          }
@@ -209,6 +215,7 @@ public abstract class ScriptPage extends TestManagerPage {
       runButton.setDisabledImage(ImageManager.getImage(OteTestManagerImage.UNSEL_RUN_EXEC));
       runButton.setToolTipText("Runs the Checked Scripts");
       runButton.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             handleRunButton();
          }
@@ -228,6 +235,7 @@ public abstract class ScriptPage extends TestManagerPage {
       abortButton.setDisabledImage(ImageManager.getImage(OteTestManagerImage.UNSEL_ABORT_STOP));
       abortButton.setToolTipText("Abort Currently Running Script");
       abortButton.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             handleAbortButton();
             abortBatchButton.setEnabled(false);
@@ -254,6 +262,7 @@ public abstract class ScriptPage extends TestManagerPage {
       abortBatchButton.setDisabledImage(ImageManager.getImage(OteTestManagerImage.UNSEL_BATCH_ABORT_STOP));
       abortBatchButton.setToolTipText("Abort Script Batch");
       abortBatchButton.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             handleBatchAbortButton();
             abortBatchButton.setEnabled(false);
@@ -326,21 +335,21 @@ public abstract class ScriptPage extends TestManagerPage {
 
    // TODO this stuff needs some updating too...
    protected void handleAbortButton() {
-      TestCoreGuiPlugin.getDefault().getConsole().write("Aborting Test Script...");
+      TestManagerPlugin.getInstance().getOteConsoleService().write("Aborting Test Script...");
       try {
          getScriptManager().abortScript(false);
       } catch (RemoteException e) {
-         TestCoreGuiPlugin.getDefault().getConsole().writeError(Lib.exceptionToString(e));
+         TestManagerPlugin.getInstance().getOteConsoleService().writeError(Lib.exceptionToString(e));
       }
    }
 
    // TODO this stuff needs some updating too...
    protected void handleBatchAbortButton() {
-      TestCoreGuiPlugin.getDefault().getConsole().write("Aborting Test Script Batch...");
+      TestManagerPlugin.getInstance().getOteConsoleService().write("Aborting Test Script Batch...");
       try {
          getScriptManager().abortScript(true);
       } catch (RemoteException e) {
-         TestCoreGuiPlugin.getDefault().getConsole().writeError(Lib.exceptionToString(e));
+         TestManagerPlugin.getInstance().getOteConsoleService().writeError(Lib.exceptionToString(e));
       }
    }
 
@@ -414,6 +423,7 @@ public abstract class ScriptPage extends TestManagerPage {
       return result;
    }
 
+   @Override
    public boolean onDisconnect(ConnectionEvent event) {
       boolean result = getScriptManager().disconnect(event);
       Display.getDefault().asyncExec(new Runnable() {
@@ -431,6 +441,7 @@ public abstract class ScriptPage extends TestManagerPage {
       return result;
    }
 
+   @Override
    public boolean onConnectionLost(IHostTestEnvironment testHost) {
       boolean result = getScriptManager().onConnectionLost(testHost);
       Display.getDefault().asyncExec(new Runnable() {
