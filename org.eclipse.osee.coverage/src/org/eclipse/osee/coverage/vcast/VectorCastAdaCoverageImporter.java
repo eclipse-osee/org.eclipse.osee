@@ -13,9 +13,11 @@ package org.eclipse.osee.coverage.vcast;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.coverage.ICoverageImporter;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
@@ -40,7 +42,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
    }
 
    @Override
-   public CoverageImport run() {
+   public CoverageImport run(IProgressMonitor progressMonitor) {
       coverageImport = new CoverageImport("VectorCast Import");
       coverageImport.setCoverageUnitFileContentsProvider(new SimpleCoverageUnitFileContentsProvider());
       if (!Strings.isValid(vectorCastCoverageImportProvider.getVCastDirectory())) {
@@ -68,7 +70,19 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
       Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();
       Map<CoverageUnit, CoverageDataSubProgram> methodCoverageUnitToCoverageDataSubProgram =
             new HashMap<CoverageUnit, CoverageDataSubProgram>();
+      List<VcpSourceFile> vcpSourceFiles = vCastVcp.sourceFiles;
+      if (progressMonitor != null) {
+         progressMonitor.beginTask("Importing Source File Data", vcpSourceFiles.size());
+      }
+      int x = 1;
       for (VcpSourceFile vcpSourceFile : vCastVcp.sourceFiles) {
+         String str =
+               String.format("Processing VcpSourceFile %d/%d [%s]...", x++, vcpSourceFiles.size(), vcpSourceFile);
+         System.out.println(str);
+         if (progressMonitor != null) {
+            progressMonitor.worked(1);
+            progressMonitor.subTask(str);
+         }
          try {
             CoverageDataFile coverageDataFile = vcpSourceFile.getCoverageDataFile();
             for (CoverageDataUnit coverageDataUnit : coverageDataFile.getCoverageDataUnits()) {
@@ -120,7 +134,19 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
       }
 
       // Process all results files and map to coverage units
-      for (VcpResultsFile vcpResultsFile : vCastVcp.resultsFiles) {
+      List<VcpResultsFile> vcpResultsFiles = vCastVcp.resultsFiles;
+      if (progressMonitor != null) {
+         progressMonitor.beginTask("Importing Test Unit Data", vcpResultsFiles.size());
+      }
+      x = 1;
+      for (VcpResultsFile vcpResultsFile : vcpResultsFiles) {
+         String str =
+               String.format("Processing VcpResultsFile %d/%d [%s]...", x++, vcpResultsFiles.size(), vcpResultsFile);
+         System.out.println(str);
+         if (progressMonitor != null) {
+            progressMonitor.worked(1);
+            progressMonitor.subTask(str);
+         }
          String testUnitName = vcpResultsFile.getValue(ResultsValue.FILENAME);
          for (String fileNum : vcpResultsFile.getVcpResultsDatFile().getFileNumbers()) {
             CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);

@@ -188,7 +188,7 @@ public class CoverageParametersTest {
    @Test
    public void testCoverageParameters() throws Exception {
       CoverageImport1TestBlam coverageImport1TestBlam = new CoverageImport1TestBlam();
-      coverageImport = coverageImport1TestBlam.run();
+      coverageImport = coverageImport1TestBlam.run(null);
       Assert.assertNotNull(coverageImport);
 
       // Check import results

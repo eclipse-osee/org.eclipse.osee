@@ -64,7 +64,7 @@ public class CoveragePackageImportTest {
    @Test
    public void testImport1() throws Exception {
       CoverageImport1TestBlam coverageImport1TestBlam = new CoverageImport1TestBlam();
-      coverageImport = coverageImport1TestBlam.run();
+      coverageImport = coverageImport1TestBlam.run(null);
       Assert.assertNotNull(coverageImport);
 
       // Check import results
@@ -205,7 +205,7 @@ public class CoveragePackageImportTest {
    // Re-import with no changes, make sure no merge items exist
    public void testImport1B() throws Exception {
       CoverageImport1TestBlam coverageImport1TestBlam = new CoverageImport1TestBlam();
-      coverageImport = coverageImport1TestBlam.run();
+      coverageImport = coverageImport1TestBlam.run(null);
       Assert.assertNotNull(coverageImport);
 
       // Check import results
@@ -230,7 +230,7 @@ public class CoveragePackageImportTest {
    // com.screenA.ComScrnButton3 and epu.PowerUnit3
    public void testImport2() throws Exception {
       CoverageImport2TestBlam coverageImport2TestBlam = new CoverageImport2TestBlam();
-      coverageImport = coverageImport2TestBlam.run();
+      coverageImport = coverageImport2TestBlam.run(null);
       Assert.assertNotNull(coverageImport);
 
       // Test MergeManager
@@ -304,7 +304,7 @@ public class CoveragePackageImportTest {
    // Re-import with new CoverageUnit method initAdded() at end of epu.PowerUnit1.java
    public void testImport3() throws Exception {
       CoverageImport3TestBlam coverageImport3TestBlam = new CoverageImport3TestBlam();
-      coverageImport = coverageImport3TestBlam.run();
+      coverageImport = coverageImport3TestBlam.run(null);
       Assert.assertNotNull(coverageImport);
 
       if (testWithDb) {
@@ -409,7 +409,7 @@ public class CoveragePackageImportTest {
    // Re-import with deselectAdded method added to middle of epu.PowerUnit1
    public void testImport4() throws Exception {
       CoverageImport4TestBlam coverageImport4TestBlam = new CoverageImport4TestBlam();
-      coverageImport = coverageImport4TestBlam.run();
+      coverageImport = coverageImport4TestBlam.run(null);
       Assert.assertNotNull(coverageImport);
 
       if (testWithDb) {

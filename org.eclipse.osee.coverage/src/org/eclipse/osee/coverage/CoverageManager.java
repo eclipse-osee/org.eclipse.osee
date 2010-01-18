@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 public class CoverageManager {
 
    public static void importCoverage(ICoverageImporter coverageImporter) throws OseeCoreException {
-      CoverageImport coverageImport = coverageImporter.run();
+      CoverageImport coverageImport = coverageImporter.run(null);
       CoverageEditor.open(new CoverageEditorInput(coverageImport.getName(), null, coverageImport, false));
    }
 

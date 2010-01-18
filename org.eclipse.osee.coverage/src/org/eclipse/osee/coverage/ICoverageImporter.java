@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.coverage.model.CoverageImport;
 
 /**
@@ -19,5 +20,5 @@ public interface ICoverageImporter {
 
    public String getName();
 
-   public CoverageImport run();
+   public CoverageImport run(IProgressMonitor progressMonitor);
 }

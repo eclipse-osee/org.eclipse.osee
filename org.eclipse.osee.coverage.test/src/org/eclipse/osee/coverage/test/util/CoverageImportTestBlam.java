@@ -71,7 +71,7 @@ public class CoverageImportTestBlam extends AbstractCoverageBlam implements ICov
 
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      setCoverageImport(run());
+      setCoverageImport(run(null));
    }
 
    @Override
@@ -80,7 +80,7 @@ public class CoverageImportTestBlam extends AbstractCoverageBlam implements ICov
    }
 
    @Override
-   public CoverageImport run() {
+   public CoverageImport run(IProgressMonitor progressMonitor) {
 
       CoverageImport coverageImport = new CoverageImport(getName());
       coverageImport.setCoverageUnitFileContentsProvider(new SimpleCoverageUnitFileContentsProvider());
