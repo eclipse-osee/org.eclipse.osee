@@ -10,7 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.lang.reflect.Constructor;
 import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.AccessControlAction;
 import org.eclipse.osee.ats.actions.ConvertActionableItemsAction;
@@ -32,6 +37,8 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonViaAction;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -49,11 +56,31 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class SMAOperationsSection extends SectionPart {
 
-   private final SMAEditor editor;
+   protected final SMAEditor editor;
+   private ISMAOperationsSection advOperation = null;
 
    public SMAOperationsSection(SMAEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
       this.editor = editor;
+      registerAdvancedSectionsFromExtensionPoints();
+   }
+
+   @SuppressWarnings( {"unchecked", "unused"})
+   private void registerAdvancedSectionsFromExtensionPoints() {
+      List<IConfigurationElement> elements =
+            ExtensionPoints.getExtensionElements(AtsPlugin.getInstance(), "AtsAdvancedOperationAction",
+                  "AtsAdvancedOperationAction");
+      for (IConfigurationElement element : elements) {
+         String classname = element.getAttribute("classname");
+         String bundleName = element.getContributor().getName();
+         try {
+            Class<ISMAOperationsSection> clazz = Platform.getBundle(bundleName).loadClass(classname);
+            Constructor<ISMAOperationsSection> constructor = clazz.getConstructor();
+            advOperation = constructor.newInstance();
+         } catch (Exception ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+      }
    }
 
    @Override
@@ -75,7 +102,12 @@ public class SMAOperationsSection extends SectionPart {
       createViewsEditorsSection(sectionBody, toolkit);
       createNotificationsSection(sectionBody, toolkit);
 
-      createAdvancedSection(sectionBody, toolkit);
+      if (advOperation != null && advOperation.isLbaProgram(editor)) {
+         advOperation.createAdvancedSection(editor, sectionBody, toolkit);
+      } else {
+         createAdvancedSection(sectionBody, toolkit);
+      }
+
       if (AtsUtil.isAtsAdmin()) {
          createAdminSection(sectionBody, toolkit);
       }
@@ -109,6 +141,7 @@ public class SMAOperationsSection extends SectionPart {
 
    private void createAdvancedSection(Composite parent, FormToolkit toolkit) {
       if (!(editor.getSma().isTeamWorkflow())) return;
+
       Section section = toolkit.createSection(parent, Section.TITLE_BAR);
       section.setText("Advanced");
 

@@ -9,6 +9,7 @@
    <extension-point id="AtsNotification" name="AtsNotification" schema="schema/AtsNotification.exsd"/>
    <extension-point id="AtsWorldEditorItem" name="AtsWorldEditorItem" schema="schema/AtsWorldEditorItem.exsd"/>
    <extension-point id="AtsHealthCheck" name="AtsHealthCheck" schema="schema/AtsHealthCheck.exsd"/>
+   <extension-point id="AtsAdvancedOperationAction" name="AtsAdvancedOperationAction" schema="schema/AtsAdvancedOperationAction.exsd"/>
          <extension
          point="org.eclipse.ui.editors">
          <editor
