@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
+import org.eclipse.osee.framework.ui.skynet.ats.IOseeAtsService;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
@@ -48,6 +49,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
    private ServiceTracker packageAdminTracker;
    private ServiceTracker cacheServiceTracker;
    private ServiceTracker databaseServiceTracker;
+   private ServiceTracker atsServiceTracker;
 
    public SkynetGuiPlugin() {
       super();
@@ -60,6 +62,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       packageAdminTracker.close();
       cacheServiceTracker.close();
       databaseServiceTracker.close();
+      atsServiceTracker.close();
    }
 
    @Override
@@ -73,6 +76,9 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
 
       databaseServiceTracker = new ServiceTracker(context, IOseeDatabaseService.class.getName(), null);
       databaseServiceTracker.open();
+
+      atsServiceTracker = new ServiceTracker(context, IOseeAtsService.class.getName(), null);
+      atsServiceTracker.open();
 
       OseeEventManager.addListener(this);
 
@@ -120,6 +126,10 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
 
    public IOseeDatabaseService getOseeDatabaseService() {
       return (IOseeDatabaseService) databaseServiceTracker.getService();
+   }
+
+   public IOseeAtsService getOseeAtsService() {
+      return (IOseeAtsService) atsServiceTracker.getService();
    }
 
    @Override

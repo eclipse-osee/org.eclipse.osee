@@ -15,7 +15,6 @@
  <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="schema/WorkDefinitionProvider.exsd"/>
  <extension-point id="DatabaseHealthOperation" name="DatabaseHealthOperation" schema="schema/DatabaseHealthOperation.exsd"/>
   <extension-point id="ArtifactImageProvider" name="ArtifactImageProvider" schema="schema/ArtifactImageProvider.exsd"/>
-  <extension-point id="OseeAtsUtil" name="OseeAtsUtil" schema="schema/OseeAtsUtil.exsd"/>
  
    <extension point="org.eclipse.ui.popupMenus">
       <objectContribution
