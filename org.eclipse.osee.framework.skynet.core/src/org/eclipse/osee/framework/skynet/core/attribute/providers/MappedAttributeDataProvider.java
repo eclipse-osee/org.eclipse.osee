@@ -27,10 +27,10 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 
 /**
  * @author Roberto E. Escobar

@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.plugin.core.IWorkbenchUserService;
+import org.eclipse.osee.framework.skynet.core.WorkbenchUserService;
 import org.eclipse.osee.framework.skynet.core.attribute.HttpAttributeTagger;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
 import org.osgi.framework.BundleActivator;
@@ -52,6 +54,7 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
       IOseeCachingService cachingService = new ClientCachingServiceFactory().createService(this);
 
       createService(context, IOseeCachingService.class, cachingService);
+      createService(context, IWorkbenchUserService.class, new WorkbenchUserService());
 
       createServiceTracker(context, IOseeCachingService.class, TrackerId.OSEE_CACHING_SERVICE);
       createServiceTracker(context, IDataTranslationService.class, TrackerId.TRANSLATION_SERVICE);

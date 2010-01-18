@@ -30,10 +30,10 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 
 /**
  * Responds to requests by server for information about client
