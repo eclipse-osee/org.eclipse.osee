@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
@@ -33,7 +33,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
    private static class LocalRelationLink {
       public int relLinkId;
       public int gammaId;
-      public int transactionId;
+      public int relTransId;
       public int branchId;
       public int aArtId;
       public int bArtId;
@@ -46,16 +46,16 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
          this.branchId = branchId;
          this.gammaId = gammaId;
          this.relLinkId = relLinkId;
-         this.transactionId = transactionId;
+         this.relTransId = transactionId;
          this.transIdForArtifactDeletion = transIdForArtifactDeletion;
       }
    }
 
    private static final String NO_ADDRESSING_ARTIFACTS_A =
-         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, tx1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 AS deleted_tran FROM osee_txs tx1, osee_relation_link rel1 WHERE tx1.gamma_id = rel1.gamma_id AND NOT EXISTS (SELECT 'x' FROM osee_txs tx2, osee_artifact_version av1 WHERE tx1.branch_id = tx2.branch_id AND tx2.gamma_id = av1.gamma_id AND av1.art_id = rel1.a_art_id UNION ALL SELECT 'x' FROM osee_txs_archived ta, osee_artifact_version av1 WHERE tx1.branch_id = ta.branch_id AND ta.gamma_id = av1.gamma_id AND av1.art_id = rel1.a_art_id)";
+         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, tx1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 AS deleted_tran FROM osee_txs tx1, osee_relation_link rel1 WHERE tx1.gamma_id = rel1.gamma_id AND NOT EXISTS (SELECT 'x' FROM osee_txs tx2, osee_artifact_version av1 WHERE tx1.branch_id = tx2.branch_id AND tx2.gamma_id = av1.gamma_id AND av1.art_id = rel1.a_art_id)";
 
    private static final String NO_ADDRESSING_ARTIFACTS_B =
-         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, tx1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 AS deleted_tran FROM osee_txs tx1, osee_relation_link rel1 WHERE tx1.gamma_id = rel1.gamma_id AND NOT EXISTS (SELECT 'x' FROM osee_txs tx2, osee_artifact_version av1 WHERE tx1.branch_id = tx2.branch_id AND tx2.gamma_id = av1.gamma_id AND av1.art_id = rel1.b_art_id UNION ALL SELECT 'x' FROM osee_txs_archived ta, osee_artifact_version av1 WHERE tx1.branch_id = ta.branch_id AND ta.gamma_id = av1.gamma_id AND av1.art_id = rel1.b_art_id)";
+         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, tx1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 AS deleted_tran FROM osee_txs tx1, osee_relation_link rel1 WHERE tx1.gamma_id = rel1.gamma_id AND NOT EXISTS (SELECT 'x' FROM osee_txs tx2, osee_artifact_version av1 WHERE tx1.branch_id = tx2.branch_id AND tx2.gamma_id = av1.gamma_id AND av1.art_id = rel1.b_art_id)";
 
    private static final String DELETED_A_ARTIFACTS =
          "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, tx1.branch_id, rel1.a_art_id, rel1.b_art_id, tx2.transaction_id AS deleted_tran FROM osee_txs tx1, osee_txs tx2, osee_relation_link rel1, osee_artifact_version av1 WHERE tx1.gamma_id = rel1.gamma_id AND tx1.tx_current = 1 AND tx1.branch_id = tx2.branch_id AND tx2.gamma_id = av1.gamma_id AND tx2.tx_current = 2 AND av1.art_id = rel1.a_art_id";
@@ -64,17 +64,15 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
          "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, tx1.branch_id, rel1.a_art_id, rel1.b_art_id, tx2.transaction_id AS deleted_tran FROM osee_txs tx1, osee_txs tx2, osee_relation_link rel1, osee_artifact_version av1 WHERE tx1.gamma_id = rel1.gamma_id AND tx1.tx_current = 1 AND tx1.branch_id = tx2.branch_id AND tx2.gamma_id = av1.gamma_id AND tx2.tx_current = 2 AND av1.art_id = rel1.b_art_id";
 
    private static final String DELETE_FROM_TXS = "DELETE FROM osee_txs where gamma_id = ? AND transaction_id = ?";
-   private static final String DELETE_FROM_TX_ARCHIVED =
-         "DELETE FROM osee_tx_archived where gamma_id = ? AND transaction_id = ?";
 
-   private static final String UPDATE_TXS =
+   private static final String UPDATE_TXS_PREVIOUS =
          "UPDATE osee_txs SET tx_current = 0 WHERE gamma_id = ? AND transaction_id = ?";
 
-   private static final String UPDATE_TXS_SAME =
+   private static final String UPDATE_TXS_CURRENT =
          "UPDATE osee_txs SET tx_current = " + TxChange.ARTIFACT_DELETED.getValue() + ", mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " WHERE gamma_id = ? AND transaction_id = ?";
 
    private static final String INSERT_TXS =
-         "INSERT INTO osee_txs (gamma_id, transaction_id, tx_current, mod_type) VALUES (?, ?, " + TxChange.ARTIFACT_DELETED.getValue() + ", " + ModificationType.ARTIFACT_DELETED.getValue() + ")";
+         "INSERT INTO osee_txs (gamma_id, transaction_id, tx_current, mod_type, branch_id) VALUES (?, ?, " + TxChange.ARTIFACT_DELETED.getValue() + ", " + ModificationType.ARTIFACT_DELETED.getValue() + ", ?)";
 
    private static final String[] columnHeaders =
          new String[] {"Rel Link ID", "Gamma Id", "Transaction Id", "Branch_id", "A Art Id", "B Art Id",
@@ -157,13 +155,12 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
    private void deleteInvalidRelationAddressing() throws OseeDataStoreException {
       List<Object[]> rowsToDelete = new LinkedList<Object[]>();
       for (LocalRelationLink relLink : deleteMap.allValues()) {
-         rowsToDelete.add(new Object[] {relLink.gammaId, relLink.transactionId});
+         rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId});
       }
 
       monitor.subTask("Deleting Relation Addressing with non existent Artifacts");
       if (rowsToDelete.size() != 0) {
          ConnectionHandler.runBatchUpdate(DELETE_FROM_TXS, rowsToDelete);
-         ConnectionHandler.runBatchUpdate(DELETE_FROM_TX_ARCHIVED, rowsToDelete);
       }
       deleteMap = null;
 
@@ -174,22 +171,24 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
       deleteInvalidRelationAddressing();
 
       List<Object[]> insertArtifactDeleted = new LinkedList<Object[]>();
-      List<Object[]> updateCurrentAddressing = new LinkedList<Object[]>();
       List<Object[]> updatePreviousAddressing = new LinkedList<Object[]>();
+      List<Object[]> updateCurrentAddressing = new LinkedList<Object[]>();
+      List<LocalRelationLink> pathologicalCases = new ArrayList<LocalRelationLink>();
       for (LocalRelationLink relLink : updateMap.allValues()) {
-         if (BranchManager.getBranch(relLink.branchId).getArchiveState().isUnArchived()) {
-            updateCurrentAddressing.add(new Object[] {relLink.gammaId, relLink.transactionId});
-            if (relLink.transactionId >= relLink.transIdForArtifactDeletion) {
-               updatePreviousAddressing.add(new Object[] {relLink.gammaId, relLink.transactionId});
-            } else {
-               insertArtifactDeleted.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion});
-            }
+         if (relLink.relTransId > relLink.transIdForArtifactDeletion) {
+            pathologicalCases.add(relLink);
+         } else if (relLink.relTransId == relLink.transIdForArtifactDeletion) {
+            updateCurrentAddressing.add(new Object[] {relLink.gammaId, relLink.relTransId});
+         } else {
+            updatePreviousAddressing.add(new Object[] {relLink.gammaId, relLink.relTransId});
+            insertArtifactDeleted.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion,
+                  relLink.branchId});
          }
       }
 
       runInsert(insertArtifactDeleted, INSERT_TXS, "Inserting Addressing for Deleted Artifacts");
-      runInsert(updateCurrentAddressing, UPDATE_TXS, "Updating Addressing for Deleted Artifacts");
-      runInsert(updatePreviousAddressing, UPDATE_TXS_SAME, "Updating Addressing for Deleted Artifacts");
+      runInsert(updatePreviousAddressing, UPDATE_TXS_PREVIOUS, "Updating Addressing for Deleted Artifacts");
+      runInsert(updateCurrentAddressing, UPDATE_TXS_CURRENT, "Updating Addressing for Deleted Artifacts");
       updateMap = null;
    }
 
@@ -216,7 +215,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
       for (LocalRelationLink relLink : map.allValues()) {
          count++;
          sbFull.append(AHTML.addRowMultiColumnTable(new String[] {Integer.toString(relLink.relLinkId),
-               Integer.toString(relLink.gammaId), Integer.toString(relLink.transactionId),
+               Integer.toString(relLink.gammaId), Integer.toString(relLink.relTransId),
                Integer.toString(relLink.branchId), Integer.toString(relLink.aArtId), Integer.toString(relLink.bArtId),
                Integer.toString(relLink.transIdForArtifactDeletion)}));
       }
