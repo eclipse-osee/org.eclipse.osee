@@ -31,10 +31,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -42,11 +44,11 @@ import org.eclipse.osee.support.test.util.TestUtil;
  */
 public abstract class ImageManagerTest {
 
-   private final OseeImage[] oseeImages;
+   private final KeyedImage[] oseeImages;
    private final String imageClassName;
    private static SevereLoggingMonitor monitorLog;
 
-   public ImageManagerTest(String imageClassName, OseeImage[] oseeImages) {
+   public ImageManagerTest(String imageClassName, KeyedImage[] oseeImages) {
       this.imageClassName = imageClassName;
       this.oseeImages = oseeImages;
    }
@@ -55,7 +57,7 @@ public abstract class ImageManagerTest {
    public static void testSetup() throws Exception {
       monitorLog = new SevereLoggingMonitor();
       // Clear db image
-      ImageManager.setArtifactTypeImageInDb(ArtifactTypeManager.getType("Folder"), null);
+      ArtifactImageManager.setArtifactTypeImageInDb(ArtifactTypeManager.getType("Folder"), null);
       OseeLog.registerLoggerListener(monitorLog);
    }
 
@@ -90,14 +92,14 @@ public abstract class ImageManagerTest {
    }
 
    /**
-    * Test that all image enums have associated immage files. (Non return missing image)
+    * Test that all image enums have associated image files. (Non return missing image)
     * 
     * @throws Exception
     */
    @org.junit.Test
    public void testFrameworkImageEnums() throws Exception {
       StringBuffer sb = new StringBuffer();
-      for (OseeImage oseeImage : oseeImages) {
+      for (KeyedImage oseeImage : oseeImages) {
          if (oseeImage == FrameworkImage.MISSING) {
             continue;
          }
@@ -112,9 +114,8 @@ public abstract class ImageManagerTest {
 
    @org.junit.Test
    public void testGetImageByType() throws Exception {
-      assertTrue("Image returned not a folder image.",
-            ImageManager.getImage(ArtifactTypeManager.getType("Folder")).equals(
-                  ImageManager.getImage(FrameworkImage.FOLDER)));
+      assertTrue("Image returned not a folder image.", ArtifactImageManager.getImage(
+            ArtifactTypeManager.getType("Folder")).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
 
    }
 
@@ -123,8 +124,8 @@ public abstract class ImageManagerTest {
       Artifact folder =
             StaticIdManager.getOrCreateSingletonArtifact(CoreArtifactTypes.Folder, "user.groups",
                   BranchManager.getCommonBranch());
-      assertTrue("Image returned not a folder image.", ImageManager.getImage(folder).equals(
-            ImageManager.getImage(FrameworkImage.FOLDER)));
+      assertTrue("Image returned not a folder image.", ArtifactImageManager.getImage(folder).equals(
+            ImageManager.getImage(PluginUiImage.FOLDER)));
    }
 
    @org.junit.Test
@@ -135,27 +136,27 @@ public abstract class ImageManagerTest {
                   BranchManager.getCommonBranch());
 
       // Check folder image
-      assertTrue("Image returned not a \"Folder\" image.", ImageManager.getImage(folder).equals(
-            ImageManager.getImage(FrameworkImage.FOLDER)));
+      assertTrue("Image returned not a \"Folder\" image.", ArtifactImageManager.getImage(folder).equals(
+            ImageManager.getImage(PluginUiImage.FOLDER)));
 
       // Set different image for folder
-      ImageManager.setArtifactTypeImageInDb(ArtifactTypeManager.getType("Folder"),
+      ArtifactImageManager.setArtifactTypeImageInDb(ArtifactTypeManager.getType("Folder"),
             getByteArrayInputStream("heading.gif"));
 
       // Test that different image overrides folder image
-      assertFalse("Image returned should be \"Heading\" image.", ImageManager.getImage(folder).equals(
-            ImageManager.getImage(FrameworkImage.FOLDER)));
+      assertFalse("Image returned should be \"Heading\" image.", ArtifactImageManager.getImage(folder).equals(
+            ImageManager.getImage(PluginUiImage.FOLDER)));
 
       // Clear db image
-      ImageManager.setArtifactTypeImageInDb(ArtifactTypeManager.getType("Folder"), null);
+      ArtifactImageManager.setArtifactTypeImageInDb(ArtifactTypeManager.getType("Folder"), null);
 
       // Reload cache
-      ImageManager.loadCache();
+      ArtifactImageManager.loadCache();
       TestUtil.sleep(2000);
 
       // Test that folder image is back
-      assertTrue("Image returned not a \"Folder\" image.", ImageManager.getImage(folder).equals(
-            ImageManager.getImage(FrameworkImage.FOLDER)));
+      assertTrue("Image returned not a \"Folder\" image.", ArtifactImageManager.getImage(folder).equals(
+            ImageManager.getImage(PluginUiImage.FOLDER)));
 
       // Cleanup folder artifact
       folder.purgeFromBranch();
@@ -169,7 +170,7 @@ public abstract class ImageManagerTest {
       return new ByteArrayInputStream(Lib.inputStreamToBytes(new FileInputStream(imageFile)));
    }
 
-   public enum MissingImage implements OseeImage {
+   public enum MissingImage implements KeyedImage {
       NOT_HERE("nothere.gif");
 
       private final String fileName;
