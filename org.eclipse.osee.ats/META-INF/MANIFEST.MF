@@ -4,7 +4,7 @@ Bundle-Name: Ats Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats;singleton:=true
 Bundle-Version: 0.9.1.qualifier
 Eclipse-ExtensibleAPI: true
-Bundle-Activator: org.eclipse.osee.ats.AtsPlugin
+Bundle-Activator: org.eclipse.osee.ats.internal.AtsPlugin
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.gef,
  org.eclipse.osee.framework.jdk.core,
@@ -18,7 +18,6 @@ Require-Bundle: org.eclipse.gef,
  org.eclipse.core.runtime,
  org.eclipse.help,
  org.eclipse.osee.framework.ui.plugin,
- org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.ui.editors,
  org.eclipse.zest.layouts,
@@ -77,5 +76,6 @@ Import-Package: javax.mail,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.database.init,
- org.eclipse.osee.framework.logging
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.ui.swt
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

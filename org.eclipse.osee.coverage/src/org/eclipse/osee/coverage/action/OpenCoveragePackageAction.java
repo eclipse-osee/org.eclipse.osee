@@ -18,15 +18,15 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
  */
 public class OpenCoveragePackageAction extends Action {
 
-   public static OseeImage OSEE_IMAGE = CoverageImage.COVERAGE_PACKAGE;
+   public static KeyedImage OSEE_IMAGE = CoverageImage.COVERAGE_PACKAGE;
 
    public OpenCoveragePackageAction() {
       super("Open Coverage Package");
@@ -40,7 +40,9 @@ public class OpenCoveragePackageAction extends Action {
    @Override
    public void run() {
       try {
-         if (!CoverageUtil.getBranchFromUser(false)) return;
+         if (!CoverageUtil.getBranchFromUser(false)) {
+            return;
+         }
          CoveragePackageArtifactListDialog dialog =
                new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
          dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts());

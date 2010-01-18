@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
 /**
  * @author Donald G. Dunne

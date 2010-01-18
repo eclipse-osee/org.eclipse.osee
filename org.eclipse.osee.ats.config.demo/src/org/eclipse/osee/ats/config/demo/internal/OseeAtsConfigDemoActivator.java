@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.internal;
 
-import org.eclipse.osee.framework.plugin.core.OseeActivator;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class OseeAtsConfigDemoActivator extends OseeActivator {
+public class OseeAtsConfigDemoActivator extends OseeUiActivator {
    // The shared instance.
    private static OseeAtsConfigDemoActivator plugin;
    public static final String PLUGIN_ID = "org.eclipse.osee.ats.config.demo";

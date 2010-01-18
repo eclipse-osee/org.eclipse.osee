@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.LegacyPCRActions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
@@ -149,7 +149,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
          }
          if (enteredIds.equals("purple icons")) {
             AWorkbench.popup("Confirmation", "Yeehaw, Purple Icons Rule!!");
-            ImageManager.setOverrideImageEnum(FrameworkImage.PURPLE);
+            ArtifactImageManager.setOverrideImageEnum(FrameworkImage.PURPLE);
             cancelled = true;
             return;
          }

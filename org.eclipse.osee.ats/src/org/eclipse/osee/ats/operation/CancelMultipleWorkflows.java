@@ -13,10 +13,10 @@ package org.eclipse.osee.ats.operation;
 import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -50,8 +50,7 @@ public class CancelMultipleWorkflows extends Action {
             return;
          }
          for (StateMachineArtifact sma : smas) {
-            Result result =
-                  sma.isTransitionValid(DefaultTeamState.Cancelled.name(), null, TransitionOption.None);
+            Result result = sma.isTransitionValid(DefaultTeamState.Cancelled.name(), null, TransitionOption.None);
             if (result.isFalse()) {
                result.popup();
                return;
@@ -61,8 +60,7 @@ public class CancelMultipleWorkflows extends Action {
          if (ed.open() == 0) {
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Cancel Multiple Workflows");
             for (StateMachineArtifact sma : smas) {
-               Result result =
-                     sma.transitionToCancelled(ed.getEntry(), transaction, TransitionOption.Persist);
+               Result result = sma.transitionToCancelled(ed.getEntry(), transaction, TransitionOption.Persist);
                if (result.isFalse()) {
                   result.popup();
                   return;

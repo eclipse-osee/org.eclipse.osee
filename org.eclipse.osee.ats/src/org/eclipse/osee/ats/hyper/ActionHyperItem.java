@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.hyper;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.swt.graphics.Image;
 
 public class ActionHyperItem extends HyperViewItem {
@@ -50,7 +50,7 @@ public class ActionHyperItem extends HyperViewItem {
          return null;
       if (iHyperartifact.isDeleted())
          return null;
-      return ImageManager.getImage(iHyperartifact.getHyperArtifact());
+      return ArtifactImageManager.getImage(iHyperartifact.getHyperArtifact());
    }
 
    @Override

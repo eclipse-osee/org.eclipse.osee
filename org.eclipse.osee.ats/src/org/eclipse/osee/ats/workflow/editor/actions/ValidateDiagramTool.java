@@ -15,7 +15,7 @@ import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.SharedCursors;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.tools.SelectionTool;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.model.ModelElement;
 import org.eclipse.osee.ats.workflow.editor.parts.DiagramEditPart;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

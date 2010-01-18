@@ -16,14 +16,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 
 /**
  * @author Donald G. Dunne
@@ -56,7 +56,7 @@ public class NewDecisionReviewJob extends Job {
                ReviewManager.createNewDecisionReview(teamParent, reviewBlockType, reviewTitle, againstState,
                      description, options, assignees);
          decisionReviewArtifact.persist();
-         AtsUtil.openAtsAction(decisionReviewArtifact, AtsOpenOption.OpenOneOrPopupSelect);
+         AtsUtil.openATSAction(decisionReviewArtifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          monitor.done();
          return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Error creating Decision Review", ex);

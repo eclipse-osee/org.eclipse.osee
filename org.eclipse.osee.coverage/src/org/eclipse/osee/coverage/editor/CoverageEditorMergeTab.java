@@ -53,12 +53,12 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -384,7 +384,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
    @Override
    public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
-      return ((OseeCoveragePackageStore) OseeCoveragePackageStore.get(coveragePackage)).save(coverages);
+      return OseeCoveragePackageStore.get(coveragePackage).save(coverages);
    }
 
 }

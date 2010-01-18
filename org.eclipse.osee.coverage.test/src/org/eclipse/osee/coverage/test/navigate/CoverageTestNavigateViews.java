@@ -22,7 +22,7 @@ import org.eclipse.osee.coverage.test.import4.CoveragePackage1Import4;
 import org.eclipse.osee.coverage.test.import5.CoveragePackage1Import5;
 import org.eclipse.osee.coverage.test.package1.CoveragePackage1;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
 /**
  * @author Donald G. Dunne

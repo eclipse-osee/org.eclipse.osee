@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
@@ -36,6 +35,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.commit.CommitStatus;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
@@ -302,7 +302,7 @@ public class AtsBranchManager {
     * 
     * @param title
     * @param showMergeManager
-    * @return
+    * @return TransactionRecord
     * @throws OseeCoreException
     */
    public TransactionRecord getTransactionIdOrPopupChoose(String title, boolean showMergeManager) throws OseeCoreException {
@@ -349,7 +349,7 @@ public class AtsBranchManager {
    }
 
    public Result isCreateBranchAllowed() throws OseeCoreException {
-      if (!(teamArt.isTeamWorkflow())) {
+      if (!teamArt.isTeamWorkflow()) {
          return Result.FalseResult;
       }
 
@@ -389,7 +389,7 @@ public class AtsBranchManager {
    }
 
    public Result isCommitBranchAllowed(ICommitConfigArtifact configArt) throws OseeCoreException {
-      if (!(teamArt.isTeamWorkflow())) {
+      if (!teamArt.isTeamWorkflow()) {
          return Result.FalseResult;
       }
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
@@ -522,8 +522,8 @@ public class AtsBranchManager {
             teamArt.getTargetedForVersion().getParallelVersions(configObjects);
          }
       } else {
-         if (teamArt.isTeamWorkflow() && ((TeamWorkFlowArtifact) teamArt).getTeamDefinition().getParentBranch() != null) {
-            configObjects.add(((TeamWorkFlowArtifact) teamArt).getTeamDefinition());
+         if (teamArt.isTeamWorkflow() && (teamArt).getTeamDefinition().getParentBranch() != null) {
+            configObjects.add((teamArt).getTeamDefinition());
          }
       }
       return configObjects;
@@ -535,8 +535,8 @@ public class AtsBranchManager {
             return teamArt.getTargetedForVersion();
          }
       } else {
-         if (teamArt.isTeamWorkflow() && ((TeamWorkFlowArtifact) teamArt).getTeamDefinition().getParentBranch() != null) {
-            return ((TeamWorkFlowArtifact) teamArt).getTeamDefinition();
+         if (teamArt.isTeamWorkflow() && (teamArt).getTeamDefinition().getParentBranch() != null) {
+            return (teamArt).getTeamDefinition();
          }
       }
       return null;
@@ -700,7 +700,7 @@ public class AtsBranchManager {
 
       // If not defined in version, check for parent branch from team definition
       if (parentBranch == null && teamArt.isTeamWorkflow()) {
-         parentBranch = ((TeamWorkFlowArtifact) teamArt).getTeamDefinition().getParentBranch();
+         parentBranch = (teamArt).getTeamDefinition().getParentBranch();
       }
 
       // If not defined, return null
@@ -725,8 +725,7 @@ public class AtsBranchManager {
             // Create reviews as necessary
             SkynetTransaction transaction =
                   new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Transition");
-            createNecessaryBranchEventReviews(StateEventType.CreateBranch, ((TeamWorkFlowArtifact) teamArt),
-                  transaction);
+            createNecessaryBranchEventReviews(StateEventType.CreateBranch, (teamArt), transaction);
             transaction.execute();
             return Status.OK_STATUS;
          }
@@ -770,7 +769,7 @@ public class AtsBranchManager {
             // Confirm that all blocking reviews are completed
             // Loop through this state's blocking reviews to confirm complete
             if (teamArt.isTeamWorkflow()) {
-               for (ReviewSMArtifact reviewArt : ReviewManager.getReviewsFromCurrentState((TeamWorkFlowArtifact) teamArt)) {
+               for (ReviewSMArtifact reviewArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                   if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.isCancelledOrCompleted()) {
                      return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
                            "Blocking Review must be completed before commit.");
@@ -832,7 +831,7 @@ public class AtsBranchManager {
       if (branchCommitted) {
          // Create reviews as necessary
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Commit");
-         createNecessaryBranchEventReviews(StateEventType.CommitBranch, ((TeamWorkFlowArtifact) teamArt), transaction);
+         createNecessaryBranchEventReviews(StateEventType.CommitBranch, (teamArt), transaction);
          transaction.execute();
       }
    }

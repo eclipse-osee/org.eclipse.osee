@@ -11,17 +11,17 @@
 package org.eclipse.osee.ats.world;
 
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
  */
 public class WorldXNavigateItemAction extends XNavigateItemAction {
 
-   public WorldXNavigateItemAction(XNavigateItem parent, String name, OseeImage oseeImage) {
+   public WorldXNavigateItemAction(XNavigateItem parent, String name, KeyedImage oseeImage) {
       super(parent, name, oseeImage);
    }
 
@@ -29,7 +29,7 @@ public class WorldXNavigateItemAction extends XNavigateItemAction {
       super(parent, name, determineImage(name));
    }
 
-   private static OseeImage determineImage(String name) {
+   private static KeyedImage determineImage(String name) {
       if (name.contains("Report")) {
          return AtsImage.REPORT;
       } else if (name.contains("Search")) {

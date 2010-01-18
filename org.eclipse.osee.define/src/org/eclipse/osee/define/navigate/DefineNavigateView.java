@@ -13,13 +13,13 @@ package org.eclipse.osee.define.navigate;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.define.DefinePlugin;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.plugin.core.IActionable;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
@@ -50,7 +50,9 @@ public class DefineNavigateView extends ViewPart implements IActionable {
     */
    @Override
    public void createPartControl(Composite parent) {
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
+         return;
+      }
 
       xNavComp = new XNavigateComposite(new DefineNavigateViewItems(), parent, SWT.NONE);
       xNavComp.getFilteredTree().getViewer().setSorter(new DefineNavigateViewerSorter());
@@ -69,17 +71,18 @@ public class DefineNavigateView extends ViewPart implements IActionable {
             xNavComp.refresh();
          }
       };
-      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
 
-      OseeAts.addBugToViewToolbar(this, this, DefinePlugin.getInstance(), VIEW_ID, "Define Navigator");
+      OseeUiActions.addBugToViewToolbar(this, this, DefinePlugin.getInstance(), VIEW_ID, "Define Navigator");
 
    }
 
    public String getActionDescription() {
       IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
-      if (sel.iterator().hasNext()) return String.format("Currently Selected - %s",
-            ((XNavigateItem) sel.iterator().next()).getName());
+      if (sel.iterator().hasNext()) {
+         return String.format("Currently Selected - %s", ((XNavigateItem) sel.iterator().next()).getName());
+      }
       return "";
    }
 

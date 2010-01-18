@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
@@ -216,7 +216,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
    }
 
    @Override
-   public OseeImage getOseeImage() {
+   public KeyedImage getOseeImage() {
       return null;
    }
 

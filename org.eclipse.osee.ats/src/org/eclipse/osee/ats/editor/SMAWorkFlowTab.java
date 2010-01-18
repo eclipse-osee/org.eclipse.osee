@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.AddNoteAction;
 import org.eclipse.osee.ats.actions.CopyActionDetailsAction;
 import org.eclipse.osee.ats.actions.EmailActionAction;
@@ -44,6 +43,7 @@ import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
@@ -54,14 +54,14 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.IActionable;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -138,7 +138,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          });
 
          scrolledForm.setText(sma.getEditor().getTitleStr());
-         scrolledForm.setImage(ImageManager.getImage(sma));
+         scrolledForm.setImage(ArtifactImageManager.getImage(sma));
 
          bodyComp = managedForm.getForm().getBody();
          GridLayout gridLayout = new GridLayout(1, false);
@@ -353,7 +353,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolBarMgr.add(new PrivilegedEditAction(sma));
       toolBarMgr.add(new ResourceHistoryAction(sma));
 
-      OseeAts.addButtonToEditorToolBar(sma.getEditor(), this, AtsPlugin.getInstance(),
+      OseeUiActions.addButtonToEditorToolBar(sma.getEditor(), this, AtsPlugin.getInstance(),
             scrolledForm.getToolBarManager(), SMAEditor.EDITOR_ID, "ATS Editor");
 
       scrolledForm.updateToolBar();
@@ -618,7 +618,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          atsBody.dispose();
          createAtsBody();
          scrolledForm.setText(sma.getEditor().getTitleStr());
-         scrolledForm.setImage(ImageManager.getImage(sma));
+         scrolledForm.setImage(ArtifactImageManager.getImage(sma));
          refreshToolbar();
       }
    }

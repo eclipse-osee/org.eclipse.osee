@@ -20,7 +20,7 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.requests.SelectionRequest;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.actions.EditAction;
 import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;

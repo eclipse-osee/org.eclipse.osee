@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
@@ -32,7 +32,7 @@ public class LinkWithImportItemAction extends Action {
    private XCoverageMergeViewer packageXViewer;
    private XCoverageMergeViewer importXViewer;
    private CoveragePackage coveragePackage;
-   private Collection<MatchType> matchTypes = Arrays.asList(MatchType.Match__Name_And_Order_Num);
+   private final Collection<MatchType> matchTypes = Arrays.asList(MatchType.Match__Name_And_Order_Num);
 
    public LinkWithImportItemAction() {
       super("Link with Import Item", Action.AS_CHECK_BOX);

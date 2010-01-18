@@ -13,8 +13,9 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.Date;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionableItemListDialog;
@@ -23,11 +24,10 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
  * @author Donald G. Dunne
@@ -56,7 +56,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
                            new Date(), transaction);
                peerArt.getActionableItemsDam().setActionableItems(ld.getSelected());
                peerArt.persist(transaction);
-               AtsUtil.openAtsAction(peerArt, AtsOpenOption.OpenAll);
+               AtsUtil.openATSAction(peerArt, AtsOpenOption.OpenAll);
                transaction.execute();
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

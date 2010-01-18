@@ -13,12 +13,12 @@ package org.eclipse.osee.ats.actions.wizard;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTree;
+import org.eclipse.osee.framework.ui.swt.OSEEFilteredTree;
 
 public class ActionableItemFilter extends ViewerFilter {
    private String contains = null;

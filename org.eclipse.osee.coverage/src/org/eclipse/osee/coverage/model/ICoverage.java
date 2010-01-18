@@ -8,7 +8,7 @@ package org.eclipse.osee.coverage.model;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
@@ -31,7 +31,7 @@ public interface ICoverage {
 
    public Collection<? extends ICoverage> getChildren(boolean recurse);
 
-   public OseeImage getOseeImage();
+   public KeyedImage getOseeImage();
 
    public boolean isCovered();
 

@@ -26,7 +26,7 @@ import org.eclipse.gef.tools.AbstractTool;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.actions.ValidateDiagramToolEntry;
 import org.eclipse.osee.ats.workflow.editor.model.CancelledWorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.CompletedWorkPageShape;
@@ -34,9 +34,9 @@ import org.eclipse.osee.ats.workflow.editor.model.DefaultTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.TransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -156,7 +156,7 @@ final class AtsWorkflowConfigEditorPaletteFactory {
       toolbar.add(new ValidateDiagramToolEntry());
 
       final Action action =
-            OseeAts.createBugAction(AtsPlugin.getInstance(), editor, AtsWorkflowConfigEditor.EDITOR_ID,
+            OseeUiActions.createBugAction(AtsPlugin.getInstance(), editor, AtsWorkflowConfigEditor.EDITOR_ID,
                   "ATS Workflow Config Editor");
       final ImageDescriptor img = action.getImageDescriptor();
 

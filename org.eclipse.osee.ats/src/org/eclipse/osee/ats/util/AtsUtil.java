@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -46,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.OseeGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
@@ -53,15 +55,14 @@ import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
-import org.eclipse.osee.framework.ui.skynet.ats.IAtsLib;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.ats.OseeEditor;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -78,7 +79,7 @@ import org.eclipse.ui.dialogs.ListDialog;
 /**
  * @author Donald G. Dunne
  */
-public class AtsUtil implements IAtsLib {
+public final class AtsUtil {
 
    private static boolean emailEnabled = true;
    public static Color ACTIVE_COLOR = new Color(null, 206, 212, 241);
@@ -87,7 +88,7 @@ public class AtsUtil implements IAtsLib {
    private static final Date today = new Date();
    public static int MILLISECS_PER_DAY = 1000 * 60 * 60 * 24;
 
-   public AtsUtil() {
+   private AtsUtil() {
       super();
    }
 
@@ -95,16 +96,12 @@ public class AtsUtil implements IAtsLib {
       return Boolean.valueOf(System.getProperty("osee.isInTest"));
    }
 
-   public long daysTillToday(Date date) throws OseeCoreException {
+   public static long daysTillToday(Date date) throws OseeCoreException {
       return (date.getTime() - today.getTime()) / MILLISECS_PER_DAY;
    }
 
    public static boolean isProductionDb() throws OseeCoreException {
       return ClientSessionManager.isProductionDataStore();
-   }
-
-   public boolean isAdmin() {
-      return AtsUtil.isAtsAdmin();
    }
 
    public static boolean isAtsAdmin() {
@@ -235,15 +232,15 @@ public class AtsUtil implements IAtsLib {
       }
    }
 
-   public static void open(String guid, OseeAts.OpenView view) {
-      new AtsUtil().openArtifact(guid, view);
+   public static void open(String guid, OseeEditor view) {
+      openArtifact(guid, view);
    }
 
-   public void openArtifact(String guidOrHrid, Integer branchId, OseeAts.OpenView view) {
+   public static void openArtifact(String guidOrHrid, Integer branchId, OseeEditor view) {
       try {
          Branch branch = BranchManager.getBranch(branchId);
          Artifact artifact = ArtifactQuery.getArtifactFromId(guidOrHrid, branch);
-         openAtsAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+         openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -254,7 +251,7 @@ public class AtsUtil implements IAtsLib {
     * 
     * @param guid
     */
-   public void openArtifact(String guid, OseeAts.OpenView view) {
+   public static void openArtifact(String guid, OseeEditor view) {
       AtsBulkLoad.run(false);
       Artifact artifact = null;
       try {
@@ -264,24 +261,20 @@ public class AtsUtil implements IAtsLib {
          return;
       }
 
-      if (view == OseeAts.OpenView.ActionEditor) {
+      if (view == OseeEditor.ActionEditor) {
          if (artifact instanceof StateMachineArtifact || artifact instanceof ActionArtifact) {
             openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
          } else {
             ArtifactEditor.editArtifact(artifact);
          }
-      } else if (view == OseeAts.OpenView.ArtifactEditor) {
+      } else if (view == OseeEditor.ArtifactEditor) {
          ArtifactEditor.editArtifact(artifact);
-      } else if (view == OseeAts.OpenView.ArtifactHyperViewer) {
+      } else if (view == OseeEditor.ArtifactHyperViewer) {
          AWorkbench.popup("ERROR", "Unimplemented");
       }
    }
 
-   public static void createAtsAction(String initialDescription, String actionableItem) {
-      new AtsUtil().createATSAction(initialDescription, actionableItem);
-   }
-
-   public void createATSAction(String initialDescription, String actionableItemName) {
+   public static void createATSAction(String initialDescription, String actionableItemName) {
       // Ensure actionable item is configured for ATS before continuing
       try {
          AtsCacheManager.getSoleArtifactByName(ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME),
@@ -301,11 +294,20 @@ public class AtsUtil implements IAtsLib {
       newAction.run();
    }
 
-   public static void openAtsAction(final Artifact art, final AtsOpenOption atsOpenOption) {
-      new AtsUtil().openATSAction(art, atsOpenOption);
+   public static void openATSArtifact(Artifact art) {
+      if (art instanceof IATSArtifact) {
+         try {
+            openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
+         } catch (Exception ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            AWorkbench.popup("ERROR", ex.getLocalizedMessage());
+         }
+      } else {
+         AWorkbench.popup("ERROR", "Trying to open " + art.getArtifactTypeName() + " with SMAEditor");
+      }
    }
 
-   public void openATSAction(final Artifact art, final AtsOpenOption atsOpenOption) {
+   public static void openATSAction(final Artifact art, final AtsOpenOption atsOpenOption) {
       try {
          if (art instanceof ActionArtifact) {
             final ActionArtifact actionArt = (ActionArtifact) art;
@@ -363,8 +365,7 @@ public class AtsUtil implements IAtsLib {
       return null;
    }
 
-   @Override
-   public void openInAtsWorldEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException {
+   public static void openInAtsWorldEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException {
       Set<Artifact> otherArts = new HashSet<Artifact>();
       for (Artifact art : artifacts) {
          if (art.isOfType(UniversalGroup.ARTIFACT_TYPE_NAME)) {
@@ -379,12 +380,11 @@ public class AtsUtil implements IAtsLib {
       }
    }
 
-   @Override
-   public void openInAtsTaskEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException {
+   public static void openInAtsTaskEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException {
       TaskEditor.open(new TaskEditorSimpleProvider(name, artifacts));
    }
 
-   public static ToolItem actionToToolItem(ToolBar toolBar, Action action, OseeImage imageEnum) {
+   public static ToolItem actionToToolItem(ToolBar toolBar, Action action, KeyedImage imageEnum) {
       final Action fAction = action;
       ToolItem item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(ImageManager.getImage(imageEnum));

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultBrowserHyperCmd;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultBrowserListener;
 import org.eclipse.swt.browser.LocationEvent;

@@ -34,8 +34,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.widgets.Listener;
 
 /**
@@ -62,7 +62,7 @@ public class CoverageUtil {
       return true;
    }
 
-   public static OseeImage getCoveragePackageBaseImage(CoveragePackageBase coveragePackageBase) {
+   public static KeyedImage getCoveragePackageBaseImage(CoveragePackageBase coveragePackageBase) {
       if (coveragePackageBase instanceof CoverageImport) {
          return CoverageImage.COVERAGE_IMPORT;
       }

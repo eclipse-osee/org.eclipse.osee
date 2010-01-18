@@ -11,13 +11,13 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
@@ -28,7 +28,7 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
       this(name, LoadView.WorldEditor, null);
    }
 
-   public WorldUISearchItem(String name, OseeImage oseeImage) {
+   public WorldUISearchItem(String name, KeyedImage oseeImage) {
       this(name, LoadView.WorldEditor, oseeImage);
    }
 
@@ -36,7 +36,7 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
       this(name, loadView, null);
    }
 
-   public WorldUISearchItem(String name, LoadView loadView, OseeImage oseeImage) {
+   public WorldUISearchItem(String name, LoadView loadView, KeyedImage oseeImage) {
       super(name, loadView, oseeImage);
    }
 
@@ -44,7 +44,7 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
       this(worldUISearchItem, null);
    }
 
-   public WorldUISearchItem(WorldUISearchItem worldUISearchItem, OseeImage oseeImage) {
+   public WorldUISearchItem(WorldUISearchItem worldUISearchItem, KeyedImage oseeImage) {
       super(worldUISearchItem, oseeImage);
    }
 

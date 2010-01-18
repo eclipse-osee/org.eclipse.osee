@@ -24,8 +24,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
@@ -39,11 +39,11 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -114,7 +115,9 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       Composite mainComp = new Composite(parent, SWT.BORDER);
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
       mainComp.setLayout(ALayout.getZeroMarginLayout());
-      if (toolkit != null) toolkit.paintBordersFor(mainComp);
+      if (toolkit != null) {
+         toolkit.paintBordersFor(mainComp);
+      }
 
       createTaskActionBar(mainComp);
 
@@ -127,7 +130,9 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          }
       });
       new ActionContributionItem(xViewer.getCustomizeAction()).fill(toolBar, -1);
-      if (toolkit != null) toolkit.adapt(xViewer.getStatusLabel(), false, false);
+      if (toolkit != null) {
+         toolkit.adapt(xViewer.getStatusLabel(), false, false);
+      }
 
       handleExpandCollapseDefectTableList();
 
@@ -152,10 +157,11 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          int calculatedTableHeightHint = treeItemHeight * (defectListSize + 1);
          if (expand && calculatedTableHeightHint > defaultTableHeightHint) {
             // allow expansion to approximately 50 items 
-            if (defectListSize > (defaultTableHeightHint / 2)) {
+            if (defectListSize > defaultTableHeightHint / 2) {
                return treeItemHeight * (paddedTableHeightHint + defaultTableHeightHint);
-            } else
+            } else {
                return treeItemHeight * (paddedTableHeightHint + defectListSize);
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(DefectManager.class, Level.SEVERE, ex.toString());
@@ -232,7 +238,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
+      item.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
       item.setToolTipText("Refresh Defects");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -286,14 +292,18 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       }
       xViewer.refresh();
       if (getForm(parentComposite) != null) {
-         (getForm(parentComposite)).reflow(true);
+         getForm(parentComposite).reflow(true);
       }
    }
 
    public ScrolledForm getForm(Composite composite) {
       ScrolledForm form = null;
-      if (composite == null) return null;
-      if (composite instanceof ScrolledForm) return (ScrolledForm) composite;
+      if (composite == null) {
+         return null;
+      }
+      if (composite instanceof ScrolledForm) {
+         return (ScrolledForm) composite;
+      }
       if (!(composite instanceof ScrolledForm)) {
          form = getForm(composite.getParent());
       }
@@ -342,8 +352,9 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          return;
       }
       StringBuilder builder = new StringBuilder();
-      for (DefectItem defectItem : items)
+      for (DefectItem defectItem : items) {
          builder.append("\"" + defectItem.getDescription() + "\"\n");
+      }
 
       boolean delete =
             MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
@@ -392,8 +403,12 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
    @SuppressWarnings("unchecked")
    public ArrayList<DefectItem> getSelectedDefectItems() {
       ArrayList<DefectItem> items = new ArrayList<DefectItem>();
-      if (xViewer == null) return items;
-      if (xViewer.getSelection().isEmpty()) return items;
+      if (xViewer == null) {
+         return items;
+      }
+      if (xViewer.getSelection().isEmpty()) {
+         return items;
+      }
       Iterator i = ((IStructuredSelection) xViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
@@ -420,7 +435,9 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
    @Override
    public void refresh() {
-      if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
+      if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
+         return;
+      }
       xViewer.refresh();
       validate();
       refreshActionEnablement();
@@ -436,7 +453,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          }
          if (reviewArt != null) {
             for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
-               if (item.isClosed() == false || item.getDisposition() == Disposition.None || (item.getSeverity() == Severity.None && (item.getDisposition() != Disposition.Duplicate && item.getDisposition() != Disposition.Reject))) {
+               if (item.isClosed() == false || item.getDisposition() == Disposition.None || item.getSeverity() == Severity.None && item.getDisposition() != Disposition.Duplicate && item.getDisposition() != Disposition.Reject) {
                   extraInfoLabel.setText("All items must be marked for severity, disposition and closed.  Select icon in cell or right-click to update field.");
                   extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
                   return new Status(IStatus.ERROR, getClass().getSimpleName(),
@@ -466,7 +483,9 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
    @Override
    public String toHTML(String labelFont) {
-      if (getXViewer().getTree().getItemCount() == 0) return "";
+      if (getXViewer().getTree().getItemCount() == 0) {
+         return "";
+      }
       StringBuffer html = new StringBuffer();
       try {
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
@@ -518,7 +537,9 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
    public void setReviewArt(IReviewArtifact reviewArt) {
       this.reviewArt = reviewArt;
-      if (xViewer != null) loadTable();
+      if (xViewer != null) {
+         loadTable();
+      }
    }
 
    public void setArtifact(Artifact artifact, String attrName) {
@@ -543,15 +564,20 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.getId() != AtsUtil.getAtsBranch().getId()) return;
+      if (transData.getId() != AtsUtil.getAtsBranch().getId()) {
+         return;
+      }
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
+            if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
+               return;
+            }
             if (transData.isRelAddedChangedDeleted(reviewArt.getArtifact())) {
                loadTable();
-            } else
+            } else {
                refresh();
+            }
          }
       });
    }

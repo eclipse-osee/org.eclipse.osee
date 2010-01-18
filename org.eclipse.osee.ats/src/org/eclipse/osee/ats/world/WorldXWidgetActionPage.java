@@ -23,7 +23,6 @@ import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction;
@@ -31,6 +30,7 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -39,16 +39,16 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -116,7 +116,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       toolBarManager.add(new RefreshAction(worldComposite));
       toolBarManager.add(new Separator());
       toolBarManager.add(new NewAction());
-      toolBarManager.add(OseeAts.createBugAction(AtsPlugin.getInstance(), worldEditor, WorldEditor.EDITOR_ID,
+      toolBarManager.add(OseeUiActions.createBugAction(AtsPlugin.getInstance(), worldEditor, WorldEditor.EDITOR_ID,
             "ATS World"));
       toolBarManager.add(new Separator());
 
@@ -198,7 +198,9 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       }
 
       public Menu getMenu(Control parent) {
-         if (fMenu != null) fMenu.dispose();
+         if (fMenu != null) {
+            fMenu.dispose();
+         }
 
          fMenu = new Menu(parent);
          addActionToMenu(fMenu, selectionMetricsAction);
@@ -312,10 +314,12 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                   worldComposite.getXViewer().getSelectedSMAArtifacts(), null,
                   worldComposite.getXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(),
                   null));
-         } else
+         } else {
             showReleaseMetricsLabel.setText("");
-      } else
+         }
+      } else {
          showReleaseMetricsLabel.setText("");
+      }
       showReleaseMetricsLabel.getParent().layout();
    }
 

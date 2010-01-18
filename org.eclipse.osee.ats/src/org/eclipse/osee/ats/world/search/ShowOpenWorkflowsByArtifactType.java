@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
@@ -36,7 +36,7 @@ public class ShowOpenWorkflowsByArtifactType extends WorldUISearchItem {
    private final boolean showFinished;
    private final boolean showWorkflow;
 
-   public ShowOpenWorkflowsByArtifactType(String displayName, IArtifactType artifactType, boolean showFinished, boolean showWorkflow, OseeImage oseeImage) {
+   public ShowOpenWorkflowsByArtifactType(String displayName, IArtifactType artifactType, boolean showFinished, boolean showWorkflow, KeyedImage oseeImage) {
       super(displayName, oseeImage);
       this.artifactType = artifactType;
       this.showFinished = showFinished;

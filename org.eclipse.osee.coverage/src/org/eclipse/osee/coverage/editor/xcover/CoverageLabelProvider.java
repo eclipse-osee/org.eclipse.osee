@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 public class CoverageLabelProvider extends XViewerLabelProvider {
@@ -56,68 +56,106 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      if (element instanceof MessageCoverageItem && xCol.equals(CoverageMergeXViewerFactory.Name)) return ImageManager.getImage(FrameworkImage.X_RED);
-      if (element instanceof MessageCoverageItem) return null;
+      if (element instanceof MessageCoverageItem && xCol.equals(CoverageMergeXViewerFactory.Name)) {
+         return ImageManager.getImage(FrameworkImage.X_RED);
+      }
+      if (element instanceof MessageCoverageItem) {
+         return null;
+      }
       ICoverage coverageItem = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
          return getCoverageItemUserImage(coverageItem);
       }
-      if (xCol.equals(CoverageXViewerFactory.Name)) return ImageManager.getImage(coverageItem.getOseeImage());
+      if (xCol.equals(CoverageXViewerFactory.Name)) {
+         return ImageManager.getImage(coverageItem.getOseeImage());
+      }
       return null;
    }
 
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       ICoverage coverage = (ICoverage) element;
-      if (xCol.equals(CoverageXViewerFactory.Name)) return coverage.getName();
-      if (element instanceof MessageCoverageItem) return "";
+      if (xCol.equals(CoverageXViewerFactory.Name)) {
+         return coverage.getName();
+      }
+      if (element instanceof MessageCoverageItem) {
+         return "";
+      }
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
          if (element instanceof CoverageUnit) {
             return Artifacts.toString("; ", OseeCoverageUnitStore.getAssignees((CoverageUnit) coverage));
          }
          return "";
       }
-      if (xCol.equals(CoverageXViewerFactory.Notes_Col)) return coverage.getNotes();
+      if (xCol.equals(CoverageXViewerFactory.Notes_Col)) {
+         return coverage.getNotes();
+      }
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
          return coverage.getCoveragePercentStr();
       }
-      if (xCol.equals(CoverageXViewerFactory.Location)) return coverage.getLocation();
-      if (xCol.equals(CoverageXViewerFactory.Namespace)) return coverage.getNamespace();
-      if (xCol.equals(CoverageXViewerFactory.Guid)) return coverage.getGuid();
+      if (xCol.equals(CoverageXViewerFactory.Location)) {
+         return coverage.getLocation();
+      }
+      if (xCol.equals(CoverageXViewerFactory.Namespace)) {
+         return coverage.getNamespace();
+      }
+      if (xCol.equals(CoverageXViewerFactory.Guid)) {
+         return coverage.getGuid();
+      }
 
       if (coverage instanceof CoverageItem) {
          CoverageItem coverageItem = (CoverageItem) coverage;
-         if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale)) return coverageItem.getRationale();
-         if (xCol.equals(CoverageXViewerFactory.Method_Number)) return coverageItem.getParent().getOrderNumber();
-         if (xCol.equals(CoverageXViewerFactory.Execution_Number)) return coverageItem.getOrderNumber();
-         if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) return coverageItem.getCoverageMethod().getName();
-         if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageItem.getCoverageUnit().getName();
+         if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale)) {
+            return coverageItem.getRationale();
+         }
+         if (xCol.equals(CoverageXViewerFactory.Method_Number)) {
+            return coverageItem.getParent().getOrderNumber();
+         }
+         if (xCol.equals(CoverageXViewerFactory.Execution_Number)) {
+            return coverageItem.getOrderNumber();
+         }
+         if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) {
+            return coverageItem.getCoverageMethod().getName();
+         }
+         if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) {
+            return coverageItem.getCoverageUnit().getName();
+         }
          if (xCol.equals(CoverageXViewerFactory.Coverage_Test_Units)) {
             Collection<String> testUnits = coverageItem.getTestUnits();
-            if (testUnits == null) return "";
+            if (testUnits == null) {
+               return "";
+            }
             return Collections.toString(", ", testUnits);
          }
          return "";
       }
-      if ((coverage instanceof CoverageUnit) || (coverage instanceof MergeItem && (((MergeItem) coverage).getImportItem() instanceof CoverageUnit))) {
+      if (coverage instanceof CoverageUnit || coverage instanceof MergeItem && ((MergeItem) coverage).getImportItem() instanceof CoverageUnit) {
          CoverageUnit coverageUnit = null;
          if (coverage instanceof CoverageUnit) {
             coverageUnit = (CoverageUnit) coverage;
          } else {
             coverageUnit = (CoverageUnit) ((MergeItem) coverage).getImportItem();
          }
-         if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageUnit.getParentCoverageUnit() == null ? "" : coverageUnit.getParentCoverageUnit().getName();
-         if (xCol.equals(CoverageXViewerFactory.Method_Number)) return coverageUnit.getOrderNumber();
+         if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) {
+            return coverageUnit.getParentCoverageUnit() == null ? "" : coverageUnit.getParentCoverageUnit().getName();
+         }
+         if (xCol.equals(CoverageXViewerFactory.Method_Number)) {
+            return coverageUnit.getOrderNumber();
+         }
       }
-      if ((coverage instanceof CoverageItem) || (coverage instanceof MergeItem && (((MergeItem) coverage).getImportItem() instanceof CoverageItem))) {
+      if (coverage instanceof CoverageItem || coverage instanceof MergeItem && ((MergeItem) coverage).getImportItem() instanceof CoverageItem) {
          CoverageItem coverageItem = null;
          if (coverage instanceof CoverageItem) {
             coverageItem = (CoverageItem) coverage;
          } else {
             coverageItem = (CoverageItem) ((MergeItem) coverage).getImportItem();
          }
-         if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageItem.getParent() == null ? "" : coverageItem.getParent().getName();
-         if (xCol.equals(CoverageXViewerFactory.Method_Number)) return coverageItem.getOrderNumber();
+         if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) {
+            return coverageItem.getParent() == null ? "" : coverageItem.getParent().getName();
+         }
+         if (xCol.equals(CoverageXViewerFactory.Method_Number)) {
+            return coverageItem.getOrderNumber();
+         }
       }
       return "";
 
@@ -142,8 +180,12 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
 
    @Override
    public int getColumnGradient(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
-      if (element == null) return 0;
-      if (element instanceof MessageCoverageItem) return 0;
+      if (element == null) {
+         return 0;
+      }
+      if (element instanceof MessageCoverageItem) {
+         return 0;
+      }
       ICoverage coverageItem = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
          return coverageItem.getCoveragePercent();

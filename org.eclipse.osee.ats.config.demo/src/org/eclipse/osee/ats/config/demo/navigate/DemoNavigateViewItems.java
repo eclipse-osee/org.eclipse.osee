@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.config.demo.config.PopulateDemoActions;
@@ -36,10 +35,11 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateUrlItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemFolder;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateUrlItem;
 
 /**
  * Provides the ATS Navigator items for the sample XYZ company's teams
@@ -55,18 +55,24 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
    public List<XNavigateItem> getNavigateItems() throws OseeCoreException {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
-      if (AtsPlugin.areOSEEServicesAvailable().isFalse()) return items;
+      if (OseeAtsConfigDemoActivator.areOSEEServicesAvailable().isFalse()) {
+         return items;
+      }
 
       // If Demo Teams not configured, ignore these navigate items
       try {
-         if (DemoTeams.getInstance().getTeamDef(Team.Process_Team) == null) return items;
+         if (DemoTeams.getInstance().getTeamDef(Team.Process_Team) == null) {
+            return items;
+         }
       } catch (Exception ex) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.WARNING, "Demo Teams Not Cofigured", ex);
          return items;
       }
       // If Demo Teams not configured, ignore these navigate items
       try {
-         if (DemoTeams.getInstance().getTeamDef(Team.Process_Team) == null) return items;
+         if (DemoTeams.getInstance().getTeamDef(Team.Process_Team) == null) {
+            return items;
+         }
       } catch (Exception ex) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.WARNING, "Demo Teams Not Cofigured", ex);
          return items;
@@ -94,10 +100,11 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
                      Arrays.asList(childTeamDef), false, false, false, null, null, ReleasedOption.Both));
             }
             if (teamDef.isTeamUsesVersions()) {
-               if (team.name().contains("SAW"))
+               if (team.name().contains("SAW")) {
                   new XNavigateUrlItem(teamItems, "Open SAW Website", "http://www.cisst.org/cisst/saw/", false);
-               else if (team.name().contains("CIS")) new XNavigateUrlItem(teamItems, "Open CIS Website",
-                     "http://www.cisst.org/cisst/cis/", false);
+               } else if (team.name().contains("CIS")) {
+                  new XNavigateUrlItem(teamItems, "Open CIS Website", "http://www.cisst.org/cisst/cis/", false);
+               }
 
                new SearchNavigateItem(teamItems, new NextVersionSearchItem(teamDef, LoadView.WorldEditor));
                new SearchNavigateItem(teamItems, new VersionTargetedForTeamSearchItem(teamDef, null, false,
@@ -124,7 +131,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health", FrameworkImage.LASER);
       new ValidateAtsDatabase(healthItems);
 
-      XNavigateItem demoItems = new XNavigateItem(adminItems, "Demo Data", FrameworkImage.ADMIN);
+      XNavigateItem demoItems = new XNavigateItem(adminItems, "Demo Data", PluginUiImage.ADMIN);
       new PopulateDemoActions(demoItems);
 
       new DoesNotWorkItemDemo(adminItems);

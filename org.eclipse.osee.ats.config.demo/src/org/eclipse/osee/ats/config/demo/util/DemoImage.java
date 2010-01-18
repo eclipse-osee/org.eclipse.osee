@@ -12,13 +12,13 @@ package org.eclipse.osee.ats.config.demo.util;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
  */
-public enum DemoImage implements OseeImage {
+public enum DemoImage implements KeyedImage {
    DEMO_WORKFLOW("workflow.gif");
 
    private final String fileName;

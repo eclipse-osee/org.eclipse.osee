@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.artifact;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.eclipse.osee.ats.NoteType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.ui.skynet.ats.NoteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 public class NoteItem {

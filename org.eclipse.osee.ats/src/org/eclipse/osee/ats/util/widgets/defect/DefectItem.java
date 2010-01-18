@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -41,7 +41,10 @@ public class DefectItem {
    private InjectionActivity injectionActivity = InjectionActivity.None;
    private boolean closed = false;
    public static enum Severity {
-      None, Major, Minor, Issue;
+      None,
+      Major,
+      Minor,
+      Issue;
       public static Collection<String> strValues() {
          Set<String> values = new HashSet<String>();
          for (Enum<Severity> e : values()) {
@@ -51,11 +54,13 @@ public class DefectItem {
       }
 
       public static Image getImage(Severity sev) {
-         if (sev == Major)
+         if (sev == Major) {
             return ImageManager.getImage(FrameworkImage.SEVERITY_MAJOR);
-         else if (sev == Minor)
+         } else if (sev == Minor) {
             return ImageManager.getImage(FrameworkImage.SEVERITY_MINOR);
-         else if (sev == Issue) return ImageManager.getImage(FrameworkImage.SEVERITY_ISSUE);
+         } else if (sev == Issue) {
+            return ImageManager.getImage(FrameworkImage.SEVERITY_ISSUE);
+         }
          return null;
       }
    };
@@ -66,13 +71,27 @@ public class DefectItem {
 
    public DefectItem(User user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date) {
       this.user = user;
-      if (severity != null) this.severity = severity;
-      if (disposition != null) this.disposition = disposition;
-      if (injectionActivity != null) this.injectionActivity = injectionActivity;
-      if (description != null) this.description = description;
-      if (resolution != null) this.resolution = resolution;
-      if (location != null) this.location = location;
-      if (date != null) this.date = date;
+      if (severity != null) {
+         this.severity = severity;
+      }
+      if (disposition != null) {
+         this.disposition = disposition;
+      }
+      if (injectionActivity != null) {
+         this.injectionActivity = injectionActivity;
+      }
+      if (description != null) {
+         this.description = description;
+      }
+      if (resolution != null) {
+         this.resolution = resolution;
+      }
+      if (location != null) {
+         this.location = location;
+      }
+      if (date != null) {
+         this.date = date;
+      }
    }
 
    public DefectItem(String xml) throws OseeCoreException {
@@ -84,7 +103,10 @@ public class DefectItem {
    }
 
    public static enum Disposition {
-      None, Accept, Reject, Duplicate;
+      None,
+      Accept,
+      Reject,
+      Duplicate;
       public static Collection<String> strValues() {
          Set<String> values = new HashSet<String>();
          for (Enum<Disposition> e : values()) {
@@ -94,11 +116,13 @@ public class DefectItem {
       }
 
       public static Image getImage(Disposition sev) {
-         if (sev == Accept)
+         if (sev == Accept) {
             return ImageManager.getImage(FrameworkImage.ACCEPT);
-         else if (sev == Reject)
+         } else if (sev == Reject) {
             return ImageManager.getImage(FrameworkImage.REJECT);
-         else if (sev == Duplicate) return ImageManager.getImage(FrameworkImage.DUPLICATE);
+         } else if (sev == Duplicate) {
+            return ImageManager.getImage(FrameworkImage.DUPLICATE);
+         }
          return null;
       }
    };
@@ -122,7 +146,9 @@ public class DefectItem {
    };
 
    public String getDate(String pattern) {
-      if (pattern != null) return (new SimpleDateFormat(pattern)).format(date);
+      if (pattern != null) {
+         return new SimpleDateFormat(pattern).format(date);
+      }
       return date.toString();
    }
 
@@ -170,7 +196,9 @@ public class DefectItem {
    }
 
    public String getCreatedDate(String pattern) {
-      if (pattern != null) return (new SimpleDateFormat(pattern)).format(date);
+      if (pattern != null) {
+         return new SimpleDateFormat(pattern).format(date);
+      }
       return date.toString();
    }
 

@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -74,7 +74,7 @@ public class DeleteCoverUnitAction extends Action {
                if (coverageItem.getParent() instanceof ICoverageUnitProvider) {
                   ((ICoverageUnitProvider) coverageItem.getParent()).removeCoverageUnit((CoverageUnit) coverageItem);
                   deleteItems.add(coverageItem);
-                  (new OseeCoverageUnitStore((CoverageUnit) coverageItem)).delete(transaction, false);
+                  new OseeCoverageUnitStore((CoverageUnit) coverageItem).delete(transaction, false);
                }
             }
             transaction.execute();

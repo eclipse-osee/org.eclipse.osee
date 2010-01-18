@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.world;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
+import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.swt.widgets.Menu;
 
 /**

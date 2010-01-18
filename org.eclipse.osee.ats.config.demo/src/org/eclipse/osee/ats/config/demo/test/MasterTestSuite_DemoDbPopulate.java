@@ -14,8 +14,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.demo.config.PopulateDemoActions;
+import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
@@ -45,7 +45,7 @@ public class MasterTestSuite_DemoDbPopulate {
                "Authenticated user should be \"Joe Smith\" and is not.  Check that Demo Application Server is being run.",
                UserManager.getUser().getUserId().equals("Joe Smith"));
       } catch (OseeAuthenticationException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
          fail("Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");
       }
       // This test should only be run on test db

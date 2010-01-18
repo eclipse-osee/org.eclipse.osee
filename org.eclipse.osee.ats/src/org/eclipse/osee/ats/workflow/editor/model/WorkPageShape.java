@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workflow.editor.model;
 
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;

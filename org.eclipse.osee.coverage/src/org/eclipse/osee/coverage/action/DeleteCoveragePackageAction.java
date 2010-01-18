@@ -18,16 +18,16 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
  */
 public class DeleteCoveragePackageAction extends Action {
 
-   public static OseeImage OSEE_IMAGE = FrameworkImage.DELETE;
+   public static KeyedImage OSEE_IMAGE = FrameworkImage.DELETE;
 
    public DeleteCoveragePackageAction() {
       super("Delete/Purge Coverage Package");
@@ -41,7 +41,9 @@ public class DeleteCoveragePackageAction extends Action {
    @Override
    public void run() {
       try {
-         if (!CoverageUtil.getBranchFromUser(false)) return;
+         if (!CoverageUtil.getBranchFromUser(false)) {
+            return;
+         }
          CoveragePackageArtifactListDialog dialog =
                new CoveragePackageArtifactListDialog("Delete Package", "Select Package");
          dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts());
@@ -57,9 +59,13 @@ public class DeleteCoveragePackageAction extends Action {
             if (cDialog.open() == 0) {
                boolean purge = cDialog.isChecked();
                SkynetTransaction transaction = null;
-               if (!purge) transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Delete Coverage Package");
+               if (!purge) {
+                  transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Delete Coverage Package");
+               }
                OseeCoveragePackageStore.get(coveragePackage).delete(transaction, purge);
-               if (!purge) transaction.execute();
+               if (!purge) {
+                  transaction.execute();
+               }
             }
          }
       } catch (OseeCoreException ex) {

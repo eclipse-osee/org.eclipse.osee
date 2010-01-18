@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.config.demo.navigate;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewWorkflowManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -25,12 +26,11 @@ import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.swt.widgets.Display;
 
@@ -44,7 +44,7 @@ public class DoesNotWorkItemDemo extends WorldXNavigateItemAction {
     * @throws OseeArgumentException
     */
    public DoesNotWorkItemDemo(XNavigateItem parent) throws OseeArgumentException {
-      super(parent, "Does Not Work - Demo - Create peer review", FrameworkImage.ADMIN);
+      super(parent, "Does Not Work - Demo - Create peer review", PluginUiImage.ADMIN);
    }
 
    @Override
@@ -86,6 +86,6 @@ public class DoesNotWorkItemDemo extends WorldXNavigateItemAction {
       reviewArt.persist(transaction);
       transaction.execute();
 
-      AtsUtil.openAtsAction(reviewArt, AtsOpenOption.OpenAll);
+      AtsUtil.openATSAction(reviewArt, AtsOpenOption.OpenAll);
    }
 }

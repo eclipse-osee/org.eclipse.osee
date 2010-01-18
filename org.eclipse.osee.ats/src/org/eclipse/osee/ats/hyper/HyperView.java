@@ -37,19 +37,19 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -812,7 +812,7 @@ public class HyperView extends ViewPart implements IPartListener {
 
    public static void openActionEditor(Artifact artifact) {
       if (artifact instanceof StateMachineArtifact) {
-         AtsUtil.openAtsAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+         AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       }
    }
 
@@ -1054,8 +1054,8 @@ public class HyperView extends ViewPart implements IPartListener {
          }
       };
       refreshAction.setToolTipText("Refresh");
-      ImageManager.getImageDescriptor(FrameworkImage.REFRESH);
-      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
+      ImageManager.getImageDescriptor(PluginUiImage.REFRESH);
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
 
       IActionBars bars = getViewSite().getActionBars();
       IMenuManager mm = bars.getMenuManager();

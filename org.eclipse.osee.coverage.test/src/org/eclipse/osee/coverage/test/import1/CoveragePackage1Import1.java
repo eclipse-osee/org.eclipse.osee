@@ -11,7 +11,7 @@
 package org.eclipse.osee.coverage.test.import1;
 
 import org.eclipse.osee.coverage.test.util.CpCreateAndImportItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
 /**
  * @author Donald G. Dunne

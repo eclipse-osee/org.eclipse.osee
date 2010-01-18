@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -37,12 +38,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -267,7 +267,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          resultData.logError(String.format("Couldn't load Action named [%s]", actionTitle));
       } else {
          resultData.log("Loaded Action " + actionArt);
-         AtsUtil.openAtsAction(actionArt, AtsOpenOption.OpenOneOrPopupSelect);
+         AtsUtil.openATSAction(actionArt, AtsOpenOption.OpenOneOrPopupSelect);
       }
       validateActionAtStart(actionArt);
       resultData.report(title);
@@ -286,7 +286,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          resultData.logError(String.format("Couldn't load Action named [%s]", actionTitle));
       } else {
          resultData.log("Loaded Action " + actionArt);
-         AtsUtil.openAtsAction(actionArt, AtsOpenOption.OpenOneOrPopupSelect);
+         AtsUtil.openATSAction(actionArt, AtsOpenOption.OpenOneOrPopupSelect);
       }
       validateActionAtEnd(actionArt);
       resultData.report(title);

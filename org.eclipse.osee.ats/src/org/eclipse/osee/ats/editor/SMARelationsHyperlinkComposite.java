@@ -11,9 +11,10 @@
 
 package org.eclipse.osee.ats.editor;
 
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -42,10 +42,11 @@ public class SMARelationsHyperlinkComposite extends Composite {
 
    private final XFormToolkit toolkit;
    private static IRelationEnumeration[] sides =
-         new IRelationEnumeration[] {AtsRelationTypes.TeamWorkflowToReview_Review, AtsRelationTypes.TeamWorkflowToReview_Team,
-         CoreRelationTypes.Supercedes_Superceded, CoreRelationTypes.Supercedes_Supercedes,
-         CoreRelationTypes.SupportingInfo_SupportedBy, CoreRelationTypes.SupportingInfo_SupportingInfo,
-         CoreRelationTypes.Dependency__Artifact, CoreRelationTypes.Dependency__Dependency};
+         new IRelationEnumeration[] {AtsRelationTypes.TeamWorkflowToReview_Review,
+               AtsRelationTypes.TeamWorkflowToReview_Team, CoreRelationTypes.Supercedes_Superceded,
+               CoreRelationTypes.Supercedes_Supercedes, CoreRelationTypes.SupportingInfo_SupportedBy,
+               CoreRelationTypes.SupportingInfo_SupportingInfo, CoreRelationTypes.Dependency__Artifact,
+               CoreRelationTypes.Dependency__Dependency};
    private StateMachineArtifact sma;
    private Label actionableItemsLabel;
 
@@ -67,17 +68,12 @@ public class SMARelationsHyperlinkComposite extends Composite {
       toolkit.adapt(this);
 
       // Create all hyperlinks from this artifact to others of interest
-      createArtifactRelationHyperlinks("This", sma, "is reviewed by",
-            AtsRelationTypes.TeamWorkflowToReview_Review);
+      createArtifactRelationHyperlinks("This", sma, "is reviewed by", AtsRelationTypes.TeamWorkflowToReview_Review);
       createArtifactRelationHyperlinks("This", sma, "reviews", AtsRelationTypes.TeamWorkflowToReview_Team);
-      createArtifactRelationHyperlinks("This", sma, "supercedes",
-            CoreRelationTypes.Supercedes_Superceded);
-      createArtifactRelationHyperlinks("This", sma, "is superceded by",
-            CoreRelationTypes.Supercedes_Supercedes);
-      createArtifactRelationHyperlinks("This", sma, "depends on",
-            CoreRelationTypes.Dependency__Dependency);
-      createArtifactRelationHyperlinks("This", sma, "is dependency of",
-            CoreRelationTypes.Dependency__Artifact);
+      createArtifactRelationHyperlinks("This", sma, "supercedes", CoreRelationTypes.Supercedes_Superceded);
+      createArtifactRelationHyperlinks("This", sma, "is superceded by", CoreRelationTypes.Supercedes_Supercedes);
+      createArtifactRelationHyperlinks("This", sma, "depends on", CoreRelationTypes.Dependency__Dependency);
+      createArtifactRelationHyperlinks("This", sma, "is dependency of", CoreRelationTypes.Dependency__Artifact);
       createArtifactRelationHyperlinks("This", sma, "is supported info for",
             CoreRelationTypes.SupportingInfo_SupportedBy);
       createArtifactRelationHyperlinks("This", sma, "has supporting info",
@@ -121,8 +117,8 @@ public class SMARelationsHyperlinkComposite extends Composite {
                prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(art) + " \"" + art.getArtifactTypeName() + "\" ");
          Hyperlink link =
                toolkit.createHyperlink(this, String.format("\"%s\" - %s",
-               art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60),
-               art.getHumanReadableId()), SWT.NONE);
+                     art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60),
+                     art.getHumanReadableId()), SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 
             public void linkEntered(HyperlinkEvent e) {
@@ -132,7 +128,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
             }
 
             public void linkActivated(HyperlinkEvent e) {
-               AtsUtil.openAtsAction(art, AtsOpenOption.OpenOneOrPopupSelect);
+               AtsUtil.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
             }
          });
       }
@@ -162,9 +158,9 @@ public class SMARelationsHyperlinkComposite extends Composite {
    private void refreshActionableItemsLabel() throws OseeCoreException {
       if (actionableItemsLabel != null && sma instanceof ReviewSMArtifact) {
          actionableItemsLabel.setText("This \"" + ((ReviewSMArtifact) sma).getArtifactTypeName() +
-                        //
+         //
          "\" is review of Actionable Items  \"" +
-                        //
+         //
          ((ReviewSMArtifact) sma).getActionableItemsDam().getActionableItemsStr() + "\" ");
       }
    }

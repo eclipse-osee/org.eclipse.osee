@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 public class XCommitLabelProvider extends XViewerLabelProvider {
@@ -41,8 +41,9 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       if (xCol.equals(CommitXManagerFactory.Action_Col)) {
          return ImageManager.getImage(FrameworkImage.ARROW_RIGHT_YELLOW);
       }
-      if (branch == null)
+      if (branch == null) {
          return null;
+      }
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          try {
             CommitStatus commitStatus =
@@ -100,27 +101,28 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          return ((Artifact) element).getArtifactTypeName();
       } else if (xCol.equals(CommitXManagerFactory.Dest_Branch_Col)) {
          if (element instanceof VersionArtifact) {
-            return (branch == null ? "Parent Branch Not Configured for Version [" + (element) + "]" : branch.getShortName());
+            return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : branch.getShortName();
          } else if (element instanceof TeamDefinitionArtifact) {
-            return (branch == null ? "Parent Branch Not Configured for Team Definition [" + (element) + "]" : branch.getShortName());
+            return branch == null ? "Parent Branch Not Configured for Team Definition [" + element + "]" : branch.getShortName();
          }
       } else if (xCol.equals(CommitXManagerFactory.Action_Col)) {
          CommitStatus commitStatus =
                commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitStatus(configArt);
-         if (commitStatus == CommitStatus.Branch_Not_Configured)
+         if (commitStatus == CommitStatus.Branch_Not_Configured) {
             return "Configure Branch";
-         else if (commitStatus == CommitStatus.Branch_Commit_Disabled)
+         } else if (commitStatus == CommitStatus.Branch_Commit_Disabled) {
             return "Enable Branch Commit";
-         else if (commitStatus == CommitStatus.Commit_Needed)
+         } else if (commitStatus == CommitStatus.Commit_Needed) {
             return "Start Commit";
-         else if (commitStatus == CommitStatus.Merge_In_Progress)
+         } else if (commitStatus == CommitStatus.Merge_In_Progress) {
             return "Merge Conflicts and Commit";
-         else if (commitStatus == CommitStatus.Committed)
+         } else if (commitStatus == CommitStatus.Committed) {
             return "Show Change Report";
-         else if (commitStatus == CommitStatus.Committed_With_Merge)
+         } else if (commitStatus == CommitStatus.Committed_With_Merge) {
             return "Show Change/Merge Report";
-         else if (commitStatus == CommitStatus.Working_Branch_Not_Created)
+         } else if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
             return "Working Branch Not Created";
+         }
          return "Error: Need to handle this";
       }
       return "unhandled column";

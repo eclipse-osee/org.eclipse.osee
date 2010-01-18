@@ -22,8 +22,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -35,16 +35,17 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -95,7 +96,9 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
       Composite mainComp = new Composite(parent, SWT.BORDER);
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
       mainComp.setLayout(ALayout.getZeroMarginLayout());
-      if (toolkit != null) toolkit.paintBordersFor(mainComp);
+      if (toolkit != null) {
+         toolkit.paintBordersFor(mainComp);
+      }
 
       createTaskActionBar(mainComp);
 
@@ -111,7 +114,9 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
       });
       new ActionContributionItem(xViewer.getCustomizeAction()).fill(toolBar, -1);
 
-      if (toolkit != null) toolkit.adapt(xViewer.getStatusLabel(), false, false);
+      if (toolkit != null) {
+         toolkit.adapt(xViewer.getStatusLabel(), false, false);
+      }
 
       Tree tree = xViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH);
@@ -172,7 +177,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
+      item.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
       item.setToolTipText("Refresh Roles");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -185,8 +190,12 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
    }
 
    public void refreshActionEnablement() {
-      if (deleteUserRoleItem != null && !deleteUserRoleItem.isDisposed()) deleteUserRoleItem.setEnabled(isEditable() && getSelectedUserRoleItems().size() > 0);
-      if (newUserRoleItem != null && !newUserRoleItem.isDisposed()) newUserRoleItem.setEnabled(isEditable());
+      if (deleteUserRoleItem != null && !deleteUserRoleItem.isDisposed()) {
+         deleteUserRoleItem.setEnabled(isEditable() && getSelectedUserRoleItems().size() > 0);
+      }
+      if (newUserRoleItem != null && !newUserRoleItem.isDisposed()) {
+         newUserRoleItem.setEnabled(isEditable());
+      }
    }
 
    public void loadTable() {
@@ -207,8 +216,9 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
          return;
       }
       StringBuilder builder = new StringBuilder();
-      for (UserRole userRole : items)
+      for (UserRole userRole : items) {
          builder.append("\"" + userRole.toString() + "\"\n");
+      }
 
       boolean delete =
             MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete Roles",
@@ -249,8 +259,12 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
    @SuppressWarnings("unchecked")
    public ArrayList<UserRole> getSelectedUserRoleItems() {
       ArrayList<UserRole> items = new ArrayList<UserRole>();
-      if (xViewer == null) return items;
-      if (xViewer.getSelection().isEmpty()) return items;
+      if (xViewer == null) {
+         return items;
+      }
+      if (xViewer.getSelection().isEmpty()) {
+         return items;
+      }
       Iterator i = ((IStructuredSelection) xViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
@@ -277,7 +291,9 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
 
    @Override
    public void refresh() {
-      if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
+      if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
+         return;
+      }
       xViewer.refresh();
       validate();
       refreshActionEnablement();
@@ -319,7 +335,9 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
 
    @Override
    public String toHTML(String labelFont) {
-      if (getXViewer().getTree().getItemCount() == 0) return "";
+      if (getXViewer().getTree().getItemCount() == 0) {
+         return "";
+      }
       StringBuffer html = new StringBuffer();
       try {
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
@@ -371,7 +389,9 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
 
    public void setReviewArt(IReviewArtifact reviewArt) {
       this.reviewArt = reviewArt;
-      if (xViewer != null) loadTable();
+      if (xViewer != null) {
+         loadTable();
+      }
    }
 
    public void setArtifact(Artifact artifact, String attrName) {
@@ -396,15 +416,20 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.getId() != AtsUtil.getAtsBranch().getId()) return;
+      if (transData.getId() != AtsUtil.getAtsBranch().getId()) {
+         return;
+      }
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
+            if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
+               return;
+            }
             if (transData.isRelAddedChangedDeleted(reviewArt.getArtifact())) {
                loadTable();
-            } else
+            } else {
                refresh();
+            }
          }
       });
    }

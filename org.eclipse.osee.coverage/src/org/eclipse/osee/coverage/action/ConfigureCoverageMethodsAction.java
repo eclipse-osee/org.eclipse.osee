@@ -24,9 +24,9 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ConfigureCoverageMethodsAction extends Action {
 
-   public static OseeImage OSEE_IMAGE = FrameworkImage.GEAR;
+   public static KeyedImage OSEE_IMAGE = FrameworkImage.GEAR;
 
    public ConfigureCoverageMethodsAction() {
       super("Configure Coverage Methods");
@@ -48,7 +48,9 @@ public class ConfigureCoverageMethodsAction extends Action {
    @Override
    public void run() {
       try {
-         if (!CoverageUtil.getBranchFromUser(false)) return;
+         if (!CoverageUtil.getBranchFromUser(false)) {
+            return;
+         }
          CoveragePackageArtifactListDialog dialog =
                new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
          dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts());

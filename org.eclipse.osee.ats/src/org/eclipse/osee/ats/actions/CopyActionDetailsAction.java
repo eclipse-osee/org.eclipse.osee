@@ -15,7 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -37,7 +37,9 @@ public class CopyActionDetailsAction extends Action {
    }
 
    private void performCopy() {
-      if (clipboard == null) this.clipboard = new Clipboard(null);
+      if (clipboard == null) {
+         this.clipboard = new Clipboard(null);
+      }
       clipboard.setContents(
             new Object[] {"\"" + sma.getArtifactTypeName() + "\" - " + sma.getHumanReadableId() + " - \"" + sma.getName() + "\""},
             new Transfer[] {TextTransfer.getInstance()});

@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -56,7 +56,7 @@ public class TeamDefinitionDialog extends org.eclipse.ui.dialogs.ListDialog {
          @Override
          public Image getImage(Object element) {
             if (element instanceof TeamDefinitionArtifact) {
-               return ImageManager.getImage((TeamDefinitionArtifact) element);
+               return ArtifactImageManager.getImage((TeamDefinitionArtifact) element);
             }
             return null;
          }

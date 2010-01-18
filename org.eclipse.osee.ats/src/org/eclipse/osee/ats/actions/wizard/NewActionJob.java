@@ -18,15 +18,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
@@ -79,7 +79,7 @@ public class NewActionJob extends Job {
          // Because this is a job, it will automatically kill any popups that are created during.
          // Thus, if multiple teams were selected to create, don't popup on openAction or dialog
          // will exception out when it is killed at the end of this job.
-         AtsUtil.openAtsAction(actionArt, AtsOpenOption.OpenAll);
+         AtsUtil.openATSAction(actionArt, AtsOpenOption.OpenAll);
          OseeNotificationManager.sendNotifications();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

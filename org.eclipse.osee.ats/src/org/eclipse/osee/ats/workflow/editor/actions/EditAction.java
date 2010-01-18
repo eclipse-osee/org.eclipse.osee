@@ -14,7 +14,7 @@ import java.util.Iterator;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
 import org.eclipse.osee.ats.workflow.editor.parts.DiagramEditPart;

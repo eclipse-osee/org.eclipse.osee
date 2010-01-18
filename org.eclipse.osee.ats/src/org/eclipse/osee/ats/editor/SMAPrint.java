@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.Arrays;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskComposite;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

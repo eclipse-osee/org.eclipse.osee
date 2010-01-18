@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * Single code unit (file/procedure/function) that can contain other Coverage Unit or Coverage Items
@@ -169,7 +169,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    @Override
-   public OseeImage getOseeImage() {
+   public KeyedImage getOseeImage() {
       boolean covered = isCovered();
       if (isFolder()) {
          if (covered) {

@@ -62,13 +62,13 @@ import org.eclipse.osee.framework.skynet.core.importing.resolvers.NewArtifactImp
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.support.test.util.DemoCscis;
 import org.eclipse.osee.support.test.util.DemoProgramAttributes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -94,7 +94,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
    private static final String UPDATE_BRANCH_TYPE = "update osee_branch set branch_type = ? where branch_id = ?";
 
    public PopulateDemoActions(XNavigateItem parent) {
-      super(parent, "Populate Demo Actions", FrameworkImage.ADMIN);
+      super(parent, "Populate Demo Actions", PluginUiImage.ADMIN);
    }
 
    @Override

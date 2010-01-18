@@ -11,13 +11,14 @@
 package org.eclipse.osee.ats;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Ryan D. Brooks
  */
-public enum AtsImage implements OseeImage {
+public enum AtsImage implements KeyedImage {
    ACTION("action.gif"),
    ACTIONABLE_ITEM("AI.gif"),
    ART_VIEW("artView.gif"),

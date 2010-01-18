@@ -31,12 +31,12 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -170,7 +170,7 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
 
    @Override
    public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
-      return ((OseeCoveragePackageStore) OseeCoveragePackageStore.get((CoveragePackage) coveragePackageBase)).save(coverages);
+      return (OseeCoveragePackageStore.get((CoveragePackage) coveragePackageBase)).save(coverages);
    }
 
 }

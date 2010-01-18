@@ -12,14 +12,14 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -36,11 +36,15 @@ public class CompareTwoStringsAction extends Action {
       try {
          EntryDialog ed = new EntryDialog(getText(), "Enter First String");
          ed.setFillVertically(true);
-         if (ed.open() != 0) return;
+         if (ed.open() != 0) {
+            return;
+         }
          String firstStr = ed.getEntry();
          ed = new EntryDialog(getText(), "Enter Second String");
          ed.setFillVertically(true);
-         if (ed.open() != 0) return;
+         if (ed.open() != 0) {
+            return;
+         }
          String secondStr = ed.getEntry();
          CompareHandler compareHandler =
                new CompareHandler(new CompareItem("First", firstStr, System.currentTimeMillis()), new CompareItem(

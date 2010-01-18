@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 
@@ -141,9 +141,9 @@ public class AtsConfigManager {
       transaction.execute();
 
       // open everything in editors
-      AtsUtil.openAtsAction(teamDef, AtsOpenOption.OpenAll);
+      AtsUtil.openATSAction(teamDef, AtsOpenOption.OpenAll);
       for (ActionableItemArtifact aia : aias) {
-         AtsUtil.openAtsAction(aia, AtsOpenOption.OpenAll);
+         AtsUtil.openATSAction(aia, AtsOpenOption.OpenAll);
       }
       AtsWorkflowConfigEditor.editWorkflow(workFlowDefinition);
 

@@ -211,12 +211,6 @@
       </ArtifactAnnotation>
    </extension>
    <extension
-         point="org.eclipse.osee.framework.skynet.core.AtsLib">
-      <AtsLib
-            classname="org.eclipse.osee.ats.util.AtsUtil">
-      </AtsLib>
-   </extension>
-   <extension
          point="org.eclipse.osee.framework.ui.skynet.XWidgetProvider">
       <XWidgetProvider
             classname="org.eclipse.osee.ats.util.widgets.XWidgetProvider">

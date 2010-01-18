@@ -13,13 +13,13 @@ package org.eclipse.osee.ats.world.search;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -33,10 +33,13 @@ public abstract class WorldSearchItem {
    private LoadView loadView;
    private final Image image;
    public static enum LoadView {
-      TaskEditor, WorldEditor, None
+      TaskEditor,
+      WorldEditor,
+      None
    }
    public static enum SearchType {
-      Search, ReSearch
+      Search,
+      ReSearch
    };
 
    public WorldSearchItem(String name) {
@@ -47,7 +50,7 @@ public abstract class WorldSearchItem {
       this(name, loadView, null);
    }
 
-   public WorldSearchItem(String name, LoadView loadView, boolean cancelled, OseeImage oseeImage) {
+   public WorldSearchItem(String name, LoadView loadView, boolean cancelled, KeyedImage oseeImage) {
       super();
       this.name = name;
       this.loadView = loadView;
@@ -55,7 +58,7 @@ public abstract class WorldSearchItem {
       this.image = oseeImage == null ? null : ImageManager.getImage(oseeImage);
    }
 
-   public WorldSearchItem(String name, LoadView loadView, OseeImage oseeImage) {
+   public WorldSearchItem(String name, LoadView loadView, KeyedImage oseeImage) {
       this(name, loadView, false, oseeImage);
    }
 
@@ -63,7 +66,7 @@ public abstract class WorldSearchItem {
       this(worldSearchItem, null);
    }
 
-   public WorldSearchItem(WorldSearchItem worldSearchItem, OseeImage oseeImage) {
+   public WorldSearchItem(WorldSearchItem worldSearchItem, KeyedImage oseeImage) {
       this(worldSearchItem.name, worldSearchItem.loadView, worldSearchItem.cancelled, oseeImage);
    }
 

@@ -22,8 +22,9 @@ import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 public class CoverageMergeLabelProvider extends CoverageLabelProvider {
@@ -37,21 +38,27 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      if (element instanceof MessageMergeItem && xCol.equals(CoverageMergeXViewerFactory.Name)) return ImageManager.getImage(FrameworkImage.X_RED);
-      if (element instanceof MessageMergeItem) return null;
+      if (element instanceof MessageMergeItem && xCol.equals(CoverageMergeXViewerFactory.Name)) {
+         return ImageManager.getImage(FrameworkImage.X_RED);
+      }
+      if (element instanceof MessageMergeItem) {
+         return null;
+      }
       ICoverage coverageItem = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
          return getCoverageItemUserImage(coverageItem);
       }
-      if (xCol.equals(CoverageMergeXViewerFactory.Name)) return ImageManager.getImage(coverageItem.getOseeImage());
+      if (xCol.equals(CoverageMergeXViewerFactory.Name)) {
+         return ImageManager.getImage(coverageItem.getOseeImage());
+      }
       if (xCol.equals(CoverageMergeXViewerFactoryImport.Import) && element instanceof IMergeItem) {
          if (!((IMergeItem) element).isImportAllowed() || !((IMergeItem) element).isCheckable()) {
             return null;
          }
          if (((IMergeItem) element).isChecked()) {
-            return ImageManager.getImage(FrameworkImage.CHECKBOX_ENABLED);
+            return ImageManager.getImage(PluginUiImage.CHECKBOX_ENABLED);
          }
-         return ImageManager.getImage(FrameworkImage.CHECKBOX_DISABLED);
+         return ImageManager.getImage(PluginUiImage.CHECKBOX_DISABLED);
       }
       return super.getColumnImage(element, xCol, columnIndex);
    }
@@ -59,12 +66,24 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       ICoverage coverage = (ICoverage) element;
-      if (xCol.equals(CoverageMergeXViewerFactory.Name)) return coverage.getName();
-      if (element instanceof MessageMergeItem) return "";
-      if (xCol.equals(CoverageXViewerFactory.Guid)) return coverage.getGuid();
-      if (xCol.equals(CoverageXViewerFactory.Location)) return coverage.getLocation();
-      if (xCol.equals(CoverageXViewerFactory.Namespace)) return coverage.getNamespace();
-      if (xCol.equals(CoverageXViewerFactory.Notes_Col)) return coverage.getNotes();
+      if (xCol.equals(CoverageMergeXViewerFactory.Name)) {
+         return coverage.getName();
+      }
+      if (element instanceof MessageMergeItem) {
+         return "";
+      }
+      if (xCol.equals(CoverageXViewerFactory.Guid)) {
+         return coverage.getGuid();
+      }
+      if (xCol.equals(CoverageXViewerFactory.Location)) {
+         return coverage.getLocation();
+      }
+      if (xCol.equals(CoverageXViewerFactory.Namespace)) {
+         return coverage.getNamespace();
+      }
+      if (xCol.equals(CoverageXViewerFactory.Notes_Col)) {
+         return coverage.getNotes();
+      }
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
          return coverage.getCoveragePercentStr();
       }
@@ -115,7 +134,9 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
 
    @Override
    public int getColumnGradient(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
-      if (element instanceof MessageMergeItem) return 0;
+      if (element instanceof MessageMergeItem) {
+         return 0;
+      }
       ICoverage coverageItem = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
          return coverageItem.getCoveragePercent();

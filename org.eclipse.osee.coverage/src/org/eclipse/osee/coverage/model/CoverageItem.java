@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
@@ -113,7 +113,7 @@ public class CoverageItem implements ICoverage {
    }
 
    @Override
-   public OseeImage getOseeImage() {
+   public KeyedImage getOseeImage() {
       if (isCovered()) {
          return CoverageImage.ITEM_GREEN;
       }

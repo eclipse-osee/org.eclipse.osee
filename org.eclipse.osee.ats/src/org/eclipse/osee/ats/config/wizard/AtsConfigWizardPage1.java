@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.config.wizard;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;

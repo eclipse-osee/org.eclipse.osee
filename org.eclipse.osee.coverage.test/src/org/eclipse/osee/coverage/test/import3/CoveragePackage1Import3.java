@@ -11,7 +11,7 @@
 package org.eclipse.osee.coverage.test.import3;
 
 import org.eclipse.osee.coverage.test.util.CpSelectAndImportItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
 /**
  * Imports two completely new file CoverageUnits PowerUnit1 and ComScrnAButton1

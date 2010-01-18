@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
+import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 
 /**

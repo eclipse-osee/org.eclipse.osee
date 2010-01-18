@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.hyper;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.swt.graphics.Image;
 
 public class ArtifactHyperItem extends HyperViewItem {
@@ -19,7 +19,7 @@ public class ArtifactHyperItem extends HyperViewItem {
    private final Artifact artifact;
 
    public ArtifactHyperItem(Artifact artifact) {
-      super(artifact.getName(), ImageManager.getImage(artifact));
+      super(artifact.getName(), ArtifactImageManager.getImage(artifact));
       this.artifact = artifact;
       setGuid(artifact.getGuid());
    }

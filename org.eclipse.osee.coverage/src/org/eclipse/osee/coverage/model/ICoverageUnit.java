@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * Single code unit (file/procedure/function) that can contain other Coverage Unit or Coverage Items
@@ -57,7 +57,7 @@ public interface ICoverageUnit {
 
    public Result isEditable();
 
-   public OseeImage getOseeImage();
+   public KeyedImage getOseeImage();
 
    public boolean isCovered();
 

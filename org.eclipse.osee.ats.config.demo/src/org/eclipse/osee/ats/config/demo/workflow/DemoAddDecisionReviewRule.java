@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.config.demo.workflow;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
+import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -36,7 +36,7 @@ public class DemoAddDecisionReviewRule extends AtsAddDecisionReviewRule {
          setDecisionParameterValue(this, DecisionParameter.assignees, "<99999997>");
          setDecisionParameterValue(this, DecisionParameter.options, "Completed;Completed;");
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
       }
    }
 }

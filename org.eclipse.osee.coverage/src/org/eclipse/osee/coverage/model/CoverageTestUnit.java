@@ -10,7 +10,7 @@ import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * Single test that can cover multiple Coverage Items
@@ -55,7 +55,7 @@ public class CoverageTestUnit implements ICoverage {
    }
 
    @Override
-   public OseeImage getOseeImage() {
+   public KeyedImage getOseeImage() {
       if (isCovered()) {
          return CoverageImage.TEST_UNIT_GREEN;
       }

@@ -15,7 +15,6 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.ImportTasksViaSimpleList;
 import org.eclipse.osee.ats.actions.ImportTasksViaSpreadsheet;
 import org.eclipse.osee.ats.actions.NewAction;
@@ -26,20 +25,22 @@ import org.eclipse.osee.ats.actions.TaskDeleteAction;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.export.AtsExportManager;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.AtsXWidgetActionFormPage;
 import org.eclipse.osee.ats.world.WorldAssigneeFilter;
 import org.eclipse.osee.ats.world.WorldCompletedFilter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.IActionable;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -87,7 +88,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
    @Override
    public void createPartControl(Composite parent) {
       super.createPartControl(parent);
-      scrolledForm.setImage(ImageManager.getImage(smaEditor.getSma()));
+      scrolledForm.setImage(ArtifactImageManager.getImage(smaEditor.getSma()));
       String title = smaEditor.getSma().getName();
       if (title.length() > 80) {
          title = title.substring(0, 80 - 1) + "...";
@@ -154,7 +155,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
       toolBarManager.add(new RefreshAction(taskComposite));
       toolBarManager.add(new Separator());
       toolBarManager.add(new NewAction());
-      OseeAts.addButtonToEditorToolBar(smaEditor, smaEditor, AtsPlugin.getInstance(), toolBarManager,
+      OseeUiActions.addButtonToEditorToolBar(smaEditor, smaEditor, AtsPlugin.getInstance(), toolBarManager,
             TaskEditor.EDITOR_ID, "ATS Task Tab");
       toolBarManager.add(new Separator());
       createDropDownMenuActions();
@@ -173,7 +174,9 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
       }
 
       public Menu getMenu(Control parent) {
-         if (fMenu != null) fMenu.dispose();
+         if (fMenu != null) {
+            fMenu.dispose();
+         }
 
          fMenu = new Menu(parent);
 
@@ -212,6 +215,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
          item.fill(parent, -1);
       }
 
+      @Override
       public void run() {
 
       }

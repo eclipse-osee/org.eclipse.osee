@@ -15,9 +15,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
@@ -34,7 +34,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       this.user = user;
    }
 
-   public UserSearchItem(String name, User user, OseeImage oseeImage) {
+   public UserSearchItem(String name, User user, KeyedImage oseeImage) {
       super(name, oseeImage);
       this.user = user;
    }
@@ -43,7 +43,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       this(userSearchItem, null);
    }
 
-   public UserSearchItem(UserSearchItem userSearchItem, OseeImage oseeImage) {
+   public UserSearchItem(UserSearchItem userSearchItem, KeyedImage oseeImage) {
       super(userSearchItem, oseeImage);
       this.user = userSearchItem.user;
       this.selectedUser = userSearchItem.selectedUser;
@@ -55,24 +55,31 @@ public abstract class UserSearchItem extends WorldUISearchItem {
    }
 
    public String getUserSearchName() {
-      if (user != null)
+      if (user != null) {
          return user.getName();
-      else if (selectedUser != null) return selectedUser.getName();
+      } else if (selectedUser != null) {
+         return selectedUser.getName();
+      }
       return "";
    }
 
    public User getSearchUser() {
-      if (user != null) return user;
+      if (user != null) {
+         return user;
+      }
       return selectedUser;
    }
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      if (isCancelled()) return EMPTY_SET;
-      if (user != null)
+      if (isCancelled()) {
+         return EMPTY_SET;
+      }
+      if (user != null) {
          return searchIt(user);
-      else
+      } else {
          return searchIt();
+      }
    }
 
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
@@ -80,16 +87,24 @@ public abstract class UserSearchItem extends WorldUISearchItem {
    }
 
    private Collection<Artifact> searchIt() throws OseeCoreException {
-      if (isCancelled()) return EMPTY_SET;
-      if (selectedUser != null) return searchIt(selectedUser);
+      if (isCancelled()) {
+         return EMPTY_SET;
+      }
+      if (selectedUser != null) {
+         return searchIt(selectedUser);
+      }
       return EMPTY_SET;
    }
 
    @Override
    public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
-      if (user != null) return;
-      if (searchType == SearchType.ReSearch && selectedUser != null) return;
+      if (user != null) {
+         return;
+      }
+      if (searchType == SearchType.ReSearch && selectedUser != null) {
+         return;
+      }
       UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell());
       int result = ld.open();
       if (result == 0) {
@@ -125,7 +140,9 @@ public abstract class UserSearchItem extends WorldUISearchItem {
             return false;
          }
          if (getDefaultUser() != null && wsi.getDefaultUser() != null) {
-            if (!wsi.getDefaultUser().equals(getDefaultUser())) return false;
+            if (!wsi.getDefaultUser().equals(getDefaultUser())) {
+               return false;
+            }
          }
          return true;
       }
@@ -149,7 +166,9 @@ public abstract class UserSearchItem extends WorldUISearchItem {
    @Override
    public Image getImage() {
       Image image = super.getImage();
-      if (image != null) return image;
+      if (image != null) {
+         return image;
+      }
       return ImageManager.getImage(FrameworkImage.USER);
    }
 

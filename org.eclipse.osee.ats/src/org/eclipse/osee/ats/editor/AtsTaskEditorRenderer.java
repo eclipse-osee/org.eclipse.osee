@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -30,9 +30,7 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
 
    @Override
    public void open(List<Artifact> artifacts) throws OseeCoreException {
-      if (OseeAts.getAtsLib() != null) {
-         OseeAts.getAtsLib().openInAtsTaskEditor("Tasks", artifacts);
-      }
+      AtsUtil.openInAtsTaskEditor("Tasks", artifacts);
    }
 
    @Override
@@ -52,7 +50,7 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (artifact instanceof TaskArtifact && (!artifact.isHistorical())) {
+      if (artifact instanceof TaskArtifact && !artifact.isHistorical()) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

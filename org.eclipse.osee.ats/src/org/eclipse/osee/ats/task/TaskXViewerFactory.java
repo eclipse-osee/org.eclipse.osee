@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;

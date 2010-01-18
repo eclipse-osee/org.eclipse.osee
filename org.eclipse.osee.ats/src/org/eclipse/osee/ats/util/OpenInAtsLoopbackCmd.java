@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util;
 import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.framework.core.client.server.HttpResponse;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.httpRequests.BaseArtifactLoopbackCmd;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -54,7 +54,7 @@ public class OpenInAtsLoopbackCmd extends BaseArtifactLoopbackCmd {
                Display.getDefault().asyncExec(new Runnable() {
                   public void run() {
                      try {
-                        AtsUtil.openAtsAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+                        AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
                         String html =
                               AHTML.simplePage("Action [" + artifact.getName() + "]has been opened in OSEE ATS<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
                         httpResponse.getPrintStream().println(html);

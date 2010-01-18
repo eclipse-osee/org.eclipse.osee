@@ -14,14 +14,14 @@ import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -41,7 +41,9 @@ public class ConvertActionableItemsAction extends Action {
       try {
          Collection<TeamWorkFlowArtifact> teamArts =
                Collections.castMatching(TeamWorkFlowArtifact.class, selectedAtsArtifacts.getSelectedSMAArtifacts());
-         if (teamArts.size() == 0) throw new OseeStateException("No TeamWorkflows selected");
+         if (teamArts.size() == 0) {
+            throw new OseeStateException("No TeamWorkflows selected");
+         }
 
          TeamWorkFlowArtifact teamArt = teamArts.iterator().next();
          Result result = teamArt.convertActionableItems();

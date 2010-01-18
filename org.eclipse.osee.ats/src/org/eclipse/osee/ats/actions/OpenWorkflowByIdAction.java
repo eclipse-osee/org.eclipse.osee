@@ -15,18 +15,18 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.SmaWorkflowLabelProvider;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.ListDialog;
 
@@ -60,7 +60,7 @@ public class OpenWorkflowByIdAction extends Action {
             }
          }
          if (artifact instanceof ActionArtifact) {
-            AtsUtil.openAtsAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+            AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
          } else {
             SMAEditor.editArtifact(artifact);
          }

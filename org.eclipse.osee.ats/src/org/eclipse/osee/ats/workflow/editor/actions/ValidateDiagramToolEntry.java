@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workflow.editor.actions;
 
 import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne

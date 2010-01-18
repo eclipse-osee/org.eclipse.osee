@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.test.util;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.customize.dialog.XViewerCustomizeDialog;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;

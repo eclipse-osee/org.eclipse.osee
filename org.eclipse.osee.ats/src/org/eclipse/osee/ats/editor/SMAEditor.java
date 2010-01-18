@@ -20,7 +20,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.AccessControlAction;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
 import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
@@ -31,6 +30,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
 import org.eclipse.osee.ats.task.TaskComposite;
@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -62,21 +63,21 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -175,7 +176,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
 
    private void updatePartName() throws OseeCoreException {
       setPartName(getTitleStr());
-      setTitleImage(ImageManager.getImage(sma));
+      setTitleImage(ArtifactImageManager.getImage(sma));
    }
 
    public String getTitleStr() throws OseeCoreException {
@@ -364,7 +365,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
    private ToolBar createToolBar(Composite parent) {
       ToolBar toolBar = AtsUtil.createCommonToolBar(parent);
 
-      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "ATS Editor");
+      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "ATS Editor");
       AtsUtil.actionToToolItem(toolBar, new ResourceHistoryAction(sma), FrameworkImage.EDIT_BLUE);
       AtsUtil.actionToToolItem(toolBar, new AccessControlAction(sma), FrameworkImage.AUTHENTICATED);
       AtsUtil.actionToToolItem(toolBar, new DirtyReportAction(sma), FrameworkImage.DIRTY);
@@ -536,7 +537,9 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       try {
-         if (!(sma.isTeamWorkflow())) return;
+         if (!sma.isTeamWorkflow()) {
+            return;
+         }
          if (sma.isInTransition()) {
             return;
          }
@@ -731,7 +734,8 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
       return this;
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
     * @see org.eclipse.osee.ats.actions.ISelectedAtsArtifacts#getSelectedSMAArtifacts()
     */
    @Override

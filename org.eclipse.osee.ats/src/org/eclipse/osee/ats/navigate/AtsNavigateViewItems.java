@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.CompareTwoStringsAction;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -30,6 +29,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.health.ValidateChangeReportByHrid;
 import org.eclipse.osee.ats.health.ValidateChangeReports;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.notify.AtsNotificationNavigateItem;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
@@ -61,6 +61,11 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
@@ -68,10 +73,6 @@ import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XViewerExample;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroupsAndUserGroups;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroupsAndUserGroups.GroupType;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemFolder;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems;
 import org.osgi.framework.Bundle;
 
 /**
@@ -102,8 +103,9 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
          items.add(new SearchNavigateItem(null, new MySubscribedSearchItem("My Subscribed", user)));
-         if (AtsUtil.isGoalEnabled()) items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user,
-               GoalSearchState.InWork)));
+         if (AtsUtil.isGoalEnabled()) {
+            items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user, GoalSearchState.InWork)));
+         }
          items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new VisitedItems(null));
          items.add(new XNavigateItemAction(null, new NewAction(), AtsImage.NEW_ACTION));
@@ -187,7 +189,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          BlamContributionManager.addBlamOperationsToNavigator(items);
 
          if (AtsUtil.isAtsAdmin()) {
-            XNavigateItem adminItems = new XNavigateItem(null, "Admin", FrameworkImage.ADMIN);
+            XNavigateItem adminItems = new XNavigateItem(null, "Admin", PluginUiImage.ADMIN);
 
             new AtsNotificationNavigateItem(adminItems);
             new AtsNotificationNavigateItem(adminItems, true);

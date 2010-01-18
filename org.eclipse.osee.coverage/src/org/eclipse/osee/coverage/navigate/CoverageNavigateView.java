@@ -23,14 +23,14 @@ import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -158,11 +158,11 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
             xNavComp.refresh();
          }
       };
-      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
+      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
       getViewSite().getActionBars().getMenuManager().add(refreshAction);
 
-      OseeAts.addBugToViewToolbar(this, this, Activator.getInstance(), VIEW_ID, "Coverage Navigator");
+      OseeUiActions.addBugToViewToolbar(this, this, Activator.getInstance(), VIEW_ID, "Coverage Navigator");
 
    }
 

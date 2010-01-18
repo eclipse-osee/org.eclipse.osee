@@ -12,13 +12,13 @@ package org.eclipse.osee.coverage.util;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
  */
-public enum CoverageImage implements OseeImage {
+public enum CoverageImage implements KeyedImage {
    COVERAGE("coverage.gif"),
    COVERAGE_IMPORT("coverageImport.gif"),
    COVERAGE_PACKAGE("coveragePackage.gif"),

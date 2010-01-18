@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.MyFavoritesAction;
 import org.eclipse.osee.ats.actions.MyWorldAction;
 import org.eclipse.osee.ats.actions.NewAction;
@@ -23,30 +22,28 @@ import org.eclipse.osee.ats.actions.OpenChangeReportByIdAction;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.actions.OpenWorldByIdAction;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.plugin.util.AudioFile;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -153,22 +150,7 @@ public class NavigateView extends ViewPart implements IActionable {
             }
          }
       });
-      searchButton.addMouseListener(new MouseListener() {
-         @Override
-         public void mouseUp(MouseEvent mouseEvent) {
-         }
 
-         @Override
-         public void mouseDoubleClick(MouseEvent mouseEvent) {
-            if (mouseEvent.button == 3) {
-               AudioFile.processAudioFile(AtsPlugin.getInstance(), "support/OSEEDay.wav");
-            }
-         }
-
-         @Override
-         public void mouseDown(MouseEvent arg0) {
-         }
-      });
       GridData gridData = new GridData(SWT.RIGHT, SWT.NONE, false, false);
       gridData.heightHint = 15;
       this.searchArea = new Text(comp, SWT.SINGLE | SWT.BORDER);
@@ -231,7 +213,7 @@ public class NavigateView extends ViewPart implements IActionable {
       }
       toolbarManager.add(new NewAction());
 
-      OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Navigator");
+      OseeUiActions.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Navigator");
    }
 
    /**

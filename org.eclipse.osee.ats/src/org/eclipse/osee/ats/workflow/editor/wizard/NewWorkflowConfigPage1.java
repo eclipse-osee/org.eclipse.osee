@@ -12,7 +12,7 @@
 package org.eclipse.osee.ats.workflow.editor.wizard;
 
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLevel;

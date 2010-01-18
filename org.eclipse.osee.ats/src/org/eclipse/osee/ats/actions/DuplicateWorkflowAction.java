@@ -12,14 +12,14 @@ package org.eclipse.osee.ats.actions;
 
 import java.util.Collection;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.operation.DuplicateWorkflowBlam;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
@@ -35,7 +35,8 @@ public class DuplicateWorkflowAction extends Action {
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DUPLICATE));
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
     * @see org.eclipse.jface.action.Action#run()
     */
    @Override

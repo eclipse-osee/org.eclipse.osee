@@ -18,10 +18,10 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.OverlayImage.Location;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
 
 /**
  * @author Ryan D. Brooks
@@ -30,22 +30,22 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
    public void init() throws OseeCoreException {
-      ImageManager.registerBaseImage(AtsArtifactTypes.DecisionReview.getName(), AtsImage.REVIEW, this);
-      ImageManager.registerBaseImage("Action", AtsImage.ACTION, this);
-      ImageManager.registerBaseImage("Version", FrameworkImage.VERSION, this);
-      ImageManager.registerBaseImage("Task", AtsImage.TASK, this);
-      ImageManager.registerBaseImage("Actionable Item", AtsImage.ACTIONABLE_ITEM, this);
-      ImageManager.registerBaseImage("Team Workflow", AtsImage.TEAM_WORKFLOW, this);
-      ImageManager.registerBaseImage("Team Definition", AtsImage.TEAM_DEFINITION, this);
-      ImageManager.registerBaseImage("Goal", AtsImage.GOAL, this);
-      ImageManager.registerBaseImage("PeerToPeer Review", AtsImage.REVIEW, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.DecisionReview.getName(), AtsImage.REVIEW, this);
+      ArtifactImageManager.registerBaseImage("Action", AtsImage.ACTION, this);
+      ArtifactImageManager.registerBaseImage("Version", FrameworkImage.VERSION, this);
+      ArtifactImageManager.registerBaseImage("Task", AtsImage.TASK, this);
+      ArtifactImageManager.registerBaseImage("Actionable Item", AtsImage.ACTIONABLE_ITEM, this);
+      ArtifactImageManager.registerBaseImage("Team Workflow", AtsImage.TEAM_WORKFLOW, this);
+      ArtifactImageManager.registerBaseImage("Team Definition", AtsImage.TEAM_DEFINITION, this);
+      ArtifactImageManager.registerBaseImage("Goal", AtsImage.GOAL, this);
+      ArtifactImageManager.registerBaseImage("PeerToPeer Review", AtsImage.REVIEW, this);
 
-      ImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Version.getName());
-      ImageManager.registerOverrideImageProvider(this, TaskArtifact.ARTIFACT_NAME);
-      ImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.PeerToPeerReview.getName());
-      ImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.DecisionReview.getName());
+      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Version.getName());
+      ArtifactImageManager.registerOverrideImageProvider(this, TaskArtifact.ARTIFACT_NAME);
+      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.PeerToPeerReview.getName());
+      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.DecisionReview.getName());
       for (IArtifactType artifactType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()) {
-         ImageManager.registerOverrideImageProvider(this, artifactType.getName());
+         ArtifactImageManager.registerOverrideImageProvider(this, artifactType.getName());
       }
    }
 
@@ -53,14 +53,14 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
    public String setupImage(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Version)) {
          if (artifact.getSoleAttributeValue("ats.Next Version", false)) {
-            return ImageManager.setupImage(artifact, AtsImage.NEXT, Location.BOT_RIGHT);
+            return ArtifactImageManager.setupImage(artifact, AtsImage.NEXT, Location.BOT_RIGHT);
          }
          if (artifact.getSoleAttributeValue("ats.Released", false)) {
-            return ImageManager.setupImage(artifact, AtsImage.RELEASED, Location.TOP_RIGHT);
+            return ArtifactImageManager.setupImage(artifact, AtsImage.RELEASED, Location.TOP_RIGHT);
          }
          if (artifact.getSoleAttributeValue("ats.Version Locked", false) && !artifact.getSoleAttributeValue(
                "ats.Released", false)) {
-            return ImageManager.setupImage(artifact, AtsImage.VERSION_LOCKED, Location.BOT_RIGHT);
+            return ArtifactImageManager.setupImage(artifact, AtsImage.VERSION_LOCKED, Location.BOT_RIGHT);
          }
       }
 
@@ -68,11 +68,11 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
          StateMachineArtifact stateMachine = (StateMachineArtifact) artifact;
          if (stateMachine.isSubscribed(UserManager.getUser())) {
             // was 8,6
-            return ImageManager.setupImage(artifact, AtsImage.SUBSCRIBED_OVERLAY, Location.BOT_RIGHT);
+            return ArtifactImageManager.setupImage(artifact, AtsImage.SUBSCRIBED_OVERLAY, Location.BOT_RIGHT);
          }
          if (stateMachine.isFavorite(UserManager.getUser())) {
             // was 7,0
-            return ImageManager.setupImage(artifact, AtsImage.FAVORITE_OVERLAY, Location.TOP_RIGHT);
+            return ArtifactImageManager.setupImage(artifact, AtsImage.FAVORITE_OVERLAY, Location.TOP_RIGHT);
          }
       }
 

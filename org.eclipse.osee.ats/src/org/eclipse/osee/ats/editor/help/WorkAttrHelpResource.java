@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.editor.help;
 import java.io.File;
 import java.io.IOException;
 import org.eclipse.help.IHelpResource;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;

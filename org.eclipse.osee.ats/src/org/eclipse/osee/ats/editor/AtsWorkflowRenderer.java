@@ -13,15 +13,15 @@ package org.eclipse.osee.ats.editor;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsOpenOption;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -54,7 +54,7 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
    @Override
    public void open(List<Artifact> artifacts) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
-         OseeAts.getAtsLib().openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+         AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       }
    }
 

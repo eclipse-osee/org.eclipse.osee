@@ -13,13 +13,13 @@ package org.eclipse.osee.ats.navigate;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.config.AtsDatabaseConfig;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -31,7 +31,7 @@ public class UpdateAtsWorkItemDefinitions extends XNavigateItemAction {
     * @param parent
     */
    public UpdateAtsWorkItemDefinitions(XNavigateItem parent) {
-      super(parent, "Update Ats WorkItemDefinitions", FrameworkImage.ADMIN);
+      super(parent, "Update Ats WorkItemDefinitions", PluginUiImage.ADMIN);
    }
 
    @Override

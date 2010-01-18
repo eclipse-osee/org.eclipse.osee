@@ -17,9 +17,11 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 public class DefectLabelProvider extends XViewerLabelProvider {
@@ -33,16 +35,16 @@ public class DefectLabelProvider extends XViewerLabelProvider {
    @Override
    public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) throws OseeCoreException {
       DefectItem defectItem = (DefectItem) element;
-      if (dCol.equals(DefectXViewerFactory.Severity_Col))
+      if (dCol.equals(DefectXViewerFactory.Severity_Col)) {
          return Severity.getImage(defectItem.getSeverity());
-      else if (dCol.equals(DefectXViewerFactory.Injection_Activity_Col))
+      } else if (dCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
          return ImageManager.getImage(FrameworkImage.INFO_SM);
-      else if (dCol.equals(DefectXViewerFactory.Disposition_Col))
+      } else if (dCol.equals(DefectXViewerFactory.Disposition_Col)) {
          return Disposition.getImage(defectItem.getDisposition());
-      else if (dCol.equals(DefectXViewerFactory.Closed_Col)) {
-         return defectItem.isClosed() ? ImageManager.getImage(FrameworkImage.CHECKBOX_ENABLED) : ImageManager.getImage(FrameworkImage.CHECKBOX_DISABLED);
+      } else if (dCol.equals(DefectXViewerFactory.Closed_Col)) {
+         return ImageManager.getImage(defectItem.isClosed() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
       } else if (dCol.equals(DefectXViewerFactory.User_Col)) {
-         return ImageManager.getImage(defectItem.getUser());
+         return ArtifactImageManager.getImage(defectItem.getUser());
       }
       return null;
    }
@@ -50,24 +52,25 @@ public class DefectLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException {
       DefectItem defectItem = (DefectItem) element;
-      if (aCol.equals(DefectXViewerFactory.User_Col))
+      if (aCol.equals(DefectXViewerFactory.User_Col)) {
          return defectItem.getUser().getName();
-      else if (aCol.equals(DefectXViewerFactory.Closed_Col))
+      } else if (aCol.equals(DefectXViewerFactory.Closed_Col)) {
          return String.valueOf(defectItem.isClosed());
-      else if (aCol.equals(DefectXViewerFactory.Created_Date_Col))
+      } else if (aCol.equals(DefectXViewerFactory.Created_Date_Col)) {
          return defectItem.getCreatedDate(XDate.MMDDYYHHMM);
-      else if (aCol.equals(DefectXViewerFactory.Description_Col))
+      } else if (aCol.equals(DefectXViewerFactory.Description_Col)) {
          return defectItem.getDescription();
-      else if (aCol.equals(DefectXViewerFactory.Resolution_Col))
+      } else if (aCol.equals(DefectXViewerFactory.Resolution_Col)) {
          return defectItem.getResolution();
-      else if (aCol.equals(DefectXViewerFactory.Location_Col))
+      } else if (aCol.equals(DefectXViewerFactory.Location_Col)) {
          return defectItem.getLocation();
-      else if (aCol.equals(DefectXViewerFactory.Severity_Col))
+      } else if (aCol.equals(DefectXViewerFactory.Severity_Col)) {
          return defectItem.getSeverity().equals(Severity.None) ? "" : defectItem.getSeverity().name();
-      else if (aCol.equals(DefectXViewerFactory.Disposition_Col))
+      } else if (aCol.equals(DefectXViewerFactory.Disposition_Col)) {
          return defectItem.getDisposition().equals(Disposition.None) ? "" : defectItem.getDisposition().name();
-      else if (aCol.equals(DefectXViewerFactory.Injection_Activity_Col))
+      } else if (aCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
          return defectItem.getInjectionActivity() == InjectionActivity.None ? "" : defectItem.getInjectionActivity().name();
+      }
 
       return "Unhandled Column";
    }

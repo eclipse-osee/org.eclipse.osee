@@ -15,11 +15,11 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
@@ -29,7 +29,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private CustomizeData customizeData;
    private TableLoadOption[] tableLoadOptions;
 
-   public WorldEditorParameterSearchItem(String name, OseeImage oseeImage) throws OseeArgumentException {
+   public WorldEditorParameterSearchItem(String name, KeyedImage oseeImage) throws OseeArgumentException {
       super(name, LoadView.WorldEditor, oseeImage);
    }
 
@@ -37,7 +37,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       this(name, loadView, null);
    }
 
-   public WorldEditorParameterSearchItem(String name, LoadView loadView, OseeImage oseeImage) throws OseeArgumentException {
+   public WorldEditorParameterSearchItem(String name, LoadView loadView, KeyedImage oseeImage) throws OseeArgumentException {
       super(name, loadView, oseeImage);
    }
 
@@ -45,7 +45,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       this(worldSearchItem, null);
    }
 
-   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem, OseeImage oseeImage) throws OseeArgumentException {
+   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem, KeyedImage oseeImage) throws OseeArgumentException {
       super(worldSearchItem, oseeImage);
    }
 
