@@ -76,9 +76,7 @@ public class ExportChangeReportsAction extends Action {
    private void export() throws OseeCoreException {
       ViewWordChangeReportHandler handler = new ViewWordChangeReportHandler();
       branch = BranchManager.getBranchByGuid("NBdJRXpKwHF0bAvVHSwA");
-      //      Collection<String> legacyIds =
-      //            Arrays.asList("10594", "10599", "11129", "11224", "11233", "11327", "11329", "11382", "11408", "11416",
-      //                  "11420", "11435", "11464", "11495", "11499", "11556", "11558", "11576", "11648", "11778");
+      //      Collection<String> legacyIds = Arrays.asList();
       //      List<Artifact> workflows =
       //            ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.LegacyPCRId, legacyIds,
       //                  CoreBranches.COMMON, legacyIds.size());
