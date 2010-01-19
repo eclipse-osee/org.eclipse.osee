@@ -24,7 +24,8 @@ public enum XResultBrowserHyperCmd {
    openChangeReport,
    openPriorityHelp,
    browserInternal,
-   browserExternal;
+   browserExternal,
+   other;
 
    public static String getHyperCmdStr(XResultBrowserHyperCmd xResultBrowserHyperCmd, String value) {
       return String.format("%s=%s", xResultBrowserHyperCmd.name(), value);
@@ -32,19 +33,25 @@ public enum XResultBrowserHyperCmd {
 
    public static XResultBrowserHyperCmd getCmdStrHyperCmd(String hyperCmdStr) {
       Matcher m = Pattern.compile("(.*?)=(.*)").matcher(hyperCmdStr);
-      if (m.find()) return XResultBrowserHyperCmd.getHyperCmd(m.group(1));
-      return null;
+      if (m.find()) {
+         return XResultBrowserHyperCmd.getHyperCmd(m.group(1));
+      }
+      return other;
    }
 
    public static String getCmdStrValue(String hyperCmdStr) {
       Matcher m = Pattern.compile("(.*?)=(.*)").matcher(hyperCmdStr);
-      if (m.find()) return m.group(2);
+      if (m.find()) {
+         return m.group(2);
+      }
       return "";
    }
 
    public static XResultBrowserHyperCmd getHyperCmd(String str) {
       for (XResultBrowserHyperCmd xResultBrowserHyperCmd : XResultBrowserHyperCmd.values()) {
-         if (xResultBrowserHyperCmd.toString().equals(str)) return xResultBrowserHyperCmd;
+         if (xResultBrowserHyperCmd.toString().equals(str)) {
+            return xResultBrowserHyperCmd;
+         }
       }
       throw new IllegalArgumentException("Invalid XResultBrowserHyperCmd Name");
    }
