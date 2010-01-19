@@ -1,5 +1,5 @@
 <project default="run" name="org.eclipse.osee.server.releng/build.xml - Run a OSEE build using the Athena CBI">
-
+	<property name="WORKSPACE" location="../../../../" />
 	<property environment="env" />
 
 	<!-- load properties and set timestamp for the build
