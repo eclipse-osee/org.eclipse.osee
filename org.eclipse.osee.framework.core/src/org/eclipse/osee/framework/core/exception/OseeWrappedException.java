@@ -16,24 +16,14 @@ package org.eclipse.osee.framework.core.exception;
 public class OseeWrappedException extends OseeCoreException {
    private static final long serialVersionUID = 1L;
 
-   /**
-    * @param message
-    */
    public OseeWrappedException(String message) {
       super(message);
    }
 
-   /**
-    * @param message
-    * @param cause
-    */
    public OseeWrappedException(String message, Throwable cause) {
       super(message, cause);
    }
 
-   /**
-    * @param cause
-    */
    public OseeWrappedException(Throwable cause) {
       super(cause);
    }

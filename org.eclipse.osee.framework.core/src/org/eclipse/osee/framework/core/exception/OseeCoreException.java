@@ -29,7 +29,7 @@ public class OseeCoreException extends CoreException {
    }
 
    public OseeCoreException(Throwable cause) {
-      super(new Status(IStatus.ERROR, "OSEE", null, cause));
+      super(new Status(IStatus.ERROR, "OSEE", cause.getMessage(), cause));
    }
 
    public OseeCoreException(IStatus status) {
