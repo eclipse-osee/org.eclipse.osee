@@ -52,7 +52,7 @@
 			<propertyref prefix="ftp." />
 			<propertyref prefix="socksProxy" />
 		</propertyset>
-		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" />
+		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />
 		<antcall target="cleanUp" inheritall="true" />
 	</target>
 
