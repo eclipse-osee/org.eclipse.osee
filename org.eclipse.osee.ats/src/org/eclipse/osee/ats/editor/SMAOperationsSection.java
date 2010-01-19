@@ -94,7 +94,7 @@ public class SMAOperationsSection extends SectionPart {
       createViewsEditorsSection(sectionBody, toolkit);
       createNotificationsSection(sectionBody, toolkit);
 
-      if (advOperation != null && advOperation.isLbaProgram(editor)) {
+      if (advOperation != null && advOperation.isValid(editor)) {
          advOperation.createAdvancedSection(editor, sectionBody, toolkit);
       } else {
          createAdvancedSection(sectionBody, toolkit);

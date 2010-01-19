@@ -17,9 +17,11 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -35,6 +37,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -42,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -52,18 +56,35 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class TaskXViewer extends WorldXViewer {
 
+   public static final String MENU_GROUP_ATS_TASK_SHOW = "ATS TASK SHOW";
    private final TaskComposite xTaskViewer;
    private final IDirtiableEditor editor;
    private boolean tasksEditable = true;
    private boolean addDeleteTaskEnabled = false;
    private static String viewerId = GUID.create();
    private final TaskComposite taskComposite;
+   private ITaskAction showRelatedTasksAction = null;
 
    public TaskXViewer(TaskComposite taskComposite, int style, IDirtiableEditor editor, TaskComposite xTaskViewer) {
       super(taskComposite, style, new TaskXViewerFactory());
       this.taskComposite = taskComposite;
       this.editor = editor;
       this.xTaskViewer = xTaskViewer;
+      registerAdvancedSectionsFromExtensionPoints();
+   }
+
+   private void registerAdvancedSectionsFromExtensionPoints() {
+
+      ExtensionDefinedObjects<ITaskAction> extensions =
+            new ExtensionDefinedObjects<ITaskAction>(AtsPlugin.PLUGIN_ID + ".AtsMenuAction", "AtsMenuAction",
+                  "classname");
+      for (ITaskAction item : extensions.getObjects()) {
+         try {
+            showRelatedTasksAction = item;
+         } catch (Exception ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+      }
    }
 
    @Override
@@ -124,6 +145,7 @@ public class TaskXViewer extends WorldXViewer {
    Action editTaskTitleAction, editTaskAssigneesAction, editTaskStatusAction, editTaskResolutionAction,
          editTaskEstimateAction, editTaskRelatedStateAction, editTaskNotesAction;
    Action addNewTaskAction, deleteTasksAction;
+   Action showRelatedAction;
 
    @Override
    public void createMenuActions() {
@@ -260,6 +282,17 @@ public class TaskXViewer extends WorldXViewer {
    @Override
    public void updateEditMenuActions() {
       MenuManager mm = getMenuManager();
+
+      if (showRelatedTasksAction == null) {
+         registerAdvancedSectionsFromExtensionPoints();
+      }
+      if (showRelatedTasksAction != null && showRelatedTasksAction.isValid(getSelectedTaskArtifacts())) {
+         showRelatedTasksAction.setXViewer(this);
+         mm.insertBefore(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_TASK_SHOW));
+         mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, (Action) showRelatedTasksAction);
+         mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, new Separator());
+         editTaskNotesAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);
+      }
 
       // EDIT MENU BLOCK
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskTitleAction);

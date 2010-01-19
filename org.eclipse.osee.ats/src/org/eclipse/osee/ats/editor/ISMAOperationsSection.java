@@ -17,5 +17,5 @@ public interface ISMAOperationsSection {
 
    public abstract void createAdvancedSection(SMAEditor editor, Composite parent, FormToolkit toolkit);
 
-   public abstract boolean isLbaProgram(SMAEditor editor);
+   public abstract boolean isValid(SMAEditor editor);
 }
