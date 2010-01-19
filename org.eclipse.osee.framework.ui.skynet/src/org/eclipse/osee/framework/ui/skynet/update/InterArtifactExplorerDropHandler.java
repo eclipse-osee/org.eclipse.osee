@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -44,24 +45,10 @@ public class InterArtifactExplorerDropHandler {
    private static final String ACCESS_ERROR_MSG =
          "Access control has restricted this action. The current user does not have sufficient permission to drag and drop artifacts on this branch from the selected source branch.";
 
-   public boolean isUpdateFromParent(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      boolean result = false;
-      if (destinationBranch.hasParentBranch()) {
-         result = destinationBranch.getParentBranch().equals(sourceBranch);
-      }
-      return result;
-   }
-
-   public boolean isAccessAllowed(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      return AccessControlManager.hasPermission(destinationBranch, PermissionEnum.WRITE) && AccessControlManager.hasPermission(
-            sourceBranch, PermissionEnum.READ);
-   }
-
    public void dropArtifactIntoDifferentBranch(Artifact destinationParentArtifact, Artifact[] sourceArtifacts, boolean prompt) throws OseeCoreException {
       if (destinationParentArtifact == null || sourceArtifacts == null || sourceArtifacts.length < 1) {
-         throw new OseeArgumentException("");
+         throw new OseeArgumentException("Invalid arguments");
       }
-
       Branch sourceBranch = sourceArtifacts[0].getBranch();
       Branch destinationBranch = destinationParentArtifact.getBranch();
 
@@ -69,26 +56,7 @@ public class InterArtifactExplorerDropHandler {
          MessageDialog.openError(Display.getCurrent().getActiveShell(), ACCESS_ERROR_MSG_TITLE,
                UPDATE_FROM_PARENT_ERROR_MSG);
       } else if (isAccessAllowed(sourceBranch, destinationBranch)) {
-         List<Integer> artifactIds = new ArrayList<Integer>();
-         artifactIds.add(destinationParentArtifact.getArtId());
-
-         for (Artifact artifact : destinationParentArtifact.getDescendants()) {
-            artifactIds.add(artifact.getArtId());
-         }
-
-         List<TransferObject> transferObjects = new LinkedList<TransferObject>();
-
-         for (Artifact sourceArtifact : sourceArtifacts) {
-            TransferStatus transferStatus = null;
-
-            if (artifactOnBranch(destinationParentArtifact.getBranch(), sourceArtifact)) {
-               transferStatus = TransferStatus.UPDATE;
-            } else {
-               transferStatus = TransferStatus.INTRODUCE;
-            }
-            transferObjects.add(new TransferObject(sourceArtifact, transferStatus));
-
-         }
+         List<TransferObject> transferObjects = createTransferObjects(destinationParentArtifact, sourceArtifacts);
          if (prompt) {
             boolean userConfirmed =
                   confirmUsersRequestAndProcess(transferObjects);
@@ -100,7 +68,34 @@ public class InterArtifactExplorerDropHandler {
       } else {
          MessageDialog.openError(Display.getCurrent().getActiveShell(), ACCESS_ERROR_MSG_TITLE, ACCESS_ERROR_MSG);
       }
+   }
+   
+   private List<TransferObject> createTransferObjects(Artifact destinationParentArtifact, Artifact[] sourceArtifacts) throws OseeDataStoreException{
+      List<TransferObject> transferObjects = new LinkedList<TransferObject>();
+      
+      for (Artifact sourceArtifact : sourceArtifacts) {
+         TransferStatus transferStatus = null;
+         if (artifactOnBranch(destinationParentArtifact.getBranch(), sourceArtifact)) {
+            transferStatus = TransferStatus.UPDATE;
+         } else {
+            transferStatus = TransferStatus.INTRODUCE;
+         }
+         transferObjects.add(new TransferObject(sourceArtifact, transferStatus));
+      }
+      return transferObjects;
+   }
+   
+   private boolean isUpdateFromParent(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
+      boolean result = false;
+      if (destinationBranch.hasParentBranch()) {
+         result = destinationBranch.getParentBranch().equals(sourceBranch);
+      }
+      return result;
+   }
 
+   private boolean isAccessAllowed(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
+      return AccessControlManager.hasPermission(destinationBranch, PermissionEnum.WRITE) && AccessControlManager.hasPermission(
+            sourceBranch, PermissionEnum.READ);
    }
 
    private boolean confirmUsersRequestAndProcess(List<TransferObject> transferObjects) throws OseeCoreException {
@@ -109,38 +104,58 @@ public class InterArtifactExplorerDropHandler {
    }
 
    private void addArtifactsToNewTransaction(Artifact destinationArtifact, List<TransferObject> transferObjects, Branch sourceBranch) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(destinationArtifact.getBranch(), "Introduced " + transferObjects.size() + " artifact(s)");
-      ArrayList<Artifact> reloadArtifacts = new ArrayList<Artifact>();
-
-      ArrayList<Integer> sourceArtIds = new ArrayList<Integer>(transferObjects.size());
-      for (TransferObject transferObject : transferObjects) {
-         sourceArtIds.add(transferObject.getArtifact().getArtId());
-      }
-
-      ArtifactLoader.loadArtifacts(sourceArtIds, sourceBranch, ArtifactLoad.ALL_CURRENT, true);
-
-      for (TransferObject transferObject : transferObjects) {
-         TransferStatus status = transferObject.getStatus();
-         Artifact sourceArtifact = transferObject.getArtifact();
-
-         if (status == TransferStatus.INTRODUCE || status == TransferStatus.UPDATE) {
-            Artifact parentArtifact = getParent(sourceArtifact, destinationArtifact, status);
-
-            Artifact reflectedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
-            if (status == TransferStatus.INTRODUCE) {
-               reflectedArtifact.setRelations(RelationOrderBaseTypes.USER_DEFINED,
-                     CoreRelationTypes.Default_Hierarchical__Parent, Collections.singleton(parentArtifact));
-            } else {
-               reloadArtifacts.add(reflectedArtifact);
-            }
-            reflectedArtifact.persist(transaction);
-         }
-      }
-      transaction.execute();
-
+      loadArtifactsIntoCache(transferObjects, sourceBranch);
+      handleTransfers(transferObjects, destinationArtifact);
+   }
+   
+   private void reloadCachedArtifacts(ArrayList<Artifact> reloadArtifacts) throws OseeCoreException{
       for (Artifact reloadArtifact : reloadArtifacts) {
          reloadArtifact.reloadAttributesAndRelations();
       }
+   }
+   
+   private void handleTransfers(List<TransferObject> transferObjects, Artifact destinationArtifact) throws OseeCoreException{
+      SkynetTransaction transaction = new SkynetTransaction(destinationArtifact.getBranch(), "Introduced " + transferObjects.size() + " artifact(s)");
+      ArrayList<Artifact> reloadArtifacts = new ArrayList<Artifact>();
+     
+      for (TransferObject transferObject : transferObjects) {
+         TransferStatus status = transferObject.getStatus();
+         Artifact updatedArtifact = null;
+         if (status == TransferStatus.INTRODUCE) {
+            updatedArtifact = handleIntroduceCase(transferObject, destinationArtifact);
+         } else if (status == TransferStatus.UPDATE){
+            updatedArtifact = handleUpdateCase(transferObject, destinationArtifact, reloadArtifacts);
+         }
+         updatedArtifact.persist(transaction);
+      }
+      transaction.execute();
+      reloadCachedArtifacts(reloadArtifacts);
+   }
+   
+   private void loadArtifactsIntoCache(List<TransferObject> transferObjects, Branch sourceBranch) throws OseeCoreException{
+      ArrayList<Integer> sourceArtIds = new ArrayList<Integer>(transferObjects.size());
+     
+      for (TransferObject transferObject : transferObjects) {
+         sourceArtIds.add(transferObject.getArtifact().getArtId());
+      }
+      ArtifactLoader.loadArtifacts(sourceArtIds, sourceBranch, ArtifactLoad.ALL_CURRENT, true);
+   }
+   
+   private Artifact handleIntroduceCase(TransferObject transferObject, Artifact destinationArtifact) throws OseeCoreException{
+      Artifact updatedArtifact = null;
+      Artifact sourceArtifact = transferObject.getArtifact();
+      Artifact parentArtifact = getParent(sourceArtifact, destinationArtifact, transferObject.getStatus());
+      updatedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
+      updatedArtifact.setRelations(RelationOrderBaseTypes.USER_DEFINED,
+               CoreRelationTypes.Default_Hierarchical__Parent, Collections.singleton(parentArtifact));
+      return updatedArtifact;
+   }
+   
+   private Artifact handleUpdateCase(TransferObject transferObject, Artifact destinationArtifact,ArrayList<Artifact> reloadArtifacts) throws OseeCoreException{
+      Artifact sourceArtifact = transferObject.getArtifact();
+      destinationArtifact.updateArtifactFromBranch(sourceArtifact.getBranch());
+      reloadArtifacts.add(destinationArtifact);
+      return destinationArtifact;
    }
 
    private Artifact getParent(Artifact sourceArtifact, Artifact destinationArtifact, TransferStatus status) throws OseeCoreException {
@@ -150,37 +165,9 @@ public class InterArtifactExplorerDropHandler {
 
       if (reflectedArtifact != null) {
          newDestinationArtifact = reflectedArtifact.getParent();
-         //    Causes transaction errors so we can only introduce the same artifact once.
-         //         if (status == TransferStatus.INTRODUCE) {
-         //            reflectedArtifact.revert();
-         //            ArtifactPersistenceManager.revertArtifact(null, reflectedArtifact);
-         //         }
-         //
-         //         if (!reflectedArtifact.equals(newDestinationArtifact)) {
-         //            newDestinationArtifact.reloadAttributesAndRelations();
-         //         }
       }
       return newDestinationArtifact;
    }
-
-   //   private void addArtifactsToBaseline(List<TransferObject> transferObjects, Branch destinationBranch, Branch sourceBranch) throws OseeCoreException {
-   //      List<Artifact> artifacts = new LinkedList<Artifact>();
-   //
-   //      for (TransferObject transferObject : transferObjects) {
-   //         TransferStatus status = transferObject.getStatus();
-   //         if (status == TransferStatus.REBASELINE || status == TransferStatus.REBASELINE_SOMEWHERE_ON_BRANCH || status == TransferStatus.ADD_TO_BASELINE) {
-   //            artifacts.add(transferObject.getArtifact());
-   //         }
-   //      }
-   //
-   //      if (artifacts.isEmpty()) {
-   //         return;
-   //      }
-   //
-   //      RebaselineDbTransaction artifactDbTransaction =
-   //            new RebaselineDbTransaction(destinationBranch, sourceBranch, artifacts);
-   //      artifactDbTransaction.execute();
-   //   }
 
    private boolean artifactOnBranch(Branch sourceBranch, Artifact sourceArtifact) throws OseeDataStoreException {
       return ConnectionHandler.runPreparedQueryFetchInt(0, IS_ARTIFACT_ON_BRANCH, sourceArtifact.getArtId(),
