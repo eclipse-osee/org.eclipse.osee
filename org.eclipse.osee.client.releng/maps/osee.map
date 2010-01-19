@@ -55,21 +55,4 @@ plugin@org.eclipse.osee.ats.config.demo=SVN,trunk,https://dev.eclipse.org/svnroo
 plugin@org.eclipse.osee.demo.db.connection=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.demo.db.connection
 plugin@org.eclipse.osee.support.test.util=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.support.test.util
 
-feature@org.eclipse.osee.ote.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.feature
-plugin@org.eclipse.osee.ote.client=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.client
-plugin@org.eclipse.osee.ote.client.msg=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.client.msg
-plugin@org.eclipse.osee.ote.connection.jini=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.connection.jini
-plugin@org.eclipse.osee.ote.connection.service=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.connection.service
-plugin@org.eclipse.osee.ote.core=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.core
-plugin@org.eclipse.osee.ote.define=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.define
-plugin@org.eclipse.osee.ote.message=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.message
-plugin@org.eclipse.osee.ote.messaging.dds=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.messaging.dds
-plugin@org.eclipse.osee.ote.runtimeManager=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.runtimeManager
-plugin@org.eclipse.osee.ote.ui=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.ui
-plugin@org.eclipse.osee.ote.ui.define=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.ui.define
-plugin@org.eclipse.osee.ote.ui.host.cmd=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.ui.host.cmd
-plugin@org.eclipse.osee.ote.ui.markers=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.ui.markers
-plugin@org.eclipse.osee.ote.ui.mux=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.ui.mux
-plugin@org.eclipse.osee.ote.ui.test.manager=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.ui.test.manager
-
 feature@org.eclipse.osee.external.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.external.feature
