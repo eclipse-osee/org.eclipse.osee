@@ -39,7 +39,6 @@ import org.eclipse.osee.ote.service.ITestConnectionListener;
 import org.eclipse.osee.ote.ui.test.manager.ITestManagerFactory;
 import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
-import org.eclipse.osee.ote.ui.test.manager.pages.contributions.ExtensionContributions;
 import org.eclipse.osee.ote.ui.test.manager.pages.contributions.TestManagerStorageKeys;
 import org.eclipse.osee.ote.ui.testclassserver.ClassServerInst;
 import org.eclipse.osgi.service.datalocation.Location;
@@ -98,7 +97,6 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    private final IPropertyStore propertyStore;
 
    private final PageManager pageManager;
-   private final ExtensionContributions extensionContributions;
 
    private ITestEnvironment connectedEnv = null;
    private IServiceConnector connector = null;
@@ -108,7 +106,6 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
 
       this.testManagerFactory = testManagerFactory;
       this.pageManager = new PageManager(testManagerFactory, this);
-      this.extensionContributions = new ExtensionContributions();
       this.model = new TestManagerModel();
       this.propertyStore = new PropertyStore(testManagerFactory.getClass().getSimpleName());
    }
@@ -487,10 +484,6 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
 
    public PageManager getPageManager() {
       return pageManager;
-   }
-
-   public ExtensionContributions getContributions() {
-      return extensionContributions;
    }
 
    public String getActionDescription() {

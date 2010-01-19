@@ -163,10 +163,11 @@
       </ITestRunReport>
    </extension>
    <extension
-         point="org.eclipse.osee.ote.ui.test.manager.AdvancedPageContribution">
-      <AdvancedPageContribution
-            classname="org.eclipse.osee.ote.ui.define.views.TestRunArtifactOptions">
-      </AdvancedPageContribution>
+         point="org.eclipse.osee.framework.ui.plugin.PropertyStoreControl">
+      <PropertyStoreControl
+            classname="org.eclipse.osee.ote.ui.define.views.TestRunArtifactOptions"
+            viewId="org.eclipse.osee.ote.ui.test.manager">
+      </PropertyStoreControl>
    </extension>
    <extension
          point="org.eclipse.help.contexts">

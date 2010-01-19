@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.plugin;
+package org.eclipse.osee.framework.ui.plugin.widgets;
 
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.swt.widgets.Composite;

@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="XNavigateItem" name="XNavigateItem" schema="schema/XNavigateItem.exsd"/>
+   <extension-point id="PropertyStoreControl" name="PropertyStoreControl" schema="schema/PropertyStoreControl.exsd"/>
    <extension
          point="org.eclipse.ui.startup">
       <startup

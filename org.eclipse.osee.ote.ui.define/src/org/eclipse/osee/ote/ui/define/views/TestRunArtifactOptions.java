@@ -12,7 +12,7 @@ package org.eclipse.osee.ote.ui.define.views;
 
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
-import org.eclipse.osee.framework.ui.plugin.IPropertyStoreBasedControl;
+import org.eclipse.osee.framework.ui.plugin.widgets.IPropertyStoreBasedControl;
 import org.eclipse.osee.ote.define.TestRunStorageKey;
 import org.eclipse.osee.ote.ui.define.panels.GrayableBranchSelectionComposite;
 import org.eclipse.swt.SWT;

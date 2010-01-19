@@ -23,6 +23,7 @@ Export-Package: org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.ui.plugin.io,
  org.eclipse.osee.framework.ui.plugin.util,
  org.eclipse.osee.framework.ui.plugin.views.property,
+ org.eclipse.osee.framework.ui.plugin.widgets,
  org.eclipse.osee.framework.ui.plugin.workspace,
  org.eclipse.osee.framework.ui.plugin.xnavigate
 Import-Package: org.eclipse.jdt.core,

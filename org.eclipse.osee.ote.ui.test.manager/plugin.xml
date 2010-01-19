@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension-point id="AdvancedPageContribution" name="AdvancedPageContribution" schema="schema/AdvancedPageContribution.exsd"/>
 
      <extension point="org.eclipse.ui.actionSets">
       <actionSet
@@ -146,11 +145,13 @@
       <contexts file="contexts/tmOverviewPage.xml"/>
    </extension>
    <extension
-         point="org.eclipse.osee.ote.ui.test.manager.AdvancedPageContribution">
-      <AdvancedPageContribution
-            classname="org.eclipse.osee.ote.ui.test.manager.pages.contributions.ScriptExecutionContribution">
-      </AdvancedPageContribution>
+         point="org.eclipse.osee.framework.ui.plugin.PropertyStoreControl">
+      <PropertyStoreControl
+            classname="org.eclipse.osee.ote.ui.test.manager.pages.contributions.ScriptExecutionContribution"
+            viewId="org.eclipse.osee.ote.ui.test.manager">
+      </PropertyStoreControl>
    </extension>
+   
    <extension
          id="TestBatchProjectNature"
          name="Test Batch Nature"

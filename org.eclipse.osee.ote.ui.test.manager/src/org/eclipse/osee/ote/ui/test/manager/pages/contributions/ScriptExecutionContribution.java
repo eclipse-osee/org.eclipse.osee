@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.ui.test.manager.pages.contributions;
 
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
-import org.eclipse.osee.framework.ui.plugin.IPropertyStoreBasedControl;
+import org.eclipse.osee.framework.ui.plugin.widgets.IPropertyStoreBasedControl;
 import org.eclipse.osee.ote.ui.test.manager.panels.FileOrDirectorySelectionPanel;
 import org.eclipse.osee.ote.ui.test.manager.panels.LoggingPanel;
 import org.eclipse.osee.ote.ui.test.manager.panels.ScriptExecutionOptionsPanel;
