@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  */
 public class LoadChangeDataOperation extends AbstractOperation {
    private static final String SELECT_SOURCE_BRANCH_CHANGES =
-         "select txs.transaction_id, gamma_id, mod_type from osee_tx_details txd, osee_txs txs where txd.branch_id = ? and txd.tx_type = ? and txd.transaction_id = txs.transaction_id and txs.tx_current <> ?";
+         "select txs.transaction_id, gamma_id, mod_type from osee_txs txs, osee_tx_details txd where txs.branch_id = ? and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.tx_type = ?";
 
    private static final String SELECT_SOURCE_TRANSACTION_CHANGES =
          "select gamma_id, mod_type from osee_txs txs where txs.branch_id = ? and txs.transaction_id = ?";
@@ -118,7 +118,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
          switch (loadChangesEnum) {
             case FROM_ALL_BRANCH_TRANSACTIONS:
                chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
-                     TransactionDetailsType.NonBaselined.getId(), TxChange.NOT_CURRENT.getValue());
+                     TxChange.NOT_CURRENT.getValue(), TransactionDetailsType.NonBaselined.getId());
                currentTransactionNumber = sourceTransactionId.getId();
                break;
             case FROM_SINGLE_TRANSACTION:
