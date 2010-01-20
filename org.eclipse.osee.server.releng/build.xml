@@ -45,13 +45,7 @@
 
 		<!-- invoke a new Eclipse process and launch the build from the common.releng folder -->
 		<property name="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng" />
-		<!--<propertyset id="proxy.properties">
-			<propertyref prefix="java.net.useSystemProxies" />
-			<propertyref prefix="http." />
-			<propertyref prefix="https." />
-			<propertyref prefix="ftp." />
-			<propertyref prefix="socksProxy" />
-		</propertyset>-->
+
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}"/>
 		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />
 		<antcall target="cleanUp" inheritall="true" />
