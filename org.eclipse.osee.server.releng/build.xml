@@ -40,7 +40,7 @@
 		<echo message="Workspace: ${WORKSPACE}" />
 		<echo message="Writable Build Root: ${writableBuildRoot}" />
 		<echo message="Java Home: ${JAVA_HOME}" />
-		<echo messsage="Java 6.0 Home: ${JAVA60_HOME}" />
+		<echo message="Java 6.0 Home: ${JAVA60_HOME}" />
 
 		<fail message="Specify the build workspace path 'WORKSPACE'">
 			<condition>
