@@ -43,7 +43,7 @@
 				<isset property="${WORKSPACE}" />
 			</not>
 		</condition>
-		<fail unless="${isWorkspaceSet}" message="Specify the path to mylyn wikitext jars by setting 'mylyn.plugins.path'" />
+		<fail unless="${isWorkspaceSet}" message="Specify the build workspace path '${WORKSPACE}'" />
 
 		
 		<echo message="Workspace: ${WORKSPACE}" />
