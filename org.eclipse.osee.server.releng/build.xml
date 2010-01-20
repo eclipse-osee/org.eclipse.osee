@@ -41,9 +41,11 @@
 		<echo message="Workspace: ${WORKSPACE}" />
 		<echo message="Writable Build Root: ${writableBuildRoot}" />
 
-		<fail message="Specify the build workspace path '$${WORKSPACE}'">
+		<fail message="Specify the build workspace path 'WORKSPACE'">
 			<condition>
-				<isset property="${WORKSPACE}" />
+				<not>
+					<isset property="WORKSPACE" />
+				</not>
 			</condition>
 		</fail>
 
