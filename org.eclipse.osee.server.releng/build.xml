@@ -1,5 +1,4 @@
 <project default="run" name="org.eclipse.osee.server.releng/build.xml - Run a OSEE build using the Athena CBI">
-
 	<property environment="env" />
 
 	<!-- load properties and set timestamp for the build
@@ -40,6 +39,8 @@
 	<target name="run" depends="init">
 		<echo message="Workspace: ${WORKSPACE}" />
 		<echo message="Writable Build Root: ${writableBuildRoot}" />
+		<echo message="Java Home: ${JAVA_HOME}" />
+		<echo messsage="Java 6.0 Home: ${JAVA60_HOME}" />
 
 		<fail message="Specify the build workspace path 'WORKSPACE'">
 			<condition>
