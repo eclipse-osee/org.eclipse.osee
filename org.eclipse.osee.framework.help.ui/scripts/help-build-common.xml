@@ -3,12 +3,13 @@
 	<property name="extract.style.sheet" value="${ant.file.imported}${file.separator}extract-markup.xsl" />
 	<property name="mylyn.plugins.path" value="${eclipse.home}${file.separator}plugins" />
 
-	<condition property="isPathToMylynPluginsSet" value="true" else="false">
-		<not>
-			<isset property="${mylyn.plugins.path}" />
-		</not>
-	</condition>
-	<fail unless="${isPathToMylynPluginsSet}" message="Specify the path to mylyn wikitext jars by setting 'mylyn.plugins.path'" />
+	<fail message="Specify the path to mylyn wikitext jars by setting 'mylyn.plugins.path'">
+		<condition>
+			<not>
+				<isset property="mylyn.plugins.path" />
+			</not>
+		</condition>
+	</fail>
 
 	<taskdef resource="org/eclipse/osee/framework/help/ui/internal/anttask/tasks.properties">
 		<classpath>
