@@ -8,7 +8,7 @@
 			<isset property="${mylyn.plugins.path}" />
 		</not>
 	</condition>
-	<fail unless="isPathToMylynPluginsSet" message="Specify the path to mylyn wikitext jars by setting 'mylyn.plugins.path'" />
+	<fail unless="${isPathToMylynPluginsSet}" message="Specify the path to mylyn wikitext jars by setting 'mylyn.plugins.path'" />
 
 	<taskdef resource="org/eclipse/osee/framework/help/ui/internal/anttask/tasks.properties">
 		<classpath>
