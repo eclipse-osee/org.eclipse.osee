@@ -22,6 +22,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class TestMessageOperations {
    private UnitTestSupport support;
@@ -44,6 +45,7 @@ public class TestMessageOperations {
       support.cleanup();
    }
 
+   @Test
    public void testTransmissionRate() throws InterruptedException {
       Benchmark.setBenchmarkingEnabled(true);
       TestMessage msg = new TestMessage();
@@ -69,6 +71,7 @@ public class TestMessageOperations {
             (int) avg));
    }
 
+   @Test
    public void testCheckForTransmission() throws InterruptedException {
       TestMessage msg = new TestMessage();
       support.activateMsg(msg);
