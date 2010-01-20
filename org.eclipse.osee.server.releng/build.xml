@@ -1,7 +1,7 @@
 <project default="run" name="org.eclipse.osee.server.releng/build.xml - Run a OSEE build using the Athena CBI">
-	<property name="WORKSPACE" location="../../../../" />
+	
 	<property environment="env" />
-
+	
 	<!-- load properties and set timestamp for the build
 		<property name="properties.file.path" default="build.properties" /> -->
 	<property file="build.properties" />
@@ -38,6 +38,14 @@
 	</target>
 
 	<target name="run" depends="init">
+		<condition property="isWorkspaceSet" value="true" else="false">
+			<not>
+				<isset property="${WORKSPACE}" />
+			</not>
+		</condition>
+		<fail unless="${isWorkspaceSet}" message="Specify the path to mylyn wikitext jars by setting 'mylyn.plugins.path'" />
+
+		
 		<echo message="Workspace: ${WORKSPACE}" />
 		<echo message="Writable Build Root: ${writableBuildRoot}" />
 
@@ -48,6 +56,7 @@
 
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}"/>
 		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />
+		
 		<antcall target="cleanUp" inheritall="true" />
 	</target>
 
