@@ -38,16 +38,15 @@
 	</target>
 
 	<target name="run" depends="init">
+		<echo message="Workspace: ${WORKSPACE}" />
+		<echo message="Writable Build Root: ${writableBuildRoot}" />
+
 		<condition property="isWorkspaceSet" value="true" else="false">
 			<not>
 				<isset property="${WORKSPACE}" />
 			</not>
 		</condition>
 		<fail unless="${isWorkspaceSet}" message="Specify the build workspace path '${WORKSPACE}'" />
-
-		
-		<echo message="Workspace: ${WORKSPACE}" />
-		<echo message="Writable Build Root: ${writableBuildRoot}" />
 
 		<mkdir dir="${writableBuildRoot}" />
 
