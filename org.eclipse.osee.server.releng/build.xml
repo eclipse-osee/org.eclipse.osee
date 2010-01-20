@@ -1,7 +1,7 @@
 <project default="run" name="org.eclipse.osee.server.releng/build.xml - Run a OSEE build using the Athena CBI">
-	
+
 	<property environment="env" />
-	
+
 	<!-- load properties and set timestamp for the build
 		<property name="properties.file.path" default="build.properties" /> -->
 	<property file="build.properties" />
@@ -41,21 +41,22 @@
 		<echo message="Workspace: ${WORKSPACE}" />
 		<echo message="Writable Build Root: ${writableBuildRoot}" />
 
-		<condition property="isWorkspaceSet" value="true" else="false">
-			<not>
-				<isset property="${WORKSPACE}" />
-			</not>
-		</condition>
-		<fail unless="${isWorkspaceSet}" message="Specify the build workspace path '${WORKSPACE}'" />
+		<fail message="Specify the build workspace path '${WORKSPACE}'">
+			<condition>
+				<not>
+					<isset property="${WORKSPACE}" />
+				</not>
+			</condition>
+		</fail>
 
 		<mkdir dir="${writableBuildRoot}" />
 
 		<!-- invoke a new Eclipse process and launch the build from the common.releng folder -->
 		<property name="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng" />
 
-		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}"/>
+		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
 		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />
-		
+
 		<antcall target="cleanUp" inheritall="true" />
 	</target>
 
