@@ -34,7 +34,6 @@ public class OseeDataTypeFactory {
    private OseeDataTypeFactory() {
       if (fileHandlers == null) {
          fileHandlers = new ArrayList<IOseeDataTypeHandler>();
-         fileHandlers.add(new ExcelXmlODMFileHandler());
       }
    }
 
