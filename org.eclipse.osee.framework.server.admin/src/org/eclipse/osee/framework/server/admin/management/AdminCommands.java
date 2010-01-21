@@ -18,16 +18,13 @@ import org.eclipse.osgi.framework.console.CommandInterpreter;
  */
 public class AdminCommands {
 
-   private final ServerShutdownWorker shutdownWorker;
+   private ServerShutdownWorker shutdownWorker;
    private final RemoveServerVersionWorker removeServerVersion;
    private final AddServerVersionWorker addServerVersion;
    private final ReloadCachesWorker reloadCacheWorker;
    private final ClearCachesWorker clearCacheWorker;
 
    public AdminCommands() {
-      this.shutdownWorker = new ServerShutdownWorker();
-      this.shutdownWorker.setExecutionAllowed(true);
-
       this.addServerVersion = new AddServerVersionWorker();
       this.addServerVersion.setExecutionAllowed(true);
 
@@ -98,27 +95,12 @@ public class AdminCommands {
       }
    }
 
-   @Deprecated
-   //this public method is never called
-   public void startServerShutdown(CommandInterpreter ci) {
-      if (!this.shutdownWorker.isRunning()) {
-         this.shutdownWorker.setCommandInterpreter(ci);
-         this.shutdownWorker.setExecutionAllowed(true);
+   public void oseeShutdown(CommandInterpreter ci) {
+      if (shutdownWorker == null) {
+         this.shutdownWorker = new ServerShutdownWorker(ci);
          Operations.executeAsJob(shutdownWorker, false);
       } else {
-         if (this.shutdownWorker.isRunning()) {
-            ci.println("Waiting for shutdown");
-         }
-      }
-   }
-
-   @Deprecated
-   //this public method is never called
-   public void stopServerShutdown(CommandInterpreter ci) {
-      if (this.shutdownWorker.isRunning()) {
-         this.shutdownWorker.setExecutionAllowed(false);
-      } else {
-         ci.println("Server shutdown is not running.");
+         ci.println("Waiting for shutdown");
       }
    }
 
@@ -128,5 +110,4 @@ public class AdminCommands {
       worker.setExecutionAllowed(true);
       Operations.executeAsJob(worker, false);
    }
-
 }

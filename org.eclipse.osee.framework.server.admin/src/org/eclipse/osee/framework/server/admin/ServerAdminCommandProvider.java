@@ -77,6 +77,10 @@ public class ServerAdminCommandProvider implements CommandProvider {
       Operations.executeAsJob(new FinishPartiallyArchivedBranchesCommand(ci), false);
    }
 
+   public void _osee_shutdown(CommandInterpreter ci) {
+      adminCommands.oseeShutdown(ci);
+   }
+
    @Override
    public String getHelp() {
       StringBuilder sb = new StringBuilder();
@@ -88,6 +92,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        remove_osee_version [version string]- removes the version string from the list of supported osee versions\n");
       sb.append("        change_attribute_uri_to_guid - renames attribute data stored on disk from HRID to Guid and updates database\n");
       sb.append("        finish_partial_archives - move txs addressing to osee_txs_archived for archived branches\n");
+      sb.append("        osee_shutdown - immediately release listning port then wait for all existing operations to finsih\n");
       sb.append(String.format("        reload_cache %s? - reloads server caches\n", Arrays.deepToString(
             OseeCacheEnum.values()).replaceAll(",", " | ")));
       sb.append(String.format("        clear_cache %s? - decaches all objects from the specified caches\n",

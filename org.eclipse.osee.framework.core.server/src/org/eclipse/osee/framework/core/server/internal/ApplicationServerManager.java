@@ -23,8 +23,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.operation.OperationJob;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
@@ -60,7 +62,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
                timer.cancel();
             }
          }
-      }, 3 * 1000);
+      }, 5 * 1000);
    }
 
    private InternalOseeServerInfo createOseeServerInfo() {
@@ -117,20 +119,12 @@ public class ApplicationServerManager implements IApplicationServerManager {
       return factory.getThreads();
    }
 
+   /**
+    * This method expects that one OSEE server job is running, namely the job calling
+    * this method, so it will return true if 1 or less jobs are running.
+    */
    public boolean isSystemIdle() {
-      boolean result = true;
-      for (String contexts : oseeHttpServlets.keySet()) {
-         InternalOseeHttpServlet servlets = oseeHttpServlets.get(contexts);
-         result &= !servlets.getState().equals(ProcessingStateEnum.BUSY);
-      }
-
-      for (String key : threadFactories.keySet()) {
-         for (OseeServerThread thread : getThreadsFromFactory(key)) {
-            State state = thread.getState();
-            result &= !state.equals(State.TERMINATED);
-         }
-      }
-      return result;
+      return Job.getJobManager().find(OperationJob.class).length <= 1;
    }
 
    private void updateServletRequestsAllowed(final boolean value) {
@@ -153,7 +147,6 @@ public class ApplicationServerManager implements IApplicationServerManager {
    public void shutdown() throws OseeCoreException {
       timer.cancel();
       setServletRequestsAllowed(false);
-      ApplicationServerDataStore.deregisterWithDb(getApplicationServerInfo());
    }
 
    @Override
@@ -180,8 +173,8 @@ public class ApplicationServerManager implements IApplicationServerManager {
    public int getNumberOfActiveThreads() {
       int totalProcesses = 0;
       for (String contexts : oseeHttpServlets.keySet()) {
-         InternalOseeHttpServlet servlets = oseeHttpServlets.get(contexts);
-         if (servlets.getState().equals(ProcessingStateEnum.BUSY)) {
+         InternalOseeHttpServlet servlet = oseeHttpServlets.get(contexts);
+         if (servlet.getState().isBusy()) {
             totalProcesses++;
          }
       }
@@ -189,7 +182,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
       for (String key : threadFactories.keySet()) {
          for (OseeServerThread thread : getThreadsFromFactory(key)) {
             State state = thread.getState();
-            if (!state.equals(State.TERMINATED)) {
+            if (State.TERMINATED != state) {
                totalProcesses++;
             }
          }

@@ -14,5 +14,10 @@ package org.eclipse.osee.framework.core.server.internal;
  * @author Roberto E. Escobar
  */
 enum ProcessingStateEnum {
-   BUSY, IDLE;
+   BUSY,
+   IDLE;
+
+   public boolean isBusy() {
+      return this == BUSY;
+   }
 }

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.jobs.Job;
 /**
  * @author Ryan D. Brooks
  */
-class OperationJob extends Job {
+public class OperationJob extends Job {
    private final IOperation operation;
 
    /**
@@ -33,4 +33,8 @@ class OperationJob extends Job {
       return operation.run(monitor).getStatus();
    }
 
+   @Override
+   public boolean belongsTo(Object family) {
+      return OperationJob.class.equals(family);
+   }
 }

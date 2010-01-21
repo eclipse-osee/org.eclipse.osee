@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.server.admin.management;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
@@ -40,6 +42,11 @@ class ServerStats extends BaseServerCommand {
       buffer.append("\n");
       buffer.append(String.format("Server State: [%s]\n", manager.isSystemIdle() ? "IDLE" : "BUSY"));
       buffer.append(String.format("Active Threads: [%s]\n", manager.getNumberOfActiveThreads()));
+
+      IJobManager jobManager = Job.getJobManager();
+      buffer.append(String.format("Job Manager: [%s]\n", jobManager.isIdle() ? "IDLE" : "BUSY"));
+      buffer.append(String.format("Current Job: [%s]\n", jobManager.currentJob().getName()));
+
       buffer.append("Current Tasks: ");
       List<String> entries = manager.getCurrentProcesses();
       if (entries.isEmpty()) {
