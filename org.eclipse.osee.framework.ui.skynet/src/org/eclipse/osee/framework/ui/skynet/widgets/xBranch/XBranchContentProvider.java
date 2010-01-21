@@ -123,11 +123,15 @@ public class XBranchContentProvider implements ITreeContentProvider {
                   BranchType.WORKING));
          }
          if (!showChildBranchesAtMainLevel) {
-            branchTypes.add(BranchType.BASELINE);
-            for (Branch branch : BranchManager.getBranches(branchState, BranchControlled.ALL,
-                  branchTypes.toArray(new BranchType[branchTypes.size()]))) {
-               if (branch.hasParentBranch() && branch.getParentBranch().getBranchType().isSystemRootBranch()) {
-                  branchesToReturn.add(branch);
+            if (AccessControlManager.isOseeAdmin()) {
+               branchesToReturn.add(BranchManager.getSystemRootBranch());
+            } else {
+               branchTypes.add(BranchType.BASELINE);
+               for (Branch branch : BranchManager.getBranches(branchState, BranchControlled.ALL,
+                     branchTypes.toArray(new BranchType[branchTypes.size()]))) {
+                  if (branch.hasParentBranch() && branch.getParentBranch().getBranchType().isSystemRootBranch()) {
+                     branchesToReturn.add(branch);
+                  }
                }
             }
          } else {
@@ -222,38 +226,23 @@ public class XBranchContentProvider implements ITreeContentProvider {
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 
-   /**
-    * @return the changeXViewer
-    */
    public BranchXViewer getChangeXViewer() {
       return changeXViewer;
    }
 
-   /**
-    * @param flat
-    */
    public void setPresentation(boolean flat) {
       showChildBranchesAtMainLevel = flat;
       showChildBranchesUnderParents = !flat;
    }
 
-   /**
-    * @param showMergeBranches
-    */
    public void setShowMergeBranches(boolean showMergeBranches) {
       this.showMergeBranches = showMergeBranches;
    }
 
-   /**
-    * @param showArchivedBranches
-    */
    public void setShowArchivedBranches(boolean showArchivedBranches) {
       this.showArchivedBranches = showArchivedBranches;
    }
 
-   /**
-    * @param showTransactions2
-    */
    public void setShowTransactions(boolean showTransactions) {
       this.showTransactions = showTransactions;
    }
