@@ -67,7 +67,7 @@ import org.eclipse.swt.widgets.Display;
 public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    public DoesNotWorkItemAts(XNavigateItem parent) {
-      super(parent, "Does Not Work - ATS - Curren User Time Test", PluginUiImage.ADMIN);
+      super(parent, "Does Not Work - ATS - fixAtsNotesAndDefectItemsUserIds", PluginUiImage.ADMIN);
    }
 
    @Override
@@ -75,7 +75,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) {
          return;
       }
-      myWorldTimeTest();
+      convertAtsStateNotesAndDefectItemsUserIds();
       //      fixNotesStateNames();
       //      renameTransactionComments();
       //      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Admin Cleanup");
@@ -171,6 +171,33 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
             System.out.println(String.format("Post State [%s]", item.getState()));
          }
          //         ConnectionHandler.runPreparedUpdate(UPDATE_QUERY, value, gammaId);
+      }
+   }
+
+   private void convertAtsStateNotesAndDefectItemsUserIds() throws OseeCoreException {
+      String SELECT_QUERY = "select * from osee_attribute where value like ? and attr_type_id in (84,92,72,73)";
+      String UPDATE_QUERY = "update osee_attribute set value = ? where gamma_id = ?";
+      Map<String, String> oldIdToNewId = new HashMap<String, String>();
+      oldIdToNewId.put("<va053c>", "<1588621>");
+      oldIdToNewId.put("<fw314c>", "<1631765>");
+
+      for (Entry<String, String> entry : oldIdToNewId.entrySet()) {
+
+         IOseeStatement chStmt = ConnectionHandler.getStatement();
+         try {
+            chStmt.runPreparedQuery(SELECT_QUERY, "%" + entry.getKey() + "%");
+            while (chStmt.next()) {
+               int gammaId = chStmt.getInt("gamma_id");
+               String value = chStmt.getString("value");
+               System.out.println("Old " + gammaId + " Value = " + value);
+               value = value.replaceAll(entry.getKey(), entry.getValue());
+               System.out.println("New " + gammaId + " Value = " + value);
+               //               ConnectionHandler.runPreparedUpdate(UPDATE_QUERY, value, gammaId);
+            }
+         } finally {
+            chStmt.close();
+         }
+
       }
    }
 
