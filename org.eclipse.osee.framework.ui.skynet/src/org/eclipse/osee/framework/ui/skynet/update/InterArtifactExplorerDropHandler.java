@@ -17,14 +17,15 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
@@ -37,8 +38,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Jeff C. Phillips
  */
 public class InterArtifactExplorerDropHandler {
-   private static final String IS_ARTIFACT_ON_BRANCH =
-         "select count(1) from osee_artifact_version av1, osee_txs txs1, osee_tx_details txd1 where av1.art_id = ? and av1.gamma_id = txs1.gamma_id and txs1.transaction_id = txd1.transaction_id and txd1.branch_id = ?";
+
    private static final String ACCESS_ERROR_MSG_TITLE = "Drag and Drop Error";
    private static final String UPDATE_FROM_PARENT_ERROR_MSG =
          "Attempting to update child branch from parent branch. Use 'Update Branch' instead.";
@@ -70,7 +70,7 @@ public class InterArtifactExplorerDropHandler {
       }
    }
    
-   private List<TransferObject> createTransferObjects(Artifact destinationParentArtifact, Artifact[] sourceArtifacts) throws OseeDataStoreException{
+   private List<TransferObject> createTransferObjects(Artifact destinationParentArtifact, Artifact[] sourceArtifacts) throws OseeCoreException{
       List<TransferObject> transferObjects = new LinkedList<TransferObject>();
       
       for (Artifact sourceArtifact : sourceArtifacts) {
@@ -144,7 +144,7 @@ public class InterArtifactExplorerDropHandler {
    private Artifact handleIntroduceCase(TransferObject transferObject, Artifact destinationArtifact) throws OseeCoreException{
       Artifact updatedArtifact = null;
       Artifact sourceArtifact = transferObject.getArtifact();
-      Artifact parentArtifact = getParent(sourceArtifact, destinationArtifact, transferObject.getStatus());
+      Artifact parentArtifact = getParent(sourceArtifact, destinationArtifact);
       updatedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
       updatedArtifact.setRelations(RelationOrderBaseTypes.USER_DEFINED,
                CoreRelationTypes.Default_Hierarchical__Parent, Collections.singleton(parentArtifact));
@@ -158,7 +158,7 @@ public class InterArtifactExplorerDropHandler {
       return destinationArtifact;
    }
 
-   private Artifact getParent(Artifact sourceArtifact, Artifact destinationArtifact, TransferStatus status) throws OseeCoreException {
+   private Artifact getParent(Artifact sourceArtifact, Artifact destinationArtifact) throws OseeCoreException {
       Artifact reflectedArtifact =
             ArtifactQuery.checkArtifactFromId(sourceArtifact.getArtId(), destinationArtifact.getBranch(), true);
       Artifact newDestinationArtifact = destinationArtifact;
@@ -169,8 +169,8 @@ public class InterArtifactExplorerDropHandler {
       return newDestinationArtifact;
    }
 
-   private boolean artifactOnBranch(Branch sourceBranch, Artifact sourceArtifact) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedQueryFetchInt(0, IS_ARTIFACT_ON_BRANCH, sourceArtifact.getArtId(),
+   private boolean artifactOnBranch(Branch sourceBranch, Artifact sourceArtifact) throws OseeCoreException {
+      return ConnectionHandler.runPreparedQueryFetchInt(0, ClientSessionManager.getSql(OseeSql.IS_ARTIFACT_ON_BRANCH), sourceArtifact.getArtId(),
             sourceBranch.getId()) > 0;
    }
 }

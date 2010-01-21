@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.database.core;
 
 import java.sql.DatabaseMetaData;
 import java.util.Properties;
+
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -61,7 +62,10 @@ public enum OseeSql {
    CHANGE_TX_MODIFYING("SELECT arj.art_id, arj.branch_id, txd.transaction_id from osee_join_artifact arj, osee_artifact_version arv, osee_txs txs, osee_tx_details txd where arj.query_id = ? AND arj.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = arj.branch_id AND txd.transaction_id <= arj.transaction_id AND txd.tx_type = " + TransactionDetailsType.NonBaselined.getId(), Strings.HINTS__ORDERED__FIRST_ROWS),
    CHANGE_BRANCH_MODIFYING("SELECT count(txd.transaction_id) as tx_count, arj.branch_id, arj.art_id FROM osee_join_artifact arj, osee_artifact_version arv, osee_txs txs, osee_tx_details txd where arj.query_id = ? AND arj.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = arj.branch_id and tx_type = 0 group by arj.art_id, arj.branch_id", Strings.HINTS__ORDERED__FIRST_ROWS),
 
-   QUERY_BUILDER("%s", Strings.HINTS__ORDERED__FIRST_ROWS);
+   IS_ARTIFACT_ON_BRANCH(
+      "SELECT%s count(1) from osee_artifact_version av1, osee_txs txs1 where av1.art_id = ? and av1.gamma_id = txs1.gamma_id and txs1.branch_id = ?", Strings.HINTS__ORDERED__FIRST_ROWS),
+   
+      QUERY_BUILDER("%s", Strings.HINTS__ORDERED__FIRST_ROWS);
 
    private final String sql;
    private final String hints;
