@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -34,6 +35,14 @@ public interface IApplicationServerManager {
    public boolean executeLookupRegistration();
 
    public String getId();
+
+   public String getServerAddress();
+
+   public int getPort();
+
+   public Date getDateStarted();
+
+   public boolean isAcceptingRequests();
 
    public String[] getSupportedVersions();
 

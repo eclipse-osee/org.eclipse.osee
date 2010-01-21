@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.management;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -17,6 +19,7 @@ import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
+import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
@@ -37,9 +40,16 @@ class ServerStats extends BaseServerCommand {
       buffer.append("\n----------------------------------------------\n");
       buffer.append("                  Server Stats                \n");
       buffer.append("----------------------------------------------\n");
-      buffer.append("Osee Application Server: ");
-      buffer.append(Arrays.deepToString(CoreServerActivator.getApplicationServerManager().getSupportedVersions()));
+
+      buffer.append(String.format("Server:[%s:%s]\n", manager.getServerAddress(), manager.getPort()));
+      buffer.append(String.format("Id: [%s]\n", manager.getId()));
+      buffer.append(String.format("Running Since: [%s]\n", SimpleDateFormat.getDateTimeInstance(DateFormat.LONG,
+            DateFormat.LONG).format(manager.getDateStarted())));
+      buffer.append(String.format("Binary Data Path: [%s]\n", OseeServerProperties.getOseeApplicationServerData()));
+      buffer.append(String.format("Supported Versions: %s\n", Arrays.deepToString(manager.getSupportedVersions())));
+      buffer.append(String.format("Accepting Requests: [%s]\n", manager.isAcceptingRequests()));
       buffer.append("\n");
+
       buffer.append(String.format("Server State: [%s]\n", manager.isSystemIdle() ? "IDLE" : "BUSY"));
       buffer.append(String.format("Active Threads: [%s]\n", manager.getNumberOfActiveThreads()));
 
@@ -61,6 +71,7 @@ class ServerStats extends BaseServerCommand {
             }
          }
       }
+      buffer.append("\n");
       println(buffer.toString());
    }
 }

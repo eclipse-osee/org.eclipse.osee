@@ -16,6 +16,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -193,6 +194,26 @@ public class ApplicationServerManager implements IApplicationServerManager {
    @Override
    public String getId() {
       return getApplicationServerInfo().getServerId();
+   }
+
+   @Override
+   public String getServerAddress() {
+      return getApplicationServerInfo().getServerAddress();
+   }
+
+   @Override
+   public int getPort() {
+      return getApplicationServerInfo().getPort();
+   }
+
+   @Override
+   public Date getDateStarted() {
+      return getApplicationServerInfo().getDateStarted();
+   }
+
+   @Override
+   public boolean isAcceptingRequests() {
+      return getApplicationServerInfo().isAcceptingRequests();
    }
 
    @Override
