@@ -72,6 +72,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    private DirectoryOrFileSelector directoryFileSelector;
    private File defaultSourceFile;
    private Button updateExistingArtifacts;
+   private Button updateByGuid;
    private Button deleteUnmatchedArtifacts;
 
    private final ArtifactSelectPanel artifactSelectPanel;
@@ -209,11 +210,22 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       group.setLayout(new GridLayout(1, false));
       group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      updateExistingArtifacts = new Button(group, SWT.CHECK);
+      Composite updateComp = new Composite(group, SWT.NULL);
+      updateComp.setLayout(ALayout.getZeroMarginLayout(2, false));
+      updateComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+      updateExistingArtifacts = new Button(updateComp, SWT.CHECK);
       updateExistingArtifacts.setText("Update existing child artifacts");
       updateExistingArtifacts.setToolTipText("All imported artifacts will be checked against the root\n" + "import artifact and the content will be placed on the artifact\n" + "that has the same identifying attributes and level from the root");
       updateExistingArtifacts.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
       updateExistingArtifacts.setSelection(false);
+
+      updateByGuid = new Button(updateComp, SWT.CHECK);
+      updateByGuid.setText("by GUID");
+      updateByGuid.setToolTipText("Match imported artifacts based on user-supplied GUIDs");
+      updateByGuid.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+      updateByGuid.setSelection(false);
+      updateByGuid.setEnabled(false);
 
       deleteUnmatchedArtifacts = new Button(group, SWT.CHECK);
       deleteUnmatchedArtifacts.setText("Delete unmatched artifacts");
@@ -234,11 +246,15 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            boolean wasSelected = updateExistingArtifacts.getSelection();
-            widgetEnabledHelper(composite, wasSelected);
-            deleteUnmatchedArtifacts.setEnabled(wasSelected);
+            boolean isNowSelected = updateExistingArtifacts.getSelection();
+            widgetEnabledHelper(composite, isNowSelected);
+            deleteUnmatchedArtifacts.setEnabled(isNowSelected);
+            deleteUnmatchedArtifacts.setSelection(false);
+            updateByGuid.setEnabled(isNowSelected);
+            updateByGuid.setSelection(false);
          }
       });
+      updateByGuid.addListener(SWT.Selection, this);
       widgetEnabledHelper(composite, false);
    }
 
@@ -251,12 +267,26 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       }
    }
 
-   public boolean isUpdateExistingSelected() {
+   private boolean isUpdateExistingSelected() {
       return updateExistingArtifacts.getSelection();
+   }
+
+   private boolean isUpdateByGuidSelected() {
+      return updateByGuid.getSelection();
    }
 
    public boolean isDeleteUnmatchedSelected() {
       return deleteUnmatchedArtifacts.getSelection();
+   }
+
+   public MatchingStrategy getMatchingStrategy() {
+      if (isUpdateExistingSelected() && isUpdateByGuidSelected()) {
+         return MatchingStrategy.GUID;
+      } else if (isUpdateExistingSelected()) {
+         return MatchingStrategy.ATTRIBUTE;
+      } else {
+         return MatchingStrategy.NONE;
+      }
    }
 
    public boolean isDirectory() {
@@ -306,7 +336,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       return getArtifactParser() != null && //
       selectionLatch.areSelectionsValid() && !selectionLatch.hasChanged() && //
       getArtifactType() != null && //
-      (!updateExistingArtifacts.getSelection() || getNonChangingAttributes() != null);
+      (!updateExistingArtifacts.getSelection() || updateByGuid.getSelection() || getNonChangingAttributes() != null);
    }
 
    @Override

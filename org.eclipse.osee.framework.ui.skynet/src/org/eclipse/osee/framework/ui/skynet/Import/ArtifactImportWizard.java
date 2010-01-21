@@ -31,13 +31,10 @@ import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.operations.CompleteArtifactImportOperation;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughToRealArtifactOperation;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
-import org.eclipse.osee.framework.skynet.core.importing.resolvers.NewArtifactImportResolver;
-import org.eclipse.osee.framework.skynet.core.importing.resolvers.RootAndAttributeBasedArtifactResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.ArtifactValidationCheckOperation;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -135,28 +132,18 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
 
    private IArtifactImportResolver getResolver() {
       ArtifactType primaryArtifactType = mainPage.getArtifactType();
-      boolean isUpdateExistingArtifactsSelected = mainPage.isUpdateExistingSelected();
       Collection<AttributeType> nonChangingAttributes = mainPage.getNonChangingAttributes();
-      IArtifactImportResolver resolver = null;
+      MatchingStrategy strategy = mainPage.getMatchingStrategy();
       try {
-         ArtifactType secondaryArtifactType = ArtifactTypeManager.getType("Heading");
-         // only non-null when reuse artifacts is checked
-         if (isUpdateExistingArtifactsSelected) {
-            resolver =
-                  new RootAndAttributeBasedArtifactResolver(primaryArtifactType, secondaryArtifactType,
-                        nonChangingAttributes, true, mainPage.isDeleteUnmatchedSelected());
-         } else {
-            resolver = new NewArtifactImportResolver(primaryArtifactType, secondaryArtifactType);
-         }
+         IArtifactImportResolver resolver =
+               strategy.getResolver(primaryArtifactType, nonChangingAttributes, true,
+                     mainPage.isDeleteUnmatchedSelected());
+         return resolver;
       } catch (OseeCoreException ex) {
-         String msg =
-               String.format(
-                     "Unable to create an artifact resolver for [%s]",
-                     primaryArtifactType,
-                     isUpdateExistingArtifactsSelected ? String.format("using %s as identifiers", nonChangingAttributes) : "");
+         String msg = "getResolver() could not retrieve artifact type \"Heading\"";
          ErrorDialog.openError(getContainer().getShell(), "Artifact Import", null, new Status(IStatus.ERROR,
                SkynetGuiPlugin.PLUGIN_ID, msg, ex));
+         return null;
       }
-      return resolver;
    }
 }
