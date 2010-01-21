@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -51,11 +52,7 @@ public class PurgeArtifactHandler extends CommandHandler {
                IStatus toReturn = Status.CANCEL_STATUS;
                monitor.beginTask("Purge artifact", artifacts.size());
                try {
-                  for (Artifact artifactToPurge : artifacts) {
-                     monitor.setTaskName("Purge: " + artifactToPurge.getName());
-                     artifactToPurge.purgeFromBranch();
-                     monitor.worked(1);
-                  }                
+                  new PurgeArtifacts(artifacts).execute();
                   toReturn = Status.OK_STATUS;
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

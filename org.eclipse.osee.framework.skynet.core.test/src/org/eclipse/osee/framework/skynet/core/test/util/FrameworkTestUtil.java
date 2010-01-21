@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.support.test.util.DemoSubsystems;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -92,12 +93,6 @@ public class FrameworkTestUtil {
       }
    }
 
-   public static void purgeArtifacts(Collection<Artifact> artifacts) throws Exception {
-      for (Artifact art : artifacts) {
-         art.purgeFromBranch();
-      }
-   }
-
    /**
     * Deletes all artifacts with names that start with any title given
     * 
@@ -109,8 +104,7 @@ public class FrameworkTestUtil {
       for (String title : titles) {
          artifacts.addAll(ArtifactQuery.getArtifactListFromName(title + "%", branch, false));
       }
-      purgeArtifacts(artifacts);
-      //      ArtifactPersistenceManager.purgeArtifacts(artifacts);
+      new PurgeArtifacts(artifacts).execute();
       TestUtil.sleep(4000);
    }
 

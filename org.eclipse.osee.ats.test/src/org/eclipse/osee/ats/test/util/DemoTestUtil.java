@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
@@ -117,12 +118,6 @@ public class DemoTestUtil {
       return teamArt.createTasks(names, Arrays.asList(UserManager.getUser()), transaction);
    }
 
-   public static void purgeArtifacts(Collection<Artifact> artifacts) throws Exception {
-      for (Artifact art : artifacts) {
-         art.purgeFromBranch();
-      }
-   }
-
    /**
     * Deletes all artifacts with names that start with any title given
     * 
@@ -134,7 +129,7 @@ public class DemoTestUtil {
       for (String title : titles) {
          artifacts.addAll(ArtifactQuery.getArtifactListFromName(title + "%", AtsUtil.getAtsBranch(), false));
       }
-      purgeArtifacts(artifacts);
+      new PurgeArtifacts(artifacts).execute();
       TestUtil.sleep(4000);
    }
 

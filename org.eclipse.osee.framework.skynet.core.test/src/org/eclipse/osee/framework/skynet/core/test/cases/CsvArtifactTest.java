@@ -16,8 +16,8 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.utility.CsvArtifact;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 
@@ -68,6 +68,6 @@ public class CsvArtifactTest {
    private void cleanup() throws Exception {
       Collection<Artifact> arts =
             ArtifactQuery.getArtifactListFromName(id, BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), false);
-      FrameworkTestUtil.purgeArtifacts(arts);
+      new PurgeArtifacts(arts).execute();
    }
 }

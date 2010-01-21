@@ -23,13 +23,13 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
@@ -41,7 +41,9 @@ import org.eclipse.swt.widgets.Display;
 public class AtsDeleteManager {
 
    public enum DeleteOption {
-      Prompt, Delete, Purge
+      Prompt,
+      Delete,
+      Purge
    };
 
    public static void handleDeletePurgeAtsObject(Collection<? extends Artifact> selectedArts, boolean forcePend, DeleteOption... deleteOption) throws OseeCoreException {
@@ -128,7 +130,7 @@ public class AtsDeleteManager {
                protected void doWork(IProgressMonitor monitor) throws Exception {
                   // perform the delete/purge
                   if (purge) {
-                     purgeArtifacts(allDeleteArts);
+                     new PurgeArtifacts(allDeleteArts).execute();
                   } else {
                      SkynetTransaction transaction =
                            new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete ATS Objects");
@@ -148,11 +150,5 @@ public class AtsDeleteManager {
          Operations.executeAsJob(operation, true);
       }
 
-   }
-
-   private static void purgeArtifacts(Collection<Artifact> artifacts) throws OseeDataStoreException, OseeCoreException {
-      for (Artifact art : artifacts) {
-         art.purgeFromBranch();
-      }
    }
 }

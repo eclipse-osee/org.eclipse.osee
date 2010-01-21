@@ -16,10 +16,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.DbTransaction;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -32,19 +34,12 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 /**
  * @author Ryan D. Brooks
  */
-public class PurgeDbTransaction extends DbTransaction {
+public class PurgeArtifacts extends DbTransaction {
 
-   private static final String INSERT_SELECT_RELATIONS =
-         "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) SELECT ?, ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_relation_link rel1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND (al1.art_id = rel1.a_art_id OR al1.art_id = rel1.b_art_id) AND rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
-
-   private static final String INSERT_SELECT_ATTRIBUTES =
-         "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) SELECT ?, ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_attribute att1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
-
-   private static final String INSERT_SELECT_ARTIFACTS =
-         "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) SELECT ?, ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_artifact art1, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id";
-
+   private static final String INSERT_SELECT_ITEM =
+         "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) SELECT /*+ ordered FIRST_ROWS */ ?, ?, txs.gamma_id, txs.transaction_id FROM osee_join_artifact aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.branch_id = txs.branch_id";
    private static final String COUNT_ARTIFACT_VIOLATIONS =
-         "SELECT art1.art_id, txd1.branch_id FROM osee_join_artifact al1, osee_artifact art1, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id";
+         "SELECT arv.art_id, txs.branch_id FROM osee_join_artifact aj, osee_artifact_version arv, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id";
    private static final String DELETE_FROM_TXS_USING_JOIN_TRANSACTION =
          "DELETE FROM osee_txs txs1 WHERE EXISTS ( select 1 from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.transaction_id = txs1.transaction_id AND jt1.gamma_id = txs1.gamma_id)";
    private static final String DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION =
@@ -63,7 +58,7 @@ public class PurgeDbTransaction extends DbTransaction {
    /**
     * @param artifactsToPurge
     */
-   public PurgeDbTransaction(Collection<? extends Artifact> artifactsToPurge) throws OseeCoreException {
+   public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge) throws OseeCoreException {
       this.artifactsToPurge = artifactsToPurge;
    }
 
@@ -120,14 +115,15 @@ public class PurgeDbTransaction extends DbTransaction {
 
          //run the insert select queries to populate the osee_join_transaction table  (this will take care of the txs table)    
          int transactionJoinId = ArtifactLoader.getNewQueryId();
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_SELECT_RELATIONS, transactionJoinId, insertTime,
-               queryId);
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_SELECT_ATTRIBUTES, transactionJoinId, insertTime,
-               queryId);
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_SELECT_ARTIFACTS, transactionJoinId, insertTime,
-               queryId);
+         //run the insert select queries to populate the osee_join_transaction table  (this will take care of the txs table)
 
-         //delete from the txs table
+         insertSelectItems(connection, "osee_relation_link",
+               "(aj.art_id = item.a_art_id OR aj.art_id = item.b_art_id)", transactionJoinId, insertTime, queryId);
+         insertSelectItems(connection, "osee_attribute", "aj.art_id = item.art_id", transactionJoinId, insertTime,
+               queryId);
+         insertSelectItems(connection, "osee_artifact_version", "aj.art_id = item.art_id", transactionJoinId,
+               insertTime, queryId);
+
          int txsDeletes =
                ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_TXS_USING_JOIN_TRANSACTION,
                      transactionJoinId);
@@ -171,5 +167,11 @@ public class PurgeDbTransaction extends DbTransaction {
       } finally {
          ArtifactLoader.clearQuery(connection, queryId);
       }
+   }
+
+   public void insertSelectItems(OseeConnection connection, String tableName, String artifactJoinSql, int transactionJoinId, Timestamp insertTime, int queryId) throws OseeDataStoreException {
+      IOseeDatabaseService databaseService = Activator.getInstance().getOseeDatabaseService();
+      String sql = String.format(INSERT_SELECT_ITEM, tableName, artifactJoinSql);
+      databaseService.runPreparedUpdate(connection, sql, transactionJoinId, insertTime, queryId);
    }
 }

@@ -25,11 +25,11 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
-import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.Before;
 
@@ -320,7 +320,7 @@ public class BranchStateTest {
             purgeBranchAndChildren(branch);
          }
          if (toDelete != null) {
-            FrameworkTestUtil.purgeArtifacts(Arrays.asList(toDelete));
+            new PurgeArtifacts(Arrays.asList(toDelete)).execute();
          }
       } catch (Exception ex) {
          // Do Nothing;

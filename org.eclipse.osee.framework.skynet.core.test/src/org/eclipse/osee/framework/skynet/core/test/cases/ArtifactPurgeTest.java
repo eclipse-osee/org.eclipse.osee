@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -117,10 +118,7 @@ public class ArtifactPurgeTest {
       DbUtil.getTableRowCounts(postCreateArtifactsCount, tables);
       TestUtil.checkThatIncreased(preCreateArtifactsCount, postCreateArtifactsCount);
 
-      // Purge
-      for (Artifact art : softArts) {
-         art.purgeFromBranch();
-      }
+      new PurgeArtifacts(softArts).execute();
 
       // Count rows and check that same as when began
       DbUtil.getTableRowCounts(postPurgeCount, tables);

@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -48,6 +47,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -390,7 +390,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
                System.out.println("Sleeping 5 sec...");
                Thread.sleep(5000);
                System.out.println("Purging " + artsToDelete.size() + " artifacts...");
-               purgeArtifacts(artsToDelete);
+               new PurgeArtifacts(artsToDelete).execute();
             }
          } catch (ArtifactDoesNotExist ex) {
             System.out.println("Artifact with hrid does not exist: " + hrid);
@@ -400,12 +400,6 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
       }
 
-   }
-
-   private static void purgeArtifacts(Collection<Artifact> artifacts) throws OseeDataStoreException, OseeCoreException {
-      for (Artifact art : artifacts) {
-         art.purgeFromBranch();
-      }
    }
 
    private void convertAtsLogUserIds(SkynetTransaction transaction) throws OseeCoreException {

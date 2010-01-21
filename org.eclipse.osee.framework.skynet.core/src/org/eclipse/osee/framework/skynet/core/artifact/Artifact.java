@@ -1247,7 +1247,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @throws OseeCoreException
     */
    public void purgeFromBranch() throws OseeCoreException {
-      new PurgeDbTransaction(Arrays.asList(this)).execute();
+      new PurgeArtifacts(Arrays.asList(this)).execute();
    }
 
    public boolean isDeleted() {

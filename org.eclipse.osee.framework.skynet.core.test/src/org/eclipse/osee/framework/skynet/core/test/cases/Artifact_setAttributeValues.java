@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -111,6 +111,6 @@ public class Artifact_setAttributeValues {
       Assert.assertNotNull(branch);
       Collection<Artifact> arts =
             ArtifactQuery.getArtifactListFromName(Artifact_setAttributeValues.class.getSimpleName(), branch, false);
-      FrameworkTestUtil.purgeArtifacts(arts);
+      new PurgeArtifacts(arts).execute();
    }
 }

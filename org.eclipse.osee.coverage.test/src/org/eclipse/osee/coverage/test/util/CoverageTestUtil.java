@@ -18,6 +18,7 @@ import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 
 /**
@@ -28,9 +29,7 @@ public class CoverageTestUtil {
 
    public static void cleanupCoverageTests() throws OseeCoreException {
       try {
-         for (Artifact artifact : getAllCoverageArtifacts()) {
-            artifact.purgeFromBranch();
-         }
+         new PurgeArtifacts(getAllCoverageArtifacts()).execute();
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }

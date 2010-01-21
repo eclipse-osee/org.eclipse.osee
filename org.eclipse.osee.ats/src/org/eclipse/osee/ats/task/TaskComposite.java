@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
@@ -161,10 +162,11 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
          builder.append("Are you sure you wish to delete " + items.size() + " Tasks?\n\n");
       } else {
          builder.append("Are you sure you wish to delete ");
-         if (items.size() == 1)
+         if (items.size() == 1) {
             builder.append("this Task?\n\n");
-         else
+         } else {
             builder.append("these Tasks?\n\n");
+         }
          for (TaskArtifact taskItem : items) {
             builder.append("\"" + taskItem.getName() + "\"\n");
          }
@@ -194,9 +196,7 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
             taskXViewer.remove(items);
 
             if (tasksNotInDb.size() > 0) {
-               for (TaskArtifact taskArt : tasksNotInDb) {
-                  taskArt.purgeFromBranch();
-               }
+               new PurgeArtifacts(tasksNotInDb).execute();
                refreshActionHandler();
             }
             iXTaskViewer.getEditor().onDirtied();
@@ -229,13 +229,17 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
       ArrayList<TaskArtifact> items = new ArrayList<TaskArtifact>();
       while (i.hasNext()) {
          Object obj = i.next();
-         if (obj instanceof TaskArtifact) items.add((TaskArtifact) obj);
+         if (obj instanceof TaskArtifact) {
+            items.add((TaskArtifact) obj);
+         }
       }
       return items;
    }
 
    public String toHTML(String labelFont) {
-      if (getTaskXViewer().getTree().getItemCount() == 0) return "";
+      if (getTaskXViewer().getTree().getItemCount() == 0) {
+         return "";
+      }
       StringBuffer html = new StringBuffer();
       try {
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
@@ -309,7 +313,9 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
    private void performDrop(DropTargetEvent e) {
       if (e.data instanceof ArtifactData) {
          try {
-            if (iXTaskViewer.getSma() == null) return;
+            if (iXTaskViewer.getSma() == null) {
+               return;
+            }
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Drop Add Tasks");
             for (Artifact art : artsToRelate) {

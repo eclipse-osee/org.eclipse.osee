@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
@@ -88,9 +89,7 @@ public class AtsPurgeTest {
       TestUtil.checkThatIncreased(preCreateActionCount, postCreateActionCount);
 
       // Purge Action, Workflow and Tasks
-      for (Artifact art : artsToPurge) {
-         art.purgeFromBranch();
-      }
+      new PurgeArtifacts(artsToPurge).execute();
 
       // Count rows and check that same as when began
       DbUtil.getTableRowCounts(postPurgeCount, tables);
