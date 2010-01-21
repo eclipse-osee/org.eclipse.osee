@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.ArtifactUtil;
 import org.eclipse.osee.framework.manager.servlet.data.DefaultOseeArtifact;
 import org.eclipse.osee.framework.manager.servlet.data.HttpArtifactFileInfo;
+import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -74,10 +75,10 @@ public class ArtifactFileServlet extends OseeHttpServlet {
          }
          if (Strings.isValid(uri)) {
             IResourceLocator locator =
-                  MasterServletActivator.getInstance().getResourceLocatorManager().getResourceLocator(uri);
+                  Activator.getInstance().getResourceLocatorManager().getResourceLocator(uri);
             Options options = new Options();
             options.put(StandardOptions.DecompressOnAquire.name(), true);
-            IResource resource = MasterServletActivator.getInstance().getResourceManager().acquire(locator, options);
+            IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
 
             if (resource != null) {
                wasProcessed = true;
@@ -123,7 +124,7 @@ public class ArtifactFileServlet extends OseeHttpServlet {
    private void handleError(HttpServletResponse response, int status, String message, Throwable ex) throws IOException {
       response.setStatus(status);
       response.setContentType("text/plain");
-      OseeLog.log(MasterServletActivator.class, Level.SEVERE, message, ex);
+      OseeLog.log(Activator.class, Level.SEVERE, message, ex);
       response.getWriter().write(Lib.exceptionToString(ex));
    }
 

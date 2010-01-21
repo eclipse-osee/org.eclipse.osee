@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -69,7 +70,7 @@ public class ServerLookupServlet extends OseeHttpServlet {
             response.getOutputStream().flush();
          }
       } catch (Exception ex) {
-         OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format(
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Failed to process application server lookup request [%s]", request.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
          response.getWriter().flush();
@@ -89,7 +90,7 @@ public class ServerLookupServlet extends OseeHttpServlet {
                   String.format("Registration into server lookup was a [%s]", wasSuccessful ? "success" : "failure"));
          }
       } catch (Exception ex) {
-         OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format(
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Failed to process application server lookup request [%s]", request.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
       }

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -59,13 +60,13 @@ public class SessionManagementServlet extends OseeHttpServlet {
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
-         String[] protocols = MasterServletActivator.getInstance().getAuthenticationManager().getProtocols();
+         String[] protocols = Activator.getInstance().getAuthenticationManager().getProtocols();
          response.setStatus(HttpServletResponse.SC_OK);
          response.setContentType("text/plain");
          response.setCharacterEncoding("UTF-8");
          response.getWriter().write(Arrays.deepToString(protocols));
       } catch (Exception ex) {
-         OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format(
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Error processing request for protocols [%s]", request.toString()), ex);
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
@@ -92,7 +93,7 @@ public class SessionManagementServlet extends OseeHttpServlet {
                break;
          }
       } catch (Exception ex) {
-         OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format("Error processing session request [%s]",
+         OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing session request [%s]",
                request.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
          response.getWriter().flush();
@@ -102,7 +103,7 @@ public class SessionManagementServlet extends OseeHttpServlet {
 
    private void createSession(HttpServletRequest request, HttpServletResponse response) throws OseeCoreException {
       try {
-         ISessionManager manager = MasterServletActivator.getInstance().getSessionManager();
+         ISessionManager manager = Activator.getInstance().getSessionManager();
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          Lib.inputStreamToOutputStream(request.getInputStream(), outputStream);
          byte[] bytes = outputStream.toByteArray();
@@ -135,7 +136,7 @@ public class SessionManagementServlet extends OseeHttpServlet {
 
    private void releaseSession(HttpServletRequest request, HttpServletResponse response) throws OseeCoreException {
       try {
-         ISessionManager manager = MasterServletActivator.getInstance().getSessionManager();
+         ISessionManager manager = Activator.getInstance().getSessionManager();
          String sessionId = request.getParameter("sessionId");
          manager.releaseSession(sessionId);
          response.setStatus(HttpServletResponse.SC_ACCEPTED);

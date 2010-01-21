@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.HttpSearchInfo;
+import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.MatchLocation;
 import org.eclipse.osee.framework.search.engine.SearchResult;
@@ -50,7 +51,7 @@ public class SearchEngineServlet extends OseeHttpServlet {
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
-         OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format(
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Failed to respond to a search engine servlet request [%s]", request.getRequestURL()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
       }
@@ -58,7 +59,7 @@ public class SearchEngineServlet extends OseeHttpServlet {
 
    private void executeSearch(HttpSearchInfo searchInfo, HttpServletResponse response, boolean wasFromGet) throws IOException {
       try {
-         ISearchEngine searchEngine = MasterServletActivator.getInstance().getSearchEngine();
+         ISearchEngine searchEngine = Activator.getInstance().getSearchEngine();
          SearchResult results =
                searchEngine.search(searchInfo.getQuery(), searchInfo.getId(), searchInfo.getOptions(),
                      searchInfo.getAttributeTypes());
@@ -79,7 +80,7 @@ public class SearchEngineServlet extends OseeHttpServlet {
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
-         OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format(
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Failed to respond to a search engine servlet request [%s]", searchInfo.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
       }

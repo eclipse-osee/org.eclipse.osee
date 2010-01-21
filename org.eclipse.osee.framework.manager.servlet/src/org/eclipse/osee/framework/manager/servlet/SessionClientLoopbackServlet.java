@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.server.SessionData;
 import org.eclipse.osee.framework.core.server.SessionData.SessionState;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -77,7 +78,7 @@ public class SessionClientLoopbackServlet extends OseeHttpServlet {
             clientAddress = "localhost";
          }
       } catch (UnknownHostException ex) {
-         OseeLog.log(MasterServletActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return String.format("http://%s:%s/", clientAddress, session.getPort());
    }
@@ -157,7 +158,7 @@ public class SessionClientLoopbackServlet extends OseeHttpServlet {
       String remoteAddress = getNormalizedAddress(request.getRemoteAddr());
       String sessionId = request.getParameter("sessionId");
 
-      ISessionManager sessionManager = MasterServletActivator.getInstance().getSessionManager();
+      ISessionManager sessionManager = Activator.getInstance().getSessionManager();
       SessionData sessionData = null;
       if (Strings.isValid(sessionId)) {
          sessionData = sessionManager.getSessionById(sessionId);

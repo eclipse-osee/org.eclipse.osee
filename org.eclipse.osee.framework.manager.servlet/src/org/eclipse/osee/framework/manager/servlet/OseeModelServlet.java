@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeDataTranslationProvider;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.framework.services.IOseeModelingService;
 
 /**
@@ -46,11 +47,11 @@ public class OseeModelServlet extends OseeHttpServlet {
    }
 
    private IOseeModelingService getModelingService() throws OseeCoreException {
-      return MasterServletActivator.getInstance().getOseeModelingService();
+      return Activator.getInstance().getOseeModelingService();
    }
 
    private void handleError(HttpServletResponse resp, String request, Throwable th) throws IOException {
-      OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format("Osee Cache request error: [%s]", request),
+      OseeLog.log(Activator.class, Level.SEVERE, String.format("Osee Cache request error: [%s]", request),
             th);
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       resp.setContentType("text/plain");

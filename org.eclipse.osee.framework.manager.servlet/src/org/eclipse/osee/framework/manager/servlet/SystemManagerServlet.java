@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.HttpSystemManagerCreationInfo;
+import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -79,7 +80,7 @@ public class SystemManagerServlet extends OseeHttpServlet {
                break;
          }
       } catch (Exception ex) {
-         OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format(
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Error processing request for protocols [%s]", request.toString()), ex);
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
@@ -151,7 +152,7 @@ public class SystemManagerServlet extends OseeHttpServlet {
          if (!Strings.isValid(info.getSessionId())) {
             sb.append("Invalid userId [" + info.getSessionId() + "]");
          } else {
-            MasterServletActivator.getInstance().getSessionManager().releaseSessionImmediate(info.getSessionId());
+            Activator.getInstance().getSessionManager().releaseSessionImmediate(info.getSessionId());
             sb.append("Deleted session [" + info.getSessionId() + "]");
          }
       } catch (OseeCoreException ex) {
@@ -169,7 +170,7 @@ public class SystemManagerServlet extends OseeHttpServlet {
          } else {
             try {
                SessionData sessionData =
-                     MasterServletActivator.getInstance().getSessionManager().getSessionById(info.getSessionId());
+                     Activator.getInstance().getSessionManager().getSessionById(info.getSessionId());
                if (sessionData == null) {
                   sb.append("Can't retrieve SessionData for [" + info.getSessionId() + "]");
                   return;
@@ -208,7 +209,7 @@ public class SystemManagerServlet extends OseeHttpServlet {
          response.setCharacterEncoding("UTF-8");
          response.getWriter().write(results + AHTML.newline() + "As of: " + new Date());
       } catch (Exception ex) {
-         OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format(
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Error processing request for protocols [%s]", request.toString()), ex);
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
@@ -221,13 +222,13 @@ public class SystemManagerServlet extends OseeHttpServlet {
 
    private String getSessions(String requestAddress, String requestPort) throws Exception {
       Collection<SessionData> sessionData =
-            MasterServletActivator.getInstance().getSessionManager().getAllSessions(true);
+            Activator.getInstance().getSessionManager().getAllSessions(true);
       return createSessionTable(sessionData, "Sessions", requestAddress, requestPort);
    }
 
    private String getSessionsByUserId(String userId, String requestAddress, String requestPort) throws Exception {
       Collection<SessionData> sessionData =
-            MasterServletActivator.getInstance().getSessionManager().getSessionsByUserId(userId, true);
+            Activator.getInstance().getSessionManager().getSessionsByUserId(userId, true);
       return createSessionTable(sessionData, "Sessions for [" + userId + "]", requestAddress, requestPort);
    }
 

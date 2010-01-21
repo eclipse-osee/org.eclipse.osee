@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.manager.servlet;
+package org.eclipse.osee.framework.manager.servlet.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +30,19 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeDataTranslationProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.manager.servlet.ArtifactFileServlet;
+import org.eclipse.osee.framework.manager.servlet.BranchExchangeServlet;
+import org.eclipse.osee.framework.manager.servlet.BranchManagerServlet;
+import org.eclipse.osee.framework.manager.servlet.ClientInstallInfoServlet;
+import org.eclipse.osee.framework.manager.servlet.OseeCacheServlet;
+import org.eclipse.osee.framework.manager.servlet.OseeModelServlet;
+import org.eclipse.osee.framework.manager.servlet.ResourceManagerServlet;
+import org.eclipse.osee.framework.manager.servlet.SearchEngineServlet;
+import org.eclipse.osee.framework.manager.servlet.SearchEngineTaggerServlet;
+import org.eclipse.osee.framework.manager.servlet.ServerLookupServlet;
+import org.eclipse.osee.framework.manager.servlet.SessionClientLoopbackServlet;
+import org.eclipse.osee.framework.manager.servlet.SessionManagementServlet;
+import org.eclipse.osee.framework.manager.servlet.SystemManagerServlet;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
@@ -43,13 +56,15 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Donald G. Dunne
  */
-public class MasterServletActivator implements BundleActivator, IOseeModelFactoryServiceProvider, IOseeModelingServiceProvider, IOseeBranchServiceProvider, IOseeDataTranslationProvider {
-   private static MasterServletActivator instance;
+public class Activator implements BundleActivator, IOseeModelFactoryServiceProvider, IOseeModelingServiceProvider, IOseeBranchServiceProvider, IOseeDataTranslationProvider {
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.manager.servlet";
+
+   private static Activator instance;
 
    private final List<ServiceTracker> trackers;
    private final Map<OseeServiceTrackerId, ServiceTracker> mappedTrackers;
 
-   public MasterServletActivator() {
+   public Activator() {
       this.trackers = new ArrayList<ServiceTracker>();
       this.mappedTrackers = new HashMap<OseeServiceTrackerId, ServiceTracker>();
    }
@@ -115,7 +130,7 @@ public class MasterServletActivator implements BundleActivator, IOseeModelFactor
       return clazz.cast(service);
    }
 
-   public static MasterServletActivator getInstance() {
+   public static Activator getInstance() {
       return instance;
    }
 

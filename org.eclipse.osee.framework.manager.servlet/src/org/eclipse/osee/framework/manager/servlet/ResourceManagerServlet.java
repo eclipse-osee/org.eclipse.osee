@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.HttpRequestDecoder;
 import org.eclipse.osee.framework.manager.servlet.data.ServletResourceBridge;
+import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -61,16 +62,16 @@ public class ResourceManagerServlet extends OseeHttpServlet {
          Options options = HttpRequestDecoder.getOptions(request);
 
          IResourceLocator locator =
-               MasterServletActivator.getInstance().getResourceLocatorManager().getResourceLocator(path);
+               Activator.getInstance().getResourceLocatorManager().getResourceLocator(path);
 
          if (isCheckExistance) {
-            boolean exists = MasterServletActivator.getInstance().getResourceManager().exists(locator);
+            boolean exists = Activator.getInstance().getResourceManager().exists(locator);
             response.setStatus(exists ? HttpServletResponse.SC_OK : HttpServletResponse.SC_NOT_FOUND);
             response.setContentType("text/plain");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().println(String.format("[%s] was %sfound.", path, exists ? "" : "not "));
          } else {
-            IResource resource = MasterServletActivator.getInstance().getResourceManager().acquire(locator, options);
+            IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
             if (resource != null) {
                inputStream = resource.getContent();
 
@@ -118,12 +119,12 @@ public class ResourceManagerServlet extends OseeHttpServlet {
          Options options = HttpRequestDecoder.getOptions(request);
 
          IResourceLocator locator =
-               MasterServletActivator.getInstance().getResourceLocatorManager().generateResourceLocator(args[0],
+               Activator.getInstance().getResourceLocatorManager().generateResourceLocator(args[0],
                      args[1], args[2]);
          IResource tempResource = new ServletResourceBridge(request, locator);
 
          IResourceLocator actualLocator =
-               MasterServletActivator.getInstance().getResourceManager().save(locator, tempResource, options);
+               Activator.getInstance().getResourceManager().save(locator, tempResource, options);
          result = HttpServletResponse.SC_CREATED;
          response.setStatus(result);
          response.setContentType("text/plain");
@@ -151,7 +152,7 @@ public class ResourceManagerServlet extends OseeHttpServlet {
       try {
          String path = HttpRequestDecoder.fromDeleteRequest(request);
          IResourceLocator locator =
-               MasterServletActivator.getInstance().getResourceLocatorManager().getResourceLocator(path);
+               Activator.getInstance().getResourceLocatorManager().getResourceLocator(path);
          int status = IResourceManager.OK;
          //Activator.getInstance().getResourceManager().delete(locator);
          if (status == IResourceManager.OK) {
@@ -181,7 +182,7 @@ public class ResourceManagerServlet extends OseeHttpServlet {
 
       Set<IResourceLocator> locators = new HashSet<IResourceLocator>();
 
-      IResourceManager resourceManager = MasterServletActivator.getInstance().getResourceManager();
+      IResourceManager resourceManager = Activator.getInstance().getResourceManager();
       for (IResourceLocator locator : locators) {
          try {
             Options options = new Options();

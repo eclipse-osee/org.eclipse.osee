@@ -12,21 +12,36 @@ package org.eclipse.osee.framework.manager.servlet.function;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.PurgeBranchRequest;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeBranchServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeDataTranslationProvider;
+import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 
 /**
  * @author Megumi Telles
  * @author Jeff C. Phillips
  */
-public class PurgeBranchFunction {
+public class PurgeBranchFunction extends AbstractOperation {
+   private final HttpServletRequest req;
+   private final HttpServletResponse resp;
+   private final IOseeBranchServiceProvider branchServiceProvider;
+   private final IOseeDataTranslationProvider dataTransalatorProvider;
 
-   public void purge(HttpServletRequest req, HttpServletResponse resp, IOseeBranchServiceProvider branchServiceProvider, IOseeDataTranslationProvider dataTransalatorProvider) throws Exception {
+   public PurgeBranchFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchServiceProvider branchServiceProvider, IOseeDataTranslationProvider dataTransalatorProvider) {
+      super("Purge Branch", Activator.PLUGIN_ID);
+      this.req = req;
+      this.resp = resp;
+      this.branchServiceProvider = branchServiceProvider;
+      this.dataTransalatorProvider = dataTransalatorProvider;
+   }
+
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
       IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
       PurgeBranchRequest request = service.convert(req.getInputStream(), CoreTranslatorId.PURGE_BRANCH_REQUEST);
       branchServiceProvider.getBranchService().purge(new NullProgressMonitor(), request);

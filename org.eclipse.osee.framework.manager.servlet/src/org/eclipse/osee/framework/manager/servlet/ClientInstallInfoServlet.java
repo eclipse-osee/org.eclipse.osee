@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 
 /**
  * Sends a page with links to OSEE client install locations.
@@ -108,7 +109,7 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
                         Arrays.deepToString(CommandType.values())));
          }
       } catch (Exception ex) {
-         OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format(
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Failed to process client install info request [%s]", request.toString()), ex);
          response.setContentType("text/plain");
          response.getWriter().write(Lib.exceptionToString(ex));

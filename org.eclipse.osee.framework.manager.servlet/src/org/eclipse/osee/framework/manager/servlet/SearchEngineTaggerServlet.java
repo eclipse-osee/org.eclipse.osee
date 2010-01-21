@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.TagListener;
+import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -36,7 +37,7 @@ public class SearchEngineTaggerServlet extends OseeHttpServlet {
          boolean waitForTags = Boolean.parseBoolean(request.getParameter("wait"));
          if (waitForTags) {
             TagListener listener = new TagListener();
-            MasterServletActivator.getInstance().getSearchTagger().tagByBranchId(listener, branchId);
+            Activator.getInstance().getSearchTagger().tagByBranchId(listener, branchId);
             if (listener.wasProcessed() != true) {
                synchronized (listener) {
                   listener.wait();
@@ -45,7 +46,7 @@ public class SearchEngineTaggerServlet extends OseeHttpServlet {
             message.append(String.format("Processed %d queries containing %d attributes in %d ms.",
                   listener.getQueryCount(), listener.getAttributeCount(), System.currentTimeMillis() - start));
          } else {
-            MasterServletActivator.getInstance().getSearchTagger().tagByBranchId(branchId);
+            Activator.getInstance().getSearchTagger().tagByBranchId(branchId);
          }
          response.setContentType("text/plain");
          response.setCharacterEncoding("UTF-8");
@@ -54,7 +55,7 @@ public class SearchEngineTaggerServlet extends OseeHttpServlet {
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
-         OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",
+         OseeLog.log(Activator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",
                request.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
       }
@@ -70,14 +71,14 @@ public class SearchEngineTaggerServlet extends OseeHttpServlet {
          inputStream = request.getInputStream();
          if (waitForTags) {
             TagListener listener = new TagListener();
-            MasterServletActivator.getInstance().getSearchTagger().tagFromXmlStream(listener, inputStream);
+            Activator.getInstance().getSearchTagger().tagFromXmlStream(listener, inputStream);
             if (listener.wasProcessed() != true) {
                synchronized (listener) {
                   listener.wait();
                }
             }
          } else {
-            MasterServletActivator.getInstance().getSearchTagger().tagFromXmlStream(inputStream);
+            Activator.getInstance().getSearchTagger().tagFromXmlStream(inputStream);
          }
          response.setContentType("text/plain");
          response.setCharacterEncoding("UTF-8");
@@ -85,7 +86,7 @@ public class SearchEngineTaggerServlet extends OseeHttpServlet {
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
-         OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",
+         OseeLog.log(Activator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",
                request.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
       } finally {
@@ -101,7 +102,7 @@ public class SearchEngineTaggerServlet extends OseeHttpServlet {
    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
          String queryId = request.getParameter("queryId");
-         int value = MasterServletActivator.getInstance().getSearchTagger().deleteTags(Integer.parseInt(queryId));
+         int value = Activator.getInstance().getSearchTagger().deleteTags(Integer.parseInt(queryId));
          response.setContentType("text/plain");
          response.setCharacterEncoding("UTF-8");
          if (value > 0) {
@@ -112,7 +113,7 @@ public class SearchEngineTaggerServlet extends OseeHttpServlet {
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
-         OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",
+         OseeLog.log(Activator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",
                request.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
       } finally {
