@@ -123,7 +123,7 @@ public class CoverageItemPersistTest {
       (new OseeCoverageUnitStore(parentCu)).delete(transaction, false);
       transaction.execute();
       artifact = (new OseeCoverageUnitStore(parentCu)).getArtifact(false);
-      Assert.assertTrue(artifact.isDeleted());
+      Assert.assertNull(artifact);
       Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
    }
 
