@@ -14,6 +14,12 @@ public enum MergeType {
    Add,
    // This will result in adding this and all children with all attributes
    Add_With_Moves,
+   // This will result in deleting this child and re-ordering
+   Delete,
+   // Group option that contains deletions and re-order items
+   Delete_And_Reorder,
+   // Just update package item's order with import item's order
+   Moved_Due_To_Delete,
    // This will result in updating the package item method number of the imported method number
    Moved_Due_To_Add,
    // Used to display "Nothing to Import" message

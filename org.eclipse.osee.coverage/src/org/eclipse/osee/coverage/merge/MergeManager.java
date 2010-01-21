@@ -66,8 +66,14 @@ public class MergeManager {
          Collection<? extends ICoverage> packageItemChildren = packageICoverage.getChildren();
          Collection<? extends ICoverage> importItemChildren = importICoverage.getChildren();
          Map<ICoverage, MatchItem> importItemToMatchItem = new HashMap<ICoverage, MatchItem>(10);
+         boolean moreImportChildrenThanPackageChildren = importItemChildren.size() > packageItemChildren.size();
+         boolean morePackageChildrenThanImportChildren = packageItemChildren.size() > importItemChildren.size();
+         boolean sameNumberChilren = importItemChildren.size() == packageItemChildren.size();
 
-         if (importCoverage.getName().startsWith("AuxPowerUnit2")) {
+         if (importCoverage.getGuid().equals("AAF9mnqbqltZqbmN7iwA")) {
+            System.out.println("here");
+         }
+         if (importCoverage.getName().equals("agp_threat_audio.2.ada")) {
             System.out.println("here");
          }
 
@@ -77,24 +83,55 @@ public class MergeManager {
             importItemToMatchItem.put(childCoverage, childMatchItem);
          }
 
-         // Print out match results
-         //         for (Entry<ICoverage, MatchItem> entry : importItemToMatchItem.entrySet()) {
-         //            System.out.println(String.format("MatchItem[%s]-Coverage[%s]", entry.getValue(), entry.getKey()));
-         //         }
+         //          Print out match results
+         for (Entry<ICoverage, MatchItem> entry : importItemToMatchItem.entrySet()) {
+            System.out.println(String.format("MatchItem[%s]-Coverage[%s]", entry.getValue(), entry.getKey()));
+         }
 
          // Case A - All match and package # children == import # children
          // Action: continue and check children's children
-         if (packageItemChildren.size() == importItemChildren.size() && MatchItem.isAllMatchType(MatchType.FullMatches,
-               importItemToMatchItem.values())) {
+         if (sameNumberChilren && MatchItem.isAllMatchType(MatchType.FullMatches, importItemToMatchItem.values())) {
             // process all children
             for (ICoverage childCoverage : importItemChildren) {
                processImportCoverage(childCoverage);
             }
          }
 
+         // Deletion of package item; see if can handle
+         else if (morePackageChildrenThanImportChildren) {
+            // If all import match package items, but there are more package items, delete package items
+            List<IMergeItem> groupMergeItems = new ArrayList<IMergeItem>();
+            boolean unmergeable = false;
+            // Discover which packageItems don't have matches
+            for (ICoverage packageItem : packageItemChildren) {
+               Collection<ICoverage> matches = getNameMatchItems(packageItem, importItemChildren);
+               // If matches > 1 can't perform merge
+               if (matches.size() > 1) {
+                  // Case Else - unhandled cases
+                  unmergeable = true;
+                  mergeItems.add(new MergeItem(MergeType.Error__UnMergable, null, importCoverage, false));
+                  break;
+               }
+               // If matches == 0, this is a deletion
+               else if (matches.size() == 0) {
+                  groupMergeItems.add(new MergeItem(MergeType.Delete, packageItem, null, false));
+               }
+               // Else matches == 1, check the order; if different order, this is a Move_Due_To_Delete
+               else {
+                  if (!packageItem.getOrderNumber().equals(matches.iterator().next().getOrderNumber())) {
+                     groupMergeItems.add(new MergeItem(MergeType.Moved_Due_To_Delete, packageItem,
+                           matches.iterator().next(), false));
+                  }
+               }
+            }
+            if (!unmergeable) {
+               mergeItems.add(new MergeItemGroup(MergeType.Delete_And_Reorder, groupMergeItems, true));
+            }
+         }
          // Addition/Move - Import children all full match except Import has more that don't match, items added and moved
-         else if (MatchItem.isAllMatchType(Arrays.asList(MatchType.Match__Name_And_Order_Num,
-               MatchType.No_Match__Name_Or_Order_Num, MatchType.Match__Folder), importItemToMatchItem.values()) && importItemChildren.size() > packageItemChildren.size()) {
+         else if (moreImportChildrenThanPackageChildren && MatchItem.isAllMatchType(Arrays.asList(
+               MatchType.Match__Name_And_Order_Num, MatchType.No_Match__Name_Or_Order_Num, MatchType.Match__Folder),
+               importItemToMatchItem.values())) {
 
             // Determine number of No_Match items that are name-only match
             Map<ICoverage, ICoverage> nameOnlyImportToPackageCoverage = new HashMap<ICoverage, ICoverage>();
@@ -174,6 +211,16 @@ public class MergeManager {
          }
       }
       return;
+   }
+
+   private List<ICoverage> getNameMatchItems(ICoverage coverage, Collection<? extends ICoverage> toMatch) {
+      List<ICoverage> matches = new ArrayList<ICoverage>();
+      for (ICoverage item : toMatch) {
+         if (item.getName().equals(coverage.getName())) {
+            matches.add(item);
+         }
+      }
+      return matches;
    }
 
    public MatchItem getPackageCoverageItem(ICoverage importItem) throws OseeStateException {

@@ -6,6 +6,7 @@
 package org.eclipse.osee.coverage.merge;
 
 import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -35,92 +36,112 @@ public class MergeItem extends MergeItemBase {
 
    @Override
    public String getAssignees() throws OseeCoreException {
-      return importItem.getAssignees();
+      if (importItem != null) return importItem.getAssignees();
+      return "";
    }
 
    @Override
    public Collection<? extends ICoverage> getChildren() {
-      return importItem.getChildren();
+      if (importItem != null) return importItem.getChildren();
+      return Collections.emptyList();
    }
 
    @Override
    public Collection<? extends ICoverage> getChildren(boolean recurse) {
-      return importItem.getChildren(recurse);
+      if (importItem != null) return importItem.getChildren(recurse);
+      return Collections.emptyList();
    }
 
    @Override
    public int getCoveragePercent() {
-      return importItem.getCoveragePercent();
+      if (importItem != null) return importItem.getCoveragePercent();
+      return 0;
    }
 
    @Override
    public String getCoveragePercentStr() {
-      return importItem.getCoveragePercentStr();
+      if (importItem != null) return importItem.getCoveragePercentStr();
+      return "0";
    }
 
    @Override
    public String getGuid() {
-      return importItem.getGuid();
+      if (importItem != null) return importItem.getGuid();
+      return "";
    }
 
    @Override
    public String getLocation() {
-      return importItem.getLocation();
+      if (importItem != null) return importItem.getLocation();
+      return packageItem.getLocation();
    }
 
    @Override
    public String getName() {
-      return importItem.getName();
+      if (importItem != null)
+         return importItem.getName();
+      else
+         return packageItem.getName();
    }
 
    @Override
    public String getNamespace() {
-      return importItem.getNamespace();
+      if (importItem != null) return importItem.getNamespace();
+      return packageItem.getNamespace();
    }
 
    @Override
    public String getNotes() {
-      return importItem.getNotes();
+      if (importItem != null) return importItem.getNotes();
+      return packageItem.getNotes();
    }
 
    @Override
    public KeyedImage getOseeImage() {
-      return importItem.getOseeImage();
+      if (importItem != null) return importItem.getOseeImage();
+      return packageItem.getOseeImage();
    }
 
    @Override
    public ICoverage getParent() {
-      return importItem.getParent();
+      if (importItem != null) return importItem.getParent();
+      return packageItem.getParent();
    }
 
    @Override
    public String getFileContents() throws OseeCoreException {
-      return importItem.getFileContents();
+      if (importItem != null) return importItem.getFileContents();
+      return packageItem.getFileContents();
    }
 
    @Override
    public boolean isAssignable() {
-      return importItem.isAssignable();
+      if (importItem != null) return importItem.isAssignable();
+      return packageItem.isAssignable();
    }
 
    @Override
    public boolean isCovered() {
-      return importItem.isCovered();
+      if (importItem != null) return importItem.isCovered();
+      return packageItem.isCovered();
    }
 
    @Override
    public Result isEditable() {
-      return importItem.isEditable();
+      if (importItem != null) return importItem.isEditable();
+      return packageItem.isEditable();
    }
 
    @Override
    public boolean isFolder() {
-      return importItem.isFolder();
+      if (importItem != null) return importItem.isFolder();
+      return packageItem.isFolder();
    }
 
    @Override
    public String toString() {
-      return getMergeType().toString() + " - " + importItem.toString();
+      if (importItem != null) return getMergeType().toString() + " - " + importItem.toString();
+      return getMergeType().toString() + " - " + packageItem.toString();
    }
 
    @Override

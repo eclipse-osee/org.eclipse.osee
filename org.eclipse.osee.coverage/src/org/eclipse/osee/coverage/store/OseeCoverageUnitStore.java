@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
+import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -131,9 +132,27 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
             parentArt.addChild(artifact);
          }
       }
+      // Save current/new coverage items
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
          new OseeCoverageUnitStore(childCoverageUnit).save(transaction);
       }
+      // Delete removed coverage items
+      for (Artifact childArt : artifact.getChildren()) {
+         if (childArt.isOfType(CoverageArtifactTypes.CoverageUnit) || childArt.isOfType(CoverageArtifactTypes.CoverageFolder)) {
+            boolean found = false;
+            for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
+               if (childCoverageUnit.getGuid().equals(childArt.getGuid())) {
+                  found = true;
+                  break;
+               }
+            }
+            if (!found) {
+               new OseeCoverageUnitStore(coverageUnit, childArt, CoverageOptionManagerDefault.instance()).delete(
+                     transaction, false);
+            }
+         }
+      }
+
       artifact.persist(transaction);
       return Result.TrueResult;
    }

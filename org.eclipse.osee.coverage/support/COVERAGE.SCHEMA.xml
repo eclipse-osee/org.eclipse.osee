@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TableConfig>
+	<Table name="OSEE_CVG_TESTUNIT_NAMES">
+		<Column id="name_id" limits="8,0" type="DECIMAL" />
+		<Column id="name" limits="255" type="VARCHAR" />
+	</Table>
+	<Table name="OSEE_CVG_TESTUNITS">
+		<Column id="name_id" limits="8,0" type="DECIMAL" />
+		<Column id="item_guid" limits="20" type="VARCHAR" />
+	</Table>
+</TableConfig>
+
