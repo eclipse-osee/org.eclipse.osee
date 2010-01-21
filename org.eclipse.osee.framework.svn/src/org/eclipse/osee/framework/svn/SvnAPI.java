@@ -117,7 +117,8 @@ public class SvnAPI {
       HashMap<String, IRepositoryResource> checkoutMap = toMap(getRepositoryResources(fileToCheckout));
       if (checkoutMap.size() > 0) {
          CheckoutOperationBuilder operationBuilder = new CheckoutOperationBuilder(checkoutMap);
-         operationBuilder.getOperation().run(monitor);
+         CheckoutOperation op = operationBuilder.getOperation();
+         op.run(monitor);
       }
    }
 
@@ -168,10 +169,6 @@ public class SvnAPI {
             this.notify();
             callbackReceived = true;
          }
-      }
-
-      protected void setCallbackReceived(boolean received) {
-         callbackReceived = received;
       }
 
       protected boolean wasCallbackReceived() {

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.exchange.BranchExchange;
-import org.eclipse.osee.framework.core.enums.TrackerId;
+import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
@@ -46,11 +46,11 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
 
    private static Activator instance;
 
-   private final Map<TrackerId, ServiceTracker> mappedTrackers;
+   private final Map<OseeServiceTrackerId, ServiceTracker> mappedTrackers;
    private final List<ServiceRegistration> services;
 
    public Activator() {
-      this.mappedTrackers = new HashMap<TrackerId, ServiceTracker>();
+      this.mappedTrackers = new HashMap<OseeServiceTrackerId, ServiceTracker>();
       this.services = new ArrayList<ServiceRegistration>();
    }
 
@@ -66,17 +66,17 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
       createService(context, IBranchExchange.class, new BranchExchange(this));
       createService(context, IOseeBranchService.class, new OseeBranchService(this, this, this));
 
-      createServiceTracker(context, IResourceLocatorManager.class, TrackerId.RESOURCE_LOCATOR);
-      createServiceTracker(context, IResourceManager.class, TrackerId.RESOURCE_MANAGER);
-      createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
-      createServiceTracker(context, IOseeDatabaseService.class, TrackerId.OSEE_DATABASE_SERVICE);
-      createServiceTracker(context, IOseeCachingService.class, TrackerId.OSEE_CACHING_SERVICE);
-      createServiceTracker(context, IOseeModelingService.class, TrackerId.OSEE_MODELING_SERVICE);
-      createServiceTracker(context, IDataTranslationService.class, TrackerId.DATA_TRANSLATION_SERVICE);
+      createServiceTracker(context, IResourceLocatorManager.class, OseeServiceTrackerId.RESOURCE_LOCATOR);
+      createServiceTracker(context, IResourceManager.class, OseeServiceTrackerId.RESOURCE_MANAGER);
+      createServiceTracker(context, IBranchExchange.class, OseeServiceTrackerId.BRANCH_EXCHANGE);
+      createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
+      createServiceTracker(context, IOseeCachingService.class, OseeServiceTrackerId.OSEE_CACHING_SERVICE);
+      createServiceTracker(context, IOseeModelingService.class, OseeServiceTrackerId.OSEE_MODELING_SERVICE);
+      createServiceTracker(context, IDataTranslationService.class, OseeServiceTrackerId.DATA_TRANSLATION_SERVICE);
 
-      createServiceTracker(context, IOseeModelFactoryService.class, TrackerId.OSEE_FACTORY_SERVICE);
-      createServiceTracker(context, IApplicationServerManager.class, TrackerId.MASTER_SERVICE);
-      createServiceTracker(context, IApplicationServerLookup.class, TrackerId.LOOKUP_SERVICE);
+      createServiceTracker(context, IOseeModelFactoryService.class, OseeServiceTrackerId.OSEE_FACTORY_SERVICE);
+      createServiceTracker(context, IApplicationServerManager.class, OseeServiceTrackerId.MASTER_SERVICE);
+      createServiceTracker(context, IApplicationServerLookup.class, OseeServiceTrackerId.LOOKUP_SERVICE);
    }
 
    public void stop(BundleContext context) throws Exception {
@@ -97,7 +97,7 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
       services.add(context.registerService(serviceInterface.getName(), serviceImplementation, null));
    }
 
-   private void createServiceTracker(BundleContext context, Class<?> clazz, TrackerId trackerId) {
+   private void createServiceTracker(BundleContext context, Class<?> clazz, OseeServiceTrackerId trackerId) {
       ServiceTracker tracker = new ServiceTracker(context, clazz.getName(), null);
       tracker.open();
       mappedTrackers.put(trackerId, tracker);
@@ -108,52 +108,52 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
    }
 
    public IBranchExchange getBranchExchange() {
-      return getTracker(TrackerId.BRANCH_EXCHANGE, IBranchExchange.class);
+      return getTracker(OseeServiceTrackerId.BRANCH_EXCHANGE, IBranchExchange.class);
    }
 
    public IResourceManager getResourceManager() {
-      return getTracker(TrackerId.RESOURCE_MANAGER, IResourceManager.class);
+      return getTracker(OseeServiceTrackerId.RESOURCE_MANAGER, IResourceManager.class);
    }
 
    public IResourceLocatorManager getResourceLocatorManager() {
-      return getTracker(TrackerId.RESOURCE_LOCATOR, IResourceLocatorManager.class);
+      return getTracker(OseeServiceTrackerId.RESOURCE_LOCATOR, IResourceLocatorManager.class);
    }
 
    public IApplicationServerManager getApplicationServerManger() {
-      return getTracker(TrackerId.MASTER_SERVICE, IApplicationServerManager.class);
+      return getTracker(OseeServiceTrackerId.MASTER_SERVICE, IApplicationServerManager.class);
    }
 
    @Override
    public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
-      return getTracker(TrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
+      return getTracker(OseeServiceTrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
    }
 
    @Override
    public IOseeModelFactoryService getOseeFactoryService() throws OseeCoreException {
-      return getTracker(TrackerId.OSEE_FACTORY_SERVICE, IOseeModelFactoryService.class);
+      return getTracker(OseeServiceTrackerId.OSEE_FACTORY_SERVICE, IOseeModelFactoryService.class);
    }
 
    @Override
    public IOseeCachingService getOseeCachingService() throws OseeCoreException {
-      return getTracker(TrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
+      return getTracker(OseeServiceTrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
    }
 
    @Override
    public IOseeModelingService getOseeModelingService() throws OseeCoreException {
-      return getTracker(TrackerId.OSEE_MODELING_SERVICE, IOseeModelingService.class);
+      return getTracker(OseeServiceTrackerId.OSEE_MODELING_SERVICE, IOseeModelingService.class);
    }
 
    @Override
    public IDataTranslationService getTranslationService() throws OseeCoreException {
-      return getTracker(TrackerId.DATA_TRANSLATION_SERVICE, IDataTranslationService.class);
+      return getTracker(OseeServiceTrackerId.DATA_TRANSLATION_SERVICE, IDataTranslationService.class);
    }
 
    @Override
    public IApplicationServerLookup getApplicationServerLookupService() throws OseeCoreException {
-      return getTracker(TrackerId.LOOKUP_SERVICE, IApplicationServerLookup.class);
+      return getTracker(OseeServiceTrackerId.LOOKUP_SERVICE, IApplicationServerLookup.class);
    }
 
-   private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {
+   private <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz) {
       ServiceTracker tracker = mappedTrackers.get(trackerId);
       Object service = tracker.getService();
       return clazz.cast(service);

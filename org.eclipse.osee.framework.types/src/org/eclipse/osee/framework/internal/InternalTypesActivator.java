@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.enums.TrackerId;
+import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
@@ -37,12 +37,12 @@ public class InternalTypesActivator implements BundleActivator, IOseeCachingServ
    private static InternalTypesActivator instance;
 
    private final List<ServiceTracker> trackers;
-   private final Map<TrackerId, ServiceTracker> mappedTrackers;
+   private final Map<OseeServiceTrackerId, ServiceTracker> mappedTrackers;
    private ServiceRegistration registration;
 
    public InternalTypesActivator() {
       this.trackers = new ArrayList<ServiceTracker>();
-      this.mappedTrackers = new HashMap<TrackerId, ServiceTracker>();
+      this.mappedTrackers = new HashMap<OseeServiceTrackerId, ServiceTracker>();
    }
 
    public void start(BundleContext context) throws Exception {
@@ -52,9 +52,9 @@ public class InternalTypesActivator implements BundleActivator, IOseeCachingServ
             context.registerService(IOseeModelingService.class.getName(),
                   new OseeModelingServiceImpl(this, this, this), null);
 
-      createServiceTracker(context, IOseeCachingService.class, TrackerId.OSEE_CACHING_SERVICE);
-      createServiceTracker(context, IOseeModelFactoryService.class, TrackerId.OSEE_MODEL_FACTORY);
-      createServiceTracker(context, IOseeCachingServiceFactory.class, TrackerId.OSEE_CACHING_SERVICE_FACTORY);
+      createServiceTracker(context, IOseeCachingService.class, OseeServiceTrackerId.OSEE_CACHING_SERVICE);
+      createServiceTracker(context, IOseeModelFactoryService.class, OseeServiceTrackerId.OSEE_MODEL_FACTORY);
+      createServiceTracker(context, IOseeCachingServiceFactory.class, OseeServiceTrackerId.OSEE_CACHING_SERVICE_FACTORY);
    }
 
    public void stop(BundleContext context) throws Exception {
@@ -68,7 +68,7 @@ public class InternalTypesActivator implements BundleActivator, IOseeCachingServ
       instance = null;
    }
 
-   private void createServiceTracker(BundleContext context, Class<?> clazz, TrackerId trackerId) {
+   private void createServiceTracker(BundleContext context, Class<?> clazz, OseeServiceTrackerId trackerId) {
       ServiceTracker tracker = new ServiceTracker(context, clazz.getName(), null);
       tracker.open();
       trackers.add(tracker);
@@ -81,20 +81,20 @@ public class InternalTypesActivator implements BundleActivator, IOseeCachingServ
 
    @Override
    public IOseeCachingService getOseeCachingService() throws OseeCoreException {
-      return getTracker(TrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
+      return getTracker(OseeServiceTrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
    }
 
    @Override
    public IOseeModelFactoryService getOseeFactoryService() throws OseeCoreException {
-      return getTracker(TrackerId.OSEE_MODEL_FACTORY, IOseeModelFactoryService.class);
+      return getTracker(OseeServiceTrackerId.OSEE_MODEL_FACTORY, IOseeModelFactoryService.class);
    }
 
    @Override
    public IOseeCachingServiceFactory getFactory() {
-      return getTracker(TrackerId.OSEE_CACHING_SERVICE_FACTORY, IOseeCachingServiceFactory.class);
+      return getTracker(OseeServiceTrackerId.OSEE_CACHING_SERVICE_FACTORY, IOseeCachingServiceFactory.class);
    }
 
-   private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {
+   private <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz) {
       ServiceTracker tracker = mappedTrackers.get(trackerId);
       Object service = tracker.getService();
       return clazz.cast(service);

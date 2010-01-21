@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.server.admin;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
-import org.eclipse.osee.framework.core.enums.TrackerId;
+import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -30,22 +30,22 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider 
 
    private static Activator instance;
 
-   private final Map<TrackerId, ServiceTracker> mappedTrackers;
+   private final Map<OseeServiceTrackerId, ServiceTracker> mappedTrackers;
 
    public Activator() {
-      this.mappedTrackers = new HashMap<TrackerId, ServiceTracker>();
+      this.mappedTrackers = new HashMap<OseeServiceTrackerId, ServiceTracker>();
    }
 
    public void start(BundleContext context) throws Exception {
       instance = this;
 
-      createServiceTracker(context, IResourceManager.class, TrackerId.RESOURCE_MANAGER);
-      createServiceTracker(context, IResourceLocatorManager.class, TrackerId.RESOURCE_LOCATOR);
-      createServiceTracker(context, ISearchEngineTagger.class, TrackerId.SEARCH_TAGGER);
-      createServiceTracker(context, ISearchEngine.class, TrackerId.SEARCH_ENGINE);
-      createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
-      createServiceTracker(context, IOseeCachingService.class, TrackerId.OSEE_CACHING_SERVICE);
-      createServiceTracker(context, IOseeDatabaseService.class, TrackerId.OSEE_DATABASE_SERVICE);
+      createServiceTracker(context, IResourceManager.class, OseeServiceTrackerId.RESOURCE_MANAGER);
+      createServiceTracker(context, IResourceLocatorManager.class, OseeServiceTrackerId.RESOURCE_LOCATOR);
+      createServiceTracker(context, ISearchEngineTagger.class, OseeServiceTrackerId.SEARCH_TAGGER);
+      createServiceTracker(context, ISearchEngine.class, OseeServiceTrackerId.SEARCH_ENGINE);
+      createServiceTracker(context, IBranchExchange.class, OseeServiceTrackerId.BRANCH_EXCHANGE);
+      createServiceTracker(context, IOseeCachingService.class, OseeServiceTrackerId.OSEE_CACHING_SERVICE);
+      createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
    }
 
    public void stop(BundleContext context) throws Exception {
@@ -59,40 +59,40 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider 
 
    @Override
    public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
-      return getTracker(TrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
+      return getTracker(OseeServiceTrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
    }
 
-   private void createServiceTracker(BundleContext context, Class<?> clazz, TrackerId trackerId) {
+   private void createServiceTracker(BundleContext context, Class<?> clazz, OseeServiceTrackerId trackerId) {
       ServiceTracker tracker = new ServiceTracker(context, clazz.getName(), null);
       tracker.open();
       mappedTrackers.put(trackerId, tracker);
    }
 
    public IBranchExchange getBranchExchange() {
-      return getTracker(TrackerId.BRANCH_EXCHANGE, IBranchExchange.class);
+      return getTracker(OseeServiceTrackerId.BRANCH_EXCHANGE, IBranchExchange.class);
    }
 
    public IResourceManager getResourceManager() {
-      return getTracker(TrackerId.RESOURCE_MANAGER, IResourceManager.class);
+      return getTracker(OseeServiceTrackerId.RESOURCE_MANAGER, IResourceManager.class);
    }
 
    public IResourceLocatorManager getResourceLocatorManager() {
-      return getTracker(TrackerId.RESOURCE_LOCATOR, IResourceLocatorManager.class);
+      return getTracker(OseeServiceTrackerId.RESOURCE_LOCATOR, IResourceLocatorManager.class);
    }
 
    public ISearchEngineTagger getSearchTagger() {
-      return getTracker(TrackerId.SEARCH_TAGGER, ISearchEngineTagger.class);
+      return getTracker(OseeServiceTrackerId.SEARCH_TAGGER, ISearchEngineTagger.class);
    }
 
    public ISearchEngine getSearchEngine() {
-      return getTracker(TrackerId.SEARCH_ENGINE, ISearchEngine.class);
+      return getTracker(OseeServiceTrackerId.SEARCH_ENGINE, ISearchEngine.class);
    }
 
    public IOseeCachingService getOseeCachingService() {
-      return getTracker(TrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
+      return getTracker(OseeServiceTrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
    }
 
-   private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {
+   private <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz) {
       ServiceTracker tracker = mappedTrackers.get(trackerId);
       Object service = tracker.getService();
       return clazz.cast(service);

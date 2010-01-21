@@ -21,7 +21,6 @@ Import-Package: org.eclipse.core.commands,
  org.eclipse.swt.widgets,
  org.eclipse.team.core,
  org.eclipse.team.internal.ui,
- org.eclipse.team.internal.ui.actions,
  org.eclipse.team.svn.core.connector,
  org.eclipse.team.svn.core.operation,
  org.eclipse.team.svn.core.operation.remote,
@@ -31,5 +30,3 @@ Import-Package: org.eclipse.core.commands,
  org.eclipse.team.svn.ui.action.remote,
  org.eclipse.ui,
  org.osgi.framework
-Export-Package: org.eclipse.osee.framework.svn,
- org.eclipse.osee.framework.svn.entry

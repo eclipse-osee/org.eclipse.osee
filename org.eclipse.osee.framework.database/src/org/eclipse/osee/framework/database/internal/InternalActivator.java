@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.enums.TrackerId;
+import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IApplicationDatabaseManager;
 import org.eclipse.osee.framework.database.IOseeConnectionProvider;
@@ -37,11 +37,11 @@ public class InternalActivator implements BundleActivator, IOseeDatabaseServiceP
 
    private static InternalActivator instance = null;
 
-   private final Map<TrackerId, ServiceTracker> mappedTrackers;
+   private final Map<OseeServiceTrackerId, ServiceTracker> mappedTrackers;
    private final List<ServiceRegistration> services;
 
    public InternalActivator() {
-      this.mappedTrackers = new HashMap<TrackerId, ServiceTracker>();
+      this.mappedTrackers = new HashMap<OseeServiceTrackerId, ServiceTracker>();
       this.services = new ArrayList<ServiceRegistration>();
    }
 
@@ -50,10 +50,10 @@ public class InternalActivator implements BundleActivator, IOseeDatabaseServiceP
 
       createService(context, IOseeDatabaseService.class, new OseeDatabaseServiceImpl(new OseeSequenceImpl(this), this));
 
-      createServiceTracker(context, IDbConnectionFactory.class, TrackerId.CONNECTION_PROVIDER);
-      createServiceTracker(context, IDbConnectionInformation.class, TrackerId.CONNECTION_INFOS);
-      createServiceTracker(context, IApplicationDatabaseManager.class, TrackerId.APPLICATION_MANAGER);
-      createServiceTracker(context, IOseeDatabaseService.class, TrackerId.DATABASE_SERVICE);
+      createServiceTracker(context, IDbConnectionFactory.class, OseeServiceTrackerId.CONNECTION_PROVIDER);
+      createServiceTracker(context, IDbConnectionInformation.class, OseeServiceTrackerId.CONNECTION_INFOS);
+      createServiceTracker(context, IApplicationDatabaseManager.class, OseeServiceTrackerId.APPLICATION_MANAGER);
+      createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
    }
 
    public void stop(BundleContext context) throws Exception {
@@ -73,7 +73,7 @@ public class InternalActivator implements BundleActivator, IOseeDatabaseServiceP
       services.add(context.registerService(serviceInterface.getName(), serviceImplementation, null));
    }
 
-   private void createServiceTracker(BundleContext context, Class<?> clazz, TrackerId trackerId) {
+   private void createServiceTracker(BundleContext context, Class<?> clazz, OseeServiceTrackerId trackerId) {
       ServiceTracker tracker = new ServiceTracker(context, clazz.getName(), null);
       tracker.open();
       mappedTrackers.put(trackerId, tracker);
@@ -84,16 +84,16 @@ public class InternalActivator implements BundleActivator, IOseeDatabaseServiceP
    }
 
    public IDbConnectionFactory getConnectionFactory() throws OseeDataStoreException {
-      return getTracker(TrackerId.CONNECTION_PROVIDER, IDbConnectionFactory.class, TIMEOUT);
+      return getTracker(OseeServiceTrackerId.CONNECTION_PROVIDER, IDbConnectionFactory.class, TIMEOUT);
    }
 
    public IDbConnectionInformation getConnectionInfos() throws OseeDataStoreException {
-      return getTracker(TrackerId.CONNECTION_INFOS, IDbConnectionInformation.class, TIMEOUT);
+      return getTracker(OseeServiceTrackerId.CONNECTION_INFOS, IDbConnectionInformation.class, TIMEOUT);
    }
 
    @Override
    public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
-      return getTracker(TrackerId.DATABASE_SERVICE, IOseeDatabaseService.class, TIMEOUT);
+      return getTracker(OseeServiceTrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class, TIMEOUT);
    }
 
    public IDatabaseInfoProvider getApplicationDatabaseProvider() throws OseeDataStoreException {
@@ -101,10 +101,10 @@ public class InternalActivator implements BundleActivator, IOseeDatabaseServiceP
    }
 
    private IApplicationDatabaseManager getApplicationDatabaseManager() throws OseeDataStoreException {
-      return getTracker(TrackerId.APPLICATION_MANAGER, IApplicationDatabaseManager.class, TIMEOUT);
+      return getTracker(OseeServiceTrackerId.APPLICATION_MANAGER, IApplicationDatabaseManager.class, TIMEOUT);
    }
 
-   private <T> T getTracker(TrackerId trackerId, Class<T> clazz, Long timeout) throws OseeDataStoreException {
+   private <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz, Long timeout) throws OseeDataStoreException {
       ServiceTracker tracker = mappedTrackers.get(trackerId);
       Object service;
       if (timeout != null) {
