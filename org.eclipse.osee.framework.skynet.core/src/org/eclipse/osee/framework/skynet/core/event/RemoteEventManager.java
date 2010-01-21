@@ -17,10 +17,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -453,13 +451,14 @@ public class RemoteEventManager {
                               new LoadedArtifacts(((NetworkArtifactPurgeEvent) event).getId(),
                                     ((NetworkArtifactPurgeEvent) event).getArtifactIds(),
                                     ((NetworkArtifactPurgeEvent) event).getArtifactTypeIds());
-                        for(Artifact artifact : loadedArtifacts.getLoadedArtifacts()){
+                        for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
                            //This is because applications may still have a reference to the artifact
-                           for(RelationLink link : RelationManager.getRelationsAll(artifact.getArtId(), artifact.getBranch().getId(), false)){
+                           for (RelationLink link : RelationManager.getRelationsAll(artifact.getArtId(),
+                                 artifact.getBranch().getId(), false)) {
                               link.internalRemoteEventDelete();
                            }
-                           artifact.internalSetDeleted();
                            ArtifactCache.deCache(artifact);
+                           artifact.internalSetDeleted();
                         }
                         InternalEventManager.kickArtifactsPurgedEvent(sender, loadedArtifacts);
                      } catch (Exception ex) {
@@ -587,6 +586,7 @@ public class RemoteEventManager {
                   xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, unloadedArtifact));
                } else if (!artifact.isHistorical()) {
                   if (!InternalEventManager.enableRemoteEventLoopback) {
+                     ArtifactCache.deCache(artifact);
                      artifact.internalSetDeleted();
                   }
 

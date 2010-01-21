@@ -152,6 +152,7 @@ public class PurgeArtifacts extends DbTransaction {
                transactionJoinId);
 
          for (Artifact art : artifactsToPurge) {
+            ArtifactCache.deCache(art);
             art.internalSetDeleted();
             for (RelationLink rel : art.getRelationsAll(false)) {
                rel.markAsPurged();

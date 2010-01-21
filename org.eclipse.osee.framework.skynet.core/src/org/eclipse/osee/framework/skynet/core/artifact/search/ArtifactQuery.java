@@ -139,6 +139,9 @@ public class ArtifactQuery {
    private static Artifact getOrCheckArtifactFromId(String guidOrHrid, IOseeBranch branch, boolean allowDeleted, QueryType queryType) throws OseeCoreException {
       Artifact artifact = ArtifactCache.getActive(guidOrHrid, branch);
       if (artifact != null) {
+         if (artifact.isDeleted() && !allowDeleted) {
+            return null;
+         }
          return artifact;
       }
       return new ArtifactQueryBuilder(guidOrHrid, branch, allowDeleted, FULL).getOrCheckArtifact(queryType);

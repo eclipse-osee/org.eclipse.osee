@@ -196,6 +196,8 @@ public class AtsBranchConfigurationTest {
       // commit branch
       commitBranch(teamWf);
 
+      TestUtil.sleep(2000);
+
       // test change report
       OseeLog.log(AtsPlugin.class, Level.INFO, "Test change report results");
       Collection<Artifact> newArts =

@@ -178,12 +178,6 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   /**
-    * @param artifact
-    * @param builder
-    * @param reorderReloations
-    * @throws Exception
-    */
    private static void deleteTrace(Artifact artifact, SkynetTransaction transaction, boolean reorderRelations) throws OseeCoreException {
       if (!artifact.isDeleted()) {
          // This must be done first since the the actual deletion of an artifact clears out the link manager
@@ -191,6 +185,7 @@ public class ArtifactPersistenceManager {
             deleteTrace(childArtifact, transaction, false);
          }
          try {
+            ArtifactCache.deCache(artifact);
             artifact.internalSetDeleted();
             RelationManager.deleteRelationsAll(artifact, reorderRelations);
             if (transaction != null) {
