@@ -45,7 +45,7 @@ public class MergeItemGroup extends MergeItemBase {
    public Collection<? extends ICoverage> getChildren(boolean recurse) {
       Set<ICoverage> children = new HashSet<ICoverage>();
       for (IMergeItem mergeItem : mergeItems) {
-         if (mergeItem instanceof MergeItem) {
+         if (mergeItem instanceof MergeItem && ((MergeItem) mergeItem).getImportItem() != null) {
             children.addAll(((MergeItem) mergeItem).getImportItem().getChildren(recurse));
          }
       }
