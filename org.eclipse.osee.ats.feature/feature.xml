@@ -3,8 +3,7 @@
       id="org.eclipse.osee.ats.feature"
       label="%featureName"
       version="0.9.1.qualifier"
-      provider-name="%providerName"
-      plugin="org.eclipse.osee.framework.ui.product">
+      provider-name="%providerName">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -17,10 +16,6 @@
    <license url="%licenseURL">
       %license
    </license>
-
-   <url>
-      <update label="Osee Update Site" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
-   </url>
 
    <plugin
          id="org.eclipse.osee.ats"

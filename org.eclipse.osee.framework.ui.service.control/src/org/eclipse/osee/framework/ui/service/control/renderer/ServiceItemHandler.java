@@ -72,10 +72,6 @@ public class ServiceItemHandler implements IRenderer {
          this(label, SWT.BOLD, SWT.COLOR_DARK_BLUE, data, SWT.NORMAL, SWT.COLOR_BLACK);
       }
 
-      public ItemRecord(String label, int labelStyle, int labelColor, String data) {
-         this(label, labelStyle, labelColor, data, SWT.NORMAL, SWT.COLOR_BLACK);
-      }
-
       public ItemRecord(String label, String data, int dataStyle, int dataColor) {
          this(label, SWT.BOLD, SWT.COLOR_DARK_BLUE, data, dataStyle, dataColor);
       }

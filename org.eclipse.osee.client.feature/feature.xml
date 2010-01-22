@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.osee.client.feature"
-      label="Eclipse OSEE Client Feature  (Incubation)"
+      label="%featureName"
       version="0.9.1.qualifier"
-      provider-name="Eclipse.org"
-      plugin="org.eclipse.osee.framework.ui.product">
+      provider-name="%providerName">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -19,12 +18,8 @@
    </license>
 
    <url>
-      <update label="OSEE Update Site" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
+      <update label="%updateSiteName" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
    </url>
-
-   <includes
-         id="org.eclipse.osee.external.feature"
-         version="0.0.0"/>
 
    <includes
          id="org.eclipse.osee.framework.feature"
@@ -46,28 +41,8 @@
          id="org.eclipse.osee.demo.feature"
          version="0.0.0"/>
 
-   <includes
-         id="org.eclipse.osee.define.feature.source"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.ote.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.ats.feature.source"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.framework.feature.source"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.framework.ui.feature.source"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.osee.ote.feature.source"
-         version="0.0.0"/>
+   <requires>
+      <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.1.qualifier" match="greaterOrEqual"/>
+   </requires>
 
 </feature>

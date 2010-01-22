@@ -10,20 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.plugin.internal;
 
-import java.io.File;
-import java.net.URL;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.database.core.OseeInfo;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.IActionReportingService;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osgi.service.datalocation.Location;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchListener;
-import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -48,42 +38,43 @@ public class OseePluginUiActivator extends OseeUiActivator {
       tracker = new ServiceTracker(context, IActionReportingService.class.getName(), null);
       tracker.open();
 
-      if (PlatformUI.isWorkbenchRunning()) {
-         IWorkbench workbench = PlatformUI.getWorkbench();
-         workbench.addWorkbenchListener(new IWorkbenchListener() {
-
-            @Override
-            public void postShutdown(IWorkbench workbench) {
-            }
-
-            @Override
-            public boolean preShutdown(IWorkbench workbench, boolean forced) {
-               try {
-                  if (Lib.isWindows()) {
-                     String clearCache = OseeInfo.getValue("clear_cache");
-                     if (Boolean.parseBoolean(clearCache)) {
-                        Location location = Platform.getInstallLocation();
-                        URL url = FileLocator.toFileURL(location.getURL());
-                        File file = new File(url.getFile());
-                        File cache =
-                              new File(new File(new File(file, "p2"), "org.eclipse.equinox.p2.metadata.repository"),
-                                    "cache");
-                        File[] files = cache.listFiles();
-                        for (File toDelete : files) {
-                           toDelete.delete();
-                        }
-
-                        Lib.deleteContents(new File(new File(file, "configuration"), "org.eclipse.osgi"));
-                     }
-                  }
-               } catch (Throwable th) {
-
-               }
-               return true;
-            }
-
-         });
-      }
+      // TODO: This isn't needed anymore
+      //      if (PlatformUI.isWorkbenchRunning()) {
+      //         IWorkbench workbench = PlatformUI.getWorkbench();
+      //         workbench.addWorkbenchListener(new IWorkbenchListener() {
+      //
+      //            @Override
+      //            public void postShutdown(IWorkbench workbench) {
+      //            }
+      //
+      //            @Override
+      //            public boolean preShutdown(IWorkbench workbench, boolean forced) {
+      //               try {
+      //                  if (Lib.isWindows()) {
+      //                     String clearCache = OseeInfo.getValue("clear_cache");
+      //                     if (Boolean.parseBoolean(clearCache)) {
+      //                        Location location = Platform.getInstallLocation();
+      //                        URL url = FileLocator.toFileURL(location.getURL());
+      //                        File file = new File(url.getFile());
+      //                        File cache =
+      //                              new File(new File(new File(file, "p2"), "org.eclipse.equinox.p2.metadata.repository"),
+      //                                    "cache");
+      //                        File[] files = cache.listFiles();
+      //                        for (File toDelete : files) {
+      //                           toDelete.delete();
+      //                        }
+      //
+      //                        Lib.deleteContents(new File(new File(file, "configuration"), "org.eclipse.osgi"));
+      //                     }
+      //                  }
+      //               } catch (Throwable th) {
+      //
+      //               }
+      //               return true;
+      //            }
+      //
+      //         });
+      //      }
    }
 
    @Override

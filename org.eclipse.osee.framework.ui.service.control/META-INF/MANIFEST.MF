@@ -22,15 +22,20 @@ Export-Package: org.eclipse.osee.framework.ui.service.control,
  org.eclipse.osee.framework.ui.service.control.wizards.launcher.widgets
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.osee.framework.jdk.core,
  net.jini,
- org.eclipse.osee.framework.jini,
- org.eclipse.osee.framework.ui.plugin,
- org.eclipse.osee.framework.plugin.core,
- org.eclipse.osee.framework.ui.swt,
- com.jcraft.jsch
+ org.eclipse.osee.framework.jini
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.apache.commons.lang;version="2.4.0",
+Import-Package: com.jcraft.jsch,
+ org.apache.commons.lang;version="2.4.0",
  org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.logging
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.jdk.core.util.io,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.osee.framework.plugin.core.config,
+ org.eclipse.osee.framework.plugin.core.util,
+ org.eclipse.osee.framework.ui.plugin,
+ org.eclipse.osee.framework.ui.plugin.io,
+ org.eclipse.osee.framework.ui.swt

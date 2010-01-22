@@ -24,15 +24,15 @@
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.osee.framework.jdk.core"/>
       <import plugin="net.jini"/>
       <import plugin="org.eclipse.osee.framework.jini"/>
-      <import plugin="org.eclipse.osee.framework.plugin.core"/>
-      <import plugin="org.eclipse.osee.framework.ui.swt"/>
       <import plugin="com.jcraft.jsch"/>
       <import plugin="org.apache.commons.lang"/>
       <import plugin="org.eclipse.osee.framework.core"/>
+      <import plugin="org.eclipse.osee.framework.jdk.core"/>
       <import plugin="org.eclipse.osee.framework.logging"/>
+      <import plugin="org.eclipse.osee.framework.plugin.core"/>
+      <import plugin="org.eclipse.nebula.widgets.calendarcombo"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
@@ -43,9 +43,10 @@
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.eclipse.osee.framework.database"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.ui.forms" version="3.4.1" match="greaterOrEqual"/>
       <import feature="org.eclipse.osee.core.feature" version="0.9.1.qualifier"/>
-      <import plugin="org.eclipse.nebula.widgets.calendarcombo"/>
    </requires>
 
    <plugin
@@ -71,6 +72,13 @@
 
    <plugin
          id="org.eclipse.osee.framework.ui.plugin"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.ui.swt"
          download-size="0"
          install-size="0"
          version="0.0.0"
