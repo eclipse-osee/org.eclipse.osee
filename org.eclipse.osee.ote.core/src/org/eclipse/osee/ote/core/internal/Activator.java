@@ -141,7 +141,7 @@ public class Activator implements BundleActivator, RuntimeLibraryListener {
       stopRuntimeServices();
    }   
 
-   private void stopRuntimeServices(){
+   private synchronized void stopRuntimeServices(){
       for(RuntimeConfigurationInitilizer initializer:initializersToUninitialize){
          initializer.stopRuntimeOsgiServices();
       }
