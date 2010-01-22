@@ -1,16 +1,21 @@
 <project default="run" name="org.eclipse.osee.server.releng/build.xml - Run a OSEE build using the Athena CBI">
 	<property environment="env" />
 
-	<!-- load properties and set timestamp for the build
-		<property name="properties.file.path" default="build.properties" /> -->
+	<!-- load properties and set timestamp for the build -->
+	<property name="os.specific.build.properties" default="build.athena.linux.properties" />
+	<property file="${os.specific.build.properties}" />
 	<property file="build.properties" />
 	<tstamp>
 		<format property="buildTimestamp" pattern="yyyyMMddHHmm" />
 	</tstamp>
 
-	<!-- Build from HEAD, uncomment these lines	-->
-	<property name="forceContextQualifier" value="v${buildTimestamp}" />
-	<property name="fetchTag" value="HEAD" />
+	<property name="WORKSPACE" value="${env.WORKSPACE}" />
+	
+	<property name="forceContextQualifier" value="${env.forceContextQualifier}" default="v${buildTimestamp}" />
+	<property name="fetchTag" value="${env.fetchTag}" default="HEAD" />
+
+	<!--<property name="forceContextQualifier" value="v${buildTimestamp}" />
+	<property name="fetchTag" value="HEAD" />-->
 
 	<!-- calculate workspaceDir as parent of this folder, the project's .releng folder (relengBuilderDir) -->
 	<property name="relengBuilderDir" value="${basedir}" />
