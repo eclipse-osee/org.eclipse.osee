@@ -10,12 +10,13 @@
 	</tstamp>
 
 	<property name="WORKSPACE" value="${env.WORKSPACE}" />
-	<property name="SNAPSHOT" value="${env.SNAPSHOT}" default="false" />
-	<property name="forceContextQualifier" value="${env.forceContextQualifier}" default="v${buildTimestamp}" />
-	<property name="fetchTag" value="${env.fetchTag}" default="HEAD" />
+	<property name="SNAPSHOT" value="${env.SNAPSHOT}" />
+	<property name="forceContextQualifier" value="${env.forceContextQualifier}" />
+	<property name="fetchTag" value="${env.fetchTag}" />
 
-	<!--<property name="forceContextQualifier" value="v${buildTimestamp}" />
-	<property name="fetchTag" value="HEAD" />-->
+	<property name="SNAPSHOT" value="false" />
+	<property name="forceContextQualifier" value="v${buildTimestamp}" />
+	<property name="fetchTag" value="HEAD" />
 
 	<!-- calculate workspaceDir as parent of this folder, the project's .releng folder (relengBuilderDir) -->
 	<property name="relengBuilderDir" value="${basedir}" />
