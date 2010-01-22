@@ -2,7 +2,7 @@
 	<property environment="env" />
 
 	<!-- load properties and set timestamp for the build -->
-	<property name="os.specific.build.properties" default="build.athena.linux.properties" />
+	<!-- <property name="os.specific.build.properties" default="build.athena.linux.properties" /> -->
 	<property file="${os.specific.build.properties}" />
 	<property file="build.properties" />
 	<tstamp>
