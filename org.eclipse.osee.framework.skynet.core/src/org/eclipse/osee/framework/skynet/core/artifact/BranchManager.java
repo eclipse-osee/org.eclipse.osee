@@ -253,15 +253,15 @@ public class BranchManager {
    }
 
    public static void updateBranchType(IProgressMonitor monitor, final int branchId, final BranchType type) throws OseeCoreException {
-      HttpUpdateBranchTypeRequester.updateBranchType(monitor, branchId, type);
+      // HttpUpdateBranchTypeRequester.updateBranchType(monitor, branchId, type);
    }
 
    public static void updateBranchState(IProgressMonitor monitor, final int branchId, final BranchState state) throws OseeCoreException {
-      HttpUpdateBranchStateRequester.updateBranchState(monitor, branchId, state);
+      //   HttpUpdateBranchStateRequester.updateBranchState(monitor, branchId, state);
    }
 
    public static void updateBranchArchivedState(IProgressMonitor monitor, final int branchId, final BranchArchivedState state) throws OseeCoreException {
-      HttpUpdateBranchArchivedStateRequester.updateBranchArchivedState(monitor, branchId, state);
+      //  HttpUpdateBranchArchivedStateRequester.updateBranchArchivedState(monitor, branchId, state);
    }
 
    /**
