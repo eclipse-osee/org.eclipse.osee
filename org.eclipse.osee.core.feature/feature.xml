@@ -22,24 +22,19 @@
    </url>
 
    <requires>
-      <import plugin="org.eclipse.osgi"/>
       <import plugin="com.lowagie.text"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.jobs"/>
+      <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.commons.codec"/>
       <import plugin="org.apache.commons.httpclient"/>
       <import plugin="org.apache.commons.lang"/>
       <import plugin="org.apache.xerces"/>
       <import plugin="jms.libraries"/>
       <import plugin="org.apache.commons.logging"/>
+      <import plugin="net.jini"/>
       <import plugin="org.eclipse.core.resources"/>
    </requires>
-
-   <plugin
-         id="net.jini"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.osee.framework.core"
