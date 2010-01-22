@@ -15,6 +15,6 @@ package org.eclipse.osee.framework.plugin.core;
  */
 public interface IActionReportingService {
 
-   public void report(String item, String description) throws Exception;
+   public void report(String actionableItem, String desc) throws Exception;
 
 }
