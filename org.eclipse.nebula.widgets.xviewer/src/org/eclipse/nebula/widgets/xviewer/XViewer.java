@@ -394,44 +394,50 @@ public class XViewer extends TreeViewer {
 
    /**
     * Override this to add information to the status string. eg. extra filters etc.
-    * 
-    * @return string to add
     */
    public String getStatusString() {
       return "";
-   }
-
-   public void getStatusLine1(StringBuffer sb) {
-      int loadedNum = 0;
-      if (getRoot() != null && ((ITreeContentProvider) getContentProvider()) != null) {
-         loadedNum = ((ITreeContentProvider) getContentProvider()).getChildren(getRoot()).length;
-      }
-      sb.append(" " + loadedNum + " Loaded - " + getVisibleItemCount(getTree().getItems()) + " Shown - " + ((IStructuredSelection) getSelection()).size() + " Selected - ");
-      customizeMgr.appendToStatusLabel(sb);
-      if (filterDataUI != null) {
-         filterDataUI.appendToStatusLabel(sb);
-      }
-      columnFilterDataUI.appendToStatusLabel(sb);
-      sb.append(getStatusString());
-   }
-
-   public void getStatusLine2(StringBuffer sb) {
-      customizeMgr.getSortingStr(sb);
    }
 
    public void updateStatusLabel() {
       if (!xViewerFactory.isLoadedStatusLabelAvailable()) return;
       if (getTree().isDisposed() || statusLabel.isDisposed()) return;
       StringBuffer sb = new StringBuffer();
-      getStatusLine1(sb);
+
+      // Status Line 1
+      int loadedNum = 0;
+      int visibleNum = getVisibleItemCount(getTree().getItems());
+      if (getRoot() != null && ((ITreeContentProvider) getContentProvider()) != null) {
+         loadedNum = ((ITreeContentProvider) getContentProvider()).getChildren(getRoot()).length;
+      }
+      boolean allItemsFiltered = loadedNum > 0 && visibleNum == 0;
+      if (allItemsFiltered) {
+         sb.append("ALL ITEMS FILTERED - ");
+      }
+      sb.append(" " + loadedNum + " Loaded - " + visibleNum + " Shown - " + ((IStructuredSelection) getSelection()).size() + " Selected - ");
+      customizeMgr.appendToStatusLabel(sb);
+      if (filterDataUI != null) {
+         filterDataUI.appendToStatusLabel(sb);
+      }
+      columnFilterDataUI.appendToStatusLabel(sb);
+      sb.append(getStatusString());
       if (sb.length() > 0) {
          sb.append("\n");
       }
-      getStatusLine2(sb);
+
+      // Status Line 2
+      customizeMgr.getSortingStr(sb);
+
+      // Display status lines
       String str = sb.toString();
       statusLabel.setText(str);
       statusLabel.getParent().getParent().layout();
       statusLabel.setToolTipText(str);
+      if (allItemsFiltered) {
+         statusLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+      } else {
+         statusLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
+      }
    }
 
    public String getViewerNamespace() {
