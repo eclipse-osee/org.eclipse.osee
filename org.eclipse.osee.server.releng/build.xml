@@ -10,7 +10,7 @@
 	</tstamp>
 
 	<property name="WORKSPACE" value="${env.WORKSPACE}" />
-	
+	<property name="SNAPSHOT" value="${env.SNAPSHOT}" default="false" />
 	<property name="forceContextQualifier" value="${env.forceContextQualifier}" default="v${buildTimestamp}" />
 	<property name="fetchTag" value="${env.fetchTag}" default="HEAD" />
 
