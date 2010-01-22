@@ -34,7 +34,6 @@
       <import plugin="org.eclipse.osee.framework.core"/>
       <import plugin="org.eclipse.osee.framework.logging"/>
       <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
@@ -46,6 +45,7 @@
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.osee.framework.database"/>
       <import feature="org.eclipse.osee.core.feature" version="0.9.1.qualifier"/>
+      <import plugin="org.eclipse.nebula.widgets.calendarcombo"/>
    </requires>
 
    <plugin
