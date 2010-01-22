@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.osee.framework.server.feature.test"
-      label="Test"
-      version="1.0.0.qualifier"
-      provider-name="Eclipse.org">
+      label="%featureName"
+      version="0.9.1.qualifier"
+      provider-name="%providerName">
 
    <description url="http://www.example.com/description">
       Server Feature Tests
@@ -16,6 +16,14 @@
    <license url="http://www.example.com/license">
       [Enter License Description here.]
    </license>
+
+   <url>
+      <update label="%updateSiteName" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
+   </url>
+
+   <requires>
+      <import feature="org.eclipse.osee.framework.server.feature" version="0.9.1.qualifier" match="greaterOrEqual"/>
+   </requires>
 
    <plugin
          id="org.eclipse.test"
