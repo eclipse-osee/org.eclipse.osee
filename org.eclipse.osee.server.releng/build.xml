@@ -47,6 +47,9 @@
 		<echo message="Qualifier: ${forceContextQualifier}" />
 		<echo message="Fetch Tag: ${fetchTag}" />
 
+		<echo message="Proxy Host: ${http.proxyHost}" />
+		<echo message="Proxy Port: ${http.proxyPort}" />
+
 		<fail message="Specify the build workspace path 'WORKSPACE'">
 			<condition>
 				<not>
