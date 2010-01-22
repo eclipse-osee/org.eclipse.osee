@@ -13,7 +13,7 @@ package org.eclipse.osee.support.test;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.test.AtsTest_Config_Suite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactQueryTest;
+import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactQueryTestProduction;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Production_Suite;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {AtsTest_Config_Suite.class, ArtifactQueryTest.class, FrameworkUi_Production_Suite.class})
+@Suite.SuiteClasses( {AtsTest_Config_Suite.class, ArtifactQueryTestProduction.class, FrameworkUi_Production_Suite.class})
 /**
  * This suite should contain any test that can be run against a deployed OSEE database.<br>
  * <br>
