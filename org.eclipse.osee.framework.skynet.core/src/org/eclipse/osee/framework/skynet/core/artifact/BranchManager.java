@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchControlled;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
@@ -249,6 +250,18 @@ public class BranchManager {
       } catch (RuntimeException ex) {
          throw new OseeWrappedException(ex);
       }
+   }
+
+   public static void updateBranchType(IProgressMonitor monitor, final int branchId, final BranchType type) throws OseeCoreException {
+      HttpUpdateBranchTypeRequester.updateBranchType(monitor, branchId, type);
+   }
+
+   public static void updateBranchState(IProgressMonitor monitor, final int branchId, final BranchState state) throws OseeCoreException {
+      HttpUpdateBranchStateRequester.updateBranchState(monitor, branchId, state);
+   }
+
+   public static void updateBranchArchivedState(IProgressMonitor monitor, final int branchId, final BranchArchivedState state) throws OseeCoreException {
+      HttpUpdateBranchArchivedStateRequester.updateBranchArchivedState(monitor, branchId, state);
    }
 
    /**
