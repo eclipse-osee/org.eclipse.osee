@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.osee.external.feature"
-      label="Eclipse OSEE Dependancies Feature (Incubation)"
+      label="%featureName"
       version="0.9.1.qualifier"
-      provider-name="Eclipse.org">
+      provider-name="%providerName">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -18,7 +18,7 @@
    </license>
 
    <url>
-      <update label="Osee Update Site" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
+      <update label="%updateSiteName" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
    </url>
 
    <plugin
@@ -145,7 +145,7 @@
          download-size="4727"
          install-size="4728"
          version="0.0.0"
-		 	unpack="false"/>
+         unpack="false"/>
 
    <plugin
          id="com.lowagie.text"
@@ -153,15 +153,15 @@
          install-size="1168"
          version="0.0.0"
          unpack="false"/>
-         
-    <plugin
+
+   <plugin
          id="org.eclipse.nebula.cwt"
          download-size="1166"
          install-size="1168"
          version="0.0.0"
          unpack="false"/>
-         
-    <plugin
+
+   <plugin
          id="org.eclipse.nebula.widgets.cdatetime"
          download-size="1166"
          install-size="1168"
@@ -178,5 +178,13 @@
          id="jms.libraries"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>         
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.nebula.widgets.calendarcombo"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
