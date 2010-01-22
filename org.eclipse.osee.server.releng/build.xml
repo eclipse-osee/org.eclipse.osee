@@ -48,6 +48,10 @@
 		<echo message="Java Home: ${JAVA_HOME}" />
 		<echo message="Java 6.0 Home: ${JAVA60_HOME}" />
 
+		<echo message="Snapshot: ${SNAPSHOT}" />
+		<echo message="Qualifier: ${forceContextQualifier}" />
+		<echo message="Fetch Tag: ${fetchTag}" />
+
 		<fail message="Specify the build workspace path 'WORKSPACE'">
 			<condition>
 				<not>
