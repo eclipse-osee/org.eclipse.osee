@@ -13,3 +13,4 @@ plugin@org.eclipse.nebula.widgets.xviewer=SVN,trunk,https://dev.eclipse.org/svnr
 plugin@org.eclipse.osee.framework.ui.jdk=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.ui.jdk
 plugin@org.eclipse.osee.framework.ui.plugin=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.ui.plugin
 plugin@org.eclipse.osee.framework.ui.service.control=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.ui.service.control
+plugin@org.eclipse.osee.framework.ui.swt=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.ui.swt
