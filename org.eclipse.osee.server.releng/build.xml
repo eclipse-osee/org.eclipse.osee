@@ -3,8 +3,8 @@
 
 	<!-- load properties and set timestamp for the build -->
 	<!-- <property name="os.specific.build.properties" default="build.athena.linux.properties" /> -->
-	<property file="${os.specific.build.properties}" />
-	<property file="build.properties" />
+	<loadproperties srcFile="${os.specific.build.properties}" />
+	<loadproperties srcFile="build.properties" />
 	<tstamp>
 		<format property="buildTimestamp" pattern="yyyyMMddHHmm" />
 	</tstamp>
