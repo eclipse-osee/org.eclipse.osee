@@ -17,6 +17,10 @@
       [Enter License Description here.]
    </license>
 
+   <url>
+      <update label="%updateSiteName" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
+   </url>
+
    <requires>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="com.lowagie.text"/>
