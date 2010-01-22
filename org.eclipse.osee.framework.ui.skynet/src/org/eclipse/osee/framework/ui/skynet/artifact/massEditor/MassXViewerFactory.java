@@ -25,15 +25,15 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewe
 public class MassXViewerFactory extends SkynetXViewerFactory {
 
    private static String NAMESPACE = "org.eclipse.osee.framework.ui.skynet.massEditor.ArtifactXViewer";
-   private static XViewerArtifactNameColumn nameCol = new XViewerArtifactNameColumn("Name");
+   private static XViewerArtifactNameColumn nameCol = new XViewerArtifactNameColumn("Name", true);
 
    public MassXViewerFactory(Collection<? extends Artifact> artifacts) {
       super(NAMESPACE);
       registerColumns(nameCol);
-      registerAllAttributeColumnsForArtifacts(artifacts, true);
-      registerColumns(new XViewerHridColumn("ID"));
-      registerColumns(new XViewerGuidColumn("GUID"));
-      registerColumns(new XViewerArtifactTypeColumn("Artifact Type"));
+      registerAllAttributeColumnsForArtifacts(artifacts, true, true);
+      registerColumns(new XViewerHridColumn("ID", true));
+      registerColumns(new XViewerGuidColumn("GUID", true));
+      registerColumns(new XViewerArtifactTypeColumn("Artifact Type", true));
    }
 
    @Override

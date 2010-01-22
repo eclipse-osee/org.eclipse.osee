@@ -279,7 +279,7 @@ public class XViewer extends TreeViewer {
 
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       if (!isColumnMultiEditEnabled()) return false;
-      return (!((XViewerColumn) treeColumn.getData()).isMultiColumnEditable());
+      return (((XViewerColumn) treeColumn.getData()).isMultiColumnEditable());
    }
 
    public XViewerColumn getXTreeColumn(int columnIndex) {

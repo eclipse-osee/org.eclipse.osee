@@ -27,6 +27,11 @@ public class XViewerArtifactTypeColumn extends XViewerValueColumn {
       this("framework.artifact.type." + name, name, 150, SWT.LEFT, true, SortDataType.String, false, "Artifact Type");
    }
 
+   public XViewerArtifactTypeColumn(String name, boolean multiColumnEditable) {
+      this("framework.artifact.type." + name, name, 150, SWT.LEFT, true, SortDataType.String, multiColumnEditable,
+            "Artifact Type");
+   }
+
    public XViewerArtifactTypeColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }

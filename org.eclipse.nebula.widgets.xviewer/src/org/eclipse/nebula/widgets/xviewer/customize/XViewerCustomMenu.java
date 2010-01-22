@@ -12,7 +12,6 @@
 package org.eclipse.nebula.widgets.xviewer.customize;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +36,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumnLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumnSorter;
 import org.eclipse.nebula.widgets.xviewer.XViewerComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.nebula.widgets.xviewer.action.ColumnMultiEditAction;
 import org.eclipse.nebula.widgets.xviewer.action.TableCustomizationAction;
 import org.eclipse.nebula.widgets.xviewer.action.ViewSelectedCellDataAction;
 import org.eclipse.nebula.widgets.xviewer.action.ViewTableReportAction;
@@ -46,7 +46,6 @@ import org.eclipse.nebula.widgets.xviewer.util.internal.HtmlUtil;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLog;
 import org.eclipse.nebula.widgets.xviewer.util.internal.dialog.HtmlDialog;
-import org.eclipse.nebula.widgets.xviewer.util.internal.dialog.ListDialogSortable;
 import org.eclipse.nebula.widgets.xviewer.util.internal.dialog.XCheckFilteredTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
@@ -466,31 +465,7 @@ public class XViewerCustomMenu {
       };
       tableProperties = new TableCustomizationAction(xViewer);
       viewTableReport = new ViewTableReportAction(xViewer);
-      columnMultiEdit = new Action("Column Multi Edit") {
-         @Override
-         public void run() {
-            Set<TreeColumn> editableColumns = new HashSet<TreeColumn>();
-            Collection<TreeItem> selectedTreeItems = Arrays.asList(xViewer.getTree().getSelection());
-            for (TreeColumn treeCol : xViewer.getTree().getColumns()) {
-               if (xViewer.isColumnMultiEditable(treeCol, selectedTreeItems)) {
-                  editableColumns.add(treeCol);
-               }
-            }
-            if (editableColumns.size() == 0) {
-               XViewerLib.popup("ERROR", "No Columns Are Multi-Editable");
-               return;
-            }
-            ListDialogSortable ld = new ListDialogSortable(new XViewerColumnSorter(), xViewer.getTree().getShell());
-            ld.setMessage("Select Column to Edit");
-            ld.setInput(editableColumns);
-            ld.setLabelProvider(treeColumnLabelProvider);
-            ld.setContentProvider(new ArrayContentProvider());
-            ld.setTitle("Select Column to Edit");
-            int result = ld.open();
-            if (result != 0) return;
-            xViewer.handleColumnMultiEdit((TreeColumn) ld.getResult()[0], selectedTreeItems);
-         }
-      };
+      columnMultiEdit = new ColumnMultiEditAction(xViewer);
    }
 
    private class KeySelectedListener implements KeyListener {

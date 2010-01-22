@@ -136,8 +136,8 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
          public void dragSetData(DragSourceEvent event) {
             Collection<Artifact> arts = getSelectedArtifacts();
             if (arts.size() > 0) {
-                  event.data = new ArtifactData(arts.toArray(new Artifact[arts.size()]), "", MassArtifactEditor.EDITOR_ID);
-                  
+               event.data = new ArtifactData(arts.toArray(new Artifact[arts.size()]), "", MassArtifactEditor.EDITOR_ID);
+
             }
          }
 
@@ -145,7 +145,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
             event.doit = false;
             Collection<Artifact> arts = getSelectedArtifacts();
             if (arts.size() > 0) {
-                  event.doit = true;
+               event.doit = true;
             }
          }
       });
@@ -228,7 +228,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
 
    public void add(Collection<? extends Artifact> artifacts) {
       if (xViewerFactory instanceof MassXViewerFactory) {
-         ((MassXViewerFactory) xViewerFactory).registerAllAttributeColumnsForArtifacts(artifacts, true);
+         ((MassXViewerFactory) xViewerFactory).registerAllAttributeColumnsForArtifacts(artifacts, true, true);
       }
       for (Artifact art : artifacts) {
          this.artifacts.add(art);
@@ -238,7 +238,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
 
    public void set(Collection<? extends Artifact> artifacts) {
       if (xViewerFactory instanceof MassXViewerFactory) {
-         ((MassXViewerFactory) xViewerFactory).registerAllAttributeColumnsForArtifacts(artifacts, true);
+         ((MassXViewerFactory) xViewerFactory).registerAllAttributeColumnsForArtifacts(artifacts, true, true);
       }
       this.artifacts.clear();
       for (Artifact art : artifacts) {

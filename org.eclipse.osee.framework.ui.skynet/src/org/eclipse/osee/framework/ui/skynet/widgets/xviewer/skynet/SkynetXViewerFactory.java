@@ -73,9 +73,14 @@ public class SkynetXViewerFactory extends XViewerFactory {
    }
 
    public void registerAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts, boolean show) {
+      registerAllAttributeColumnsForArtifacts(artifacts, show, false);
+   }
+
+   public void registerAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts, boolean show, boolean multiColumnEditable) {
       try {
          for (XViewerColumn xCol : SkynetXViewerFactory.getAllAttributeColumnsForArtifacts(artifacts)) {
             xCol.setShow(show);
+            xCol.setMultiColumnEditable(multiColumnEditable);
             registerColumns(xCol);
          }
       } catch (Exception ex) {
