@@ -9,10 +9,10 @@
 		<format property="buildTimestamp" pattern="yyyyMMddHHmm" />
 	</tstamp>
 
-	<property name="WORKSPACE" value="${env.WORKSPACE}" />
+	<!--<property name="WORKSPACE" value="${env.WORKSPACE}" />
 	<property name="SNAPSHOT" value="${env.SNAPSHOT}" />
 	<property name="forceContextQualifier" value="${env.forceContextQualifier}" />
-	<property name="fetchTag" value="${env.fetchTag}" />
+	<property name="fetchTag" value="${env.fetchTag}" />-->
 
 	<property name="SNAPSHOT" value="false" />
 	<property name="forceContextQualifier" value="v${buildTimestamp}" />
