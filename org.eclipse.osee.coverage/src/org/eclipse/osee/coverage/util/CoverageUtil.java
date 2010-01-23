@@ -216,4 +216,12 @@ public class CoverageUtil {
       return String.format("%d%% %d/%d", percent, complete, total);
    }
 
+   public static boolean isAllCoverageItems(Collection<ICoverage> coverages) {
+      for (ICoverage coverage : coverages) {
+         if (!(coverage instanceof CoverageItem)) {
+            return false;
+         }
+      }
+      return true;
+   }
 }

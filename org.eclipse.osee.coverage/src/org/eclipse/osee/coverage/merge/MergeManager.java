@@ -19,6 +19,7 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 
 /**
@@ -68,9 +69,9 @@ public class MergeManager {
          Map<ICoverage, MatchItem> importItemToMatchItem = new HashMap<ICoverage, MatchItem>(10);
          boolean moreImportChildrenThanPackageChildren = importItemChildren.size() > packageItemChildren.size();
          boolean morePackageChildrenThanImportChildren = packageItemChildren.size() > importItemChildren.size();
-         boolean sameNumberChilren = importItemChildren.size() == packageItemChildren.size();
+         boolean sameNumberChildren = importItemChildren.size() == packageItemChildren.size();
 
-         if (importCoverage.getGuid().equals("AAF9mnqbqltZqbmN7iwA")) {
+         if (importCoverage.getGuid().equals("AAte3i2bH3L1MvsFMqAA")) {
             System.out.println("here");
          }
          if (importCoverage.getName().equals("agp_threat_audio.2.ada")) {
@@ -90,13 +91,42 @@ public class MergeManager {
 
          // Case A - All match and package # children == import # children
          // Action: continue and check children's children
-         if (sameNumberChilren && MatchItem.isAllMatchType(MatchType.FullMatches, importItemToMatchItem.values())) {
+         if (sameNumberChildren && MatchItem.isAllMatchType(MatchType.FullMatches, importItemToMatchItem.values())) {
             // process all children
             for (ICoverage childCoverage : importItemChildren) {
                processImportCoverage(childCoverage);
             }
          }
-
+         // Same number children coverage items and either matches or just name is different, name change; 
+         // Remove all package stored data cause it's invalid now
+         else if (sameNumberChildren && CoverageUtil.isAllCoverageItems(importItemToMatchItem.keySet()) && MatchItem.isAllMatchType(
+               Arrays.asList(MatchType.Match__Name_And_Order_Num, MatchType.No_Match__Name_Or_Order_Num),
+               importItemToMatchItem.values())) {
+            boolean errorFound = false;
+            List<IMergeItem> groupMergeItems = new ArrayList<IMergeItem>();
+            for (Entry<ICoverage, MatchItem> pair : importItemToMatchItem.entrySet()) {
+               ICoverage importChild = pair.getKey();
+               if (pair.getValue().getMatchType() == MatchType.No_Match__Name_Or_Order_Num) {
+                  boolean found = false;
+                  // Find child that matches name
+                  for (ICoverage packageChild : packageItemChildren) {
+                     if (packageChild.getOrderNumber().equals(importChild.getOrderNumber())) {
+                        if (packageChild instanceof CoverageItem) {
+                           groupMergeItems.add(new MergeItem(MergeType.Rename_Coverage_Item, null, packageChild, false));
+                           found = true;
+                        }
+                     }
+                  }
+                  if (!found) {
+                     errorFound = true;
+                     mergeItems.add(new MergeItem(MergeType.Error__UnMergable, null, importCoverage, false));
+                  }
+               }
+            }
+            if (!errorFound && groupMergeItems.size() > 0) {
+               mergeItems.add(new MergeItemGroup(MergeType.Rename_Coverage_Item, groupMergeItems, true));
+            }
+         }
          // Deletion of package item; see if can handle
          else if (morePackageChildrenThanImportChildren) {
             // If all import match package items, but there are more package items, delete package items

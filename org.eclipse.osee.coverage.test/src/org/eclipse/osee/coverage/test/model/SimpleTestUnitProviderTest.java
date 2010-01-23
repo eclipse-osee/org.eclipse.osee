@@ -31,25 +31,17 @@ public class SimpleTestUnitProviderTest {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.coverage.model.SimpleTestUnitProvider#addTestUnitName(org.eclipse.osee.coverage.model.CoverageItem, java.lang.String)}
+    * {@link org.eclipse.osee.coverage.model.SimpleTestUnitProvider#getTestUnits(org.eclipse.osee.coverage.model.CoverageItem)}
     * .
     */
    @Test
-   public void testAddTestUnitName() {
+   public void testAddGetTestUnits() {
       provider.addTestUnitName(coverageItem1, "Test Unit 1");
       provider.addTestUnitName(coverageItem1, "Test Unit 2");
       provider.addTestUnitName(coverageItem1, "Test Unit 3");
       provider.addTestUnitName(coverageItem1, "Test Unit 3");
       provider.addTestUnitName(coverageItem1, "Test Unit 4");
-   }
 
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.coverage.model.SimpleTestUnitProvider#getTestUnits(org.eclipse.osee.coverage.model.CoverageItem)}
-    * .
-    */
-   @Test
-   public void testGetTestUnits() {
       Assert.assertEquals(4, provider.getTestUnits(coverageItem1).size());
 
       // Should equal cause CoverageItems are "equal" (guids are same)

@@ -19,7 +19,6 @@ public enum MatchType {
 
    // Item has no match; __<reason>
    No_Match__Namespace,
-   No_Match__Name,
    No_Match__Class,
    No_Match__Name_Or_Order_Num;
 
