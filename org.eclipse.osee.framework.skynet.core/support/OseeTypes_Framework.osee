@@ -499,15 +499,15 @@ artifactType "Indirect Software Requirement" extends "Software Requirement" {
    guid "AAMFDiC7HRQMqr5S0QwA"
 }
 
-artifactType "Software Requirement Procedure" extends "Software Requirement" {
+artifactType "Software Requirement Procedure" extends "Indirect Software Requirement" {
    guid "ABNBLPY4LnIKtcON0mgA"
 }
 
-artifactType "Software Requirement Function" extends "Software Requirement" {
+artifactType "Software Requirement Function" extends "Indirect Software Requirement" {
    guid "ABNBwZMdFgEDTVQ7pTAA"
 }
 
-artifactType "Software Requirement Drawing" extends "Software Requirement" {
+artifactType "Software Requirement Drawing" extends "Indirect Software Requirement" {
    guid "ABNClhgUfwj6A3EAArQA"
 }
 
