@@ -54,7 +54,6 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
 
          if (attributeValues.size() == roughAttributes.size()) {
             for (String attributeValue : attributeValues) {
-               boolean attributeEqual = false;
                Iterator<String> iter = roughAttributes.iterator();
 
                String normalizedAttributeValue = normalizeAttributeValue(attributeValue);
@@ -62,20 +61,13 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
                   String otherAttribute = iter.next();
 
                   if (normalizedAttributeValue.equals(normalizeAttributeValue(otherAttribute))) {
-                     // Make sure we don't count this attribute more than once for equality
-                     //                     iter.remove();
-                     attributeEqual = true;
-                     break;
+                     return true;
                   }
-               }
-
-               if (!attributeEqual) {
-                  return false;
                }
             }
          }
       }
-      return true;
+      return false;
    }
 
    private String normalizeAttributeValue(String value) {
