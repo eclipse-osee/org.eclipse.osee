@@ -79,16 +79,13 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          setContent();
          roughArtifact = setUpNewArtifact(collector, headerNumber);
          previousNamedArtifact = roughArtifact;
-
          processHeadingText(roughArtifact, WordUtil.textOnly(content));
       } else if (!listIdentifier.equals("") && !forceBody) {
          String proNumber = lastHeaderNumber + "." + listIdentifier;
-
          content = listPrKiller.matcher(content).replaceAll("");
          roughArtifact.addAttribute("Name", proNumber);
       } else if (roughArtifact != null) {
          wordFormattedContent.append(content);
-         roughArtifact.addAttribute(WordAttribute.WORD_TEMPLATE_CONTENT, wordFormattedContent.toString());
       }
    }
 
@@ -97,6 +94,10 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          roughArtifact.addAttribute(WordAttribute.WORD_TEMPLATE_CONTENT, wordFormattedContent.toString());
          wordFormattedContent.setLength(0);
       }
+   }
+
+   public void finish() {
+      setContent();
    }
 
    /**

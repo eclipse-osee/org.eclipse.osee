@@ -45,7 +45,7 @@ public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
       Set<String> names = new HashSet<String>();
       for (RoughArtifact artifact : collector.getRoughArtifacts()) {
          names.addAll(artifact.getURIAttributes().keySet());
-         names.addAll(artifact.getAttributes().keySet());
+         names.addAll(artifact.getAttributes().getKeys());
       }
       selectedArtifactTypes.clear();
       Set<AttributeType> requiredTypes = new HashSet<AttributeType>();

@@ -49,7 +49,8 @@ Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.word,
  org.eclipse.osee.framework.ui.plugin.event
 Bundle-Vendor: Eclipse.org
-Import-Package: org.eclipse.debug.core,
+Import-Package: org.apache.commons.lang,
+ org.eclipse.debug.core,
  org.eclipse.osee.framework.core.cache,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server,

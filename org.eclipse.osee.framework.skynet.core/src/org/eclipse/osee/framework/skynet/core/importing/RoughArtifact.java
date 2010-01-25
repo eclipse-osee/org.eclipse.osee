@@ -14,11 +14,13 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
 /**
  * @author Robert A. Fisher
@@ -30,14 +32,14 @@ public class RoughArtifact {
    private String guid;
    private String humandReadableId;
    private RoughArtifactKind roughArtifactKind;
-   private final Map<String, String> attributes;
+   private final RoughAttributeSet attributes;
    private final Map<String, URI> uriAttributes;
    private final Collection<RoughArtifact> children;
    private ArtifactType primaryArtifactType;
 
    public RoughArtifact(RoughArtifactKind roughArtifactKind) {
       this.uriAttributes = new HashMap<String, URI>(2, 1);
-      this.attributes = new LinkedHashMap<String, String>();
+      this.attributes = new RoughAttributeSet();
       this.children = new ArrayList<RoughArtifact>();
       this.roughArtifactKind = roughArtifactKind;
    }
@@ -80,11 +82,26 @@ public class RoughArtifact {
    }
 
    public void addAttribute(String name, String value) {
-      attributes.put(name, value);
+      if (isMultipleEnum(name, value)) {
+         attributes.addMultiple(name, StringUtils.split(value, ','));
+      } else {
+         attributes.add(name, value);
+      }
+   }
+
+   private boolean isMultipleEnum(String typeName, String value) {
+      try {
+         AttributeType type = AttributeTypeManager.getType(typeName);
+         if (type.isEnumerated() && type.getMaxOccurrences() > 1 && value.contains(",")) {
+            return true;
+         }
+      } catch (OseeCoreException e) {
+      }
+      return false;
    }
 
    public void addAttribute(IAttributeType attrType, String value) {
-      attributes.put(attrType.getName(), value);
+      attributes.add(attrType.getName(), value);
    }
 
    public Map<String, URI> getURIAttributes() {
@@ -104,7 +121,7 @@ public class RoughArtifact {
       this.number = new ReqNumbering(number);
    }
 
-   public Map<String, String> getAttributes() {
+   public RoughAttributeSet getAttributes() {
       return attributes;
    }
 
@@ -124,7 +141,7 @@ public class RoughArtifact {
       this.humandReadableId = humandReadableId;
    }
 
-   public String getHumandReadableId() {
+   public String getHumanReadableId() {
       return humandReadableId;
    }
 
@@ -137,21 +154,11 @@ public class RoughArtifact {
    }
 
    public String getName() {
-      for (Entry<String, String> roughtAttribute : attributes.entrySet()) {
-         if ("Name".equals(roughtAttribute.getKey())) {
-            return roughtAttribute.getValue();
-         }
-      }
-      return "";
+      return attributes.getName();
    }
 
    public String getRoughAttribute(String attributeName) {
-      for (Entry<String, String> roughtAttribute : attributes.entrySet()) {
-         if (roughtAttribute.getKey().equalsIgnoreCase(attributeName)) {
-            return roughtAttribute.getValue();
-         }
-      }
-      return null;
+      return attributes.getSoleAttributeValue(attributeName);
    }
 
    public ArtifactType getPrimaryArtifactType() {

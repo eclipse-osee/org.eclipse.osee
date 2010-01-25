@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
-import static org.eclipse.osee.framework.jdk.core.util.Collections.asCollection;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.Collection;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
+import org.eclipse.osee.framework.skynet.core.importing.RoughAttributeSet;
 
 /**
  * @author Ryan D. Brooks
@@ -43,7 +44,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
 
       Artifact realArtifact =
             ArtifactTypeManager.getFactory(artifactType).makeNewArtifact(branch, artifactType, roughArtifact.getGuid(),
-                  roughArtifact.getHumandReadableId(), new ArtifactProcessor() {
+                  roughArtifact.getHumanReadableId(), new ArtifactProcessor() {
                      @Override
                      public void run(Artifact artifact) throws OseeCoreException {
                         translateAttributes(roughArtifact, artifact);
@@ -66,12 +67,10 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    }
 
    protected void translateAttributes(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
-      for (Entry<String, String> roughAttribute : roughArtifact.getAttributes().entrySet()) {
-         if (roughAttribute.getKey() != null) {
-            String key = roughAttribute.getKey();
-            String val = roughAttribute.getValue();
-            artifact.setAttributeValues(key, asCollection(val));
-         }
+      RoughAttributeSet roughAttributes = roughArtifact.getAttributes();
+      for (String attrType : roughAttributes.getKeys()) {
+         Collection<String> values = roughAttributes.getAttributeValueList(attrType);
+         artifact.setAttributeValues(attrType, values);
       }
       transferBinaryAttributes(roughArtifact, artifact);
    }

@@ -71,7 +71,7 @@ public class RoughArtifactUtil {
    public static void checkRoughArtifact(RoughArtifact expected, RoughArtifact actual) {
       // Randomly generated - just check the format
       Assert.assertTrue(GUID.isValid(actual.getGuid()));
-      Assert.assertTrue(HumanReadableId.isValid(actual.getHumandReadableId()));
+      Assert.assertTrue(HumanReadableId.isValid(actual.getHumanReadableId()));
       Assert.assertEquals(expected.getName(), actual.getName());
       Assert.assertEquals(expected.getPrimaryArtifactType(), actual.getPrimaryArtifactType());
       Assert.assertEquals(expected.getRoughArtifactKind(), actual.getRoughArtifactKind());

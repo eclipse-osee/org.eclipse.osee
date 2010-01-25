@@ -15,10 +15,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
@@ -27,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
+import org.eclipse.osee.framework.skynet.core.importing.RoughAttributeSet;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -43,11 +41,8 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
    }
 
    private boolean attributeValuesMatch(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
-      Map<String, String> roughAttributeCollection = roughArtifact.getAttributes();
-      HashCollection<String, String> roughAttributeMap = new HashCollection<String, String>();
-      for (Entry<String, String> roughAttribute : roughAttributeCollection.entrySet()) {
-         roughAttributeMap.put(roughAttribute.getKey(), roughAttribute.getValue());
-      }
+      RoughAttributeSet roughAttributeSet = roughArtifact.getAttributes();
+      HashCollection<String, String> roughAttributeMap = roughAttributeSet.getAllEntries();
 
       for (AttributeType attributeType : nonChangingAttributes) {
          Collection<String> attributeValues = artifact.getAttributesToStringList(attributeType.getName());
@@ -68,7 +63,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
 
                   if (normalizedAttributeValue.equals(normalizeAttributeValue(otherAttribute))) {
                      // Make sure we don't count this attribute more than once for equality
-                     iter.remove();
+                     //                     iter.remove();
                      attributeEqual = true;
                      break;
                   }
@@ -89,9 +84,6 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
 
    @Override
    public Artifact resolve(RoughArtifact roughArtifact, Branch branch, Artifact realParent) throws OseeCoreException {
-      if (nonChangingAttributes == null || nonChangingAttributes.isEmpty()) {
-         throw new OseeArgumentException("nonChangingAttributes cannot be null or empty");
-      }
       Artifact realArtifact = null;
       RoughArtifact roughParent = roughArtifact.getRoughParent();
 
@@ -109,8 +101,10 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
             realArtifact = candidates.iterator().next();
             translateAttributes(roughArtifact, realArtifact);
          } else {
-            OseeLog.log(Activator.class, Level.INFO,
-                  "Found " + candidates.size() + " candidates during reuse import for " + roughArtifact.getName());
+            String output =
+                  String.format("Found %s candidates during reuse import for \"%s\"", candidates.size(),
+                        roughArtifact.getName());
+            OseeLog.log(Activator.class, Level.INFO, output);
             if (createNewIfNotExist) {
                realArtifact = super.resolve(roughArtifact, branch, null);
             }

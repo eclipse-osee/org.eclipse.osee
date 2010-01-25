@@ -124,6 +124,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
          while ((element = Readers.forward(reader, BODY_TAGS)) != null) {
 
             if (element == WordUtil.BODY_END) {
+               ((WordOutlineExtractorDelegate) getDelegate()).finish();
                return;
             } else {
                // Get the next parse-able chunk from the stream. This will throttle the amount of the file read in to
@@ -160,7 +161,8 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
                listIdentifier = "";
                paragraphStyle = null;
                parseContentDetails(content, new Stack<String>());
-               getDelegate().processContent(collector, forceBody, forcePrimaryType, headerNumber, listIdentifier,
+               IArtifactExtractorDelegate delegate = getDelegate();
+               delegate.processContent(collector, forceBody, forcePrimaryType, headerNumber, listIdentifier,
                      paragraphStyle, content.toString(), element == PARAGRAPH_TAG);
             }
          }

@@ -66,7 +66,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
 
       for (RoughArtifact roughArtifact : rawData.getParentRoughArtifact().getChildren()) {
          Artifact child = createArtifact(monitor, roughToRealArtifact, roughArtifact, destinationArtifact);
-         if (child != null) {
+         if (child != null && !child.hasParent()) {
             destinationArtifact.addChild(importArtifactOrder, child);
          }
          monitor.worked(unitOfWork);

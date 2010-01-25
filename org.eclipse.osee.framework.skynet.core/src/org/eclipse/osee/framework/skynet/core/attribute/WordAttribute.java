@@ -56,13 +56,7 @@ public class WordAttribute extends StringAttribute {
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
       } finally {
-         if (inputStream != null) {
-            try {
-               inputStream.close();
-            } catch (Exception ex) {
-               // Do Nothing
-            }
-         }
+         Lib.close(inputStream);
       }
    }
 

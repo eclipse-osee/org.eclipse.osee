@@ -1536,7 +1536,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       for (Attribute updateSourceAttr : updateSourceArtifact.getAttributes()) {
          Attribute thisAttr = getAttributeById(updateSourceAttr.getAttrId(), true);
          if (isCopyAllowed(updateSourceAttr)) {
-            if (thisAttr != null && (thisAttr.getGammaId() != updateSourceAttr.getGammaId())) {
+            if (thisAttr != null && thisAttr.getGammaId() != updateSourceAttr.getGammaId()) {
                thisAttr.setValue(updateSourceAttr.getValue());
             }
          }

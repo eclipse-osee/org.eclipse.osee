@@ -421,7 +421,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    private synchronized void updateExtractedElements() {
       selectionLatch.setCurrentValues(getDestinationArtifact(), getSourceFile(), getArtifactParser());
       if (selectionLatch.areSelectionsValid()) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Artifacts need to be extracted from source");
          selectionLatch.latch();
 
          collector.reset();
@@ -436,13 +435,11 @@ public class ArtifactImportPage extends WizardDataTransferPage {
                selectedArtifactTypes));
          selectedArtifactTypes.clear();
          if (executeOperation(new CompositeOperation("Extracting data from source", SkynetGuiPlugin.PLUGIN_ID, ops))) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Extracted items from: " + sourceFile.getAbsoluteFile());
             artifactTypeSelectPanel.setAllowedArtifactTypes(selectedArtifactTypes);
             try {
                attributeTypeSelectPanel.setAllowedAttributeTypes(getArtifactType().getAttributeTypes(
                      getDestinationArtifact().getBranch()));
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, ex.getLocalizedMessage());
             }
          }
       }
