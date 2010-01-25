@@ -24,6 +24,9 @@ import org.eclipse.osee.framework.core.services.IOseeBranchServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeDataTranslationProvider;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.manager.servlet.function.ChangeBranchArchiveStateFunction;
+import org.eclipse.osee.framework.manager.servlet.function.ChangeBranchStateFunction;
+import org.eclipse.osee.framework.manager.servlet.function.ChangeBranchTypeFunction;
 import org.eclipse.osee.framework.manager.servlet.function.ChangeReportFunction;
 import org.eclipse.osee.framework.manager.servlet.function.CreateBranchFunction;
 import org.eclipse.osee.framework.manager.servlet.function.CreateCommitFunction;
@@ -66,6 +69,19 @@ public class BranchManagerServlet extends OseeHttpServlet {
             case PURGE_BRANCH:
                Operations.executeAsJob(
                      new PurgeBranchFunction(req, resp, branchServiceProvider, dataTransalatorProvider), false).join();
+               break;
+            case UPDATE_BRANCH_TYPE:
+               Operations.executeAsJob(
+                     new ChangeBranchTypeFunction(req, resp, branchServiceProvider, dataTransalatorProvider), false).join();
+               break;
+            case UPDATE_BRANCH_STATE:
+               Operations.executeAsJob(
+                     new ChangeBranchStateFunction(req, resp, branchServiceProvider, dataTransalatorProvider), false).join();
+               break;
+            case UPDATE_ARCHIVE_STATE:
+               Operations.executeAsJob(
+                     new ChangeBranchArchiveStateFunction(req, resp, branchServiceProvider, dataTransalatorProvider),
+                     false).join();
                break;
             default:
                throw new UnsupportedOperationException();

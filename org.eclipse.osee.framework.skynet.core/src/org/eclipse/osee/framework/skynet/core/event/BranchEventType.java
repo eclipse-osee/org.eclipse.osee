@@ -20,7 +20,10 @@ public enum BranchEventType {
    Deleted(EventType.LocalAndRemote),
    Added(EventType.LocalAndRemote),
    Renamed(EventType.LocalAndRemote),
-   Committed(EventType.LocalAndRemote);
+   Committed(EventType.LocalAndRemote),
+   TypeUpdated(EventType.LocalAndRemote),
+   StateUpdated(EventType.LocalAndRemote),
+   ArchiveStateUpdated(EventType.LocalAndRemote);
 
    private final EventType eventType;
 

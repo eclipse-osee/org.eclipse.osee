@@ -17,6 +17,9 @@ import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.data.BranchCreationRequest;
 import org.eclipse.osee.framework.core.data.BranchCreationResponse;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
+import org.eclipse.osee.framework.core.data.ChangeBranchArchiveStateRequest;
+import org.eclipse.osee.framework.core.data.ChangeBranchStateRequest;
+import org.eclipse.osee.framework.core.data.ChangeBranchTypeRequest;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
@@ -248,5 +251,32 @@ public final class DataAsserts {
       Assert.assertEquals(expected.getTitle(), actual.getTitle());
       Assert.assertFalse(Compare.isDifferent(expected.getColumns(), actual.getColumns()));
       Assert.assertFalse(Compare.isDifferent(expected.getRows(), actual.getRows()));
+   }
+
+   public static void assertEquals(ChangeBranchTypeRequest expected, ChangeBranchTypeRequest actual) throws OseeCoreException {
+      if (expected == null) {
+         Assert.assertNull(actual);
+      } else {
+         Assert.assertEquals(expected.getBranchId(), actual.getBranchId());
+         Assert.assertEquals(expected.getType(), actual.getType());
+      }
+   }
+
+   public static void assertEquals(ChangeBranchArchiveStateRequest expected, ChangeBranchArchiveStateRequest actual) throws OseeCoreException {
+      if (expected == null) {
+         Assert.assertNull(actual);
+      } else {
+         Assert.assertEquals(expected.getBranchId(), actual.getBranchId());
+         Assert.assertEquals(expected.getState(), actual.getState());
+      }
+   }
+
+   public static void assertEquals(ChangeBranchStateRequest expected, ChangeBranchStateRequest actual) throws OseeCoreException {
+      if (expected == null) {
+         Assert.assertNull(actual);
+      } else {
+         Assert.assertEquals(expected.getBranchId(), actual.getBranchId());
+         Assert.assertEquals(expected.getState(), actual.getState());
+      }
    }
 }

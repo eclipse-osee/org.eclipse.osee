@@ -25,9 +25,9 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn("framework.branch.branchName", "Branch Name", 250, SWT.LEFT, true, SortDataType.String,
                false, null);
    public static XViewerColumn branchType =
-         new XViewerColumn("framework.branch.type", "Type", 100, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("framework.branch.type", "Type", 100, SWT.LEFT, true, SortDataType.String, true, null);
    public static XViewerColumn branchState =
-         new XViewerColumn("framework.branch.state", "State", 100, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("framework.branch.state", "State", 100, SWT.LEFT, true, SortDataType.String, true, null);
    public static XViewerColumn timeStamp =
          new XViewerColumn("framework.branch.itemType", "Time Stamp", 150, SWT.LEFT, true, SortDataType.Date, false,
                null);
@@ -48,7 +48,7 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
                false, null);
    public static XViewerColumn archivedState =
          new XViewerColumn("framework.branch.archived", "Archived State", 100, SWT.LEFT, false, SortDataType.String,
-               false, null);
+               true, null);
 
    public static String NAMESPACE = "osee.skynet.gui.BranchXViewer";
 

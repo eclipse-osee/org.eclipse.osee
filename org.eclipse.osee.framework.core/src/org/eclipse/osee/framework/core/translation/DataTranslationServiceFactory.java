@@ -52,6 +52,11 @@ public class DataTranslationServiceFactory {
       service.addTranslator(new BranchCommitRequestTranslator(), CoreTranslatorId.BRANCH_COMMIT_REQUEST);
       service.addTranslator(new BranchCommitResponseTranslator(service), CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
 
+      service.addTranslator(new BranchChangeTypeRequestTranslator(), CoreTranslatorId.CHANGE_BRANCH_TYPE);
+      service.addTranslator(new BranchChangeStateRequestTranslator(), CoreTranslatorId.CHANGE_BRANCH_STATE);
+      service.addTranslator(new BranchChangeArchivedStateRequestTranslator(),
+            CoreTranslatorId.CHANGE_BRANCH_ARCHIVE_STATE);
+
       service.addTranslator(new ChangeVersionTranslator(), CoreTranslatorId.CHANGE_VERSION);
       service.addTranslator(new ChangeItemTranslator(service), CoreTranslatorId.CHANGE_ITEM);
       service.addTranslator(new ChangeReportRequestTranslator(), CoreTranslatorId.CHANGE_REPORT_REQUEST);

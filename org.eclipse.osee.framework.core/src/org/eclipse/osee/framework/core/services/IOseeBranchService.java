@@ -16,6 +16,9 @@ import org.eclipse.osee.framework.core.data.BranchCommitRequest;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.data.BranchCreationRequest;
 import org.eclipse.osee.framework.core.data.BranchCreationResponse;
+import org.eclipse.osee.framework.core.data.ChangeBranchArchiveStateRequest;
+import org.eclipse.osee.framework.core.data.ChangeBranchStateRequest;
+import org.eclipse.osee.framework.core.data.ChangeBranchTypeRequest;
 import org.eclipse.osee.framework.core.data.ChangeReportRequest;
 import org.eclipse.osee.framework.core.data.ChangeReportResponse;
 import org.eclipse.osee.framework.core.data.PurgeBranchRequest;
@@ -32,4 +35,10 @@ public interface IOseeBranchService {
    void createBranch(IProgressMonitor monitor, BranchCreationRequest request, BranchCreationResponse response) throws OseeCoreException;
 
    void purge(IProgressMonitor monitor, PurgeBranchRequest request) throws OseeCoreException;
+
+   void updateBranchType(IProgressMonitor monitor, ChangeBranchTypeRequest request) throws OseeCoreException;
+
+   void updateBranchState(IProgressMonitor monitor, ChangeBranchStateRequest request) throws OseeCoreException;
+
+   void updateBranchArchiveState(IProgressMonitor monitor, ChangeBranchArchiveStateRequest request) throws OseeCoreException;
 }

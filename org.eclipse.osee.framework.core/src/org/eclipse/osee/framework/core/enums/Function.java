@@ -20,7 +20,10 @@ public enum Function {
    BRANCH_COMMIT,
    CHANGE_REPORT,
    CREATE_BRANCH,
-   PURGE_BRANCH;
+   PURGE_BRANCH,
+   UPDATE_BRANCH_TYPE,
+   UPDATE_BRANCH_STATE,
+   UPDATE_ARCHIVE_STATE;
 
    public static Function fromString(String toMatch) throws OseeCoreException {
       for (Function function : Function.values()) {

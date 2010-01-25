@@ -20,12 +20,16 @@ import org.eclipse.osee.framework.branch.management.change.LoadChangeDataOperati
 import org.eclipse.osee.framework.branch.management.commit.CommitDbOperation;
 import org.eclipse.osee.framework.branch.management.creation.CreateBranchOperation;
 import org.eclipse.osee.framework.branch.management.purge.PurgeBranchOperation;
+import org.eclipse.osee.framework.branch.management.update.UpdateBranchOperation;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.data.BranchCreationRequest;
 import org.eclipse.osee.framework.core.data.BranchCreationResponse;
+import org.eclipse.osee.framework.core.data.ChangeBranchArchiveStateRequest;
+import org.eclipse.osee.framework.core.data.ChangeBranchStateRequest;
+import org.eclipse.osee.framework.core.data.ChangeBranchTypeRequest;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeReportRequest;
 import org.eclipse.osee.framework.core.data.ChangeReportResponse;
@@ -133,6 +137,42 @@ public class OseeBranchService implements IOseeBranchService {
       BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
       IOperation operation =
             new PurgeBranchOperation(branchCache.getById(request.getBranchId()), cachingService, oseeDatabaseProvider);
+      Operations.executeWork(operation, new NullProgressMonitor(), -1);
+      try {
+         Operations.checkForStatusSeverityMask(operation.getStatus(), IStatus.ERROR | IStatus.WARNING);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+   }
+
+   @Override
+   public void updateBranchArchiveState(IProgressMonitor monitor, ChangeBranchArchiveStateRequest request) throws OseeCoreException {
+      IOperation operation =
+            new UpdateBranchOperation(oseeDatabaseProvider, cachingService, request.getBranchId(), request.getState());
+      Operations.executeWork(operation, new NullProgressMonitor(), -1);
+      try {
+         Operations.checkForStatusSeverityMask(operation.getStatus(), IStatus.ERROR | IStatus.WARNING);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+   }
+
+   @Override
+   public void updateBranchState(IProgressMonitor monitor, ChangeBranchStateRequest request) throws OseeCoreException {
+      IOperation operation =
+            new UpdateBranchOperation(oseeDatabaseProvider, cachingService, request.getBranchId(), request.getState());
+      Operations.executeWork(operation, new NullProgressMonitor(), -1);
+      try {
+         Operations.checkForStatusSeverityMask(operation.getStatus(), IStatus.ERROR | IStatus.WARNING);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+   }
+
+   @Override
+   public void updateBranchType(IProgressMonitor monitor, ChangeBranchTypeRequest request) throws OseeCoreException {
+      IOperation operation =
+            new UpdateBranchOperation(oseeDatabaseProvider, cachingService, request.getBranchId(), request.getType());
       Operations.executeWork(operation, new NullProgressMonitor(), -1);
       try {
          Operations.checkForStatusSeverityMask(operation.getStatus(), IStatus.ERROR | IStatus.WARNING);

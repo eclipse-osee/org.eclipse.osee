@@ -21,18 +21,20 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeBranchArchivedS
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeBranchStateDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeBranchTypeDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Megumi Telles
  */
 public class PromptChangeUtil {
 
-   public static boolean promptChangeBranchType(final Collection<Branch> branches) throws OseeCoreException {
+   public static boolean promptChangeBranchType(final Collection<TreeItem> branches) throws OseeCoreException {
       ChangeBranchTypeDialog ld = new ChangeBranchTypeDialog(Display.getCurrent().getActiveShell());
       int result = ld.open();
       if (result == 0) {
          BranchType type = ld.getSelection();
-         for (Branch branch : branches) {
+         for (TreeItem item : branches) {
+            Branch branch = (Branch) item.getData();
             BranchManager.updateBranchType(null, branch.getId(), type);
          }
          return true;
@@ -40,12 +42,13 @@ public class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeBranchState(final Collection<Branch> branches) throws OseeCoreException {
+   public static boolean promptChangeBranchState(final Collection<TreeItem> branches) throws OseeCoreException {
       ChangeBranchStateDialog ld = new ChangeBranchStateDialog(Display.getCurrent().getActiveShell());
       int result = ld.open();
       if (result == 0) {
          BranchState state = ld.getSelection();
-         for (Branch branch : branches) {
+         for (TreeItem item : branches) {
+            Branch branch = (Branch) item.getData();
             BranchManager.updateBranchState(null, branch.getId(), state);
          }
          return true;
@@ -53,12 +56,13 @@ public class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeBranchArchivedState(final Collection<Branch> branches) throws OseeCoreException {
+   public static boolean promptChangeBranchArchivedState(final Collection<TreeItem> branches) throws OseeCoreException {
       ChangeBranchArchivedStateDialog ld = new ChangeBranchArchivedStateDialog(Display.getCurrent().getActiveShell());
       int result = ld.open();
       if (result == 0) {
          BranchArchivedState state = ld.getSelection();
-         for (Branch branch : branches) {
+         for (TreeItem item : branches) {
+            Branch branch = (Branch) item.getData();
             BranchManager.updateBranchArchivedState(null, branch.getId(), state);
          }
          return true;

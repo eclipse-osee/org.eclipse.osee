@@ -30,7 +30,10 @@ BranchCommitRequestTranslatorTest.class, //
       TableDataTranslatorTest.class, //
       TransactionCacheUpdateResponseTranslatorTest.class, //
       TransactionRecordTranslatorTest.class, //
-      PurgeBranchRequestTranslatorTest.class //
+      PurgeBranchRequestTranslatorTest.class, //
+      BranchChangeTypeRequestTranslatorTest.class, //
+      BranchChangeStateRequestTranslatorTest.class, // 
+      BranchChangeArchivedStateRequestTranslatorTest.class//
 })
 /**
  * @author Roberto E. Escobar
