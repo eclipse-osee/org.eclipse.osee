@@ -53,7 +53,6 @@ public class BaseBrokerTesting {
 		broker.setUseShutdownHook(true);
 		broker.addConnector(brokerURI);
 		broker.start();
-//		testWait(10000);
 		brokers.put(brokerURI, broker);
 	}
 	
