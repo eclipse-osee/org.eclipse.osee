@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.messaging.future;
 
+import org.eclipse.osee.framework.messaging.MessageName;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 
@@ -13,8 +14,8 @@ import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
  */
 public interface ConnectionNode {
 
-   public void subscribe(String topic, OseeMessagingListener listener, final OseeMessagingStatusCallback statusCallback);
+   public void subscribe(MessageName topic, OseeMessagingListener listener, final OseeMessagingStatusCallback statusCallback);
 
-   public void send(String topic, Object body, final OseeMessagingStatusCallback statusCallback);
+   public void send(MessageName topic, Object body, final OseeMessagingStatusCallback statusCallback);
 
 }

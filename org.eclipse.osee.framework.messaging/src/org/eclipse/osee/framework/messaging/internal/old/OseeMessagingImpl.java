@@ -120,7 +120,7 @@ public class OseeMessagingImpl implements OseeMessaging {
 
 				if (Component.VM.equals(component)
 						&& SystemTopic.JMS_HEALTH_STATUS.equals(topic)) {
-					listener.process(jmsTransport.createStatusMessage());
+//					listener.process(jmsTransport.createStatusMessage());
 				}
 				statusCallback.success();
 			} catch (Exception ex) {
@@ -183,7 +183,7 @@ public class OseeMessagingImpl implements OseeMessaging {
 
 				String healthTopic = null;
 				if (Component.JMS.getComponentName().equals(component)) {
-					healthTopic = SystemTopic.JMS_HEALTH_STATUS;
+					healthTopic = SystemTopic.JMS_HEALTH_STATUS.getName();
 				}
 				// -------- //
 

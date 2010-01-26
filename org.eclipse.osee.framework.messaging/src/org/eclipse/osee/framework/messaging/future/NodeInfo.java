@@ -6,6 +6,7 @@
 package org.eclipse.osee.framework.messaging.future;
 
 import java.net.URI;
+
 import org.eclipse.osee.framework.messaging.Component;
 
 /**
@@ -20,6 +21,7 @@ public class NodeInfo {
    public NodeInfo(String name, URI uri) {
       this.uri = uri;
       this.name = name;
+      nameWithColon = name + ":";
    }
 
    public URI getUri() {

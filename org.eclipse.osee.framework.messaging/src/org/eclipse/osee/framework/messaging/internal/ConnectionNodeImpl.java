@@ -5,9 +5,12 @@
  */
 package org.eclipse.osee.framework.messaging.internal;
 
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.ExecutorService;
+
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
+import org.eclipse.osee.framework.messaging.MessageName;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.future.ConnectionNode;
@@ -18,41 +21,45 @@ import org.eclipse.osee.framework.messaging.future.NodeInfo;
  */
 public class ConnectionNodeImpl implements ConnectionNode {
 
-   private final NodeInfo nodeInfo;
-   private final ExecutorService executor;
-   private final CamelContext context;
-   private final ProducerTemplate template;
+	private final NodeInfo nodeInfo;
+	private final ExecutorService executor;
+	private final CamelContext context;
+	private final ProducerTemplate template;
 
-   ConnectionNodeImpl(NodeInfo nodeInfo, ExecutorService executor, CamelContext context, ProducerTemplate template) {
-      this.executor = executor;
-      this.nodeInfo = nodeInfo;
-      this.context = context;
-      this.template = template;
-   }
+	ConnectionNodeImpl(NodeInfo nodeInfo, ExecutorService executor,
+			CamelContext context, ProducerTemplate template) {
+		this.executor = executor;
+		this.nodeInfo = nodeInfo;
+		this.context = context;
+		this.template = template;
+	}
 
-   @Override
-   public void send(String topic, Object body, OseeMessagingStatusCallback statusCallback) {
-      process(new SendMessageRunnable(template, nodeInfo, topic, body, statusCallback));
-   }
+	@Override
+	public void send(MessageName topic, Object body,
+			OseeMessagingStatusCallback statusCallback) {
+		try {
+			String serializedBody = JAXBUtil.marshal(body);
+			process(new SendMessageRunnable(template, nodeInfo, topic.getName(), serializedBody,
+					statusCallback));
+		} catch (UnsupportedEncodingException ex) {
+			process(new SendMessageRunnable(template, nodeInfo, topic.getName(), body,
+					statusCallback));
+		}
+	}
 
-   @Override
-   public void subscribe(String topic, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
-      process(new AddListenerRunnable(context, nodeInfo, topic, listener, statusCallback));
+	@Override
+	public void subscribe(MessageName topic, OseeMessagingListener listener,
+			OseeMessagingStatusCallback statusCallback) {
+		process(new AddListenerRunnable(context, nodeInfo, topic.getName(), listener,
+				statusCallback));
 
-   }
+	}
 
-   private void process(Runnable runnable) {
-      if (nodeInfo.isVMComponent()) {
-         runnable.run();
-      } else {
-         executor.execute(runnable);
-      }
-   }
-
-   //   private void checkTransport(Component component) throws OseeCoreException {
-   //      if (component.equals(Component.JMS) && !jmsTransport.isAvailable()) {
-   //         throw new OseeCoreException("JmsComponent is not available.");
-   //      }
-   //   }
-
+	private void process(Runnable runnable) {
+		if (nodeInfo.isVMComponent()) {
+			runnable.run();
+		} else {
+			executor.execute(runnable);
+		}
+	}
 }

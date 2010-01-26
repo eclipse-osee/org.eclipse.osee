@@ -1,0 +1,1 @@
+xjc testMessages.xsd -d ../src -p org.eclipse.osee.framework.messaging.services.messages

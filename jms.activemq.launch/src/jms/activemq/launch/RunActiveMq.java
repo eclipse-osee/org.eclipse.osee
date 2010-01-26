@@ -21,7 +21,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 public class RunActiveMq implements IApplication {
-	private static String BROKER_URI = "tcp://localhost:61616";
+	private static String BROKER_URI;
 	private BrokerService broker;
 	private CamelConnectionFactory activeMqRemoteConnectionFactory;
 	
@@ -32,6 +32,8 @@ public class RunActiveMq implements IApplication {
 		broker = new BrokerService();
 		broker.setBrokerName("osee");
 		broker.setUseShutdownHook(true);
+		String[] myArgs = (String[])appContext.getArguments().get(IApplicationContext.APPLICATION_ARGS);
+		BROKER_URI =  "tcp://localhost:"+myArgs[0];
 		broker.addConnector(BROKER_URI);
 		broker.start();
 		

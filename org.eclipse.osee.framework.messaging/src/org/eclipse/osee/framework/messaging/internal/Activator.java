@@ -10,10 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.internal;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import org.apache.camel.CamelContext;
-import org.apache.camel.impl.DefaultCamelContext;
 import org.eclipse.osee.framework.messaging.MessagingGateway;
 import org.eclipse.osee.framework.messaging.future.MessageService;
 import org.eclipse.osee.framework.messaging.internal.old.MessagingGatewayImpl;
@@ -29,32 +25,24 @@ public class Activator implements BundleActivator {
    private BundleContext context;
 
    private ServiceRegistration msgServiceRegistration;
-   private MessageService messageService;
-   private CamelContext camelContext;
-   private ExecutorService executor;
-
+   private MessageServiceProviderImpl messageServiceProviderImpl = new MessageServiceProviderImpl();
+   
    // old
    private ServiceRegistration registration;
    private MessagingGatewayImpl messaging;
 
+   
+   
    public void start(BundleContext context) throws Exception {
       this.context = context;
       me = this;
 
-      camelContext = new DefaultCamelContext();
-      executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-
-      messageService = createMessageService();
-      msgServiceRegistration = context.registerService(MessageService.class.getName(), messageService, null);
-      camelContext.start();
+      messageServiceProviderImpl.start();
+      msgServiceRegistration = context.registerService(MessageService.class.getName(), messageServiceProviderImpl.getMessageService(), null);
 
       //old
       messaging = new MessagingGatewayImpl();
       registration = context.registerService(MessagingGateway.class.getName(), messaging, null);
-   }
-
-   private MessageService createMessageService() {
-      return new MessageServiceImpl(new ConnectionNodeFactoryImpl(camelContext, executor));
    }
 
    public void stop(BundleContext context) throws Exception {
@@ -64,7 +52,7 @@ public class Activator implements BundleActivator {
       if (msgServiceRegistration != null) {
          msgServiceRegistration.unregister();
       }
-      camelContext.stop();
+      messageServiceProviderImpl.stop();
 
       //old
       if (registration != null) {

@@ -5,11 +5,26 @@
  */
 package org.eclipse.osee.framework.messaging;
 
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * @author b1528444
  */
-public interface OseeMessagingListener {
-   public void process(Properties message);
+public abstract class OseeMessagingListener {
+
+	private Class<?> clazz;
+	
+	public OseeMessagingListener() {
+		this.clazz = null;
+	}
+
+	public OseeMessagingListener(Class<?> clazz) {
+		this.clazz = clazz;
+	}
+
+	public Class<?> getClazz(){
+		return clazz;
+	}
+	
+	public abstract void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection);
 }

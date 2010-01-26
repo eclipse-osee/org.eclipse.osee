@@ -23,7 +23,6 @@ class SendMessageRunnable implements Runnable {
    @Override
    public void run() {
       try {
-         //            checkTransport(component);
          template.sendBody(nodeInfo.getComponentNameForRoutes() + topic, body);
          statusCallback.success();
       } catch (Exception ex) {

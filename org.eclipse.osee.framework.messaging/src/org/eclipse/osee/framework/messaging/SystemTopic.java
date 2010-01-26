@@ -8,8 +8,19 @@ package org.eclipse.osee.framework.messaging;
 /**
  * @author b1122182
  */
-public class SystemTopic {
+public enum SystemTopic implements MessageName {
 
-   public static final String JMS_HEALTH_STATUS = "topic:jms.health.status";
-   public static final String KILL_TEST_JMS_BROKER = "topic:jms.kill.broker";
+	JMS_HEALTH_STATUS("topic:jms.health.status"),
+	KILL_TEST_JMS_BROKER("topic:jms.kill.broker");
+
+	private String name;
+
+	SystemTopic(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
 }

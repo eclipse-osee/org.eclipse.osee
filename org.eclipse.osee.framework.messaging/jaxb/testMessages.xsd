@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+            jxb:version="2.0">
+
+<xsd:element name="ServiceHealth" type="ServiceHealth"/>
+<xsd:element name="ServiceHealthRequest" type="ServiceHealthRequest"/>
+
+<xsd:complexType name="ServiceDescriptionPair">
+	<xsd:sequence>
+		<xsd:element name="name" type="xsd:string"/>
+		<xsd:element name="value" type="xsd:string"/>
+	</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ServiceHealth">
+  <xsd:sequence>
+    <xsd:element name="serviceId" type="xsd:string"/>
+    <xsd:element name="serviceVersion" type="xsd:string"/>
+    <xsd:element name="brokerURI" type="xsd:string"/>
+    <xsd:element name="serviceDescription" type="ServiceDescriptionPair" maxOccurs="unbounded"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ServiceHealthRequest">
+  <xsd:sequence>
+    <xsd:element name="serviceId" type="xsd:string"/>
+    <xsd:element name="serviceVersion" type="xsd:string"/>
+    <xsd:element name="serviceDescription" type="ServiceDescriptionPair" maxOccurs="unbounded"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+</xsd:schema>
