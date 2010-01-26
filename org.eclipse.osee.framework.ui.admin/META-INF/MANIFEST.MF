@@ -9,18 +9,22 @@ Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.osee.framework.ui.admin,
  org.eclipse.osee.framework.ui.admin.dbtabletab
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.osee.framework.jdk.core,
- org.eclipse.osee.framework.skynet.core,
- org.eclipse.osee.framework.messaging.event.skynet,
- org.eclipse.osee.framework.ui.skynet,
- org.eclipse.osee.framework.plugin.core,
- org.eclipse.osee.framework.ui.plugin,
- org.eclipse.osee.framework.ui.swt,
- org.eclipse.ui.forms,
- org.eclipse.osee.framework.database
+ org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.logging
+ org.eclipse.osee.framework.database.core,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.osee.framework.skynet.core,
+ org.eclipse.osee.framework.skynet.core.access,
+ org.eclipse.osee.framework.skynet.core.artifact,
+ org.eclipse.osee.framework.skynet.core.event,
+ org.eclipse.osee.framework.ui.plugin,
+ org.eclipse.osee.framework.ui.plugin.util,
+ org.eclipse.osee.framework.ui.skynet,
+ org.eclipse.osee.framework.ui.skynet.widgets,
+ org.eclipse.osee.framework.ui.skynet.widgets.cellEditor,
+ org.eclipse.osee.framework.ui.skynet.widgets.dialog,
+ org.eclipse.osee.framework.ui.swt
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
