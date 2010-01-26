@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.coverage.test.import1.apu;
+package org.eclipse.osee.coverage.test.import7.apu;
 
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -54,10 +54,10 @@ public class AuxPowerUnit1 extends Table {
    public void clear(int[] indices) {
       try {
          if (getStyle() == 4) { // 2, 1, TestUnit2
-            System.out.println("clear it"); // 2, 2, n
+            System.out.println("clear it now"); // 2, 2, TestUnit1
          } else {
             for (int x = 0; x < 34; x++) {
-               System.err.println("clear"); // 2, 3, n
+               System.err.println("clear it"); // 2, 3, n
             }
          }
       } catch (IllegalArgumentException ex) {

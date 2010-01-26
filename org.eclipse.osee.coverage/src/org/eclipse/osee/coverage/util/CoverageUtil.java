@@ -69,6 +69,14 @@ public class CoverageUtil {
       return CoverageImage.COVERAGE_PACKAGE;
    }
 
+   public static boolean isInTest() {
+      return Boolean.valueOf(System.getProperty("osee.isInTest"));
+   }
+
+   public static void setIsInTest(boolean isInTest) {
+      System.setProperty("osee.isInTest", String.valueOf(isInTest));
+   }
+
    public static CoveragePackageBase getParentCoveragePackageBase(ICoverage coverage) {
       if (coverage.getParent() instanceof CoveragePackageBase) {
          return (CoveragePackageBase) coverage.getParent();

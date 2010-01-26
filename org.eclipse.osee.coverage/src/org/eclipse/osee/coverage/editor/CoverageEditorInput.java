@@ -22,7 +22,7 @@ import org.eclipse.ui.IPersistableElement;
 public class CoverageEditorInput implements IEditorInput {
 
    private CoveragePackageBase coveragePackageBase;
-   private final Artifact coveragePackageArtifact;
+   private Artifact coveragePackageArtifact;
    private final String preLoadName;
    private final boolean isInTest;
 
@@ -97,6 +97,10 @@ public class CoverageEditorInput implements IEditorInput {
 
    public boolean isInTest() {
       return isInTest;
+   }
+
+   public void setCoveragePackageArtifact(Artifact coveragePackageArtifact) {
+      this.coveragePackageArtifact = coveragePackageArtifact;
    }
 
 }

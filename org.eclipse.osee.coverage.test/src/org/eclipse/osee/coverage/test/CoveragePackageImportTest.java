@@ -28,6 +28,7 @@ import org.eclipse.osee.coverage.test.import3.CoverageImport3TestBlam;
 import org.eclipse.osee.coverage.test.import4.CoverageImport4TestBlam;
 import org.eclipse.osee.coverage.test.import5.CoverageImport5TestBlam;
 import org.eclipse.osee.coverage.test.import6.CoverageImport6TestBlam;
+import org.eclipse.osee.coverage.test.import7.CoverageImport7TestBlam;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
@@ -55,7 +56,17 @@ public class CoveragePackageImportTest {
    private static boolean testWithDb = true;
 
    @BeforeClass
+   public static void setUp() throws OseeCoreException {
+      CoverageUtil.setIsInTest(true);
+      testCleanup();
+   }
+
    @AfterClass
+   public static void cleanUp() throws OseeCoreException {
+      CoverageUtil.setIsInTest(false);
+      testCleanup();
+   }
+
    public static void testCleanup() throws OseeCoreException {
       if (testWithDb) {
          CoverageUtil.setBranch(BranchManager.getCommonBranch());
@@ -72,7 +83,7 @@ public class CoveragePackageImportTest {
 
       // Check import results
       Assert.assertEquals(60, coverageImport.getCoverageItemsCovered().size());
-      Assert.assertEquals(121, coverageImport.getCoverageItems().size());
+      Assert.assertEquals(122, coverageImport.getCoverageItems().size());
 
       System.out.println(CoverageUtil.printTree(coverageImport));
 
@@ -80,7 +91,7 @@ public class CoveragePackageImportTest {
       Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(60, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(61, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(62, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       // Ensure all coverageItems have valid name
       for (CoverageItem coverageItem : coverageImport.getCoverageItems()) {
@@ -167,12 +178,12 @@ public class CoveragePackageImportTest {
 
       // CoveragePackage should now have imported results
       Assert.assertEquals(60, coveragePackage.getCoverageItemsCovered().size());
-      Assert.assertEquals(121, coveragePackage.getCoverageItems().size());
+      Assert.assertEquals(122, coveragePackage.getCoverageItems().size());
       Assert.assertEquals(49, coveragePackage.getCoveragePercent());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(60, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(61, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(62, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       CoveragePackage loadedCp = null;
       if (testWithDb) {
@@ -195,12 +206,12 @@ public class CoveragePackageImportTest {
       }
 
       Assert.assertEquals(60, loadedCp.getCoverageItemsCovered().size());
-      Assert.assertEquals(121, loadedCp.getCoverageItems().size());
+      Assert.assertEquals(122, loadedCp.getCoverageItems().size());
       Assert.assertEquals(49, loadedCp.getCoveragePercent());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(60, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(61, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(62, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
    }
 
@@ -213,12 +224,12 @@ public class CoveragePackageImportTest {
 
       // Check import results
       Assert.assertEquals(60, coverageImport.getCoverageItemsCovered().size());
-      Assert.assertEquals(121, coverageImport.getCoverageItems().size());
+      Assert.assertEquals(122, coverageImport.getCoverageItems().size());
       Assert.assertEquals(49, coverageImport.getCoveragePercent());
       Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(60, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(61, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(62, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
@@ -266,12 +277,12 @@ public class CoveragePackageImportTest {
 
       // CoveragePackage should now have imported results
       Assert.assertEquals(66, coveragePackage.getCoverageItemsCovered().size());
-      Assert.assertEquals(132, coveragePackage.getCoverageItems().size());
-      Assert.assertEquals(50, coveragePackage.getCoveragePercent());
+      Assert.assertEquals(133, coveragePackage.getCoverageItems().size());
+      Assert.assertEquals(49, coveragePackage.getCoveragePercent());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(66, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(66, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(67, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       CoveragePackage loadedCp = null;
       if (testWithDb) {
@@ -294,12 +305,12 @@ public class CoveragePackageImportTest {
       }
 
       Assert.assertEquals(66, loadedCp.getCoverageItemsCovered().size());
-      Assert.assertEquals(132, loadedCp.getCoverageItems().size());
-      Assert.assertEquals(50, loadedCp.getCoveragePercent());
+      Assert.assertEquals(133, loadedCp.getCoverageItems().size());
+      Assert.assertEquals(49, loadedCp.getCoveragePercent());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(66, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(66, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(67, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
    }
 
@@ -357,12 +368,12 @@ public class CoveragePackageImportTest {
 
       // CoveragePackage should now have imported results
       Assert.assertEquals(67, coveragePackage.getCoverageItemsCovered().size());
-      Assert.assertEquals(133, coveragePackage.getCoverageItems().size());
+      Assert.assertEquals(134, coveragePackage.getCoverageItems().size());
       Assert.assertEquals(50, coveragePackage.getCoveragePercent());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(67, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(66, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(67, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       // Confirm that fileContents were updated
       coverageUnit = (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit1.java");
@@ -393,12 +404,12 @@ public class CoveragePackageImportTest {
       }
 
       Assert.assertEquals(67, loadedCp.getCoverageItemsCovered().size());
-      Assert.assertEquals(133, loadedCp.getCoverageItems().size());
+      Assert.assertEquals(134, loadedCp.getCoverageItems().size());
       Assert.assertEquals(50, loadedCp.getCoveragePercent());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(67, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(66, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(67, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       // Confirm that updated fileContents were loaded
       coverageUnit = (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit1.java");
@@ -463,12 +474,12 @@ public class CoveragePackageImportTest {
 
       // CoveragePackage should now have imported results
       Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered().size());
-      Assert.assertEquals(134, coveragePackage.getCoverageItems().size());
+      Assert.assertEquals(135, coveragePackage.getCoverageItems().size());
       Assert.assertEquals(50, coveragePackage.getCoveragePercent());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(66, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(67, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       // Confirm that fileContents were updated
       coverageUnit = (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit1.java");
@@ -499,12 +510,12 @@ public class CoveragePackageImportTest {
       }
 
       Assert.assertEquals(68, loadedCp.getCoverageItemsCovered().size());
-      Assert.assertEquals(134, loadedCp.getCoverageItems().size());
+      Assert.assertEquals(135, loadedCp.getCoverageItems().size());
       Assert.assertEquals(50, loadedCp.getCoveragePercent());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(68, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(66, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(67, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       // Confirm that updated fileContents were loaded
       coverageUnit = (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit1.java");
@@ -575,12 +586,12 @@ public class CoveragePackageImportTest {
 
       // CoveragePackage should now have imported results
       Assert.assertEquals(69, coveragePackage.getCoverageItemsCovered().size());
-      Assert.assertEquals(136, coveragePackage.getCoverageItems().size());
+      Assert.assertEquals(137, coveragePackage.getCoverageItems().size());
       Assert.assertEquals(50, coveragePackage.getCoveragePercent());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(69, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(67, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       CoveragePackage loadedCp = null;
       if (testWithDb) {
@@ -603,12 +614,12 @@ public class CoveragePackageImportTest {
       }
 
       Assert.assertEquals(69, loadedCp.getCoverageItemsCovered().size());
-      Assert.assertEquals(136, loadedCp.getCoverageItems().size());
+      Assert.assertEquals(137, loadedCp.getCoverageItems().size());
       Assert.assertEquals(50, loadedCp.getCoveragePercent());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(69, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(67, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(68, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
    }
 
    @Test
@@ -680,12 +691,12 @@ public class CoveragePackageImportTest {
 
       // CoveragePackage should now have imported results
       Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered().size());
-      Assert.assertEquals(134, coveragePackage.getCoverageItems().size());
+      Assert.assertEquals(135, coveragePackage.getCoverageItems().size());
       Assert.assertEquals(50, coveragePackage.getCoveragePercent());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(66, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(67, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       CoveragePackage loadedCp = null;
       if (testWithDb) {
@@ -708,12 +719,12 @@ public class CoveragePackageImportTest {
       }
 
       Assert.assertEquals(68, loadedCp.getCoverageItemsCovered().size());
-      Assert.assertEquals(134, loadedCp.getCoverageItems().size());
+      Assert.assertEquals(135, loadedCp.getCoverageItems().size());
       Assert.assertEquals(50, loadedCp.getCoveragePercent());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(68, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(66, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(67, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       // Ensure that the artifact was deleted and not just relation deletion
       try {
@@ -725,6 +736,148 @@ public class CoveragePackageImportTest {
       Artifact clearArt =
             ArtifactQuery.getArtifactFromId(clearCoverageUnitForDeletion.getGuid(), CoverageUtil.getBranch(), true);
       Assert.assertNotNull("clear CoverageUnit should exist if search for deleted == true", clearArt);
+
+   }
+
+   @Test
+   // Re-import; Delete PowerUnit2.clear
+   public void testImport7() throws Exception {
+      CoverageImport7TestBlam coverageImport7TestBlam = new CoverageImport7TestBlam();
+      coverageImport = coverageImport7TestBlam.run(null);
+      Assert.assertNotNull(coverageImport);
+
+      if (testWithDb) {
+         // Test Load of Coverage Package
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         CoverageTestUtil.registerAsTestArtifact(artifact);
+         artifact.persist();
+         OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
+         Assert.assertNotNull(packageStore.getArtifact(false));
+         coveragePackage = packageStore.getCoveragePackage();
+      }
+
+      // Get and store off coverage unit to delete so can confirm deletion occurred
+      CoverageUnit auxPowerUnit1CoverageUnit =
+            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "AuxPowerUnit1.java");
+      Assert.assertNotNull(auxPowerUnit1CoverageUnit);
+      CoverageUnit clearCoverageUnit = null;
+      for (CoverageUnit childCoverageUnit : auxPowerUnit1CoverageUnit.getCoverageUnits()) {
+         if (childCoverageUnit.getName().equals("clear")) {
+            clearCoverageUnit = childCoverageUnit;
+         }
+      }
+
+      Assert.assertNotNull(clearCoverageUnit);
+      CoverageItem clearCoverageItemNum2 = null, clearCoverageItemNum3 = null;
+      for (CoverageItem childCoverageUnit : clearCoverageUnit.getCoverageItems()) {
+         if (childCoverageUnit.getName().contains("clear it")) {
+            clearCoverageItemNum2 = childCoverageUnit;
+         }
+         if (childCoverageUnit.getName().contains("clear")) {
+            clearCoverageItemNum3 = childCoverageUnit;
+         }
+      }
+      Assert.assertNotNull(clearCoverageItemNum2);
+      Assert.assertNotNull(clearCoverageItemNum3);
+
+      String preFileContents = auxPowerUnit1CoverageUnit.getFileContents();
+      Assert.assertFalse("\"clear it now\" should not yet exist in file contents",
+            preFileContents.contains("clear it now"));
+
+      // Test MergeManager
+      Assert.assertNotNull(coveragePackage);
+      MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
+      Assert.assertEquals(1, mergeManager.getMergeItems().size());
+      Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
+      int numRename = 0;
+      for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems()) {
+         if (mergeItem.getMergeType() == MergeType.Rename_Coverage_Item)
+            numRename++;
+         else
+            throw new OseeStateException(String.format("Unexpected merge type [%s] for Delete_And_Reorder group",
+                  mergeItem.getMergeType()));
+      }
+      Assert.assertEquals(2, numRename);
+
+      MergeImportManager importManager = new MergeImportManager(mergeManager);
+      XResultData resultData = importManager.importItems(new ISaveable() {
+
+         @Override
+         public Result isEditable() {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result save() throws OseeCoreException {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+            return Result.TrueResult;
+         }
+
+      }, mergeManager.getMergeItems());
+      Assert.assertEquals(0, resultData.getNumErrors());
+
+      // CoveragePackage should now have imported results
+      Assert.assertEquals(69, coveragePackage.getCoverageItemsCovered().size());
+      Assert.assertEquals(135, coveragePackage.getCoverageItems().size());
+      Assert.assertEquals(51, coveragePackage.getCoveragePercent());
+      Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
+      Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
+      Assert.assertEquals(69, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
+      Assert.assertEquals(66, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+
+      CoveragePackage loadedCp = null;
+      if (testWithDb) {
+         // Test Persist of CoveragePackage
+         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage);
+         SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Coverage Package Save");
+         store.save(transaction);
+         transaction.execute();
+
+         // Test Load of Coverage Package
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         CoverageTestUtil.registerAsTestArtifact(artifact);
+         artifact.persist();
+
+         OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
+         Assert.assertNotNull(packageStore.getArtifact(false));
+         loadedCp = packageStore.getCoveragePackage();
+      } else {
+         loadedCp = coveragePackage;
+      }
+
+      // Confirm that fileContents were updated
+      auxPowerUnit1CoverageUnit =
+            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "AuxPowerUnit1.java");
+      Assert.assertNotNull(auxPowerUnit1CoverageUnit);
+      String postFileContents = auxPowerUnit1CoverageUnit.getFileContents();
+      Assert.assertTrue("File Contents should have been updated and thus not equal",
+            !postFileContents.equals(preFileContents));
+      Assert.assertTrue("\"clear it now\" should now exist in file contents", postFileContents.contains("clear it now"));
+
+      Assert.assertEquals(69, loadedCp.getCoverageItemsCovered().size());
+      Assert.assertEquals(135, loadedCp.getCoverageItems().size());
+      Assert.assertEquals(51, loadedCp.getCoveragePercent());
+      Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
+      Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
+      Assert.assertEquals(69, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
+      Assert.assertEquals(66, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+
+      // Ensure that the items were updated
+      Assert.assertTrue(clearCoverageItemNum2.getName().contains("clear it now"));
+      Assert.assertTrue(clearCoverageItemNum3.getName().contains("clear it"));
+
+      // Ensure that file contents were updated
+      auxPowerUnit1CoverageUnit =
+            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "AuxPowerUnit1.java");
+      Assert.assertNotNull(auxPowerUnit1CoverageUnit);
+      String postLoadFileContents = auxPowerUnit1CoverageUnit.getFileContents();
+      Assert.assertEquals("File Contents should be same pre and post save", postLoadFileContents, postFileContents);
+      Assert.assertTrue("deselectAdded should exist in loaded file contents",
+            postLoadFileContents.contains("clear it now"));
 
    }
 }

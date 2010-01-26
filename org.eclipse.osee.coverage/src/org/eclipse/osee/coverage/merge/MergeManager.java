@@ -74,7 +74,7 @@ public class MergeManager {
          if (importCoverage.getGuid().equals("AAte3i2bH3L1MvsFMqAA")) {
             System.out.println("here");
          }
-         if (importCoverage.getName().equals("agp_threat_audio.2.ada")) {
+         if (importCoverage.getName().equals("apu")) {
             System.out.println("here");
          }
 
@@ -86,7 +86,7 @@ public class MergeManager {
 
          //          Print out match results
          for (Entry<ICoverage, MatchItem> entry : importItemToMatchItem.entrySet()) {
-            System.out.println(String.format("MatchItem[%s]-Coverage[%s]", entry.getValue(), entry.getKey()));
+            System.out.println(String.format("MatchItem[%s]", entry.getValue()));
          }
 
          // Case A - All match and package # children == import # children
@@ -101,7 +101,8 @@ public class MergeManager {
          // Remove all package stored data cause it's invalid now
          else if (sameNumberChildren && CoverageUtil.isAllCoverageItems(importItemToMatchItem.keySet()) && MatchItem.isAllMatchType(
                Arrays.asList(MatchType.Match__Name_And_Order_Num, MatchType.No_Match__Name_Or_Order_Num),
-               importItemToMatchItem.values())) {
+               importItemToMatchItem.values()) && !MatchItem.isAllMatchType(
+               Arrays.asList(MatchType.Match__Name_And_Order_Num), importItemToMatchItem.values())) {
             boolean errorFound = false;
             List<IMergeItem> groupMergeItems = new ArrayList<IMergeItem>();
             for (Entry<ICoverage, MatchItem> pair : importItemToMatchItem.entrySet()) {
@@ -112,7 +113,8 @@ public class MergeManager {
                   for (ICoverage packageChild : packageItemChildren) {
                      if (packageChild.getOrderNumber().equals(importChild.getOrderNumber())) {
                         if (packageChild instanceof CoverageItem) {
-                           groupMergeItems.add(new MergeItem(MergeType.Rename_Coverage_Item, null, packageChild, false));
+                           groupMergeItems.add(new MergeItem(MergeType.Rename_Coverage_Item, packageChild, importChild,
+                                 false));
                            found = true;
                         }
                      }

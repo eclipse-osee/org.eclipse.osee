@@ -379,12 +379,22 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
    @Override
    public Result save() throws OseeCoreException {
-      return OseeCoveragePackageStore.get(coveragePackage).save();
+      OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage);
+      Result result = store.save();
+      if (result.isFalse()) return result;
+      Artifact artifact = store.getArtifact(false);
+      coverageEditor.getCoverageEditorInput().setCoveragePackageArtifact(artifact);
+      return result;
    }
 
    @Override
    public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
-      return OseeCoveragePackageStore.get(coveragePackage).save(coverages);
+      OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage);
+      Result result = store.save(coverages);
+      if (result.isFalse()) return result;
+      Artifact artifact = store.getArtifact(false);
+      coverageEditor.getCoverageEditorInput().setCoveragePackageArtifact(artifact);
+      return result;
    }
 
 }

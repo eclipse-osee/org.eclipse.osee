@@ -38,7 +38,7 @@ public class MatchItem {
 
    @Override
    public String toString() {
-      return matchType.toString() + " - " + importItem.toString();
+      return matchType.toString() + " - " + importItem.toString() + (packageItem != null ? " - " + packageItem.toString() : "");
    }
 
    public static boolean isAllMatchType(Collection<MatchType> matchTypes, Collection<MatchItem> matchItems) {

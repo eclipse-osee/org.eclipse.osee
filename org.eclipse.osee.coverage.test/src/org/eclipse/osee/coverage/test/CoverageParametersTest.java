@@ -193,12 +193,12 @@ public class CoverageParametersTest {
 
       // Check import results
       Assert.assertEquals(60, coverageImport.getCoverageItemsCovered().size());
-      Assert.assertEquals(121, coverageImport.getCoverageItems().size());
+      Assert.assertEquals(122, coverageImport.getCoverageItems().size());
       Assert.assertEquals(49, coverageImport.getCoveragePercent());
       Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(60, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(61, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(62, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       CoverageParameters coverageParameters = new CoverageParameters(coverageImport);
       Result result = coverageParameters.isParameterSelectionValid();
@@ -207,7 +207,7 @@ public class CoverageParametersTest {
       // Test Show All
       coverageParameters.clearAll();
       Pair<Set<ICoverage>, Set<ICoverage>> itemsAndParents = coverageParameters.performSearchGetResults();
-      Assert.assertEquals(121, itemsAndParents.getFirst().size());
+      Assert.assertEquals(122, itemsAndParents.getFirst().size());
       Assert.assertEquals(4, itemsAndParents.getSecond().size());
 
       // Exception_Handling
@@ -226,7 +226,7 @@ public class CoverageParametersTest {
       // Not_Covered
       coverageParameters.setCoverageMethods(Collections.singleton(CoverageOptionManager.Not_Covered));
       itemsAndParents = coverageParameters.performSearchGetResults();
-      Assert.assertEquals(61, itemsAndParents.getFirst().size());
+      Assert.assertEquals(62, itemsAndParents.getFirst().size());
       Assert.assertEquals(4, itemsAndParents.getSecond().size());
       Assert.assertEquals(12, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
 
@@ -234,7 +234,7 @@ public class CoverageParametersTest {
       coverageParameters.setCoverageMethods(Arrays.asList(CoverageOptionManager.Not_Covered,
             CoverageOptionManager.Test_Unit));
       itemsAndParents = coverageParameters.performSearchGetResults();
-      Assert.assertEquals(121, itemsAndParents.getFirst().size());
+      Assert.assertEquals(122, itemsAndParents.getFirst().size());
       Assert.assertEquals(4, itemsAndParents.getSecond().size());
       Assert.assertEquals(12, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
 
@@ -242,7 +242,7 @@ public class CoverageParametersTest {
       coverageParameters.clearAll();
       coverageParameters.setName("Power");
       itemsAndParents = coverageParameters.performSearchGetResults();
-      Assert.assertEquals(54, itemsAndParents.getFirst().size());
+      Assert.assertEquals(55, itemsAndParents.getFirst().size());
       Assert.assertEquals(2, itemsAndParents.getSecond().size());
       Assert.assertEquals(4, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
 
@@ -251,7 +251,7 @@ public class CoverageParametersTest {
       coverageParameters.setName("Power");
       coverageParameters.setNamespace("apu");
       itemsAndParents = coverageParameters.performSearchGetResults();
-      Assert.assertEquals(22, itemsAndParents.getFirst().size());
+      Assert.assertEquals(23, itemsAndParents.getFirst().size());
       Assert.assertEquals(1, itemsAndParents.getSecond().size());
       Assert.assertEquals(2, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
 
