@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.define;
+package org.eclipse.osee.framework.core.data;
 
 /**
  * @author Roberto E. Escobar
