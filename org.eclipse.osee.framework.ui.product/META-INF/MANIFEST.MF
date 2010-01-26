@@ -7,9 +7,6 @@ Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.osee.framework.jdk.core,
- org.eclipse.osee.framework.plugin.core,
- org.eclipse.osee.framework.ui.plugin,
  org.eclipse.ui.intro
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: library.jar
