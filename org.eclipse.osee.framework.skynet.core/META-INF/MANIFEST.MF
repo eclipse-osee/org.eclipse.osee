@@ -6,14 +6,13 @@ Bundle-Version: 0.9.1.qualifier
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.framework.skynet.core.internal.Activator
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.osee.framework.jdk.core,
  org.eclipse.core.resources,
- org.eclipse.osee.framework.messaging.event.skynet,
+ org.eclipse.compare,
  net.jini,
  org.eclipse.osee.framework.jini,
- org.eclipse.osee.framework.database,
- org.eclipse.osee.framework.plugin.core,
- org.eclipse.compare
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.osee.framework.messaging.event.skynet,
+ org.eclipse.osee.framework.database
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.access,
@@ -61,5 +60,7 @@ Import-Package: org.apache.commons.lang,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.core.util,
- org.eclipse.osee.framework.logging
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.osee.framework.plugin.core.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
