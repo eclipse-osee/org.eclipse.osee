@@ -14,7 +14,12 @@ import static org.eclipse.osee.framework.jdk.core.util.Strings.intern;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -38,22 +43,27 @@ public class LogItem {
    public LogItem() {
    }
 
-   public LogItem(LogType type, Date date, User user, String state, String msg) throws OseeCoreException {
-      this(type.name(), date.getTime() + "", user.getUserId(), state, msg);
+   public LogItem(LogType type, Date date, User user, String state, String msg, String hrid) throws OseeCoreException {
+      this(type.name(), date.getTime() + "", user.getUserId(), state, msg, hrid);
    }
 
-   public LogItem(LogType type, String date, String userId, String state, String msg) throws OseeCoreException {
+   public LogItem(LogType type, String date, String userId, String state, String msg, String hrid) throws OseeCoreException {
       Long l = new Long(date);
       this.date = new Date(l.longValue());
       this.msg = msg;
       this.state = intern(state);
       this.userId = intern(userId);
-      this.user = UserManager.getUserByUserId(userId);
+      try {
+         this.user = UserManager.getUserByUserId(userId);
+      } catch (UserNotInDatabase ex) {
+         this.user = UserManager.getUser(SystemUser.Guest);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, String.format("Error parsing log for [%s]", hrid), ex);
+      }
       this.type = type;
    }
 
-   public LogItem(String type, String date, String userId, String state, String msg) throws OseeCoreException {
-      this(LogType.getType(type), date, userId, state, msg);
+   public LogItem(String type, String date, String userId, String state, String msg, String hrid) throws OseeCoreException {
+      this(LogType.getType(type), date, userId, state, msg, hrid);
    }
 
    public String toXml() throws OseeCoreException {

@@ -74,7 +74,8 @@ public class XCurrentStateDam extends XStateAssigneesDam {
 
    public static void logMetrics(StateMachineArtifact sma, String percent, String hours, String stateName, User user, Date date) throws OseeCoreException {
       LogItem logItem =
-            new LogItem(LogType.Metrics, date, user, stateName, String.format("Percent %s Hours %s", percent, hours));
+            new LogItem(LogType.Metrics, date, user, stateName, String.format("Percent %s Hours %s", percent, hours),
+                  sma.getHumanReadableId());
       sma.getLog().addLogItem(logItem);
    }
 }

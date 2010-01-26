@@ -157,7 +157,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          String value = entry.getKey();
          int gammaId = entry.getValue();
          System.out.println("Old GammaId " + gammaId + " Value = " + value);
-         List<NoteItem> items = ATSNote.getNoteItems(value);
+         List<NoteItem> items = ATSNote.getNoteItems(value, "GammaId:" + gammaId);
          for (NoteItem item : items) {
             System.out.println(String.format("Pre State [%s]", item.getState()));
          }
@@ -166,7 +166,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          value = value.replaceAll("\\&quot; State", "");
          value = value.replaceAll("state=\"\\&quot;", "state=\"");
          System.out.println("New GammaId " + gammaId + " Value = " + value);
-         items = ATSNote.getNoteItems(value);
+         items = ATSNote.getNoteItems(value, "GammaId:" + gammaId);
          for (NoteItem item : items) {
             System.out.println(String.format("Post State [%s]", item.getState()));
          }

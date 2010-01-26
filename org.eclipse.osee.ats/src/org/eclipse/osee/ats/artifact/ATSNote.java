@@ -19,8 +19,10 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.NoteType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -70,18 +72,28 @@ public class ATSNote {
       saveNoteItems(logItems);
    }
 
-   public static List<NoteItem> getNoteItems(String str) {
+   public static List<NoteItem> getNoteItems(String str, String hrid) {
       List<NoteItem> logItems = new ArrayList<NoteItem>();
       try {
          if (Strings.isValid(str)) {
             NodeList nodes = Jaxp.readXmlDocument(str).getElementsByTagName(LOG_ITEM_TAG);
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
-               User user = UserManager.getUserByUserId(element.getAttribute("userId"));
-               NoteItem item =
-                     new NoteItem(element.getAttribute("type"), element.getAttribute("state"),
-                           element.getAttribute("date"), user, element.getAttribute("msg"));
-               logItems.add(item);
+               try {
+                  User user = UserManager.getUserByUserId(element.getAttribute("userId"));
+                  NoteItem item =
+                        new NoteItem(element.getAttribute("type"), element.getAttribute("state"),
+                              element.getAttribute("date"), user, element.getAttribute("msg"));
+                  logItems.add(item);
+               } catch (UserNotInDatabase ex) {
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, String.format("Error parsing notes for [%s]", hrid),
+                        ex);
+                  NoteItem item =
+                        new NoteItem(element.getAttribute("type"), element.getAttribute("state"),
+                              element.getAttribute("date"), UserManager.getUser(SystemUser.Guest),
+                              element.getAttribute("msg"));
+                  logItems.add(item);
+               }
             }
          }
       } catch (Exception ex) {
@@ -94,7 +106,7 @@ public class ATSNote {
       try {
          String xml = getArtifact().getSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(), "");
          if (Strings.isValid(xml)) {
-            return getNoteItems(xml);
+            return getNoteItems(xml, getArtifact().getHumanReadableId());
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

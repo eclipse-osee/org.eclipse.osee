@@ -50,16 +50,7 @@ public class ATSLog {
    private LogItem cancelledLogItem;
    private LogItem completedLogItem;
    public static enum LogType {
-      None,
-      Originated,
-      StateComplete,
-      StateCancelled,
-      StateEntered,
-      Released,
-      Error,
-      Assign,
-      Note,
-      Metrics;
+      None, Originated, StateComplete, StateCancelled, StateEntered, Released, Error, Assign, Note, Metrics;
 
       public static LogType getType(String type) throws OseeArgumentException {
          for (Enum<LogType> e : LogType.values()) {
@@ -125,7 +116,7 @@ public class ATSLog {
          while (m.find()) {
             LogItem item =
                   new LogItem(m.group(4), m.group(1), Strings.intern(m.group(5)), Strings.intern(m.group(3)),
-                        AXml.xmlToText(m.group(2)));
+                        AXml.xmlToText(m.group(2)), getArtifact().getHumanReadableId());
             logItems.add(item);
          }
 
@@ -190,8 +181,6 @@ public class ATSLog {
 
    /**
     * Since originator can be changed, return the date of the first originated log item
-    * 
-    * @return Date
     */
    public Date getCreationDate() throws OseeCoreException {
       LogItem logItem = getEvent(LogType.Originated);
@@ -203,8 +192,6 @@ public class ATSLog {
 
    /**
     * Since originator change be changed, return the last originated event's user
-    * 
-    * @return User
     */
    public User getOriginator() throws OseeCoreException {
       LogItem logItem = getLastEvent(LogType.Originated);
@@ -216,10 +203,6 @@ public class ATSLog {
 
    /**
     * Overwrite the first logItem to match type and state with newItem data
-    * 
-    * @param matchType
-    * @param matchState
-    * @param newItem
     */
    public void overrideStateItemData(LogType matchType, String matchState, LogItem newItem) throws OseeCoreException {
       List<LogItem> logItems = getLogItems();
@@ -236,9 +219,6 @@ public class ATSLog {
 
    /**
     * Overwrite the first logItem to match matchType with newItem data
-    * 
-    * @param matchType
-    * @param newItem
     */
    public void overrideItemData(LogType matchType, LogItem newItem) throws OseeCoreException {
       List<LogItem> logItems = getLogItems();
@@ -255,9 +235,7 @@ public class ATSLog {
    }
 
    /**
-    * @param type
     * @param state name of state or null
-    * @param msg
     * @throws OseeArgumentException
     * @throws MultipleAttributesExist
     */
@@ -266,10 +244,7 @@ public class ATSLog {
    }
 
    /**
-    * @param type
     * @param state name of state or null
-    * @param msg
-    * @param user
     * @throws MultipleAttributesExist
     */
    public void addLog(LogType type, String state, String msg, User user) throws OseeCoreException {
@@ -281,18 +256,14 @@ public class ATSLog {
    }
 
    /**
-    * @param type
     * @param state name of state or null
-    * @param msg
-    * @param date
-    * @param user
     * @throws MultipleAttributesExist
     */
    public void addLog(LogType type, String state, String msg, Date date, User user) throws OseeCoreException {
       if (!enabled) {
          return;
       }
-      LogItem logItem = new LogItem(type, date, user, state, msg);
+      LogItem logItem = new LogItem(type, date, user, state, msg, artifactRef.get().getHumanReadableId());
       List<LogItem> logItems = getLogItems();
       logItems.add(logItem);
       putLogItems(logItems);
