@@ -35,7 +35,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.messaging.event.skynet,
  org.eclipse.osee.framework.jini,
  org.eclipse.nebula.widgets.xviewer,
- org.eclipse.osee.define.help.ui;bundle-version="1.0.0";resolution:=optional
+ org.eclipse.osee.define.help.ui
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.commons.lang,
  org.eclipse.osee.framework.core.client,
