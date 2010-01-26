@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ATSLog;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -40,6 +41,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.StateManager;
@@ -63,6 +65,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -88,6 +91,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private final Set<String> hrids = new HashSet<String>();
    private final Map<String, String> legacyPcrIdToParentHrid = new HashMap<String, String>();
    private String emailOnComplete = null;
+   private static ActionArtifact tempParentAction;
 
    public ValidateAtsDatabase(XNavigateItem parent) throws OseeArgumentException {
       this("Validate ATS Database", parent);
@@ -490,16 +494,37 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsWorkflowsHaveAction(Collection<Artifact> artifacts) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TeamWorkFlowArtifact) {
+            boolean noParent = false;
             try {
                if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
                   testNameToResultsMap.put("testAtsWorkflowsHaveAction",
                         "Error: Team " + XResultData.getHyperlink(artifact) + " has no parent Action\n");
+                  noParent = true;
                }
             } catch (Exception ex) {
                testNameToResultsMap.put("testAtsWorkflowsHaveAction",
                      "Error: Team " + XResultData.getHyperlink(artifact) + " has no parent Action: exception " + ex);
+               noParent = true;
+            }
+            // Create temporary action so these can be either purged or re-assigned
+            if (noParent) {
+               if (tempParentAction == null) {
+                  tempParentAction =
+                        (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action,
+                              AtsUtil.getAtsBranch());
+                  tempParentAction.setName("Temp Parent Action");
+                  testNameToResultsMap.put(
+                        "testAtsWorkflowsHaveAction",
+                        "Error: Temp Parent Action " + XResultData.getHyperlink(tempParentAction) + " created for orphaned teams.");
+
+               }
+               tempParentAction.addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, artifact);
+               tempParentAction.persist();
             }
          }
+      }
+      if (tempParentAction != null) {
+         AtsUtil.openATSAction(tempParentAction, AtsOpenOption.AtsWorld);
       }
    }
 
@@ -569,15 +594,20 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       for (Artifact artifact : artifacts) {
          if (artifact instanceof ReviewSMArtifact) {
             ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
-            if (reviewArtifact.getAttributes(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE.getStoreName()).size() > 0 && reviewArtifact.getDefectManager().getDefectItems().size() == 0) {
-               testNameToResultsMap.put(
-                     "testReviewsHaveValidDefectAndRoleXml",
-                     "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has defect attribute, but no defects (xml parsing error).");
-            }
-            if (reviewArtifact.getAttributes(ATSAttributes.ROLE_ATTRIBUTE.getStoreName()).size() > 0 && reviewArtifact.getUserRoleManager().getUserRoles().size() == 0) {
-               testNameToResultsMap.put(
-                     "testReviewsHaveValidDefectAndRoleXml",
-                     "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has role attribute, but no roles (xml parsing error).");
+            try {
+               if (reviewArtifact.getAttributes(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE.getStoreName()).size() > 0 && reviewArtifact.getDefectManager().getDefectItems().size() == 0) {
+                  testNameToResultsMap.put(
+                        "testReviewsHaveValidDefectAndRoleXml",
+                        "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has defect attribute, but no defects (xml parsing error).");
+               }
+               if (reviewArtifact.getAttributes(ATSAttributes.ROLE_ATTRIBUTE.getStoreName()).size() > 0 && reviewArtifact.getUserRoleManager().getUserRoles().size() == 0) {
+                  testNameToResultsMap.put(
+                        "testReviewsHaveValidDefectAndRoleXml",
+                        "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has role attribute, but no roles (xml parsing error).");
+               }
+            } catch (OseeCoreException ex) {
+               testNameToResultsMap.put("testReviewsHaveValidDefectAndRoleXml",
+                     "Error: Exception processing review defect test " + ex.getLocalizedMessage());
             }
          }
       }
