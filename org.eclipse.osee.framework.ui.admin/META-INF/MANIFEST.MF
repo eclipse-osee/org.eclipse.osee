@@ -6,8 +6,6 @@ Bundle-Version: 0.9.1.qualifier
 Bundle-ClassPath: admin.jar
 Bundle-Activator: org.eclipse.osee.framework.ui.admin.AdminPlugin
 Bundle-Vendor: Eclipse.org
-Export-Package: org.eclipse.osee.framework.ui.admin,
- org.eclipse.osee.framework.ui.admin.dbtabletab
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
