@@ -49,6 +49,7 @@ public class BaseBrokerTesting {
 	protected void startEmbeddedBroker(String brokerName, String brokerURI) throws Exception{
 		BrokerService broker = new BrokerService();
 		broker.setBrokerName(brokerName);
+		broker.setPersistent(false);
 		broker.setUseShutdownHook(true);
 		broker.addConnector(brokerURI);
 		broker.start();
