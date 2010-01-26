@@ -34,6 +34,7 @@
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.osee.framework.core"/>
       <import plugin="org.eclipse.osee.framework.plugin.core"/>
+      <import plugin="org.eclipse.osee.framework.svn"/>
       <import plugin="org.eclipse.osee.framework.ui.plugin"/>
       <import plugin="org.eclipse.osee.framework.ui.service.control"/>
       <import plugin="org.eclipse.osee.framework.ui.swt"/>
@@ -46,11 +47,6 @@
       <import plugin="org.eclipse.osee.framework.jini"/>
       <import plugin="net.jini"/>
       <import plugin="org.eclipse.ui" version="3.4.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.commands"/>
-      <import plugin="org.eclipse.team.core"/>
-      <import plugin="org.eclipse.team.ui"/>
-      <import plugin="org.eclipse.team.svn.core"/>
-      <import plugin="org.eclipse.team.svn.ui"/>
       <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.1.qualifier"/>
    </requires>
 
@@ -151,11 +147,5 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.svn"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
 </feature>

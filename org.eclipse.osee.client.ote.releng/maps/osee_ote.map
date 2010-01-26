@@ -1,6 +1,5 @@
 feature@org.eclipse.osee.client.ote.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.client.ote.feature
 
-plugin@org.eclipse.osee.framework.svn=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.svn
 plugin@org.eclipse.osee.framework.ui.workspacebundleloader=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.ui.workspacebundleloader
 plugin@org.eclipse.osee.ote.client=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.client
 plugin@org.eclipse.osee.ote.client.msg=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.ote.client.msg

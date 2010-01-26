@@ -47,6 +47,13 @@
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ui.forms" version="3.4.1" match="greaterOrEqual"/>
       <import feature="org.eclipse.osee.core.feature" version="0.9.1.qualifier"/>
+      <import plugin="org.eclipse.core.commands"/>
+      <import plugin="org.eclipse.core.jobs"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.team.core"/>
+      <import plugin="org.eclipse.team.ui"/>
+      <import plugin="org.eclipse.team.svn.core"/>
+      <import plugin="org.eclipse.team.svn.ui"/>
    </requires>
 
    <plugin
@@ -83,5 +90,11 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.svn"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>
