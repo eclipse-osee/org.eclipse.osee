@@ -26,7 +26,7 @@ Buildfile: createSnapshotZip.xml
 	</target>
 
 	<target name="doMoveZip" if="containsFile">
-		<echo>Renaming file to f-xtext-SDK-incubation-${BUILDTYPE}-Snapshot.zip</echo>
+		<echo>Renaming file to osee_server-update-incubation-${BUILDTYPE}-Snapshot.zip</echo>
 		<move includeemptydirs="false" tofile="${snapshotFolder}/osee-server-update-incubation-${BUILDTYPE}-Snapshot.zip" filtering="true">
 			<fileset dir="${snapshotFolder}" includes="*-Update-*.zip" />
 		</move>
