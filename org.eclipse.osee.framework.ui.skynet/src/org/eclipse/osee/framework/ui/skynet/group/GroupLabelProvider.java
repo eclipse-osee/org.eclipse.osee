@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -35,7 +34,7 @@ public class GroupLabelProvider extends LabelProvider {
          GroupExplorerItem item = (GroupExplorerItem) element;
          return ArtifactImageManager.getImage(item.getArtifact());
       }
-      return ImageManager.getImage(FrameworkImage.MISSING);
+      return ImageManager.getImage(ImageManager.MISSING);
    }
 
    /*

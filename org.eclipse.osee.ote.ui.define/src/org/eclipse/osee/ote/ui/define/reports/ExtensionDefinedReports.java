@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.swt.graphics.Image;
@@ -68,7 +67,7 @@ public class ExtensionDefinedReports {
    public Image getImage(String key) {
       ReportData data = reportMap.get(key);
       Image toReturn = data.getIcon();
-      return toReturn != null ? toReturn : ImageManager.getImage(FrameworkImage.MISSING);
+      return toReturn != null ? toReturn : ImageManager.getImage(ImageManager.MISSING);
    }
 
    public ITestRunReport getReportGenerator(String key) {

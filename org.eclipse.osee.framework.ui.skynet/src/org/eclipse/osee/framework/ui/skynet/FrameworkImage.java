@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -104,15 +105,14 @@ public enum FrameworkImage implements KeyedImage {
    NAV_BACKWARD("nav_backward.gif"),
    NAV_FORWARD("nav_forward.gif"),
    MAGNIFY("magnify.gif"),
-   MISSING("missing"),
    MERGE("merge.gif"),
    MERGE_SOURCE("green_s.gif"),
    MERGE_DEST("blue_d.gif"),
    MERGE_YELLOW_M("yellow_m.gif"),
    MERGE_START("conflict.gif"),
    MERGE_INFO("issue.gif"),
-   MERGE_MARKED("chkbox_enabled.gif"),
-   MERGE_EDITED("chkbox_disabled.gif"),
+   MERGE_MARKED(PluginUiImage.CHECKBOX_ENABLED),
+   MERGE_EDITED(PluginUiImage.CHECKBOX_DISABLED),
    MERGE_OUT_OF_DATE("chkbox_red.gif"),
    MERGE_OUT_OF_DATE_COMMITTED("chkbox_enabled_conflicted.gif"),
    MERGE_NO_CONFLICT("accept.gif"),
@@ -175,21 +175,31 @@ public enum FrameworkImage implements KeyedImage {
    X_RED("redRemove.gif");
 
    private final String fileName;
+   private final KeyedImage alias;
 
    private FrameworkImage(String fileName) {
       this.fileName = fileName;
+      this.alias = null;
+   }
+
+   private FrameworkImage(KeyedImage alias) {
+      this.fileName = alias.getImageKey();
+      this.alias = alias;
    }
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      if (this == MISSING) {
-         return ImageManager.getImageDescriptor(ImageManager.DEFAULT_IMAGE);
+      if (alias == null) {
+         return ImageManager.createImageDescriptor(SkynetGuiPlugin.PLUGIN_ID, "images", fileName);
       }
-      return ImageManager.createImageDescriptor(SkynetGuiPlugin.PLUGIN_ID, "images", fileName);
+      return alias.createImageDescriptor();
    }
 
    @Override
    public String getImageKey() {
-      return SkynetGuiPlugin.PLUGIN_ID + "." + fileName;
+      if (alias == null) {
+         return SkynetGuiPlugin.PLUGIN_ID + "." + fileName;
+      }
+      return alias.getImageKey();
    }
 }

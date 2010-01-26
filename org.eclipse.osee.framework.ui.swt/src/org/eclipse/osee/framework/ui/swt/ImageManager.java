@@ -25,7 +25,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  */
 public final class ImageManager {
 
-   public static final KeyedImage DEFAULT_IMAGE = new DefaultImage();
+   public static final KeyedImage MISSING = new DefaultImage();
 
    private ImageManager() {
    }
@@ -67,13 +67,13 @@ public final class ImageManager {
    }
 
    public synchronized static String setupImage(KeyedImage imageEnum) {
-      String imageKey = imageEnum != null ? imageEnum.getImageKey() : DEFAULT_IMAGE.getImageKey();
+      String imageKey = imageEnum != null ? imageEnum.getImageKey() : MISSING.getImageKey();
       if (getImageRegistry().getDescriptor(imageKey) == null) {
          ImageDescriptor imageDescriptor = imageEnum.createImageDescriptor();
          if (imageDescriptor == null) {
             OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to load the image for [%s]",
                   imageEnum.toString()));
-            return setupImage(DEFAULT_IMAGE);
+            return setupImage(MISSING);
          }
          storeOnImageRegistry(imageKey, imageDescriptor);
       }

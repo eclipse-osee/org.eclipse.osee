@@ -41,7 +41,7 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
       } else if (element instanceof Match && ((Match) element).getElement() instanceof Artifact) {
          return ArtifactImageManager.getImage((Artifact) ((Match) element).getElement());
       }
-      return ImageManager.getImage(FrameworkImage.MISSING);
+      return ImageManager.getImage(ImageManager.MISSING);
    }
 
    /*

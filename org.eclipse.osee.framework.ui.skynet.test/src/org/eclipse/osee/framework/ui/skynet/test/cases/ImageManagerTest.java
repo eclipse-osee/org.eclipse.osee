@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -88,7 +87,7 @@ public abstract class ImageManagerTest {
    @org.junit.Test
    public void testFrameworkImageMissing() throws Exception {
       // This will throw an OseeLog exception cause NOT_HERE can't be found; this is expected
-      assertEquals(ImageManager.getImage(MissingImage.NOT_HERE), ImageManager.getImage(FrameworkImage.MISSING));
+      assertEquals(ImageManager.getImage(MissingImage.NOT_HERE), ImageManager.getImage(ImageManager.MISSING));
    }
 
    /**
@@ -100,12 +99,12 @@ public abstract class ImageManagerTest {
    public void testFrameworkImageEnums() throws Exception {
       StringBuffer sb = new StringBuffer();
       for (KeyedImage oseeImage : oseeImages) {
-         if (oseeImage == FrameworkImage.MISSING) {
+         if (oseeImage == ImageManager.MISSING) {
             continue;
          }
          assertNotNull(String.format("[%s] Image not defined for [%s]", imageClassName, oseeImage),
                ImageManager.getImage(oseeImage));
-         if (ImageManager.getImage(oseeImage).equals(ImageManager.getImage(FrameworkImage.MISSING))) {
+         if (ImageManager.getImage(oseeImage).equals(ImageManager.getImage(ImageManager.MISSING))) {
             sb.append(String.format("\n[%s] Image not defined for [%s]", imageClassName, oseeImage));
          }
       }

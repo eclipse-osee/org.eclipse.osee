@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.data.model.editor.ODMEditorActivator;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -78,7 +77,7 @@ public class ArtifactDataType extends DataType {
    }
 
    public Image getImage() {
-      return image == null ? ImageManager.getImage(FrameworkImage.MISSING) : image;
+      return image == null ? ImageManager.getImage(ImageManager.MISSING) : image;
    }
 
    public void setImage(Image image) {

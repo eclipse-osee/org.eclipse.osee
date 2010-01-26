@@ -204,7 +204,7 @@ public final class ArtifactImageManager {
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-      return ImageManager.getImage(ImageManager.DEFAULT_IMAGE);
+      return ImageManager.getImage(ImageManager.MISSING);
    }
 
    public static Image getImage(Artifact artifact, KeyedImage overlay, Location location) {
