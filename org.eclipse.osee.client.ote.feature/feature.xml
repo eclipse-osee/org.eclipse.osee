@@ -17,6 +17,10 @@
       %license
    </license>
 
+   <includes
+         id="org.eclipse.osee.client.ote.feature.source"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.osee.framework.jdk.core"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -47,7 +51,7 @@
       <import plugin="org.eclipse.osee.framework.jini"/>
       <import plugin="net.jini"/>
       <import plugin="org.eclipse.ui" version="3.4.2" match="greaterOrEqual"/>
-      <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.1.qualifier"/>
+      <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.1.qualifier" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -148,7 +152,4 @@
          version="0.0.0"
          unpack="false"/>
 
-   <includes
-         id="org.eclipse.osee.client.ote.feature.source"
-         version="0.0.0"/>
 </feature>
