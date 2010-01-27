@@ -61,10 +61,14 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
       oteClientServiceTracker = new ServiceTracker(context, IOteClientService.class.getName(), null);
       oteClientServiceTracker.open();
 
-      remoteConsole = new OteRemoteConsole();
-      getOteClientService().addConnectionListener(remoteConsole);
-
-      startOTEArtifactBulkLoad();
+      if (System.getProperty("NO_OTE_REMOTE_CONSOLE") == null) {
+    	  remoteConsole = new OteRemoteConsole();
+    	  getOteClientService().addConnectionListener(remoteConsole);
+      }
+      
+      if (System.getProperty("NO_OTE_ARTIFACT_BULK_LOAD") == null) {
+    	  startOTEArtifactBulkLoad();
+      }
    }
 
    @Override
