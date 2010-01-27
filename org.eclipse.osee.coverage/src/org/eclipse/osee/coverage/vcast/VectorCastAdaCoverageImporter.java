@@ -26,6 +26,7 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.SimpleCoverageUnitFileContentsProvider;
 import org.eclipse.osee.coverage.vcast.VcpResultsFile.ResultsValue;
 import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -78,7 +79,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
       for (VcpSourceFile vcpSourceFile : vCastVcp.sourceFiles) {
          String str =
                String.format("Processing VcpSourceFile %d/%d [%s]...", x++, vcpSourceFiles.size(), vcpSourceFile);
-         System.out.println(str);
+         //         System.out.println(str);
          if (progressMonitor != null) {
             progressMonitor.worked(1);
             progressMonitor.subTask(str);
@@ -142,7 +143,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
       for (VcpResultsFile vcpResultsFile : vcpResultsFiles) {
          String str =
                String.format("Processing VcpResultsFile %d/%d [%s]...", x++, vcpResultsFiles.size(), vcpResultsFile);
-         System.out.println(str);
+         //         System.out.println(str);
          if (progressMonitor != null) {
             progressMonitor.worked(1);
             progressMonitor.subTask(str);
@@ -168,7 +169,14 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                                  methodNum, coverageUnit, testUnitName));
                   } else {
                      coverageItem.setCoverageMethod(CoverageOptionManager.Test_Unit);
-                     coverageItem.addTestUnitName(testUnitName);
+                     try {
+                        coverageItem.addTestUnitName(testUnitName);
+                     } catch (OseeCoreException ex) {
+                        coverageImport.getLog().logError(
+                              String.format("Can't store test unit [%s] for coverageUnit [%s]; exception [%s]",
+                                    testUnitName, coverageUnit, ex.getLocalizedMessage()));
+
+                     }
                   }
                }
             }

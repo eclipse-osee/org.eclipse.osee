@@ -7,31 +7,44 @@ package org.eclipse.osee.coverage.store;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.ITestUnitProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
  */
-public class TestUnitStore {
+public class TestUnitStore implements ITestUnitProvider {
 
-   Map<Integer, String> testIdToNameMap = new HashMap<Integer, String>();
-   public static String TEST_UNIT_QUERY =
+   private static String TEST_UNIT_QUERY =
          "select name, cvgn.name_id from osee_cvg_testunit_names cvgn, osee_cvg_testunits cvgu where cvgn.name_id = cvgu.name_id and cvgu.item_guid = ?";
-   public static String TEST_UNIT_ID_QUERY = "select name, name_id from osee_cvg_testunit_names where name_id = ?";
-   public static String ITEM_TO_ID_QUERY = "select name_id from osee_cvg_testunits where cvgu.item_guid = ?";
-   public static String DELETE_TEST_UNIT_ID = "delete from osee_cvg_testunits where item_guid = ? and name_id = ?";
-   public static String INSERT_TEST_UNIT_ID = "insert into osee_cvg_testunits (name_id, item_guid) values (?,?)";
-   public static String INSERT_TEST_UNIT_NAME = "insert into osee_cvg_testunit_names (name_id, name) values (?,?)";
-   public static String DELETE_ALL_TEST_NAMES = "delete from osee_cvg_testunit_names";
+   private static String TEST_UNIT_ID_QUERY = "select name, name_id from osee_cvg_testunit_names where name_id = ?";
+   private static String ITEM_TO_ID_QUERY = "select name_id from osee_cvg_testunits where cvgu.item_guid = ?";
+   private static String DELETE_TEST_UNIT_ID = "delete from osee_cvg_testunits where item_guid = ? and name_id = ?";
+   private static String INSERT_TEST_UNIT_ID = "insert into osee_cvg_testunits (name_id, item_guid) values (?,?)";
+   private static String INSERT_TEST_UNIT_NAME = "insert into osee_cvg_testunit_names (name_id, name) values (?,?)";
+   private static String DELETE_ALL_TEST_NAMES = "delete from osee_cvg_testunit_names";
+   private static TestUnitStore instance = new TestUnitStore();
 
-   public static void setTestUnits(CoverageItem coverageItem, Collection<String> testUnitNames) throws OseeCoreException {
+   private TestUnitStore() {
+      instance = this;
+   }
+
+   public static TestUnitStore instance() {
+      return instance;
+   }
+
+   public void setTestUnits(CoverageItem coverageItem, Collection<String> testUnitNames) throws OseeCoreException {
       List<Integer> toDelete = new ArrayList<Integer>();
       // Remove old values
       for (Entry<Integer, String> entry : getTestUnitMap(coverageItem).entrySet()) {
@@ -52,11 +65,11 @@ public class TestUnitStore {
       }
    }
 
-   public static void removeTestUnits(CoverageItem coverageItem) throws OseeCoreException {
+   public void removeTestUnits(CoverageItem coverageItem) throws OseeCoreException {
       removeTestUnits(coverageItem, null);
    }
 
-   public static void removeTestUnits(CoverageItem coverageItem, Collection<String> testUnitNames) throws OseeCoreException {
+   public void removeTestUnits(CoverageItem coverageItem, Collection<String> testUnitNames) throws OseeCoreException {
       List<Integer> toDelete = new ArrayList<Integer>();
       // Remove old values
       for (Entry<Integer, String> entry : getTestUnitMap(coverageItem).entrySet()) {
@@ -69,7 +82,7 @@ public class TestUnitStore {
       }
    }
 
-   public static Map<Integer, String> getTestUnitMap(CoverageItem coverageItem) throws OseeCoreException {
+   public Map<Integer, String> getTestUnitMap(CoverageItem coverageItem) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       Map<Integer, String> names = new HashMap<Integer, String>();
       try {
@@ -83,11 +96,11 @@ public class TestUnitStore {
       return names;
    }
 
-   public static Collection<String> getTestUnitNames(CoverageItem coverageItem) throws OseeCoreException {
+   public Collection<String> getTestUnitNames(CoverageItem coverageItem) throws OseeCoreException {
       return getTestUnitMap(coverageItem).values();
    }
 
-   private static Map<Integer, String> addTestUnitToDb(String item_guid, String name) throws OseeCoreException {
+   private Map<Integer, String> addTestUnitToDb(String item_guid, String name) throws OseeCoreException {
       int name_id = getNameId(name, true);
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       Map<Integer, String> names = new HashMap<Integer, String>();
@@ -99,7 +112,7 @@ public class TestUnitStore {
       return names;
    }
 
-   private static int addTestUnitNameToDb(String name) throws OseeCoreException {
+   private int addTestUnitNameToDb(String name) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       int nextId = getNextNameId();
       try {
@@ -110,7 +123,7 @@ public class TestUnitStore {
       return nextId;
    }
 
-   public static void clearTestUnitNames() throws OseeCoreException {
+   public void clearTestUnitNames() throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runCallableStatement(DELETE_ALL_TEST_NAMES);
@@ -119,7 +132,7 @@ public class TestUnitStore {
       }
    }
 
-   private static void removeTestUnitsFromDb(String item_guid, List<Integer> toDelete) throws OseeCoreException {
+   private void removeTestUnitsFromDb(String item_guid, List<Integer> toDelete) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          for (Integer nameId : toDelete) {
@@ -130,11 +143,11 @@ public class TestUnitStore {
       }
    }
 
-   private static int getNextNameId() throws OseeCoreException {
+   private int getNextNameId() throws OseeCoreException {
       return getNameCount() + 1;
    }
 
-   public static int getNameCount() throws OseeCoreException {
+   public int getNameCount() throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery("SELECT count(name) from osee_cvg_testunit_names");
@@ -145,7 +158,7 @@ public class TestUnitStore {
       }
    }
 
-   public static Integer getNameId(String name, boolean add) throws OseeCoreException {
+   public Integer getNameId(String name, boolean add) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery("SELECT name_id from osee_cvg_testunit_names where name = ?", name);
@@ -160,5 +173,37 @@ public class TestUnitStore {
       } finally {
          chStmt.close();
       }
+   }
+
+   @Override
+   public void addTestUnit(CoverageItem coverageItem, String testUnitName) {
+      try {
+         // Add new values
+         Map<Integer, String> currentTestUnits = getTestUnitMap(coverageItem);
+         if (!currentTestUnits.values().contains(testUnitName)) {
+            addTestUnitToDb(coverageItem.getGuid(), testUnitName);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+      }
+   }
+
+   @Override
+   public void fromXml(CoverageItem coverageItem, String xml) {
+   }
+
+   @Override
+   public Collection<String> getTestUnits(CoverageItem coverageItem) {
+      try {
+         return getTestUnitNames(coverageItem);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+      }
+      return Collections.emptyList();
+   }
+
+   @Override
+   public String toXml(CoverageItem coverageItem) {
+      return "";
    }
 }

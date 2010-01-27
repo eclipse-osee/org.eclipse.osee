@@ -67,7 +67,7 @@ public class CoverageItemTest {
     * .
     */
    @Test
-   public void testAddGetTestUnit() {
+   public void testAddGetTestUnit() throws OseeCoreException {
       for (int x = 0; x < 10; x++) {
          ci1.addTestUnitName("Test Unit " + x);
       }

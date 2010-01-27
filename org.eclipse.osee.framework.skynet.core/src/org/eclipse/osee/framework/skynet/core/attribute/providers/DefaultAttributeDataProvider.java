@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.utils.BinaryContentUtils
  */
 public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider implements ICharacterAttributeDataProvider {
 
-   private static final int MAX_VARCHAR_LENGTH = 4000;
+   public static final int MAX_VARCHAR_LENGTH = 4000;
    private String rawStringValue;
 
    private final DataStore dataStore;

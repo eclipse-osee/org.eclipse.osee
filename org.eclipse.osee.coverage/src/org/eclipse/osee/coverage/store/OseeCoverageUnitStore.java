@@ -74,7 +74,9 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          coverageUnit.setName(artifact.getName());
          coverageUnit.setGuid(artifact.getGuid());
          for (String value : artifact.getAttributesToStringList(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
-            coverageUnit.addCoverageItem(new CoverageItem(coverageUnit, value, coverageOptionManager));
+            CoverageItem item = new CoverageItem(coverageUnit, value, coverageOptionManager);
+            item.setTestUnitProvider(TestUnitStore.instance());
+            coverageUnit.addCoverageItem(item);
          }
          // Don't load file contents until needed
          coverageUnit.setFileContentsProvider(OseeCoverageUnitFileContentsProvider.getInstance());
@@ -100,7 +102,12 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
 
       List<String> items = new ArrayList<String>();
       for (CoverageItem coverageItem : coverageUnit.getCoverageItems()) {
-         items.add(coverageItem.toXml());
+         // Don't want test unit names stored in xml (to big), get toXml() using TestUnitStore
+         // which provides "" for test units
+         items.add(coverageItem.toXml(TestUnitStore.instance()));
+         // Get test unit names and store in TestUnitStore
+         Collection<String> testUnitNames = coverageItem.getTestUnits();
+         TestUnitStore.instance().setTestUnits(coverageItem, testUnitNames);
       }
       artifact.setAttributeValues(CoverageAttributes.COVERAGE_ITEM.getStoreName(), items);
       if (coverageUnit.getNotes() != null) {

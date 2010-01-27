@@ -3,6 +3,7 @@
 	<Table name="OSEE_CVG_TESTUNIT_NAMES">
 		<Column id="name_id" limits="8,0" type="DECIMAL" />
 		<Column id="name" limits="255" type="VARCHAR" />
+      <Constraint schema="OSEE" id="CVG_NAME_ID_PK" type="UNIQUE" appliesTo="name_id" />
 	</Table>
 	<Table name="OSEE_CVG_TESTUNITS">
 		<Column id="name_id" limits="8,0" type="DECIMAL" />

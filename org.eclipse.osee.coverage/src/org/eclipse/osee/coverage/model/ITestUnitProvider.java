@@ -6,6 +6,7 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * Allow external mechnism for test units to be provided to UI
@@ -14,9 +15,11 @@ import java.util.Collection;
  */
 public interface ITestUnitProvider {
 
-   public Collection<String> getTestUnits(CoverageItem coverageItem);
+   public Collection<String> getTestUnits(CoverageItem coverageItem) throws OseeCoreException;
 
-   public void addTestUnitName(CoverageItem coverageItem, String testUnitName);
+   public void addTestUnit(CoverageItem coverageItem, String testUnitName) throws OseeCoreException;
+
+   public void setTestUnits(CoverageItem coverageItem, Collection<String> testUnitNames) throws OseeCoreException;
 
    public String toXml(CoverageItem coverageItem);
 

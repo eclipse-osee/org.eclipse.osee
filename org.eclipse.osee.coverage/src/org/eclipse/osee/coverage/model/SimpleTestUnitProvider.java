@@ -26,7 +26,7 @@ public class SimpleTestUnitProvider implements ITestUnitProvider {
    }
 
    @Override
-   public void addTestUnitName(CoverageItem coverageItem, String testUnitName) {
+   public void addTestUnit(CoverageItem coverageItem, String testUnitName) {
       if (!getTestUnits(coverageItem).contains(testUnitName)) {
          coverageItemToTestUnits.put(coverageItem, Strings.intern(testUnitName));
       }
@@ -49,8 +49,16 @@ public class SimpleTestUnitProvider implements ITestUnitProvider {
    public void fromXml(CoverageItem coverageItem, String testUnitNames) {
       if (Strings.isValid(testUnitNames)) {
          for (String testName : testUnitNames.split(";")) {
-            addTestUnitName(coverageItem, testName);
+            addTestUnit(coverageItem, testName);
          }
+      }
+   }
+
+   @Override
+   public void setTestUnits(CoverageItem coverageItem, Collection<String> testUnitNames) {
+      coverageItemToTestUnits.removeValues(coverageItem);
+      for (String testUnitName : testUnitNames) {
+         addTestUnit(coverageItem, testUnitName);
       }
    }
 

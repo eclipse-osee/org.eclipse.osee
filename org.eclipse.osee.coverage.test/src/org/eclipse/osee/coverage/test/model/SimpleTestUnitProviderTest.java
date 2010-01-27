@@ -36,11 +36,11 @@ public class SimpleTestUnitProviderTest {
     */
    @Test
    public void testAddGetTestUnits() {
-      provider.addTestUnitName(coverageItem1, "Test Unit 1");
-      provider.addTestUnitName(coverageItem1, "Test Unit 2");
-      provider.addTestUnitName(coverageItem1, "Test Unit 3");
-      provider.addTestUnitName(coverageItem1, "Test Unit 3");
-      provider.addTestUnitName(coverageItem1, "Test Unit 4");
+      provider.addTestUnit(coverageItem1, "Test Unit 1");
+      provider.addTestUnit(coverageItem1, "Test Unit 2");
+      provider.addTestUnit(coverageItem1, "Test Unit 3");
+      provider.addTestUnit(coverageItem1, "Test Unit 3");
+      provider.addTestUnit(coverageItem1, "Test Unit 4");
 
       Assert.assertEquals(4, provider.getTestUnits(coverageItem1).size());
 

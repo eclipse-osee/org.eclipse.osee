@@ -67,18 +67,25 @@ public class CoverageItem implements ICoverage {
       return coverageitem;
    }
 
-   public Collection<String> getTestUnits() {
+   public Collection<String> getTestUnits() throws OseeCoreException {
       if (testUnitProvider == null) {
          return java.util.Collections.emptyList();
       }
       return testUnitProvider.getTestUnits(this);
    }
 
-   public void addTestUnitName(String testUnitName) {
+   public void addTestUnitName(String testUnitName) throws OseeCoreException {
       if (testUnitProvider == null) {
          testUnitProvider = new SimpleTestUnitProvider();
       }
-      testUnitProvider.addTestUnitName(this, testUnitName);
+      testUnitProvider.addTestUnit(this, testUnitName);
+   }
+
+   public void setTestUnits(Collection<String> testUnitNames) throws OseeCoreException {
+      if (testUnitProvider == null) {
+         return;
+      }
+      testUnitProvider.setTestUnits(this, testUnitNames);
    }
 
    public CoverageOption getCoverageMethod() {
@@ -255,11 +262,18 @@ public class CoverageItem implements ICoverage {
       }
       if (testUnitProvider == null) {
          testUnitProvider = new SimpleTestUnitProvider();
-         testUnitProvider.fromXml(this, store.get("testUnits"));
+         String testUnitsStr = store.get("testUnits");
+         if (Strings.isValid(testUnitsStr)) {
+            testUnitProvider.fromXml(this, testUnitsStr);
+         }
       }
    }
 
    public String toXml() throws OseeCoreException {
+      return toXml(testUnitProvider);
+   }
+
+   public String toXml(ITestUnitProvider testUnitProvider) throws OseeCoreException {
       PropertyStore store = new PropertyStore(PROPERTY_STORE_ID);
       store.put("guid", guid);
       if (Strings.isValid(getRationale())) {
@@ -270,7 +284,9 @@ public class CoverageItem implements ICoverage {
       }
       store.put("methodType", coverageMethod.getName());
       if (testUnitProvider != null) {
-         store.put("testUnits", testUnitProvider.toXml(this));
+         if (Strings.isValid(testUnitProvider.toXml(this))) {
+            store.put("testUnits", testUnitProvider.toXml(this));
+         }
       }
       if (Strings.isValid(name)) {
          store.put("name", name);
@@ -310,6 +326,10 @@ public class CoverageItem implements ICoverage {
          return false;
       }
       return true;
+   }
+
+   public ITestUnitProvider getTestUnitProvider() {
+      return testUnitProvider;
    }
 
 }
