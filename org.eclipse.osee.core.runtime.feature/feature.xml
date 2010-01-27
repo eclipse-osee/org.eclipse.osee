@@ -28,5 +28,13 @@
    <includes
          id="org.eclipse.osee.external.feature"
          version="0.0.0"/>
+         
+   <includes
+         id="org.eclipse.osee.core.feature.source"
+         version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.osee.core.ui.feature.source"
+         version="0.0.0"/>
+         
 </feature>
