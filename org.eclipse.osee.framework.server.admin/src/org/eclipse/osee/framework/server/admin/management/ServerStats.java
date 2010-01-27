@@ -48,7 +48,10 @@ class ServerStats extends BaseServerCommand {
       buffer.append(String.format("Binary Data Path: [%s]\n", OseeServerProperties.getOseeApplicationServerData()));
       buffer.append(String.format("Supported Versions: %s\n", Arrays.deepToString(manager.getSupportedVersions())));
       buffer.append(String.format("Accepting Requests: [%s]\n", manager.isAcceptingRequests()));
-      buffer.append("\n");
+
+      long freeMem = Runtime.getRuntime().freeMemory();
+      long maxMem = Runtime.getRuntime().maxMemory();
+      buffer.append(String.format("Memory: Max[%s] Free[%s] Used[%s]\n\n", maxMem, freeMem, maxMem - freeMem));
 
       buffer.append(String.format("Server State: [%s]\n", manager.isSystemIdle() ? "IDLE" : "BUSY"));
       buffer.append(String.format("Active Threads: [%s]\n", manager.getNumberOfActiveThreads()));
