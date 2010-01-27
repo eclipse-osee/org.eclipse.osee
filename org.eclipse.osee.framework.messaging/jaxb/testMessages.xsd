@@ -15,16 +15,18 @@
 
 <xsd:complexType name="ServiceHealth">
   <xsd:sequence>
-    <xsd:element name="serviceId" type="xsd:string"/>
+    <xsd:element name="serviceName" type="xsd:string"/>
     <xsd:element name="serviceVersion" type="xsd:string"/>
+    <xsd:element name="serviceUniqueId" type="xsd:string"/>
     <xsd:element name="brokerURI" type="xsd:string"/>
+    <xsd:element name="refreshRateInSeconds" type="xsd:int"/>
     <xsd:element name="serviceDescription" type="ServiceDescriptionPair" maxOccurs="unbounded"/>
   </xsd:sequence>
 </xsd:complexType>
 
 <xsd:complexType name="ServiceHealthRequest">
   <xsd:sequence>
-    <xsd:element name="serviceId" type="xsd:string"/>
+    <xsd:element name="serviceName" type="xsd:string"/>
     <xsd:element name="serviceVersion" type="xsd:string"/>
     <xsd:element name="serviceDescription" type="ServiceDescriptionPair" maxOccurs="unbounded"/>
   </xsd:sequence>

@@ -7,6 +7,7 @@ package org.eclipse.osee.framework.messaging.services.internal;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
@@ -20,10 +21,12 @@ import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;
  */
 class HealthServiceListener extends OseeMessagingListener {
 
-	private CompositeKeyHashMap<String, String, ServiceHealth> map;
-	private CompositeKeyHashMap<String, String, List<ServiceNotification>> callbacks;
+	private static final int WIGGLE_ROOM = 20000;
 	
-	HealthServiceListener(CompositeKeyHashMap<String, String, ServiceHealth> map, CompositeKeyHashMap<String, String, List<ServiceNotification>> callbacks){
+	private CompositeKeyHashMap<String/* serviceName */, String /* serviceVersion */, Map<String /* serviceUniqueId */,ServiceHealthPlusTimeout>> map;
+	private CompositeKeyHashMap<String/* serviceName */, String /* serviceVersion */, List<ServiceNotification>> callbacks;
+	
+	HealthServiceListener(CompositeKeyHashMap<String, String, Map<String, ServiceHealthPlusTimeout>> map, CompositeKeyHashMap<String, String, List<ServiceNotification>> callbacks){
 		super(ServiceHealth.class);
 		this.map = map;
 		this.callbacks = callbacks;
@@ -33,13 +36,27 @@ class HealthServiceListener extends OseeMessagingListener {
 	public void process(Object message, Map<String, Object> headers,
 			ReplyConnection replyConnection) {
 		ServiceHealth health = (ServiceHealth)message;
-		map.put(health.getServiceId(), health.getServiceVersion(), health);
-		List<ServiceNotification> itemsToNotify = callbacks.get(health.getServiceId(), health.getServiceVersion());
+		Map<String, ServiceHealthPlusTimeout> idMap = map.get(health.getServiceName(), health.getServiceVersion());
+		if(idMap == null){
+			idMap = new ConcurrentHashMap<String, ServiceHealthPlusTimeout>();
+			map.put(health.getServiceName(), health.getServiceVersion(), idMap);
+		}
+		long shouldHaveRenewedTime = System.currentTimeMillis() + (health.getRefreshRateInSeconds()*1000) + WIGGLE_ROOM;
+		idMap.put(health.getServiceUniqueId(), new ServiceHealthPlusTimeout(health, shouldHaveRenewedTime));
+		
+		
+		
+		
+		List<ServiceNotification> itemsToNotify = callbacks.get(health.getServiceName(), health.getServiceVersion());
 		if(itemsToNotify != null){
 			for(ServiceNotification notification :itemsToNotify){
-				notification.onHealthUpdate(health);
+				notification.onServiceUpdate(health);
 			}
 		}
 	}
+	
+	
+	
+	
 
 }

@@ -12,5 +12,6 @@ import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;
  *
  */
 public interface ServiceNotification {
-	void onHealthUpdate(ServiceHealth serviceHealth);
+	void onServiceUpdate(ServiceHealth serviceHealth);
+	void onServiceGone(ServiceHealth serviceHealth);
 }

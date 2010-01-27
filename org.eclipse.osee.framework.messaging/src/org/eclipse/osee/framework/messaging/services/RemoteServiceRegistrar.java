@@ -6,14 +6,12 @@
 package org.eclipse.osee.framework.messaging.services;
 
 import java.net.URI;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author b1528444
  *
  */
 public interface RemoteServiceRegistrar {
-	void registerService(String serviceId, String serviceVersion, URI broker, ServiceInfoPopulator infoPopulator, long period,
-            TimeUnit unit);
-	boolean unregisterService(String serviceId, String serviceVersion);
+	void registerService(String serviceName, String serviceVersion, String serviceUniqueId, URI broker, ServiceInfoPopulator infoPopulator, int refreshRateInSeconds);
+	boolean unregisterService(String serviceName, String serviceVersion, String serviceUniqueId);
 }

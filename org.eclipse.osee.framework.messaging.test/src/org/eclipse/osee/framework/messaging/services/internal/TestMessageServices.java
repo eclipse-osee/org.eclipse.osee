@@ -9,7 +9,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
 
@@ -29,64 +28,84 @@ import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;
  */
 public class TestMessageServices extends BaseBrokerTesting{
 
+	
+	@org.junit.Before
+	public void startBroker(){
+		try {
+			startEmbeddedBroker("testBroker", "tcp://localhost:61106");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}	
+	}
+	
+	@org.junit.After
+	public void stopBroker(){
+		try {
+			stopEmbeddedBroker("testBroker", "tcp://localhost:61106");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}	
+	}
+	
+	
 	@org.junit.Test
 	public void testServiceUpClientComesUp() throws Exception{
-		startEmbeddedBroker("testBroker", "tcp://localhost:61106");
 		ConnectionNode connection = getMessaging().get(new NodeInfo("osee-jms", new URI("tcp://localhost:61106")));
 		Assert.assertNotNull(connection);
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
 		RemoteServiceRegistrar registrar = new RemoteServiceRegistrarImpl(connection, executor);
-		RemoteServiceLookup lookup = new RemoteServiceLookupImpl(connection);
+		RemoteServiceLookup lookup = new RemoteServiceLookupImpl(connection, executor);
 		
-		registrar.registerService("some.service.id", "v1", new URI("tcp://localhost:666"), new TestPopulator(), 30, TimeUnit.SECONDS);
+		registrar.registerService("testService", "1002", "some.service.id", new URI("tcp://localhost:666"), new TestPopulator(), 30);
 		
 		TestNotification testNotification = new TestNotification();
-		lookup.register("some.service.id", "v1", testNotification);
+		lookup.register("testService", "1002", testNotification);
 		
 		testWait(1000);
 		
-		Assert.assertEquals(1, testNotification.getHealthUpdates());
+		Assert.assertEquals(1, testNotification.getServiceUpdates());
 		
 		testWait(61000);
 		
-		Assert.assertEquals(3, testNotification.getHealthUpdates());
-		Assert.assertTrue(registrar.unregisterService("some.service.id", "v1"));
+		Assert.assertEquals(3, testNotification.getServiceUpdates());
+		Assert.assertTrue(registrar.unregisterService("testService", "1002", "some.service.id"));
 		
 		testWait(90000);
 		
-		Assert.assertEquals(3, testNotification.getHealthUpdates());
-		Assert.assertTrue(lookup.unregister("some.service.id", "v1", testNotification));
-		stopEmbeddedBroker("testBroker", "tcp://localhost:61106");
+		Assert.assertEquals(1, testNotification.getServiceAway());
+		
+		Assert.assertEquals(3, testNotification.getServiceUpdates());
+		Assert.assertTrue(lookup.unregister("testService", "1002", testNotification));
 	}
 	
 	@org.junit.Test
 	public void testClientUpServiceComesUp() throws Exception{
-		startEmbeddedBroker("testBroker", "tcp://localhost:61106");
 		ConnectionNode connection = getMessaging().get(new NodeInfo("osee-jms", new URI("tcp://localhost:61106")));
 		Assert.assertNotNull(connection);
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
 		RemoteServiceRegistrar registrar = new RemoteServiceRegistrarImpl(connection, executor);
-		RemoteServiceLookup lookup = new RemoteServiceLookupImpl(connection);
+		RemoteServiceLookup lookup = new RemoteServiceLookupImpl(connection, executor);
 		
 		
 		TestNotification testNotification = new TestNotification();
-		lookup.register("some.service.id", "v1", testNotification);
+		lookup.register("testService", "1002", testNotification);
 		
-		registrar.registerService("some.service.id", "v1", new URI("tcp://localhost:666"), new TestPopulator(), 30, TimeUnit.SECONDS);
+		registrar.registerService("testService", "1002", "some.service.id", new URI("tcp://localhost:666"), new TestPopulator(), 30);
 		testWait(1000);
 		
-		Assert.assertEquals(1, testNotification.getHealthUpdates());
+		Assert.assertEquals(1, testNotification.getServiceUpdates());
 		
 		testWait(61000);
 		
-		Assert.assertEquals(3, testNotification.getHealthUpdates());
-		Assert.assertTrue(registrar.unregisterService("some.service.id", "v1"));
+		Assert.assertEquals(3, testNotification.getServiceUpdates());
+		Assert.assertTrue(registrar.unregisterService("testService", "1002", "some.service.id"));
 		
 		testWait(90000);
 		
-		Assert.assertEquals(3, testNotification.getHealthUpdates());
-		Assert.assertTrue(lookup.unregister("some.service.id", "v1", testNotification));
-		stopEmbeddedBroker("testBroker", "tcp://localhost:61106");
+		Assert.assertEquals(1, testNotification.getServiceAway());
+		
+		Assert.assertEquals(3, testNotification.getServiceUpdates());
+		Assert.assertTrue(lookup.unregister("testService", "1002", testNotification));
 	}
 	
 	private class TestPopulator implements ServiceInfoPopulator {
@@ -104,15 +123,26 @@ public class TestMessageServices extends BaseBrokerTesting{
 	
 	private class TestNotification implements ServiceNotification {
 
-		private int healthUpdates = 0;
-		@Override
-		public void onHealthUpdate(ServiceHealth serviceHealth) {
-			healthUpdates ++;
-			System.out.println("healthUpdates " + healthUpdates);
+		private int serviceUpdates = 0;
+		private int serviceAway = 0;
+
+		public int getServiceUpdates() {
+			return serviceUpdates;
+		}
+		public int getServiceAway(){
+			return serviceAway;
 		}
 
-		public int getHealthUpdates() {
-			return healthUpdates;
+		@Override
+		public void onServiceGone(ServiceHealth serviceHealth) {
+			serviceAway++;
+			System.out.println("serviceAway " + serviceAway);
+		}
+
+		@Override
+		public void onServiceUpdate(ServiceHealth serviceHealth) {
+			serviceUpdates++;
+			System.out.println("healthUpdates " + serviceUpdates);
 		}
 		
 	}

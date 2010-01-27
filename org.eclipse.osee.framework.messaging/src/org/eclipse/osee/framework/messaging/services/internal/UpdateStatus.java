@@ -19,16 +19,20 @@ import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;
 public class UpdateStatus implements Runnable {
 
 	private ConnectionNode connectionNode;
-	private String serviceId;
+	private String serviceName;
 	private String serviceVersion;
+	private String serviceUniqueId;
 	private URI broker;
 	private ServiceInfoPopulator infoPopulator;
+	private int refreshRateInSeconds;
 	
-	UpdateStatus(ConnectionNode connectionNode, String serviceId, String serviceVersion, URI broker, ServiceInfoPopulator infoPopulator){
+	UpdateStatus(ConnectionNode connectionNode, String serviceName, String serviceVersion, String serviceUniqueId, URI broker, int refreshRateInSeconds, ServiceInfoPopulator infoPopulator){
 		this.connectionNode = connectionNode;
-		this.serviceId = serviceId;
+		this.serviceName = serviceName;
+		this.serviceUniqueId = serviceUniqueId;
 		this.serviceVersion = serviceVersion;
 		this.broker = broker;
+		this.refreshRateInSeconds = refreshRateInSeconds;
 		this.infoPopulator = infoPopulator;
 	}
 	
@@ -36,11 +40,13 @@ public class UpdateStatus implements Runnable {
 	public void run() {
 		ServiceHealth health = new ServiceHealth();
 		health.setBrokerURI(broker.toASCIIString());
-		health.setServiceId(serviceId);
+		health.setServiceName(serviceName);
 		health.setServiceVersion(serviceVersion);
+		health.setServiceUniqueId(serviceUniqueId);
+		health.setRefreshRateInSeconds(refreshRateInSeconds);
 		infoPopulator.updateServiceInfo(health.getServiceDescription());
 		connectionNode.send(BaseMessages.ServiceHealth, health, new OseeMessagingStatusImpl(
-				String.format("Failed to send %s to %s [%s]", BaseMessages.ServiceHealth.getName(), serviceId, serviceVersion),
+				String.format("Failed to send %s to %s v[%s][%s]", BaseMessages.ServiceHealth.getName(), serviceName, serviceVersion, serviceUniqueId),
 				UpdateStatus.class));
 	}
 
