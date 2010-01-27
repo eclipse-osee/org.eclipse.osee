@@ -20,11 +20,13 @@ import org.eclipse.nebula.widgets.xviewer.action.ColumnMultiEditAction;
 import org.eclipse.nebula.widgets.xviewer.action.TableCustomizationAction;
 import org.eclipse.nebula.widgets.xviewer.action.ViewSelectedCellDataAction;
 import org.eclipse.nebula.widgets.xviewer.action.ViewTableReportAction;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
@@ -101,7 +103,13 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
             menuManager.add(new TableCustomizationAction(xBranchWidget.getXViewer()));
             menuManager.add(new ViewTableReportAction(xBranchWidget.getXViewer()));
             menuManager.add(new ViewSelectedCellDataAction(xBranchWidget.getXViewer()));
-            menuManager.add(new ColumnMultiEditAction(xBranchWidget.getXViewer()));
+            try {
+               if (AccessControlManager.isOseeAdmin()) {
+                  menuManager.add(new ColumnMultiEditAction(xBranchWidget.getXViewer()));
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       });
 
