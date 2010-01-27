@@ -33,7 +33,19 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class RelationOrderParser {
 
    private static final Object ROOT_ELEMENT = "OrderList";
-   private static XMLReader xmlReader;
+   private static final ThreadLocal<XMLReader> localReader = new ThreadLocal<XMLReader>() {
+
+      @Override
+      protected XMLReader initialValue() {
+         try {
+            return XMLReaderFactory.createXMLReader();
+         } catch (SAXException ex) {
+            ex.printStackTrace();
+            return null;
+         }
+      }
+
+   };
 
    public RelationOrderParser() {
    }
@@ -45,9 +57,7 @@ public class RelationOrderParser {
       data.clear();
       if (value != null && value.trim().length() > 0) {
          try {
-            if (xmlReader == null) {
-               xmlReader = XMLReaderFactory.createXMLReader();
-            }
+            XMLReader xmlReader = localReader.get();
             xmlReader.setContentHandler(new RelationOrderSaxHandlerLite(data));
             xmlReader.parse(new InputSource(new StringReader(value)));
          } catch (SAXException ex) {
