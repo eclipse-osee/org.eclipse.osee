@@ -51,7 +51,7 @@ import org.eclipse.xtext.ui.core.internal.Activator;
  * @author Roberto E. Escobar
  */
 public class OseeTypesImportPage extends WizardDataTransferPage {
-   private static final String PAGE_NAME = "org.eclipse.osee.frameowkr.types.bridge.wizards.OseeTypesImportPage";
+   private static final String PAGE_NAME = "org.eclipse.osee.framework.types.bridge.wizards.OseeTypesImportPage";
 
    private final OseeTypesSetup oseeTypesSetup;
    private File compositeFile;
