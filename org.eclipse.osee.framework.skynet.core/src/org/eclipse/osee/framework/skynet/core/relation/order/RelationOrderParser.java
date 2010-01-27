@@ -38,7 +38,7 @@ public class RelationOrderParser {
    public RelationOrderParser() {
    }
 
-   public void loadFromXml(RelationOrderData data, String value) throws OseeCoreException {
+   public synchronized void loadFromXml(RelationOrderData data, String value) throws OseeCoreException {
       if (data == null) {
          throw new OseeArgumentException("RelationOrderData object cannot be null");
       }
