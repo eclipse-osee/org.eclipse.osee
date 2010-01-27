@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -66,14 +67,16 @@ public class ArtifactExtractorContributionManager {
       return contentHandlers;
    }
 
-   private static final class ParserDelegateComparator implements Comparator<IArtifactExtractorDelegate> {
+   private static final class ParserDelegateComparator implements Comparator<IArtifactExtractorDelegate>, Serializable {
+      private static final long serialVersionUID = 803641362587689953L;
 
       public int compare(IArtifactExtractorDelegate o1, IArtifactExtractorDelegate o2) {
          return o1.getName().compareToIgnoreCase(o2.getName());
       }
    };
 
-   private static final class ParserComparator implements Comparator<IArtifactExtractor> {
+   private static final class ParserComparator implements Comparator<IArtifactExtractor>, Serializable {
+      private static final long serialVersionUID = 297281600323509207L;
 
       public int compare(IArtifactExtractor o1, IArtifactExtractor o2) {
          return o1.getName().compareToIgnoreCase(o2.getName());

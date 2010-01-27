@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.operations;
 
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -62,7 +62,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       monitor.setTaskName("Creating Artifacts");
       this.unmatchedArtifacts = destinationArtifact.getDescendants();
       int totalItems = rawData.getRoughArtifacts().size() + rawData.getRoughRelations().size();
-      int unitOfWork = calculateWork(totalItems / getTotalWorkUnits());
+      int unitOfWork = calculateWork((double) totalItems / getTotalWorkUnits());
 
       for (RoughArtifact roughArtifact : rawData.getParentRoughArtifact().getChildren()) {
          Artifact child = createArtifact(monitor, roughToRealArtifact, roughArtifact, destinationArtifact);
@@ -93,17 +93,15 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
          return realArtifact;
       }
 
-      realArtifact = artifactResolver.resolve(roughArtifact, transaction.getBranch(), realParent);
+      realArtifact = artifactResolver.resolve(roughArtifact, transaction.getBranch(), realParent, destinationArtifact);
       unmatchedArtifacts.remove(realArtifact);
 
       for (RoughArtifact childRoughArtifact : roughArtifact.getChildren()) {
          Artifact childArtifact = createArtifact(monitor, roughToRealArtifact, childRoughArtifact, realArtifact);
-         if (realArtifact != null && childArtifact != null && !realArtifact.isDeleted() && !childArtifact.isDeleted()) {
+         if (areValid(realArtifact, childArtifact)) {
+            removeOtherParent(childArtifact, realArtifact);
             if (!childArtifact.hasParent()) {
                realArtifact.addChild(importArtifactOrder, childArtifact);
-            } else if (!childArtifact.getParent().equals(realArtifact)) {
-               throw new OseeStateException(
-                     childArtifact.getName() + " already has a parent that differs from the imported parent");
             }
          }
       }
@@ -112,6 +110,29 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
          realArtifact.persist(transaction);
       }
       return realArtifact;
+   }
+
+   private void removeOtherParent(Artifact child, Artifact parent) throws OseeCoreException {
+      if (hasDifferentParent(child, parent)) {
+         child.deleteRelations(Default_Hierarchical__Parent);
+      }
+   }
+
+   private boolean hasDifferentParent(Artifact art, Artifact parent) throws OseeCoreException {
+      return art.hasParent() && !art.getParent().equals(parent);
+   }
+
+   // TODO move these two functions into jdk.core or find existing library functions
+   private boolean isValid(Artifact art) {
+      return art != null && !art.isDeleted();
+   }
+
+   private boolean areValid(Artifact... artifacts) {
+      boolean returnValue = true;
+      for (Artifact art : artifacts) {
+         returnValue &= isValid(art);
+      }
+      return returnValue;
    }
 
    private void createRelation(IProgressMonitor monitor, RoughRelation roughRelation) throws OseeCoreException {

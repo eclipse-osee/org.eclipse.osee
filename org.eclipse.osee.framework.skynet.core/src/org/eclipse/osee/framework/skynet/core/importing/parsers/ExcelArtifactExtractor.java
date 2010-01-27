@@ -71,7 +71,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
    }
 
-   private final class ExcelRowProcessor implements RowProcessor {
+   private static final class ExcelRowProcessor implements RowProcessor {
 
       private final DoubleKeyHashMap<String, Integer, RoughArtifact> relationHelper =
             new DoubleKeyHashMap<String, Integer, RoughArtifact>();
@@ -172,7 +172,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
             }
             collector.addRoughArtifact(roughArtifact);
 
-            relationHelper.put(primaryDescriptor.getName(), new Integer(rowCount), roughArtifact);
+            relationHelper.put(primaryDescriptor.getName(), Integer.valueOf(rowCount), roughArtifact);
          }
       }
 

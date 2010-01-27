@@ -30,11 +30,11 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 /**
  * @author Robert A. Fisher
  */
-public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportResolver {
+public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
    private final Collection<AttributeType> nonChangingAttributes;
    private final boolean createNewIfNotExist;
 
-   public RootAndAttributeBasedArtifactResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType, Collection<AttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+   public AttributeBasedArtifactResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType, Collection<AttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
       super(primaryArtifactType, secondaryArtifactType);
       this.nonChangingAttributes = nonChangingAttributes;
       this.createNewIfNotExist = createNewIfNotExist;
@@ -75,15 +75,15 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
    }
 
    @Override
-   public Artifact resolve(RoughArtifact roughArtifact, Branch branch, Artifact realParent) throws OseeCoreException {
+   public Artifact resolve(RoughArtifact roughArtifact, Branch branch, Artifact realParent, Artifact root) throws OseeCoreException {
       Artifact realArtifact = null;
       RoughArtifact roughParent = roughArtifact.getRoughParent();
 
       if (roughParent != null) {
-         List<Artifact> siblings = realParent.getChildren();
+         List<Artifact> descendants = root.getDescendants();
          Collection<Artifact> candidates = new LinkedList<Artifact>();
 
-         for (Artifact artifact : siblings) {
+         for (Artifact artifact : descendants) {
             if (attributeValuesMatch(roughArtifact, artifact)) {
                candidates.add(artifact);
             }
@@ -98,7 +98,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
                         roughArtifact.getName());
             OseeLog.log(Activator.class, Level.INFO, output);
             if (createNewIfNotExist) {
-               realArtifact = super.resolve(roughArtifact, branch, null);
+               realArtifact = super.resolve(roughArtifact, branch, null, root);
             }
          }
       }

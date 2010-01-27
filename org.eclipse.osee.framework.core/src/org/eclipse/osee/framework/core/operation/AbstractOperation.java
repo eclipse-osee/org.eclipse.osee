@@ -24,21 +24,12 @@ public abstract class AbstractOperation implements IOperation {
    private boolean wasExecuted;
    private String name;
 
-   /**
-    * @param operationName
-    * @param pluginId
-    */
    public AbstractOperation(String operationName, String pluginId) {
       this.status = new InternalMultiStatus(pluginId, IStatus.OK, operationName);
       this.wasExecuted = false;
       setName(operationName);
    }
 
-   /**
-    * Sets the operation's name
-    * 
-    * @param name
-    */
    public void setName(String name) {
       this.name = name;
    }
@@ -51,11 +42,6 @@ public abstract class AbstractOperation implements IOperation {
       return status;
    }
 
-   /**
-    * Updates the operation's status
-    * 
-    * @param status
-    */
    protected void setStatus(IStatus status) {
       if (status.getSeverity() != IStatus.OK) {
          this.status.merge(status);
@@ -96,21 +82,10 @@ public abstract class AbstractOperation implements IOperation {
     */
    protected abstract void doWork(IProgressMonitor monitor) throws Exception;
 
-   /**
-    * Updates the operation's status message
-    * 
-    * @param message
-    */
    protected void setStatusMessage(String message) {
       status.setMessage(message);
    }
 
-   /**
-    * Creates a new error status object
-    * 
-    * @param error
-    * @return
-    */
    protected IStatus createErrorStatus(Throwable error) {
       if (error instanceof OperationCanceledException) {
          return Status.CANCEL_STATUS;
@@ -120,10 +95,6 @@ public abstract class AbstractOperation implements IOperation {
       }
    }
 
-   /**
-    * @param workPercentage
-    * @return
-    */
    protected int calculateWork(double workPercentage) {
       return Operations.calculateWork(getTotalWorkUnits(), workPercentage);
    }

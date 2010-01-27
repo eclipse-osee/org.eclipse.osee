@@ -35,8 +35,8 @@ public class GuidBasedArtifactResolver extends NewArtifactImportResolver {
    }
 
    @Override
-   public Artifact resolve(RoughArtifact roughArtifact, Branch branch, Artifact realParent) throws OseeCoreException {
-      List<Artifact> descendants = realParent.getDescendants();
+   public Artifact resolve(RoughArtifact roughArtifact, Branch branch, Artifact realParent, Artifact root) throws OseeCoreException {
+      List<Artifact> descendants = root.getDescendants();
       Artifact realArtifact = null;
 
       for (Artifact artifact : descendants) {
@@ -47,7 +47,7 @@ public class GuidBasedArtifactResolver extends NewArtifactImportResolver {
       }
 
       if (createNewIfNotExist) {
-         realArtifact = super.resolve(roughArtifact, branch, null);
+         realArtifact = super.resolve(roughArtifact, branch, null, root);
       }
 
       return realArtifact;

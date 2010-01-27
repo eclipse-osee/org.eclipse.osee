@@ -39,7 +39,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       this.secondaryArtifactType = secondaryArtifactType;
    }
 
-   public Artifact resolve(final RoughArtifact roughArtifact, final Branch branch, Artifact realParent) throws OseeCoreException {
+   public Artifact resolve(final RoughArtifact roughArtifact, final Branch branch, Artifact realParent, Artifact root) throws OseeCoreException {
       ArtifactType artifactType = getArtifactType(roughArtifact.getRoughArtifactKind());
 
       Artifact realArtifact =
