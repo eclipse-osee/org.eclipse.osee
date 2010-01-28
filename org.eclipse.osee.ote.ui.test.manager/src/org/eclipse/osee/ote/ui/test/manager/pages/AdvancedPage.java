@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.test.manager.pages;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -34,9 +34,21 @@ public class AdvancedPage extends TestManagerPage {
 
    public static final OseeUiActivator plugin = TestManagerPlugin.getInstance();
    private static final String pageName = "Advanced";
+   private final List<IPropertyStoreBasedControl> contributions;
+   private volatile boolean contributionsInitialized;
 
    public AdvancedPage(Composite parent, int style, TestManagerEditor parentTestManager) {
       super(parent, style, parentTestManager);
+      this.contributions = new ArrayList<IPropertyStoreBasedControl>();
+      contributionsInitialized = false;
+   }
+
+   private synchronized List<IPropertyStoreBasedControl> getContributions() {
+      if (!contributionsInitialized) {
+         contributionsInitialized = true;
+         contributions.addAll(PropertyStoreControlContributions.getContributions(TestManagerPlugin.PLUGIN_ID));
+      }
+      return contributions;
    }
 
    @Override
@@ -50,16 +62,14 @@ public class AdvancedPage extends TestManagerPage {
       extensionPanel.setLayout(gL);
       extensionPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 
-      List<IPropertyStoreBasedControl> contributions =
-            PropertyStoreControlContributions.getContributions(TestManagerPlugin.PLUGIN_ID);
-      Collections.sort(contributions, new Comparator<IPropertyStoreBasedControl>() {
+      Collections.sort(getContributions(), new Comparator<IPropertyStoreBasedControl>() {
 
          @Override
          public int compare(IPropertyStoreBasedControl o1, IPropertyStoreBasedControl o2) {
             return Integer.valueOf(o1.getPriority()).compareTo(Integer.valueOf(o2.getPriority()));
          }
       });
-      for (IPropertyStoreBasedControl widget : contributions) {
+      for (IPropertyStoreBasedControl widget : getContributions()) {
 
          try {
             widget.createControl(extensionPanel);
@@ -102,9 +112,7 @@ public class AdvancedPage extends TestManagerPage {
    @Override
    public void saveData() {
       IPropertyStore propertyStore = getTestManager().getPropertyStore();
-      Collection<IPropertyStoreBasedControl> contributions =
-            PropertyStoreControlContributions.getContributions(TestManagerPlugin.PLUGIN_ID);
-      for (IPropertyStoreBasedControl contribution : contributions) {
+      for (IPropertyStoreBasedControl contribution : getContributions()) {
          contribution.save(propertyStore);
       }
    }
@@ -112,9 +120,7 @@ public class AdvancedPage extends TestManagerPage {
    @Override
    public void restoreData() {
       IPropertyStore propertyStore = getTestManager().getPropertyStore();
-      Collection<IPropertyStoreBasedControl> contributions =
-            PropertyStoreControlContributions.getContributions(TestManagerPlugin.PLUGIN_ID);
-      for (IPropertyStoreBasedControl contribution : contributions) {
+      for (IPropertyStoreBasedControl contribution : getContributions()) {
          contribution.load(propertyStore);
       }
    }
@@ -122,9 +128,7 @@ public class AdvancedPage extends TestManagerPage {
    @Override
    public boolean areSettingsValidForRun() {
       boolean result = true;
-      Collection<IPropertyStoreBasedControl> contributions =
-            PropertyStoreControlContributions.getContributions(TestManagerPlugin.PLUGIN_ID);
-      for (IPropertyStoreBasedControl contribution : contributions) {
+      for (IPropertyStoreBasedControl contribution : getContributions()) {
          result &= contribution.areSettingsValid();
       }
       return result;
@@ -133,9 +137,7 @@ public class AdvancedPage extends TestManagerPage {
    @Override
    public String getErrorMessage() {
       StringBuilder builder = new StringBuilder();
-      Collection<IPropertyStoreBasedControl> contributions =
-            PropertyStoreControlContributions.getContributions(TestManagerPlugin.PLUGIN_ID);
-      for (IPropertyStoreBasedControl contribution : contributions) {
+      for (IPropertyStoreBasedControl contribution : getContributions()) {
          String message = contribution.getErrorMessage();
          if (Strings.isValid(message)) {
             if (builder.length() > 0) {
