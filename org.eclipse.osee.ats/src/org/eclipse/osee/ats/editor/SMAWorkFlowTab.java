@@ -433,13 +433,18 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          }
          if (sma.isCurrentState(page.getName()) || sma.getStateMgr().isStateVisited(page.getName()) && sma.isTeamWorkflow()) {
             htmlSb.append(page.getHtml(sma.isCurrentState(page.getName()) ? activeColor : normalColor,
-                  notesSb.toString(), ReviewInfoXWidget.toHTML((TeamWorkFlowArtifact) sma, page.getName())));
+                  notesSb.toString(), getStateHoursSpentHtml(page) + ReviewInfoXWidget.toHTML(
+                        (TeamWorkFlowArtifact) sma, page.getName())));
             htmlSb.append(AHTML.newline());
          }
       }
       return htmlSb.toString();
    }
 
+   private String getStateHoursSpentHtml(WorkPage page) throws OseeCoreException {
+      return AHTML.getLabelValueStr("State Hours Spent", AtsUtil.doubleToI18nString(sma.getStateMgr().getHoursSpent(
+            page.getName())) + "<br>");
+   }
    private Control control = null;
 
    private void storeScrollLocation() throws OseeStateException {
