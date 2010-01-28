@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.osee.framework.ui.skynet.ats.IOseeAtsService;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -57,7 +58,8 @@ public abstract class OseeContributionItem extends StatusLineContributionItem {
    }
 
    public static void addTo(IStatusLineManager manager) {
-      if (OseeAts.getInstance().isAtsAdmin()) {
+      IOseeAtsService atsService = OseeAts.getInstance();
+      if (atsService != null && atsService.isAtsAdmin()) {
          AdminContributionItem.addTo(manager);
       }
       SkynetServiceContributionItem.addTo(manager);
