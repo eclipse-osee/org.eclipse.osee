@@ -51,7 +51,10 @@ public class MergeManager {
    }
 
    private void processImportCoverage(ICoverage importCoverage) throws OseeStateException {
-      System.err.println("Merging check " + importCoverage);
+      boolean debug = false;
+      if (debug) {
+         System.err.println("Merging check " + importCoverage);
+      }
       MatchItem matchItem = getPackageCoverageItem(importCoverage);
       // No matching coverage package item, Add this and all children
       if (MatchType.isNoMatch(matchItem.getMatchType())) {
@@ -71,11 +74,13 @@ public class MergeManager {
          boolean morePackageChildrenThanImportChildren = packageItemChildren.size() > importItemChildren.size();
          boolean sameNumberChildren = importItemChildren.size() == packageItemChildren.size();
 
-         if (importCoverage.getGuid().equals("AAte3i2bH3L1MvsFMqAA")) {
-            System.out.println("here");
-         }
-         if (importCoverage.getName().equals("apu")) {
-            System.out.println("here");
+         if (debug) {
+            if (importCoverage.getGuid().equals("AAte3i2bH3L1MvsFMqAA")) {
+               System.out.println("here");
+            }
+            if (importCoverage.getName().equals("apu")) {
+               System.out.println("here");
+            }
          }
 
          // Determine match for all import item children
@@ -84,9 +89,11 @@ public class MergeManager {
             importItemToMatchItem.put(childCoverage, childMatchItem);
          }
 
-         //          Print out match results
-         for (Entry<ICoverage, MatchItem> entry : importItemToMatchItem.entrySet()) {
-            System.out.println(String.format("MatchItem[%s]", entry.getValue()));
+         if (debug) {
+            //          Print out match results
+            for (Entry<ICoverage, MatchItem> entry : importItemToMatchItem.entrySet()) {
+               System.out.println(String.format("MatchItem[%s]", entry.getValue()));
+            }
          }
 
          // Case A - All match and package # children == import # children
