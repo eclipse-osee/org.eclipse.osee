@@ -124,6 +124,8 @@ public class PropertyStoreWriter {
       private String tagListKey;
       private boolean isInTagList;
       private final Stack<Pair<String, PropertyStore>> innerStoreStack;
+      private String name;
+      private String uri;
 
       public XMLReader() {
          isInTagList = false;
@@ -155,12 +157,12 @@ public class PropertyStoreWriter {
       }
 
       private void process(PropertyStore store, XMLStreamReader reader) {
-         String name = reader.getLocalName();
-         String uri = reader.getNamespaceURI();
 
          int eventType = reader.getEventType();
          switch (eventType) {
             case XMLStreamConstants.START_ELEMENT:
+               name = reader.getLocalName();
+               uri = reader.getNamespaceURI();
                if (TAG_SECTION.equals(name)) {
                   if (isInNestedStore()) {
                      getCurrentInnerStore().setId(reader.getAttributeValue(uri, TAG_NAME));
@@ -182,6 +184,8 @@ public class PropertyStoreWriter {
                }
                break;
             case XMLStreamConstants.END_ELEMENT:
+               name = reader.getLocalName();
+               uri = reader.getNamespaceURI();
                if (TAG_LIST.equals(name)) {
                   isInTagList = false;
                   if (Strings.isValid(tagListKey) && valueList != null && !valueList.isEmpty()) {
@@ -204,7 +208,10 @@ public class PropertyStoreWriter {
                      store.put(completedKey, completedStore);
                   }
                }
-
+               break;
+            case XMLStreamConstants.ENTITY_REFERENCE:
+               name = reader.getLocalName();
+               uri = reader.getNamespaceURI();
                break;
             default:
                break;
