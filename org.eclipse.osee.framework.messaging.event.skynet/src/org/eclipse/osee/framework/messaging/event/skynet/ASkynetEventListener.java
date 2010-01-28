@@ -13,12 +13,13 @@ package org.eclipse.osee.framework.messaging.event.skynet;
 import java.rmi.RemoteException;
 
 /**
- * Client callback base class.
+ * Client call back base class.
  * 
  * @author Robert A. Fisher
  */
 public abstract class ASkynetEventListener implements ISkynetEventListener {
 
+   private static final long serialVersionUID = -3051021974908944273L;
    private final Long uid;
 
    public ASkynetEventListener() {

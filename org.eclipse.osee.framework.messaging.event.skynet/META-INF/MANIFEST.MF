@@ -17,7 +17,6 @@ Export-Package: org.eclipse.osee.framework.messaging.event.skynet,
  org.eclipse.osee.framework.messaging.event.skynet.service
 Bundle-Description: Skynet Event Service - Skynet Cache Network Manager
 Bundle-Vendor: Eclipse.org
-Bundle-ClassPath: skynetEvent.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.logging
