@@ -101,44 +101,39 @@ public class CoverageUnitPersistTest {
    }
 
    @Test
-   public void testASave() {
-      try {
-         saveCoveragePackage = new CoveragePackage("CU Test", CoverageOptionManagerDefault.instance());
-         MergeManager mergeManager = new MergeManager(saveCoveragePackage, coverageImport);
-         List<IMergeItem> mergeItems = new ArrayList<IMergeItem>();
-         for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
-            ((MergeItem) mergeItem).setChecked(true);
-         }
-         MergeImportManager importer = new MergeImportManager(mergeManager);
-         importer.importItems(new ISaveable() {
-
-            @Override
-            public Result save() throws OseeCoreException {
-               OseeCoveragePackageStore store = OseeCoveragePackageStore.get(saveCoveragePackage);
-               store.save();
-               Artifact artifact = store.getArtifact(false);
-               CoverageTestUtil.registerAsTestArtifact(artifact, true);
-               artifact.persist();
-               return Result.TrueResult;
-            }
-
-            @Override
-            public Result isEditable() {
-               return Result.TrueResult;
-            }
-
-            @Override
-            public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
-               return Result.TrueResult;
-            }
-         }, mergeItems);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+   public void testSaveLoadDelete() throws OseeCoreException {
+      // TEST SAVE
+      saveCoveragePackage = new CoveragePackage("CU Test", CoverageOptionManagerDefault.instance());
+      MergeManager mergeManager = new MergeManager(saveCoveragePackage, coverageImport);
+      List<IMergeItem> mergeItems = new ArrayList<IMergeItem>();
+      for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
+         ((MergeItem) mergeItem).setChecked(true);
       }
-   }
+      MergeImportManager importer = new MergeImportManager(mergeManager);
+      importer.importItems(new ISaveable() {
 
-   @Test
-   public void testBLoad() throws OseeCoreException {
+         @Override
+         public Result save() throws OseeCoreException {
+            OseeCoveragePackageStore store = OseeCoveragePackageStore.get(saveCoveragePackage);
+            store.save();
+            Artifact artifact = store.getArtifact(false);
+            CoverageTestUtil.registerAsTestArtifact(artifact, true);
+            artifact.persist();
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result isEditable() {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+            return Result.TrueResult;
+         }
+      }, mergeItems);
+
+      // TEST LOAD
       Artifact artifact =
             ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
                   CoverageUtil.getBranch());
@@ -149,11 +144,9 @@ public class CoverageUnitPersistTest {
       Assert.assertEquals(saveCoveragePackage.getChildren(false).size(), loadCoveragePackage.getChildren(false).size());
       Assert.assertEquals(saveCoveragePackage.getChildren(true).size(), loadCoveragePackage.getChildren(true).size());
       Assert.assertEquals(saveCoveragePackage.getCoveragePercentStr(), loadCoveragePackage.getCoveragePercentStr());
-   }
 
-   @Test
-   public void testDelete() throws OseeCoreException {
-      Artifact artifact =
+      // TEST DELETE
+      artifact =
             ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
                   CoverageUtil.getBranch());
       Assert.assertNotNull(artifact);
