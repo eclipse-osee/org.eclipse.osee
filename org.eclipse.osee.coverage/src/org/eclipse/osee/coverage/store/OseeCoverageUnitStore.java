@@ -74,8 +74,8 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          coverageUnit.setName(artifact.getName());
          coverageUnit.setGuid(artifact.getGuid());
          for (String value : artifact.getAttributesToStringList(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
-            CoverageItem item = new CoverageItem(coverageUnit, value, coverageOptionManager);
-            item.setTestUnitProvider(TestUnitStore.instance());
+            CoverageItem item =
+                  new CoverageItem(coverageUnit, value, coverageOptionManager, DbTestUnitProvider.instance());
             coverageUnit.addCoverageItem(item);
          }
          // Don't load file contents until needed
@@ -102,12 +102,15 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
 
       List<String> items = new ArrayList<String>();
       for (CoverageItem coverageItem : coverageUnit.getCoverageItems()) {
-         // Don't want test unit names stored in xml (to big), get toXml() using TestUnitStore
-         // which provides "" for test units
-         items.add(coverageItem.toXml(TestUnitStore.instance()));
-         // Get test unit names and store in TestUnitStore
-         Collection<String> testUnitNames = coverageItem.getTestUnits();
-         TestUnitStore.instance().setTestUnits(coverageItem, testUnitNames);
+         if (!(coverageItem.getTestUnitProvider() instanceof DbTestUnitProvider)) {
+            // Get test names from coverageItem
+            Collection<String> testUnitNames = coverageItem.getTestUnits();
+            // Set provider to db provider
+            coverageItem.setTestUnitProvider(DbTestUnitProvider.instance());
+            // store off testUnitNames; this will add to db and replace names with db nameId
+            coverageItem.setTestUnits(testUnitNames);
+         }
+         items.add(coverageItem.toXml());
       }
       artifact.setAttributeValues(CoverageAttributes.COVERAGE_ITEM.getStoreName(), items);
       if (coverageUnit.getNotes() != null) {

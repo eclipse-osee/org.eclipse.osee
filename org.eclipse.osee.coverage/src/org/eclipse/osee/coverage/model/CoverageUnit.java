@@ -334,7 +334,8 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       if (includeItems) {
          for (CoverageItem coverageItem : coverageItems) {
             CoverageItem newCoverageItem =
-                  new CoverageItem(coverageUnit, coverageItem.toXml(), CoverageOptionManagerDefault.instance());
+                  new CoverageItem(coverageUnit, coverageItem.toXml(), CoverageOptionManagerDefault.instance(),
+                        coverageItem.getTestUnitProvider());
             newCoverageItem.setTestUnitProvider(coverageItem.getTestUnitProvider());
             coverageUnit.addCoverageItem(newCoverageItem);
          }

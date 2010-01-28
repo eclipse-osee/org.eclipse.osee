@@ -49,8 +49,9 @@ public class CoverageItem implements ICoverage {
       }
    }
 
-   public CoverageItem(CoverageUnit parentCoverageUnit, String xml, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
+   public CoverageItem(CoverageUnit parentCoverageUnit, String xml, CoverageOptionManager coverageOptionManager, ITestUnitProvider testUnitProvider) throws OseeCoreException {
       this(parentCoverageUnit, CoverageOptionManager.Not_Covered, "0");
+      this.testUnitProvider = testUnitProvider;
       fromXml(xml, coverageOptionManager);
    }
 
@@ -262,10 +263,10 @@ public class CoverageItem implements ICoverage {
       }
       if (testUnitProvider == null) {
          testUnitProvider = new SimpleTestUnitProvider();
-         String testUnitsStr = store.get("testUnits");
-         if (Strings.isValid(testUnitsStr)) {
-            testUnitProvider.fromXml(this, testUnitsStr);
-         }
+      }
+      String testUnitsStr = store.get("testUnits");
+      if (Strings.isValid(testUnitsStr)) {
+         testUnitProvider.fromXml(this, testUnitsStr);
       }
    }
 

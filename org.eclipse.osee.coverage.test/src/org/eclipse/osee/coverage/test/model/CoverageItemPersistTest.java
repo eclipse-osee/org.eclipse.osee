@@ -9,8 +9,8 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.store.DbTestUnitProvider;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
-import org.eclipse.osee.coverage.store.TestUnitStore;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -49,7 +49,7 @@ public class CoverageItemPersistTest {
       parentCu = new CoverageUnit(null, "Top", "C:/UserData/", null);
       parentGuid = parentCu.getGuid();
       ci = new CoverageItem(parentCu, CoverageOptionManager.Deactivated_Code, "1");
-      ci.setTestUnitProvider(TestUnitStore.instance());
+      ci.setTestUnitProvider(DbTestUnitProvider.instance());
       for (int x = 0; x < 10; x++) {
          ci.addTestUnitName("Test Unit " + x);
       }
@@ -103,7 +103,7 @@ public class CoverageItemPersistTest {
    public void testGetArtifact2() throws OseeCoreException {
       OseeCoverageUnitStore.get(parentCu).load(CoverageOptionManagerDefault.instance());
       CoverageItem ci = parentCu.getCoverageItems().iterator().next();
-      ci.setTestUnitProvider(TestUnitStore.instance());
+      ci.setTestUnitProvider(DbTestUnitProvider.instance());
       Assert.assertEquals(guid, ci.getGuid());
       Assert.assertEquals("1", ci.getOrderNumber());
       Assert.assertEquals(CoverageOptionManager.Deactivated_Code, ci.getCoverageMethod());

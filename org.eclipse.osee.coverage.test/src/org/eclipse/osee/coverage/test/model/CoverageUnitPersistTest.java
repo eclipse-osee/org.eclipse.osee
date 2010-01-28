@@ -22,8 +22,12 @@ import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.SimpleCoverageUnitFileContentsProvider;
+import org.eclipse.osee.coverage.model.SimpleTestUnitProvider;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
+import org.eclipse.osee.coverage.store.DbTestUnitProvider;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
+import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
+import org.eclipse.osee.coverage.store.TestUnitStore;
 import org.eclipse.osee.coverage.test.SampleJavaFileParser;
 import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
@@ -31,6 +35,7 @@ import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -147,7 +152,7 @@ public class CoverageUnitPersistTest {
    }
 
    @Test
-   public void testCDelete() throws OseeCoreException {
+   public void testDelete() throws OseeCoreException {
       Artifact artifact =
             ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
                   CoverageUtil.getBranch());
@@ -162,5 +167,41 @@ public class CoverageUnitPersistTest {
       } catch (ArtifactDoesNotExist ex) {
          //do nothing
       }
+   }
+
+   /**
+    * Test that a coverage item that has a simpletestunitprovider, as imports will, will covert over and use the
+    * DbTestUnitProvider when the item is persisted. Then, when re-loaded, will load back properly using
+    * DbTestUnitProvider
+    */
+   @Test
+   public void testSimpleToDbTestUnitProvider() throws OseeCoreException {
+      TestUnitStore.clearStore();
+      String cuName = DbTestUnitProviderTest.class.getSimpleName() + "-" + GUID.create();
+      CoverageUnit unit = new CoverageUnit(null, cuName, "location", new SimpleCoverageUnitFileContentsProvider());
+      CoverageItem item = new CoverageItem(unit, CoverageOptionManagerDefault.Test_Unit, "1");
+      item.setTestUnitProvider(new SimpleTestUnitProvider());
+      for (int x = 0; x < 10; x++) {
+         item.addTestUnitName("Test Unit " + x);
+      }
+      Assert.assertEquals(10, item.getTestUnits().size());
+      OseeCoverageUnitStore store = new OseeCoverageUnitStore(unit);
+      Result result = store.save();
+      Assert.assertTrue(result.isTrue());
+
+      Artifact artifact =
+            ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoverageUnit, cuName,
+                  CoverageUtil.getBranch());
+      Assert.assertNotNull(artifact);
+      OseeCoverageUnitStore dbStore =
+            new OseeCoverageUnitStore(null, artifact, CoverageOptionManagerDefault.instance());
+      CoverageUnit dbUnit = dbStore.getCoverageUnit();
+      Assert.assertEquals(1, dbUnit.getCoverageItems().size());
+      CoverageItem dbItem = dbUnit.getCoverageItems().iterator().next();
+      Assert.assertTrue(dbItem.getTestUnitProvider() instanceof DbTestUnitProvider);
+      Assert.assertEquals(10, dbItem.getTestUnits().size());
+      Assert.assertTrue(dbItem.getTestUnits().iterator().next().startsWith("Test Unit "));
+      Assert.assertEquals(10, TestUnitStore.getTestUnitCount());
+      TestUnitStore.clearStore();
    }
 }

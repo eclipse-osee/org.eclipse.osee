@@ -19,9 +19,11 @@ public interface ITestUnitProvider {
 
    public void addTestUnit(CoverageItem coverageItem, String testUnitName) throws OseeCoreException;
 
+   public void removeTestUnit(CoverageItem coverageItem, String testUnitName) throws OseeCoreException;
+
    public void setTestUnits(CoverageItem coverageItem, Collection<String> testUnitNames) throws OseeCoreException;
 
-   public String toXml(CoverageItem coverageItem);
+   public String toXml(CoverageItem coverageItem) throws OseeCoreException;
 
-   public void fromXml(CoverageItem coverageItem, String xml);
+   public void fromXml(CoverageItem coverageItem, String xml) throws OseeCoreException;
 }

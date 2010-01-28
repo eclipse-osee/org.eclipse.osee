@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.navigate;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +17,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
+import org.eclipse.osee.coverage.model.SimpleTestUnitProvider;
 import org.eclipse.osee.coverage.store.CoverageAttributes;
+import org.eclipse.osee.coverage.store.DbTestUnitProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DefaultAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -58,7 +60,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       //      System.out.println("print got it " + artifact);
       try {
          //         fixCoverageInformation();
-         importTestUnitNamesToDbTables();
+         //         importTestUnitNamesToDbTables();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -72,31 +74,35 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       Set<String> allTestUnitNames = new HashSet<String>();
       int fixCount = 0, binaryMoveCount = 0, totalCoverageUnits = 0, totalCoverageItems = 0;
       XResultData rd = new XResultData();
+      SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Item to name_id");
       for (Artifact artifact : ArtifactQuery.getArtifactListFromType("Coverage Unit", branch)) {
          System.out.println("Processing Item " + artifact);
          totalCoverageUnits++;
          for (Attribute<?> attr : artifact.getAttributes(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
             totalCoverageItems++;
             String xml = (String) attr.getValue();
-            CoverageItem coverageItem = new CoverageItem(null, xml, CoverageOptionManagerDefault.instance());
+            CoverageItem coverageItem =
+                  new CoverageItem(null, xml, CoverageOptionManagerDefault.instance(), new SimpleTestUnitProvider());
             allTestUnitNames.addAll(coverageItem.getTestUnits());
-            Collection<String> testUnitNames = coverageItem.getTestUnits();
             if (coverageItem.getTestUnits().size() > 0) {
                fixCount++;
-               coverageItem.setTestUnits(new ArrayList<String>());
+               Collection<String> testUnitNames = coverageItem.getTestUnits();
+               coverageItem.setTestUnitProvider(DbTestUnitProvider.instance());
+               coverageItem.setTestUnits(testUnitNames);
                String newXml = coverageItem.toXml();
-               //               TestUnitStore.instance().setTestUnits(coverageItem, testUnitNames);
-               int additionalSize = 20 + (7 * testUnitNames.size());
-               rd.log("Num Test Units " + testUnitNames.size() + " Pre-size " + xml.length() + " Post-size " + newXml.length() + " Post-size w/ name_id " + (newXml.length() + additionalSize));
+               ((StringAttribute) attr).setValue(newXml);
+               rd.log("Num Test Units " + testUnitNames.size() + " Pre-size " + xml.length() + " Post-size " + newXml.length());
                if (newXml.length() > DefaultAttributeDataProvider.MAX_VARCHAR_LENGTH) {
                   rd.logError("Still too big " + newXml.length());
                }
                if (xml.length() > DefaultAttributeDataProvider.MAX_VARCHAR_LENGTH && newXml.length() < DefaultAttributeDataProvider.MAX_VARCHAR_LENGTH) {
                   binaryMoveCount++;
                }
+               artifact.persist(transaction);
             }
          }
       }
+      transaction.execute();
       rd.log(Collections.toString(allTestUnitNames, "\n"));
       rd.log("Num Coverage Units " + totalCoverageUnits + " Num Coverage Items " + totalCoverageItems);
       rd.log("Fixed " + fixCount + " Binary Moved " + binaryMoveCount);
@@ -118,7 +124,8 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
          for (Attribute<?> attr : artifact.getAttributes(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
             String str = (String) attr.getValue();
             store.load(str);
-            CoverageItem item = new CoverageItem(null, str, CoverageOptionManagerDefault.instance());
+            CoverageItem item =
+                  new CoverageItem(null, str, CoverageOptionManagerDefault.instance(), new SimpleTestUnitProvider());
 
             String executeNum = store.get("executeNum");
             if (!Strings.isValid(executeNum)) {

@@ -6,6 +6,7 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -26,14 +27,14 @@ public class SimpleTestUnitProvider implements ITestUnitProvider {
    }
 
    @Override
-   public void addTestUnit(CoverageItem coverageItem, String testUnitName) {
+   public void addTestUnit(CoverageItem coverageItem, String testUnitName) throws OseeCoreException {
       if (!getTestUnits(coverageItem).contains(testUnitName)) {
          coverageItemToTestUnits.put(coverageItem, Strings.intern(testUnitName));
       }
    }
 
    @Override
-   public Collection<String> getTestUnits(CoverageItem coverageItem) {
+   public Collection<String> getTestUnits(CoverageItem coverageItem) throws OseeCoreException {
       if (coverageItemToTestUnits.containsKey(coverageItem)) {
          return coverageItemToTestUnits.getValues(coverageItem);
       }
@@ -41,12 +42,12 @@ public class SimpleTestUnitProvider implements ITestUnitProvider {
    }
 
    @Override
-   public String toXml(CoverageItem coverageItem) {
+   public String toXml(CoverageItem coverageItem) throws OseeCoreException {
       return Collections.toString(";", getTestUnits(coverageItem));
    }
 
    @Override
-   public void fromXml(CoverageItem coverageItem, String testUnitNames) {
+   public void fromXml(CoverageItem coverageItem, String testUnitNames) throws OseeCoreException {
       if (Strings.isValid(testUnitNames)) {
          for (String testName : testUnitNames.split(";")) {
             addTestUnit(coverageItem, testName);
@@ -55,11 +56,16 @@ public class SimpleTestUnitProvider implements ITestUnitProvider {
    }
 
    @Override
-   public void setTestUnits(CoverageItem coverageItem, Collection<String> testUnitNames) {
+   public void setTestUnits(CoverageItem coverageItem, Collection<String> testUnitNames) throws OseeCoreException {
       coverageItemToTestUnits.removeValues(coverageItem);
       for (String testUnitName : testUnitNames) {
          addTestUnit(coverageItem, testUnitName);
       }
+   }
+
+   @Override
+   public void removeTestUnit(CoverageItem coverageItem, String testUnitName) throws OseeCoreException {
+      coverageItemToTestUnits.removeValue(coverageItem, testUnitName);
    }
 
 }

@@ -33,9 +33,11 @@ public class SimpleTestUnitProviderTest {
     * Test method for
     * {@link org.eclipse.osee.coverage.model.SimpleTestUnitProvider#getTestUnits(org.eclipse.osee.coverage.model.CoverageItem)}
     * .
+    * 
+    * @throws OseeCoreException
     */
    @Test
-   public void testAddGetTestUnits() {
+   public void testAddGetTestUnits() throws OseeCoreException {
       provider.addTestUnit(coverageItem1, "Test Unit 1");
       provider.addTestUnit(coverageItem1, "Test Unit 2");
       provider.addTestUnit(coverageItem1, "Test Unit 3");
@@ -62,7 +64,8 @@ public class SimpleTestUnitProviderTest {
    @Test
    public void testToFromXml() throws OseeCoreException {
       CoverageItem newCoverageItem =
-            new CoverageItem(null, coverageItem1.toXml(), CoverageOptionManagerDefault.instance());
+            new CoverageItem(null, coverageItem1.toXml(), CoverageOptionManagerDefault.instance(),
+                  new SimpleTestUnitProvider());
       Assert.assertEquals(coverageItem1.getName(), newCoverageItem.getName());
       Assert.assertEquals(coverageItem1.getGuid(), newCoverageItem.getGuid());
       Assert.assertEquals(coverageItem1.getOrderNumber(), newCoverageItem.getOrderNumber());
