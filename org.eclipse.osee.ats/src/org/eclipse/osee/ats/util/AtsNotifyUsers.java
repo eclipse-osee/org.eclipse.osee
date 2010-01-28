@@ -89,10 +89,9 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
             OseeLog.log(AtsPlugin.class, OseeLevel.INFO, String.format("Email [%s] invalid for user [%s]",
                   originator.getEmail(), originator.getName()));
          } else if (!UserManager.getUser().equals(originator)) OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-               Arrays.asList(originator),
-               getIdString(sma),
-               NotifyType.Originator.name(),
-               "You have been set as the originator of \"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getName() + "\""));
+               Arrays.asList(originator), getIdString(sma), NotifyType.Originator.name(), String.format(
+                     "You have been set as the originator of [%s] state [%s] titled ", sma.getArtifactTypeName(),
+                     sma.getStateMgr().getCurrentStateName(), sma.getName())));
       }
       if (types.contains(NotifyType.Assigned)) {
          Collection<User> assignees = notifyUsers != null ? notifyUsers : sma.getStateMgr().getAssignees();
@@ -103,11 +102,10 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
          }
          assignees = EmailUtil.getValidEmailUsers(assignees);
          if (testing || assignees.size() > 0) {
-            OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-                  assignees,
-                  getIdString(sma),
-                  NotifyType.Assigned.name(),
-                  "You have been set as an assignee for \"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getName() + "\""));
+            OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(assignees, getIdString(sma),
+                  NotifyType.Assigned.name(), String.format(
+                        "You have been set as the assignee of [%s] state [%s] titled ", sma.getArtifactTypeName(),
+                        sma.getStateMgr().getCurrentStateName(), sma.getName())));
          }
       }
       if (types.contains(NotifyType.Subscribed)) {
@@ -118,11 +116,10 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
          }
          subscribed = EmailUtil.getValidEmailUsers(subscribed);
          if (subscribed.size() > 0) {
-            OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-                  subscribed,
-                  getIdString(sma),
-                  NotifyType.Subscribed.name(),
-                  sma.getArtifactTypeName() + " titled \"" + sma.getName() + "\" transitioned to \"" + sma.getStateMgr().getCurrentStateName() + "\" and you subscribed for notification."));
+            OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(subscribed, getIdString(sma),
+                  NotifyType.Subscribed.name(), String.format(
+                        "[%s] titled [%s] transitioned to [%s] and you subscribed for notification.",
+                        sma.getArtifactTypeName(), sma.getName(), sma.getStateMgr().getCurrentStateName())));
          }
       }
       if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed)) {
@@ -137,18 +134,16 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
             } else if (!UserManager.getUser().equals(originator)) {
                if (sma.isCompleted()) {
                   OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
-                        getIdString(sma), NotifyType.Completed.name(),
-                        "\"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getName() + "\" is Completed"));
+                        getIdString(sma), NotifyType.Completed.name(), String.format("[%s] titled [%s] is Completed",
+                              sma.getArtifactTypeName(), sma.getName())));
                }
                if (sma.isCancelled()) {
                   LogItem cancelledItem = sma.getLog().getStateEvent(LogType.StateCancelled);
-                  OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-                        Arrays.asList(originator),
-                        getIdString(sma),
-                        NotifyType.Cancelled.name(),
-                        String.format(
-                              sma.getArtifactTypeName() + " titled \"" + sma.getName() + "\" was cancelled from the \"%s\" state on \"%s\".<br>Reason: \"%s\"",
-                              cancelledItem.getState(), cancelledItem.getDate(XDate.MMDDYYHHMM), cancelledItem.getMsg())));
+                  OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
+                        getIdString(sma), NotifyType.Cancelled.name(), String.format(
+                              "[%s] titled [%s] was cancelled from the [%s] state on [%s].<br>Reason: [%s]",
+                              sma.getArtifactTypeName(), sma.getName(), cancelledItem.getState(),
+                              cancelledItem.getDate(XDate.MMDDYYHHMM), cancelledItem.getMsg())));
                }
             }
          }
@@ -165,11 +160,10 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                authorModerator = EmailUtil.getValidEmailUsers(authorModerator);
                if (authorModerator.size() > 0) {
                   for (UserRole role : ((ReviewSMArtifact) sma).getUserRoleManager().getRoleUsersReviewComplete()) {
-                     OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-                           authorModerator,
-                           getIdString(sma),
-                           NotifyType.Reviewed.name(),
-                           "\"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getName() + "\" has been Reviewed by " + role.getUser().getName()));
+                     OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(authorModerator,
+                           getIdString(sma), NotifyType.Reviewed.name(), String.format(
+                                 "[%s] titled [%s] has been Reviewed by [%s]", sma.getArtifactTypeName(),
+                                 sma.getName(), role.getUser().getName())));
                   }
                }
             }
