@@ -5,28 +5,72 @@
  */
 package org.eclipse.osee.framework.messaging.internal;
 
-import org.eclipse.osee.framework.messaging.MessageName;
+import org.eclipse.osee.framework.messaging.MessageID;
 
 /**
  * @author b1528444
  *
  */
-public enum TestMessages implements MessageName {
-	TestTopic("topic:someTopic"),
-	JMS_TOPIC("topic:test.topic.Mynewthing.removeme"),
-	VM_TOPIC("topic:inThisJVM"),
-	test("test"),
-	test2("test2");
+public enum TestMessages implements MessageID {
+	TestTopic(true, "ABVlXX3B9UaWogL++MgA", "topic:someTopic", null),
+	JMS_TOPIC(true, "ABWApt8OtWlAnz5CJXQA", "topic:test.topic.Mynewthing.removeme", null),
+	VM_TOPIC(true, "ABWHSTHuTlQb5xWueMAA", "topic:inThisJVM", null),
+	test(true, "ABWoNNdp0RnrO5T5bWwA", "test", null),
+	test2(true, "ABWpvHZTpBTR+PhVrwgA","test2", null),
+	replyTopic(true, "ABWswvHPoR6RpnW9oGAA","topic:someTopicThatNeedsAReply", null, true);
 	
 	private String name;
+	private Class<?> clazz;
+	boolean isReplyRequired;
+	private String guid;	
+	private String destination;
 	
-	TestMessages(String name){
+	TestMessages(boolean isTopic, String guid, String name, Class<?> clazz, boolean isReplyRequired){
+		this.guid = guid;
 		this.name = name;
+		this.clazz = clazz;
+		this.isReplyRequired = isReplyRequired;
+		if(isTopic){
+			destination = "topic:"+guid;
+		} else {
+			destination = guid;
+		}
+	}
+	
+	TestMessages(boolean isTopic, String guid,String name, Class<?> clazz){
+		this.name = name;
+		this.clazz = clazz;
+		this.isReplyRequired = false;
+		if(isTopic){
+			destination = "topic:"+guid;
+		} else {
+			destination = guid;
+		}
 	}
 	
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public Class<?> getSerializationClass() {
+		return clazz;
+	}
+
+	@Override
+	public boolean isReplyRequired() {
+		return isReplyRequired;
+	}
+
+	@Override
+	public String getGuid() {
+		return guid;
+	}
+
+	@Override
+	public String getMessageDestination() {
+		return destination;
 	}
 
 }

@@ -13,6 +13,8 @@ import java.io.UnsupportedEncodingException;
 import javax.xml.bind.JAXB;
 import javax.xml.transform.stream.StreamSource;
 
+import org.eclipse.osee.framework.messaging.OseeMessagingListener;
+
 /**
  * @author b1528444
  *
@@ -33,4 +35,16 @@ public class JAXBUtil {
 		ByteArrayInputStream is = new ByteArrayInputStream(str.getBytes("UTF-8"));
 		return JAXB.unmarshal(new StreamSource(is), clazz);
 	}
+	
+	public static Object unmarshal(Object body, OseeMessagingListener listener) throws UnsupportedEncodingException{
+		Class<?> pojoType = listener.getClazz();
+		Object messageBody;
+		if (pojoType == null) {
+			messageBody = body;
+		} else {
+			messageBody = JAXBUtil.unmarshal(body.toString(), pojoType);
+		}
+		return messageBody;
+	}
+	
 }

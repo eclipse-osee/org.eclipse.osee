@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
  * @author b1528444
  *
  */
-class OseeMessagingStatusImpl implements OseeMessagingStatusCallback {
+public class OseeMessagingStatusImpl implements OseeMessagingStatusCallback {
 
 	private String message;
 	private Class<?> clazz;

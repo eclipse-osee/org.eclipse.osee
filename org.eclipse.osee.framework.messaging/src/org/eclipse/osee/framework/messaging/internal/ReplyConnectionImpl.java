@@ -5,14 +5,10 @@
  */
 package org.eclipse.osee.framework.messaging.internal;
 
-import javax.jms.Destination;
-import javax.jms.JMSException;
-
-import org.apache.camel.ProducerTemplate;
-import org.apache.camel.component.jms.JmsComponent;
-import org.apache.camel.component.jms.JmsEndpoint;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
+import org.eclipse.osee.framework.messaging.future.ConnectionNode;
 
 /**
  * @author b1528444
@@ -20,33 +16,26 @@ import org.eclipse.osee.framework.messaging.ReplyConnection;
  */
 public class ReplyConnectionImpl implements ReplyConnection {
 
-	private Destination replyDestination;
-	private JmsComponent activeMQComponent;
-	private ProducerTemplate template;
+	private String replyDestination;
+	private ConnectionNode connectionNode;
 	private boolean isReplyRequested;
+	private Object correlationId;
 
 	ReplyConnectionImpl(){
 		isReplyRequested = false;
 	}
 	
-	ReplyConnectionImpl(Destination replyDestination,
-			JmsComponent activeMQComponent, ProducerTemplate template) {
+	ReplyConnectionImpl(String replyDestination,
+			 ConnectionNode connectionNode, Object correlationId) {
 		this.replyDestination = replyDestination;
-		this.activeMQComponent = activeMQComponent;
-		this.template = template;
+		this.connectionNode = connectionNode;
+		this.correlationId = correlationId;
 		isReplyRequested = true;
 	}
 
 	@Override
-	public void send(Object body, OseeMessagingStatusCallback statusCallback) {
-		try {
-			JmsEndpoint endpoint = JmsEndpoint.newInstance(replyDestination,
-					activeMQComponent);
-			template.sendBody(endpoint, body);
-		} catch (JMSException ex) {
-			statusCallback.fail(ex);
-		}
-
+	public void send(Object body, Class<?> clazz, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
+		connectionNode.sendWithCorrelationId(replyDestination, body, clazz, correlationId, statusCallback);
 	}
 
 	@Override

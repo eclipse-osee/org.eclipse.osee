@@ -10,8 +10,11 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.future.ConnectionNode;
 import org.eclipse.osee.framework.messaging.services.BaseMessages;
 import org.eclipse.osee.framework.messaging.services.RemoteServiceLookup;
@@ -33,10 +36,13 @@ public class RemoteServiceLookupImpl implements RemoteServiceLookup {
 		map = new CompositeKeyHashMap<String, String, Map<String, ServiceHealthPlusTimeout>>(25, true);
 		callbacks = new CompositeKeyHashMap<String, String, List<ServiceNotification>>(
 				25, true);
+		HealthServiceListener healthServiceListener = new HealthServiceListener(map, callbacks);
 		connectionNode.subscribe(BaseMessages.ServiceHealth,
-				new HealthServiceListener(map, callbacks),
+				healthServiceListener,
 				new OseeMessagingStatusImpl("Failed to subscribe to " + BaseMessages.ServiceHealth.getName(), 
 						RemoteServiceLookupImpl.class));
+		connectionNode.subscribeToReply(BaseMessages.ServiceHealthRequest, 
+				healthServiceListener);
 		executor.scheduleAtFixedRate(new MonitorTimedOutServices(map, callbacks), 30, 30, TimeUnit.SECONDS);
 	}
 
@@ -53,7 +59,11 @@ public class RemoteServiceLookupImpl implements RemoteServiceLookup {
 			ServiceHealthRequest request = new ServiceHealthRequest();
 			request.setServiceName(serviceName);
 			request.setServiceVersion(serviceVersion);
-			connectionNode.send(BaseMessages.ServiceHealthRequest, request, new OseeMessagingStatusImpl(String.format("Failed to send Health Request for %s [%s]", serviceName, serviceVersion), RemoteServiceLookup.class));
+			try {
+				connectionNode.send(BaseMessages.ServiceHealthRequest, request, new OseeMessagingStatusImpl(String.format("Failed to send Health Request for %s [%s]", serviceName, serviceVersion), RemoteServiceLookup.class));
+			} catch (OseeCoreException ex) {
+				OseeLog.log(RemoteServiceLookupImpl.class, Level.SEVERE, ex);
+			}
 		}
 	}
 

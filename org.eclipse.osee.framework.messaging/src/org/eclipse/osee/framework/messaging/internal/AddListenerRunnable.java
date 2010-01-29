@@ -4,41 +4,50 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
+import org.eclipse.osee.framework.messaging.future.ConnectionNode;
 import org.eclipse.osee.framework.messaging.future.NodeInfo;
 
 class AddListenerRunnable implements Runnable {
 
-   private final NodeInfo nodeInfo;
-   private final String topic;
-   private final OseeMessagingListener listener;
-   private final OseeMessagingStatusCallback statusCallback;
-   private final CamelContext context;
+	private final NodeInfo nodeInfo;
+	private final String topic;
+	private final OseeMessagingListener listener;
+	private final OseeMessagingStatusCallback statusCallback;
+	private final CamelContext context;
+	private ConnectionNode connectionNode;
 
-   public AddListenerRunnable(CamelContext context, NodeInfo nodeInfo, String topic, final OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
-      this.context = context;
-      this.nodeInfo = nodeInfo;
-      this.topic = topic;
-      this.listener = listener;
-      this.statusCallback = statusCallback;
-   }
+	public AddListenerRunnable(CamelContext context, NodeInfo nodeInfo,
+			ConnectionNode connectionNode, String topic,
+			final OseeMessagingListener listener,
+			OseeMessagingStatusCallback statusCallback) {
+		this.context = context;
+		this.nodeInfo = nodeInfo;
+		this.topic = topic;
+		this.listener = listener;
+		this.statusCallback = statusCallback;
+		this.connectionNode = connectionNode;
+	}
 
-   @Override
-   public void run() {
-      try {
-         //            checkTransport(component);
-         context.addRoutes(new RouteBuilder() {
-            @Override
-            public void configure() {
-               from(nodeInfo.getComponentNameForRoutes() + topic).process(new ProcessorTranslator(listener));
-            }
-         });
+	@Override
+	public void run() {
+		try {
+			// checkTransport(component);
+			context.addRoutes(new RouteBuilder() {
+				@Override
+				public void configure() {
+					String path = nodeInfo.getComponentNameForRoutes() + topic;
+					from(path).process(
+							new ProcessorTranslator(connectionNode, listener));
+				}
+			});
 
-         //            if (Component.VM.equals(component) && SystemTopic.JMS_HEALTH_STATUS.equals(topic)) {
-         //               listener.process(jmsTransport.createStatusMessage());
-         //            }
-         statusCallback.success();
-      } catch (Exception ex) {
-         statusCallback.fail(ex);
-      }
-   }
+			// if (Component.VM.equals(component) &&
+			// SystemTopic.JMS_HEALTH_STATUS.equals(topic)) {
+			// listener.process(jmsTransport.createStatusMessage());
+			// }
+			statusCallback.success();
+		} catch (Exception ex) {
+			statusCallback.fail(ex);
+		}
+	}
 }

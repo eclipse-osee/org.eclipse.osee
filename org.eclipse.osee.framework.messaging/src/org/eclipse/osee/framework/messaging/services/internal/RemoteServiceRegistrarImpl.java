@@ -11,6 +11,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.messaging.future.ConnectionNode;
 import org.eclipse.osee.framework.messaging.services.BaseMessages;
 import org.eclipse.osee.framework.messaging.services.RemoteServiceRegistrar;
@@ -24,14 +25,16 @@ public class RemoteServiceRegistrarImpl implements RemoteServiceRegistrar {
 
 	private ConnectionNode connectionNode;
 	private ConcurrentHashMap<String, ScheduledFuture<?>> map;
+	private CompositeKeyHashMap<String, String, UpdateStatus> mapForReplys;
 	private ScheduledExecutorService executor;
 	
 	public RemoteServiceRegistrarImpl(ConnectionNode node, ScheduledExecutorService executor) {
 		this.connectionNode = node;
 		this.executor = executor;
 		map = new ConcurrentHashMap<String, ScheduledFuture<?>>();
+		mapForReplys = new CompositeKeyHashMap<String, String, UpdateStatus>(8,	true);
 		connectionNode.subscribe(BaseMessages.ServiceHealthRequest,
-				new HealthRequestListener(),
+				new HealthRequestListener(mapForReplys),
 				new OseeMessagingStatusImpl("Failed to subscribe to " + BaseMessages.ServiceHealthRequest.getName(),
 						RemoteServiceRegistrarImpl.class));
 	}
@@ -42,6 +45,9 @@ public class RemoteServiceRegistrarImpl implements RemoteServiceRegistrar {
 		UpdateStatus updateStatus = new UpdateStatus(this.connectionNode, serviceName, serviceVersion, serviceUniqueId, broker, refreshRateInSeconds, infoPopulator);
 		ScheduledFuture<?> scheduled = executor.scheduleAtFixedRate(updateStatus, 0, refreshRateInSeconds, TimeUnit.SECONDS);
 		map.put(serviceName+serviceVersion+serviceUniqueId, scheduled);
+		
+		UpdateStatus updateStatusForReply = new UpdateStatus(this.connectionNode, serviceName, serviceVersion, serviceUniqueId, broker, refreshRateInSeconds, infoPopulator);
+		mapForReplys.put(serviceName, serviceVersion, updateStatusForReply);
 	}
 
 	@Override

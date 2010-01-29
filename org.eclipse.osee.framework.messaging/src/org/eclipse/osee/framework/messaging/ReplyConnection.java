@@ -5,11 +5,13 @@
  */
 package org.eclipse.osee.framework.messaging;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
 /**
  * @author b1528444
  *
  */
 public interface ReplyConnection {
 	public boolean isReplyRequested();
-	public void send(Object body, final OseeMessagingStatusCallback statusCallback);
+	public void send(Object body, Class<?> clazz, final OseeMessagingStatusCallback statusCallback) throws OseeCoreException;
 }

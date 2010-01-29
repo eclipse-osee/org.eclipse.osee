@@ -5,7 +5,8 @@
  */
 package org.eclipse.osee.framework.messaging.future;
 
-import org.eclipse.osee.framework.messaging.MessageName;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.messaging.MessageID;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 
@@ -14,8 +15,13 @@ import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
  */
 public interface ConnectionNode {
 
-   public void subscribe(MessageName topic, OseeMessagingListener listener, final OseeMessagingStatusCallback statusCallback);
+   public void subscribe(MessageID messageId, OseeMessagingListener listener, final OseeMessagingStatusCallback statusCallback);
 
-   public void send(MessageName topic, Object body, final OseeMessagingStatusCallback statusCallback);
+   public void subscribeToReply(MessageID messageId, OseeMessagingListener listener);
+   
+   public void send(MessageID topic, Object body, final OseeMessagingStatusCallback statusCallback) throws OseeCoreException;
+   
+   public void sendWithCorrelationId(String topic, Object body, Class<?> clazz, Object correlationId, final OseeMessagingStatusCallback statusCallback) throws OseeCoreException;
+
 
 }

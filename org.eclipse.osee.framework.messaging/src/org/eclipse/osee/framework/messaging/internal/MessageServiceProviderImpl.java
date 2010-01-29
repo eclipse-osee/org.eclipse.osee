@@ -24,11 +24,10 @@ public class MessageServiceProviderImpl implements MessageServiceProvider {
 	private CamelContext camelContext;
 	private ExecutorService executor;
 
-	MessageServiceProviderImpl(){
-		
+	MessageServiceProviderImpl() {
 	}
-	
-	public void start() throws Exception{
+
+	public void start() throws Exception {
 		camelContext = new DefaultCamelContext();
 		camelContext.start();
 		executor = Executors.newFixedThreadPool(Runtime.getRuntime()
@@ -36,14 +35,14 @@ public class MessageServiceProviderImpl implements MessageServiceProvider {
 		messageService = new MessageServiceImpl(new ConnectionNodeFactoryImpl(
 				camelContext, executor));
 	}
-	
-	public void stop() throws Exception{
+
+	public void stop() throws Exception {
 		camelContext.stop();
 	}
-	
+
 	@Override
 	public MessageService getMessageService() throws OseeCoreException {
-		
+
 		return messageService;
 	}
 }

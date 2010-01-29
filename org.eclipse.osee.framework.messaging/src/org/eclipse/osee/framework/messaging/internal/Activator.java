@@ -25,7 +25,7 @@ public class Activator implements BundleActivator {
    private BundleContext context;
 
    private ServiceRegistration msgServiceRegistration;
-   private MessageServiceProviderImpl messageServiceProviderImpl = new MessageServiceProviderImpl();
+   private MessageServiceProviderImpl messageServiceProviderImpl;
    
    // old
    private ServiceRegistration registration;
@@ -36,7 +36,7 @@ public class Activator implements BundleActivator {
    public void start(BundleContext context) throws Exception {
       this.context = context;
       me = this;
-
+      messageServiceProviderImpl = new MessageServiceProviderImpl();
       messageServiceProviderImpl.start();
       msgServiceRegistration = context.registerService(MessageService.class.getName(), messageServiceProviderImpl.getMessageService(), null);
 

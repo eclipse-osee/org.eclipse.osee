@@ -44,9 +44,6 @@ class HealthServiceListener extends OseeMessagingListener {
 		long shouldHaveRenewedTime = System.currentTimeMillis() + (health.getRefreshRateInSeconds()*1000) + WIGGLE_ROOM;
 		idMap.put(health.getServiceUniqueId(), new ServiceHealthPlusTimeout(health, shouldHaveRenewedTime));
 		
-		
-		
-		
 		List<ServiceNotification> itemsToNotify = callbacks.get(health.getServiceName(), health.getServiceVersion());
 		if(itemsToNotify != null){
 			for(ServiceNotification notification :itemsToNotify){
@@ -54,9 +51,5 @@ class HealthServiceListener extends OseeMessagingListener {
 			}
 		}
 	}
-	
-	
-	
-	
 
 }

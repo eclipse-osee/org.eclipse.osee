@@ -5,20 +5,34 @@
  */
 package org.eclipse.osee.framework.messaging.services;
 
-import org.eclipse.osee.framework.messaging.MessageName;
+import org.eclipse.osee.framework.messaging.MessageID;
+import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;
+import org.eclipse.osee.framework.messaging.services.messages.ServiceHealthRequest;
 
 /**
  * @author b1528444
  *
  */
-public enum BaseMessages implements MessageName {
-	ServiceHealth("topic:osee.message.core.ServiceHealth"),
-	ServiceHealthRequest("topic:osee.message.core.ServiceHealthRequest");
-
-	private String name;
+public enum BaseMessages implements MessageID {
+	ServiceHealth(true, "ABjyjamBQRvvAGcWpRQA", "topic:osee.message.core.ServiceHealth", ServiceHealth.class, false),
+	ServiceHealthRequest(true, "ABkAHOSFQ3VUZcfzsAgA", "topic:osee.message.core.ServiceHealthRequest", ServiceHealthRequest.class, true);
 	
-	BaseMessages(String name){
+	private String name;
+	private Class<?> clazz;
+	boolean isReplyRequired;
+	private String guid;	
+	private String destination;
+	
+	BaseMessages(boolean isTopic, String guid, String name, Class<?> clazz, boolean isReplyRequired){
+		this.guid = guid;
 		this.name = name;
+		this.clazz = clazz;
+		this.isReplyRequired = isReplyRequired;
+		if(isTopic){
+			destination = "topic:"+guid;
+		} else {
+			destination = guid;
+		}
 	}
 	
 	@Override
@@ -26,4 +40,23 @@ public enum BaseMessages implements MessageName {
 		return name;
 	}
 
+	@Override
+	public Class<?> getSerializationClass() {
+		return clazz;
+	}
+
+	@Override
+	public boolean isReplyRequired() {
+		return isReplyRequired;
+	}
+
+	@Override
+	public String getGuid() {
+		return guid;
+	}
+
+	@Override
+	public String getMessageDestination() {
+		return destination;
+	}
 }

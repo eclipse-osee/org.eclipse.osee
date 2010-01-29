@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.SystemTopic;
 import org.eclipse.osee.framework.messaging.internal.Activator;
-import org.eclipse.osee.framework.messaging.internal.ProcessorTranslator;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -113,8 +112,8 @@ public class OseeMessagingImpl implements OseeMessaging {
 						new RouteBuilder() {
 							@Override
 							public void configure() {
-								from(component.getComponentNameForRoutes() + topic)
-										.process(new ProcessorTranslator(listener));
+//								from(component.getComponentNameForRoutes() + topic)
+//										.process(new ProcessorTranslator(listener));
 							}
 						});
 
