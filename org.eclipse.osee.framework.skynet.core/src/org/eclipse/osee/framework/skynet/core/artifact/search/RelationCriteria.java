@@ -23,7 +23,6 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
    private final RelationType relationType;
    private final RelationSide relationSide;
    private String txsAlias;
-   private String txdAlias;
    private String relAlias;
    private final int artifactId;
 
@@ -52,7 +51,6 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
    public void addToTableSql(ArtifactQueryBuilder builder) {
       relAlias = builder.appendAliasedTable("osee_relation_link");
       txsAlias = builder.appendAliasedTable("osee_txs");
-      txdAlias = builder.appendAliasedTable("osee_tx_details");
    }
 
    @Override
@@ -74,7 +72,7 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
       builder.append(txsAlias);
       builder.append(".gamma_id AND ");
 
-      builder.addTxSql(txsAlias, txdAlias, false);
+      builder.addTxSql(txsAlias, false);
    }
 
    @Override

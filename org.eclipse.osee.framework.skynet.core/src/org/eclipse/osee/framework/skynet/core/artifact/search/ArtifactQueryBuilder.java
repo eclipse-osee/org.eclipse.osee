@@ -175,7 +175,6 @@ public class ArtifactQueryBuilder {
       }
 
       nextAliases.put("osee_txs", new NextAlias("txs"));
-      nextAliases.put("osee_tx_details", new NextAlias("txd"));
       nextAliases.put("osee_artifact", new NextAlias("art"));
       nextAliases.put("osee_artifact_version", new NextAlias("arv"));
       nextAliases.put("osee_attribute", new NextAlias("att"));
@@ -207,7 +206,7 @@ public class ArtifactQueryBuilder {
          }
       }
 
-      String artAlias, artvAlias, txsAlias, txdAlias;
+      String artAlias, artvAlias, txsAlias;
       String jguidAlias = "";
       if (tableOrderForward) {
          if (guids != null && guids.size() > 0) {
@@ -216,9 +215,7 @@ public class ArtifactQueryBuilder {
          artAlias = appendAliasedTable("osee_artifact");
          artvAlias = appendAliasedTable("osee_artifact_version");
          txsAlias = appendAliasedTable("osee_txs");
-         txdAlias = appendAliasedTable("osee_tx_details");
       } else {
-         txdAlias = appendAliasedTable("osee_tx_details");
          txsAlias = appendAliasedTable("osee_txs");
          artvAlias = appendAliasedTable("osee_artifact_version");
          artAlias = appendAliasedTable("osee_artifact");
@@ -231,13 +228,13 @@ public class ArtifactQueryBuilder {
       sql.append(" WHERE ");
 
       if (artifactId != 0) {
-         sql.append(artAlias);
+         sql.append(artvAlias);
          sql.append(".art_id=? AND ");
          addParameter(artifactId);
       }
 
       if (artifactIds != null) {
-         sql.append(artAlias);
+         sql.append(artvAlias);
          sql.append(".art_id IN (" + Collections.toString(",", artifactIds) + ") AND ");
       }
       if (artifactTypes != null) {
@@ -334,15 +331,15 @@ public class ArtifactQueryBuilder {
       }
 
       sql.append(" AND ");
-      addBranchTxSql(txsAlias, txdAlias);
+      addBranchTxSql(txsAlias);
 
       List<String> paramList = new ArrayList<String>();
       paramList.add(ClientSessionManager.getSql(OseeSql.QUERY_BUILDER));
       if (count) {
-         paramList.add(artAlias);
+         paramList.add(artvAlias);
       } else {
-         paramList.add(artAlias);
-         paramList.add(txdAlias);
+         paramList.add(artvAlias);
+         paramList.add(txsAlias);
       }
       return String.format(sql.toString(), paramList.toArray());
    }
@@ -363,11 +360,11 @@ public class ArtifactQueryBuilder {
       queryParameters.add(data);
    }
 
-   public void addTxSql(String txsAlias, String txdAlias, boolean historical) throws OseeCoreException {
+   public void addTxSql(String txsAlias, boolean historical) throws OseeCoreException {
       if (!historical) {
          addCurrentTxSql(txsAlias);
       }
-      addBranchTxSql(txsAlias, txdAlias);
+      addBranchTxSql(txsAlias);
       sql.append(" AND ");
    }
 
@@ -376,14 +373,9 @@ public class ArtifactQueryBuilder {
       sql.append(".tx_current=1 AND ");
    }
 
-   private void addBranchTxSql(String txsAlias, String txdAlias) throws OseeCoreException {
-      sql.append(txsAlias);
-      sql.append(".transaction_id=");
-      sql.append(txdAlias);
-      sql.append(".transaction_id");
+   private void addBranchTxSql(String txsAlias) throws OseeCoreException {
       if (branch != null) {
-         sql.append(" AND ");
-         sql.append(txdAlias);
+         sql.append(txsAlias);
          sql.append(".branch_id=?");
          addParameter(BranchManager.getBranchId(branch));
       }

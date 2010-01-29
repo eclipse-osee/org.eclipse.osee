@@ -30,7 +30,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
    private String value;
    private Collection<String> values;
    private String txsAlias;
-   private String txdAlias;
    private String attrAlias;
    private final boolean historical;
    private final Operator operator;
@@ -136,7 +135,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
    public void addToTableSql(ArtifactQueryBuilder builder) {
       attrAlias = builder.appendAliasedTable("osee_attribute");
       txsAlias = builder.appendAliasedTable("osee_txs");
-      txdAlias = builder.appendAliasedTable("osee_tx_details");
    }
 
    @Override
@@ -182,7 +180,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       builder.append(txsAlias);
       builder.append(".gamma_id AND ");
 
-      builder.addTxSql(txsAlias, txdAlias, historical);
+      builder.addTxSql(txsAlias, historical);
    }
 
    @Override
