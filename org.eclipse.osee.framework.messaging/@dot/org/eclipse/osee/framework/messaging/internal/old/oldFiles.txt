@@ -1,7 +1,0 @@
-Activator.java
-ApplicationDistributer.java
-ConcurrentListMap.java
-EndpointReceiveCollection.java
-EndpointSendCollection.java
-MessageListenerCollection.java
-MessagingGatewayImpl.java
