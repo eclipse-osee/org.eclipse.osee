@@ -57,7 +57,8 @@ public class LogItem {
          this.user = UserManager.getUserByUserId(userId);
       } catch (UserNotInDatabase ex) {
          this.user = UserManager.getUser(SystemUser.Guest);
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, String.format("Error parsing log for [%s]", hrid), ex);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, String.format("Error parsing ATS Log for %s - %s", hrid,
+               ex.getLocalizedMessage()), ex);
       }
       this.type = type;
    }
