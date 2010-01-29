@@ -14,6 +14,5 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public interface NamedIdentity extends Identity {
-   public abstract String getName();
+public interface NamedIdentity extends Identity, Named {
 }
