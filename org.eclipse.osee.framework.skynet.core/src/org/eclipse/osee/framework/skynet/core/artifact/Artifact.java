@@ -1230,6 +1230,10 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       transaction.execute();
    }
 
+   public void deleteAndPersist(SkynetTransaction transaction, boolean overrideChecks) throws OseeCoreException {
+      ArtifactPersistenceManager.deleteArtifact(transaction, overrideChecks, this);
+   }
+
    /**
     * Removes artifact from a specific branch
     */

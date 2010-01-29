@@ -315,9 +315,9 @@ public class AtsBranchConfigurationTest {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (TeamWorkFlowArtifact teamArt : aArt.getTeamWorkFlowArtifacts()) {
             SMAEditor.close(Collections.singleton(teamArt), false);
-            teamArt.deleteAndPersist(transaction);
+            teamArt.deleteAndPersist(transaction, true);
          }
-         aArt.deleteAndPersist(transaction);
+         aArt.deleteAndPersist(transaction, true);
          transaction.execute();
       }
 
@@ -328,7 +328,7 @@ public class AtsBranchConfigurationTest {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact verArt : arts) {
             if (verArt.getName().contains(testType.name())) {
-               verArt.deleteAndPersist(transaction);
+               verArt.deleteAndPersist(transaction, true);
             }
          }
          transaction.execute();
@@ -340,7 +340,7 @@ public class AtsBranchConfigurationTest {
                   AtsUtil.getAtsBranch());
       if (art != null) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
-         art.deleteAndPersist(transaction);
+         art.deleteAndPersist(transaction, true);
          transaction.execute();
       }
 
@@ -351,9 +351,9 @@ public class AtsBranchConfigurationTest {
       if (art != null) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact childArt : art.getChildren()) {
-            childArt.deleteAndPersist(transaction);
+            childArt.deleteAndPersist(transaction, true);
          }
-         art.deleteAndPersist(transaction);
+         art.deleteAndPersist(transaction, true);
          transaction.execute();
       }
 
@@ -362,7 +362,7 @@ public class AtsBranchConfigurationTest {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact workArt : arts) {
             if (workArt.getName().startsWith(namespace)) {
-               workArt.deleteAndPersist(transaction);
+               workArt.deleteAndPersist(transaction, true);
             }
          }
          transaction.execute();
@@ -372,7 +372,7 @@ public class AtsBranchConfigurationTest {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact workArt : arts) {
             if (workArt.getName().startsWith(namespace)) {
-               workArt.deleteAndPersist(transaction);
+               workArt.deleteAndPersist(transaction, true);
             }
          }
          transaction.execute();
