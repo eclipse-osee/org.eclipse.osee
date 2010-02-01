@@ -146,6 +146,10 @@ public class TableWriterAdaptor {
       document.add(table);
    }
 
+   public void addTable(Table table) throws DocumentException {
+      document.add(table);
+   }
+
    public void close() {
       if (complete != true) {
          document.close();
@@ -155,6 +159,10 @@ public class TableWriterAdaptor {
 
    public boolean isCompleted() {
       return complete;
+   }
+
+   public Table getTable() {
+      return table;
    }
 
    //   public String toString() {

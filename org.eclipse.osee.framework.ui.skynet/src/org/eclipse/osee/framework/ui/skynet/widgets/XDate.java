@@ -42,6 +42,7 @@ public class XDate extends XWidget {
    protected Date date;
    public static String MMDDYY = "MM/dd/yyyy";
    public static String YYYYMMDD = "yyyy/MM/dd";
+   public static String YYYY_MM_DD = "yyyy_MM_dd";
    public static String MMDDYYHHMM = "MM/dd/yyyy hh:mm a";
    public static String HHMMSS = "hh:mm:ss";
    public static String HHMMSSSS = "hh:mm:ss:SS";

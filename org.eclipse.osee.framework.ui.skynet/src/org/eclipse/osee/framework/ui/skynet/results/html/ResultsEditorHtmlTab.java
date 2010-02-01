@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.results.html;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -20,12 +21,15 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.action.browser.BrowserPrintAction;
+import org.eclipse.osee.framework.ui.skynet.action.browser.IBrowserActionHandler;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -38,7 +42,7 @@ import org.eclipse.swt.widgets.ToolItem;
 /**
  * @author Donald G. Dunne
  */
-public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
+public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActionHandler {
 
    private final String tabName;
    private XResultsComposite xResultsComposite;
@@ -95,17 +99,10 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
    }
 
    private void createToolbar(ToolBar toolBar) {
-      ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.PRINT));
-      item.setToolTipText("Print this tab");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent event) {
-            xResultsComposite.getBrowser().setUrl("javascript:print()");
-         }
-      });
 
-      item = new ToolItem(toolBar, SWT.PUSH);
+      new ActionContributionItem(new BrowserPrintAction(this)).fill(toolBar, -1);
+
+      ToolItem item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(ImageManager.getImage(FrameworkImage.EMAIL));
       item.setToolTipText("Email");
       item.addSelectionListener(new SelectionAdapter() {
@@ -168,6 +165,11 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
             }
          }
       });
+   }
+
+   @Override
+   public Browser getBrowser() {
+      return xResultsComposite.getBrowser();
    }
 
 }

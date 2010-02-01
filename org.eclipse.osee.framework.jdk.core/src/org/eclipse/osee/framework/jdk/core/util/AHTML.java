@@ -403,6 +403,10 @@ public class AHTML {
       return s;
    }
 
+   public static String addHeaderRowMultiColumnTable(List<String> strs) {
+      return addHeaderRowMultiColumnTable((String[]) strs.toArray(new String[strs.size()]));
+   }
+
    public static String addHeaderRowMultiColumnTable(String[] str) {
       return addHeaderRowMultiColumnTable(str, null);
    }

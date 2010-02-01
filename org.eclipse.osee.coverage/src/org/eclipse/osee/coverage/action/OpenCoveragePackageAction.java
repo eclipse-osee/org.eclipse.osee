@@ -34,7 +34,7 @@ public class OpenCoveragePackageAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(OSEE_IMAGE);
+      return ImageManager.getImageDescriptor(CoverageImage.COVERAGE_PACKAGE);
    }
 
    @Override
