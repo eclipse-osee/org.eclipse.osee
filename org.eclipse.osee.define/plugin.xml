@@ -202,4 +202,11 @@
           className="org.eclipse.osee.define.blam.operation.RequirementsTestReport">
     </Operation>
  </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.blam.operation.RequirementReorderOperation">
+    </Operation>
+ </extension>
+ 
 </plugin>

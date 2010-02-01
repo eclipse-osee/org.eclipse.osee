@@ -515,6 +515,7 @@ artifactType "System Requirement" extends "Requirement" , "MS Word Template" {
    guid "AAMFDiSTcDGdUd9+tHAA"
    attribute "Legacy Id"
    attribute "Req Type"
+   attribute "Verification Level"
 }
 
 attributeType "Req Type" extends EnumeratedAttribute {
@@ -776,7 +777,7 @@ oseeEnumType "enum.req.verification.level" {
 attributeType "Verification Level" extends EnumeratedAttribute {
    guid "AAMFEXRTkyKVIFqcMwQA"
    dataProvider DefaultAttributeDataProvider
-   min 1
+   min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
    enumType "enum.req.verification.level"

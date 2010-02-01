@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.skynet.core.importing;
 /**
  * @author Robert A. Fisher
  */
-public class ReqNumbering {
-   private String number;
-   private String[] values;
+public class ReqNumbering implements Comparable<ReqNumbering> {
+   private final String number;
+   private final String[] values;
 
    public ReqNumbering(String number) {
       this.number = number;
@@ -32,7 +32,7 @@ public class ReqNumbering {
     */
    public boolean isChild(ReqNumbering numbering) {
       String[] numberVals = numbering.values;
-      if ((values.length + 1) != numberVals.length) {
+      if (values.length + 1 != numberVals.length) {
          return false;
       }
 
@@ -44,7 +44,7 @@ public class ReqNumbering {
       return true;
    }
 
-   private String[] tokenize() {
+   public String[] tokenize() {
       String[] returnVal = number.split("\\.");
 
       // If the very last token is a 0, then chop it off
@@ -54,5 +54,33 @@ public class ReqNumbering {
          returnVal = temp;
       }
       return returnVal;
+   }
+
+   @Override
+   public int compareTo(ReqNumbering o) {
+      for (int i = 0; i < Math.max(values.length, o.values.length); i++) {
+         int thisValue = getValue(i);
+         int oValue = o.getValue(i);
+         if (thisValue > oValue) {
+            return 1;
+         } else if (thisValue < oValue) {
+            return -1;
+         }
+      }
+      
+      return 0;
+   }
+
+   private int getValue(int index) {
+      if (index <= values.length - 1) {
+         return Integer.parseInt(values[index]);
+      } else {
+         return 0;
+      }
+   }
+
+   @Override
+   public String toString() {
+      return number;
    }
 }
