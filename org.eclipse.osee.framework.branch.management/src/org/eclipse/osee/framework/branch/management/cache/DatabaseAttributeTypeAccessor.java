@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -69,17 +70,17 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
 
          while (chStmt.next()) {
             int attributeTypeId = chStmt.getInt("attr_type_id");
-            String baseAttributeTypeId = chStmt.getString("attribute_class");
-            String attributeProviderNameId = chStmt.getString("attribute_provider_class");
+            String baseAttributeTypeId = Strings.intern(chStmt.getString("attribute_class"));
+            String attributeProviderNameId = Strings.intern(chStmt.getString("attribute_provider_class"));
             try {
                String guid = chStmt.getString("attr_type_guid");
                String typeName = chStmt.getString("name");
-               String fileTypeExtension = chStmt.getString("file_type_extension");
+               String fileTypeExtension = Strings.intern(chStmt.getString("file_type_extension"));
                String defaultValue = chStmt.getString("default_value");
                int minOccurrences = chStmt.getInt("min_occurence");
                int maxOccurrences = chStmt.getInt("max_occurence");
                String description = chStmt.getString("tip_text");
-               String taggerId = chStmt.getString("tagger_id");
+               String taggerId = Strings.intern(chStmt.getString("tagger_id"));
 
                int enumTypeId = chStmt.getInt("enum_type_id");
                OseeEnumType oseeEnumType = enumCache.getById(enumTypeId);
