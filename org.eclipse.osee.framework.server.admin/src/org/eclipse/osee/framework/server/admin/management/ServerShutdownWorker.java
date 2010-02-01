@@ -23,8 +23,15 @@ import org.osgi.framework.Bundle;
  */
 class ServerShutdownWorker extends BaseServerCommand {
 
+   private final static String OSEE_ONLY_OPTION = "-oseeOnly";
+   private final static String OSEE_SHUTDOWN_COMPLETE = "Osee Shutdown Complete";
+   private boolean isOseeOnly;
+   private boolean isFirstTime;
+
    protected ServerShutdownWorker(CommandInterpreter ci) {
       super("Server Shutdown", ci);
+      isOseeOnly = false;
+      isFirstTime = true;
    }
 
    @Override
@@ -44,6 +51,20 @@ class ServerShutdownWorker extends BaseServerCommand {
          }
       }
       manager.shutdown();
-      getCommandInterpreter().execute("close");
+
+      if (isOseeOnly()) {
+         println(OSEE_SHUTDOWN_COMPLETE);
+      } else {
+         getCommandInterpreter().execute("close");
+      }
+   }
+
+   private synchronized boolean isOseeOnly() {
+      if (isFirstTime) {
+         isFirstTime = false;
+         String cmd = getCommandInterpreter().nextArgument();
+         isOseeOnly = OSEE_ONLY_OPTION.equalsIgnoreCase(cmd);
+      }
+      return isOseeOnly;
    }
 }
