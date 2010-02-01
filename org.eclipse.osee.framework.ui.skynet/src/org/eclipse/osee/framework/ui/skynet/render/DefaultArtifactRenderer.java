@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -148,9 +149,9 @@ public class DefaultArtifactRenderer implements IRenderer {
          String data = renderRelationOrder(artifact);
          wordMl.addWordMl(data);
       } else {
-         String valueList = Xml.escape(artifact.getAttributesToString(attributeTypeName)).toString();
+         String valueList = artifact.getAttributesToString(attributeTypeName);
          if (attributeElement.getFormat().contains(">x<")) {
-            wordMl.addWordMl(format.replace(">x<", ">" + valueList + "<"));
+            wordMl.addWordMl(format.replace(">x<", ">" + Xml.escape(valueList).toString() + "<"));
          } else {
             wordMl.addTextInsideParagraph(valueList);
          }

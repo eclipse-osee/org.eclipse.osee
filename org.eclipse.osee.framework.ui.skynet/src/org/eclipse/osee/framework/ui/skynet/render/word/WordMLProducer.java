@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
@@ -79,11 +80,6 @@ public class WordMLProducer extends Producer {
          flattenedLevelCount++;
          endOutlineSubSection(true);
          OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Outline level flattened, outline can only go 9 levels deep");
-         if (false) {
-            startParagraph();
-            addTextInsideParagraph("OUTLINE LEVEL FLATTENED: " + headingText, RGB_RED);
-            endParagraph();
-         }
          return startOutlineSubSection(font, headingText, outlineType);
       }
    };
@@ -258,6 +254,11 @@ public class WordMLProducer extends Producer {
       append("</w:t><w:rPr><w:b/></w:rPr></w:r></w:p>");
    }
 
+   /**
+    * This method will escape the provided text.
+    * @param text 
+    * @throws OseeWrappedException 
+    */
    public void addTextInsideParagraph(CharSequence text) throws OseeWrappedException {
       append("<w:r><w:t>");
       append(Xml.escape(text));
