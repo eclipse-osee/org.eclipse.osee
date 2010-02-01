@@ -105,17 +105,23 @@ public class AtsArtifactChecks extends ArtifactCheck {
       for (Artifact art : artifacts) {
          if (art.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent).size() > 0) {
-               return "ATS WorkFlowDefinition  [" + art + "] selected to delete has related Team Definition(s) via WorkItem__Parent; Re-assign Team Definitions to new WorkFlowDefinition first.";
+               return String.format(
+                     "ATS WorkFlowDefinition  [%s] selected to delete has related Team Definition(s) via WorkItem__Parent; Re-assign Team Definitions to new WorkFlowDefinition first.",
+                     art);
             }
          }
          if (art.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
             if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent).size() > 0) {
-               return "ATS WorkRuleDefinition [" + art + "] selected to delete has related Work Items via WorkItem__Parent that must be removed first.";
+               return String.format(
+                     "ATS WorkRuleDefinition [%s] selected to delete has related Work Items via WorkItem__Parent that must be removed first.",
+                     art);
             }
          }
          if (art.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
             if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent).size() > 0) {
-               return "ATS WorkWidgetDefinition [" + art + "] selected to delete has related Work Items via WorkItem__Parent that must be removed first.";
+               return String.format(
+                     "ATS WorkWidgetDefinition [%s] selected to delete has related Work Items via WorkItem__Parent that must be removed first.",
+                     art);
             }
          }
       }
@@ -133,7 +139,9 @@ public class AtsArtifactChecks extends ArtifactCheck {
          UserRelatedToAtsObjectSearch srch =
                new UserRelatedToAtsObjectSearch("User search", user, false, LoadView.None);
          if (srch.performSearchGetResults().size() > 0) {
-            return "User name: \"" + user.getName() + "\" userId: \"" + user.getUserId() + "\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.";
+            return String.format(
+                  "User name: \"%s\" userId: \"%s\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.",
+                  user.getName(), user.getUserId());
          }
       }
       return null;
