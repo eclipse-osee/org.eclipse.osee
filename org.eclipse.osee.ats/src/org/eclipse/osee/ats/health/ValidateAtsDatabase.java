@@ -606,8 +606,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has role attribute, but no roles (xml parsing error).");
                }
             } catch (OseeCoreException ex) {
-               testNameToResultsMap.put("testReviewsHaveValidDefectAndRoleXml",
-                     "Error: Exception processing review defect test " + ex.getLocalizedMessage());
+               testNameToResultsMap.put(
+                     "testReviewsHaveValidDefectAndRoleXml",
+                     "Error: Exception processing Review " + XResultData.getHyperlink(reviewArtifact) + " defect test " + ex.getLocalizedMessage());
             }
          }
       }
