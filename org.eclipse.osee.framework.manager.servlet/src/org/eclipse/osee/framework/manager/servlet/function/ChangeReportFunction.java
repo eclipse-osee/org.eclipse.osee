@@ -14,7 +14,6 @@ import java.io.InputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.ChangeReportRequest;
 import org.eclipse.osee.framework.core.data.ChangeReportResponse;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
@@ -48,7 +47,7 @@ public class ChangeReportFunction extends AbstractOperation {
       ChangeReportRequest request = service.convert(req.getInputStream(), CoreTranslatorId.CHANGE_REPORT_REQUEST);
 
       ChangeReportResponse response = new ChangeReportResponse();
-      branchServiceProvider.getBranchService().getChanges(new NullProgressMonitor(), request, response);
+      branchServiceProvider.getBranchService().getChanges(monitor, request, response);
 
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       resp.setContentType("text/xml");
