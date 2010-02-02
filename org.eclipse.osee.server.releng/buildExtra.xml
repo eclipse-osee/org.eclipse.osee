@@ -46,7 +46,7 @@
 		<property name="configFolder" value="${tempAppServerFolder}/configuration" />
 		<property name="pluginsFolder" value="${tempAppServerFolder}/plugins" />
 		<antcall target="generateConfigIni" inheritall="true" />
-		<antcall target="generateLaunchScripts" inheritall="true" />
+		<ant antfile="/scripts/createServerLaunch.xml" target="generateAll" inheritall="true" />
 
 		<propertyregex property="serverRuntimeFile" input="${updateSiteFile}" defaultvalue="server-runtime.zip" regexp="-Update-" replace="-Application-Server-" casesensitive="false" override="true" />
 
@@ -58,61 +58,8 @@
 	</target>
 
 	<target name="generateLaunchScripts">
-		<pathconvert property="launcherBundlePath" setonempty="false">
-			<path>
-				<fileset dir="${pluginsFolder}">
-					<include name="org.eclipse.equinox.launcher_*.jar" />
-				</fileset>
-			</path>
-		</pathconvert>
-		<propertyregex property="launcherJar" override="true" input="${launcherBundlePath}" regexp="[^${file.separator}]+$" select="\0" casesensitive="false" />
-		
-		<generate.launch 
-			name="runDerby.sh" 
-			executable="true" 
-			port="8089" 
-			connection.id="derby" 
-			args="-Dosee.derby.server=127.0.0.1:1621" />
-
-		<generate.launch 
-			name="runPostgresqlLocal.sh" 
-			executable="true" 
-			port="8089" 
-			connection.id="postgresqlLocalhost" 
-			args=" " />
-
-		<generate.launch 
-			name="runExample.sh" 
-			executable="false" 
-			port="8089" 
-			connection.id="[id from connection file]" 
-			args="-Dosee.connection.info.uri=[custom connection file path] -Dosee.application.server.data=[binary data path]" />
-
 	</target>
-
-	<macrodef name="generate.launch">
-		<attribute name="name" />
-		<attribute name="port" />
-		<attribute name="executable" />
-		<attribute name="connection.id" />
-		<attribute name="args" />
-		<sequential>
-			<echo file="${tempAppServerFolder}/@{name}" append="false">java \
--Dorg.osgi.service.http.port=@{port} \
--Dosee.check.tag.queue.on.startup=true \
--Dosee.db.connection.id=@{connection.id} \				
-@{args} \
--jar plugins/${launcherJar} -console
-</echo>
-			<if>
-				<equals arg1="executable" arg2="true" />
-				<then>
-					<chmod file="${tempAppServerFolder}/@{name}" perm="ugo+rx" />
-				</then>
-			</if>
-		</sequential>
-	</macrodef>
-
+	
 	<target name="deleteZips">
 		<echo message="deleteZips" />
 		<propertyregex property="allZip" input="${updateSiteFile}" defaultvalue="" regexp="-Update-" replace="-AllFeaturesAndPlugins-" casesensitive="false" override="true" />
@@ -156,6 +103,7 @@
 osgi.noShutdown=true
 eclipse.ignoreApp=true
 equinox.ds.debug=true
-osee.log.default=INFO${line.separator}</echo>
+osee.log.default=INFO
+		</echo>
 	</target>
 </project>

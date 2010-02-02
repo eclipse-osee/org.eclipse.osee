@@ -1,0 +1,104 @@
+
+SERVER_ID="$OS_MACHINE"_"$OSEE_APP_SERVER_PORT"
+
+LOG="/log/osee_app_server_$SERVER_ID.log"
+LOCK="/lock/osee_app_server_$SERVER_ID.lock"
+
+RETVAL=0
+
+pid_of_osee_app_server() {
+    if [ '$OS_NAME' -eq 'SunOS' ]; then
+    	usr/ucb/ps auxwww | grep java | grep org.osgi.service.http.port=$OSEE_APP_SERVER_PORT | grep -v grep | awk '{print $2}'
+    else 
+    	ps auxwww | grep java | grep org.osgi.service.http.port=$OSEE_APP_SERVER_PORT | grep -v grep | awk '{print $2}'
+    fi
+}
+
+start() {
+    [ -e "$LOG" ] && cnt=`wc -l "$LOG" | awk '{ print $1 }'` || cnt=1
+
+    echo -n $"Starting OSEE App Server: "
+
+    cd "$OSEE_APP_SERVER_HOME"
+    
+    nohup java -Xms40m -Xmx$OSEE_SERVER_MAX_MEMORY -Dosee.db.connection.id="$OSEE_DATABASE_CONNECTION_ID" -Dorg.osgi.service.http.port="$OSEE_APP_SERVER_PORT" "$OSEE_APP_SERVER_EXTRA_VMARGS" -jar $EQUINOX_LAUNCHER -console $OSGI_TELNET_PORT -consoleLog >> "$LOG" 2>&1 &
+    
+    pid_of_osee_app_server > /dev/null
+    RETVAL=$?
+    [ $RETVAL = 0 ] && success $"$STRING" || failure $"$STRING"
+    echo
+
+    [ $RETVAL = 0 ] && touch "$LOCK"
+}
+
+osee_app_server_shutdown() {
+expect<<EOF
+set timeout 20
+spawn telnet $OS_MACHINE $OSEE_APP_SERVER_PORT
+expect "osgi> "
+send "osee_shutdown -oseeOnly\r"
+expect "Osee Shutdown Complete"
+
+send "disconnect\r"
+expect "Disconnect from console? (y/n; default=y)"
+send "y\r"
+sleep 10
+}
+
+
+
+stop() {
+    echo -n "Stopping OSEE App Server: "
+
+	 osee_app_server_shutdown;
+
+    pid=`pid_of_osee_app_server`
+    [ -n "$pid" ] && kill $pid
+    RETVAL=$?
+    cnt=10
+    while [ $RETVAL = 0 -a $cnt -gt 0 ] &&
+          { pid_of_osee_app_server > /dev/null ; } ; do
+        sleep 1
+        ((cnt--))
+    done
+
+    [ $RETVAL = 0 ] && rm -f "$LOCK"
+    [ $RETVAL = 0 ] && success $"$STRING" || failure $"$STRING"
+    echo
+}
+
+status() {
+    pid=`pid_of_osee_app_server`
+    if [ -n "$pid" ]; then
+        echo "hudson (pid $pid) is running..."
+        return 0
+    fi
+    if [ -f "$LOCK" ]; then
+        echo $"${base} dead but subsys locked"
+        return 2
+    fi
+    echo "OSEE App Server is stopped"
+    return 3
+}
+
+# See how we were called.
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    status
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|restart|status}"
+    exit 1
+esac
+
+exit $RETVAL

@@ -1,0 +1,93 @@
+<project name="Generates OSEE Application Server Launch Script" default="noDefault">
+
+	<!-- Dummy Default -->
+	<target name="noDefault">
+		<echo message="You must specify a target when invoking this file" />
+	</target>
+
+	<property name="pluginsFolder" value="${eclipse.home}/plugins" />
+	<property name="tempAppServerFolder" value="${ant.file}/../.." />
+	<property name="ant.contrib.home" value="C:\Documents and Settings\b1122182\Desktop" />
+
+
+	<target name="init">
+		<taskdef resource="net/sf/antcontrib/antlib.xml">
+			<classpath>
+				<pathelement path="${classpath}" />
+				<pathelement location="${ant.contrib.home}/ant-contrib.jar" />
+			</classpath>
+		</taskdef>
+
+		<loadfile property="prelaunchScript" encoding="utf-8" failonerror="true" srcfile="pre_server_launch_template.txt" />
+		<loadfile property="postlaunchScript" encoding="utf-8" failonerror="true" srcfile="post_server_launch_template.txt" />
+
+		<pathconvert property="launcherBundlePath" setonempty="false">
+			<path>
+				<fileset dir="${pluginsFolder}">
+					<include name="org.eclipse.equinox.launcher_*.jar" />
+				</fileset>
+			</path>
+		</pathconvert>
+		<propertyregex property="launcherJar" override="true" input="${launcherBundlePath}" regexp="[^/]+$" select="\0" casesensitive="false" />
+	</target>
+
+	<target name="generateTemplate" depends="init">
+		<generate.launch connection.id="[id from connection file]" extraargs="-Dosee.connection.info.uri=[custom connection file path] -Dosee.application.server.data=[binary data path]" filepath="${tempAppServerFolder}/runExample.sh" isexecutable="false" launcher="${launcherJar}" serverport="8089" servertelnetport="8090" />
+	</target>
+
+	<target name="generateDerbyLaunch" depends="init">
+		<generate.launch connection.id="derby" extraargs="-Dosee.derby.server=127.0.0.1:1621" filepath="${tempAppServerFolder}/runDerby.sh" launcher="${launcherJar}" serverport="8089" servertelnetport="8090" />
+	</target>
+
+	<target name="generateLocalPostgresLaunch" depends="init">
+		<generate.launch connection.id="postgresqlLocalhost" filepath="${tempAppServerFolder}/runPostgresqlLocal.sh" launcher="${launcherJar}" serverport="8089" servertelnetport="8090" />
+	</target>
+
+	<target name="generateAll" depends="init,generateLocalPostgresLaunch,generateDerbyLaunch,generateTemplate">
+	</target>
+
+	<target name="generateLaunch" depends="init">
+		<echo id="serverHomeSetup">
+## Installation location
+INSTALL_LOCATION=/lba_ws/osee_common/osee_installs/
+OSEE_APP_SERVER_VERSION=@LAST_LBA_OSEE_SERVER_RELEASE
+OSEE_APP_SERVER_HOME=$INSTALL_LOCATION/$OSEE_APP_SERVER_VERSION			
+</echo>
+
+		<generate.launch connection.id="" extraargs="-Dosee.application.server.data=&quot;/lba_oseex/osee_server_data/datastore_lba8_fs&quot;" filepath="${tempAppServerFolder}/runProduction.sh" launcher="${launcherJar}" serverport="8015" servertelnetport="8016" extrascript="${serverHomeSetup}" />
+	</target>
+
+	<macrodef name="generate.launch">
+		<attribute name="filePath" />
+		<attribute name="launcher" />
+		<attribute name="serverPort" />
+		<attribute name="serverTelnetPort" />
+		<attribute name="serverMaxMem" default="1024m" />
+		<attribute name="connection.id" />
+		<attribute name="extraArgs" default=" " />
+		<attribute name="isExecutable" default="true" />
+		<attribute name="extraScript" default=" " />
+		<sequential>
+			<echo file="@{filePath}" append="false" message="${prelaunchScript}" />
+			<echo file="@{filePath}" append="true">
+#######################################################################
+## Custom Config				
+EQUINOX_LAUNCHER=@{launcher}
+OSEE_DATABASE_CONNECTION_ID=@{connection.id}
+OSGI_TELNET_PORT=@{serverTelnetPort}
+OSEE_SERVER_MAX_MEMORY=@{serverMaxMem}
+OSEE_APP_SERVER_PORT=@{serverPort}
+OSEE_APP_SERVER_EXTRA_VMARGS=@{extraArgs}			
+@{extraScript}	
+######################################################################
+			</echo>
+			<echo file="@{filePath}" append="true" message="${postlaunchScript}" />
+			<if>
+				<equals arg1="isExecutable" arg2="true" />
+				<then>
+					<chmod file="@{filePath}" perm="ugo+rx" />
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+</project>

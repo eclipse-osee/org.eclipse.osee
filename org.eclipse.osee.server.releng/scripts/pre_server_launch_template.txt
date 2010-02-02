@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Startup script for OSEE Application Server
+#
+# description: OSEE Application server
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+[ -z "$JAVA_HOME" -a -x /etc/profile.d/java.sh ] && . /etc/profile.d/java.sh
+
+OS_NAME=`uname -s`
+OS_MACHINE=`uname -n`
