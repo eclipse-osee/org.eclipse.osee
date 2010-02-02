@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
@@ -48,12 +49,8 @@ class ServerStats extends BaseServerCommand {
       buffer.append(String.format("Binary Data Path: [%s]\n", OseeServerProperties.getOseeApplicationServerData()));
       buffer.append(String.format("Supported Versions: %s\n", Arrays.deepToString(manager.getSupportedVersions())));
       buffer.append(String.format("Accepting Requests: [%s]\n", manager.isAcceptingRequests()));
-
-      long freeMem = Runtime.getRuntime().freeMemory();
-      long maxMem = Runtime.getRuntime().maxMemory();
-      buffer.append(String.format("Memory: Max[%s] Free[%s] Used[%s]\n\n", maxMem, freeMem, maxMem - freeMem));
-
-      buffer.append(String.format("Server State: [%s]\n", manager.isSystemIdle() ? "IDLE" : "BUSY"));
+      buffer.append(Lib.getMemoryInfo());
+      buffer.append(String.format("\nServer State: [%s]\n", manager.isSystemIdle() ? "IDLE" : "BUSY"));
       buffer.append(String.format("Active Threads: [%s]\n", manager.getNumberOfActiveThreads()));
 
       IJobManager jobManager = Job.getJobManager();
@@ -74,7 +71,9 @@ class ServerStats extends BaseServerCommand {
             }
          }
       }
+
       buffer.append("\n");
       println(buffer.toString());
    }
+
 }

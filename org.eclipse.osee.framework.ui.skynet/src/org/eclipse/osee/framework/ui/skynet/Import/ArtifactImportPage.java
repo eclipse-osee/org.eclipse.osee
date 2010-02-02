@@ -443,7 +443,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             }
          }
       }
-
    }
 
    protected boolean executeOperation(final IOperation operation) {
@@ -452,7 +451,15 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
             @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-               Operations.executeWork(operation, monitor, -1);
+               try {
+                  Operations.executeWorkAndCheckStatus(operation, monitor, -1);
+               } catch (OseeCoreException ex) {
+                  if (monitor.isCanceled()) {
+                     throw new InterruptedException();
+                  } else {
+                     throw new InvocationTargetException(ex);
+                  }
+               }
             }
          });
       } catch (InterruptedException e) {
@@ -466,12 +473,10 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       if (status.isOK()) {
          setErrorMessage(null);
       } else {
-         setErrorMessage(status.getChildren()[0].getMessage());
+         setErrorMessage(status.getMessage());
       }
-
       return true;
    }
-
    private static final class SelectionLatch {
       protected final SelectionData lastSelected;
       protected final SelectionData currentSelected;
