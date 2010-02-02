@@ -208,10 +208,6 @@ public class ResourceToTraceUnit {
          return traceUnitToTraceMarks.isEmpty();
       }
 
-      public void reset() {
-         this.traceUnitToTraceMarks.clear();
-      }
-
       public Set<String> getTraceUnitTypes() {
          return traceUnitToTraceMarks.keySet();
       }

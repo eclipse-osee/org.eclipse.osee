@@ -12,7 +12,6 @@ package org.eclipse.osee.define;
 
 import org.eclipse.osee.define.navigate.DefineNavigateView;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
-import org.eclipse.osee.framework.ui.skynet.queryLog.QueryLogView;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
@@ -33,7 +32,6 @@ public class DefinePerspectiveFactory implements IPerspectiveFactory {
 
       layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
       layout.addShowViewShortcut(BranchView.VIEW_ID);
-      layout.addShowViewShortcut(QueryLogView.VIEW_ID);
       layout.addShowViewShortcut(QuickSearchView.VIEW_ID);
       layout.addShowViewShortcut(DefineNavigateView.VIEW_ID);
       layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");

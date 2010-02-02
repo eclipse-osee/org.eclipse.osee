@@ -373,7 +373,9 @@ public class TraceReportBlam extends AbstractBlam {
    }
 
    private enum OutputType {
-      ResultsEditor, Excel, Both;
+      ResultsEditor,
+      Excel,
+      Both;
 
       public static OutputType asType(boolean isExcel, boolean isEditor) {
          if (isExcel && isEditor) {
@@ -389,9 +391,15 @@ public class TraceReportBlam extends AbstractBlam {
 
    private enum TraceTypeEnum {
       Code_Unit_Trace(CoreRelationTypes.CodeRequirement_Requirement, CoreRelationTypes.CodeRequirement_CodeUnit, false),
-      Verified_By_Test_Unit_Trace(CoreRelationTypes.Verification__Requirement, CoreRelationTypes.Verification__Verifier, true),
+      Verified_By_Test_Unit_Trace(
+            CoreRelationTypes.Verification__Requirement,
+            CoreRelationTypes.Verification__Verifier,
+            true),
       Used_By_Test_Unit_Trace(CoreRelationTypes.Uses__Requirement, CoreRelationTypes.Uses__TestUnit, true),
-      Validation_By_TestProcedure(CoreRelationTypes.Validation__Requirement, CoreRelationTypes.Validation__Validator, true);
+      Validation_By_TestProcedure(
+            CoreRelationTypes.Validation__Requirement,
+            CoreRelationTypes.Validation__Validator,
+            true);
 
       private IRelationEnumeration toReq;
       private IRelationEnumeration toTraceUnit;
@@ -417,16 +425,6 @@ public class TraceReportBlam extends AbstractBlam {
 
       public String asLabel() {
          return name().replaceAll("_", " ");
-      }
-
-      public static TraceTypeEnum fromLabel(String label) {
-         label = label.replaceAll(" ", "_");
-         for (TraceTypeEnum traceType : TraceTypeEnum.values()) {
-            if (traceType.name().equalsIgnoreCase(label)) {
-               return traceType;
-            }
-         }
-         return null;
       }
 
       public boolean isIn(Collection<TraceTypeEnum> traceTypes) {

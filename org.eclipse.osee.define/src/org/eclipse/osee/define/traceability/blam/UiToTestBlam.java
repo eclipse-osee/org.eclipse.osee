@@ -224,7 +224,7 @@ public class UiToTestBlam extends AbstractBlam {
       return toReturn;
    }
 
-   private enum Column {
+   private static enum Column {
       UI_Title,
       Requirement_Type,
       Relates_To_Test_Unit,
@@ -233,10 +233,6 @@ public class UiToTestBlam extends AbstractBlam {
       Verified_By,
       Validated_By,
       Used_By;
-
-      public String asLabel() {
-         return this.name().replaceAll("_", " ");
-      }
    }
 
 }

@@ -22,9 +22,7 @@ import java.util.logging.Level;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -65,23 +63,6 @@ public class UriResourceContentFinder {
             locatorMap.removeValues(locator);
          }
       }
-   }
-
-   private int getTotalWork(IFileStore fileStore) throws CoreException {
-      int totalWork = 0;
-      if (fileStore.fetchInfo().isDirectory()) {
-         IFileStore[] stores = fileStore.childStores(EFS.NONE, new NullProgressMonitor());
-         if (isRecursionAllowed) {
-            for (IFileStore store : stores) {
-               totalWork += getTotalWork(store);
-            }
-         } else {
-            totalWork = stores.length;
-         }
-      } else {
-         totalWork = 1;
-      }
-      return totalWork;
    }
 
    public void execute(IProgressMonitor monitor) throws OseeCoreException {
