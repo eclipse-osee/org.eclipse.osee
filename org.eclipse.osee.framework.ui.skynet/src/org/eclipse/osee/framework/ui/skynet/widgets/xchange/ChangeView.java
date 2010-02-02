@@ -21,6 +21,9 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.nebula.widgets.xviewer.action.TableCustomizationAction;
+import org.eclipse.nebula.widgets.xviewer.action.ViewSelectedCellDataAction;
+import org.eclipse.nebula.widgets.xviewer.action.ViewTableReportAction;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -149,9 +152,18 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
          public void menuAboutToShow(IMenuManager manager) {
             MenuManager menuManager = (MenuManager) manager;
             menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+
          }
       });
-
+      menuManager.addMenuListener(new IMenuListener() {
+         @Override
+         public void menuAboutToShow(IMenuManager menuManager) {
+            menuManager.add(new Separator());
+            menuManager.add(new TableCustomizationAction(xChangeWidget.getXViewer()));
+            menuManager.add(new ViewTableReportAction(xChangeWidget.getXViewer()));
+            menuManager.add(new ViewSelectedCellDataAction(xChangeWidget.getXViewer()));
+         }
+      });
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
       xChangeWidget.getXViewer().getTree().setMenu(menuManager.createContextMenu(xChangeWidget.getXViewer().getTree()));
       getSite().registerContextMenu(VIEW_ID, menuManager, xChangeWidget.getXViewer());

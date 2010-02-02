@@ -14,6 +14,7 @@ import org.eclipse.osee.coverage.navigate.CoverageNavigateView;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
@@ -35,6 +36,7 @@ public class CoveragePerspectiveFactory implements IPerspectiveFactory {
       // Add views to Window -> Show View
       layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
       layout.addShowViewShortcut(QuickSearchView.VIEW_ID);
+      layout.addShowViewShortcut(BranchView.VIEW_ID);
       layout.addShowViewShortcut(CoverageNavigateView.VIEW_ID);
       layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");
 

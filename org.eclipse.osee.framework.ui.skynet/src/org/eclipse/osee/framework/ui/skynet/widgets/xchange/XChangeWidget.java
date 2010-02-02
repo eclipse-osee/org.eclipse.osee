@@ -21,7 +21,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.nebula.widgets.xviewer.action.TableCustomizationAction;
+import org.eclipse.nebula.widgets.xviewer.action.ViewSelectedCellDataAction;
+import org.eclipse.nebula.widgets.xviewer.action.ViewTableReportAction;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -124,6 +128,10 @@ public class XChangeWidget extends XWidget implements IActionable {
       if (toolkit != null) {
          toolkit.adapt(xChangeViewer.getStatusLabel(), false, false);
       }
+      getXViewer().getMenuManager().add(new Separator());
+      getXViewer().getMenuManager().add(new TableCustomizationAction(getXViewer()));
+      getXViewer().getMenuManager().add(new ViewTableReportAction(getXViewer()));
+      getXViewer().getMenuManager().add(new ViewSelectedCellDataAction(getXViewer()));
 
       Tree tree = xChangeViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH);
