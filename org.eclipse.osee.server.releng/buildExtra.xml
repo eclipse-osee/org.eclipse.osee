@@ -46,7 +46,8 @@
 		<property name="configFolder" value="${tempAppServerFolder}/configuration" />
 		<property name="pluginsFolder" value="${tempAppServerFolder}/plugins" />
 		<antcall target="generateConfigIni" inheritall="true" />
-		<ant antfile="/scripts/createServerLaunch.xml" target="generateAll" inheritall="true" />
+		
+		<ant antfile="${relengBuilderDir}/scripts/createServerLaunch.xml" target="generateAll" inheritall="true" />
 
 		<propertyregex property="serverRuntimeFile" input="${updateSiteFile}" defaultvalue="server-runtime.zip" regexp="-Update-" replace="-Application-Server-" casesensitive="false" override="true" />
 

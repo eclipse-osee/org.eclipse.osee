@@ -18,8 +18,12 @@ start() {
     [ -e "$LOG" ] && cnt=`wc -l "$LOG" | awk '{ print $1 }'` || cnt=1
 
     echo -n $"Starting OSEE App Server: "
-
+	 if [[ ! -d $OSEE_APP_SERVER_HOME ]]; then 
+	 	OSEE_APP_SERVER_HOME=`pwd`;
+	 fi
     cd "$OSEE_APP_SERVER_HOME"
+    
+    echo -n $"OSEE App Server Home: [$OSEE_APP_SERVER_HOME]"
     
     nohup java -Xms40m -Xmx$OSEE_SERVER_MAX_MEMORY -Dosee.db.connection.id="$OSEE_DATABASE_CONNECTION_ID" -Dorg.osgi.service.http.port="$OSEE_APP_SERVER_PORT" "$OSEE_APP_SERVER_EXTRA_VMARGS" -jar $EQUINOX_LAUNCHER -console $OSGI_TELNET_PORT -consoleLog >> "$LOG" 2>&1 &
     

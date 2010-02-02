@@ -7,7 +7,7 @@
 
 	<property name="pluginsFolder" value="${eclipse.home}/plugins" />
 	<property name="tempAppServerFolder" value="${ant.file}/../.." />
-	<property name="ant.contrib.home" value="C:\Documents and Settings\b1122182\Desktop" />
+	<property name="ant.contrib.home" value="/tmp/build/3rdPartyJars/" />
 
 
 	<target name="init">
