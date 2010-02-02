@@ -540,10 +540,8 @@ public class XViewer extends TreeViewer {
    }
 
    /**
-    * Mouse clicks can happend in table via XViewerMouseListener or in menu area via XViewerMenuDetectListener. Both are
+    * Mouse clicks can happen in table via XViewerMouseListener or in menu area via XViewerMenuDetectListener. Both are
     * processed here to use in UI
-    * 
-    * @param point
     */
    public void processRightClickMouseEvent(Point point) {
       rightClickSelectedColumn = null;
