@@ -363,6 +363,29 @@ public class XViewer extends TreeViewer {
       return cnt;
    }
 
+   public int getVisibleItemCount() {
+      TreeItem[] items = getTree().getItems();
+      int cnt = items.length;
+      for (TreeItem item : items)
+         if (item.getExpanded()) cnt += getVisibleItemCount(item.getItems());
+      return cnt;
+   }
+
+   public List<TreeItem> getVisibleItems() {
+      List<TreeItem> toReturn = new ArrayList<TreeItem>();
+      getVisibleItems(toReturn, getTree().getItems());
+      return toReturn;
+   }
+
+   private void getVisibleItems(List<TreeItem> toReturn, TreeItem items[]) {
+      for (TreeItem item : items) {
+         toReturn.add(item);
+         if (item.getExpanded()) {
+            getVisibleItems(toReturn, item.getItems());
+         }
+      }
+   }
+
    @Override
    public void refresh() {
       if (getTree() == null || getTree().isDisposed()) return;

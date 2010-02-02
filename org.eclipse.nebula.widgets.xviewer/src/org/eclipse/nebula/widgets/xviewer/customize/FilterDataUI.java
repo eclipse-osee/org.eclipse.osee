@@ -90,6 +90,12 @@ public class FilterDataUI {
    public void dispose() {
    }
 
+   public void addFilterTextListener(KeyListener keyListener) {
+      if (filterText != null && !filterText.isDisposed()) {
+         filterText.addKeyListener(keyListener);
+      }
+   }
+
    public void clear() {
       filterText.setText("");
       xViewer.getCustomizeMgr().setFilterText("");

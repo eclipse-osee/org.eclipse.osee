@@ -14,12 +14,15 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptions;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -29,6 +32,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
@@ -65,6 +69,23 @@ public class BranchSelectionDialog extends MessageDialog {
       branchWidget.createWidgets(container, 1);
       branchWidget.setBranchOptions(BranchOptions.FAVORITES_FIRST, BranchOptions.FLAT);
       branchWidget.setShowWorkingBranchesOnly(allowOnlyWorkingBranches);
+      branchWidget.getXViewer().getFilterDataUI().addFilterTextListener(new KeyListener() {
+
+         @Override
+         public void keyReleased(KeyEvent e) {
+            Collection<TreeItem> visibleItems = branchWidget.getXViewer().getVisibleItems();
+            if (visibleItems.size() == 1) {
+               branchWidget.getXViewer().setSelection(
+                     new StructuredSelection(new Object[] {visibleItems.iterator().next().getData()}));
+               getButton(IDialogConstants.OK_ID).setEnabled(true);
+               storeSelectedBranch();
+            }
+         }
+
+         @Override
+         public void keyPressed(KeyEvent e) {
+         }
+      });
       if (branches != null) {
          branchWidget.loadData(branches);
       } else {
