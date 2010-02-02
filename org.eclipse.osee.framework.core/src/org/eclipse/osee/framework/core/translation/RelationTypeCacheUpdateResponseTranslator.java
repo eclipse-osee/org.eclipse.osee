@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class RelationTypeCacheUpdateResponseTranslator implements ITranslator<RelationTypeCacheUpdateResponse> {
 
-   private enum Fields {
+   private static enum Fields {
       COUNT,
       ROW
    }

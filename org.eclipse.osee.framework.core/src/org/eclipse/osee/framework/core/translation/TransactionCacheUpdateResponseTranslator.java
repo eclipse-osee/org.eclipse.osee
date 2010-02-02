@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class TransactionCacheUpdateResponseTranslator implements ITranslator<TransactionCacheUpdateResponse> {
 
-   private enum Fields {
+   private static enum Fields {
       TX_COUNT,
       TX_ROW,
       TX_TO_BRANCH;

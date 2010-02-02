@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class BranchCommitResponseTranslator implements ITranslator<BranchCommitResponse> {
 
-   private enum Entry {
+   private static enum Entry {
       TRANSACTION_NUMBER
    }
 

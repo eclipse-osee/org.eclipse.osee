@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class OseeImportModelResponseTranslator implements ITranslator<OseeImportModelResponse> {
 
-   private enum Fields {
+   private static enum Fields {
       WAS_PERSISTED,
       EMF_COMPARE_REPORT,
       EMF_COMPARE_NAME,

@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.type.Triplet;
  */
 public class ArtifactTypeCacheUpdateResponseTranslator implements ITranslator<ArtifactTypeCacheUpdateResponse> {
 
-   private enum Fields {
+   private static enum Fields {
       ITEM_COUNT,
       ITEM_ROW,
       BASE_TO_SUPER_TYPES,

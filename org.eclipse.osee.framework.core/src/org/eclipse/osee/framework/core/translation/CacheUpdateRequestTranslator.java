@@ -24,8 +24,9 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class CacheUpdateRequestTranslator implements ITranslator<CacheUpdateRequest> {
 
-   private enum Entry {
-      CACHE_ID, ITEM_IDS;
+   private static enum Entry {
+      CACHE_ID,
+      ITEM_IDS;
    }
 
    @Override
@@ -53,7 +54,7 @@ public class CacheUpdateRequestTranslator implements ITranslator<CacheUpdateRequ
          String[] itemStr = new String[itemIds.size()];
          int index = 0;
          for (Integer item : itemIds) {
-            itemStr[index++] = (String.valueOf(item));
+            itemStr[index++] = String.valueOf(item);
          }
          store.put(Entry.ITEM_IDS.name(), itemStr);
       }

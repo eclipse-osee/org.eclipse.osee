@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public final class BranchCommitRequestTranslator implements ITranslator<BranchCommitRequest> {
 
-   private enum Entry {
+   private static enum Entry {
       USER_ART_ID,
       SRC_BRANCH_ID,
       DEST_BRANCH_ID,

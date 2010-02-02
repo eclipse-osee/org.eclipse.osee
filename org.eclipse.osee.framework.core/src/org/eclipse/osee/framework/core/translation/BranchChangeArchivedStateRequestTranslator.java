@@ -20,8 +20,9 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public final class BranchChangeArchivedStateRequestTranslator implements ITranslator<ChangeBranchArchiveStateRequest> {
 
-   private enum Entry {
-      BRANCH_ID, BRANCH_ARCHIVED_STATE,
+   private static enum Entry {
+      BRANCH_ID,
+      BRANCH_ARCHIVED_STATE,
    }
 
    public ChangeBranchArchiveStateRequest convert(PropertyStore propertyStore) throws OseeCoreException {

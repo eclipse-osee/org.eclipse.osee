@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  * @author Jeff C. Phillips
  */
 public class ChangeVersionTranslator implements ITranslator<ChangeVersion> {
-   private enum Entry {
+   private static enum Entry {
       GAMMA_ID,
       MOD_TYPE,
       VALUE,
@@ -34,13 +34,14 @@ public class ChangeVersionTranslator implements ITranslator<ChangeVersion> {
    @Override
    public ChangeVersion convert(PropertyStore propertyStore) throws OseeCoreException {
       ChangeVersion changeVersion = new ChangeVersion();
-      
-      if(!propertyStore.get(Entry.IS_VALID.name()).isEmpty()){
+
+      if (!propertyStore.get(Entry.IS_VALID.name()).isEmpty()) {
          String value = propertyStore.get(Entry.VALUE.name());
-         ModificationType modificationType = ModificationType.getMod(Integer.parseInt(propertyStore.get(Entry.MOD_TYPE.name())));
+         ModificationType modificationType =
+               ModificationType.getMod(Integer.parseInt(propertyStore.get(Entry.MOD_TYPE.name())));
          Long gammaId = Long.parseLong(propertyStore.get(Entry.GAMMA_ID.name()));
          Integer transactionNumber = Integer.parseInt(propertyStore.get(Entry.TRANSACTION_NUMBER.name()));
-         
+
          changeVersion.setGammaId(gammaId);
          changeVersion.setModType(modificationType);
          changeVersion.setTransactionNumber(transactionNumber);
@@ -52,8 +53,8 @@ public class ChangeVersionTranslator implements ITranslator<ChangeVersion> {
    @Override
    public PropertyStore convert(ChangeVersion changeVersion) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
-      
-      if(changeVersion.isValid()){
+
+      if (changeVersion.isValid()) {
          store.put(Entry.IS_VALID.name(), "IS_VALID");
          store.put(Entry.GAMMA_ID.name(), changeVersion.getGammaId());
          store.put(Entry.MOD_TYPE.name(), changeVersion.getModType().getValue());

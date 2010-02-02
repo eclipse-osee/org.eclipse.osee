@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class TableDataTranslator implements ITranslator<TableData> {
 
-   private enum Entry {
+   private static enum Entry {
       TABLE,
       TITLE,
       HEADERS,

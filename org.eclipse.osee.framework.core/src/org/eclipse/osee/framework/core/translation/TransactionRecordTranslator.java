@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public final class TransactionRecordTranslator implements ITranslator<TransactionRecord> {
 
-   private enum Entry {
+   private static enum Entry {
       TRANSACTION_ID,
       TRANSACTION_BRANCH,
       TRANSACTION_TX_TYPE,

@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class BranchCreationResponseTranslator implements ITranslator<BranchCreationResponse> {
 
-   private enum Fields {
+   private static enum Fields {
       BRANCH_ID;
    }
 

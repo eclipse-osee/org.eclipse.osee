@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class OseeImportModelRequestTranslator implements ITranslator<OseeImportModelRequest> {
 
-   private enum Fields {
+   private static enum Fields {
       PERSIST,
       GENERATE_EMF_COMPARE,
       GENERATE_DIRTY_REPORT,

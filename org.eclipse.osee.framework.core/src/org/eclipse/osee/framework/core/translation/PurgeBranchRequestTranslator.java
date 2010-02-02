@@ -19,21 +19,21 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  * @author Jeff C. Phillips
  */
 public class PurgeBranchRequestTranslator implements ITranslator<PurgeBranchRequest> {
-   private enum Entry {
+   private static enum Entry {
       BRANCH_ID
-  }
+   }
 
-  @Override
-  public PurgeBranchRequest convert(PropertyStore propertyStore) throws OseeCoreException {
+   @Override
+   public PurgeBranchRequest convert(PropertyStore propertyStore) throws OseeCoreException {
       int branchId = propertyStore.getInt(Entry.BRANCH_ID.name());
       PurgeBranchRequest request = new PurgeBranchRequest(branchId);
       return request;
-  }
+   }
 
-  @Override
-  public PropertyStore convert(PurgeBranchRequest data) throws OseeCoreException {
+   @Override
+   public PropertyStore convert(PurgeBranchRequest data) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       store.put(Entry.BRANCH_ID.name(), data.getBranchId());
       return store;
-  }
+   }
 }

@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<AttributeTypeCacheUpdateResponse> {
 
-   private enum Fields {
+   private static enum Fields {
       ROW_COUNT,
       ROW,
       ATTR_TO_ENUM;

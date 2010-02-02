@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class BranchCacheStoreRequestTranslator implements ITranslator<BranchCacheStoreRequest> {
 
-   private enum Field {
+   private static enum Field {
       IS_SERVER_MESSAGE;
    }
 

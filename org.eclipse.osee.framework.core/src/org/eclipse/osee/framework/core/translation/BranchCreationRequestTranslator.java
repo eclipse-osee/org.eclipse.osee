@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class BranchCreationRequestTranslator implements ITranslator<BranchCreationRequest> {
 
-   private enum Fields {
+   private static enum Fields {
       BRANCH_NAME,
       PARENT_BRANCH_ID,
       ASSOCIATED_ART_ID,

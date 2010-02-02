@@ -20,8 +20,9 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public final class BranchChangeTypeRequestTranslator implements ITranslator<ChangeBranchTypeRequest> {
 
-   private enum Entry {
-      BRANCH_ID, BRANCH_TYPE,
+   private static enum Entry {
+      BRANCH_ID,
+      BRANCH_TYPE,
    }
 
    public ChangeBranchTypeRequest convert(PropertyStore propertyStore) throws OseeCoreException {
