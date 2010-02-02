@@ -190,7 +190,7 @@ public final class UserManager {
          try {
             user = (User) ArtifactQuery.getArtifactFromAttribute("User Id", userId, BranchManager.getCommonBranch());
          } catch (ArtifactDoesNotExist ex) {
-            throw new UserNotInDatabase("the user with id " + userId + " was not found.");
+            throw new UserNotInDatabase(String.format("The user with id [%s] was not found.", userId));
          }
       }
       return user;
