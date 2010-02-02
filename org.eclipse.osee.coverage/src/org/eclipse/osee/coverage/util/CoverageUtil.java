@@ -162,7 +162,11 @@ public class CoverageUtil {
    public static void getFullPathRecurse(ICoverage coverage, StringBuffer sb) {
       if (coverage == null) return;
       getFullPathRecurse(coverage.getParent(), sb);
-      sb.append("[" + coverage.getName() + "]");
+      if (coverage instanceof CoverageImport) {
+         sb.append("[Import]");
+      } else {
+         sb.append("[" + coverage.getName() + "]");
+      }
    }
 
    public static void printCoverageItemDiffs(CoveragePackageBase coveragePackage, CoveragePackageBase coverageImport) throws OseeStateException {
