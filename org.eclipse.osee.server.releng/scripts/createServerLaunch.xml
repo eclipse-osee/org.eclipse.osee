@@ -46,17 +46,6 @@
 	<target name="generateAll" depends="init,generateLocalPostgresLaunch,generateDerbyLaunch,generateTemplate">
 	</target>
 
-	<target name="generateLaunch" depends="init">
-		<echo id="serverHomeSetup">
-## Installation location
-INSTALL_LOCATION=/lba_ws/osee_common/osee_installs/
-OSEE_APP_SERVER_VERSION=@LAST_LBA_OSEE_SERVER_RELEASE
-OSEE_APP_SERVER_HOME=$INSTALL_LOCATION/$OSEE_APP_SERVER_VERSION			
-</echo>
-
-		<generate.launch connection.id="" extraargs="-Dosee.application.server.data=&quot;/lba_oseex/osee_server_data/datastore_lba8_fs&quot;" filepath="${tempAppServerFolder}/runProduction.sh" launcher="${launcherJar}" serverport="8015" servertelnetport="8016" extrascript="${serverHomeSetup}" />
-	</target>
-
 	<macrodef name="generate.launch">
 		<attribute name="filePath" />
 		<attribute name="launcher" />
