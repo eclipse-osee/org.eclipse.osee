@@ -21,13 +21,11 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.database.internal.InternalActivator;
-import org.eclipse.osee.framework.database.sql.QueryRecord;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -78,7 +76,6 @@ public final class OseeStatementImpl implements IOseeStatement {
     */
    @Override
    public void runPreparedQuery(int fetchSize, String query, Object... data) throws OseeDataStoreException {
-      QueryRecord record = new QueryRecord(query, data);
 
       try {
          allowReuse();
@@ -86,11 +83,8 @@ public final class OseeStatementImpl implements IOseeStatement {
          preparedStatement.setFetchSize(Math.min(fetchSize, 10000));
          StatementUtil.populateValuesForPreparedStatement(preparedStatement, data);
 
-         record.markStart();
          rSet = preparedStatement.executeQuery();
-         record.markEnd();
       } catch (SQLException ex) {
-         record.setSqlException(ex);
          throw new OseeDataStoreException(ex);
       }
    }
@@ -105,7 +99,6 @@ public final class OseeStatementImpl implements IOseeStatement {
     */
    @Override
    public void runCallableStatement(String query, Object... data) throws OseeDataStoreException {
-      QueryRecord record = new QueryRecord(query, data);
 
       try {
          allowReuse();
@@ -117,14 +110,10 @@ public final class OseeStatementImpl implements IOseeStatement {
             }
          }
          StatementUtil.populateValuesForPreparedStatement(callableStatement, data);
-
-         record.markStart();
          if (callableStatement.execute()) {
             rSet = callableStatement.getResultSet();
          }
-         record.markEnd();
       } catch (SQLException ex) {
-         record.setSqlException(ex);
          throw new OseeDataStoreException(ex);
       }
    }
@@ -172,9 +161,9 @@ public final class OseeStatementImpl implements IOseeStatement {
    }
 
    private void closePreviousResources() throws OseeDataStoreException {
-      try{
+      try {
          if (rSet != null) {
-               rSet.close();
+            rSet.close();
          }
          if (preparedStatement != null) {
             preparedStatement.close();
@@ -182,8 +171,7 @@ public final class OseeStatementImpl implements IOseeStatement {
          if (callableStatement != null) {
             callableStatement.close();
          }
-      }
-      catch (SQLException ex) {
+      } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }
    }

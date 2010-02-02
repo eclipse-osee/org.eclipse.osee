@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.database;singleton:=true
 Bundle-Version: 0.9.1.qualifier
 Bundle-Activator: org.eclipse.osee.framework.database.internal.InternalActivator
 Export-Package: org.eclipse.osee.framework.database,
- org.eclipse.osee.framework.database.core,
- org.eclipse.osee.framework.database.sql
+ org.eclipse.osee.framework.database.core
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: org.eclipse.core.runtime,

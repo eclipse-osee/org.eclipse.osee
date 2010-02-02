@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.internal.InternalActivator;
-import org.eclipse.osee.framework.database.sql.QueryRecord;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -97,7 +96,6 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    @Override
    public IOseeStatement getStatement(int resultSetType, int resultSetConcurrency) throws OseeDataStoreException {
       throw new UnsupportedOperationException("This needs to be implemented");
-      //      return null;
    }
 
    @Override
@@ -124,12 +122,10 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
       if (connection == null) {
          return runBatchUpdate(query, dataList);
       }
-      QueryRecord record = new QueryRecord("<batchable: batched> " + query, dataList.size());
       int returnCount = 0;
       PreparedStatement preparedStatement = null;
       try {
          preparedStatement = ((OseeConnectionImpl) connection).prepareStatement(query);
-         record.markStart();
          boolean needExecute = false;
          int count = 0;
          for (Object[] data : dataList) {
@@ -150,9 +146,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
             returnCount += StatementUtil.calculateBatchUpdateResults(updates);
          }
 
-         record.markEnd();
       } catch (SQLException ex) {
-         record.setSqlException(ex);
          SQLException exlist;
          if ((exlist = ex.getNextException()) != null) {
             OseeLog.log(InternalActivator.class, Level.SEVERE, "This is the nested exception", exlist);
