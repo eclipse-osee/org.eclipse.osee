@@ -46,6 +46,10 @@ public class OpenWorkflowByIdAction extends Action {
          MultipleHridSearchItem item = new MultipleHridSearchItem("Open Workflow by Id");
          Collection<Artifact> arts = item.performSearchGetResults(true);
          Artifact artifact = null;
+         // popup already shown via performSearchGetResults
+         if (arts.size() == 0) {
+            return;
+         }
          if (arts.size() == 1) {
             artifact = arts.iterator().next();
          } else {
