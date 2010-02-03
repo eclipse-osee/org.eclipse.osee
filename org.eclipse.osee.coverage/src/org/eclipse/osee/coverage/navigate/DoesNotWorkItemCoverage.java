@@ -22,6 +22,7 @@ import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.SimpleTestUnitProvider;
 import org.eclipse.osee.coverage.store.CoverageAttributes;
 import org.eclipse.osee.coverage.store.DbTestUnitProvider;
+import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -49,7 +50,7 @@ import org.eclipse.swt.widgets.Display;
 public class DoesNotWorkItemCoverage extends XNavigateItemAction {
 
    public DoesNotWorkItemCoverage() {
-      super(null, "Does Not Work - Coverage - fixCoverageInformation ", PluginUiImage.ADMIN);
+      super(null, "Does Not Work - Coverage - fixCoverageItemNames ", PluginUiImage.ADMIN);
    }
 
    @Override
@@ -61,6 +62,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       //      Artifact artifact = ArtifactQuery.getArtifactFromId("AFLY_zvqoHPNSwfetyQA", BranchManager.getBranch(3308));
       //      System.out.println("print got it " + artifact);
       try {
+         fixCoverageItemNames();
          //         fixCoverageInformation();
          //         importTestUnitNamesToDbTables();
       } catch (Exception ex) {
@@ -115,28 +117,32 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       Pattern linePattern = Pattern.compile("^[0-9]+ [0-9]+(.*?)$");
       // BlkII Code Coverage Branch
       Branch branch = BranchManager.getBranchByGuid("QyUb5GYLbDS3AmXKZWgA");
+      Artifact msmCoveragePackageArt = ArtifactQuery.getArtifactFromId("AA6+z8QPbToPZSn9tAgA", branch);
+      OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(msmCoveragePackageArt);
       // Don Coverage Branch
       PropertyStore store = new PropertyStore();
       //      Branch branch = BranchManager.getBranchByGuid("ANPixlmF+BNVrPJIUvQA");
       SkynetTransaction transaction = new SkynetTransaction(branch, "Fix coverage item names");
 
-      boolean persist = false;
+      boolean persist = true;
       for (Artifact artifact : ArtifactQuery.getArtifactListFromType("Coverage Unit", branch)) {
          System.out.println("Processing Item " + artifact);
          for (Attribute<?> attr : artifact.getAttributes(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
             String attrStr = (String) attr.getValue();
             store.load(attrStr);
             CoverageItem item =
-                  new CoverageItem(null, attrStr, CoverageOptionManagerDefault.instance(), new SimpleTestUnitProvider());
+                  new CoverageItem(null, attrStr, packageStore.getCoverageOptionManager(), new SimpleTestUnitProvider());
             String name = store.get("name");
             if (!Strings.isValid(name)) {
                System.err.println(String.format("Invalid name [%s] for item [%s]", name, item));
                continue;
             }
+            System.out.println(String.format("Old [%s]", name));
+
             Matcher m = linePattern.matcher(name);
             if (m.find()) {
-               item.setName(name);
-               System.out.println(String.format("Setting name to %s", name));
+               item.setName(m.group(1));
+               System.out.println(String.format("New [%s]", item.getName()));
                attr.setFromString(item.toXml());
             } else {
                System.err.println(String.format("Error: name [%s] doesn't match", name));

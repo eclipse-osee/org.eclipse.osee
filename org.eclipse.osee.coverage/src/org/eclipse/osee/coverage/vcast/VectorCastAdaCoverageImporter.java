@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.coverage.ICoverageImporter;
 import org.eclipse.osee.coverage.model.CoverageImport;
@@ -37,6 +39,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
 
    private CoverageImport coverageImport;
    private final IVectorCastCoverageImportProvider vectorCastCoverageImportProvider;
+   Pattern sourceLinePattern = Pattern.compile("^[0-9]+ [0-9]+(.*?)$");
 
    public VectorCastAdaCoverageImporter(IVectorCastCoverageImportProvider vectorCastCoverageImportProvider) {
       this.vectorCastCoverageImportProvider = vectorCastCoverageImportProvider;
@@ -116,7 +119,16 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                         Pair<String, Boolean> lineData =
                               vcpSourceLisFile.getExecutionLine(String.valueOf(methodNum),
                                     String.valueOf(lineNumToBranches.getLineNum()));
-                        coverageItem.setName(lineData.getFirst());
+                        String sourceLine = lineData.getFirst();
+                        // Need to get rid of line method num and line num before storing
+                        Matcher m = sourceLinePattern.matcher(sourceLine);
+                        if (m.find()) {
+                           coverageItem.setName(m.group(1));
+                        } else {
+                           coverageImport.getLog().logError(
+                                 String.format("Coverage line doesn't match \"n n <line>\" [%s].  " + sourceLine));
+                           continue;
+                        }
                         if (lineData.getSecond()) {
                            coverageItem.setCoverageMethod(CoverageOptionManager.Exception_Handling);
                         }
