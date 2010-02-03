@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.messaging.future.ConnectionNode;
 import org.eclipse.osee.framework.messaging.future.ConnectionNodeFactory;
@@ -20,11 +21,11 @@ import org.eclipse.osee.framework.messaging.future.NodeInfo;
  */
 public class MessageServiceImpl implements MessageService {
 
-   private final Map<NodeInfo, ConnectionNode> connectionNodes;
+   private final Map<NodeInfo, ConnectionNodeImpl> connectionNodes;
    private final ConnectionNodeFactory factory;
 
    public MessageServiceImpl(ConnectionNodeFactory factory) {
-      this.connectionNodes = new ConcurrentHashMap<NodeInfo, ConnectionNode>();
+      this.connectionNodes = new ConcurrentHashMap<NodeInfo, ConnectionNodeImpl>();
       this.factory = factory;
    }
 
@@ -44,8 +45,15 @@ public class MessageServiceImpl implements MessageService {
       ConnectionNode node = connectionNodes.get(nodeInfo);
       if (node == null) {
          node = factory.create(nodeInfo);
-         connectionNodes.put(nodeInfo, node);
+         connectionNodes.put(nodeInfo, (ConnectionNodeImpl)node);
       }
       return node;
    }
+
+	void stop() {
+		
+		for(ConnectionNodeImpl node:connectionNodes.values()){
+			node.stop();
+		}
+	}
 }

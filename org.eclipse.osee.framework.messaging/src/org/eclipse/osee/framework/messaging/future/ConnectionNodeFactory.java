@@ -13,4 +13,5 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 public interface ConnectionNodeFactory {
 
    ConnectionNode create(NodeInfo nodeInfo) throws OseeCoreException;
+   
 }

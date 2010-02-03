@@ -16,9 +16,10 @@ import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 public interface ConnectionNode {
 
    public void subscribe(MessageID messageId, OseeMessagingListener listener, final OseeMessagingStatusCallback statusCallback);
+   public void unsubscribe(MessageID messageId, OseeMessagingListener listener, final OseeMessagingStatusCallback statusCallback);
 
-   public void subscribeToReply(MessageID messageId, OseeMessagingListener listener);
-   
+   public boolean subscribeToReply(MessageID messageId, OseeMessagingListener listener);
+   public boolean unsubscribteToReply(MessageID messageId, OseeMessagingListener listener);
    public void send(MessageID topic, Object body, final OseeMessagingStatusCallback statusCallback) throws OseeCoreException;
    
    public void sendWithCorrelationId(String topic, Object body, Class<?> clazz, Object correlationId, final OseeMessagingStatusCallback statusCallback) throws OseeCoreException;

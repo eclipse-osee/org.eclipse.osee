@@ -30,21 +30,34 @@ public class RemoteServiceLookupImpl implements RemoteServiceLookup {
 	private ConnectionNode connectionNode;
 	private CompositeKeyHashMap<String, String, Map<String, ServiceHealthPlusTimeout>> map;
 	private CompositeKeyHashMap<String, String, List<ServiceNotification>> callbacks;
+	private HealthServiceListener healthServiceListener;
 
 	public RemoteServiceLookupImpl(ConnectionNode node, ScheduledExecutorService executor) {
 		this.connectionNode = node;
 		map = new CompositeKeyHashMap<String, String, Map<String, ServiceHealthPlusTimeout>>(25, true);
 		callbacks = new CompositeKeyHashMap<String, String, List<ServiceNotification>>(
 				25, true);
-		HealthServiceListener healthServiceListener = new HealthServiceListener(map, callbacks);
-		connectionNode.subscribe(BaseMessages.ServiceHealth,
-				healthServiceListener,
-				new OseeMessagingStatusImpl("Failed to subscribe to " + BaseMessages.ServiceHealth.getName(), 
-						RemoteServiceLookupImpl.class));
+		healthServiceListener = new HealthServiceListener(map, callbacks);
 		connectionNode.subscribeToReply(BaseMessages.ServiceHealthRequest, 
 				healthServiceListener);
 		executor.scheduleAtFixedRate(new MonitorTimedOutServices(map, callbacks), 30, 30, TimeUnit.SECONDS);
 	}
+	
+	public void start(){
+		connectionNode.subscribe(BaseMessages.ServiceHealth,
+				healthServiceListener,
+				new OseeMessagingStatusImpl("Failed to subscribe to " + BaseMessages.ServiceHealth.getName(), 
+						RemoteServiceLookupImpl.class));
+		
+	}
+	
+	public void stop(){
+		connectionNode.unsubscribe(BaseMessages.ServiceHealth,
+				healthServiceListener,
+				new OseeMessagingStatusImpl("Failed to subscribe to " + BaseMessages.ServiceHealth.getName(), 
+						RemoteServiceLookupImpl.class));
+	}
+	
 
 	@Override
 	public void register(String serviceName, String serviceVersion,

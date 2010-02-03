@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.messaging.future.MessageServiceProvider;
  */
 public class MessageServiceProviderImpl implements MessageServiceProvider {
 
-	private MessageService messageService;
+	private MessageServiceImpl messageService;
 	private CamelContext camelContext;
 	private ExecutorService executor;
 
@@ -37,6 +37,7 @@ public class MessageServiceProviderImpl implements MessageServiceProvider {
 	}
 
 	public void stop() throws Exception {
+		messageService.stop();
 		camelContext.stop();
 	}
 

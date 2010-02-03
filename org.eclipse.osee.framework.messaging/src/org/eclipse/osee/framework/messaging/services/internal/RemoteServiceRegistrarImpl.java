@@ -27,14 +27,26 @@ public class RemoteServiceRegistrarImpl implements RemoteServiceRegistrar {
 	private ConcurrentHashMap<String, ScheduledFuture<?>> map;
 	private CompositeKeyHashMap<String, String, UpdateStatus> mapForReplys;
 	private ScheduledExecutorService executor;
+	private HealthRequestListener healthRequestListener;
 	
 	public RemoteServiceRegistrarImpl(ConnectionNode node, ScheduledExecutorService executor) {
 		this.connectionNode = node;
 		this.executor = executor;
 		map = new ConcurrentHashMap<String, ScheduledFuture<?>>();
 		mapForReplys = new CompositeKeyHashMap<String, String, UpdateStatus>(8,	true);
+		healthRequestListener = new HealthRequestListener(mapForReplys);
+	}
+	
+	public void start(){
 		connectionNode.subscribe(BaseMessages.ServiceHealthRequest,
-				new HealthRequestListener(mapForReplys),
+				healthRequestListener,
+				new OseeMessagingStatusImpl("Failed to subscribe to " + BaseMessages.ServiceHealthRequest.getName(),
+						RemoteServiceRegistrarImpl.class));	
+	}
+	
+	public void stop(){
+		connectionNode.subscribe(BaseMessages.ServiceHealthRequest,
+				healthRequestListener,
 				new OseeMessagingStatusImpl("Failed to subscribe to " + BaseMessages.ServiceHealthRequest.getName(),
 						RemoteServiceRegistrarImpl.class));
 	}

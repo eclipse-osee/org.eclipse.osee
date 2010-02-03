@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Component;
 import org.apache.camel.ProducerTemplate;
+import org.apache.camel.model.RouteDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -37,6 +38,7 @@ public class ConnectionNodeImpl implements ConnectionNode {
 	private final ProducerTemplate template;
 	private final SessionMessageId sessionGuid;
 	private final Map<String, List<OseeMessagingListener>> replyToListeners;
+	private ReplySubscription replySubscription;
 	
 	private class SessionMessageId implements MessageID{
 		String guid;
@@ -81,6 +83,7 @@ public class ConnectionNodeImpl implements ConnectionNode {
 		this.template = template;
 		this.sessionGuid = new SessionMessageId(GUID.create().replaceAll("\\+", "F"));
 		replyToListeners = new ConcurrentHashMap<String, List<OseeMessagingListener>>();
+		replySubscription = new ReplySubscription();
 		subscribeToSessionReplyQueue();
 	}
 
@@ -121,26 +124,49 @@ public class ConnectionNodeImpl implements ConnectionNode {
 	}
 
 	@Override
-	public void subscribe(MessageID topic, OseeMessagingListener listener,
+	public void subscribe(MessageID messageId, OseeMessagingListener listener,
 			OseeMessagingStatusCallback statusCallback) {
-		process(new AddListenerRunnable(context, nodeInfo, this, topic
+		process(new ListenerRunnable(true, context, nodeInfo, this, messageId
+				.getMessageDestination(), listener, statusCallback));
+	}
+	
+	@Override
+	public void unsubscribe(MessageID messageId,
+			OseeMessagingListener listener,
+			OseeMessagingStatusCallback statusCallback) {
+		process(new ListenerRunnable(false, context, nodeInfo, this, messageId
 				.getMessageDestination(), listener, statusCallback));
 	}
 
 	@Override
-	public void subscribeToReply(MessageID messageId,
+	public boolean subscribeToReply(MessageID messageId,
 			OseeMessagingListener listener) {
 		List<OseeMessagingListener> list = replyToListeners.get(messageId.getGuid());
 		if(list == null){
 			list = new CopyOnWriteArrayList<OseeMessagingListener>();
 			replyToListeners.put(messageId.getGuid(), list);
 		}
-		list.add(listener);
+		return list.add(listener);
+	}
+	
+	@Override
+	public boolean unsubscribteToReply(MessageID messageId,
+			OseeMessagingListener listener) {
+		List<OseeMessagingListener> list = replyToListeners.get(messageId.getGuid());
+		if(list != null){
+			return list.remove(listener);
+		}
+		return false;
 	}
 	
 	private void subscribeToSessionReplyQueue(){
-		process(new AddListenerRunnable(context, nodeInfo, this, 
-				sessionGuid.getMessageDestination(), new ReplySubscription(), new OseeMessagingStatusImpl("Failed to add message", ConnectionNodeImpl.class)));
+		process(new ListenerRunnable(true, context, nodeInfo, this, 
+				sessionGuid.getMessageDestination(), replySubscription, new OseeMessagingStatusImpl("Failed to add message", ConnectionNodeImpl.class)));
+	}
+	
+	private void unsubscribeToSessionReplyQueue(){
+		process(new ListenerRunnable(false, context, nodeInfo, this, 
+				sessionGuid.getMessageDestination(), replySubscription, new OseeMessagingStatusImpl("Failed to add message", ConnectionNodeImpl.class)));
 	}
 	
 	private class ReplySubscription extends OseeMessagingListener{
@@ -175,5 +201,20 @@ public class ConnectionNodeImpl implements ConnectionNode {
 		}
 	}
 
-
+	public void stop() {
+		System.out.println("before");
+		for(RouteDefinition def:context.getRouteDefinitions()){
+			System.out.println(def);
+		}
+		unsubscribeToSessionReplyQueue();
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ex) {
+		}
+		System.out.println("after");
+		for(RouteDefinition def:context.getRouteDefinitions()){
+			System.out.println(def.getStatus());
+			System.out.println(def);
+		}
+	}
 }
