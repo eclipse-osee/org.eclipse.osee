@@ -13,6 +13,8 @@ package org.eclipse.osee.coverage.navigate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
@@ -107,6 +109,43 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       rd.log("Num Coverage Units " + totalCoverageUnits + " Num Coverage Items " + totalCoverageItems);
       rd.log("Fixed " + fixCount + " Binary Moved " + binaryMoveCount);
       rd.report("Test Unit Import");
+   }
+
+   private void fixCoverageItemNames() throws Exception {
+      Pattern linePattern = Pattern.compile("^[0-9]+ [0-9]+(.*?)$");
+      // BlkII Code Coverage Branch
+      Branch branch = BranchManager.getBranchByGuid("QyUb5GYLbDS3AmXKZWgA");
+      // Don Coverage Branch
+      PropertyStore store = new PropertyStore();
+      //      Branch branch = BranchManager.getBranchByGuid("ANPixlmF+BNVrPJIUvQA");
+      SkynetTransaction transaction = new SkynetTransaction(branch, "Fix coverage item names");
+
+      boolean persist = false;
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromType("Coverage Unit", branch)) {
+         System.out.println("Processing Item " + artifact);
+         for (Attribute<?> attr : artifact.getAttributes(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
+            String attrStr = (String) attr.getValue();
+            store.load(attrStr);
+            CoverageItem item =
+                  new CoverageItem(null, attrStr, CoverageOptionManagerDefault.instance(), new SimpleTestUnitProvider());
+            String name = store.get("name");
+            if (!Strings.isValid(name)) {
+               System.err.println(String.format("Invalid name [%s] for item [%s]", name, item));
+               continue;
+            }
+            Matcher m = linePattern.matcher(name);
+            if (m.find()) {
+               item.setName(name);
+               System.out.println(String.format("Setting name to %s", name));
+               attr.setFromString(item.toXml());
+            } else {
+               System.err.println(String.format("Error: name [%s] doesn't match", name));
+            }
+         }
+         if (persist) artifact.persist(transaction);
+      }
+
+      transaction.execute();
    }
 
    private void fixCoverageInformation() throws Exception {
