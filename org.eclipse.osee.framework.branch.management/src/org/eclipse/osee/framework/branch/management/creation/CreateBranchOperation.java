@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.BranchCache;
@@ -212,7 +213,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       if (branch.getBranchType().isMergeBranch()) {
          int parentBranchId = branch.hasParentBranch() ? branch.getParentBranch().getId() : -1;
          getDatabaseService().runPreparedUpdate(connection, MERGE_BRANCH_INSERT, parentBranchId,
-               request.getDestinationBranchId(), branch.getId(), -1);
+               request.getDestinationBranchId(), branch.getId(), 0);
       }
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(workAmount));

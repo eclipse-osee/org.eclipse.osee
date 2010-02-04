@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -126,7 +127,7 @@ public class ConflictManagerInternal {
 
       //Check to see if the branch has already been committed than use the transaction version
       int commitTransactionId = getCommitTransaction(sourceBranch, destinationBranch);
-      if (commitTransactionId != 0) {
+      if (commitTransactionId > 0) {
          try {
             return getConflictsPerBranch(TransactionManager.getTransactionId(commitTransactionId), monitor);
          } catch (TransactionDoesNotExist ex) {

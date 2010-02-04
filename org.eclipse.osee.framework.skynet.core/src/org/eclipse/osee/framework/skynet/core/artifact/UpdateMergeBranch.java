@@ -15,12 +15,14 @@ import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatab
 import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -157,9 +159,9 @@ public class UpdateMergeBranch extends DbTransaction {
    }
 
    private final static String INSERT_ATTRIBUTE_GAMMAS =
-         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, atr1.gamma_id, txs1.mod_type, ?, txs1.branch_id FROM osee_attribute atr1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
+         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, atr1.gamma_id, txs1.mod_type, ?, ? FROM osee_attribute atr1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
    private final static String INSERT_ARTIFACT_GAMMAS =
-         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, arv1.gamma_id, txs1.mod_type, ?, txs1.branch_id FROM osee_artifact_version arv1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
+         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, arv1.gamma_id, txs1.mod_type, ?, ? FROM osee_artifact_version arv1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
 
    private void addArtifactsToBranch(OseeConnection connection, Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIds) throws OseeCoreException {
       if (artIds == null || artIds.isEmpty()) {
@@ -178,8 +180,8 @@ public class UpdateMergeBranch extends DbTransaction {
       try {
          ArtifactLoader.insertIntoArtifactJoin(datas);
          Integer startTransactionNumber = startTransactionId.getId();
-         insertGammas(connection, INSERT_ATTRIBUTE_GAMMAS, startTransactionNumber, queryId, sourceBranch);
-         insertGammas(connection, INSERT_ARTIFACT_GAMMAS, startTransactionNumber, queryId, sourceBranch);
+         insertGammas(connection, INSERT_ATTRIBUTE_GAMMAS, startTransactionNumber, queryId, sourceBranch, mergeBranch);
+         insertGammas(connection, INSERT_ARTIFACT_GAMMAS, startTransactionNumber, queryId, sourceBranch, mergeBranch);
       } catch (OseeCoreException ex) {
          throw new OseeCoreException(
                "Source Branch Id: " + sourceBranch.getId() + " Artifact Ids: " + Collections.toString(",", artIds));
@@ -188,9 +190,9 @@ public class UpdateMergeBranch extends DbTransaction {
       }
    }
 
-   private static void insertGammas(OseeConnection connection, String sql, int baselineTransactionNumber, int queryId, Branch sourceBranch) throws OseeDataStoreException {
+   private static void insertGammas(OseeConnection connection, String sql, int baselineTransactionNumber, int queryId, Branch sourceBranch, Branch mergeBranch) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(connection, sql, baselineTransactionNumber, TxChange.CURRENT.getValue(),
-            sourceBranch.getId(), queryId);
+                                          mergeBranch.getId(), sourceBranch.getId(), queryId);
    }
 
    private static Collection<Integer> getAllMergeArtifacts(Branch branch) throws OseeCoreException {
