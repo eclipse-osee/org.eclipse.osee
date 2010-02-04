@@ -5,21 +5,21 @@
 		<echo message="You must specify a target when invoking this file" />
 	</target>
 
-	<property name="pluginsFolder" value="${eclipse.home}/plugins" />
+	<!--<property name="pluginsFolder" value="${eclipse.home}/plugins" />
 	<property name="tempAppServerFolder" value="${ant.file}/../.." />
-	<property name="ant.contrib.home" value="/tmp/build/3rdPartyJars/" />
+	<property name="ant.contrib.home" value="/tmp/build/3rdPartyJars/" />-->
 
 
 	<target name="init">
-		<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<!--<taskdef resource="net/sf/antcontrib/antlib.xml">
 			<classpath>
 				<pathelement path="${classpath}" />
 				<pathelement location="${ant.contrib.home}/ant-contrib.jar" />
 			</classpath>
-		</taskdef>
+		</taskdef>-->
 
-		<loadfile property="prelaunchScript" encoding="utf-8" failonerror="true" srcfile="pre_server_launch_template.txt" />
-		<loadfile property="postlaunchScript" encoding="utf-8" failonerror="true" srcfile="post_server_launch_template.txt" />
+		<loadfile property="prelaunchScript" encoding="utf-8" failonerror="true" srcfile="${relengBuilderDir}/scripts/pre_server_launch_template.txt" />
+		<loadfile property="postlaunchScript" encoding="utf-8" failonerror="true" srcfile="${relengBuilderDir}/scripts/post_server_launch_template.txt" />
 
 		<pathconvert property="launcherBundlePath" setonempty="false">
 			<path>
