@@ -72,7 +72,7 @@ OSEE_APP_SERVER_EXTRA_VMARGS=@{extraArgs}
 			</echo>
 			<echo file="@{filePath}" append="true" message="${postlaunchScript}" />
 			<if>
-				<equals arg1="isExecutable" arg2="true" />
+				<equals arg1="@{isExecutable}" arg2="true" />
 				<then>
 					<chmod file="@{filePath}" perm="ugo+rx" />
 				</then>
