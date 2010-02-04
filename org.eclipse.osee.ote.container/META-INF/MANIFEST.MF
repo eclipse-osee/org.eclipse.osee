@@ -10,8 +10,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt,
  org.eclipse.jdt.ui,
  org.eclipse.jdt.core,
- org.eclipse.osee.ote.runtimeManager;bundle-version="1.0.0",
- org.eclipse.osee.framework.jdk.core;bundle-version="0.4.0"
+ org.eclipse.osee.ote.runtimeManager,
+ org.eclipse.osee.framework.jdk.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.ui.workspacebundleloader
