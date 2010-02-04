@@ -85,25 +85,15 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 	private IRemoteMessageService service;
 
 	private final IMessageDbFactory messageDbFactory;
-	private final OteClientServiceTracker tracker;
-	private IOteClientService clientService;
+	private final IOteClientService clientService;
 	
-	public MessageSubscriptionService(IMessageDbFactory messageDbFactory) throws IOException {
-		tracker = new OteClientServiceTracker(this);
+	public MessageSubscriptionService(IOteClientService service, IMessageDbFactory messageDbFactory) throws IOException {
 		this.messageDbFactory = messageDbFactory;
 		localAddress = InetAddress.getLocalHost();
 		OseeLog.log(Activator.class, Level.INFO, "OTE client message service started on: " + localAddress.getHostAddress());
-		tracker.open();
-	}
-
-	void oteClientServiceAcquired(IOteClientService service) {
 		clientService = service;
 		clientService.addDictionaryListener(this);
 		clientService.addConnectionListener(this);
-	}
-	
-	void oteClientServiceLost() {
-	
 	}
 	
 	public synchronized IMessageSubscription subscribe(String name) {
@@ -123,12 +113,9 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 	 * Shuts down the client message service. All worker threads will be
 	 * terminated and all IO resources will be closed.
 	 */
-	public void shutdown() throws IOException {
-		if (clientService != null) {
-			clientService.removeDictionaryListener(this);
-			clientService.removeConnectionListener(this);
-		}
-		tracker.close();
+	public void shutdown()  {
+		clientService.removeDictionaryListener(this);
+		clientService.removeConnectionListener(this);
 		shutdownDispatcher();
 		threadPool.shutdown();
 		try {

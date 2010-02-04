@@ -35,7 +35,8 @@ public class Activator extends Plugin {
 	private static Activator plugin;
 
 	private BundleContext context;
-	private ServiceRegistration registration;
+
+	private OteClientServiceTracker tracker;
 	
 	/**
 	 * The constructor
@@ -53,8 +54,8 @@ public class Activator extends Plugin {
 		try {
 			List<IMessageDbFactory> providers = definedObjects.getObjects();
 			if (!providers.isEmpty()) {
-				MessageSubscriptionService service = new MessageSubscriptionService(providers.get(0));
-				registration = context.registerService(IOteMessageService.class.getName(), service, null);
+				tracker = new OteClientServiceTracker(providers.get(0));
+				tracker.open(true);
 			} else {
 				OseeLog.log(Activator.class, Level.WARNING, "no message db factory found. Message Subscription Service not started");
 			}
@@ -68,12 +69,7 @@ public class Activator extends Plugin {
 
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
-		if (registration != null) {
-			MessageSubscriptionService service = (MessageSubscriptionService) context.getService(registration.getReference());
-			service.shutdown();
-			registration.unregister();
-			registration = null;
-		}
+		tracker.close();
 		super.stop(context);
 		this.context = null;
 	}
