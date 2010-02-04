@@ -1423,13 +1423,16 @@ public final class Lib {
       Manifest manifest;
       File jarFile = new File(jarFilePath);
       if (!jarFile.isFile()) {// maybe it's an http connection
+         JarInputStream jis = null;
          try {
             URL u = new URL(jarFilePath);
             URLConnection uc = u.openConnection();
-            JarInputStream jis = new JarInputStream(uc.getInputStream());
+            jis = new JarInputStream(uc.getInputStream());
             manifest = jis.getManifest();
-         } catch (Exception ex) {
+         } catch (IOException ex) {
             throw new IllegalArgumentException(jarFilePath + " is not a valid file or URL.");
+         } finally {
+            Lib.close(jis);
          }
       } else {
          manifest = new JarFile(jarFile).getManifest();

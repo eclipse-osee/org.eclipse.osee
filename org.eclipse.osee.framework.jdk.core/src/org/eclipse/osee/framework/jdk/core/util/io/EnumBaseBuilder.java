@@ -127,13 +127,13 @@ public class EnumBaseBuilder extends JavaFileBuilder {
       string.append(enumValueTable.toString());
    }
 
-   private class EnumRecord {
+   private static class EnumRecord {
       private final int number;
       private final String name;
 
       /**
        * @param number The ordinal value of the enumeration
-       * @param name The declarartion name of the enumeration
+       * @param name The declaration name of the enumeration
        */
       public EnumRecord(int number, String name) {
          this.number = number;

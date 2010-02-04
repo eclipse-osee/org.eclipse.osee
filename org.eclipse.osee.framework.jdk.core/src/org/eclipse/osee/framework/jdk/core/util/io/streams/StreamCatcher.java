@@ -21,9 +21,9 @@ import java.util.logging.Logger;
  * @author Jeff C. Phillips
  */
 public class StreamCatcher extends Thread {
-   private InputStream is;
-   private String type;
-   private Logger logger;
+   private final InputStream is;
+   private final String type;
+   private final Logger logger;
 
    public StreamCatcher(InputStream is, String type) {
       this(is, type, null);
@@ -35,23 +35,27 @@ public class StreamCatcher extends Thread {
       this.logger = logger;
    }
 
+   @Override
    public void run() {
       try {
          InputStreamReader isr = new InputStreamReader(is);
          BufferedReader br = new BufferedReader(isr);
          String line = null;
-         String loggerError = "";
+         StringBuilder loggerError = new StringBuilder();
 
          while ((line = br.readLine()) != null) {
 
-            if (logger == null)
+            if (logger == null) {
                System.out.println(type + ">" + line);
-            else
-               loggerError += line + "\n";
-
+            } else {
+               loggerError.append(line);
+               loggerError.append("\n");
+            }
          }
 
-         if (logger != null && loggerError.length() > 0) logger.log(Level.SEVERE, loggerError);
+         if (logger != null && loggerError.length() > 0) {
+            logger.log(Level.SEVERE, loggerError.toString());
+         }
 
       } catch (IOException ioe) {
          ioe.printStackTrace();

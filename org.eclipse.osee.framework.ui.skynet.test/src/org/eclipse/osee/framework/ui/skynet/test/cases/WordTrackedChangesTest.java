@@ -13,20 +13,16 @@ package org.eclipse.osee.framework.ui.skynet.test.cases;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -39,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -64,7 +59,7 @@ public class WordTrackedChangesTest {
       assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1),
             WordTrackedChangesTest.class.getSimpleName());
-      WordAttribute.setDisplayTrackedChangesErrorMessage("");
+      WordAttribute.resetTrackedChangesDetection();
       WholeDocumentRenderer.setNoPopups(true);
       WordTemplateRenderer.setNoPopups(true);
       FileSystemRenderer.setNoPopups(true);
@@ -76,7 +71,6 @@ public class WordTrackedChangesTest {
 
    @org.junit.Test
    public void testWordSaveWithTrackChanges() throws Exception {
-
       List<Artifact> artifacts = new ArrayList<Artifact>();
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       FileRenderer.setWorkbenchSavePopUpDisabled(true);
@@ -89,9 +83,7 @@ public class WordTrackedChangesTest {
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       makeChangesToArtifact(renderer, TEST_WORD_EDIT_FILE_NAME, artifacts);
       Thread.sleep(5000);
-      assertTrue("Did not detect Tracked Changes Succcessfully",
-            WordAttribute.getDisplayTrackedChangesErrorMessage().contains(
-                  "Cannot save - Detected tracked changes on this artifact. ") == true);
+      assertTrue("Did not detect Tracked Changes Succcessfully", WordAttribute.trackedChangesDetected());
       TestUtil.severeLoggingEnd(monitorLog);
    }
 
@@ -108,11 +100,11 @@ public class WordTrackedChangesTest {
       Artifact newArt = ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName());
       newArt.persist();
       artifacts = Arrays.asList(newArt);
-      FileRenderer renderer = RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, newArt);
+      FileRenderer renderer = new WordTemplateRenderer();
+      //      FileRenderer renderer = RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, newArt);
       makeChangesToArtifact(renderer, TEST_GEN_WORD_EDIT_FILE_NAME, artifacts);
       Thread.sleep(10000);
-      assertTrue("Did not Detect Tracked Changes",
-            WordAttribute.getDisplayTrackedChangesErrorMessage().equals("") == true);
+      assertTrue("Did not Detect Tracked Changes", WordAttribute.trackedChangesDetected());
       TestUtil.severeLoggingEnd(monitorLog);
    }
 
@@ -135,13 +127,8 @@ public class WordTrackedChangesTest {
          newArt.setSoleAttributeFromString(WordAttribute.WHOLE_WORD_CONTENT, content);
          newArt.persist();
       } catch (OseeArgumentException ex) {
-         if (ex.getLocalizedMessage().equals("Cannot save - Detected tracked changes on this artifact. ")) {
-            assertTrue("Did not Detect Tracked Changes", WordAttribute.getDisplayTrackedChangesErrorMessage().contains(
-                  "Cannot save - Detected tracked changes on this artifact. ") == true);
-            newArt.purgeFromBranch();
-         } else {
-            throw ex;
-         }
+         assertTrue("Did not detect Tracked Changes", WordAttribute.trackedChangesDetected());
+         newArt.purgeFromBranch();
       } finally {
          TestUtil.severeLoggingEnd(monitorLog);
       }
@@ -154,7 +141,7 @@ public class WordTrackedChangesTest {
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getCommonBranch(), WordTrackedChangesTest.class.getSimpleName());
    }
 
-   public static IFile makeChangesToArtifact(FileRenderer renderer, String file, List<Artifact> artifacts) throws IOException, InterruptedException {
+   public static IFile makeChangesToArtifact(FileRenderer renderer, String file, List<Artifact> artifacts) throws Exception {
       IFile renderedFile = null;
       try {
          WordAttribute.setNoPopUps(true);
@@ -163,8 +150,6 @@ public class WordTrackedChangesTest {
          final IFile rFile = renderedFile;
          rFile.setContents(inputStream, IResource.FORCE, new NullProgressMonitor());
          inputStream.close();
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
       } finally {
          FrameworkTestUtil.killAllOpenWinword();
       }

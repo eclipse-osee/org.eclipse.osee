@@ -10,11 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -123,34 +119,6 @@ public class FileWatcher extends TimerTask {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-   }
-
-   public static void main(String[] args) {
-      final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-      FileWatcher watcher = new FileWatcher(2, TimeUnit.SECONDS);
-      watcher.addListener(new IFileWatcherListener() {
-
-         @Override
-         public void filesModified(Collection<FileChangeEvent> events) {
-            for (FileChangeEvent event : events) {
-               System.out.println(event.getChangeType().name() + ": " + event.getFile().getAbsolutePath());
-            }
-         }
-
-      });
-      File directory = new File("C:\\Documents and Settings\\b1529404\\Desktop\\watcher_test");
-      watcher.addFile(new File(directory, "f1.txt"));
-      watcher.addFile(new File(directory, "f2.txt"));
-      watcher.addFile(new File(directory, "f3.txt"));
-      watcher.start();
-      try {
-         while (!reader.readLine().equals("QUIT")) {
-
-         }
-      } catch (IOException ex) {
-         ex.printStackTrace();
-      }
-      watcher.dispose();
    }
 
    public void dispose() {

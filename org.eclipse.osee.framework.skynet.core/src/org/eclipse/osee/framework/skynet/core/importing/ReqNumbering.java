@@ -67,8 +67,16 @@ public class ReqNumbering implements Comparable<ReqNumbering> {
             return -1;
          }
       }
-      
+
       return 0;
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (!(o instanceof ReqNumbering)) {
+         return false;
+      }
+      return this.compareTo((ReqNumbering) o) == 0;
    }
 
    private int getValue(int index) {

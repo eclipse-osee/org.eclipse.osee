@@ -82,7 +82,8 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          processHeadingText(roughArtifact, WordUtil.textOnly(content));
       } else if (!listIdentifier.equals("") && !forceBody) {
          String proNumber = lastHeaderNumber + "." + listIdentifier;
-         content = listPrKiller.matcher(content).replaceAll(""); // DEAD STORE
+         content = listPrKiller.matcher(content).replaceAll("");
+         wordFormattedContent.append(content);
          roughArtifact.addAttribute("Name", proNumber);
       } else if (roughArtifact != null) {
          wordFormattedContent.append(content);

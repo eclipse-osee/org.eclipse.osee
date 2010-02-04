@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 public class Zip {
 
@@ -109,6 +110,7 @@ public class Zip {
       } catch (RuntimeException ex) {
          String information =
                "ZipFile: " + (zipFile != null ? zipFile.getAbsolutePath() : "NULL") + "\n" + "DestinationDir: " + (destinationDir != null ? destinationDir.getAbsolutePath() : "NULL") + "\n" + "Entry Processed: " + (entry != null ? entry.toString() : "NULL") + "\n";
+         Lib.close(is);
          throw new IOException(information + ex.getMessage());
       }
    }

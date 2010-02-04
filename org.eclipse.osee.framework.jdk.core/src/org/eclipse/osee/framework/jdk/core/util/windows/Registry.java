@@ -102,7 +102,7 @@ public class Registry {
          System.out.println("Found Version: " + regVersion);
 
          double foundVersion = Double.parseDouble(regVersion);
-         if ((foundVersion >= lowerBound) && (foundVersion <= upperBound)) {
+         if (foundVersion >= lowerBound && foundVersion <= upperBound) {
             matched = true;
          }
       }
@@ -166,8 +166,7 @@ public class Registry {
        */
       if (version.isVersion().equals("1.00")) {
          if (updatedReg.exists() && updatedReg.isFile()) {
-            command = updatedReg.getAbsolutePath() + command.replaceAll("reg", "");
-            ;
+            command = updatedReg.getAbsolutePath() + command.replaceAll("reg", "");;
          }
       }
 

@@ -289,18 +289,15 @@ public class RelationLink {
    public String toString() {
       String artAName = "Unloaded";
       String artBName = "Unloaded";
-      try {
-         Artifact artA = ArtifactCache.getActive(getAArtifactId(), getABranch());
-         if (artA != null) {
-            artAName = artA.getSafeName();
-         }
-         Artifact artB = ArtifactCache.getActive(getBArtifactId(), getBBranch());
-         if (artB != null) {
-            artBName = artB.getSafeName();
-         }
-      } catch (Exception ex) {
-         // do nothing
+      Artifact artA = ArtifactCache.getActive(getAArtifactId(), getABranch());
+      if (artA != null) {
+         artAName = artA.getSafeName();
       }
+      Artifact artB = ArtifactCache.getActive(getBArtifactId(), getBBranch());
+      if (artB != null) {
+         artBName = artB.getSafeName();
+      }
+
       return String.format("type[%s] id[%d] modType[%s] [%s]: aName[%s] aId[%d] <--> bName[%s] bId[%s]",
             relationType.getName(), relationId, getModificationType(), (isDirty() ? "dirty" : "not dirty"), artAName,
             aArtifactId, artBName, bArtifactId);

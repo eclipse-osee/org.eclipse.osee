@@ -61,7 +61,7 @@ public final class ArtifactFactoryManager {
       return getDefaultArtifactFactory();
    }
 
-   public static Collection<ArtifactType> getEternalArtifactTypes() throws OseeCoreException {
+   public static synchronized Collection<ArtifactType> getEternalArtifactTypes() throws OseeCoreException {
       if (eternalArtifactTypes == null) {
          eternalArtifactTypes = new HashSet<ArtifactType>();
          for (ArtifactFactory factory : getFactories()) {

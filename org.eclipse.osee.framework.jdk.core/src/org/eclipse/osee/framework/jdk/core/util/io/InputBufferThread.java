@@ -44,6 +44,7 @@ public class InputBufferThread extends Thread {
     * Overridden Thread.run method. Reads from the input stream on character at a time until the end of available input
     * or until the bold shouldStopRunning is set by an outside source.
     */
+   @Override
    public void run() {
       System.out.println("thread started");
       int count = 0;
@@ -231,11 +232,12 @@ public class InputBufferThread extends Thread {
       join(5000);
    }
 
-   public long getLastRead() {
-      if (lastRead == 0)
+   public synchronized long getLastRead() {
+      if (lastRead == 0) {
          return System.currentTimeMillis();
-      else
+      } else {
          return lastRead;
+      }
    }
 
    public synchronized void clear() {

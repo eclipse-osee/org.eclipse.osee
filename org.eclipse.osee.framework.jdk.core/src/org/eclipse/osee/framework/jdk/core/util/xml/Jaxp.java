@@ -137,27 +137,27 @@ public class Jaxp {
     */
    public static String getElementCharacterData(Element e, boolean trimWhitespace) {
       NodeList childNodes = e.getChildNodes();
-      String resultString = "";
+      StringBuilder resultString = new StringBuilder();
       boolean first = true;
 
       for (int i = 0; i < childNodes.getLength(); i++) {
          Node n = childNodes.item(i);
          if (n.getNodeType() == Node.TEXT_NODE) {
             if (!first && trimWhitespace) {
-               resultString += " ";
+               resultString.append(" ");
             }
-            resultString += trimWhitespace ? n.getNodeValue().trim() : n.getNodeValue();
+            resultString.append(trimWhitespace ? n.getNodeValue().trim() : n.getNodeValue());
             first = false;
          } else if (n.getNodeType() == Node.CDATA_SECTION_NODE) {
             if (!first && trimWhitespace) {
-               resultString += " ";
+               resultString.append(" ");
             }
-            resultString += trimWhitespace ? n.getNodeValue().trim() : n.getNodeValue();
+            resultString.append(trimWhitespace ? n.getNodeValue().trim() : n.getNodeValue());
             first = false;
          }
 
       }
-      return resultString;
+      return resultString.toString();
    }
 
    /**

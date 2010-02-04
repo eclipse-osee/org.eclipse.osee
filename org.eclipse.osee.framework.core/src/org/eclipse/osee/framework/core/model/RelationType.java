@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -19,7 +20,7 @@ import org.eclipse.osee.framework.core.internal.fields.OseeField;
 /**
  * @author Robert A. Fisher
  */
-public final class RelationType extends AbstractOseeType implements Comparable<RelationType> {
+public final class RelationType extends AbstractOseeType implements IRelationType, Comparable<RelationType> {
 
    private static final String RELATION_SIDE_A_NAME_FIELD_KEY = "osee.relation.type.side.a.name.field";
    private static final String RELATION_SIDE_B_NAME_FIELD_KEY = "osee.relation.type.side.b.name.field";

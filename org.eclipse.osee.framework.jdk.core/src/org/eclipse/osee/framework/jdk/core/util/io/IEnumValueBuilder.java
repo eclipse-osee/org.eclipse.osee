@@ -60,9 +60,9 @@ public class IEnumValueBuilder extends JavaFileBuilder {
       return "\tpublic static " + className + " getEnum(String enumString) {\n" + "\t\tfor (" + className + " myEnum : " + className + ".values()) {\n" + "\t\t\tif (" + className + ".valueOf(enumString) == myEnum) {\n" + "\t\t\t\treturn myEnum;\n" + "\t\t\t}\n" + "\t\t}\n" + "\t\tthrow new IllegalArgumentException(\"Unable to find " + className + " to match \" + enumString + \".\");\n" + "\t}\n";
    }
 
-   public class EnumRecord {
-      private int number;
-      private String name;
+   public static class EnumRecord {
+      private final int number;
+      private final String name;
 
       /**
        * @param number The ordinal value of the enumeration

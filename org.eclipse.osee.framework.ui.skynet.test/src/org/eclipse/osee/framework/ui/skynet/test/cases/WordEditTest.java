@@ -81,7 +81,7 @@ public class WordEditTest {
 
    @After
    public void tearDown() throws Exception {
-      WordAttribute.setDisplayTrackedChangesErrorMessage("");
+      WordAttribute.resetTrackedChangesDetection();
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), getClass().getSimpleName());
    }
 

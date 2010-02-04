@@ -23,8 +23,8 @@ import java.util.Set;
  */
 public class InputManager<T> implements IInputListener<T> {
 
-   private List<T> inputList;
-   private Set<IInputListener<T>> changeListeners;
+   private final List<T> inputList;
+   private final Set<IInputListener<T>> changeListeners;
 
    public InputManager() {
       super();
@@ -42,8 +42,9 @@ public class InputManager<T> implements IInputListener<T> {
       }
       synchronized (changeListeners) {
          Iterator<IInputListener<T>> iterator = changeListeners.iterator();
-         while (iterator.hasNext())
-            (iterator.next()).addNode(inNode);
+         while (iterator.hasNext()) {
+            iterator.next().addNode(inNode);
+         }
       }
    }
 
@@ -53,8 +54,9 @@ public class InputManager<T> implements IInputListener<T> {
       }
       synchronized (changeListeners) {
          Iterator<IInputListener<T>> iterator = changeListeners.iterator();
-         while (iterator.hasNext())
-            (iterator.next()).addNodes(inNode);
+         while (iterator.hasNext()) {
+            iterator.next().addNodes(inNode);
+         }
       }
    }
 
@@ -64,24 +66,27 @@ public class InputManager<T> implements IInputListener<T> {
       }
       synchronized (changeListeners) {
          Iterator<IInputListener<T>> iterator = changeListeners.iterator();
-         while (iterator.hasNext())
-            (iterator.next()).removeNode(inNode);
+         while (iterator.hasNext()) {
+            iterator.next().removeNode(inNode);
+         }
       }
    }
 
    public void nodeChanged(T inNode) {
       synchronized (changeListeners) {
          Iterator<IInputListener<T>> iterator = changeListeners.iterator();
-         while (iterator.hasNext())
-            (iterator.next()).nodeChanged(inNode);
+         while (iterator.hasNext()) {
+            iterator.next().nodeChanged(inNode);
+         }
       }
    }
 
    public void inputChanged() {
       synchronized (changeListeners) {
          Iterator<IInputListener<T>> iterator = changeListeners.iterator();
-         while (iterator.hasNext())
-            (iterator.next()).inputChanged();
+         while (iterator.hasNext()) {
+            iterator.next().inputChanged();
+         }
       }
    }
 
@@ -92,7 +97,7 @@ public class InputManager<T> implements IInputListener<T> {
       synchronized (changeListeners) {
          Iterator<IInputListener<T>> iterator = changeListeners.iterator();
          while (iterator.hasNext()) {
-            (iterator.next()).removeAll();
+            iterator.next().removeAll();
          }
       }
    }
@@ -113,14 +118,16 @@ public class InputManager<T> implements IInputListener<T> {
       }
    }
 
+   @Override
    public String toString() {
       synchronized (inputList) {
-         String toReturn = "";
+         StringBuilder toReturn = new StringBuilder();
          for (int i = 0; i < inputList.size(); i++) {
-            T node = (T) inputList.get(i);
-            toReturn += node.toString();
+            T node = inputList.get(i);
+            toReturn.append(node.toString());
          }
-         return toReturn + "\n\n";
+         toReturn.append("\n\n");
+         return toReturn.toString();
       }
    }
 

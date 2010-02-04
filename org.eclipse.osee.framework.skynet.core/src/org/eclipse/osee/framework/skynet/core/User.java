@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core;
 
-import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collection;
@@ -32,9 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 /**
  * @author Donald G. Dunne
  */
-public class User extends Artifact implements Serializable {
-   private static final long serialVersionUID = 834749078806388387L;
-
+public class User extends Artifact {
    private PropertyStore userSettings;
 
    @Override

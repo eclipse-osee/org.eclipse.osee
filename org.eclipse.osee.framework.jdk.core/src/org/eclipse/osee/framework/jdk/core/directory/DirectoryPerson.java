@@ -394,6 +394,11 @@ public class DirectoryPerson implements Comparable<Object>, Serializable {
       return this.fullName.equals(dp.fullName);
    }
 
+   @Override
+   public int hashCode() {
+      return fullName.hashCode();
+   }
+
    /**
     * @return Returns the policies.
     */

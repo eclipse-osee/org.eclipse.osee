@@ -75,12 +75,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
          "SELECT b_art_id FROM osee_relation_link WHERE a_art_id =? AND rel_link_type_id =? ORDER BY b_art_id";
 
    public static enum ObjectTypeEnum {
-      ALL,
-      BRANCH,
-      REL_TYPE,
-      ART_TYPE,
-      ATTR_TYPE,
-      ART;
+      ALL, BRANCH, REL_TYPE, ART_TYPE, ATTR_TYPE, ART;
    }
 
    private static DoubleKeyHashMap<Integer, AccessObject, PermissionEnum> accessControlListCache;
@@ -253,7 +248,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
 
       branchPermission = getBranchPermission(subject, branch, permission);
 
-      if (branchPermission != null && (branchPermission.equals(PermissionEnum.DENY) || userPermission == null && userPermission != PermissionEnum.LOCK)) {
+      if (branchPermission != PermissionEnum.DENY && userPermission != PermissionEnum.LOCK) {
          userPermission = branchPermission;
       }
 
@@ -371,7 +366,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
                if (recurse) {
                   Artifact artifact =
                         ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
-                        BranchManager.getBranch(artifactAccessObject.getId()));
+                              BranchManager.getBranch(artifactAccessObject.getId()));
                   AccessControlData childAccessControlData = null;
 
                   for (Artifact child : artifact.getChildren()) {

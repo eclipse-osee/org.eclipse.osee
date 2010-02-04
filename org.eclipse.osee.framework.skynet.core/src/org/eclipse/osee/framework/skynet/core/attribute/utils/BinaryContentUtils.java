@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.utils;
 
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -47,7 +48,7 @@ public class BinaryContentUtils {
          }
          builder.append(URLEncoder.encode(name, "UTF-8"));
          builder.append(".");
-      } catch (Exception ex) {
+      } catch (UnsupportedEncodingException ex) {
          // Do Nothing - this is not important
       }
 

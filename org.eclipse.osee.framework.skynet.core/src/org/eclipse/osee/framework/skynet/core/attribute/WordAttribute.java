@@ -28,14 +28,18 @@ public class WordAttribute extends StringAttribute {
    public static final String WHOLE_WORD_CONTENT = "Whole Word Content";
    public static final String OLE_DATA_NAME = "Word Ole Data";
    public static boolean noPopUps = false;
-   public static String displayTrackedChangesErrorMessage = "";
+   private static boolean trackedChangesDetected = false;
+
+   public static boolean trackedChangesDetected() {
+      return trackedChangesDetected;
+   }
 
    @Override
    public boolean subClassSetValue(String value) throws OseeCoreException {
       // Do not allow save on tracked changes except on three way merges
       if (WordAnnotationHandler.containsWordAnnotations(value) && getArtifact().getBranch().getBranchType() != BranchType.MERGE) {
-         displayTrackedChangesErrorMessage = "Cannot save - Detected tracked changes on this artifact. ";
-         throw new OseeArgumentException(displayTrackedChangesErrorMessage);
+         trackedChangesDetected = true;
+         throw new OseeArgumentException("Tracked changes detected.");
       } else {
          value = WordUtil.removeWordMarkupSmartTags(value);
          return super.subClassSetValue(value);
@@ -78,21 +82,7 @@ public class WordAttribute extends StringAttribute {
       WordAttribute.noPopUps = noPopUps;
    }
 
-   /**
-    * Mainly used for testing purposes
-    * 
-    * @return the displayTrackedChangesErrorMessage
-    */
-   public static String getDisplayTrackedChangesErrorMessage() {
-      return displayTrackedChangesErrorMessage;
-   }
-
-   /**
-    * Mainly used for testing purposes
-    * 
-    * @param displayTrackedChangesErrorMessage the displayTrackedChangesErrorMessage to set
-    */
-   public static void setDisplayTrackedChangesErrorMessage(String displayTrackedChangesErrorMessage) {
-      WordAttribute.displayTrackedChangesErrorMessage = displayTrackedChangesErrorMessage;
+   public static void resetTrackedChangesDetection() {
+      trackedChangesDetected = false;
    }
 }

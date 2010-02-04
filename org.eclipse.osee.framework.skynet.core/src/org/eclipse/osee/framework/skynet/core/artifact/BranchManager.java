@@ -414,7 +414,7 @@ public class BranchManager {
     */
    public static Branch createBaselineBranch(IOseeBranch parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
       TransactionRecord parentTransactionId = TransactionManager.getLastTransaction(parentBranch);
-      String creationComment = String.format("Branch Creation for ", childBranch.getName());
+      String creationComment = String.format("Branch Creation for %s", childBranch.getName());
       return HttpBranchCreation.createBranch(BranchType.BASELINE, parentTransactionId.getId(),
             parentTransactionId.getBranch().getId(), childBranch.getName(), childBranch.getGuid(), associatedArtifact,
             creationComment, -1, -1);

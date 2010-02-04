@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -145,7 +146,8 @@ public class RelationOrderData {
       return String.format("Relation Order Data for artifact:%s", getIArtifact());
    }
 
-   private final static class EntryComparator implements Comparator<Entry<Pair<String, String>, Pair<String, List<String>>>> {
+   private final static class EntryComparator implements Serializable, Comparator<Entry<Pair<String, String>, Pair<String, List<String>>>> {
+      private static final long serialVersionUID = 5242452476694174988L;
 
       @Override
       public int compare(Entry<Pair<String, String>, Pair<String, List<String>>> o1, Entry<Pair<String, String>, Pair<String, List<String>>> o2) {

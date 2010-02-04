@@ -28,8 +28,8 @@ import java.util.regex.Pattern;
  * @author Andrew M. Finkbeiner
  */
 public class JarCreator {
-   private JarOutputStream out;
-   private byte[] buffer;
+   private final JarOutputStream out;
+   private final byte[] buffer;
 
    /**
     * @throws IOException
@@ -103,8 +103,8 @@ public class JarCreator {
       out.close();
    }
 
-   private class FilenameAndDirectoryFilter implements FileFilter {
-      private Matcher matcher;
+   private static class FilenameAndDirectoryFilter implements FileFilter {
+      private final Matcher matcher;
 
       public FilenameAndDirectoryFilter(String pattern) {
          this.matcher = Pattern.compile(pattern).matcher("");

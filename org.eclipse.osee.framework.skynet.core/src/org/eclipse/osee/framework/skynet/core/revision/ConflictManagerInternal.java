@@ -194,7 +194,7 @@ public class ConflictManagerInternal {
          }
       }
       if (DEBUG) {
-         System.out.println(String.format("    Creating conflict objects and setting theri status completed in %s",
+         System.out.println(String.format("    Creating conflict objects and setting their status to completed in %s",
                Lib.getElapseString(time)));
       }
       cleanUpConflictDB(conflicts, mergeBranch.getId(), monitor);

@@ -41,10 +41,11 @@ public class AXml {
 
    public static String addTagData(String elementName, String data, boolean newLine) {
       String str = "<" + elementName + ">" + data + "</" + elementName + ">";
-      if (newLine)
+      if (newLine) {
          return str + "\n";
-      else
+      } else {
          return str;
+      }
    }
 
    /**
@@ -102,7 +103,7 @@ public class AXml {
       String tags[] = getTagDataArray(xmlStr, xmlRoot);
       if (tags.length > 0) {
          String intStr = tags[0];
-         return (new Integer(intStr)).intValue();
+         return new Integer(intStr).intValue();
       }
       return 0;
    }
@@ -111,7 +112,7 @@ public class AXml {
       String tags[] = getTagDataArray(xmlStr, xmlRoot);
       if (tags.length > 0) {
          String intStr = tags[0];
-         return (intStr.equals("true") ? true : false);
+         return intStr.equals("true") ? true : false;
       }
       return false;
    }
@@ -124,8 +125,10 @@ public class AXml {
     * @return String valid xml string
     */
    public static String textToXml(String text) {
-      if (text == null || text.equals("")) return "";
-      String str = new String(text);
+      if (text == null || text.equals("")) {
+         return "";
+      }
+      String str = text;
       str = str.replaceAll("&", "&amp;");
       str = str.replaceAll(">", "&gt;");
       str = str.replaceAll("<", "&lt;");
@@ -142,8 +145,10 @@ public class AXml {
     * @return displayable string
     */
    public static String xmlToText(String xml) {
-      if (xml == null || xml.equals("")) return "";
-      String str = new String(xml);
+      if (xml == null || xml.equals("")) {
+         return "";
+      }
+      String str = xml;
       str = str.replaceAll("&gt;", ">");
       str = str.replaceAll("&lt;", "<");
       str = str.replaceAll("&apos;", "'");

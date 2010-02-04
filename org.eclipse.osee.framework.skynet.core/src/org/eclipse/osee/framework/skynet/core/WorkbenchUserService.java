@@ -19,7 +19,7 @@ public class WorkbenchUserService implements IWorkbenchUserService {
       return new WorkbenchUserAdaptor(UserManager.getUser());
    }
 
-   private final class WorkbenchUserAdaptor implements IWorkbenchUser {
+   private static final class WorkbenchUserAdaptor implements IWorkbenchUser {
 
       private final User user;
 
