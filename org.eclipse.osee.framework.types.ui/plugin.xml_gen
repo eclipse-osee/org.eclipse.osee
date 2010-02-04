@@ -52,8 +52,7 @@
         <page
             class="org.eclipse.osee.framework.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.core.editor.preferences.LanguageRootPreferencePage"
             id="org.eclipse.osee.framework.OseeTypes"
-            name="OseeTypes"
-            category="org.eclipse.xtext.languages">
+            name="OseeTypes">
             <keywordReference id="org.eclipse.osee.framework.ui.keyword_OseeTypes"/>
         </page>
         <page
@@ -87,7 +86,7 @@
     </extension>
     <extension point="org.eclipse.ui.menus">
         <menuContribution
-            locationURI="popup:#TextEditorContext?after=group.open">
+            locationURI="popup:#TextEditorContext?after=group.edit">
              <command
                  commandId="org.eclipse.osee.framework.OseeTypes.validate"
                  style="push"
@@ -100,6 +99,27 @@
          </command>  
          </menuContribution>
     </extension>
+    <extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:#TextEditorContext?endof=group.find">
+			<command commandId="org.eclipse.xtext.ui.core.editor.FindReferences">
+				<visibleWhen checkEnabled="false">
+                	<reference definitionId="org.eclipse.osee.framework.OseeTypes.Editor.opened">
+                	</reference>
+            	</visibleWhen>
+			</command>
+		</menuContribution>
+	</extension>
+	<extension point="org.eclipse.ui.handlers">
+	    <handler
+            class="org.eclipse.osee.framework.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.core.editor.findrefs.FindReferencesHandler"
+            commandId="org.eclipse.xtext.ui.core.editor.FindReferences">
+            <activeWhen>
+                <reference
+                    definitionId="org.eclipse.osee.framework.OseeTypes.Editor.opened">
+                </reference>
+            </activeWhen>
+        </handler>
+    </extension>   
 
 <!-- adding resource factories -->
 
@@ -110,13 +130,12 @@
 			type="osee">
 		</parser>
 	</extension>
-	<extension
-        point="org.eclipse.xtext.extension_resourceServiceProvider">
-     <resourceServiceProvider
-           class="org.eclipse.osee.framework.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceServiceProvider"
-           uriExtension="osee">
-     </resourceServiceProvider>
-  </extension>
+	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
+        <resourceServiceProvider
+            class="org.eclipse.osee.framework.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.core.resource.IResourceUIServiceProvider"
+            uriExtension="osee">
+        </resourceServiceProvider>
+    </extension>
 
 
 
