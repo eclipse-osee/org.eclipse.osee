@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -550,4 +551,24 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return branchMgr;
    }
 
+   /**
+    * 5-9 character short name for UI and display purposes
+    */
+   public String getArtifactTypeShortName() {
+      return "";
+   }
+
+   public String getBranchName() {
+
+      String smaTitle = getName();
+      if (smaTitle.length() > 40) {
+         smaTitle = smaTitle.substring(0, 39) + "...";
+      }
+      if (Strings.isValid(getArtifactTypeShortName())) {
+         return String.format("%s - %s - %s", getHumanReadableId(), getArtifactTypeShortName(), smaTitle);
+      } else {
+         return String.format("%s - %s", getHumanReadableId(), smaTitle);
+      }
+
+   }
 }

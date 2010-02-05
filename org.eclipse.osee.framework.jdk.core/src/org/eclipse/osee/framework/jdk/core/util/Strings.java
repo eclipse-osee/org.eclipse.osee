@@ -42,7 +42,8 @@ public class Strings {
       }
       String toReturn = value;
       if (Strings.isValid(value) && value.length() > length) {
-         toReturn = value.substring(0, Math.min(length, value.length())) + (addDots ? "..." : "");
+         int len = (addDots && length - 3 > 0 ? length - 3 : length);
+         toReturn = value.substring(0, Math.min(length, len)) + (addDots ? "..." : "");
       }
       return toReturn;
    }

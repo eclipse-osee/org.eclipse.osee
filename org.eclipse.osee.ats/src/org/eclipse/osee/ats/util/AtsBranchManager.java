@@ -50,11 +50,11 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
@@ -712,16 +712,11 @@ public class AtsBranchManager {
     * except in test cases or automated tools. Use createWorkingBranchWithPopups
     */
    public void createWorkingBranch(String pageId, final IOseeBranch parentBranch) throws OseeCoreException {
-      final Artifact stateMachineArtifact = teamArt;
-      String smaTitle = stateMachineArtifact.getName();
-      if (smaTitle.length() > 40) {
-         smaTitle = smaTitle.substring(0, 39) + "...";
-      }
-      final String branchName = String.format("%s - %s", stateMachineArtifact.getHumanReadableId(), smaTitle);
+      final String branchName = Strings.truncate(teamArt.getBranchName(), 195, true);
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
-            BranchManager.createWorkingBranch(parentBranch, branchName, stateMachineArtifact);
+            BranchManager.createWorkingBranch(parentBranch, branchName, teamArt);
             // Create reviews as necessary
             SkynetTransaction transaction =
                   new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Transition");
@@ -740,11 +735,6 @@ public class AtsBranchManager {
       private final Branch destinationBranch;
       private final boolean archiveWorkingBranch;
 
-      /**
-       * @param name
-       * @param commitPopup
-       * @param overrideStateValidation
-       */
       public AtsCommitJob(boolean commitPopup, boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch) {
          super("Commit Branch");
          this.commitPopup = commitPopup;
@@ -883,8 +873,6 @@ public class AtsBranchManager {
     * Return ChangeData represented by commit to commitConfigArt or earliest commit if commitConfigArt == null
     * 
     * @param commitConfigArt that configures commit or null
-    * @return ChangeData
-    * @throws OseeCoreException
     */
    public ChangeData getChangeData(ICommitConfigArtifact commitConfigArt) throws OseeCoreException {
       if (commitConfigArt != null && commitConfigArt.getParentBranch() == null) {

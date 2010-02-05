@@ -385,8 +385,9 @@ public class BranchManager {
       Branch parentBranch = BranchManager.getBranch(parentBranchId);
       String creationComment = "New Branch from " + parentBranch.getName() + "(" + parentTransactionNumber + ")";
 
+      final String shortBranchName = Strings.truncate(childBranchName, 195, true);
       return HttpBranchCreation.createBranch(BranchType.WORKING, parentTransactionNumber, parentBranchId,
-            childBranchName, childBranchGuid, associatedArtifact, creationComment, -1, -1);
+            shortBranchName, childBranchGuid, associatedArtifact, creationComment, -1, -1);
    }
 
    /**
