@@ -22,12 +22,13 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * @author Donald G. Dunne
  */
-public class XCheckedFilteredTree extends XFilteredTree {
+public class XCheckedFilteredTree extends FilteredTree {
 
    private final Set<Object> checked = new HashSet<Object>();
 
@@ -37,7 +38,8 @@ public class XCheckedFilteredTree extends XFilteredTree {
     * @param filter
     */
    public XCheckedFilteredTree(Composite parent, int treeStyle, PatternFilter filter) {
-      super(parent, treeStyle, filter);
+      super(parent, treeStyle, filter, true);
+      setInitialText("");
    }
 
    @Override

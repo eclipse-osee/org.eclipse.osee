@@ -56,7 +56,7 @@ import org.eclipse.ui.progress.WorkbenchJob;
 /**
  * A simple control that provides a text widget and a tree viewer. The contents of the text widget are used to drive a
  * PatternFilter that is on the viewer.
- * 
+ *
  * @see org.eclipse.ui.dialogs.PatternFilter
  * @since 3.2
  */
@@ -104,7 +104,7 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * The parent composite of the filtered tree.
-    * 
+    *
     * @since 3.3
     */
    protected Composite parent;
@@ -158,7 +158,7 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * Create a new instance of the receiver.
-    * 
+    *
     * @param parent the parent <code>Composite</code>
     * @param treeStyle the style bits for the <code>Tree</code>
     * @param filter the filter to be used
@@ -173,7 +173,7 @@ public class FilteredTreeComposite extends Composite {
     * Create a new instance of the receiver. Subclasses that wish to override the default creation behavior may use this
     * constructor, but must ensure that the <code>init(composite, int, PatternFilter)</code> method is called in the
     * overriding constructor.
-    * 
+    *
     * @param parent the parent <code>Composite</code>
     * @see #init(int, PatternFilter)
     * @since 3.3
@@ -185,7 +185,7 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * Create the filtered tree.
-    * 
+    *
     * @param treeStyle the style bits for the <code>Tree</code>
     * @param filter the filter to be used
     * @since 3.3
@@ -205,7 +205,7 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * Create the filtered tree's controls. Subclasses should override.
-    * 
+    *
     * @param parent
     * @param treeStyle
     */
@@ -241,7 +241,7 @@ public class FilteredTreeComposite extends Composite {
    /**
     * Create the filter controls. By default, a text and corresponding tool bar button that clears the contents of the
     * text is created. Subclasses may override.
-    * 
+    *
     * @param parent parent <code>Composite</code> of the filter controls
     * @return the <code>Composite</code> that contains the filter controls
     */
@@ -260,7 +260,7 @@ public class FilteredTreeComposite extends Composite {
     * Creates and set up the tree and tree viewer. This method calls {@link #doCreateTreeViewer(Composite, int)} to
     * create the tree viewer. Subclasses should override {@link #doCreateTreeViewer(Composite, int)} instead of
     * overriding this method.
-    * 
+    *
     * @param parent parent <code>Composite</code>
     * @param style SWT style bits used to create the tree
     * @return the tree
@@ -283,7 +283,7 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * Creates the tree viewer. Subclasses may override.
-    * 
+    *
     * @param parent the parent composite
     * @param style SWT style bits used to create the tree viewer
     * @return the tree viewer
@@ -295,16 +295,17 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * Return the first item in the tree that matches the filter pattern.
-    * 
+    *
     * @param items
     * @return the first matching TreeItem
     */
    private TreeItem getFirstMatchingItem(TreeItem[] items) {
-      for (int i = 0; i < items.length; i++) {
-         if (patternFilter.isLeafMatch(treeViewer, items[i].getData()) && patternFilter.isElementSelectable(items[i].getData())) {
-            return items[i];
+      if (items.length > 0) {
+         TreeItem treeItem = items[0];
+         if (patternFilter.isLeafMatch(treeViewer, treeItem.getData()) && patternFilter.isElementSelectable(treeItem.getData())) {
+            return treeItem;
          }
-         return getFirstMatchingItem(items[i].getItems());
+         return getFirstMatchingItem(treeItem.getItems());
       }
       return null;
    }
@@ -319,7 +320,7 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * Creates a workbench job that will refresh the tree based on the current filter text. Subclasses may override.
-    * 
+    *
     * @return a workbench job that can be scheduled to refresh the tree
     * @since 3.4
     */
@@ -404,7 +405,7 @@ public class FilteredTreeComposite extends Composite {
 
          /**
           * Returns true if the job should be canceled (because of timeout or actual cancellation).
-          * 
+          *
           * @param items
           * @param monitor
           * @param cancelTime
@@ -416,7 +417,7 @@ public class FilteredTreeComposite extends Composite {
             for (int i = 0; !canceled && i < items.length; i++) {
                TreeItem item = items[i];
                boolean visible = numItemsLeft[0]-- >= 0;
-               if (monitor.isCanceled() || (!visible && System.currentTimeMillis() > cancelTime)) {
+               if (monitor.isCanceled() || !visible && System.currentTimeMillis() > cancelTime) {
                   canceled = true;
                } else {
                   Object itemData = item.getData();
@@ -448,7 +449,7 @@ public class FilteredTreeComposite extends Composite {
    /**
     * Creates the filter text and adds listeners. This method calls {@link #doCreateFilterText(Composite)} to create the
     * text control. Subclasses should override {@link #doCreateFilterText(Composite)} instead of overriding this method.
-    * 
+    *
     * @param parent <code>Composite</code> of the filter text
     */
    protected void createFilterText(Composite parent) {
@@ -468,7 +469,7 @@ public class FilteredTreeComposite extends Composite {
 
          /**
           * Return the number of filtered items
-          * 
+          *
           * @return int
           */
          private int getFilteredItemsCount() {
@@ -483,7 +484,7 @@ public class FilteredTreeComposite extends Composite {
 
          /**
           * Return the count of treeItem and it's children to infinite depth.
-          * 
+          *
           * @param treeItem
           * @return int
           */
@@ -569,7 +570,9 @@ public class FilteredTreeComposite extends Composite {
          filterText.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
-               if (e.detail == SWT.CANCEL) clearText();
+               if (e.detail == SWT.CANCEL) {
+                  clearText();
+               }
             }
          });
       }
@@ -577,13 +580,15 @@ public class FilteredTreeComposite extends Composite {
       GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
       // if the text widget supported cancel then it will have it's own
       // integrated button. We can take all of the space.
-      if ((filterText.getStyle() & SWT.CANCEL) != 0) gridData.horizontalSpan = 2;
+      if ((filterText.getStyle() & SWT.CANCEL) != 0) {
+         gridData.horizontalSpan = 2;
+      }
       filterText.setLayoutData(gridData);
    }
 
    /**
     * Creates the text control for entering the filter text. Subclasses may override.
-    * 
+    *
     * @param parent the parent composite
     * @return the text widget
     * @since 3.3
@@ -609,7 +614,7 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * Set the background for the widgets that support the filter text area.
-    * 
+    *
     * @param background background <code>Color</code> to set
     */
    @Override
@@ -625,7 +630,7 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * Create the button that clears the text.
-    * 
+    *
     * @param parent parent <code>Composite</code> of toolbar button
     */
    private void createClearText(Composite parent) {
@@ -661,7 +666,7 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * Set the text in the filter control.
-    * 
+    *
     * @param string
     */
    protected void setFilterText(String string) {
@@ -673,7 +678,7 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * Returns the pattern filter used by this tree.
-    * 
+    *
     * @return The pattern filter; never <code>null</code>.
     */
    public final PatternFilter getPatternFilter() {
@@ -682,7 +687,7 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * Get the tree viewer of the receiver.
-    * 
+    *
     * @return the tree viewer
     */
    public TreeViewer getViewer() {
@@ -691,7 +696,7 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * Get the filter text for the receiver, if it was created. Otherwise return <code>null</code>.
-    * 
+    *
     * @return the filter Text, or null if it was not created
     */
    public Text getFilterControl() {
@@ -701,7 +706,7 @@ public class FilteredTreeComposite extends Composite {
    /**
     * Convenience method to return the text of the filter control. If the text widget is not created, then null is
     * returned.
-    * 
+    *
     * @return String in the text, or null if the text does not exist
     */
    protected String getFilterString() {
@@ -711,7 +716,7 @@ public class FilteredTreeComposite extends Composite {
    /**
     * Set the text that will be shown until the first focus. A default value is provided, so this method only need be
     * called if overriding the default initial text is desired.
-    * 
+    *
     * @param text initial text to appear in text field
     */
    public void setInitialText(String text) {
@@ -731,7 +736,7 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * Get the initial text for the receiver.
-    * 
+    *
     * @return String
     */
    protected String getInitialText() {
@@ -741,7 +746,7 @@ public class FilteredTreeComposite extends Composite {
    /**
     * Return a bold font if the given element matches the given pattern. Clients can opt to call this method from a
     * Viewer's label provider to get a bold font for which to highlight the given element in the tree.
-    * 
+    *
     * @param element element for which a match should be determined
     * @param tree FilteredTree in which the element resides
     * @param filter PatternFilter which determines a match
@@ -773,7 +778,7 @@ public class FilteredTreeComposite extends Composite {
 
    /**
     * Custom tree viewer subclass that clears the caches in patternFilter on any change to the tree. See bug 187200.
-    * 
+    *
     * @since 3.3
     */
    class NotifyingTreeViewer extends TreeViewer {
