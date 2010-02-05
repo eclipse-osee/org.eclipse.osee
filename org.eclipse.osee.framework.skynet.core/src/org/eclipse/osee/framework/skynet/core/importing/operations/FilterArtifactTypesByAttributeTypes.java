@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -29,11 +29,11 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
 
-   private final Branch branch;
+   private final IOseeBranch branch;
    private final Collection<ArtifactType> selectedArtifactTypes;
    private final RoughArtifactCollector collector;
 
-   public FilterArtifactTypesByAttributeTypes(Branch branch, RoughArtifactCollector collector, Collection<ArtifactType> selectedArtifactTypes) {
+   public FilterArtifactTypesByAttributeTypes(IOseeBranch branch, RoughArtifactCollector collector, Collection<ArtifactType> selectedArtifactTypes) {
       super("Filter Artifact Types", Activator.PLUGIN_ID);
       this.branch = branch;
       this.selectedArtifactTypes = selectedArtifactTypes;
@@ -56,8 +56,8 @@ public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
          }
       }
       for (ArtifactType artifactType : ArtifactTypeManager.getValidArtifactTypes(branch)) {
-         Collection<AttributeType> attributeType = artifactType.getAttributeTypes(branch);
-         if (Collections.setComplement(requiredTypes, attributeType).isEmpty()) {
+         Collection<AttributeType> attributeTypes = artifactType.getAttributeTypes(branch);
+         if (Collections.setComplement(requiredTypes, attributeTypes).isEmpty()) {
             selectedArtifactTypes.add(artifactType);
          }
       }

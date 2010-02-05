@@ -14,12 +14,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * High-level test to ensure demo artifact types correctly inherit from artifact
@@ -49,14 +49,12 @@ public class ArtifactTypeInheritanceTest {
       Set<ArtifactType> allTypes = new HashSet<ArtifactType>(ArtifactTypeManager.getAllTypes());
       allTypes.remove(baseArtifactType);
 
-      Collection<AttributeType> baseAttributeTypes =
-            baseArtifactType.getAttributeTypes(BranchManager.getSystemRootBranch());
+      Collection<AttributeType> baseAttributeTypes = baseArtifactType.getAttributeTypes(CoreBranches.SYSTEM_ROOT);
 
       Assert.assertTrue(baseAttributeTypes.size() > 0); // Must have at least name
 
       for (ArtifactType artifactType : allTypes) {
-         Collection<AttributeType> childAttributeTypes =
-               artifactType.getAttributeTypes(BranchManager.getSystemRootBranch());
+         Collection<AttributeType> childAttributeTypes = artifactType.getAttributeTypes(CoreBranches.SYSTEM_ROOT);
          Collection<AttributeType> complement = Collections.setComplement(baseAttributeTypes, childAttributeTypes);
          Assert.assertTrue(String.format("[%s] did not inherit %s ", artifactType.getName(), complement),
                complement.isEmpty());

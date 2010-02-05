@@ -18,17 +18,16 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.AttributeChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeReportResponse;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.RelationChangeItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.ChangeItemUtil;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
@@ -37,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpChangeDataRequester;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
@@ -53,7 +53,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class ChangeDataLoader {
 
-   public Collection<Change> getChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor) throws OseeCoreException {
+   public Collection<Change> getChanges(IOseeBranch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor) throws OseeCoreException {
       boolean isHistorical = sourceBranch == null;
       ArrayList<Change> changes = new ArrayList<Change>();
       List<ChangeItem> changeItems = loadChangeItems(sourceBranch, transactionId, monitor, isHistorical);
@@ -64,7 +64,7 @@ public class ChangeDataLoader {
 
       for (ChangeItem item : changeItems) {
          Change change = null;
-         Branch branch = null;
+         IOseeBranch branch = null;
          Artifact artifact = null;
 
          try {
@@ -102,21 +102,21 @@ public class ChangeDataLoader {
       return changes;
    }
 
-   private Change asChange(ChangeItem item, Artifact artifact, Branch branch, TransactionRecord fromTransactionId, TransactionRecord toTransactionId, String wasValue, boolean isHistorical) throws OseeCoreException {
+   private Change asChange(ChangeItem item, Artifact artifact, IOseeBranch branch, TransactionRecord fromTransactionId, TransactionRecord toTransactionId, String wasValue, boolean isHistorical) throws OseeCoreException {
       Change change = null;
       if (item instanceof ArtifactChangeItem) {
          change =
                new ArtifactChange(branch, artifact.getArtifactType(),
-               (int) item.getCurrentVersion().getGammaId().longValue(), item.getItemId(), toTransactionId,
-               fromTransactionId, item.getNetChange().getModType(), ChangeType.OUTGOING, isHistorical, artifact);
+                     (int) item.getCurrentVersion().getGammaId().longValue(), item.getItemId(), toTransactionId,
+                     fromTransactionId, item.getNetChange().getModType(), ChangeType.OUTGOING, isHistorical, artifact);
       } else if (item instanceof AttributeChangeItem) {
          change =
                new AttributeChange(branch, artifact.getArtifactType(),
-               (int) item.getCurrentVersion().getGammaId().longValue(), item.getArtId(), toTransactionId,
-               fromTransactionId, item.getNetChange().getModType(), ChangeType.OUTGOING,
-               item.getCurrentVersion().getValue(), wasValue, item.getItemId(), artifact.getAttributeById(
-               item.getItemId(), true).getAttributeType().getId(), item.getNetChange().getModType(),
-               isHistorical, artifact);
+                     (int) item.getCurrentVersion().getGammaId().longValue(), item.getArtId(), toTransactionId,
+                     fromTransactionId, item.getNetChange().getModType(), ChangeType.OUTGOING,
+                     item.getCurrentVersion().getValue(), wasValue, item.getItemId(), artifact.getAttributeById(
+                           item.getItemId(), true).getAttributeType().getId(), item.getNetChange().getModType(),
+                     isHistorical, artifact);
       } else if (item instanceof RelationChangeItem) {
          RelationChangeItem relationChangeItem = (RelationChangeItem) item;
          Artifact bArtifact;
@@ -128,24 +128,24 @@ public class ChangeDataLoader {
          }
          change =
                new RelationChange(branch, artifact.getArtifactType(),
-               (int) relationChangeItem.getCurrentVersion().getGammaId().longValue(), item.getArtId(),
-               toTransactionId, fromTransactionId, relationChangeItem.getNetChange().getModType(),
-               ChangeType.OUTGOING, bArtifact.getArtId(), relationChangeItem.getItemId(),
-               relationChangeItem.getRationale(), RelationTypeManager.getType(relationChangeItem.getRelTypeId()),
-               isHistorical, artifact, bArtifact);
+                     (int) relationChangeItem.getCurrentVersion().getGammaId().longValue(), item.getArtId(),
+                     toTransactionId, fromTransactionId, relationChangeItem.getNetChange().getModType(),
+                     ChangeType.OUTGOING, bArtifact.getArtId(), relationChangeItem.getItemId(),
+                     relationChangeItem.getRationale(), RelationTypeManager.getType(relationChangeItem.getRelTypeId()),
+                     isHistorical, artifact, bArtifact);
       } else {
          throw new OseeCoreException("The change item must map to either a artifact, attribute or relation change");
       }
       return change;
    }
 
-   private Collection<Artifact> preloadArtifacts(List<ChangeItem> changeItems, Branch sourceBranch, TransactionRecord transactionId, boolean isHistorical, IProgressMonitor monitor) throws OseeCoreException {
+   private Collection<Artifact> preloadArtifacts(List<ChangeItem> changeItems, IOseeBranch sourceBranch, TransactionRecord transactionId, boolean isHistorical, IProgressMonitor monitor) throws OseeCoreException {
       Collection<Artifact> artifacts = Collections.emptyList();
       if (!changeItems.isEmpty()) {
          monitor.subTask("Preload artifacts");
          int queryId = ArtifactLoader.getNewQueryId();
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-         Branch branch = isHistorical ? transactionId.getBranch() : sourceBranch;
+         IOseeBranch branch = isHistorical ? transactionId.getBranch() : sourceBranch;
 
          Set<Integer> artIds = new HashSet<Integer>();
          for (ChangeItem item : changeItems) {
@@ -158,13 +158,13 @@ public class ChangeDataLoader {
 
          List<Object[]> insertParameters = new LinkedList<Object[]>();
          for (Integer artId : artIds) {
-            insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getId(),
+            insertParameters.add(new Object[] {queryId, insertTime, artId, BranchManager.getBranch(branch).getId(),
                   isHistorical ? transactionId.getId() : SQL3DataType.INTEGER});
          }
 
          artifacts =
                ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.ALL_CURRENT, null, insertParameters, true,
-               isHistorical, true);
+                     isHistorical, true);
       }
       return artifacts;
    }
@@ -176,7 +176,7 @@ public class ChangeDataLoader {
     * @throws OseeCoreException
     * @throws OseeWrappedException
     */
-   private List<ChangeItem> loadChangeItems(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException, OseeWrappedException {
+   private List<ChangeItem> loadChangeItems(IOseeBranch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException, OseeWrappedException {
       TransactionRecord destinationTransactionId;
       TransactionRecord sourceTransactionId;
 
@@ -184,10 +184,12 @@ public class ChangeDataLoader {
          destinationTransactionId = TransactionManager.getPriorTransaction(transactionId);
          sourceTransactionId = transactionId;
       } else {
-         destinationTransactionId = TransactionManager.getLastTransaction(sourceBranch.getParentBranch());
+         destinationTransactionId =
+               TransactionManager.getLastTransaction(BranchManager.getBranch(sourceBranch).getParentBranch());
          sourceTransactionId = TransactionManager.getLastTransaction(sourceBranch);
       }
-      ChangeReportResponse response = HttpChangeDataRequester.getChanges(sourceTransactionId, destinationTransactionId, monitor, isHistorical);
+      ChangeReportResponse response =
+            HttpChangeDataRequester.getChanges(sourceTransactionId, destinationTransactionId, monitor, isHistorical);
       return response.getChangeItems();
    }
 }

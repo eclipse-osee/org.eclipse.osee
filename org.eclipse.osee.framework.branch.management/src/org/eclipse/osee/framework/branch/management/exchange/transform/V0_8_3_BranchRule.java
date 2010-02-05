@@ -31,10 +31,10 @@ public class V0_8_3_BranchRule extends Rule {
          }
 
          String guid = GUID.create();
-         for (CoreBranches branch : CoreBranches.values()) {
-            if (branchMatcher.group(3).equals(branch.getName())) {
-               guid = branch.getGuid();
-            }
+         if (branchMatcher.group(3).equals(CoreBranches.SYSTEM_ROOT.getName())) {
+            guid = CoreBranches.SYSTEM_ROOT.getGuid();
+         } else if (branchMatcher.group(3).equals(CoreBranches.COMMON.getName())) {
+            guid = CoreBranches.COMMON.getGuid();
          }
          changeSet.insertBefore(branchMatcher.end(1), "branch_guid=\"" + guid + "\" branch_state=\"-1\" ");
          ruleWasApplicable = true;

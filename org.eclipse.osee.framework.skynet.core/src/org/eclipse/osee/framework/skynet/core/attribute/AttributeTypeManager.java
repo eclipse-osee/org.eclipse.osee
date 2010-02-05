@@ -16,13 +16,13 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -44,7 +44,7 @@ public class AttributeTypeManager {
       return Activator.getInstance().getOseeCacheService().getAttributeTypeCache();
    }
 
-   public static Collection<AttributeType> getValidAttributeTypes(Branch branch) throws OseeCoreException {
+   public static Collection<AttributeType> getValidAttributeTypes(IOseeBranch branch) throws OseeCoreException {
       Set<AttributeType> attributeTypes = new HashSet<AttributeType>(100);
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
          attributeTypes.addAll(artifactType.getAttributeTypes(branch));
@@ -169,11 +169,11 @@ public class AttributeTypeManager {
    }
 
    public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, IAttributeType attributeType) throws OseeCoreException {
-      return baseType.isAssignableFrom(getAttributeBaseClass(getType(attributeType)));
+      return baseType.isAssignableFrom(getAttributeBaseClass(attributeType));
    }
 
-   public static Class<? extends Attribute<?>> getAttributeBaseClass(AttributeType attributeType) throws OseeCoreException {
-      return AttributeExtensionManager.getAttributeClassFor(attributeType.getBaseAttributeTypeId());
+   public static Class<? extends Attribute<?>> getAttributeBaseClass(IAttributeType attributeType) throws OseeCoreException {
+      return AttributeExtensionManager.getAttributeClassFor(getType(attributeType).getBaseAttributeTypeId());
    }
 
    public static Class<? extends IAttributeDataProvider> getAttributeProviderClass(AttributeType attributeType) throws OseeCoreException {

@@ -293,8 +293,6 @@ public final class ArtifactImageManager {
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-      if (baseImageEnum == null) {
-      }
       return ImageManager.setupImage(baseImageEnum);
    }
 

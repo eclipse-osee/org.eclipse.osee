@@ -11,53 +11,60 @@
 package org.eclipse.osee.framework.core.enums;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 
 /**
  * @author Ryan D. Brooks
  */
-public enum CoreArtifactTypes implements IArtifactType {
-   AbstractSoftwareRequirement("Abstract Software Requirement", "ABNAYPwV6H4EkjQ3+QQA"),
-   AbstractTestResult("Abstract Test Result", "ATkaanWmHH3PkhGNVjwA"),
-   Artifact("Artifact", "AAMFDh6S7gRLupAMwywA"),
-   CodeUnit("Code Unit", "AAMFDkEh216dzK1mTZgA"),
-   Folder("Folder", "AAMFDg_wmiYHHY5swJwA"),
-   GeneralData("General Data", "AAMFDhQXfyb2m+jCwlwA"),
-   GeneralDocument("General Document", "AAMFDhCjkTvP+VBpBCQA"),
-   GlobalPreferences("Global Preferences", "AAMFDho2kBqyoOZEw+gA"),
-   Heading("Heading", "AAMFDhEzni8FpFb5yHwA"),
-   IndirectSoftwareRequirement("Indirect Software Requirement", "AAMFDiC7HRQMqr5S0QwA"),
-   Requirement("Requirement", "ABM_vxEEowY+8i2_q9gA"),
-   RootArtifact("Root Artifact", "AAMFDhHDqlbzKcIxcsAA"),
-   SoftwareRequirement("Software Requirement", "AAMFDiAwhRFXwIyapJAA"),
-   SoftwareRequirementDrawing("Software Requirement Drawing", "ABNClhgUfwj6A3EAArQA"),
-   SubsystemRequirement("Subsystem Requirement", "AAMFDiN9KiAkhuLqOhQA"),
-   TestPlanElement("Test Plan Element", "ATi_kUpvPBiW2upYC_wA"),
-   TestProcedure("Test Procedure", "AAMFDjsjiGhoWpqM4PQA"),
-   TestResultNative("Test Result Native", "ATkaanWmHH3PkhGNVjwA"),
-   TestResultWML("Test Result WML", "ATk6NKFFmD_zg1b_eaQA"),
-   TestUnit("Test Unit", "ABM2d6uxUw66aSdo0LwA"),
-   UniversalGroup("Universal Group", "AAMFDhLY2TnADPA_EQQA"),
-   User("User", "AAMFDhmr+Dqqe5pn3kAA"),
-   UserGroup("User Group", "AAMFDhrEbXqZKPfWkwAA"),
-   WorkFlowDefinition("Work Flow Definition", "AAMFDh16eQ1GIHPWlYQA"),
-   WorkPageDefinition("Work Page Definition", "AAMFDhzuyizN4qu7tXgA"),
-   WorkRuleDefinition("Work Rule Definition", "AAMFDhxjHC2RUV2RkcQA"),
-   WorkWidgetDefinition("Work Widget Definition", "AAMFDh4IVzqPgVTpLrwA"),
-   XViewerGlobalCustomization("XViewer Global Customization", "AAMFDhtN7T4of30iYhAA");
+public class CoreArtifactTypes extends NamedIdentity implements IArtifactType {
+   public static final CoreArtifactTypes AbstractSoftwareRequirement =
+         new CoreArtifactTypes("ABNAYPwV6H4EkjQ3+QQA", "Abstract Software Requirement");
+   public static final CoreArtifactTypes AbstractTestResult =
+         new CoreArtifactTypes("ATkaanWmHH3PkhGNVjwA", "Abstract Test Result");
+   public static final CoreArtifactTypes Artifact = new CoreArtifactTypes("AAMFDh6S7gRLupAMwywA", "Artifact");
+   public static final CoreArtifactTypes CodeUnit = new CoreArtifactTypes("AAMFDkEh216dzK1mTZgA", "Code Unit");
+   public static final CoreArtifactTypes Folder = new CoreArtifactTypes("AAMFDg_wmiYHHY5swJwA", "Folder");
+   public static final CoreArtifactTypes GeneralData = new CoreArtifactTypes("AAMFDhQXfyb2m+jCwlwA", "General Data");
+   public static final CoreArtifactTypes GeneralDocument =
+         new CoreArtifactTypes("AAMFDhCjkTvP+VBpBCQA", "General Document");
+   public static final CoreArtifactTypes GlobalPreferences =
+         new CoreArtifactTypes("AAMFDho2kBqyoOZEw+gA", "Global Preferences");
+   public static final CoreArtifactTypes Heading = new CoreArtifactTypes("AAMFDhEzni8FpFb5yHwA", "Heading");
+   public static final CoreArtifactTypes IndirectSoftwareRequirement =
+         new CoreArtifactTypes("AAMFDiC7HRQMqr5S0QwA", "Indirect Software Requirement");
+   public static final CoreArtifactTypes Requirement = new CoreArtifactTypes("ABM_vxEEowY+8i2_q9gA", "Requirement");
+   public static final CoreArtifactTypes RootArtifact = new CoreArtifactTypes("AAMFDhHDqlbzKcIxcsAA", "Root Artifact");
+   public static final CoreArtifactTypes SoftwareRequirement =
+         new CoreArtifactTypes("AAMFDiAwhRFXwIyapJAA", "Software Requirement");
+   public static final CoreArtifactTypes SoftwareRequirementDrawing =
+         new CoreArtifactTypes("ABNClhgUfwj6A3EAArQA", "Software Requirement Drawing");
+   public static final CoreArtifactTypes SubsystemRequirement =
+         new CoreArtifactTypes("AAMFDiN9KiAkhuLqOhQA", "Subsystem Requirement");
+   public static final CoreArtifactTypes TestPlanElement =
+         new CoreArtifactTypes("ATi_kUpvPBiW2upYC_wA", "Test Plan Element");
+   public static final CoreArtifactTypes TestProcedure =
+         new CoreArtifactTypes("AAMFDjsjiGhoWpqM4PQA", "Test Procedure");
+   public static final CoreArtifactTypes TestResultNative =
+         new CoreArtifactTypes("ATkaanWmHH3PkhGNVjwA", "Test Result Native");
+   public static final CoreArtifactTypes TestResultWML =
+         new CoreArtifactTypes("ATk6NKFFmD_zg1b_eaQA", "Test Result WML");
+   public static final CoreArtifactTypes TestUnit = new CoreArtifactTypes("ABM2d6uxUw66aSdo0LwA", "Test Unit");
+   public static final CoreArtifactTypes UniversalGroup =
+         new CoreArtifactTypes("AAMFDhLY2TnADPA_EQQA", "Universal Group");
+   public static final CoreArtifactTypes User = new CoreArtifactTypes("AAMFDhmr+Dqqe5pn3kAA", "User");
+   public static final CoreArtifactTypes UserGroup = new CoreArtifactTypes("AAMFDhrEbXqZKPfWkwAA", "User Group");
+   public static final CoreArtifactTypes WorkFlowDefinition =
+         new CoreArtifactTypes("AAMFDh16eQ1GIHPWlYQA", "Work Flow Definition");
+   public static final CoreArtifactTypes WorkPageDefinition =
+         new CoreArtifactTypes("AAMFDhzuyizN4qu7tXgA", "Work Page Definition");
+   public static final CoreArtifactTypes WorkRuleDefinition =
+         new CoreArtifactTypes("AAMFDhxjHC2RUV2RkcQA", "Work Rule Definition");
+   public static final CoreArtifactTypes WorkWidgetDefinition =
+         new CoreArtifactTypes("AAMFDh4IVzqPgVTpLrwA", "Work Widget Definition");
+   public static final CoreArtifactTypes XViewerGlobalCustomization =
+         new CoreArtifactTypes("AAMFDhtN7T4of30iYhAA", "XViewer Global Customization");
 
-   private final String name;
-   private final String guid;
-
-   private CoreArtifactTypes(String name, String guid) {
-      this.name = name;
-      this.guid = guid;
-   }
-
-   public String getName() {
-      return this.name;
-   }
-
-   public String getGuid() {
-      return guid;
+   private CoreArtifactTypes(String guid, String name) {
+      super(guid, name);
    }
 }

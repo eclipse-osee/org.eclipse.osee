@@ -13,5 +13,5 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public interface IOseeBranch extends NamedIdentity {
+public interface IOseeBranch extends Identity, Named {
 }

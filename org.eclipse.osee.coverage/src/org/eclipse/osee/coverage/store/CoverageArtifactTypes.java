@@ -11,29 +11,20 @@
 package org.eclipse.osee.coverage.store;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 
 /**
  * @author Don Dunne
  */
-public enum CoverageArtifactTypes implements IArtifactType {
-   CoveragePackage("Coverage Package", "AARFcyA9zyD3uEK8akgA"),
-   CoverageUnit("Coverage Unit", "ALZS3MQdCCIUvEYlZeAA"),
-   CoverageFolder("Coverage Folder", "ALZR_AbpJTTf6QQn2iAA");
+public class CoverageArtifactTypes extends NamedIdentity implements IArtifactType {
+   public static final CoverageArtifactTypes CoveragePackage =
+         new CoverageArtifactTypes("AARFcyA9zyD3uEK8akgA", "Coverage Package");
+   public static final CoverageArtifactTypes CoverageUnit =
+         new CoverageArtifactTypes("ALZS3MQdCCIUvEYlZeAA", "Coverage Unit");
+   public static final CoverageArtifactTypes CoverageFolder =
+         new CoverageArtifactTypes("ALZR_AbpJTTf6QQn2iAA", "Coverage Folder");
 
-   private final String name;
-   private final String guid;
-
-   private CoverageArtifactTypes(String name, String guid) {
-      this.name = name;
-      this.guid = guid;
+   private CoverageArtifactTypes(String guid, String name) {
+      super(guid, name);
    }
-
-   public String getName() {
-      return this.name;
-   }
-
-   public String getGuid() {
-      return guid;
-   }
-
 }

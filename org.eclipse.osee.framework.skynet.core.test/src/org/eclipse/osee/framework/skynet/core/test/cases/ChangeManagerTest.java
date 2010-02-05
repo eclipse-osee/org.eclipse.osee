@@ -49,8 +49,7 @@ public class ChangeManagerTest {
    public void setUp() throws Exception {
       assertFalse("This test can not be run on Production", ClientSessionManager.isProductionDataStore());
 
-      modArtifact =
-            ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, BranchManager.getSystemRootBranch());
+      modArtifact = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, CoreBranches.SYSTEM_ROOT);
       modArtifact.persist();
 
       sleep(5000);

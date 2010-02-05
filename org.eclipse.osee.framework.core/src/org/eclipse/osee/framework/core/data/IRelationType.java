@@ -13,5 +13,5 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public interface IRelationType extends NamedIdentity {
+public interface IRelationType extends Identity, Named {
 }

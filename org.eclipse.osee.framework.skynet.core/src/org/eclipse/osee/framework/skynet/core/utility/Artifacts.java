@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -101,14 +102,14 @@ public final class Artifacts {
       Collection<? extends Artifact> artsOfClass =
             clazz != null ? Collections.castMatching(clazz, artifacts) : artifacts;
       for (Artifact art : artsOfClass) {
-         if (art.isAttributeTypeValid("Active") || art.isAttributeTypeValid("ats.Active")) {
+         if (art.isAttributeTypeValid(CoreAttributeTypes.Active) || art.isAttributeTypeValid("ats.Active")) {
             if (active == Active.Both) {
                results.add((A) art);
             } else {
                // Is Active unless otherwise specified
                boolean attributeActive = false;
-               if (art.isAttributeTypeValid("Active")) {
-                  attributeActive = ((A) art).getSoleAttributeValue("Active", false);
+               if (art.isAttributeTypeValid(CoreAttributeTypes.Active)) {
+                  attributeActive = ((A) art).getSoleAttributeValue(CoreAttributeTypes.Active, false);
                } else {
                   attributeActive = ((A) art).getSoleAttributeValue("ats.Active", false);
                }

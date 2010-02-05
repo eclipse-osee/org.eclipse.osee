@@ -11,25 +11,15 @@
 package org.eclipse.osee.ote.define.AUTOGEN;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 
-public enum OteArtifactTypes implements IArtifactType {
-   TEST_RUN(Requirements.TEST_RUN, "AAMFDjqDHWo+orlSpaQA"),
-   TEST_SCRIPT(Requirements.TEST_CASE, "AAMFDikEi0TGK27TKPgA");
+public class OteArtifactTypes extends NamedIdentity implements IArtifactType {
+   public static final OteArtifactTypes TEST_RUN = new OteArtifactTypes("AAMFDjqDHWo+orlSpaQA", Requirements.TEST_RUN);
+   public static final OteArtifactTypes TEST_SCRIPT =
+         new OteArtifactTypes("AAMFDikEi0TGK27TKPgA", Requirements.TEST_CASE);
 
-   private final String name;
-   private final String guid;
-
-   private OteArtifactTypes(String name, String guid) {
-      this.name = name;
-      this.guid = guid;
-   }
-
-   public String getName() {
-      return this.name;
-   }
-
-   public String getGuid() {
-      return guid;
+   private OteArtifactTypes(String guid, String name) {
+      super(guid, name);
    }
 }

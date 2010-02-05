@@ -53,17 +53,17 @@ public class ArtifactTypeManager {
       return Activator.getInstance().getOseeCacheService().getArtifactTypeCache();
    }
 
-   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeType attributeType, Branch branch) throws OseeCoreException {
+   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeType attributeType, IOseeBranch branch) throws OseeCoreException {
       List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
       for (ArtifactType artifactType : getAllTypes()) {
-         if (artifactType.getAttributeTypes(branch).contains(attributeType)) {
+         if (artifactType.isValidAttributeType(attributeType, branch)) {
             artifactTypes.add(artifactType);
          }
       }
       return artifactTypes;
    }
 
-   public static Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws OseeCoreException {
+   public static Collection<ArtifactType> getValidArtifactTypes(IOseeBranch branch) throws OseeCoreException {
       // TODO Filter artifact types by branch
       return getAllTypes();
    }

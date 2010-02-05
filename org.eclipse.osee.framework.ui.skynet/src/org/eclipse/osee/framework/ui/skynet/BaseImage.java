@@ -69,11 +69,9 @@ public class BaseImage implements KeyedImage {
          return ArtifactImageManager.getOverrideImageEnum();
       }
       try {
-         if (artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_EXTENSION.getName())) {
-            String extension = artifact.getSoleAttributeValue(CoreAttributeTypes.NATIVE_EXTENSION.getName(), "");
-            if (Strings.isValid(extension)) {
-               return new ProgramImage(extension);
-            }
+         String extension = artifact.getSoleAttributeValue(CoreAttributeTypes.NATIVE_EXTENSION.getName(), "");
+         if (Strings.isValid(extension)) {
+            return new ProgramImage(extension);
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

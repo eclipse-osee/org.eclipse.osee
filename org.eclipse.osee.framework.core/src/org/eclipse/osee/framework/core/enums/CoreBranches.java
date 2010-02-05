@@ -11,27 +11,16 @@
 package org.eclipse.osee.framework.core.enums;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 
 /**
  * @author Roberto E. Escobar
  */
-public enum CoreBranches implements IOseeBranch {
-   COMMON("Common", "AyH_fDpMERA+zDfML4gA"),
-   SYSTEM_ROOT("System Root Branch", "AyH_fDnM2RFEhyybolQA");
+public class CoreBranches extends NamedIdentity implements IOseeBranch {
+   public static final CoreBranches COMMON = new CoreBranches("AyH_fDpMERA+zDfML4gA", "Common");
+   public static final CoreBranches SYSTEM_ROOT = new CoreBranches("AyH_fDnM2RFEhyybolQA", "System Root Branch");
 
-   private final String name;
-   private final String guid;
-
-   private CoreBranches(String name, String guid) {
-      this.name = name;
-      this.guid = guid;
-   }
-
-   public String getName() {
-      return this.name;
-   }
-
-   public String getGuid() {
-      return guid;
+   public CoreBranches(String guid, String name) {
+      super(guid, name);
    }
 }

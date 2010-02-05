@@ -385,9 +385,9 @@ public class BranchManager {
       Branch parentBranch = BranchManager.getBranch(parentBranchId);
       String creationComment = "New Branch from " + parentBranch.getName() + "(" + parentTransactionNumber + ")";
 
-      final String shortBranchName = Strings.truncate(childBranchName, 195, true);
+      final String truncatedName = Strings.truncate(childBranchName, 195, true);
       return HttpBranchCreation.createBranch(BranchType.WORKING, parentTransactionNumber, parentBranchId,
-            shortBranchName, childBranchGuid, associatedArtifact, creationComment, -1, -1);
+            truncatedName, childBranchGuid, associatedArtifact, creationComment, -1, -1);
    }
 
    /**
@@ -435,18 +435,7 @@ public class BranchManager {
    }
 
    public static Branch createTopLevelBranch(final String branchName) throws OseeCoreException {
-      return createTopLevelBranch(new IOseeBranch() {
-
-         @Override
-         public String getGuid() {
-            return GUID.create();
-         }
-
-         @Override
-         public String getName() {
-            return branchName;
-         }
-      });
+      return createTopLevelBranch(new CoreBranches(GUID.create(), branchName));
    }
 
    public static Branch createSystemRootBranch() throws OseeCoreException {

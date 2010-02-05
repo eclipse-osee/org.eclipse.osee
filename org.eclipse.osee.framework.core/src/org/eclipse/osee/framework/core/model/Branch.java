@@ -206,4 +206,7 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
       return null;
    }
 
+   public boolean isAncestorOf(IOseeBranch branch) throws OseeCoreException {
+      return getChildBranches(true).contains(branch);
+   }
 }

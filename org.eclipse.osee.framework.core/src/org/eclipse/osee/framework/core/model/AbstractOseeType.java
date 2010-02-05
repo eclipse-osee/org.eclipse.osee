@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -16,17 +15,16 @@ import org.eclipse.osee.framework.core.internal.fields.OseeField;
 import org.eclipse.osee.framework.core.internal.fields.UniqueIdField;
 import org.eclipse.osee.framework.logging.OseeLog;
 
-public abstract class AbstractOseeType implements IOseeStorable, NamedIdentity {
+public abstract class AbstractOseeType extends NamedIdentity implements IOseeStorable {
 
    public static final String NAME_FIELD_KEY = "osee.name.field";
    public static final String UNIQUE_ID_FIELD_KEY = "osee.unique.id.field";
 
-   private final String guid;
    private ModificationType modificationType;
    private final Map<String, IOseeField<?>> fieldMap;
 
    protected AbstractOseeType(String guid, String name) {
-      this.guid = guid;
+      super(guid, name);
       this.fieldMap = new HashMap<String, IOseeField<?>>();
       this.modificationType = ModificationType.NEW;
 
@@ -91,14 +89,11 @@ public abstract class AbstractOseeType implements IOseeStorable, NamedIdentity {
       }
    }
 
-   public final String getGuid() {
-      return guid;
-   }
-
    public final int getId() {
       return getFieldValueLogException(IOseeStorable.UNPERSISTTED_VALUE, UNIQUE_ID_FIELD_KEY);
    }
 
+   @Override
    public final String getName() {
       return getFieldValueLogException("", NAME_FIELD_KEY);
    }
@@ -114,32 +109,6 @@ public abstract class AbstractOseeType implements IOseeStorable, NamedIdentity {
    @Override
    public String toString() {
       return String.format("%s - [%s]", getName(), getGuid());
-   }
-
-   @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + (guid == null ? 0 : guid.hashCode());
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (obj == null || guid == null) {
-         return false;
-      }
-      if (obj instanceof Identity) {
-         return guid.equals(((Identity) obj).getGuid());
-      }
-
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      return guid.equals(((AbstractOseeType) obj).guid);
    }
 
    public final boolean isDirty() {

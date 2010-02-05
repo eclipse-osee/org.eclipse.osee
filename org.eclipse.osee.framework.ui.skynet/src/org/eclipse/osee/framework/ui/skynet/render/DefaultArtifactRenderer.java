@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -141,7 +140,7 @@ public class DefaultArtifactRenderer implements IRenderer {
       if (allAttrs) {
          wordMl.addWordMl("<w:r><w:t> " + Xml.escape(attributeTypeName) + ": </w:t></w:r>");
       } else {
-         wordMl.addWordMl(Xml.escape(attributeElement.getLabel()));
+         wordMl.addWordMl(attributeElement.getLabel());
       }
 
       if (attributeTypeName.equals(CoreAttributeTypes.RELATION_ORDER.getName())) {

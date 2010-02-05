@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.database.init;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
@@ -43,11 +42,9 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
 
    public void run() throws OseeCoreException {
       if (initializeRootArtifacts) {
-         Branch systemBranch = BranchManager.getSystemRootBranch();
-
-         ArtifactTypeManager.addArtifact(OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME, systemBranch,
+         ArtifactTypeManager.addArtifact(OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME, CoreBranches.SYSTEM_ROOT,
                OseeSystemArtifacts.DEFAULT_HIERARCHY_ROOT_NAME).persist();
-         ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, systemBranch,
+         ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, CoreBranches.SYSTEM_ROOT,
                OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME).persist();
 
          BranchManager.createTopLevelBranch(CoreBranches.COMMON);

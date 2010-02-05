@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -71,23 +72,14 @@ import org.junit.Before;
  */
 public class AtsBranchConfigurationTest {
 
-   public enum TestType implements IOseeBranch {
-      BranchViaTeamDef("AyH_e6damwQgvDhKfAAA"),
-      BranchViaVersions("AyH_e6damwQgvDhKfBBB"),
-      BranchViaParallelVersions("AyH_e6damwQgvDhKfCCC");
+   public static class TestType extends NamedIdentity implements IOseeBranch {
+      public static final TestType BranchViaTeamDef = new TestType("AyH_e6damwQgvDhKfAAA", "BranchViaTeamDef");
+      public static final TestType BranchViaVersions = new TestType("AyH_e6damwQgvDhKfBBB", "BranchViaVersions");
+      public static final TestType BranchViaParallelVersions =
+            new TestType("AyH_e6damwQgvDhKfCCC", "BranchViaParallelVersions");
 
-      private final String guid;
-
-      private TestType(String guid) {
-         this.guid = guid;
-      }
-
-      public String getGuid() {
-         return guid;
-      }
-
-      public String getName() {
-         return name();
+      private TestType(String guid, String name) {
+         super(guid, name);
       }
    }
 
@@ -104,15 +96,19 @@ public class AtsBranchConfigurationTest {
 
       OseeLog.log(AtsPlugin.class, Level.INFO, "Running testBranchViaVersions...");
 
-      String namespace = "org.branchTest." + TestType.BranchViaVersions.name().toLowerCase();
+      String namespace = "org.branchTest." + TestType.BranchViaVersions.getName().toLowerCase();
       // Cleanup from previous run
       cleanupBranchTest(TestType.BranchViaVersions);
 
       OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring ATS for team org.branchTest.viaTeamDefs");
       // create team definition and actionable item
-      AtsConfigManager.configureAtsForDefaultTeam(namespace, TestType.BranchViaVersions.name(), Arrays.asList(
-            TestType.BranchViaVersions.name() + "- Ver1", TestType.BranchViaVersions.name() + "- Ver2"), Arrays.asList(
-            TestType.BranchViaVersions.name() + "- A1", TestType.BranchViaVersions.name() + "- A2"), namespace);
+      AtsConfigManager.configureAtsForDefaultTeam(
+            namespace,
+            TestType.BranchViaVersions.getName(),
+            Arrays.asList(TestType.BranchViaVersions.getName() + "- Ver1",
+                  TestType.BranchViaVersions.getName() + "- Ver2"),
+            Arrays.asList(TestType.BranchViaVersions.getName() + "- A1", TestType.BranchViaVersions.getName() + "- A2"),
+            namespace);
 
       TestUtil.sleep(2000);
 
@@ -127,7 +123,7 @@ public class AtsBranchConfigurationTest {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring version to use branch and allow create/commit");
       TeamDefinitionArtifact teamDef =
             (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME,
-                  TestType.BranchViaVersions.name(), AtsUtil.getAtsBranch());
+                  TestType.BranchViaVersions.getName(), AtsUtil.getAtsBranch());
       VersionArtifact verArtToTarget = null;
       for (VersionArtifact vArt : teamDef.getVersionsArtifacts()) {
          if (vArt.getName().contains("Ver1")) {
@@ -150,9 +146,15 @@ public class AtsBranchConfigurationTest {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Create new Action and target for version " + verArtToTarget);
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       ActionArtifact actionArt =
-            ActionManager.createAction(null, TestType.BranchViaVersions.name() + " Req Changes", "description",
-                  ChangeType.Problem, PriorityType.Priority_1, false, null,
-                  ActionableItemArtifact.getActionableItems(Arrays.asList(TestType.BranchViaVersions.name() + "- A1")),
+            ActionManager.createAction(
+                  null,
+                  TestType.BranchViaVersions.getName() + " Req Changes",
+                  "description",
+                  ChangeType.Problem,
+                  PriorityType.Priority_1,
+                  false,
+                  null,
+                  ActionableItemArtifact.getActionableItems(Arrays.asList(TestType.BranchViaVersions.getName() + "- A1")),
                   transaction);
       actionArt.getTeamWorkFlowArtifacts().iterator().next().addRelation(
             AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArtToTarget);
@@ -189,7 +191,7 @@ public class AtsBranchConfigurationTest {
             OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getBranchMgr().getWorkingBranch());
       Artifact blk3MainArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT,
-                  teamWf.getBranchMgr().getWorkingBranch(), TestType.BranchViaVersions.name() + " Requirement");
+                  teamWf.getBranchMgr().getWorkingBranch(), TestType.BranchViaVersions.getName() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist();
 
@@ -212,14 +214,14 @@ public class AtsBranchConfigurationTest {
 
       OseeLog.log(AtsPlugin.class, Level.INFO, "Running testBranchViaTeamDefinition...");
 
-      String namespace = "org.branchTest." + TestType.BranchViaTeamDef.name().toLowerCase();
+      String namespace = "org.branchTest." + TestType.BranchViaTeamDef.getName().toLowerCase();
       // Cleanup from previous run
       cleanupBranchTest(TestType.BranchViaTeamDef);
 
       OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring ATS for team org.branchTest.viaTeamDefs");
       // create team definition and actionable item
-      AtsConfigManager.configureAtsForDefaultTeam(namespace, TestType.BranchViaTeamDef.name(), null, Arrays.asList(
-            TestType.BranchViaTeamDef.name() + "- A1", TestType.BranchViaTeamDef.name() + "- A2"), namespace);
+      AtsConfigManager.configureAtsForDefaultTeam(namespace, TestType.BranchViaTeamDef.getName(), null, Arrays.asList(
+            TestType.BranchViaTeamDef.getName() + "- A1", TestType.BranchViaTeamDef.getName() + "- A2"), namespace);
 
       TestUtil.sleep(2000);
 
@@ -234,7 +236,7 @@ public class AtsBranchConfigurationTest {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring team def to use branch and allow create/commit");
       TeamDefinitionArtifact teamDef =
             (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME,
-                  TestType.BranchViaTeamDef.name(), AtsUtil.getAtsBranch());
+                  TestType.BranchViaTeamDef.getName(), AtsUtil.getAtsBranch());
       teamDef.setSoleAttributeFromString(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(),
             viaTeamDefBranch.getGuid());
       // setup team def to allow create/commit of branch
@@ -253,9 +255,15 @@ public class AtsBranchConfigurationTest {
       SkynetTransaction transaction =
             new SkynetTransaction(AtsUtil.getAtsBranch(), "Test branch via team definition: create action");
       ActionArtifact actionArt =
-            ActionManager.createAction(null, TestType.BranchViaTeamDef.name() + " Req Changes", "description",
-                  ChangeType.Problem, PriorityType.Priority_1, false, null,
-                  ActionableItemArtifact.getActionableItems(Arrays.asList(TestType.BranchViaTeamDef.name() + "- A1")),
+            ActionManager.createAction(
+                  null,
+                  TestType.BranchViaTeamDef.getName() + " Req Changes",
+                  "description",
+                  ChangeType.Problem,
+                  PriorityType.Priority_1,
+                  false,
+                  null,
+                  ActionableItemArtifact.getActionableItems(Arrays.asList(TestType.BranchViaTeamDef.getName() + "- A1")),
                   transaction);
       transaction.execute();
 
@@ -290,7 +298,7 @@ public class AtsBranchConfigurationTest {
             OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getBranchMgr().getWorkingBranch());
       Artifact blk3MainArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT,
-                  teamWf.getBranchMgr().getWorkingBranch(), TestType.BranchViaTeamDef.name() + " Requirement");
+                  teamWf.getBranchMgr().getWorkingBranch(), TestType.BranchViaTeamDef.getName() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist();
 
@@ -306,11 +314,11 @@ public class AtsBranchConfigurationTest {
    }
 
    private void cleanupBranchTest(TestType testType) throws Exception {
-      String namespace = "org.branchTest." + testType.name().toLowerCase();
+      String namespace = "org.branchTest." + testType.getName().toLowerCase();
       OseeLog.log(AtsPlugin.class, Level.INFO, "Cleanup from previous run of ATS for team " + namespace);
       ActionArtifact aArt =
             (ActionArtifact) ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.Action,
-                  testType.name() + " Req Changes", AtsUtil.getAtsBranch());
+                  testType.getName() + " Req Changes", AtsUtil.getAtsBranch());
       if (aArt != null) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (TeamWorkFlowArtifact teamArt : aArt.getTeamWorkFlowArtifacts()) {
@@ -327,7 +335,7 @@ public class AtsBranchConfigurationTest {
       if (arts.size() > 0) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact verArt : arts) {
-            if (verArt.getName().contains(testType.name())) {
+            if (verArt.getName().contains(testType.getName())) {
                verArt.deleteAndPersist(transaction, true);
             }
          }
@@ -336,7 +344,7 @@ public class AtsBranchConfigurationTest {
 
       // Delete Team Definitions
       Artifact art =
-            ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, testType.name(),
+            ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, testType.getName(),
                   AtsUtil.getAtsBranch());
       if (art != null) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
@@ -346,7 +354,7 @@ public class AtsBranchConfigurationTest {
 
       // Delete AIs
       art =
-            ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.ActionableItem, testType.name(),
+            ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.ActionableItem, testType.getName(),
                   AtsUtil.getAtsBranch());
       if (art != null) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
@@ -383,7 +391,7 @@ public class AtsBranchConfigurationTest {
          // delete working branches
          for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchControlled.ALL,
                BranchType.WORKING)) {
-            if (workingBranch.getName().contains(testType.name())) {
+            if (workingBranch.getName().contains(testType.getName())) {
                BranchManager.purgeBranch(workingBranch);
                TestUtil.sleep(2000);
             }

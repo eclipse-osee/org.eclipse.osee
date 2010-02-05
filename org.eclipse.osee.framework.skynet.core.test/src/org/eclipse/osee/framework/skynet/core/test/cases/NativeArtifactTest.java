@@ -47,8 +47,8 @@ public class NativeArtifactTest {
                   true);
       assertNotNull(csvArtifact);
       Artifact artifact = csvArtifact.getArtifact();
-      assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT.getName()));
-      assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_EXTENSION.getName()));
+      assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT));
+      assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_EXTENSION));
    }
 
    @org.junit.Test

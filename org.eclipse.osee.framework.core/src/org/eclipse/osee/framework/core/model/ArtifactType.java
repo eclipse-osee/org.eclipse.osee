@@ -16,7 +16,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.internal.fields.ArtifactSuperTypeField;
 import org.eclipse.osee.framework.core.internal.fields.ArtifactTypeAttributesField;
@@ -99,7 +102,7 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
       ((ArtifactTypeAttributesField) field).put(branch, attributeTypes);
    }
 
-   public boolean isValidAttributeType(AttributeType attributeType, Branch branch) throws OseeCoreException {
+   public boolean isValidAttributeType(IAttributeType attributeType, IOseeBranch branch) throws OseeCoreException {
       return getAttributeTypes(branch).contains(attributeType);
    }
 
@@ -107,29 +110,19 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
       return getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
    }
 
-   private Collection<AttributeType> getLocalAttributeTypes(Branch branch) throws OseeCoreException {
-      Collection<AttributeType> values = getLocalAttributeTypes().get(branch);
-      return values == null ? Collections.<AttributeType> emptyList() : values;
-   }
-
-   public Collection<AttributeType> getAttributeTypes(Branch branch) throws OseeCoreException {
+   public Collection<AttributeType> getAttributeTypes(IOseeBranch branch) throws OseeCoreException {
       // Do not use ARTIFACT_TYPE_ATTRIBUTES_FIELD for this call since it must use branch inheritance to get all attribute types
       Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
       getAttributeTypes(attributeTypes, this, branch);
       return attributeTypes;
    }
 
-   private void getAttributeTypes(Set<AttributeType> attributeTypes, ArtifactType artifactType, Branch branch) throws OseeCoreException {
-      Branch branchCursor = branch;
-      while (true) {
-         Collection<AttributeType> items = artifactType.getLocalAttributeTypes(branchCursor);
-         if (items != null) {
-            attributeTypes.addAll(items);
-         }
-         if (branchCursor.getBranchType().isSystemRootBranch()) {
-            break;
-         } else {
-            branchCursor = branchCursor.getParentBranch();
+   private void getAttributeTypes(Set<AttributeType> attributeTypes, ArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
+      Map<Branch, Collection<AttributeType>> entries = artifactType.getLocalAttributeTypes();
+      for (Entry<Branch, Collection<AttributeType>> entry : entries.entrySet()) {
+         Branch compareBranch = entry.getKey();
+         if (compareBranch.isAncestorOf(branch) || compareBranch.equals(branch)) {
+            attributeTypes.addAll(entry.getValue());
          }
       }
 

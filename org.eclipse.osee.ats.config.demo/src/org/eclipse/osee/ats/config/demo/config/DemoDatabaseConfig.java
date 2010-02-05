@@ -75,8 +75,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Demo Database Config");
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW), DemoSawBuilds.SAW_Bld_1.name(),
             DemoSawBuilds.SAW_Bld_1.name(), transaction);
-      mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.CIS_SW), DemoCISBuilds.CIS_Bld_1.name(),
-            DemoCISBuilds.CIS_Bld_1.name(), transaction);
+      mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.CIS_SW), DemoCISBuilds.CIS_Bld_1.getName(),
+            DemoCISBuilds.CIS_Bld_1.getName(), transaction);
 
       // Set Joe Smith as Priviledged Member of SAW Test
       Artifact teamDef =
@@ -142,8 +142,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       }
 
       // Setup some sample builds for Widget B
-      for (String verName : new String[] {DemoCISBuilds.CIS_Bld_1.name(), DemoCISBuilds.CIS_Bld_2.name(),
-            DemoCISBuilds.CIS_Bld_3.name()}) {
+      for (String verName : new String[] {DemoCISBuilds.CIS_Bld_1.getName(), DemoCISBuilds.CIS_Bld_2.getName(),
+            DemoCISBuilds.CIS_Bld_3.getName()}) {
          VersionArtifact ver =
                (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(),
                      verName);

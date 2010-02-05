@@ -12,13 +12,13 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -29,14 +29,14 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Jeff C. Phillips
  */
 public final class RelationChange extends Change {
-   private int bArtId;
+   private final int bArtId;
    private String bArtName;
-   private Artifact bArtifact;
-   private int relLinkId;
-   private String rationale;
+   private final Artifact bArtifact;
+   private final int relLinkId;
+   private final String rationale;
    private int aLinkOrder;
    private int bLinkOrder;
-   private RelationType relationType;
+   private final RelationType relationType;
 
    /**
     * @param aArtTypeId
@@ -56,9 +56,7 @@ public final class RelationChange extends Change {
     * @throws OseeDataStoreException
     * @throws ArtifactDoesNotExist
     */
-   public RelationChange(Branch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType,
-         ChangeType changeType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, Artifact artifact, 
-         Artifact bArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+   public RelationChange(IOseeBranch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, Artifact artifact, Artifact bArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super(branch, aArtType, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, changeType,
             isHistorical, artifact);
       this.bArtId = bArtId;
@@ -71,7 +69,9 @@ public final class RelationChange extends Change {
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
-      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+      if (adapter == null) {
+         throw new IllegalArgumentException("adapter can not be null");
+      }
 
       try {
          if (adapter.isInstance(getArtifact())) {

@@ -94,11 +94,11 @@ public class User extends Artifact {
    }
 
    public Boolean isActive() throws OseeCoreException {
-      return getSoleAttributeValue(CoreAttributeTypes.ACTIVE);
+      return getSoleAttributeValue(CoreAttributeTypes.Active);
    }
 
    public void setActive(boolean active) throws OseeCoreException {
-      setSoleAttributeValue(CoreAttributeTypes.ACTIVE, active);
+      setSoleAttributeValue(CoreAttributeTypes.Active, active);
    }
 
    public void toggleFavoriteBranch(Branch favoriteBranch) throws OseeCoreException {

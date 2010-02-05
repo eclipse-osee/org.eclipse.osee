@@ -17,6 +17,7 @@ import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -43,14 +44,14 @@ public abstract class Attribute<T> {
    private boolean dirty;
    private ModificationType modificationType;
 
-   void internalInitialize(AttributeType attributeType, Artifact artifact, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
-      this.attributeType = attributeType;
+   void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
+      this.attributeType = AttributeTypeManager.getType(attributeType);
       this.artifactRef = new WeakReference<Artifact>(artifact);
       this.modificationType = modificationType;
 
       try {
          Class<? extends IAttributeDataProvider> providerClass =
-               AttributeTypeManager.getAttributeProviderClass(attributeType);
+               AttributeTypeManager.getAttributeProviderClass(this.attributeType);
          Constructor<? extends IAttributeDataProvider> providerConstructor =
                providerClass.getConstructor(new Class[] {Attribute.class});
          attributeDataProvider = providerConstructor.newInstance(new Object[] {this});
@@ -82,7 +83,7 @@ public abstract class Attribute<T> {
    protected void uponInitialize() throws OseeCoreException {
    }
 
-   public void internalInitialize(AttributeType attributeType, Artifact artifact, ModificationType modificationType, int attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
+   public void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, int attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       internalInitialize(attributeType, artifact, modificationType, markDirty, setDefaultValue);
       this.attrId = attributeId;
       this.gammaId = gammaId;
@@ -260,7 +261,7 @@ public abstract class Attribute<T> {
     * @param artifactType
     * @return whether this attribute's type or any of its super-types are the specified type
     */
-   public boolean isOfType(AttributeType otherAttributeType) {
+   public boolean isOfType(IAttributeType otherAttributeType) {
       return attributeType.equals(otherAttributeType);
    }
 

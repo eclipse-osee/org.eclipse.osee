@@ -14,9 +14,9 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -38,7 +38,7 @@ public class CatchTrackedChanges implements CommitAction {
     */
 
    @Override
-   public void runCommitAction(Branch branch) throws OseeCoreException {
+   public void runCommitAction(IOseeBranch branch) throws OseeCoreException {
       Set<Artifact> changedArtifacts = new HashSet<Artifact>();
 
       for (Change change : ChangeManager.getChangesPerBranch(branch, new NullProgressMonitor())) {

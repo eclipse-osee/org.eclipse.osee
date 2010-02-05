@@ -13,5 +13,5 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public interface IArtifactType extends NamedIdentity {
+public interface IArtifactType extends Identity, Named {
 }

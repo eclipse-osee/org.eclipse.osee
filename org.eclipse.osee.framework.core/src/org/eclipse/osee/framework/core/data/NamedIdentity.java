@@ -14,5 +14,40 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public interface NamedIdentity extends Identity, Named {
+public class NamedIdentity implements Identity, Named {
+   private final String guid;
+   private final String name;
+
+   public NamedIdentity(String guid, String name) {
+      this.guid = guid;
+      this.name = name;
+   }
+
+   @Override
+   public String getGuid() {
+      return guid;
+   }
+
+   @Override
+   public String getName() {
+      return name;
+   }
+
+   @Override
+   public int hashCode() {
+      return guid.hashCode();
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof NamedIdentity) {
+         return guid.equals(((NamedIdentity) obj).guid);
+      }
+      return false;
+   }
+
+   @Override
+   public String toString() {
+      return getName();
+   }
 }

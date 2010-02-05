@@ -92,7 +92,7 @@ public class ChangeArtifactType {
    }
 
    /**
-    * Splits the attributes of the current artifact into two groups. The attributes that are compatable for the new type
+    * Splits the attributes of the current artifact into two groups. The attributes that are compatible for the new type
     * and the attributes that will need to be purged.
     * 
     * @param artifact
@@ -101,17 +101,16 @@ public class ChangeArtifactType {
    private static void processAttributes(Artifact artifact, ArtifactType artifactType) throws OseeCoreException {
       attributesToPurge = new LinkedList<Attribute<?>>();
 
-      Collection<AttributeType> attributeTypes = artifactType.getAttributeTypes(artifact.getBranch());
       for (AttributeType attributeType : artifact.getAttributeTypes()) {
-         if (!attributeTypes.contains(attributeType)) {
+         if (!artifactType.isValidAttributeType(attributeType, artifact.getBranch())) {
             attributesToPurge.addAll(artifact.getAttributes(attributeType.getName()));
          }
       }
    }
 
    /**
-    * Splits the relationLinks of the current artifact into Two groups. The links that are compatable for the new type
-    * and the links that will need to be pruged.
+    * Splits the relationLinks of the current artifact into Two groups. The links that are compatible for the new type
+    * and the links that will need to be purged.
     * 
     * @param artifact
     * @param artifactType

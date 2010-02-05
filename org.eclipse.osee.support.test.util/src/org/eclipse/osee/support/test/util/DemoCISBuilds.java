@@ -11,26 +11,17 @@
 package org.eclipse.osee.support.test.util;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 
 /**
  * @author Donald G. Dunne
  */
-public enum DemoCISBuilds implements IOseeBranch {
-   CIS_Bld_1("AyH_f2sSKy3l07fIvDDD"),
-   CIS_Bld_2("AyH_f2sSKy3l07fIvEEE"),
-   CIS_Bld_3("AyH_f2sSKy3l07fIvFFF");
+public class DemoCISBuilds extends NamedIdentity implements IOseeBranch {
+   public static final DemoCISBuilds CIS_Bld_1 = new DemoCISBuilds("AyH_f2sSKy3l07fIvDDD", "CIS_Bld_1");
+   public static final DemoCISBuilds CIS_Bld_2 = new DemoCISBuilds("AyH_f2sSKy3l07fIvEEE", "CIS_Bld_2");
+   public static final DemoCISBuilds CIS_Bld_3 = new DemoCISBuilds("AyH_f2sSKy3l07fIvFFF", "CIS_Bld_3");
 
-   private final String guid;
-
-   private DemoCISBuilds(String guid) {
-      this.guid = guid;
-   }
-
-   public String getGuid() {
-      return guid;
-   }
-
-   public String getName() {
-      return name();
+   private DemoCISBuilds(String guid, String name) {
+      super(guid, name);
    }
 }

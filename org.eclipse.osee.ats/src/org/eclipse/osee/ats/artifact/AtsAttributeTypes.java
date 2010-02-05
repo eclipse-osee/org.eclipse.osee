@@ -11,26 +11,18 @@
 package org.eclipse.osee.ats.artifact;
 
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 
 /**
  * @author Ryan D. Brooks
  */
-public enum AtsAttributeTypes implements IAttributeType {
-   LegacyPCRId("ats.Legacy PCR Id", "AAMFEd3TakphMtQX1zgA");
+public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
+   public static final AtsAttributeTypes LegacyPCRId =
+         new AtsAttributeTypes("AAMFEd3TakphMtQX1zgA", "ats.Legacy PCR Id");
 
-   private final String name;
-   private final String guid;
+   public static final AtsAttributeTypes Active = new AtsAttributeTypes("AAMFEclQOVmzkIvzyWwA", "ats.Active");
 
-   private AtsAttributeTypes(String name, String guid) {
-      this.name = name;
-      this.guid = guid;
-   }
-
-   public String getName() {
-      return name;
-   }
-
-   public String getGuid() {
-      return guid;
+   private AtsAttributeTypes(String guid, String name) {
+      super(guid, name);
    }
 }

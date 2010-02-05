@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -24,16 +25,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  * @author Donald G. Dunne
  */
 public class AttributeAnnotationManager {
-
-   public static final String ANNOTATION_ATTRIBUTE = "Annotation";
-   private final org.eclipse.osee.framework.skynet.core.artifact.Artifact artifact;
+   private final Artifact artifact;
 
    public AttributeAnnotationManager(Artifact artifact) {
       this.artifact = artifact;
    }
 
    private Collection<Attribute<String>> getAttributes() throws OseeCoreException {
-      return artifact.getAttributes(ANNOTATION_ATTRIBUTE);
+      return artifact.getAttributes(CoreAttributeTypes.Annotation);
    }
 
    /**
@@ -42,7 +41,7 @@ public class AttributeAnnotationManager {
     */
    public List<ArtifactAnnotation> getAnnotations() throws OseeCoreException {
       List<ArtifactAnnotation> annotations = new ArrayList<ArtifactAnnotation>();
-      for (String value : artifact.getAttributesToStringList(ANNOTATION_ATTRIBUTE)) {
+      for (String value : artifact.getAttributesToStringList(CoreAttributeTypes.Annotation)) {
          ArtifactAnnotation annotation = new ArtifactAnnotation(value);
          annotations.add(annotation);
       }
@@ -65,7 +64,7 @@ public class AttributeAnnotationManager {
             return;
          }
       }
-      artifact.addAttribute(ANNOTATION_ATTRIBUTE, newAnnotation.toXml());
+      artifact.addAttribute(CoreAttributeTypes.Annotation, newAnnotation.toXml());
    }
 
    /**
@@ -84,5 +83,4 @@ public class AttributeAnnotationManager {
          }
       }
    }
-
 }

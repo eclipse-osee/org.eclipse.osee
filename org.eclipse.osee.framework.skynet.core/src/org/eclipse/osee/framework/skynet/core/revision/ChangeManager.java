@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -74,7 +75,7 @@ public class ChangeManager {
     * @return changes
     * @throws OseeCoreException
     */
-   public static Collection<Change> getChangesPerBranch(Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
+   public static Collection<Change> getChangesPerBranch(IOseeBranch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
       return new ChangeDataLoader().getChanges(sourceBranch, null, monitor);
    }
 

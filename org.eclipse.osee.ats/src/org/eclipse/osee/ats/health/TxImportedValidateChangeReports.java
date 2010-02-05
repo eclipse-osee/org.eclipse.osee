@@ -46,7 +46,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 public class TxImportedValidateChangeReports extends AbstractBlam {
 
    private static final String[] ARTIFACT_ID_ALIASES = new String[] {"artId", "bArtId", "aOrdr", "bOrdr"};
-   private static final String BRANCH_ID_ALIASES = "brId";
+   public static final String BRANCH_ID_ALIASES = "brGuid";
    private static final String GAMMA_ID_ALIASES = "gamma";
    private static final String[] TRANSACTION_ID_ALIASES = new String[] {"tTranId", "fTranId"};
    private static final String ARTIFACT_TYPE_ID = "artTId";

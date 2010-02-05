@@ -110,4 +110,8 @@ public class Activator implements BundleActivator, IOseeCachingServiceProvider, 
    public IOseeModelFactoryService getOseeFactoryService() throws OseeCoreException {
       return getTracker(OseeServiceTrackerId.OSEE_MODEL_FACTORY, IOseeModelFactoryService.class);
    }
+
+   public static Activator getInstance() {
+      return instance;
+   }
 }

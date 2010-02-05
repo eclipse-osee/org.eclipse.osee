@@ -458,7 +458,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @throws OseeCoreException
     */
    @SuppressWarnings("unchecked")
-   private <T> Attribute<T> createAttribute(AttributeType attributeType) throws OseeCoreException {
+   private <T> Attribute<T> createAttribute(IAttributeType attributeType) throws OseeCoreException {
       Class<? extends Attribute<T>> attributeClass =
             (Class<? extends Attribute<T>>) AttributeTypeManager.getAttributeBaseClass(attributeType);
       try {
@@ -472,13 +472,13 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       }
    }
 
-   private <T> Attribute<T> initializeAttribute(AttributeType attributeType, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
+   private <T> Attribute<T> initializeAttribute(IAttributeType attributeType, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       Attribute<T> attribute = createAttribute(attributeType);
       attribute.internalInitialize(attributeType, this, modificationType, markDirty, setDefaultValue);
       return attribute;
    }
 
-   public <T> Attribute<T> internalInitializeAttribute(AttributeType attributeType, int attributeId, int gammaId, ModificationType modificationType, boolean markDirty, Object... data) throws OseeCoreException {
+   public <T> Attribute<T> internalInitializeAttribute(IAttributeType attributeType, int attributeId, int gammaId, ModificationType modificationType, boolean markDirty, Object... data) throws OseeCoreException {
       Attribute<T> attribute = createAttribute(attributeType);
       attribute.internalInitialize(attributeType, this, modificationType, attributeId, gammaId, markDirty, false);
       attribute.getAttributeDataProvider().loadData(data);
@@ -496,12 +496,11 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    }
 
    public boolean isAttributeTypeValid(String attributeName) throws OseeCoreException {
-      AttributeType attributeType = AttributeTypeManager.getType(attributeName);
-      return getArtifactType().isValidAttributeType(attributeType, branch);
+      return isAttributeTypeValid(AttributeTypeManager.getType(attributeName));
    }
 
    public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
-      return isAttributeTypeValid(attributeType.getName());
+      return getArtifactType().isValidAttributeType(attributeType, branch);
    }
 
    /**
@@ -571,6 +570,11 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     */
    public <T> List<Attribute<T>> getAttributes(String attributeTypeName) throws OseeCoreException {
       return Collections.castAll(getAttributesByModificationType(attributeTypeName,
+            ModificationType.getCurrentModTypes()));
+   }
+
+   public <T> List<Attribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
+      return Collections.castAll(getAttributesByModificationType(attributeType.getName(),
             ModificationType.getCurrentModTypes()));
    }
 
@@ -940,7 +944,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @param value
     * @throws OseeCoreException
     */
-   public <T> void addAttribute(AttributeType attributeType, T value) throws OseeCoreException {
+   public <T> void addAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
       initializeAttribute(attributeType, ModificationType.NEW, true, false).setValue(value);
    }
 
@@ -1006,36 +1010,20 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @return string collection containing of all the attribute values of the type attributeName
     * @throws OseeCoreException
     */
-   public List<String> getAttributesToStringList(AttributeType attributeType) throws OseeCoreException {
+   public List<String> getAttributesToStringList(IAttributeType attributeType) throws OseeCoreException {
       return getAttributesToStringList(attributeType.getName());
-   }
-
-   /**
-    * Return the String value of the first found attributeTypeName attribute whether deleted or not.
-    * 
-    * @param attributeTypeName
-    * @return attribute value
-    * @throws OseeCoreException
-    */
-   private String getInternalAttributeValue(String attributeTypeName) throws OseeCoreException {
-      ensureAttributesLoaded();
-      if (!isAttributeTypeValid(attributeTypeName)) {
-         throw new OseeStateException(String.format(
-               "ArtifactType [%s] definition error - Attribute Type [%s] is not a part of Artifact Type [%s:%s]",
-               getArtifactTypeName(), attributeTypeName, getArtifactTypeName(), getGuid()));
-      }
-      for (Attribute<?> attribute : internalGetAttributes()) {
-         if (attribute.isOfType(attributeTypeName)) {
-            return (String) attribute.getValue();
-         }
-      }
-      return "";
    }
 
    public String getName() {
       String name = null;
       try {
-         name = getInternalAttributeValue("Name");
+         ensureAttributesLoaded();
+         // use the first name attribute whether deleted or not.
+         for (Attribute<?> attribute : internalGetAttributes()) {
+            if (attribute.isOfType(CoreAttributeTypes.NAME)) {
+               name = (String) attribute.getValue();
+            }
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -1521,7 +1509,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       for (Attribute<?> sourceAttribute : attributes.getValues()) {
          // In order to reflect attributes they must exist in the data store
          // and be valid for the destination branch as well
-         if (sourceAttribute.isInDb() && reflectedArtifact.isAttributeTypeValid(sourceAttribute.getAttributeType().getName())) {
+         if (sourceAttribute.isInDb() && reflectedArtifact.isAttributeTypeValid(sourceAttribute.getAttributeType())) {
             reflectedArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(),
                   sourceAttribute.getAttrId(), sourceAttribute.getGammaId(), ModificationType.INTRODUCED, true,
                   sourceAttribute.getAttributeDataProvider().getData());

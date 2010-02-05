@@ -11,28 +11,20 @@
 package org.eclipse.osee.ats.config.demo.artifact;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 
 /**
  * @author Ryan D. Brooks
  */
-public enum DemoArtifactTypes implements IArtifactType {
-   DemoCodeTeamWorkflow("Demo Code Team Workflow", "ABRNqDKnpGEKAyUm49gA"),
-   DemoReqTeamWorkflow("Demo Req Team Workflow", "ABRO5pC6kCmP35t06RwA"),
-   DemoTestTeamWorkflow("Demo Test Team Workflow", "ABRPeQO1qlCd4J7Bv5AA");
+public class DemoArtifactTypes extends NamedIdentity implements IArtifactType {
+   public static final DemoArtifactTypes DemoCodeTeamWorkflow =
+         new DemoArtifactTypes("ABRNqDKnpGEKAyUm49gA", "Demo Code Team Workflow");
+   public static final DemoArtifactTypes DemoReqTeamWorkflow =
+         new DemoArtifactTypes("ABRO5pC6kCmP35t06RwA", "Demo Req Team Workflow");
+   public static final DemoArtifactTypes DemoTestTeamWorkflow =
+         new DemoArtifactTypes("ABRPeQO1qlCd4J7Bv5AA", "Demo Test Team Workflow");
 
-   private final String name;
-   private final String guid;
-
-   private DemoArtifactTypes(String name, String guid) {
-      this.name = name;
-      this.guid = guid;
-   }
-
-   public String getName() {
-      return this.name;
-   }
-
-   public String getGuid() {
-      return guid;
+   private DemoArtifactTypes(String guid, String name) {
+      super(guid, name);
    }
 }
