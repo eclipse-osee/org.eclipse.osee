@@ -154,6 +154,9 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
             return coverageItem.getParent() == null ? "" : coverageItem.getParent().getName();
          }
          if (xCol.equals(CoverageXViewerFactory.Method_Number)) {
+            return coverageItem.getParent() == null ? "" : coverageItem.getParent().getOrderNumber();
+         }
+         if (xCol.equals(CoverageXViewerFactory.Execution_Number)) {
             return coverageItem.getOrderNumber();
          }
       }
