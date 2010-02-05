@@ -88,6 +88,7 @@
 			<fileset dir="${writableBuildRoot}">
 				<include name="**/*AllFeatures*.zip" />
 				<include name="**/*Master*.zip" />
+				<include name="**/*SDK*.zip" />
 			</fileset>
 		</delete>
 	</target>
@@ -108,7 +109,7 @@
 		<delete quiet="true" dir="${snapshotFolder}" />
 
 		<copy flatten="true" toDir="${snapshotFolder}" failonerror="true" includeemptydirs="false">
-			<fileset dir="${buildFolder}" includes="${BUILDTYPE}*/*-Update-*.zip" />
+			<fileset dir="${buildFolder}" includes="athena/*-Update-*.zip" />
 		</copy>
 
 		<available file="${snapshotFolder}" property="containsFile" />
@@ -116,8 +117,8 @@
 	</target>
 
 	<target name="doMoveZip" if="containsFile">
-		<echo>Renaming file to osee_server-update-incubation-${BUILDTYPE}-Snapshot.zip</echo>
-		<move includeemptydirs="false" tofile="${snapshotFolder}/osee-server-update-incubation-${BUILDTYPE}-Snapshot.zip" filtering="true">
+		<echo>Renaming file to ${zipPrefix}${incubation}-${BUILDTYPE}-Snapshot.zip</echo>
+		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
 			<fileset dir="${snapshotFolder}" includes="*-Update-*.zip" />
 		</move>
 	</target>
