@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
@@ -23,25 +24,27 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class XAttributeTypeListViewer extends XTypeListViewer {
    private static final String NAME = "XAttributeTypeListViewer";
 
-   /**
-    * @param name
-    */
    public XAttributeTypeListViewer(String keyedBranchName, String defaultValue) {
       super(NAME);
 
-      setContentProvider(new DefaultBranchContentProvider(new AttributeContentProvider(), resolveBranch(keyedBranchName)));
-      ArrayList<Object> input = new ArrayList<Object>(1);
-      input.add(resolveBranch(keyedBranchName));
+      try {
+         setContentProvider(new DefaultBranchContentProvider(new AttributeContentProvider(),
+               BranchManager.getSystemRootBranch()));
+         ArrayList<Object> input = new ArrayList<Object>(1);
+         input.add(resolveBranch(keyedBranchName));
 
-      setInput(input);
+         setInput(input);
 
-      if (defaultValue != null) {
          try {
-            AttributeType attributeType = AttributeTypeManager.getType(defaultValue);
-            setDefaultSelected(attributeType);
+            if (defaultValue != null) {
+               AttributeType attributeType = AttributeTypeManager.getType(defaultValue);
+               setDefaultSelected(attributeType);
+            }
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 }
