@@ -8,7 +8,8 @@ Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ote.ui,
  org.eclipse.osee.ote.ui.navigate,
- org.eclipse.osee.ote.ui.testclassserver
+ org.eclipse.osee.ote.ui.testclassserver,
+ org.eclipse.osee.ote.ui.view
 Bundle-ClassPath: library.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.core.resources,
