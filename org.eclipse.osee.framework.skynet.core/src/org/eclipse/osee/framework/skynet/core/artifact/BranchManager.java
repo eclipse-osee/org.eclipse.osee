@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -469,14 +470,15 @@ public class BranchManager {
             lastBranch = getDefaultInitialBranch();
             UserManager.getUser().setSetting(LAST_DEFAULT_BRANCH, String.valueOf(lastBranch.getId()));
          } else {
-            lastBranch = getBranchNoExistenceExcpetion(Integer.parseInt(branchIdStr));
-            if (lastBranch == null) {
-               lastBranch = getDefaultInitialBranch();
+            if (Strings.isValid(branchIdStr)) {
+               lastBranch = getBranchNoExistenceExcpetion(Integer.parseInt(branchIdStr));
+               if (lastBranch == null) {
+                  lastBranch = getDefaultInitialBranch();
+               }
             }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-
       }
    }
 
