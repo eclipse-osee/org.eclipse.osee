@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
 /**
  * @author Theron Virgin
  */
-public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
+public class RelationIntegrityCheck extends DatabaseHealthOperation {
    private static class LocalRelationLink {
       public int relLinkId;
       public int gammaId;
@@ -79,12 +79,12 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
                "Transaction ID of Deleted Artifact"};
 
    private static final String[] DESCRIPTION =
-         {" Relation Links with non existent Artifacts on the Branch\n",
-               " Relation Links with deleted Artifacts on the Branch\n"};
+         {"Relation Links with non existent Artifacts on the Branch\n",
+               "Relation Links with deleted Artifacts on the Branch\n"};
 
    private static final String[] HEADER =
-         {"Relation Links that have artifacts that don't exist on the branch",
-               "Relation Links that have artifacts that are deleted on the branch"};
+         {"%S Relation Links that have artifacts that don't exist on the branch",
+               "%s Relation Links that have artifacts that are deleted on the branch"};
 
    private DoubleKeyHashMap<Integer, Integer, LocalRelationLink> deleteMap = null;
    private DoubleKeyHashMap<Integer, Integer, LocalRelationLink> updateMap = null;
@@ -116,7 +116,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
       verify = !fix;
    }
 
-   public RelationDatabaseIntegrityCheck() {
+   public RelationIntegrityCheck() {
       super("Relation Integrity Errors");
    }
 
@@ -211,7 +211,8 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
 
    private void displayData(int x, StringBuffer sbFull, Appendable builder, boolean verify, DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map) throws IOException {
       int count = 0;
-      sbFull.append(AHTML.addRowSpanMultiColumnTable(HEADER[x], columnHeaders.length));
+      String header = String.format(HEADER[x], map.allValues().size());
+      sbFull.append(AHTML.addRowSpanMultiColumnTable(header, columnHeaders.length));
       for (LocalRelationLink relLink : map.allValues()) {
          count++;
          sbFull.append(AHTML.addRowMultiColumnTable(new String[] {Integer.toString(relLink.relLinkId),
