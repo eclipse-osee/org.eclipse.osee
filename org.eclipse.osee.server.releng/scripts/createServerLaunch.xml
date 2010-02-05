@@ -57,6 +57,7 @@
 		<attribute name="isExecutable" default="true" />
 		<attribute name="extraScript" default=" " />
 		<sequential>
+			<echo message="Launcher was ${launcherJar}" />
 			<echo file="@{filePath}" append="false" message="${prelaunchScript}" />
 			<echo file="@{filePath}" append="true">
 #######################################################################

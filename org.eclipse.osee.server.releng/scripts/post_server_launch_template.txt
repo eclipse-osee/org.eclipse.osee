@@ -1,16 +1,59 @@
-
 SERVER_ID="$OS_MACHINE"_"$OSEE_APP_SERVER_PORT"
+if [ ! -d "$OSEE_APP_SERVER_HOME" ]; then 
+  OSEE_APP_SERVER_HOME=`pwd`;
+fi
+cd "$OSEE_APP_SERVER_HOME"
 
-LOG="/log/osee_app_server_$SERVER_ID.log"
-LOCK="/lock/osee_app_server_$SERVER_ID.lock"
+if [ ! -d "$JAVA_HOME" ]; then 
+  JAVA_HOME=`which java | awk '{print substr($1,0,length($1)-9)}'`;
+fi
+
+LOG="$OSEE_APP_SERVER_HOME/osee_app_server_$SERVER_ID.log"
+LOCK="$OSEE_APP_SERVER_HOME/osee_app_server_$SERVER_ID.lock"
+
+echo "OSEE App Server Home: [$OSEE_APP_SERVER_HOME]"
 
 RETVAL=0
 
+osee_app_server_shutdown() {
+echo "$OS_MACHINE" "$OSEE_APP_SERVER_PORT"
+#expect<<EOF
+#set timeout 20
+#spawn telnet "$OS_MACHINE" "$OSEE_APP_SERVER_PORT"
+#expect "osgi> "
+#send "osee_shutdown -oseeOnly\r"
+#expect "Osee Shutdown Complete"
+
+#send "disconnect\r"
+#expect "Disconnect from console? (y/n; default=y)"
+#send "y\r"
+#sleep 10
+
+}
+
+test_app_server_alive() {
+  echo Connecting to "$OS_MACHINE":"$OSEE_APP_SERVER_PORT"...
+
+#  set timeout 10
+#  spawn "/bin/sh"
+#  send "telnet $OS_MACHINE $OSEE_APP_SERVER_PORT\r"
+#  sleep 1
+#  expect "osgi>"
+#  send "disconnect\r"
+#  expect "Disconnect from console? (y/n; default=y)"
+#  send "y\r"
+#  close
+	
+#  if [ ];then
+   isAlive="true"
+#  fi
+}
+
 pid_of_osee_app_server() {
-    if [ '$OS_NAME' -eq 'SunOS' ]; then
-    	usr/ucb/ps auxwww | grep java | grep org.osgi.service.http.port=$OSEE_APP_SERVER_PORT | grep -v grep | awk '{print $2}'
+    if [ "$OS_NAME" == "SunOS" ]; then
+    	usr/ucb/ps auxwww | grep java | grep org.osgi.service.http.port="$OSEE_APP_SERVER_PORT" | grep -v grep | awk '{print $2}'
     else 
-    	ps auxwww | grep java | grep org.osgi.service.http.port=$OSEE_APP_SERVER_PORT | grep -v grep | awk '{print $2}'
+    	ps auxwww | grep java | grep org.osgi.service.http.port="$OSEE_APP_SERVER_PORT" | grep -v grep | awk '{print $2}'
     fi
 }
 
@@ -18,14 +61,10 @@ start() {
     [ -e "$LOG" ] && cnt=`wc -l "$LOG" | awk '{ print $1 }'` || cnt=1
 
     echo -n $"Starting OSEE App Server: "
-	 if [[ ! -d $OSEE_APP_SERVER_HOME ]]; then 
-	 	OSEE_APP_SERVER_HOME=`pwd`;
-	 fi
-    cd "$OSEE_APP_SERVER_HOME"
     
-    echo -n $"OSEE App Server Home: [$OSEE_APP_SERVER_HOME]"
-    
-    nohup java -Xms40m -Xmx$OSEE_SERVER_MAX_MEMORY -Dosee.db.connection.id="$OSEE_DATABASE_CONNECTION_ID" -Dorg.osgi.service.http.port="$OSEE_APP_SERVER_PORT" "$OSEE_APP_SERVER_EXTRA_VMARGS" -jar $EQUINOX_LAUNCHER -console $OSGI_TELNET_PORT -consoleLog >> "$LOG" 2>&1 &
+    EXECUTION_CMD="nohup $JAVA_HOME/bin/java -Xms40m -Xmx$OSEE_SERVER_MAX_MEMORY -Dosee.db.connection.id=$OSEE_DATABASE_CONNECTION_ID -Dorg.osgi.service.http.port=$OSEE_APP_SERVER_PORT $OSEE_APP_SERVER_EXTRA_VMARGS -jar $EQUINOX_LAUNCHER -console $OSGI_TELNET_PORT -consoleLog >> $LOG 2>>&1" 
+    echo "EXEC: $EXECUTION_CMD"> "$LOG"
+    `$EXECUTION_CMD` &
     
     pid_of_osee_app_server > /dev/null
     RETVAL=$?
@@ -35,28 +74,15 @@ start() {
     [ $RETVAL = 0 ] && touch "$LOCK"
 }
 
-osee_app_server_shutdown() {
-expect<<EOF
-set timeout 20
-spawn telnet $OS_MACHINE $OSEE_APP_SERVER_PORT
-expect "osgi> "
-send "osee_shutdown -oseeOnly\r"
-expect "Osee Shutdown Complete"
-
-send "disconnect\r"
-expect "Disconnect from console? (y/n; default=y)"
-send "y\r"
-sleep 10
-}
-
-
-
 stop() {
-    echo -n "Stopping OSEE App Server: "
-
-	 osee_app_server_shutdown;
-
+    echo -n $"Stopping OSEE App Server: "
+    
     pid=`pid_of_osee_app_server`
+
+    if [ -n "$pid" ]; then
+	osee_app_server_shutdown
+    fi
+
     [ -n "$pid" ] && kill $pid
     RETVAL=$?
     cnt=10
@@ -74,7 +100,14 @@ stop() {
 status() {
     pid=`pid_of_osee_app_server`
     if [ -n "$pid" ]; then
-        echo "hudson (pid $pid) is running..."
+
+	test_app_server_alive
+
+	if [ -n "$isAlive" ]; then
+            echo "OSEE App Server (pid $pid) is running..."
+	else 
+	    echo "OSGI without OSEE (pid $pid) is running..."
+        fi
         return 0
     fi
     if [ -f "$LOCK" ]; then
