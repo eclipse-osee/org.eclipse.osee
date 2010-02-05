@@ -107,7 +107,7 @@
 
 	<target name="doMoveZip" if="containsFile">
 		<echo>Renaming file to ${zipPrefix}${incubation}-${BUILDTYPE}-Snapshot.zip</echo>
-		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
+		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}${incubation}-update-${BUILDTYPE}-Snapshot.zip" filtering="true">
 			<fileset dir="${snapshotFolder}" includes="*-Update-*.zip" />
 		</move>
 	</target>
