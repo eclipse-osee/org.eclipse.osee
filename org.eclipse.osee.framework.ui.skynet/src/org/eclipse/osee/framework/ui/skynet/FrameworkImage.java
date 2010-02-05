@@ -171,7 +171,7 @@ public enum FrameworkImage implements KeyedImage {
    WIDGET("widget.gif"),
    WARNING("warn.gif"),
    WARNING_OVERLAY("alert_8_8.gif"),
-   WWW("www.gif"),
+   WWW(PluginUiImage.URL),
    X_RED("redRemove.gif");
 
    private final String fileName;
