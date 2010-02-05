@@ -128,10 +128,8 @@ artifactType "Task" extends "ats.State Machine" {
 artifactType "Team Workflow" extends "Goal" {
    guid "AAMFDhSiF2OD+wiUqugA"
    attribute "ats.Actionable Item"
-   attribute "ats.Branch Id"
    attribute "ats.Branch Metrics"
    attribute "ats.Baseline Branch Guid"
-   attribute "ats.Transaction Id"
    attribute "ats.Validation Required"
 }
 
@@ -368,20 +366,6 @@ attributeType "ats.Hours Per Work Day" extends FloatingPointAttribute {
    min 0
    max 1
    defaultValue "0.0"
-}
-
-attributeType "ats.Branch Id" extends IntegerAttribute {
-   guid "AAMFEQYd4VpF0Fy2+VAA"
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "ats.Transaction Id" extends IntegerAttribute {
-   guid "AAMFEQaqpwxoT7Sx9UQA"
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
 }
 
 attributeType "ats.Percent Rework" extends IntegerAttribute {
