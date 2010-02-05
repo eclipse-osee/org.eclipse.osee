@@ -49,7 +49,6 @@ public class WordTrackedChangesTest {
    private static final String TEST_PATH_NAME =
          "../org.eclipse.osee.framework.ui.skynet.test/src/org/eclipse/osee/framework/ui/skynet/test/cases/support/";
    private static final String TEST_WORD_EDIT_FILE_NAME = TEST_PATH_NAME + "WordTrackedChangesTest.xml";
-   private static final String TEST_GEN_WORD_EDIT_FILE_NAME = TEST_PATH_NAME + "GeneralWordTrackedChangesTest.doc";
 
    /**
     * This test Word Edit's are being saved.
@@ -84,27 +83,6 @@ public class WordTrackedChangesTest {
       makeChangesToArtifact(renderer, TEST_WORD_EDIT_FILE_NAME, artifacts);
       Thread.sleep(5000);
       assertTrue("Did not detect Tracked Changes Succcessfully", WordAttribute.trackedChangesDetected());
-      TestUtil.severeLoggingEnd(monitorLog);
-   }
-
-   /*
-    * Verifies that on a general document the save was success with tracked changes
-    */
-   @org.junit.Test
-   public void testGeneralWordSaveWithTrackChanges() throws Exception {
-      List<Artifact> artifacts = new ArrayList<Artifact>();
-      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      FileRenderer.setWorkbenchSavePopUpDisabled(true);
-      Branch branch = BranchManager.getCommonBranch();
-      // create a new general document artifact
-      Artifact newArt = ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName());
-      newArt.persist();
-      artifacts = Arrays.asList(newArt);
-      FileRenderer renderer = new WordTemplateRenderer();
-      //      FileRenderer renderer = RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, newArt);
-      makeChangesToArtifact(renderer, TEST_GEN_WORD_EDIT_FILE_NAME, artifacts);
-      Thread.sleep(10000);
-      assertTrue("Did not Detect Tracked Changes", WordAttribute.trackedChangesDetected());
       TestUtil.severeLoggingEnd(monitorLog);
    }
 
