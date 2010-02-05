@@ -842,6 +842,10 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       getOrCreateSoleAttribute(attributeTypeName).setValueFromInputStream(stream);
    }
 
+   public void setSoleAttributeFromStream(IAttributeType attributeType, InputStream stream) throws OseeCoreException {
+      setSoleAttributeFromStream(attributeType.getName(), stream);
+   }
+
    /**
     * @param attributeTypeName
     * @return comma delimited representation of all the attributes of the type attributeName
