@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.osee.framework.server.external.feature"
-      label="Eclipse OSEE Server External Dependencies Feature (Incubation)"
+      label="%featureName"
       version="0.9.1.qualifier"
-      provider-name="Eclipse.org"
-      plugin="org.eclipse.osee.framework.ui.product">
+      provider-name="%providerName">
 
    <description>
       %description
