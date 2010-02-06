@@ -46,7 +46,9 @@
 		<property name="relengBaseBuilderDir" value="${workspaceDir}/org.eclipse.releng.basebuilder" />
 		
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
-		<ant antfile="${relengBuilderDir}/scripts/createEclipseTarget.xml" target="run" inheritall="true"/>
+		<!--<ant antfile="${relengBuilderDir}/scripts/createEclipseTarget.xml" target="run" inheritall="true"/>-->
+		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />
+
 	</target>
 
 	<target name="cleanUp">
