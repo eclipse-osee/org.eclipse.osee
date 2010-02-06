@@ -55,13 +55,10 @@
 			<fileset dir="${tempAppServerFolder}" />
 		</zip>
 		<delete dir="${tempAppServerFolder}" quiet="true" />
-		<antcall target="deleteZips" inheritall="true" />
+		<!--<antcall target="deleteZips" inheritall="true" />-->
 	</target>
 
-	<target name="generateLaunchScripts">
-	</target>
-	
-	<target name="deleteZips">
+	<!--<target name="deleteZips">
 		<echo message="deleteZips" />
 		<propertyregex property="allZip" input="${updateSiteFile}" defaultvalue="" regexp="-Update-" replace="-AllFeaturesAndPlugins-" casesensitive="false" override="true" />
 		<propertyregex property="sdkZip" input="${updateSiteFile}" defaultvalue="" regexp="-Update-" replace="-SDK-" casesensitive="false" override="true" />
@@ -70,7 +67,7 @@
 		<delete file="${buildDirectory}/${buildLabel}/${allZip}.md5" quiet="true" />
 		<delete file="${buildDirectory}/${buildLabel}/${sdkZip}" quiet="true" />
 		<delete file="${buildDirectory}/${buildLabel}/${sdkZip}.md5" quiet="true" />
-	</target>
+	</target>-->
 
 	<target name="generateConfigIni">
 		<echo file="${configFolder}/config.ini" append="false" message="osgi.bundles= \${line.separator}\${line.separator}" />
