@@ -18,7 +18,7 @@
    </license>
 
    <requires>
-      <import feature="org.eclipse.osee.framework.server.feature" version="0.9.1.qualifier" match="greaterOrEqual"/>
+      <import feature="org.eclipse.osee.framework.server.feature" match="greaterOrEqual"/>
    </requires>
 
    <plugin
