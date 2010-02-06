@@ -5,7 +5,7 @@
 	-->
 
 	<!-- Required Properties
-	${buildDir}/
+	$${writableBuildRoot}
 	${updateZip}
 	${projectName}
 	
@@ -20,10 +20,9 @@
 	-->
 
 	<target name="init">
-		<property name="buildDir" value="/tmp/build" />
-		<property name="buildLabel" value="${buildDir}/targetPlatform" />
-		<property name="3rdPartyJars" value="${buildDir}/3rdPartyJars" />
-		<property name="downloadsDir" value="${buildDir}/downloads" />
+		<property name="buildLabel" value="${writableBuildRoot}/targetPlatform" />
+		<property name="3rdPartyJars" value="${writableBuildRoot}/3rdPartyJars" />
+		<property name="downloadsDir" value="${writableBuildRoot}/downloads" />
 		<property name="helper" value="${relengCommonBuilderDir}/tools/scripts/buildAllHelper.xml" />
 
 		<taskdef resource="net/sf/antcontrib/antlib.xml">
@@ -68,7 +67,7 @@
 
 	<target name="build" description="create one or more platform target archives">
 		<echo message="Generating ${buildType} build type target(s)..." />
-		<var name="platformBuildDir" value="${buildDir}/${buildLabel}/platformBuildTmp" />
+		<var name="platformBuildDir" value="${buildLabel}/platformBuildTmp" />
 
 		<!-- for all the platform suffixes to build... -->
 		<for param="platformSuffix" list="${targetPlatforms}">
@@ -92,7 +91,7 @@
 					</else>
 				</if>
 				<var name="destArchiveName" value="${targetPrefix}-@{platformSuffix}${incubation}${platformArchiveSuffix}" />
-				<var name="destArchiveNamePath" value="${buildDir}/${buildLabel}/${destArchiveName}" />
+				<var name="destArchiveNamePath" value="${buildLabel}/${destArchiveName}" />
 
 				<!-- get the Eclipse bundle if not already downloaded: only need linux-gtk to build, but need others to package up all-in-ones -->
 				<!-- <echo message="orig eclipse.base.file = ${eclipse.base.file}" /> -->
@@ -203,7 +202,7 @@
 						</if>
 						<for param="whatID" list="${@{whatToInstall}}" delimiter=", " keepgoing="true">
 							<sequential>
-								<echo>Install @{whatID} to ${buildDir}</echo>
+								<echo>Install @{whatID} to ${buildLabel}</echo>
 								<if>
 									<available file="${buildDir}/p2/org.eclipse.equinox.p2.engine/profileRegistry/SDKProfile.profile" type="dir" />
 									<then>
@@ -246,18 +245,18 @@
 			</sequential>
 		</for>
 		<if>
-			<available file="${buildDir}/${buildLabel}/${updateZip}" type="file" />
+			<available file="${buildLabel}/${updateZip}" type="file" />
 			<then>
 				<echo>Install ${mainFeatureToBuildID} feature to ${install}</echo>
 				<ant target="run.director" antfile="${helper}">
 					<property name="p2.director.installType" value="IU" />
 					<property name="p2.director.installIU" value="${mainFeatureToBuildID}.group" />
-					<property name="p2.director.input.repo" value="jar:file:${buildDir}/${buildLabel}/${updateZip}!/" />
+					<property name="p2.director.input.repo" value="jar:file:${buildLabel}/${updateZip}!/" />
 					<property name="p2.director.destination" value="${eclipse-home}" />
 				</ant>
 			</then>
 			<elseif>
-				<available file="${buildDir}/${buildLabel}/${SDKZip}" type="file" />
+				<available file="${buildLabel}/${SDKZip}" type="file" />
 				<then>
 					<echo>Unpack SDKZip ${SDKZip} to ${dropins-home}</echo>
 					<unzip dest="${dropins-home}/${subprojectName}" overwrite="true">
