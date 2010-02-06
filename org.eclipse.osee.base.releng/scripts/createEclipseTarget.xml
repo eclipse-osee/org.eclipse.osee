@@ -1,0 +1,273 @@
+<project default="run" name="org.eclipse.osee.base.releng/createEclipseTarget.xml">
+	<!--
+		given a list of platforms & dependencies, assemble one or more all in ones
+		by copying the eclipse zip/tar.gz, then adding deps + SDK into it
+	-->
+
+	<!-- Required Properties
+	${buildDir}/
+	${updateZip}
+	${projectName}
+	
+	targetPrefix= if not set will be defaulted to projectName-platform
+	targetPlatforms=linux-gtk,win32,solaris-gtk
+	
+	featureIDsToInstall,
+	pluginIDsToInstall,
+	IUsToInstall
+	relengCommonBuilderDir= org.eclipse.dash.common.releng,
+	relengBaseBuilderDir= org.eclipse.releng.basebuilder
+	-->
+
+	<target name="init">
+		<property name="buildDir" value="/tmp/build" />
+		<property name="buildLabel" value="${buildDir}/targetPlatform" />
+		<property name="3rdPartyJars" value="${buildDir}/3rdPartyJars" />
+		<property name="downloadsDir" value="${buildDir}/downloads" />
+		<property name="helper" value="${relengCommonBuilderDir}/tools/scripts/buildAllHelper.xml" />
+
+		<taskdef resource="net/sf/antcontrib/antlib.xml">
+			<classpath>
+				<pathelement path="${classpath}" />
+				<pathelement location="${3rdPartyJars}/ant-contrib.jar" />
+			</classpath>
+		</taskdef>
+		<if>
+			<not>
+				<isset property="targetPrefix" />
+			</not>
+			<then>
+				<property name="targetPrefix" value="${projectName}-platform" />
+			</then>
+		</if>
+		<if>
+			<not>
+				<isset property="targetPlatforms" />
+			</not>
+			<then>
+				<property name="targetPlatforms" value="linux-gtk,win32,solaris-gtk,macosx-carbon" />
+			</then>
+		</if>
+		<if>
+			<not>
+				<isset property="incubation" />
+			</not>
+			<then>
+				<property name="incubation" value="" />
+			</then>
+		</if>
+		<if>
+			<not>
+				<isset property="eclipseBaseNameId" />
+			</not>
+			<then>
+				<property name="eclipseBaseNameId" value="SDK" />
+			</then>
+		</if>
+	</target>
+
+	<target name="build" description="create one or more platform target archives">
+		<echo message="Generating ${buildType} build type target(s)..." />
+		<var name="platformBuildDir" value="${buildDir}/${buildLabel}/platformBuildTmp" />
+
+		<!-- for all the platform suffixes to build... -->
+		<for param="platformSuffix" list="${targetPlatforms}">
+			<sequential>
+				<if>
+					<equals arg1="@{platformSuffix}" arg2="win32" />
+					<then>
+						<var name="platformArchiveSuffix" value=".zip" />
+					</then>
+					<else>
+						<var name="platformArchiveSuffix" value=".tar" />
+					</else>
+				</if>
+				<if>
+					<equals arg1="@{platformSuffix}" arg2="win32" />
+					<then>
+						<var name="eclipseSuffix" value=".zip" />
+					</then>
+					<else>
+						<var name="eclipseSuffix" value=".tar.gz" />
+					</else>
+				</if>
+				<var name="destArchiveName" value="${targetPrefix}-@{platformSuffix}${incubation}${platformArchiveSuffix}" />
+				<var name="destArchiveNamePath" value="${buildDir}/${buildLabel}/${destArchiveName}" />
+
+				<!-- get the Eclipse bundle if not already downloaded: only need linux-gtk to build, but need others to package up all-in-ones -->
+				<!-- <echo message="orig eclipse.base.file = ${eclipse.base.file}" /> -->
+				<propertyregex property="thisEclipseFile" input="${eclipse.base.file}" regexp="(eclipse-)(SDK-)(.+)(-linux-gtk\.tar\.gz)" replace="\1${eclipseBaseNameId}-\3-@{platformSuffix}${eclipseSuffix}" casesensitive="false" />
+				<!-- <echo message="this eclipse.base.file = ${thisEclipseFile}" /> -->
+				<if>
+					<not>
+						<available file="${downloadsDir}/${thisEclipseFile}" type="file" />
+					</not>
+					<then>
+						<!-- <echo message="orig eclipse.base.url = ${eclipse.base.url}" /> -->
+						<propertyregex property="thisEclipseURL" input="${eclipse.base.url}" regexp="(.+eclipse-)(SDK-)(.+)(-linux-gtk\.tar\.gz)" replace="\1${eclipseBaseNameId}-\3-@{platformSuffix}${eclipseSuffix}" casesensitive="false" />
+						<!-- <echo message="this eclipse.base.url = ${thisEclipseURL}" /> -->
+						<get src="${thisEclipseURL}" dest="${downloadsDir}/${thisEclipseFile}" usetimestamp="true" />
+						<touch file="${downloadsDir}/${thisEclipseFile}" />
+					</then>
+				</if>
+
+
+				<mkdir dir="${platformBuildDir}" />
+				<if>
+					<equals arg1="@{platformSuffix}" arg2="win32" />
+					<then>
+						<unzip src="${downloadsDir}/${thisEclipseFile}" dest="${platformBuildDir}" />
+					</then>
+					<else>
+						<gunzip src="${downloadsDir}/${thisEclipseFile}" dest="${platformBuildDir}/tarFile.tar" />
+						<untar src="${platformBuildDir}/tarFile.tar" dest="${platformBuildDir}" />
+						<delete file="${platformBuildDir}/tarFile.tar" />
+					</else>
+				</if>
+
+				<var name="install" value="${platformBuildDir}" />
+				<antcall target="installDependencies" inheritAll="true" />
+				<var name="suffix" value="@{platformSuffix}" />
+				<antcall target="createArchive" inheritAll="true" />
+
+				<var name="thisEclipseFile" unset="true" />
+				<var name="thisEclipseURL" unset="true" />
+			</sequential>
+		</for>
+		<delete dir="${platformBuildDir}" includeemptydirs="true" quiet="true" failonerror="false" />
+	</target>
+
+	<target name="createArchive">
+		<!-- <echo message="Create ${destArchiveName} from ${thisEclipseFile} ..." /> -->
+		<if>
+			<equals arg1="${suffix}" arg2="win32" />
+			<then>
+				<zip destfile="${destArchiveNamePath}" update="true">
+					<fileset dir="${platformBuildDir}" />
+				</zip>
+			</then>
+			<else>
+				<tar destfile="${destArchiveNamePath}" basedir="${platformBuildDir}" />
+				<gzip src="${destArchiveNamePath}" destfile="${destArchiveNamePath}.gz" />
+				<delete file="${destArchiveNamePath}" />
+			</else>
+		</if>
+	</target>
+
+
+	<!-- Target platform provisioning:
+        install all the specified features from the listed repos, one by one 
+		  eg., for repositoryURLs=http://download.eclipse.org/releases/ganymede/,...
+		  install featureIDsToInstall=org.eclipse.emf,org.eclipse.gef (two operations)
+				  - or -
+				 install all the specified features from the listed repos at the same time
+				 eg., for repositoryURLs=http://download.eclipse.org/releases/galileo/,...
+				 install featureIDsToInstall=org.eclipse.emf+org.eclipse.gef (one operation)
+				 
+				 install all the specified plugins from the listed repos, one by one 
+				 eg., for repositoryURLs=http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/updateSite,...
+				 install pluginIDsToInstall=org.apache.xml.resolver,javax.xml,org.apache.xml.serializer,org.apache.xerces,org.apache.xalan (five operations)
+				 install       IUsToInstall=org.apache.xml.resolver,javax.xml,org.apache.xml.serializer,org.apache.xerces,org.apache.xalan (five operations)
+				  - or -
+				 install all the specified plugins from the listed repos at the same time
+				 eg., for repositoryURLs=http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/updateSite,...
+				 install pluginIDsToInstall=org.apache.xml.resolver+javax.xml+org.apache.xml.serializer+org.apache.xerces+org.apache.xalan (one operation)
+				 install       IUsToInstall=org.apache.xml.resolver+javax.xml+org.apache.xml.serializer+org.apache.xerces+org.apache.xalan (one operation)
+	-->
+	<target name="installDependencies">
+		<property name="eclipse-home" value="${install}/eclipse" />
+		<property name="dropins-home" value="${install}/eclipse/dropins" />
+
+
+		<for param="whatToInstall" list="featureIDsToInstall,pluginIDsToInstall,IUsToInstall" delimiter="," keepgoing="true">
+			<sequential>
+				<if>
+					<and>
+						<isset property="@{whatToInstall}" />
+						<not>
+							<equals arg1="${@{whatToInstall}}" arg2="" />
+						</not>
+					</and>
+					<then>
+						<!-- shortcut for installing features -->
+						<if>
+							<equals arg1="@{whatToInstall}" arg2="featureIDsToInstall" />
+							<then>
+								<var name="IUsuffix" value=".feature.group" />
+								<var name="p2.director.installType" value="feature" />
+							</then>
+							<else>
+								<var name="IUsuffix" value="" />
+								<var name="p2.director.installType" value="IU" />
+							</else>
+						</if>
+						<for param="whatID" list="${@{whatToInstall}}" delimiter=", " keepgoing="true">
+							<sequential>
+								<echo>Install @{whatID} to ${buildDir}</echo>
+								<if>
+									<available file="${buildDir}/p2/org.eclipse.equinox.p2.engine/profileRegistry/SDKProfile.profile" type="dir" />
+									<then>
+										<var name="repositoryURLs.cleaned" value="file:${buildDir}/p2/org.eclipse.equinox.p2.engine/profileRegistry/SDKProfile.profile,${repositoryURLs},${repositoryURLs}" />
+									</then>
+									<else>
+										<var name="repositoryURLs.cleaned" value="${repositoryURLs}" />
+									</else>
+								</if>
+								<if>
+									<contains string="@{whatID}" substring="+" />
+									<then>
+										<propertyregex property="whatIDListCmd" input="@{whatID}" defaultvalue="@{whatID}" regexp="\+" replace="${IUsuffix} -installIU " override="true" />
+										<!-- install multiple IUs at the same time with Eclipse 3.5 -->
+										<ant target="run.director" antfile="${helper}">
+											<property name="p2.director.installType" value="${p2.director.installType}" />
+											<property name="p2.director.installIU" value="${whatIDListCmd}" />
+											<property name="p2.director.input.repo" value="${repositoryURLs.cleaned}" />
+											<property name="p2.director.destination" value="${eclipse-home}" />
+											<property name="p2.director.application" value="org.eclipse.equinox.p2.director" />
+										</ant>
+										<var name="whatIDListCmd" unset="true" />
+									</then>
+									<else>
+										<!-- install one IU at a time with Eclipse 3.4 or 3.5 -->
+										<ant target="run.director" antfile="${helper}">
+											<property name="p2.director.installType" value="${p2.director.installType}" />
+											<property name="p2.director.installIU" value="@{whatID}" />
+											<property name="p2.director.input.repo" value="${repositoryURLs.cleaned}" />
+											<property name="p2.director.destination" value="${eclipse-home}" />
+										</ant>
+									</else>
+								</if>
+							</sequential>
+						</for>
+						<var name="IUsuffix" unset="true" />
+						<var name="p2.director.installType" unset="true" />
+					</then>
+				</if>
+			</sequential>
+		</for>
+		<if>
+			<available file="${buildDir}/${buildLabel}/${updateZip}" type="file" />
+			<then>
+				<echo>Install ${mainFeatureToBuildID} feature to ${install}</echo>
+				<ant target="run.director" antfile="${helper}">
+					<property name="p2.director.installType" value="IU" />
+					<property name="p2.director.installIU" value="${mainFeatureToBuildID}.group" />
+					<property name="p2.director.input.repo" value="jar:file:${buildDir}/${buildLabel}/${updateZip}!/" />
+					<property name="p2.director.destination" value="${eclipse-home}" />
+				</ant>
+			</then>
+			<elseif>
+				<available file="${buildDir}/${buildLabel}/${SDKZip}" type="file" />
+				<then>
+					<echo>Unpack SDKZip ${SDKZip} to ${dropins-home}</echo>
+					<unzip dest="${dropins-home}/${subprojectName}" overwrite="true">
+						<fileset dir="${baseLocation}/${buildID}" includes="**/${SDKZip}" />
+					</unzip>
+				</then>
+			</elseif>
+		</if>
+	</target>
+
+	<target name="run" depends="init,build">
+	</target>
+</project>

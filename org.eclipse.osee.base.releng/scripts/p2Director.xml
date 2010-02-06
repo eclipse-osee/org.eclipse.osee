@@ -1,0 +1,73 @@
+<project default="noDefault" name="lba.osee.client.releng/eclipseInstaller.xml - OSEE coverage Helper Process">
+	<target name="noDefault">
+		<echo message="You must specify a target when invoking this file" />
+	</target>
+ <!-- create base -->
+	<!--
+	1. Download eclipse base check in downloads directory for it first
+	2. For each base ... install osee client, svn + connectors, 
+	3. If development is true add code quality plugins
+	
+	
+	======
+	
+	For testing
+	
+	1. Get base build (ALL_IN_ONE for specific platform)
+	2. Instrument Code 
+	3. Run Server
+	4. Run Launch Configs
+	
+	-->
+	
+	<target name="install">
+		<property name="p2dirTmp" value="${buildDir}/testing/p2dirTmp" />
+		<mkdir dir="${p2dirTmp}/eclipse" />
+		<unzip src="${buildDirectory}/${buildLabel}/${MasterZip}" dest="${p2dirTmp}" overwrite="true" />
+		<unzip src="${buildDirectory}/${buildLabel}/${updateZip}" dest="${p2dirTmp}/eclipse" overwrite="false" />
+		<echo>Install ${mainFeatureToBuildID} feature to ${install}</echo>
+		<ant target="run.director" antfile="${helper}">
+			<property name="p2.director.installIU" value="${mainFeatureToBuildID}.feature.group" />
+			<property name="p2.director.install.path" value="${install}/eclipse" />
+			<property name="p2.director.destination" value="${install}/eclipse" />
+			<property name="p2.director.input.repo" value="${p2dirTmp}/eclipse" />
+		</ant>
+	</target>
+
+
+	<target name="run.director">
+		<property name="p2.director.installIU" value="${mainFeatureToBuildID}.feature.group" />
+		<property name="p2.director.install.path" value="${install}/eclipse" />
+		<property name="p2.director.destination" value="${install}/eclipse" />
+		<property name="p2.director.input.repo" value="${p2dirTmp}/eclipse" />
+		<property name="p2.director.extraArgs" value="" />
+		<echo>
+p2.director.destination  = ${p2.director.destination}
+p2.director.input.repo   = ${p2.director.input.repo}
+p2.director.install.path = ${p2.director.install.path}
+</echo>
+		<mkdir dir="${p2.director.install.path}" />
+		<chmod perm="ugo+rwx" file="${p2.director.destination}/eclipse" />
+		<exec executable="${p2.director.destination}/eclipse" failonerror="true" dir="${p2.director.destination}" timeout="900000" taskname="p2.dir">
+			<arg line=" -vm ${JAVA_HOME}/bin/java" />
+			<arg line=" -application org.eclipse.equinox.p2.director.app.application" />
+			<arg line=" -nosplash" />
+			<arg line=" --launcher.suppressErrors" />
+			<arg line=" -consoleLog" />
+			<arg line=" -flavor tooling" />
+			<arg line=" -roaming" />
+			<arg line=" -profile SDKProfile" />
+			<arg line=" -destination ${p2.director.install.path}" />
+			<arg line=" -bundlepool ${p2.director.destination}" />
+			<arg line=" -installIU ${p2.director.installIU}" />
+			<arg line=" -metadataRepository file:${p2.director.input.repo},file:${p2.director.destination}/p2/org.eclipse.equinox.p2.engine/profileRegistry/SDKProfile.profile" />
+			<arg line=" -artifactRepository file:${p2.director.input.repo},file:${p2.director.destination}" />
+			<arg line=" -profileProperties org.eclipse.update.install.features=true" />
+			<arg line=" -vmargs" />
+			<arg line=" -Declipse.p2.data.area=${p2.director.destination}/p2" />
+			<arg line=" -Declipse.p2.MD5Check=false" />
+		</exec>
+	</target>
+
+
+</project>
