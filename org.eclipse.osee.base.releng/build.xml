@@ -44,10 +44,12 @@
 		<!-- invoke a new Eclipse process and launch the build from the common.releng folder -->
 		<property name="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng" />
 		<property name="relengBaseBuilderDir" value="${workspaceDir}/org.eclipse.releng.basebuilder" />
-		
+		<property name="downloadsDir" value="${writableBuildRoot}/downloads" />
+		<property name="thirdPartyJarsDir" value="${writableBuildRoot}/3rdPartyJars" />
+			
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
-		<!--<ant antfile="${relengBuilderDir}/scripts/createEclipseTarget.xml" target="run" inheritall="true"/>-->
-		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />
+		<ant antfile="${relengBuilderDir}/scripts/createEclipseTarget.xml" target="run" inheritall="true"/>
+		<!--<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />-->
 
 	</target>
 
