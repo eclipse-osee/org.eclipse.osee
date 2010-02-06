@@ -6,7 +6,7 @@ Bundle-Version: 0.9.1.qualifier
 Bundle-Activator: org.eclipse.osee.framework.server.admin.Activator
 Bundle-Vendor: Boeing
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.core.runtime;version="3.4.0",
+Import-Package: org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
  org.eclipse.equinox.app,
  org.eclipse.osee.framework.branch.management,
