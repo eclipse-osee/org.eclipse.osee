@@ -48,7 +48,7 @@
 		<property name="thirdPartyJarsDir" value="${writableBuildRoot}/3rdPartyJars" />
 			
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
-		<ant antfile="${relengBuilderDir}/scripts/createEclipseTarget.xml" target="run" inheritall="true"/>
+		<ant antfile="${relengBuilderDir}/scripts/createEclipseTarget.xml" target="run" inheritall="true" inheritrefs="true"/>
 		<!--<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />-->
 
 	</target>
