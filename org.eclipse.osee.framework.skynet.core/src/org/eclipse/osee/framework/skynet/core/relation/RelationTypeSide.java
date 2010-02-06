@@ -38,16 +38,6 @@ public class RelationTypeSide implements IRelationEnumeration {
    }
 
    @Override
-   public String getName() {
-      return type.getName();
-   }
-
-   @Override
-   public boolean isSideA() {
-      return side == RelationSide.SIDE_A;
-   }
-
-   @Override
    public boolean equals(Object arg0) {
       if (arg0 instanceof RelationTypeSide) {
          RelationTypeSide arg = (RelationTypeSide) arg0;
@@ -67,5 +57,10 @@ public class RelationTypeSide implements IRelationEnumeration {
    @Override
    public String getGuid() {
       return type.getGuid();
+   }
+
+   @Override
+   public String getName() {
+      return type.getName();
    }
 }

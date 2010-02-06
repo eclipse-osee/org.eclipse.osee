@@ -12,70 +12,89 @@ package org.eclipse.osee.framework.core.enums;
 
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 
-public enum CoreRelationTypes implements IRelationEnumeration {
-   Allocation__Requirement(SIDE_A, "Allocation", "AAMFE+RS8gRV2BXaCtQA"),
-   Allocation__Component(SIDE_B, "Allocation", "AAMFE+RS8gRV2BXaCtQA"),
-   CodeRequirement_Requirement(SIDE_B, "Code-Requirement", "AAMFE+TNKxG5ytcGHqgA"),
-   CodeRequirement_CodeUnit(SIDE_A, "Code-Requirement", "AAMFE+TNKxG5ytcGHqgA"),
-   Default_Hierarchical__Parent(SIDE_A, "Default Hierarchical", "AAMFE9skWhPMi6I1WdAA"),
-   Default_Hierarchical__Child(SIDE_B, "Default Hierarchical", "AAMFE9skWhPMi6I1WdAA"),
-   Dependency__Dependency(SIDE_B, "Dependency", "AAMFE9uek34jqArVRuAA"),
-   Dependency__Artifact(SIDE_A, "Dependency", "AAMFE9uek34jqArVRuAA"),
-   Design__Design(SIDE_B, "Design", "AAMFE+XjcSaqnXfOXVQA"),
-   Design__Requirement(SIDE_A, "Design", "AAMFE+XjcSaqnXfOXVQA"),
-   Executes__Test_Plan_Element(SIDE_A, "Executes", "AWo0+Hkh+2qNMeAlUwQA"),
-   Executes__Test_Procedure(SIDE_B, "Executes", "AWo0+Hkh+2qNMeAlUwQA"),
-   Requirement_Trace__Higher_Level(SIDE_A, "Requirement Trace", "AAMFE+dRBVFN6fAPXdwA"),
-   Requirement_Trace__Lower_Level(SIDE_B, "Requirement Trace", "AAMFE+dRBVFN6fAPXdwA"),
-   Supercedes_Supercedes(SIDE_A, "Supercedes", "AAMFE9qJZC_qegaByjgA"),
-   Supercedes_Superceded(SIDE_B, "Supercedes", "AAMFE9qJZC_qegaByjgA"),
-   SupportingInfo_SupportedBy(SIDE_A, "Supporting Info", "AAMFE9wWnVhFW0wtOPAA"),
-   SupportingInfo_SupportingInfo(SIDE_B, "Supporting Info", "AAMFE9wWnVhFW0wtOPAA"),
-   TeamMember_Team(SIDE_A, "TeamMember", "AAMFE92A6gCO9WJ2ijQA"),
-   TeamMember_Member(SIDE_B, "TeamMember", "AAMFE92A6gCO9WJ2ijQA"),
-   Test_Unit_Result__Test_Unit(SIDE_A, "Results Data", "AQm9ouX6JwBD29WrFoAA"),
-   Test_Unit_Result__Test_Result(SIDE_B, "Results Data", "AQm9ouX6JwBD29WrFoAA"),
-   Universal_Grouping__Members(SIDE_B, "Universal Grouping", "AAMFE9yOp2hIrXwZ13wA"),
-   Universal_Grouping__Group(SIDE_A, "Universal Grouping", "AAMFE9yOp2hIrXwZ13wA"),
-   Users_Artifact(SIDE_A, "Users", "AAMFE9nibXSCqcoXkMAA"),
-   Users_User(SIDE_B, "Users", "AAMFE9nibXSCqcoXkMAA"),
-   Uses__Requirement(SIDE_A, "Uses", "AAMFE_GV43rvba32QqwA"),
-   Uses__TestUnit(SIDE_B, "Uses", "AAMFE_GV43rvba32QqwA"),
-   Validation__Requirement(SIDE_A, "Validation", "AAMFE+fMVRM8f9BUD0AA"),
-   Validation__Validator(SIDE_B, "Validation", "AAMFE+fMVRM8f9BUD0AA"),
-   Verification__Requirement(SIDE_A, "Verification", "AAMFE+ZdqgB+D5zP5+gA"),
-   Verification__Verifier(SIDE_B, "Verification", "AAMFE+ZdqgB+D5zP5+gA"),
-   Verification_Plan__Requirement(SIDE_A, "Verification Plan", "ATmJsVc28wU57zFAi7AA"),
-   Verification_Plan__Test_Plan_Element(SIDE_B, "Verification Plan", "ATmJsVc28wU57zFAi7AA"),
-   WorkItem__Parent(SIDE_A, "Work Item", "AAMFE9jvEzcbzwAfjzwA"),
-   WorkItem__Child(SIDE_B, "Work Item", "AAMFE9jvEzcbzwAfjzwA");
+public class CoreRelationTypes extends NamedIdentity implements IRelationEnumeration {
+   public static final CoreRelationTypes Allocation__Requirement =
+         new CoreRelationTypes(SIDE_A, "AAMFE+RS8gRV2BXaCtQA", "Allocation");
+   public static final CoreRelationTypes Allocation__Component =
+         new CoreRelationTypes(SIDE_B, "AAMFE+RS8gRV2BXaCtQA", "Allocation");
+   public static final CoreRelationTypes CodeRequirement_Requirement =
+         new CoreRelationTypes(SIDE_B, "AAMFE+TNKxG5ytcGHqgA", "Code-Requirement");
+   public static final CoreRelationTypes CodeRequirement_CodeUnit =
+         new CoreRelationTypes(SIDE_A, "AAMFE+TNKxG5ytcGHqgA", "Code-Requirement");
+   public static final CoreRelationTypes Default_Hierarchical__Parent =
+         new CoreRelationTypes(SIDE_A, "AAMFE9skWhPMi6I1WdAA", "Default Hierarchical");
+   public static final CoreRelationTypes Default_Hierarchical__Child =
+         new CoreRelationTypes(SIDE_B, "AAMFE9skWhPMi6I1WdAA", "Default Hierarchical");
+   public static final CoreRelationTypes Dependency__Dependency =
+         new CoreRelationTypes(SIDE_B, "AAMFE9uek34jqArVRuAA", "Dependency");
+   public static final CoreRelationTypes Dependency__Artifact =
+         new CoreRelationTypes(SIDE_A, "AAMFE9uek34jqArVRuAA", "Dependency");
+   public static final CoreRelationTypes Design__Design =
+         new CoreRelationTypes(SIDE_B, "AAMFE+XjcSaqnXfOXVQA", "Design");
+   public static final CoreRelationTypes Design__Requirement =
+         new CoreRelationTypes(SIDE_A, "AAMFE+XjcSaqnXfOXVQA", "Design");
+   public static final CoreRelationTypes Executes__Test_Plan_Element =
+         new CoreRelationTypes(SIDE_A, "AWo0+Hkh+2qNMeAlUwQA", "Executes");
+   public static final CoreRelationTypes Executes__Test_Procedure =
+         new CoreRelationTypes(SIDE_B, "AWo0+Hkh+2qNMeAlUwQA", "Executes");
+   public static final CoreRelationTypes Requirement_Trace__Higher_Level =
+         new CoreRelationTypes(SIDE_A, "AAMFE+dRBVFN6fAPXdwA", "Requirement Trace");
+   public static final CoreRelationTypes Requirement_Trace__Lower_Level =
+         new CoreRelationTypes(SIDE_B, "AAMFE+dRBVFN6fAPXdwA", "Requirement Trace");
+   public static final CoreRelationTypes Supercedes_Supercedes =
+         new CoreRelationTypes(SIDE_A, "AAMFE9qJZC_qegaByjgA", "Supercedes");
+   public static final CoreRelationTypes Supercedes_Superceded =
+         new CoreRelationTypes(SIDE_B, "AAMFE9qJZC_qegaByjgA", "Supercedes");
+   public static final CoreRelationTypes SupportingInfo_SupportedBy =
+         new CoreRelationTypes(SIDE_A, "AAMFE9wWnVhFW0wtOPAA", "Supporting Info");
+   public static final CoreRelationTypes SupportingInfo_SupportingInfo =
+         new CoreRelationTypes(SIDE_B, "AAMFE9wWnVhFW0wtOPAA", "Supporting Info");
+   public static final CoreRelationTypes TeamMember_Team =
+         new CoreRelationTypes(SIDE_A, "AAMFE92A6gCO9WJ2ijQA", "TeamMember");
+   public static final CoreRelationTypes TeamMember_Member =
+         new CoreRelationTypes(SIDE_B, "AAMFE92A6gCO9WJ2ijQA", "TeamMember");
+   public static final CoreRelationTypes Test_Unit_Result__Test_Unit =
+         new CoreRelationTypes(SIDE_A, "AQm9ouX6JwBD29WrFoAA", "Results Data");
+   public static final CoreRelationTypes Test_Unit_Result__Test_Result =
+         new CoreRelationTypes(SIDE_B, "AQm9ouX6JwBD29WrFoAA", "Results Data");
+   public static final CoreRelationTypes Universal_Grouping__Members =
+         new CoreRelationTypes(SIDE_B, "AAMFE9yOp2hIrXwZ13wA", "Universal Grouping");
+   public static final CoreRelationTypes Universal_Grouping__Group =
+         new CoreRelationTypes(SIDE_A, "AAMFE9yOp2hIrXwZ13wA", "Universal Grouping");
+   public static final CoreRelationTypes Users_Artifact =
+         new CoreRelationTypes(SIDE_A, "AAMFE9nibXSCqcoXkMAA", "Users");
+   public static final CoreRelationTypes Users_User = new CoreRelationTypes(SIDE_B, "AAMFE9nibXSCqcoXkMAA", "Users");
+   public static final CoreRelationTypes Uses__Requirement =
+         new CoreRelationTypes(SIDE_A, "AAMFE_GV43rvba32QqwA", "Uses");
+   public static final CoreRelationTypes Uses__TestUnit = new CoreRelationTypes(SIDE_B, "AAMFE_GV43rvba32QqwA", "Uses");
+   public static final CoreRelationTypes Validation__Requirement =
+         new CoreRelationTypes(SIDE_A, "AAMFE+fMVRM8f9BUD0AA", "Validation");
+   public static final CoreRelationTypes Validation__Validator =
+         new CoreRelationTypes(SIDE_B, "AAMFE+fMVRM8f9BUD0AA", "Validation");
+   public static final CoreRelationTypes Verification__Requirement =
+         new CoreRelationTypes(SIDE_A, "AAMFE+ZdqgB+D5zP5+gA", "Verification");
+   public static final CoreRelationTypes Verification__Verifier =
+         new CoreRelationTypes(SIDE_B, "AAMFE+ZdqgB+D5zP5+gA", "Verification");
+   public static final CoreRelationTypes Verification_Plan__Requirement =
+         new CoreRelationTypes(SIDE_A, "ATmJsVc28wU57zFAi7AA", "Verification Plan");
+   public static final CoreRelationTypes Verification_Plan__Test_Plan_Element =
+         new CoreRelationTypes(SIDE_B, "ATmJsVc28wU57zFAi7AA", "Verification Plan");
+   public static final CoreRelationTypes WorkItem__Parent =
+         new CoreRelationTypes(SIDE_A, "AAMFE9jvEzcbzwAfjzwA", "Work Item");
+   public static final CoreRelationTypes WorkItem__Child =
+         new CoreRelationTypes(SIDE_B, "AAMFE9jvEzcbzwAfjzwA", "Work Item");
 
-   private RelationSide relationSide;
-   private String typeName;
-   private String guid;
+   private final RelationSide relationSide;
 
    private CoreRelationTypes(RelationSide side, String typeName, String guid) {
+      super(guid, typeName);
       this.relationSide = side;
-      this.typeName = typeName;
-      this.guid = guid;
-   }
-
-   @Deprecated
-   public boolean isSideA() {
-      return relationSide.isSideA();
-   }
-
-   public String getName() {
-      return typeName;
    }
 
    @Override
    public RelationSide getSide() {
       return relationSide;
-   }
-
-   public String getGuid() {
-      return guid;
    }
 }

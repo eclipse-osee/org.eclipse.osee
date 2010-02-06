@@ -202,7 +202,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          SkynetTransaction transaction =
                new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Branch");
          DemoDatabaseConfig.mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW),
-               DemoSawBuilds.SAW_Bld_2.name(), DemoSawBuilds.SAW_Bld_2.name(), transaction);
+               DemoSawBuilds.SAW_Bld_2.getName(), DemoSawBuilds.SAW_Bld_2.getName(), transaction);
          transaction.execute();
       } catch (Exception ex) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
@@ -283,8 +283,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       DemoDbUtil.sleep(2000L);
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Committing branch");
-      reqTeam.getBranchMgr().commitWorkingBranch(false, true,
-            reqTeam.getTargetedForVersion().getParentBranch(), true);
+      reqTeam.getBranchMgr().commitWorkingBranch(false, true, reqTeam.getTargetedForVersion().getParentBranch(), true);
 
       DemoDbUtil.sleep(5000);
 

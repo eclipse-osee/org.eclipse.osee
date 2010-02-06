@@ -5,42 +5,31 @@
  */
 package org.eclipse.osee.framework.messaging;
 
+import org.eclipse.osee.framework.core.data.NamedIdentity;
+
 /**
  * @author b1122182
  */
-public enum SystemTopic implements MessageID {
+public class SystemTopic extends NamedIdentity implements MessageID {
+   public static final SystemTopic JMS_HEALTH_STATUS = new SystemTopic("topic:jms.health.status");
+   public static final SystemTopic KILL_TEST_JMS_BROKER = new SystemTopic("topic:jms.kill.broker");
 
-	JMS_HEALTH_STATUS("topic:jms.health.status"),
-	KILL_TEST_JMS_BROKER("topic:jms.kill.broker");
+   SystemTopic(String name) {
+      super(name, name);
+   }
 
-	private String name;
+   @Override
+   public String getMessageDestination() {
+      return getName();
+   }
 
-	SystemTopic(String name) {
-		this.name = name;
-	}
+   @Override
+   public Class<?> getSerializationClass() {
+      return null;
+   }
 
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public String getMessageDestination() {
-		return name;
-	}
-
-	@Override
-	public Class<?> getSerializationClass() {
-		return null;
-	}
-
-	@Override
-	public boolean isReplyRequired() {
-		return false;
-	}
-
-	@Override
-	public String getGuid() {
-		return name;
-	}
+   @Override
+   public boolean isReplyRequired() {
+      return false;
+   }
 }

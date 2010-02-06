@@ -13,7 +13,5 @@ package org.eclipse.osee.framework.core.enums;
 import org.eclipse.osee.framework.core.data.IRelationType;
 
 public interface IRelationEnumeration extends IRelationType {
-   boolean isSideA();
-
    public RelationSide getSide();
 }

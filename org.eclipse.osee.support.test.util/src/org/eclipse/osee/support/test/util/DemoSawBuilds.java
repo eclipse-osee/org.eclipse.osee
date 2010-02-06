@@ -11,26 +11,17 @@
 package org.eclipse.osee.support.test.util;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 
 /**
  * @author Donald G. Dunne
  */
-public enum DemoSawBuilds implements IOseeBranch {
-   SAW_Bld_1("AyH_f2sSKy3l07fIvAAA"),
-   SAW_Bld_2("AyH_f2sSKy3l07fIvBBB"),
-   SAW_Bld_3("AyH_f2sSKy3l07fIvCCC");
+public class DemoSawBuilds extends NamedIdentity implements IOseeBranch {
+   public static final DemoSawBuilds SAW_Bld_1 = new DemoSawBuilds("AyH_f2sSKy3l07fIvAAA", "SAW_Bld_1");
+   public static final DemoSawBuilds SAW_Bld_2 = new DemoSawBuilds("AyH_f2sSKy3l07fIvBBB", "SAW_Bld_2");
+   public static final DemoSawBuilds SAW_Bld_3 = new DemoSawBuilds("AyH_f2sSKy3l07fIvCCC", "SAW_Bld_3");
 
-   private final String guid;
-
-   private DemoSawBuilds(String guid) {
-      this.guid = guid;
-   }
-
-   public String getGuid() {
-      return guid;
-   }
-
-   public String getName() {
-      return name();
+   private DemoSawBuilds(String guid, String name) {
+      super(guid, name);
    }
 }

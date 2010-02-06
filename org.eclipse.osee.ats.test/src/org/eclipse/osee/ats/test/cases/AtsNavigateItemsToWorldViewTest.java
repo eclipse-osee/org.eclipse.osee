@@ -352,8 +352,8 @@ public class AtsNavigateItemsToWorldViewTest {
       teamDefs.add("SAW Design");
       Set<TeamDefinitionArtifact> tda = TeamDefinitionArtifact.getTeamDefinitions(teamDefs);
       runGeneralTeamWorkflowSearchOnTeamTest(item, tda, 3);
-      runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.name(), 0);
-      runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_2.name(), 3);
+      runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.getName(), 0);
+      runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_2.getName(), 3);
       selectedTeamDefs.clear();
       runGeneralTeamWorkflowSearchOnTeamTest(item, selectedTeamDefs, 6);
    }
@@ -424,7 +424,7 @@ public class AtsNavigateItemsToWorldViewTest {
       XNavigateItem item = items.iterator().next();
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof VersionTargetedForTeamSearchItem);
       ((VersionTargetedForTeamSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedVersionArt(VersionArtifact.getVersions(
-            Arrays.asList(DemoSawBuilds.SAW_Bld_2.name())).iterator().next());
+            Arrays.asList(DemoSawBuilds.SAW_Bld_2.getName())).iterator().next());
       runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 14, null, TableLoadOption.DontCopySearchItem);
    }
 

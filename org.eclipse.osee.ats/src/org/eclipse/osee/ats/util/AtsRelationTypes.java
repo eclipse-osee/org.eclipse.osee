@@ -10,108 +10,96 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
  * @author Donald G. Dunne
  */
-public enum AtsRelationTypes implements IRelationEnumeration {
-   ActionToWorkflow_Action(true, "ActionToWorkflow", "AAMFE953ixQThusHUPwA"),
-   ActionToWorkflow_WorkFlow(false, "ActionToWorkflow", "AAMFE953ixQThusHUPwA"),
-      //
-   TeamActionableItem_Team(true, "TeamActionableItem", "AAMFE939Ul9Oenq9wWgA"),
-   TeamActionableItem_ActionableItem(false, "TeamActionableItem", "AAMFE939Ul9Oenq9wWgA"),
-      //
-   TeamLead_Team(true, "TeamLead", "AAMFE90HyTZPyHuQWOQA"),
-   TeamLead_Lead(false, "TeamLead", "AAMFE90HyTZPyHuQWOQA"),
-      //
-   TeamMember_Team(true, "TeamMember", "AAMFE92A6gCO9WJ2ijQA"),
-   TeamMember_Member(false, "TeamMember", "AAMFE92A6gCO9WJ2ijQA"),
-      //
-   Goal_Member(false, "Goal", "ABMn0wPKdyN+Mfo5nwgA"),
-   Goal_Goal(true, "Goal", "ABMn0wPKdyN+Mfo5nwgA"),
-      //
-   ParallelVersion_Parent(true, "ParallelVersion", "AAMFE_EJHSBGb9msPXQA"),
-   ParallelVersion_Child(false, "ParallelVersion", "AAMFE_EJHSBGb9msPXQA"),
-      //
-   PrivilegedMember_Team(true, "PrivilegedMember", "AAMFE9XfiibyK1x2FiwA"),
-   PrivilegedMember_Member(false, "PrivilegedMember", "AAMFE9XfiibyK1x2FiwA"),
-      //
-   SmaToTask_Sma(true, "SmaToTask", "AAMFE97xw1BM5l+GxKAA"),
-   SmaToTask_Task(false, "SmaToTask", "AAMFE97xw1BM5l+GxKAA"),
-      //
-   TeamWorkflowTargetedForVersion_Workflow(true, "TeamWorkflowTargetedForVersion", "AAMFE99pzm4zSibDT9gA"),
-   TeamWorkflowTargetedForVersion_Version(false, "TeamWorkflowTargetedForVersion", "AAMFE99pzm4zSibDT9gA"),
-      //
-   TeamDefinitionToVersion_TeamDefinition(true, "TeamDefinitionToVersion", "AAMFE9_i7zG3lR1kGWQA"),
-   TeamDefinitionToVersion_Version(false, "TeamDefinitionToVersion", "AAMFE9_i7zG3lR1kGWQA"),
-      //
-   TeamDefinitionToWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToWorkflowDiagram", "AAMFE+BpKTGewbN8c3gA"),
-   TeamDefinitionToWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToWorkflowDiagram", "AAMFE+BpKTGewbN8c3gA"),
-      //
-   TeamDefinitionToTaskWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToTaskWorkflowDiagram", "AAMFE+DkeQ9mRBPca0QA"),
-   TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToTaskWorkflowDiagram", "AAMFE+DkeQ9mRBPca0QA"),
-      //
-   TeamDefinitionToDecisionReviewWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToDecisionReviewWorkflowDiagram", "AAMFE+Fg4RmKrda_jJQA"),
-   TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToDecisionReviewWorkflowDiagram", "AAMFE+Fg4RmKrda_jJQA"),
-      //
-   TeamDefinitionToPeerToPeerReviewWorkflowDiagram_TeamDefinition(true,
-         "TeamDefinitionToPeerToPeerReviewWorkflowDiagram", "AAMFE+HqYUG262IxMFwA"),
-   TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram(false,
-         "TeamDefinitionToPeerToPeerReviewWorkflowDiagram", "AAMFE+HqYUG262IxMFwA"),
-      //
-   TeamWorkflowToReview_Team(true, "TeamWorkflowToReview", "AAMFE+JqDz+8tuRDdIwA"),
-   TeamWorkflowToReview_Review(false, "TeamWorkflowToReview", "AAMFE+JqDz+8tuRDdIwA"),
-      //
-   SubscribedUser_Artifact(true, "SubscribedUser", "AAMFE+LkSAkfUWoTHdwA"),
-   SubscribedUser_User(false, "SubscribedUser", "AAMFE+LkSAkfUWoTHdwA"),
-   FavoriteUser_Artifact(true, "FavoriteUser", "AAMFE+NegDLK1g2ph+AA"),
-   FavoriteUser_User(false, "FavoriteUser", "AAMFE+NegDLK1g2ph+AA");
-
+public class AtsRelationTypes extends NamedIdentity implements IRelationEnumeration {
    private final RelationSide relationSide;
-   private final String typeName;
-   private final String guid;
 
-   private AtsRelationTypes(boolean sideA, String typeName, String guid) {
-      this.relationSide = sideA ? RelationSide.SIDE_A : RelationSide.SIDE_B;
-      this.typeName = typeName;
-      this.guid = guid;
-   }
+   public static final AtsRelationTypes ActionToWorkflow_Action =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE953ixQThusHUPwA", "ActionToWorkflow");
+   public static final AtsRelationTypes ActionToWorkflow_WorkFlow =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE953ixQThusHUPwA", "ActionToWorkflow");
+   public static final AtsRelationTypes FavoriteUser_Artifact =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE+NegDLK1g2ph+AA", "FavoriteUser");
+   public static final AtsRelationTypes FavoriteUser_User =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE+NegDLK1g2ph+AA", "FavoriteUser");
+   public static final AtsRelationTypes Goal_Goal =
+         new AtsRelationTypes(RelationSide.SIDE_A, "ABMn0wPKdyN+Mfo5nwgA", "Goal");
+   public static final AtsRelationTypes Goal_Member =
+         new AtsRelationTypes(RelationSide.SIDE_B, "ABMn0wPKdyN+Mfo5nwgA", "Goal");
+   public static final AtsRelationTypes ParallelVersion_Child =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE_EJHSBGb9msPXQA", "ParallelVersion");
+   public static final AtsRelationTypes ParallelVersion_Parent =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE_EJHSBGb9msPXQA", "ParallelVersion");
+   public static final AtsRelationTypes PrivilegedMember_Member =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE9XfiibyK1x2FiwA", "PrivilegedMember");
+   public static final AtsRelationTypes PrivilegedMember_Team =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE9XfiibyK1x2FiwA", "PrivilegedMember");
+   public static final AtsRelationTypes SmaToTask_Sma =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE97xw1BM5l+GxKAA", "SmaToTask");
+   public static final AtsRelationTypes SmaToTask_Task =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE97xw1BM5l+GxKAA", "SmaToTask");
+   public static final AtsRelationTypes SubscribedUser_Artifact =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE+LkSAkfUWoTHdwA", "SubscribedUser");
+   public static final AtsRelationTypes SubscribedUser_User =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE+LkSAkfUWoTHdwA", "SubscribedUser");
+   public static final AtsRelationTypes TeamActionableItem_ActionableItem =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE939Ul9Oenq9wWgA", "TeamActionableItem");
+   public static final AtsRelationTypes TeamActionableItem_Team =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE939Ul9Oenq9wWgA", "TeamActionableItem");
+   public static final AtsRelationTypes TeamDefinitionToDecisionReviewWorkflowDiagram_TeamDefinition =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE+Fg4RmKrda_jJQA",
+               "TeamDefinitionToDecisionReviewWorkflowDiagram");
+   public static final AtsRelationTypes TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE+Fg4RmKrda_jJQA",
+               "TeamDefinitionToDecisionReviewWorkflowDiagram");
+   public static final AtsRelationTypes TeamDefinitionToPeerToPeerReviewWorkflowDiagram_TeamDefinition =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE+HqYUG262IxMFwA",
+               "TeamDefinitionToPeerToPeerReviewWorkflowDiagram");
+   public static final AtsRelationTypes TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE+HqYUG262IxMFwA",
+               "TeamDefinitionToPeerToPeerReviewWorkflowDiagram");
+   public static final AtsRelationTypes TeamDefinitionToTaskWorkflowDiagram_TeamDefinition =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE+DkeQ9mRBPca0QA", "TeamDefinitionToTaskWorkflowDiagram");
+   public static final AtsRelationTypes TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE+DkeQ9mRBPca0QA", "TeamDefinitionToTaskWorkflowDiagram");
+   public static final AtsRelationTypes TeamDefinitionToVersion_TeamDefinition =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE9_i7zG3lR1kGWQA", "TeamDefinitionToVersion");
+   public static final AtsRelationTypes TeamDefinitionToVersion_Version =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE9_i7zG3lR1kGWQA", "TeamDefinitionToVersion");
+   public static final AtsRelationTypes TeamDefinitionToWorkflowDiagram_TeamDefinition =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE+BpKTGewbN8c3gA", "TeamDefinitionToWorkflowDiagram");
+   public static final AtsRelationTypes TeamDefinitionToWorkflowDiagram_WorkflowDiagram =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE+BpKTGewbN8c3gA", "TeamDefinitionToWorkflowDiagram");
+   public static final AtsRelationTypes TeamLead_Lead =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE90HyTZPyHuQWOQA", "TeamLead");
+   public static final AtsRelationTypes TeamLead_Team =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE90HyTZPyHuQWOQA", "TeamLead");
+   public static final AtsRelationTypes TeamMember_Member =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE92A6gCO9WJ2ijQA", "TeamMember");
+   public static final AtsRelationTypes TeamMember_Team =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE92A6gCO9WJ2ijQA", "TeamMember");
+   public static final AtsRelationTypes TeamWorkflowTargetedForVersion_Version =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE99pzm4zSibDT9gA", "TeamWorkflowTargetedForVersion");
+   public static final AtsRelationTypes TeamWorkflowTargetedForVersion_Workflow =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE99pzm4zSibDT9gA", "TeamWorkflowTargetedForVersion");
+   public static final AtsRelationTypes TeamWorkflowToReview_Review =
+         new AtsRelationTypes(RelationSide.SIDE_B, "AAMFE+JqDz+8tuRDdIwA", "TeamWorkflowToReview");
+   public static final AtsRelationTypes TeamWorkflowToReview_Team =
+         new AtsRelationTypes(RelationSide.SIDE_A, "AAMFE+JqDz+8tuRDdIwA", "TeamWorkflowToReview");
 
-   /**
-    * @return Returns the sideName.
-    */
-   @Deprecated
-   public boolean isSideA() {
-      return relationSide.isSideA();
-   }
-
-   /**
-    * @return Returns the typeName.
-    */
-   public String getName() {
-      return typeName;
-   }
-
-   public RelationType getRelationType() throws OseeCoreException {
-      return RelationTypeManager.getType(typeName);
+   private AtsRelationTypes(RelationSide relationSide, String guid, String name) {
+      super(guid, name);
+      this.relationSide = relationSide;
    }
 
    @Override
    public RelationSide getSide() {
       return relationSide;
-   }
-
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.data.IOseeType#getGuid()
-    */
-   @Override
-   public String getGuid() {
-      return guid;
    }
 }

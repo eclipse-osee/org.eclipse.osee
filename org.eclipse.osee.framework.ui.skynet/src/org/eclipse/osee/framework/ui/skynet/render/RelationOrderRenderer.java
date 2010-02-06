@@ -46,7 +46,7 @@ public class RelationOrderRenderer {
       String toReturn = sorterGuid;
       try {
          IRelationSorter sorter = sorterProvider.getRelationOrder(toReturn);
-         toReturn = sorter.getSorterId().prettyName();
+         toReturn = sorter.getSorterId().getName();
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

@@ -17,33 +17,19 @@ import org.eclipse.osee.framework.core.model.Branch;
 /**
  * @author Roberto E. Escobar
  */
-public final class DefaultBasicArtifact implements IBasicArtifact<Object> {
+public final class DefaultBasicArtifact extends NamedIdentity implements IBasicArtifact<Object> {
 
    private static final long serialVersionUID = -4997763989583925345L;
    private final int artId;
-   private final String name;
-   private final String guid;
 
    public DefaultBasicArtifact(int artId, String guid, String name) {
-      super();
+      super(guid, name);
       this.artId = artId;
-      this.guid = guid;
-      this.name = name;
    }
 
    @Override
    public int getArtId() {
       return artId;
-   }
-
-   @Override
-   public String getGuid() {
-      return guid;
-   }
-
-   @Override
-   public String getName() {
-      return name;
    }
 
    @Override
@@ -60,5 +46,4 @@ public final class DefaultBasicArtifact implements IBasicArtifact<Object> {
    public Branch getBranch() {
       return null;
    }
-
 }

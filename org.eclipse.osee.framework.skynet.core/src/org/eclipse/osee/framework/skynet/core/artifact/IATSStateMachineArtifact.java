@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import org.eclipse.osee.framework.core.data.Identity;
+
 /**
  * @author Donald G. Dunne
  */
-public interface IATSStateMachineArtifact {
-
-   public abstract String getGuid();
+public interface IATSStateMachineArtifact extends Identity {
 }

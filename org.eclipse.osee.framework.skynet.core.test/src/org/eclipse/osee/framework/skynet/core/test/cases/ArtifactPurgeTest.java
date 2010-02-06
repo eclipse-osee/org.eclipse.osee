@@ -98,7 +98,7 @@ public class ArtifactPurgeTest {
       DbUtil.getTableRowCounts(preCreateArtifactsCount, tables);
 
       // Create some software artifacts      
-      Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2.name());
+      Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2.getName());
       SkynetTransaction transaction = new SkynetTransaction(branch, "Test purge artifacts");
       Collection<Artifact> softArts =
             FrameworkTestUtil.createSimpleArtifacts(Requirements.SOFTWARE_REQUIREMENT, 10, getClass().getSimpleName(),

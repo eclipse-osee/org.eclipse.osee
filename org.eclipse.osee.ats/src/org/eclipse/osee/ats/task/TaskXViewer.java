@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -89,7 +90,9 @@ public class TaskXViewer extends WorldXViewer {
 
    @Override
    public String toString() {
-      if (xTaskViewer == null) return "TaskXViewer";
+      if (xTaskViewer == null) {
+         return "TaskXViewer";
+      }
       try {
          if (xTaskViewer.getIXTaskViewer().getSma() != null) {
             return "TaskXViewer - id:" + viewerId + " - " + xTaskViewer.getIXTaskViewer().getSma().toString();
@@ -102,7 +105,9 @@ public class TaskXViewer extends WorldXViewer {
 
    public boolean isUsingTaskResolutionOptions() {
       try {
-         if (getSelectedTaskArtifact() == null) return false;
+         if (getSelectedTaskArtifact() == null) {
+            return false;
+         }
          return getSelectedTaskArtifact().isUsingTaskResolutionOptions();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -114,8 +119,9 @@ public class TaskXViewer extends WorldXViewer {
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       handleColumnMultiEdit(treeColumn, treeItems, false);
       Set<TaskArtifact> items = new HashSet<TaskArtifact>();
-      for (TreeItem item : treeItems)
+      for (TreeItem item : treeItems) {
          items.add((TaskArtifact) item.getData());
+      }
       refresh();
       editor.onDirtied();
    }
@@ -133,7 +139,11 @@ public class TaskXViewer extends WorldXViewer {
          Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
          while (i.hasNext()) {
             Object obj = i.next();
-            if (obj instanceof TaskArtifact) if (!((TaskArtifact) obj).isInWork()) return false;
+            if (obj instanceof TaskArtifact) {
+               if (!((TaskArtifact) obj).isInWork()) {
+                  return false;
+               }
+            }
          }
          return true;
       } catch (OseeCoreException ex) {
@@ -338,7 +348,9 @@ public class TaskXViewer extends WorldXViewer {
       // Ensure tasks are related to current state of workflow 
       SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(getSelectedTaskArtifacts());
       Result result = promptChangeStatus.isValidToChangeStatus();
-      if (result.isFalse()) return false;
+      if (result.isFalse()) {
+         return false;
+      }
 
       if (isUsingTaskResolutionOptions()) {
          if (SMAPromptChangeStatus.promptChangeStatus(getSelectedTaskArtifacts(), false)) {
@@ -383,12 +395,13 @@ public class TaskXViewer extends WorldXViewer {
             modified = handleChangeResolution();
          } else if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col)) {
             modified = SMAPromptChangeStatus.promptChangeStatus(Arrays.asList(taskArt), false);
-         } else
+         } else {
             modified = super.handleAltLeftClick(treeColumn, treeItem, false);
+         }
 
          if (modified) {
             editor.onDirtied();
-            update((treeItem.getData()), null);
+            update(treeItem.getData(), null);
             return true;
          }
       } catch (Exception ex) {
@@ -419,11 +432,15 @@ public class TaskXViewer extends WorldXViewer {
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId != AtsUtil.getAtsBranch().getId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
+         return;
+      }
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (xTaskViewer.getTaskXViewer().getContentProvider() == null) return;
+            if (xTaskViewer.getTaskXViewer().getContentProvider() == null) {
+               return;
+            }
             remove(transData.cacheDeletedArtifacts.toArray(new Object[transData.cacheDeletedArtifacts.size()]));
             update(transData.cacheChangedArtifacts.toArray(new Object[transData.cacheChangedArtifacts.size()]), null);
             try {
@@ -435,7 +452,7 @@ public class TaskXViewer extends WorldXViewer {
                   // Add any new tasks related to parent sma
                   Collection<TaskArtifact> artifacts =
                         Collections.castMatching(TaskArtifact.class, transData.getRelatedArtifacts(
-                              parentSma.getArtId(), AtsRelationTypes.SmaToTask_Task.getRelationType().getId(),
+                              parentSma.getArtId(), RelationTypeManager.getTypeId(AtsRelationTypes.SmaToTask_Task),
                               AtsUtil.getAtsBranch().getId(), transData.cacheAddedRelations));
                   if (artifacts.size() > 0) {
                      taskComposite.add(artifacts);
@@ -444,7 +461,7 @@ public class TaskXViewer extends WorldXViewer {
                   // Remove any tasks related to parent sma
                   artifacts =
                         Collections.castMatching(TaskArtifact.class, transData.getRelatedArtifacts(
-                              parentSma.getArtId(), AtsRelationTypes.SmaToTask_Task.getRelationType().getId(),
+                              parentSma.getArtId(), RelationTypeManager.getTypeId(AtsRelationTypes.SmaToTask_Task),
                               AtsUtil.getAtsBranch().getId(), transData.cacheDeletedRelations));
                   if (artifacts.size() > 0) {
                      remove(artifacts.toArray(new Object[artifacts.size()]));

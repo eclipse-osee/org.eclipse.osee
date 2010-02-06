@@ -17,13 +17,9 @@ import org.eclipse.osee.framework.core.model.Branch;
 /**
  * @author Roberto E. Escobar
  */
-public interface IBasicArtifact<T> {
+public interface IBasicArtifact<T> extends Named, Identity {
 
    int getArtId();
-
-   String getGuid();
-
-   String getName();
 
    Branch getBranch();
 

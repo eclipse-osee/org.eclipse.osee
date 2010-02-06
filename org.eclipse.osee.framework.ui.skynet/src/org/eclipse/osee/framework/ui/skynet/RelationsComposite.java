@@ -268,7 +268,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       List<IRelationSorterId> orderTypes = RelationManager.getRelationOrderTypes();
       for (IRelationSorterId id : orderTypes) {
          MenuItem idMenu = new MenuItem(subMenu, SWT.CASCADE | SWT.CHECK);
-         idMenu.setText(id.prettyName());
+         idMenu.setText(id.getName());
          idMenu.addSelectionListener(new SelectionId(id));
       }
 

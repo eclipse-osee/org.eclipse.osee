@@ -73,8 +73,8 @@ public class AtsNavigateItemsToTaskEditorTest {
       Set<TeamDefinitionArtifact> tda = TeamDefinitionArtifact.getTeamDefinitions(teamDefs);
       runGeneralTaskSearchOnTeamTest(item, tda, 14);
       runGeneralTaskSearchOnAssigneeTest(item, "Joe Smith", 14);
-      runGeneralTaskSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.name(), 0);
-      runGeneralTaskSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_2.name(), 14);
+      runGeneralTaskSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.getName(), 0);
+      runGeneralTaskSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_2.getName(), 14);
       selectedUsers.clear();
       runGeneralTaskSearchOnTeamTest(item, selectedUsers, 14);
       runGeneralTaskSearchOnAssigneeTest(item, "Kay Jones", 8);

@@ -12,6 +12,8 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -21,7 +23,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * 
  * @author Donald G. Dunne
  */
-public interface ICoverageUnit {
+public interface ICoverageUnit extends Named, Identity {
 
    public void clearCoverageUnits();
 
@@ -39,8 +41,6 @@ public interface ICoverageUnit {
 
    public CoverageItem getCoverageItem(String childUnitOrderNum, String itemOrderNumber);
 
-   public String getName();
-
    public void setName(String name);
 
    public String getLocation();
@@ -50,8 +50,6 @@ public interface ICoverageUnit {
    public String getFileContents();
 
    public void setFileContents(String fileContents);
-
-   public String getGuid();
 
    public ICoverageUnit getParentCoverageUnit();
 

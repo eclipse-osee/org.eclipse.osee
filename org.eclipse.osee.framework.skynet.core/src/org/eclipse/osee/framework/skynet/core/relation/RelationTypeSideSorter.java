@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  * @author Ryan Schmitt
  */
 public class RelationTypeSideSorter extends RelationTypeSide {
-
    private final RelationOrderData orderData;
    private final RelationSorterProvider sorterProvider;
 
@@ -85,7 +84,7 @@ public class RelationTypeSideSorter extends RelationTypeSide {
 
    public String getSorterName() throws OseeCoreException {
       IRelationSorterId id = getSorterId();
-      return id.prettyName();
+      return id.getName();
    }
 
    public void sort(List<? extends IArtifact> listToOrder) throws OseeCoreException {

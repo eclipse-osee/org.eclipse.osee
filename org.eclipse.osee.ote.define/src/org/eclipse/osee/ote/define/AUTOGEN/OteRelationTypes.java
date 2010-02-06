@@ -10,50 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.define.AUTOGEN;
 
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
-public enum OteRelationTypes implements IRelationEnumeration {
-   TEST_SCRIPT_TO_RUN_RELATION__TEST_SCRIPT(RelationSide.SIDE_A, "Test Case to Run Relation", "AAMFE+jMyBDK7CV479wA"),
-   TEST_SCRIPT_TO_RUN_RELATION__TEST_RUN(RelationSide.SIDE_B, "Test Case to Run Relation", "AAMFE+jMyBDK7CV479wA");
+public class OteRelationTypes extends NamedIdentity implements IRelationEnumeration {
+   public static final OteRelationTypes TEST_SCRIPT_TO_RUN_RELATION__TEST_SCRIPT =
+         new OteRelationTypes(RelationSide.SIDE_A, "AAMFE+jMyBDK7CV479wA", "Test Case to Run Relation");
+   public static final OteRelationTypes TEST_SCRIPT_TO_RUN_RELATION__TEST_RUN =
+         new OteRelationTypes(RelationSide.SIDE_B, "AAMFE+jMyBDK7CV479wA", "Test Case to Run Relation");
    private final RelationSide relationSide;
-   private final String guid;
-   private String typeName;
 
-   private OteRelationTypes(RelationSide relationSide, String typeName, String guid) {
+   private OteRelationTypes(RelationSide relationSide, String guid, String name) {
+      super(guid, name);
       this.relationSide = relationSide;
-      this.typeName = typeName;
-      this.guid = guid;
-   }
-
-   /**
-    * @return Returns the sideName.
-    */
-   public boolean isSideA() {
-      return relationSide.isSideA();
-   }
-
-   /**
-    * @return Returns the typeName.
-    */
-   public String getName() {
-      return typeName;
-   }
-
-   public RelationType getRelationType() throws OseeCoreException {
-      return RelationTypeManager.getType(typeName);
    }
 
    @Override
    public RelationSide getSide() {
       return relationSide;
-   }
-
-   @Override
-   public String getGuid() {
-      return guid;
    }
 }

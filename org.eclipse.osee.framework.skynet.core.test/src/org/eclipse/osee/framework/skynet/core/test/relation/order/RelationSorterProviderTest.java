@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.relation.order;
 
+import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.UNORDERED;
+import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.USER_DEFINED;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
@@ -37,33 +41,30 @@ public class RelationSorterProviderTest {
       List<IRelationSorterId> actual = provider.getAllRelationOrderIds();
 
       List<IRelationSorterId> expected =
-            Collections.castAll(IRelationSorterId.class, Arrays.asList(RelationOrderBaseTypes.values()));
+            Collections.castAll(IRelationSorterId.class, Arrays.asList(RelationOrderBaseTypes.values));
       Assert.assertTrue(Collections.isEqual(expected, actual));
    }
 
    @Test
    public void testGetRelationOrder() throws OseeCoreException {
       RelationSorterProvider provider = new RelationSorterProvider();
-      for (RelationOrderBaseTypes baseType : RelationOrderBaseTypes.values()) {
+      for (RelationOrderBaseTypes baseType : RelationOrderBaseTypes.values) {
          IRelationSorter actual = provider.getRelationOrder(baseType.getGuid());
          Assert.assertEquals(baseType, actual.getSorterId());
          boolean matches = false;
-         switch (baseType) {
-            case LEXICOGRAPHICAL_ASC:
-               matches = actual instanceof LexicographicalRelationSorter;
-               break;
-            case LEXICOGRAPHICAL_DESC:
-               matches = actual instanceof LexicographicalRelationSorter;
-               break;
-            case UNORDERED:
-               matches = actual instanceof UnorderedRelationSorter;
-               break;
-            case USER_DEFINED:
-               matches = actual instanceof UserDefinedRelationSorter;
-               break;
-            default:
-               Assert.assertNull("This line should not be reached");
-               break;
+
+         if (baseType == LEXICOGRAPHICAL_ASC) {
+            matches = actual instanceof LexicographicalRelationSorter;
+         } else if (baseType == LEXICOGRAPHICAL_DESC) {
+            matches = actual instanceof LexicographicalRelationSorter;
+
+         } else if (baseType == UNORDERED) {
+            matches = actual instanceof UnorderedRelationSorter;
+
+         } else if (baseType == USER_DEFINED) {
+            matches = actual instanceof UserDefinedRelationSorter;
+         } else {
+            Assert.assertNull("This line should not be reached");
          }
          Assert.assertTrue(matches);
       }

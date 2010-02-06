@@ -113,7 +113,7 @@ public class RelationTypeSideSorterTest {
       Assert.assertNotNull(sorterGuid);
       Assert.assertEquals(expected, sorter.getSorterId());
       Assert.assertEquals(expected.getGuid(), sorter.getSorterId().getGuid());
-      Assert.assertEquals(expected.prettyName(), sorter.getSorterId().prettyName());
+      Assert.assertEquals(expected.getName(), sorter.getSorterId().getName());
    }
 
    @Test
@@ -121,12 +121,7 @@ public class RelationTypeSideSorterTest {
       String sorterGuid = orderData.getCurrentSorterGuid(relationType, relationSide);
       IRelationSorterId expected = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
       Assert.assertNotNull(sorterGuid);
-      Assert.assertEquals(expected.prettyName(), sorter.getSorterName());
-   }
-
-   @Test
-   public void testIsSideA() {
-      Assert.assertEquals(relationSide == RelationSide.SIDE_A, sorter.isSideA());
+      Assert.assertEquals(expected.getName(), sorter.getSorterName());
    }
 
    @Test

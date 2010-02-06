@@ -96,6 +96,10 @@ public class RelationTypeManager {
       return getCache().get(relationType);
    }
 
+   public static int getTypeId(IRelationType relationType) throws OseeCoreException {
+      return getCache().get(relationType).getId();
+   }
+
    public static RelationType getType(String typeName) throws OseeCoreException {
       RelationType relationType = getCache().getUniqueByName(typeName);
       if (relationType == null) {

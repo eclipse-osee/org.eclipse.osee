@@ -22,7 +22,7 @@ public class RelationSorterIdComparator implements Serializable, Comparator<IRel
 
    @Override
    public int compare(IRelationSorterId o1, IRelationSorterId o2) {
-      return o1.prettyName().compareToIgnoreCase(o2.prettyName());
+      return o1.getName().compareToIgnoreCase(o2.getName());
    }
 
 }

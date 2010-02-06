@@ -113,7 +113,7 @@ public class RelationOrderRendererTest {
       String expectedOrderId = relationOrderIdGuid;
       try {
          IRelationSorter sorter = sorterProvider.getRelationOrder(relationOrderIdGuid);
-         expectedOrderId = sorter.getSorterId().prettyName();
+         expectedOrderId = sorter.getSorterId().getName();
       } catch (Exception ex) {
          // Do Nothing
       }

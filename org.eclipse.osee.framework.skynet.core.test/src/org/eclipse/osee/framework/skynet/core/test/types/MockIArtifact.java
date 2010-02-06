@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.test.types;
 
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -22,19 +23,16 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 /**
  * @author Roberto E. Escobar
  */
-public class MockIArtifact implements IArtifact {
+public class MockIArtifact extends NamedIdentity implements IArtifact {
 
    private boolean wasGetFullArtifactCalled;
    private final int uniqueId;
    private final ArtifactType artifactType;
    private final Branch branch;
-   private final String guid;
-   private final String name;
 
    public MockIArtifact(int uniqueId, String name, String guid, Branch branch, ArtifactType artifactType) {
+      super(guid, name);
       this.uniqueId = uniqueId;
-      this.name = name;
-      this.guid = guid;
       this.branch = branch;
       this.artifactType = artifactType;
       clear();
@@ -67,16 +65,6 @@ public class MockIArtifact implements IArtifact {
    public Artifact getFullArtifact() throws OseeCoreException {
       wasGetFullArtifactCalled = true;
       return null;
-   }
-
-   @Override
-   public String getGuid() {
-      return guid;
-   }
-
-   @Override
-   public String getName() {
-      return name;
    }
 
    @Override

@@ -114,7 +114,7 @@ public class RelationContentProvider implements ITreeContentProvider {
             WrapperForRelationLink[] wrapper = new WrapperForRelationLink[artifacts.size()];
             for (int i = 0; i < artifacts.size(); i++) {
                Artifact sideArtifact = artifacts.get(i).getFullArtifact();
-               if (relationSorter.isSideA()) {
+               if (relationSorter.getSide().isSideA()) {
                   wrapper[i] =
                         new WrapperForRelationLink(relationSorter.getRelationType(), sideArtifact, sideArtifact,
                               relationSorter.getArtifact());

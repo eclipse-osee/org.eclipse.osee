@@ -265,7 +265,7 @@ public class OseeToXtextOperation extends AbstractOperation {
 
    private String getRelationOrderType(String guid) throws OseeArgumentException {
       RelationOrderBaseTypes type = RelationOrderBaseTypes.getFromGuid(guid);
-      return type.prettyName().replaceAll(" ", "_");
+      return type.getName().replaceAll(" ", "_");
    }
 
    private String asQuoted(String name) {

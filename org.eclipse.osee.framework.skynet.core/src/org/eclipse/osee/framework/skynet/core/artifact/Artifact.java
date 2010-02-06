@@ -34,6 +34,8 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -89,7 +91,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.osgi.framework.Bundle;
 
-public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IAccessControllable {
+public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IAccessControllable, Named, Identity {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
@@ -206,7 +208,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    }
 
    private Pair<Artifact, Artifact> determineArtifactSides(Artifact artifact, IRelationEnumeration relationSide) {
-      boolean sideA = relationSide.isSideA();
+      boolean sideA = relationSide.getSide().isSideA();
       Artifact artifactA = sideA ? artifact : this;
       Artifact artifactB = sideA ? this : artifact;
       return new Pair<Artifact, Artifact>(artifactA, artifactB);
@@ -1269,7 +1271,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    }
 
    public void addRelation(IRelationSorterId sorterId, IRelationEnumeration relationEnumeration, Artifact targetArtifact, boolean insertAfterTarget, Artifact itemToAdd, String rationale) throws OseeCoreException {
-      boolean sideA = relationEnumeration.isSideA();
+      boolean sideA = relationEnumeration.getSide().isSideA();
       Artifact artifactA = sideA ? itemToAdd : this;
       Artifact artifactB = sideA ? this : itemToAdd;
 

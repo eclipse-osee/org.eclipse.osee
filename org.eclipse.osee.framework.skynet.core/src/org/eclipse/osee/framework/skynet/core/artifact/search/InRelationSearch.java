@@ -64,13 +64,13 @@ public class InRelationSearch implements ISearchPrimitive {
     */
    public InRelationSearch(FromArtifactsSearch otherArtifacts, IRelationEnumeration firstSide, IRelationEnumeration... sides) {
       this.typeNames = new String[sides.length + 1];
-      this.sideA = firstSide.isSideA();
+      this.sideA = firstSide.getSide().isSideA();
       this.otherArtifactsCriteria = otherArtifacts;
 
       int count = 0;
       typeNames[count++] = firstSide.getName();
       for (IRelationEnumeration side : sides) {
-         if (side.isSideA() != firstSide.isSideA()) {
+         if (side != firstSide) {
             throw new IllegalArgumentException("All links must be for the same side.");
          }
 
