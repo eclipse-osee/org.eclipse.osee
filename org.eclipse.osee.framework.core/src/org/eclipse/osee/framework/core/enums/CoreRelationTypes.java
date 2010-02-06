@@ -88,8 +88,8 @@ public class CoreRelationTypes extends NamedIdentity implements IRelationEnumera
 
    private final RelationSide relationSide;
 
-   private CoreRelationTypes(RelationSide side, String typeName, String guid) {
-      super(guid, typeName);
+   private CoreRelationTypes(RelationSide side, String guid, String name) {
+      super(guid, name);
       this.relationSide = side;
    }
 
