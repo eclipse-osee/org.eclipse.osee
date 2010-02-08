@@ -1,3 +1,4 @@
+
 SERVER_ID="$OS_MACHINE"_"$OSEE_APP_SERVER_PORT"
 if [ ! -d "$OSEE_APP_SERVER_HOME" ]; then 
   OSEE_APP_SERVER_HOME=`pwd`;
@@ -8,12 +9,14 @@ if [ ! -d "$JAVA_HOME" ]; then
   JAVA_HOME=`which java | awk '{print substr($1,0,length($1)-9)}'`;
 fi
 
-LOG="$OSEE_APP_SERVER_HOME/osee_app_server_$SERVER_ID.log"
-LOCK="$OSEE_APP_SERVER_HOME/osee_app_server_$SERVER_ID.lock"
-
-echo "OSEE App Server Home: [$OSEE_APP_SERVER_HOME]"
+LOG="$OSEE_APP_SERVER_HOME/logs/osee_app_server_$SERVER_ID.log"
+LOCK="$OSEE_APP_SERVER_HOME/lock/osee_app_server_$SERVER_ID.lock"
 
 RETVAL=0
+
+print_osee_app_server_home(){
+	echo "OSEE App Server Home: [$OSEE_APP_SERVER_HOME]"
+}
 
 osee_app_server_shutdown() {
 echo "$OS_MACHINE" "$OSEE_APP_SERVER_PORT"
@@ -62,6 +65,9 @@ start() {
 
     echo -n $"Starting OSEE App Server: "
     
+    mkdir "$OSEE_APP_SERVER_HOME"/logs
+    mkdir "$OSEE_APP_SERVER_HOME"/locks
+    
     EXECUTION_CMD="nohup $JAVA_HOME/bin/java -Xms40m -Xmx$OSEE_SERVER_MAX_MEMORY -Dosee.db.connection.id=$OSEE_DATABASE_CONNECTION_ID -Dorg.osgi.service.http.port=$OSEE_APP_SERVER_PORT $OSEE_APP_SERVER_EXTRA_VMARGS -jar $EQUINOX_LAUNCHER -console $OSGI_TELNET_PORT -consoleLog >> $LOG 2>>&1" 
     echo "EXEC: $EXECUTION_CMD"> "$LOG"
     `$EXECUTION_CMD` &
@@ -80,7 +86,7 @@ stop() {
     pid=`pid_of_osee_app_server`
 
     if [ -n "$pid" ]; then
-	osee_app_server_shutdown
+		osee_app_server_shutdown
     fi
 
     [ -n "$pid" ] && kill $pid
@@ -98,35 +104,39 @@ stop() {
 }
 
 status() {
-    pid=`pid_of_osee_app_server`
-    if [ -n "$pid" ]; then
+   pid=`pid_of_osee_app_server`
+   if [ -n "$pid" ]; then
+		test_app_server_alive
 
-	test_app_server_alive
-
-	if [ -n "$isAlive" ]; then
-            echo "OSEE App Server (pid $pid) is running..."
-	else 
-	    echo "OSGI without OSEE (pid $pid) is running..."
-        fi
-        return 0
-    fi
-    if [ -f "$LOCK" ]; then
-        echo $"${base} dead but subsys locked"
-        return 2
-    fi
-    echo "OSEE App Server is stopped"
-    return 3
+		if [ -n "$isAlive" ]; then
+    	  echo "OSEE App Server (pid $pid) is running..."
+		else 
+   	  echo "OSGI without OSEE (pid $pid) is running..."
+   	fi
+  		return 0
+   fi
+   
+   if [ -f "$LOCK" ]; then
+   	echo $"${base} dead but subsys locked"
+      return 2
+   fi
+   
+   echo "OSEE App Server is stopped"
+   return 3
 }
 
 # See how we were called.
 case "$1" in
   start)
+  	 print_osee_app_server_home
     start
     ;;
   stop)
+    print_osee_app_server_home
     stop
     ;;
   status)
+  	 print_osee_app_server_home
     status
     ;;
   restart)

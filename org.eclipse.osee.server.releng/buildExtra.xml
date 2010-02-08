@@ -37,15 +37,27 @@
 	<target name="extraPackaging">
 		<propertyregex property="updateSiteFile" input="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-Update-" casesensitive="false" override="true" />
 		<property name="tempAppServerFolder" value="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp" />
+		
 		<mkdir dir="${tempAppServerFolder}" />
+		
 		<unzip src="${buildDirectory}/${buildLabel}/${updateSiteFile}" dest="${tempAppServerFolder}">
 			<patternset includes="plugins/*" excludes="features/*,*.jar,*.xml" />
 		</unzip>
+		
 		<mkdir dir="${tempAppServerFolder}/configuration" />
-
 		<property name="configFolder" value="${tempAppServerFolder}/configuration" />
 		<property name="pluginsFolder" value="${tempAppServerFolder}/plugins" />
+		
 		<antcall target="generateConfigIni" inheritall="true" />
+				
+		<pathconvert property="launcherBundlePath" setonempty="false">
+			<path>
+				<fileset dir="${pluginsFolder}">
+					<include name="org.eclipse.equinox.launcher_*.jar" />
+				</fileset>
+			</path>
+		</pathconvert>
+		<propertyregex property="launcherJar" override="true" input="${launcherBundlePath}" regexp="[^/]+$" select="\0" casesensitive="false" />
 		
 		<ant antfile="${relengBuilderDir}/scripts/createServerLaunch.xml" target="generateAll" inheritall="true" />
 
