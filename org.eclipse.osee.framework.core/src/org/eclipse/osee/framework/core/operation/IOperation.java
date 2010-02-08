@@ -12,15 +12,14 @@ package org.eclipse.osee.framework.core.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.data.Named;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IOperation {
+public interface IOperation extends Named {
 
    public final static int TOTAL_WORK = Integer.MAX_VALUE;
-
-   public String getName();
 
    public IStatus getStatus();
 

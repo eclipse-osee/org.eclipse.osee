@@ -1663,10 +1663,16 @@
            className="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpBackingData">
      </DatabaseHealthOperation>
   </extension>
-    <extension
+  <extension
         point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
      <DatabaseHealthOperation
            className="org.eclipse.osee.framework.ui.skynet.dbHealth.TxCurrentChecks">
+     </DatabaseHealthOperation>
+  </extension>
+  <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.PopulateNewArtsTable">
      </DatabaseHealthOperation>
   </extension>
   <extension

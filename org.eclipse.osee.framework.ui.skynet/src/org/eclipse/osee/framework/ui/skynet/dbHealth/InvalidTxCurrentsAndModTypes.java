@@ -19,6 +19,9 @@ import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private static final String SELECT_ADDRESSES =
          "select %s, txd.branch_id, txd.transaction_id, tx_type, txs.gamma_id, mod_type, tx_current from %s t1, osee_txs txs, osee_tx_details txd where t1.gamma_id = txs.gamma_id and txs.transaction_id = txd.transaction_id order by txd.branch_id, %s, txd.transaction_id desc, txs.gamma_id desc";
@@ -215,8 +218,8 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
             checkForCancelledStatus(monitor);
             Address address =
                   new Address(chStmt.getInt("branch_id"), chStmt.getInt(columnName), chStmt.getInt("transaction_id"),
-                  chStmt.getInt("tx_type"), chStmt.getLong("gamma_id"), chStmt.getInt("mod_type"),
-                  chStmt.getInt("tx_current"));
+                        chStmt.getInt("tx_type"), chStmt.getLong("gamma_id"), chStmt.getInt("mod_type"),
+                        chStmt.getInt("tx_current"));
 
             if (!address.isSimilar(previousAddress)) {
                consolidateAddressing();
