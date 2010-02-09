@@ -89,6 +89,7 @@
 				<fileset dir="${pluginsFolder}">
 					<exclude name="org.eclipse.osgi_*.jar" />
 					<exclude name="org.eclipse.equinox.launcher_*.jar" />
+					<exclude name="*source*.jar" />
 				</fileset>
 			</path>
 		</pathconvert>
