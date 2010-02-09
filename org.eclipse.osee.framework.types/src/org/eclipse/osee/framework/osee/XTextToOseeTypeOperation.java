@@ -238,8 +238,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       org.eclipse.osee.framework.core.model.AttributeType type =
             getFactory().getAttributeTypeFactory().createOrUpdate(cache, attributeType.getTypeGuid(), //
                   removeQuotes(attributeType.getName()), //
-                  attributeType.getBaseAttributeType(), // 
-                  attributeType.getDataProvider(), // 
+                  getQualifiedTypeName(attributeType.getBaseAttributeType()), //
+                  getQualifiedTypeName(attributeType.getDataProvider()), //
                   attributeType.getFileExtension(), //
                   attributeType.getDefaultValue(), //
                   oseeEnumType, //
@@ -249,6 +249,14 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
                   attributeType.getTaggerId()//
             );
       attributeType.setTypeGuid(type.getGuid());
+   }
+
+   private String getQualifiedTypeName(String id) {
+      String value = id;
+      if (!value.contains(".")) {
+         value = "org.eclipse.osee.framework.skynet.core." + id;
+      }
+      return value;
    }
 
    private void handleRelationType(RelationType relationType) throws OseeCoreException {
