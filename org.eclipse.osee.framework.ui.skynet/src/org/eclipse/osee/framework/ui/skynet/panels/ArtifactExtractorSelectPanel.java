@@ -110,7 +110,7 @@ public class ArtifactExtractorSelectPanel {
          extractorCombo.add(extractorName);
          extractorCombo.setData(extractorName, extractor);
       }
-      extractorCombo.select(extractorCombo.getItemCount() - 1);
+      extractorCombo.select(extractorCombo.getItemCount() - 3);
       handleExtractorSelection();
    }
 
