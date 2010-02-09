@@ -1292,5 +1292,5 @@ relationType "Results Data" {
    sideBName "test result"
    sideBArtifactType "Abstract Test Result"
    defaultOrderType Lexicographical_Ascending
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
