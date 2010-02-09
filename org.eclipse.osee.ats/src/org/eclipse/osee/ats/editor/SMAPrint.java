@@ -62,14 +62,11 @@ public class SMAPrint extends Action {
       resultData.addRaw(AHTML.beginMultiColumnTable(100));
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
       //
-            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ",
-                  ((IWorldViewArtifact) sma).getWorldViewState()),
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ", ((IWorldViewArtifact) sma).getWorldViewState()),
             //
-            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ",
-                  ((IWorldViewArtifact) sma).getWorldViewTeam()),
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ", ((IWorldViewArtifact) sma).getWorldViewTeam()),
             //
-            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ",
-                  ((IWorldViewArtifact) sma).getWorldViewActivePoc()),
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ", ((IWorldViewArtifact) sma).getWorldViewActivePoc()),
             //
             AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ",
                   ((IWorldViewArtifact) sma).getWorldViewOriginator()),
@@ -82,10 +79,16 @@ public class SMAPrint extends Action {
       resultData.addRaw(AHTML.beginMultiColumnTable(100));
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
             //
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Change Type: ", sma.getWorldViewChangeTypeStr()),
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Priority: ", sma.getWorldViewPriority()),
+            AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Need By: ", sma.getWorldViewDeadlineDateStr())}));
+
+      resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
+            //
             AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", sma.getArtifactTypeName()),
             AHTML.getLabelValueStr(AHTML.LABEL_FONT, "HRID: ", sma.getHumanReadableId()),
-            (sma.getParentActionArtifact() == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT,
-                  "Action HRID: ", sma.getParentActionArtifact().getHumanReadableId()))}));
+            (sma.getParentActionArtifact() == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Action HRID: ",
+                  sma.getParentActionArtifact().getHumanReadableId()))}));
       resultData.addRaw(AHTML.endMultiColumnTable());
       for (NoteItem note : sma.getNotes().getNoteItems()) {
          if (note.getState().equals("")) {
