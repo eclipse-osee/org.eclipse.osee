@@ -340,7 +340,7 @@ attributeType "ats.Numeric1" extends FloatingPointAttribute {
    guid "AABY2xxQsDm811kCViwA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max unlimited
+   max 1
    defaultValue "0.0"
 }
 
@@ -348,7 +348,7 @@ attributeType "ats.Numeric2" extends FloatingPointAttribute {
    guid "AABiRtvZsAEkU4BS9qwA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max unlimited
+   max 1
    defaultValue "0.0"
 }
 
