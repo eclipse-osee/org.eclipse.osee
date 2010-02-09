@@ -96,6 +96,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       }
    }
 
+   @Override
    public Result save(SkynetTransaction transaction) throws OseeCoreException {
       Artifact artifact = getArtifact(true);
       artifact.setName(coverageUnit.getName());
