@@ -8,19 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.server.test;
+package org.eclipse.osee.framework.core.server.test.internal;
 
-import org.eclipse.osee.framework.core.server.test.internal.CoreServerInternalTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { //
-CoreServerInternalTestSuite.class, //
+BuildTypeIdentifierTest.class, //
 })
 /**
  * @author Roberto E. Escobar
  */
-public class CoreServerTestSuite {
+public class CoreServerInternalTestSuite {
 
 }

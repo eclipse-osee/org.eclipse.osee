@@ -1,10 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core Server Test
-Bundle-SymbolicName: org.eclipse.osee.framework.core.server.test
+Bundle-SymbolicName: org.eclipse.osee.framework.core.server.test;singleton:=true
 Bundle-Version: 0.9.1.qualifier
 Bundle-Vendor: Eclipse.org
 Fragment-Host: org.eclipse.osee.framework.core.server;bundle-version="0.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.junit.runner;version="4.5.0",
- org.junit.runners;version="4.5.0"
+Require-Bundle: org.junit4;bundle-version="4.5.0"
+Export-Package: org.eclipse.osee.framework.core.server.test,
+ org.eclipse.osee.framework.core.server.test.mocks
