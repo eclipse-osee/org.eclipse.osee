@@ -39,4 +39,9 @@ public class ServerDatabaseProvider implements IDatabaseInfoProvider {
       return Integer.MIN_VALUE;
    }
 
+   @Override
+   public String toString() {
+      return "Application Server DB Connection Info Provider";
+   }
+
 }
