@@ -30,10 +30,23 @@ public final class Conditions {
       }
    }
 
+   public static void checkNotNull(Object object, String objectName, String message) throws OseeCoreException {
+      if (object == null) {
+         throw new OseeArgumentException(String.format("%s cannot be null - %s", objectName, message));
+      }
+   }
+
    public static void checkNotNullOrEmpty(String object, String message) throws OseeCoreException {
       checkNotNull(object, message);
       if (object.length() == 0) {
          throw new OseeArgumentException(String.format("%s cannot be empty", message));
+      }
+   }
+
+   public static void checkNotNullOrEmpty(String object, String objectName, String message) throws OseeCoreException {
+      checkNotNull(object, objectName);
+      if (object.length() == 0) {
+         throw new OseeArgumentException(String.format("%s cannot be empty", objectName, message));
       }
    }
 

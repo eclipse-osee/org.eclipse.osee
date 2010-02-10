@@ -37,6 +37,7 @@ public class OseeSessionGrant extends BaseExchangeData {
    private static final String OSEE_USER_ID = "oseeUserId";
    private static final String OSEE_IS_USER_ACTIVE = "isOseeUserActive";
    private static final String OSEE_APPLICATION_SERVER_DATA_PATH = "oseeApplicationServerDataPath";
+   private static final String OSEE_CLIENT_BUILD_DESIGNATION = "oseeClientBuildDesignation";
 
    private IDatabaseInfo grantedDatabaseInfo;
    private IOseeUser grantedOseeUserInfo;
@@ -103,6 +104,14 @@ public class OseeSessionGrant extends BaseExchangeData {
 
    public IOseeUser getOseeUserInfo() {
       return grantedOseeUserInfo;
+   }
+
+   public String getClientBuildDesignation(){
+      return getString(OSEE_CLIENT_BUILD_DESIGNATION);
+   }
+
+   public void setClientBuildDesination(String designation){
+      this.backingData.put(OSEE_CLIENT_BUILD_DESIGNATION, designation);
    }
 
    public static OseeSessionGrant fromXml(InputStream inputStream) throws OseeWrappedException {
