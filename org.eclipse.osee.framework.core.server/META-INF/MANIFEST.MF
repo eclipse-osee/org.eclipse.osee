@@ -13,6 +13,7 @@ Import-Package: javax.servlet,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.operation,
+ org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
@@ -21,6 +22,7 @@ Import-Package: javax.servlet,
  org.osgi.framework,
  org.osgi.service.http,
  org.osgi.util.tracker
+Eclipse-ExtensibleAPI: true
 Export-Package: org.eclipse.osee.framework.core.server
 Bundle-ActivationPolicy: lazy
 Service-Component:  OSGI-INF/authentication.manager.xml,

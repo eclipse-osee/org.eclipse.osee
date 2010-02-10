@@ -76,7 +76,6 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
             this.request = request;
             try {
                checkAccessControl(request);
-               String method = request.getMethod();
                super.service(request, response);
             } catch (OseeCoreException ex) {
                response.setStatus(HttpServletResponse.SC_PROXY_AUTHENTICATION_REQUIRED);

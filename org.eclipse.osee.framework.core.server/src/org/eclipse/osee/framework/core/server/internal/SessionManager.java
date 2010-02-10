@@ -56,8 +56,10 @@ public class SessionManager implements ISessionManager {
 
    private final Map<String, SessionData> sessionCache;
    private final Timer updateTimer;
+   private final BuildTypeIdentifier typeIdentifier;
 
    public SessionManager() {
+      this.typeIdentifier = new BuildTypeIdentifier(new BuildTypeDataProvider());
       this.sessionCache = Collections.synchronizedMap(new HashMap<String, SessionData>());
       this.updateTimer = new Timer("Persist Session Data Timer");
       updateTimer.scheduleAtFixedRate(new UpdateDataStore(), DATASTORE_UPDATE, DATASTORE_UPDATE);
@@ -159,6 +161,7 @@ public class SessionManager implements ISessionManager {
          sessionGrant.setDatabaseInfo(DatabaseInfoManager.getDefault());
          sessionGrant.setSqlProperties(OseeSql.getSqlProperties(ConnectionHandler.getMetaData()));
          sessionGrant.setDataStorePath(OseeServerProperties.getOseeApplicationServerData());
+         sessionGrant.setClientBuildDesination(typeIdentifier.getBuildDesignation(session.getVersion()));
       }
       return sessionGrant;
    }
@@ -300,5 +303,4 @@ public class SessionManager implements ISessionManager {
          }
       }
    }
-
 }
