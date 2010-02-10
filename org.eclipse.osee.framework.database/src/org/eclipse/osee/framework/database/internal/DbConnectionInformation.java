@@ -67,11 +67,10 @@ public class DbConnectionInformation implements IDbConnectionInformation {
 
    @Override
    public void bind(IDbConnectionInformationContributor contributor) {
-      OseeLog.log(InternalActivator.class, Level.INFO, "binding " + contributor);
+      OseeLog.log(InternalActivator.class, Level.FINE, "binding " + contributor);
       try {
          for (IDatabaseInfo info : contributor.getDbInformation()) {
             dbInfo.put(info.getId(), info);
-            OseeLog.log(InternalActivator.class, Level.INFO, info.getId() + ": " + info);
          }
       } catch (Exception ex) {
          OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
