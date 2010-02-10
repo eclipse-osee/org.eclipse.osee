@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.eclipse.osee.framework.types.bridge;singleton:=true
 Bundle-Version: 0.9.1.qualifier
 Bundle-Activator: org.eclipse.osee.framework.types.bridge.internal.Activator
 Bundle-Vendor: Eclipse.org
-Require-Bundle: org.eclipse.ui.ide,
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.ui.ide,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.types.ui,
  org.eclipse.osee.framework.skynet.core,
