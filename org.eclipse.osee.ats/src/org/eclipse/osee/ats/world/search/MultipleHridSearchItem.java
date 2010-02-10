@@ -31,8 +31,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
@@ -73,6 +73,10 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
          str = str.replaceAll("\\s+$", "");
          if (!str.equals("")) {
             ids.add(str);
+         }
+         // allow for lower case hrids
+         if (str.length() == 5) {
+            ids.add(str.toUpperCase());
          }
       }
 
