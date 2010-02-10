@@ -84,6 +84,8 @@ public class OseeConnectionPoolImpl {
       IConnectionFactory connectionDriver = createConnection(driver);
       Connection connection = connectionDriver.getConnection(properties, dbUrl);
       connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+      OseeLog.log(InternalActivator.class, Level.INFO, String.format("DbConnection: [%s] - [%d]", dbUrl,
+            connections.size()));
       return new OseeConnectionImpl(connection, this);
    }
 
