@@ -50,25 +50,30 @@ public class XViewerMouseListener implements MouseListener {
       TreeItem item = xViewer.getItemUnderMouseClick(new Point(event.x, event.y));
       if (item == null) return;
 
-      TreeColumn column = xViewer.getColumnUnderMouseClick(new Point(event.x, event.y));
-
-      if (isLeftClick(event) && controlNotBeingHeld(event)) {
-         if (altIsBeingHeld(event)) {
-            // System.out.println("Column " + colNum);
-            xViewer.handleAltLeftClick(column, item);
-         } else if (clickOccurredInIconArea(event, item)) {
-            xViewer.handleLeftClickInIconArea(column, item);
-         } else {
-            // System.out.println("Column " + colNum);
-            xViewer.handleLeftClick(column, item);
+      try {
+         TreeColumn column = xViewer.getColumnUnderMouseClick(new Point(event.x, event.y));
+         if (isLeftClick(event) && controlNotBeingHeld(event)) {
+            if (altIsBeingHeld(event)) {
+               // System.out.println("Column " + colNum);
+               xViewer.handleAltLeftClick(column, item);
+            } else if (clickOccurredInIconArea(event, item)) {
+               xViewer.handleLeftClickInIconArea(column, item);
+            } else {
+               // System.out.println("Column " + colNum);
+               xViewer.handleLeftClick(column, item);
+            }
          }
+         xViewer.updateStatusLabel();
+      } catch (ArrayIndexOutOfBoundsException ex) {
+         // mouse clicked outside of last/valid column
+         return;
       }
-      xViewer.updateStatusLabel();
 
    }
 
    private boolean clickOccurredInIconArea(MouseEvent event, TreeItem item) {
-      int columnNumber = xViewer.getColumnNumberUnderMouseClick(new Point(event.x, event.y));
+      Integer columnNumber = xViewer.getColumnNumberUnderMouseClick(new Point(event.x, event.y));
+      if (columnNumber == null) return false;
       Rectangle rect = item.getBounds(columnNumber);
       return (event.x <= (rect.x + 18));
    }

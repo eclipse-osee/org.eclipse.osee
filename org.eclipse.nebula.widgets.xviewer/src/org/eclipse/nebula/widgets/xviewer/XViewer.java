@@ -553,13 +553,14 @@ public class XViewer extends TreeViewer {
       rightClickSelectedColumnNum = getColumnNumberUnderMouseClick(point);
    }
 
-   public TreeColumn getColumnUnderMouseClick(Point point) {
-      int columnNumber = getColumnNumberUnderMouseClick(point);
+   public TreeColumn getColumnUnderMouseClick(Point point) throws ArrayIndexOutOfBoundsException {
+      Integer columnNumber = getColumnNumberUnderMouseClick(point);
+      if (columnNumber == null) return null;
       TreeColumn column = getTree().getColumn(columnNumber);
       return column;
    }
 
-   public int getColumnNumberUnderMouseClick(Point point) {
+   public Integer getColumnNumberUnderMouseClick(Point point) {
       int[] columnOrder = getTree().getColumnOrder();
       int sum = 0;
       int columnCount = 0;
@@ -572,11 +573,14 @@ public class XViewer extends TreeViewer {
          columnCount++;
       }
 
+      if (columnCount > columnOrder.length - 1) {
+         return null;
+      }
       int columnNumber = columnOrder[columnCount];
       return columnNumber;
    }
 
-   public TreeItem getItemUnderMouseClick(Point point) {
+   public TreeItem getItemUnderMouseClick(Point point) throws ArrayIndexOutOfBoundsException {
       TreeItem itemToReturn = getTree().getItem(point);
 
       if (itemToReturn == null) {
