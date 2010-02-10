@@ -63,7 +63,7 @@ public final class HumanReadableId {
    }
 
    public static boolean isValid(String hrid) {
-      return HRID_PATTERN.matcher(hrid).matches();
+      return hrid != null && HRID_PATTERN.matcher(hrid).matches();
    }
 
    private static String constructHridPattern() {
