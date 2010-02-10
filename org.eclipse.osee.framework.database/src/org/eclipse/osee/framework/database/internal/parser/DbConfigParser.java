@@ -12,12 +12,9 @@ package org.eclipse.osee.framework.database.internal.parser;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.database.internal.InternalActivator;
 import org.eclipse.osee.framework.database.internal.parser.DbInformation.DbObjectType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -47,7 +44,6 @@ public class DbConfigParser {
    }
 
    private DbInformation[] getAllDbServices() {
-      OseeLog.log(InternalActivator.class, Level.INFO, "in getAllDbServices " + servicesMap.size());
       DbInformation[] info = new DbInformation[servicesMap.size()];
       int i = 0;
       for (String name : servicesMap.keySet()) {
