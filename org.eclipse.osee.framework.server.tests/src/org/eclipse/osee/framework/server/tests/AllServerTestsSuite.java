@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.server.tests;
 
 import org.eclipse.osee.framework.branch.management.test.BranchManagementTestSuite;
+import org.eclipse.osee.framework.core.server.test.CoreServerTestSuite;
 import org.eclipse.osee.framework.core.test.FrameworkCoreTestSuite;
 import org.eclipse.osee.framework.jdk.core.test.JdkCoreTestSuite;
 import org.eclipse.osee.framework.resource.locator.attribute.test.AttributeLocatorProviderTestSuite;
@@ -28,6 +29,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( { //
 JdkCoreTestSuite.class, //
       FrameworkCoreTestSuite.class, //
+      CoreServerTestSuite.class, //
       BranchManagementTestSuite.class, //
       ResourceManagementTestSuite.class, //
       AttributeLocatorProviderTestSuite.class, //
