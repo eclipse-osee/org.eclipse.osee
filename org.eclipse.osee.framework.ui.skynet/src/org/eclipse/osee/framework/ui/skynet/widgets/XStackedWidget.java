@@ -169,6 +169,7 @@ public abstract class XStackedWidget<T> extends XLabel {
       layout.marginWidth = 2;
       composite.setLayout(layout);
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      composite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
 
       currentPageLabel = new StyledText(composite, SWT.READ_ONLY | SWT.SINGLE | SWT.WRAP);
       currentPageLabel.setAlignment(SWT.RIGHT);
@@ -215,7 +216,8 @@ public abstract class XStackedWidget<T> extends XLabel {
                if (currentPage > totalPages) {
                   currentPage = totalPages;
                }
-               currentPageLabel.setText(String.format("%s of %s", currentPage, totalPages));
+               currentPageLabel.setText(String.format("Page %s of %s  -  Page Id (%s)", currentPage, totalPages,
+                     stackedControl.getCurrentPageId()));
             }
          }
       });
@@ -313,7 +315,7 @@ public abstract class XStackedWidget<T> extends XLabel {
    private final class RemovePage extends Action {
       public RemovePage() {
          super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REMOVE));
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.X_RED));
          setToolTipText("Removes a page");
       }
 

@@ -36,12 +36,10 @@ import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.progress.UIJob;
 
 public class XStackedDam extends XStackedWidget<String> implements IArtifactWidget {
@@ -156,16 +154,9 @@ public class XStackedDam extends XStackedWidget<String> implements IArtifactWidg
    @Override
    protected void createPage(String id, Composite parent, String initialInput) {
       if (!xWidgets.containsKey(id)) {
-         Label label = new Label(parent, SWT.NONE);
-         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-         label.setFont(FontManager.getDefaultLabelFont());
-         label.setText(String.format("Page: %s", id));
-
          try {
             XWidget xWidget = getWidget(attributeTypeName, parent, initialInput);
             xWidget.setEditable(isEditable());
-            label.setBackground(xWidget.getControl().getBackground());
-            parent.setBackground(label.getBackground());
             xWidgets.put(id, xWidget);
 
             xWidget.addXModifiedListener(xModifiedListener);
