@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.preferences;
 
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -33,6 +35,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @author Roberto E. Escobar
  */
 public class ConfigurationDetails extends PreferencePage implements IWorkbenchPreferencePage {
+   public static final String PAGE_ID = "org.eclipse.osee.framework.ui.skynet.preferences.OseeConfigDetailsPage";
+
    private static final String HTML_HEADER =
          "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html14/loose.dtd\">\n";
 
@@ -85,8 +89,21 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
       builder.append("<table class=\"oseeTable\" width=\"100%\">");
       builder.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Info", "Status"}));
 
+      String buildType = "N/A";
+      boolean wasSuccessful = false;
+      try {
+         buildType = ClientSessionManager.getClientBuildDesignation();
+         wasSuccessful = true;
+      } catch (OseeCoreException ex) {
+         // Do Nothing;
+      }
+
       builder.append(AHTML.addRowMultiColumnTable("<b>OSEE Client Version</b>", OseeCodeVersion.getVersion(),
             "<font color=\"green\"><b>Ok</b></font>"));
+
+      builder.append(AHTML.addRowMultiColumnTable("<b>OSEE Client Build Type</b>", buildType,
+            wasSuccessful ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"));
+
       for (IHealthStatus status : OseeLog.getStatus()) {
          builder.append(AHTML.addRowMultiColumnTable(
                "<b>" + status.getSourceName() + "</b>",
@@ -101,5 +118,4 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
       builder.append(AHTML.endMultiColumnTable());
       browser.setText(String.format(PAGE_TEMPLATE, builder.toString()));
    }
-
 }

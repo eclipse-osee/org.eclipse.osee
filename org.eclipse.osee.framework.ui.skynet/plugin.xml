@@ -90,7 +90,7 @@
     <page
           category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
           class="org.eclipse.osee.framework.ui.skynet.preferences.ConfigurationDetails"
-          id="org.eclipse.osee.framework.ui.skynet.preferences.HttpServerPreferences"
+          id="org.eclipse.osee.framework.ui.skynet.preferences.OseeConfigDetailsPage"
           name="Configuration Details">
     </page>
  </extension>
