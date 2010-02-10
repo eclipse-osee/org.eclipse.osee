@@ -156,6 +156,7 @@ public enum FrameworkImage implements KeyedImage {
    SLASH_RED_OVERLAY("red_slash.gif"),
    SWITCHED("switched.gif"),
    TRASH("trash.gif"),
+   TOOLS("tools.gif"),
    SKYWALKER("skywalker.gif"),
    SUPPORT("users2.gif"),
    USER("userPurple.gif"),

@@ -58,6 +58,7 @@ public abstract class OseeContributionItem extends StatusLineContributionItem {
    }
 
    public static void addTo(IStatusLineManager manager) {
+      OseeBuildTypeContributionItem.addTo(manager);
       IOseeAtsService atsService = OseeAts.getInstance();
       if (atsService != null && atsService.isAtsAdmin()) {
          AdminContributionItem.addTo(manager);
