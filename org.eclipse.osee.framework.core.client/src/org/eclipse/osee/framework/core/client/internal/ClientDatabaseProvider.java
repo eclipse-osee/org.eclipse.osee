@@ -43,4 +43,9 @@ public class ClientDatabaseProvider implements IDatabaseInfoProvider {
       return -1;
    }
 
+   @Override
+   public String toString() {
+      return "Client Db Connection Info Provider (connection info provided by remote server)";
+   }
+
 }
