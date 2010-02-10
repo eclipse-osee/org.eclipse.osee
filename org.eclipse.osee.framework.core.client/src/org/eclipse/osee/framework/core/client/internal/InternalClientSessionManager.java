@@ -117,7 +117,8 @@ public class InternalClientSessionManager {
             OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, ex));
             throw ex;
          }
-         OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.INFO, "%s", oseeSession));
+         OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.INFO, "%s BuildType:[%s]", oseeSession,
+               oseeSessionGrant.getClientBuildDesignation()));
       }
       return oseeSession;
    }
@@ -159,7 +160,8 @@ public class InternalClientSessionManager {
       parameters.put("sessionId", sessionId);
       try {
          String url =
-               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
+               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT,
+                     parameters);
          String reponse = HttpProcessor.post(new URL(url));
          OseeLog.log(CoreClientActivator.class, Level.INFO, reponse);
          oseeSession = null;
@@ -174,7 +176,8 @@ public class InternalClientSessionManager {
       try {
          Map<String, String> parameters = new HashMap<String, String>();
          String url =
-               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
+               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT,
+                     parameters);
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          AcquireResult result = HttpProcessor.acquire(new URL(url), outputStream);
          if (result.getCode() == HttpURLConnection.HTTP_OK) {
@@ -205,7 +208,9 @@ public class InternalClientSessionManager {
       parameters.put("operation", "create");
       String url = null;
       try {
-         url = HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
+         url =
+               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT,
+                     parameters);
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          AcquireResult result =
                HttpProcessor.post(new URL(url), asInputStream(credential), "text/xml", "UTF-8", outputStream);
