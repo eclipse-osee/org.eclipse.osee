@@ -533,15 +533,15 @@ public class XText extends XWidget {
    }
 
    public String toHTML(String labelFont, boolean newLineText) {
-      String s = AHTML.getLabelStr(labelFont, getLabel() + ": ");
+      String result = AHTML.getLabelStr(labelFont, getLabel() + ": ");
       if (newLineText) {
-         s = "<dl><dt>" + s + "<dd>";
+         result = "<dl><dt>" + result + "<dd>";
       }
-      s += text;
+      result += AHTML.textToHtml(text);
       if (newLineText) {
-         s += "</dl>";
+         result += "</dl>";
       }
-      return s;
+      return result;
    }
 
    @Override
