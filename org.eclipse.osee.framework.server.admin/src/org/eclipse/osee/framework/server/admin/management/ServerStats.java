@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
+import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
@@ -44,9 +45,13 @@ class ServerStats extends BaseServerCommand {
 
       buffer.append(String.format("Server:[%s:%s]\n", manager.getServerAddress(), manager.getPort()));
       buffer.append(String.format("Id: [%s]\n", manager.getId()));
-      buffer.append(String.format("Running Since: [%s]\n", SimpleDateFormat.getDateTimeInstance(DateFormat.LONG,
+      buffer.append(String.format("Running Since: [%s]\n\n", SimpleDateFormat.getDateTimeInstance(DateFormat.LONG,
             DateFormat.LONG).format(manager.getDateStarted())));
-      buffer.append(String.format("Binary Data Path: [%s]\n", OseeServerProperties.getOseeApplicationServerData()));
+
+      buffer.append(String.format("Code Base Location: [%s]\n", System.getProperty("user.dir")));
+      buffer.append(String.format("Datastore: [%s]\n", DatabaseInfoManager.getDefault().toString()));
+      buffer.append(String.format("Binary Data Path: [%s]\n\n", OseeServerProperties.getOseeApplicationServerData()));
+
       buffer.append(String.format("Supported Versions: %s\n", Arrays.deepToString(manager.getSupportedVersions())));
       buffer.append(String.format("Accepting Requests: [%s]\n", manager.isAcceptingRequests()));
       buffer.append(Lib.getMemoryInfo());
