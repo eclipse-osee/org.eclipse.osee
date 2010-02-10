@@ -144,7 +144,7 @@ public class ArtifactExtractorSelectPanel {
                extractor.setDelegate(delegate);
             }
          }
-         delegateCombo.select(delegateCombo.getItemCount() - 1);
+         delegateCombo.select(0);
       }
       delegateCombo.setEnabled(!delegates.isEmpty());
 
