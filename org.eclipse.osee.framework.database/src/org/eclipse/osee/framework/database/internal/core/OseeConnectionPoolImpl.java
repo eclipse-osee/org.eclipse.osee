@@ -74,6 +74,8 @@ public class OseeConnectionPoolImpl {
       try {
          OseeConnectionImpl connection = getOseeConnection();
          connections.add(connection);
+         OseeLog.log(InternalActivator.class, Level.INFO, String.format("DbConnection: [%s] - [%d]", dbUrl,
+               connections.size()));
          return connection;
       } catch (Throwable th) {
          throw new OseeDataStoreException("Unable to get a database connection: ", th);
@@ -84,8 +86,6 @@ public class OseeConnectionPoolImpl {
       IConnectionFactory connectionDriver = createConnection(driver);
       Connection connection = connectionDriver.getConnection(properties, dbUrl);
       connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-      OseeLog.log(InternalActivator.class, Level.INFO, String.format("DbConnection: [%s] - [%d]", dbUrl,
-            connections.size()));
       return new OseeConnectionImpl(connection, this);
    }
 
