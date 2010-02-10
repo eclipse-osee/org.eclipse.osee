@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.server.internal.BuildInfo;
 import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier;
 import org.eclipse.osee.framework.core.server.test.mocks.MockBuildTypeDataProvider;
 import org.eclipse.osee.framework.core.util.Compare;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -55,6 +56,12 @@ public class BuildTypeIdentifierTest {
    private static final Collection<BuildInfo> BUILD_DATA4 =
          Arrays.asList(new BuildInfo("BUILD1", "0.9.1.*"), new BuildInfo("BUILD2", "0.9.2.*", "0.9.3.*"));
 
+   private static final String XML_DATA5 =
+         "<builds><build type=\"Release Candidate\"><matches>0.9.2.*</matches></build><build type=\"Release\"><matches>0.9.*</matches></build><build type=\"Hacking\"><matches>.*</matches></build></builds>";
+   private static final Collection<BuildInfo> BUILD_DATA5 =
+         Arrays.asList(new BuildInfo("Release Candidate", "0.9.2.*"), new BuildInfo("Release", "0.9.*"), new BuildInfo(
+               "Hacking", ".*"));
+
    private final BuildTypeIdentifier buildIdentifier;
    private final String clientVersion;
    private final String expectedMatch;
@@ -82,7 +89,7 @@ public class BuildTypeIdentifierTest {
             Assert.fail("This line should not executed during an xml data access exception");
          }
       } catch (OseeCoreException ex1) {
-         Assert.assertTrue(isExceptionExpected());
+         Assert.assertTrue("Threw exception when not expected. \n" + Lib.exceptionToString(ex1), isExceptionExpected());
       }
       Assert.assertFalse(Compare.isDifferent(expectedInfos, actualInfos));
    }
@@ -106,8 +113,9 @@ public class BuildTypeIdentifierTest {
       data.add(new Object[] {"valid version && invalid xml data", "version1", "N/A", INVALID_XML, false, null});
       data.add(new Object[] {"exact match", "version1", "BUILD1", XML_DATA1, false, BUILD_DATA1});
       data.add(new Object[] {"regex match", "version12 !@#$da", "BUILD1", XML_DATA2, false, BUILD_DATA2});
-      data.add(new Object[] {"complex regex match", "verB!@#$_456", "BUILD1", XML_DATA3, false, BUILD_DATA3});
-      data.add(new Object[] {"complex regex match", "0.9.3.123132131", "BUILD2", XML_DATA4, false, BUILD_DATA4});
+      data.add(new Object[] {"complex regex match1", "verB!@#$_456", "BUILD1", XML_DATA3, false, BUILD_DATA3});
+      data.add(new Object[] {"complex regex match2", "0.9.3.123132131", "BUILD2", XML_DATA4, false, BUILD_DATA4});
+      data.add(new Object[] {"complex regex match3", "Development", "Hacking", XML_DATA5, false, BUILD_DATA5});
       return data;
    }
 
