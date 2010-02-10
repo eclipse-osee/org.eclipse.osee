@@ -213,6 +213,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    }
 
    public T get(Identity token) throws OseeCoreException {
+      ensurePopulated();
       return getByGuid(token.getGuid());
    }
 
