@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.database.internal.InternalActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 public class OseeConnectionPoolImpl {
-   private static final int MAX_CONNECTIONS_PER_CLIENT = 8;
+   private static final int MAX_CONNECTIONS_PER_CLIENT = Math.max(8, 2 * Runtime.getRuntime().availableProcessors());
    private final List<OseeConnectionImpl> connections = new CopyOnWriteArrayList<OseeConnectionImpl>();
    private final String dbUrl;
    private final Properties properties;
