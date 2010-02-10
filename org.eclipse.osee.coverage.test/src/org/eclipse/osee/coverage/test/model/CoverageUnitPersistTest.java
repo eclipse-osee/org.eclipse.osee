@@ -21,6 +21,7 @@ import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.ICoverageImportRecordProvider;
 import org.eclipse.osee.coverage.model.SimpleCoverageUnitFileContentsProvider;
 import org.eclipse.osee.coverage.model.SimpleTestUnitProvider;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
@@ -41,6 +42,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -130,6 +132,11 @@ public class CoverageUnitPersistTest {
          @Override
          public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
             return Result.TrueResult;
+         }
+
+         @Override
+         public Result saveImportRecord(SkynetTransaction transaction, ICoverageImportRecordProvider coverageImportRecordProvider) throws OseeCoreException {
+            return null;
          }
       }, mergeItems);
 

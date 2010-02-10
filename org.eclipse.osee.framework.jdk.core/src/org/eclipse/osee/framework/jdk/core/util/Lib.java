@@ -1526,6 +1526,19 @@ public final class Lib {
       return bos.toByteArray();
    }
 
+   public static void compressFiles(String basePath, Collection<File> files, String zipTarget) throws IOException {
+      if (Strings.isValid(zipTarget) != true) {
+         throw new IllegalArgumentException("Error target zip filename is invalid");
+      }
+      ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipTarget));
+      for (File file : files) {
+         if (file.isDirectory() != true) {
+            Lib.compressFile(basePath, file, out);
+         }
+      }
+      out.close();
+   }
+
    private static void compressFile(String basePath, File file, ZipOutputStream outputStream) throws IOException {
       FileInputStream inputStream = null;
       try {

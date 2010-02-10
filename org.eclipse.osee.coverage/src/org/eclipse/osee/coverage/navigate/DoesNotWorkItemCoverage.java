@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.navigate;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +31,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -50,7 +55,7 @@ import org.eclipse.swt.widgets.Display;
 public class DoesNotWorkItemCoverage extends XNavigateItemAction {
 
    public DoesNotWorkItemCoverage() {
-      super(null, "Does Not Work - Coverage - fixCoverageItemNames ", PluginUiImage.ADMIN);
+      super(null, "Does Not Work - Coverage - Zip VCast", PluginUiImage.ADMIN);
    }
 
    @Override
@@ -62,7 +67,8 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       //      Artifact artifact = ArtifactQuery.getArtifactFromId("AFLY_zvqoHPNSwfetyQA", BranchManager.getBranch(3308));
       //      System.out.println("print got it " + artifact);
       try {
-         fixCoverageItemNames();
+         zipVcastFiles();
+         //         fixCoverageItemNames();
          //         fixCoverageInformation();
          //         importTestUnitNamesToDbTables();
       } catch (Exception ex) {
@@ -70,6 +76,19 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       }
 
       AWorkbench.popup("Completed", "Complete");
+   }
+
+   private void zipVcastFiles() throws IOException {
+      String base = "I:\\links\\lba_mp\\us\\code\\v01_\\msm.ss\\user\\jmckinne\\msm_FTB4\\msm.ftb4_2.wrk\\";
+      String vcastBase = base + "vcast\\";
+      String resultsBase = base + "vcast\\results\\";
+      List<File> files = new ArrayList<File>();
+      files.add(new File(base + "vcast.vcp"));
+      files.add(new File(base + "CCAST_.CFG"));
+      files.add(new File(vcastBase + "build_info.xml"));
+      files.add(new File(resultsBase + "lba.test.script.qual.msm.asm.MSM_ASM_ac_bus_tie_indication_MSM_1_01052010.DAT"));
+
+      Lib.compressFiles(base, files, "C://UserData//try.zip");
    }
 
    private void importTestUnitNamesToDbTables() throws Exception {

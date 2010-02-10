@@ -48,6 +48,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
    @Override
    public CoverageImport run(IProgressMonitor progressMonitor) {
       coverageImport = new CoverageImport("VectorCast Import");
+      coverageImport.setCoverageImportRecordProvider(this.vectorCastCoverageImportProvider);
       coverageImport.setCoverageUnitFileContentsProvider(new SimpleCoverageUnitFileContentsProvider());
       if (!Strings.isValid(vectorCastCoverageImportProvider.getVCastDirectory())) {
          coverageImport.getLog().logError("VectorCast directory must be specified");
@@ -115,23 +116,21 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                      CoverageItem coverageItem =
                            new CoverageItem(methodCoverageUnit, CoverageOptionManager.Not_Covered,
                                  String.valueOf(lineNumToBranches.getLineNum()));
-                     if (vectorCastCoverageImportProvider.isResolveExceptionHandling()) {
-                        Pair<String, Boolean> lineData =
-                              vcpSourceLisFile.getExecutionLine(String.valueOf(methodNum),
-                                    String.valueOf(lineNumToBranches.getLineNum()));
-                        String sourceLine = lineData.getFirst();
-                        // Need to get rid of line method num and line num before storing
-                        Matcher m = sourceLinePattern.matcher(sourceLine);
-                        if (m.find()) {
-                           coverageItem.setName(m.group(1));
-                        } else {
-                           coverageImport.getLog().logError(
-                                 String.format("Coverage line doesn't match \"n n <line>\" [%s].  " + sourceLine));
-                           continue;
-                        }
-                        if (lineData.getSecond()) {
-                           coverageItem.setCoverageMethod(CoverageOptionManager.Exception_Handling);
-                        }
+                     Pair<String, Boolean> lineData =
+                           vcpSourceLisFile.getExecutionLine(String.valueOf(methodNum),
+                                 String.valueOf(lineNumToBranches.getLineNum()));
+                     String sourceLine = lineData.getFirst();
+                     // Need to get rid of line method num and line num before storing
+                     Matcher m = sourceLinePattern.matcher(sourceLine);
+                     if (m.find()) {
+                        coverageItem.setName(m.group(1));
+                     } else {
+                        coverageImport.getLog().logError(
+                              String.format("Coverage line doesn't match \"n n <line>\" [%s].  " + sourceLine));
+                        continue;
+                     }
+                     if (vectorCastCoverageImportProvider.isResolveExceptionHandling() && lineData.getSecond()) {
+                        coverageItem.setCoverageMethod(CoverageOptionManager.Exception_Handling);
                      }
                      methodCoverageUnit.addCoverageItem(coverageItem);
                   }

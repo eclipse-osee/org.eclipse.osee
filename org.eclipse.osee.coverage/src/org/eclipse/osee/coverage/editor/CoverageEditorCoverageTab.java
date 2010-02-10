@@ -22,6 +22,7 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.ICoverageImportRecordProvider;
 import org.eclipse.osee.coverage.model.MessageCoverageItem;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
@@ -171,6 +173,11 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
    @Override
    public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
       return (OseeCoveragePackageStore.get((CoveragePackage) coveragePackageBase)).save(coverages);
+   }
+
+   @Override
+   public Result saveImportRecord(SkynetTransaction transaction, ICoverageImportRecordProvider coverageImportRecordProvider) throws OseeCoreException {
+      return new Result(false, "Not valid for this tab.");
    }
 
 }

@@ -5,11 +5,12 @@
  */
 package org.eclipse.osee.coverage.vcast;
 
+import org.eclipse.osee.coverage.model.ICoverageImportRecordProvider;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IVectorCastCoverageImportProvider {
+public interface IVectorCastCoverageImportProvider extends ICoverageImportRecordProvider {
 
    public String getVCastDirectory();
 

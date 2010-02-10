@@ -25,7 +25,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {TestUnitStoreTest.class, DbTestUnitProviderTest.class, Coverage_Suite.class,
       CoverageParametersTest.class, CoverageItemPersistTest.class, CoverageUnitPersistTest.class,
-      CoveragePackageImportTest.class})
+      CoveragePackageImportTest.class, VectorCastImportTest.class})
 /**
  * @author Donald G. Dunne
  */

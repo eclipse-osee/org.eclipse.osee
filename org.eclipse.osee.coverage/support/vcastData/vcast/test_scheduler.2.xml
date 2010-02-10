@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage_data xml_testcase_version=" 3">
+  <unit index="2" coverage_type="STATEMENT">
+    <name>test_scheduler.2.ada</name>
+    <subprogram index="1">
+      <name>UPDATE_TEXT</name>
+      <line_numbers_to_branches>{1; 0},{2; 0},{3; 0},{4; 0}</line_numbers_to_branches>
+      <metrics>
+        <complexity>1</complexity>
+        <coverage coverage_type="STATEMENT">
+          <covered>0</covered>
+          <total>4</total>
+        </coverage>
+      </metrics>
+    </subprogram>
+    <subprogram index="2">
+      <name>UPDATE_TEXT2</name>
+      <line_numbers_to_branches>{1; 0},{2; 0},{3; 0},{4; 0}</line_numbers_to_branches>
+      <metrics>
+        <complexity>1</complexity>
+        <coverage coverage_type="STATEMENT">
+          <covered>0</covered>
+          <total>4</total>
+        </coverage>
+      </metrics>
+    </subprogram>
+  </unit>
+</coverage_data>

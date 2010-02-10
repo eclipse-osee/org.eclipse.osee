@@ -36,6 +36,7 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.ICoverageImportRecordProvider;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -49,6 +50,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -57,6 +59,7 @@ import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -156,13 +159,27 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
          return;
       }
       try {
-         XResultData rd = new MergeImportManager(mergeManager).importItems(this, mergeItems);
-         rd.report("Import");
+         CheckBoxDialog dialog =
+               new CheckBoxDialog("Import Items", String.format("Importing [%d] items.", mergeItems.size()),
+                     "Save Import Record?");
+         if (dialog.open() == 0) {
+            if (dialog.isChecked() && coverageImport.getCoverageImportRecordProvider() == null) {
+               AWorkbench.popup("No Import Record Provider, Import Record can not be saved");
+               return;
+            }
+            XResultData rd = new MergeImportManager(mergeManager).importItems(this, mergeItems);
+            rd.report("Import");
+            if (dialog.isChecked()) {
+               SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Save Import Record");
+               saveImportRecord(transaction, coverageImport.getCoverageImportRecordProvider());
+               transaction.execute();
+            }
+            handleSearchButtonPressed();
+            updateTitles();
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      handleSearchButtonPressed();
-      updateTitles();
    }
 
    private void updateTitles() {
@@ -397,4 +414,10 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       return result;
    }
 
+   @Override
+   public Result saveImportRecord(SkynetTransaction transaction, ICoverageImportRecordProvider coverageImportRecordProvider) throws OseeCoreException {
+      OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage);
+      Result result = store.saveImportRecord(transaction, coverageImportRecordProvider);
+      return result;
+   }
 }

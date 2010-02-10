@@ -13,14 +13,18 @@ import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.ICoverageImportRecordProvider;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -32,6 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ElapsedTime;
 public class OseeCoveragePackageStore extends OseeCoverageStore implements ISaveable {
    private final CoveragePackage coveragePackage;
    private CoverageOptionManager coverageOptionManager = CoverageOptionManagerDefault.instance();
+   private String IMPORT_RECORD_NAME = "Import Record";
 
    public OseeCoveragePackageStore(Artifact artifact) throws OseeCoreException {
       super(null, CoverageArtifactTypes.CoveragePackage);
@@ -114,6 +119,29 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          store.save(transaction);
       }
       elapsedTime.end();
+      return Result.TrueResult;
+   }
+
+   public Result saveImportRecord(SkynetTransaction transaction, ICoverageImportRecordProvider coverageImportRecordProvider) throws OseeCoreException {
+      if (coverageImportRecordProvider == null) return Result.FalseResult;
+      Artifact importRecordArt = null;
+      for (Artifact artifact : getArtifact(false).getChildren()) {
+         if (artifact.getName().equals(IMPORT_RECORD_NAME)) {
+            importRecordArt = artifact;
+            break;
+         }
+      }
+      if (importRecordArt == null) {
+         importRecordArt =
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, artifact.getBranch(),
+                     IMPORT_RECORD_NAME);
+         // must set the extension before setting content
+         importRecordArt.setSoleAttributeFromString(CoreAttributeTypes.NATIVE_EXTENSION, "zip");
+         getArtifact(false).addChild(artifact);
+      }
+      importRecordArt.setSoleAttributeFromStream(CoreAttributeTypes.NATIVE_CONTENT,
+            coverageImportRecordProvider.getImportRecordZipInputStream());
+      importRecordArt.persist(transaction);
       return Result.TrueResult;
    }
 

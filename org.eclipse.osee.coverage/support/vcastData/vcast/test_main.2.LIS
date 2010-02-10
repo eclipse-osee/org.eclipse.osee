@@ -1,0 +1,23 @@
+               --Proprietary header begins-----------------------------------------------------
+               --
+               -- Furnished to all others with the following restrictions: This software
+               --
+               -- Copyright Unpublished - 2002. All rights reserved under the copyright laws
+               --Proprietary header ends-------------------------------------------------------
+
+               WITH  sch.test;
+               WITH  string0;
+
+               PACKAGE  BODY test_main IS
+                   --
+                   --
+                   PROCEDURE update_text (str : IN OUT types.report_text) IS
+                   BEGIN
+1 1                   string0.trim (this => str);
+1 2                   string0.append (this => ' ', to => str);
+1 3                   string0.append
+                         (this => callsign, to => str);
+1 4                   string0.pad (this => str, with_this => ' ');
+                   END update_text;
+
+               END  test_main;

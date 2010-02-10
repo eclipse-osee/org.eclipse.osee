@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.model;
 
+import java.io.InputStream;
 import java.util.Date;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -23,11 +24,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageImport extends CoveragePackageBase implements ICoverage {
+public class CoverageImport extends CoveragePackageBase implements ICoverage, ICoverageImportRecordProvider {
 
    private Date runDate;
    private String location = "";
    private String blamName = "";
+   private ICoverageImportRecordProvider coverageImportRecordProvider;
 
    public CoverageImport(String name) {
       this(name, new Date());
@@ -95,6 +97,22 @@ public class CoverageImport extends CoveragePackageBase implements ICoverage {
    @Override
    public Date getDate() {
       return getRunDate();
+   }
+
+   public void setCoverageImportRecordProvider(ICoverageImportRecordProvider coverageImportRecordProvider) {
+      this.coverageImportRecordProvider = coverageImportRecordProvider;
+   }
+
+   @Override
+   public InputStream getImportRecordZipInputStream() throws OseeCoreException {
+      if (this.coverageImportRecordProvider != null) {
+         return this.coverageImportRecordProvider.getImportRecordZipInputStream();
+      }
+      return null;
+   }
+
+   public ICoverageImportRecordProvider getCoverageImportRecordProvider() {
+      return coverageImportRecordProvider;
    }
 
 }
