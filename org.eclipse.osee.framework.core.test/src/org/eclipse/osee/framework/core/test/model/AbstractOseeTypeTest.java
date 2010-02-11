@@ -53,7 +53,7 @@ public class AbstractOseeTypeTest<T extends AbstractOseeType> {
 
    @Test
    public void testGetId() {
-      Assert.assertEquals(IOseeStorable.UNPERSISTTED_VALUE, Integer.valueOf(type.getId()));
+      Assert.assertEquals(IOseeStorable.UNPERSISTED_VALUE, Integer.valueOf(type.getId()));
    }
 
    @Test(expected = OseeStateException.class)

@@ -37,11 +37,11 @@ public class UniqueIdFieldTest extends BaseOseeFieldTest {
    public static Collection<Object[]> data() throws OseeCoreException {
       Collection<Object[]> data = new ArrayList<Object[]>();
       data.add(new Object[] {new OseeFieldTestData<Integer>(new UniqueIdField(), //
-            IOseeStorable.UNPERSISTTED_VALUE, true, //
-            new FieldGetSetTestData<Integer>(false, IOseeStorable.UNPERSISTTED_VALUE,
-                  IOseeStorable.UNPERSISTTED_VALUE, true), //
-            new FieldGetSetTestData<Integer>(true, IOseeStorable.UNPERSISTTED_VALUE,
-                  IOseeStorable.UNPERSISTTED_VALUE, false), //
+            IOseeStorable.UNPERSISTED_VALUE, true, //
+            new FieldGetSetTestData<Integer>(false, IOseeStorable.UNPERSISTED_VALUE,
+                  IOseeStorable.UNPERSISTED_VALUE, true), //
+            new FieldGetSetTestData<Integer>(true, IOseeStorable.UNPERSISTED_VALUE,
+                  IOseeStorable.UNPERSISTED_VALUE, false), //
             new FieldGetSetTestData<Integer>(false, 100, 100, true), //
             new FieldGetSetTestData<Integer>(false, 200, 100, true, OseeStateException.class),//
             new FieldGetSetTestData<Integer>(true, 300, 100, false, OseeStateException.class)//
