@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -103,9 +104,6 @@ public class WordTemplateProcessor {
    private static final Pattern internalOutlineElementsPattern =
          Pattern.compile("<((\\w+:)?(HeadingAttribute|RecurseChildren|Number))>(.*?)</\\1>",
                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-
-   private static final String[] NUMBER =
-         new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
 
    private String slaveTemplate;
    private boolean outlining;
@@ -477,27 +475,6 @@ public class WordTemplateProcessor {
       theMap.setValue("allAttrs", allAttrs);
 
       return theMap;
-   }
-
-   public static String elementNameFor(String artifactName) {
-      // Since artifact names are free text it is important to reformat the name
-      // to ensure it is suitable as an element name
-      // NOTE: The current program.launch has a tokenizing bug that causes an error if consecutive
-      // spaces are in the name
-      String elementName = artifactName.trim().replaceAll("[^A-Za-z0-9]", "_");
-
-      // Ensure the name did not end up empty
-      if (elementName.equals("")) {
-         elementName = "nameless";
-      }
-
-      // Fix the first character if it is a number by replacing it with its name
-      char firstChar = elementName.charAt(0);
-      if (firstChar >= '0' && firstChar <= '9') {
-         elementName = NUMBER[firstChar - '0'] + elementName.substring(1);
-      }
-
-      return elementName;
    }
 
    public static void writeXMLMetaDataWrapper(WordMLProducer wordMl, String name, String guid, String attributeId, String contentString) throws OseeWrappedException {

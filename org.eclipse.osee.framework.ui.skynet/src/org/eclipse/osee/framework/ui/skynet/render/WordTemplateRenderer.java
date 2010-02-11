@@ -21,7 +21,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+
 import javax.xml.namespace.QName;
+
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.core.resources.IFile;
@@ -47,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
+import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -413,9 +416,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          }
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {
-            WordTemplateProcessor.writeXMLMetaDataWrapper(wordMl,
-                  WordTemplateProcessor.elementNameFor(attributeTypeName), "ns0:guid=\"" + artifact.getGuid() + "\"",
-                  "ns0:attrId=\"" + wordTempConAttr.getAttributeType().getId() + "\"", value);
+            OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
+            wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(), "OSEE_EDIT_START"));
+            wordMl.addWordMl(value);
+            wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(), "OSEE_EDIT_END"));
          } else {
             wordMl.addWordMl(value);
          }
@@ -441,7 +445,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() > 1) {
             // currently we can't support the editing of multiple artifacts with OLE data
             for (Artifact artifact : artifacts) {
-               if (!artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("") && presentationType == PresentationType.GENERALIZED_EDIT) {
+               if (!artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("")) {
                   notMultiEditableArtifacts.add(artifact);
                }
             }

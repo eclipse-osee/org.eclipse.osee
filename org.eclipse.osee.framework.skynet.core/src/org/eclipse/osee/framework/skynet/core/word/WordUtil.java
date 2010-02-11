@@ -14,6 +14,9 @@ package org.eclipse.osee.framework.skynet.core.word;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+
+import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -34,6 +38,7 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -49,6 +54,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 public class WordUtil {
    public static final String BODY_START = "<w:body>";
    public static final String BODY_END = "</w:body>";
+   private static final String[] NUMBER =
+      new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
 
    private static final String SELECT_WORD_VALUES =
          "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("content", "gamma_id") + " FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE art_id=? AND attr_type_id=? AND " + ATTRIBUTE_VERSION_TABLE.join(
@@ -167,6 +174,28 @@ public class WordUtil {
          chStmt.close();
       }
    }
+   
+   public static String elementNameFor(String artifactName) {
+      // Since artifact names are free text it is important to reformat the name
+      // to ensure it is suitable as an element name
+      // NOTE: The current program.launch has a tokenizing bug that causes an error if consecutive
+      // spaces are in the name
+      String elementName = artifactName.trim().replaceAll("[^A-Za-z0-9]", "_");
+
+      // Ensure the name did not end up empty
+      if (elementName.equals("")) {
+         elementName = "nameless";
+      }
+
+      // Fix the first character if it is a number by replacing it with its name
+      char firstChar = elementName.charAt(0);
+      if (firstChar >= '0' && firstChar <= '9') {
+         elementName = NUMBER[firstChar - '0'] + elementName.substring(1);
+      }
+
+      return elementName;
+   }
+
 
    public static String textOnly(String str) {
       str = paragraphPattern.matcher(str).replaceAll(" ");
@@ -215,14 +244,20 @@ public class WordUtil {
       return adjustedWordContentString;
    }
 
-   public final static String getGUIDFromFileInputStream(FileInputStream myFileInputStream) throws IOException {
+   public final static String getGUIDFromFile(File file) throws IOException {
       String guid = null;
+      InputStream stream = new BufferedInputStream(new FileInputStream(file));
       byte[] myBytes = new byte[4096];
-      if (myFileInputStream.read(myBytes) == -1) {
-         throw new IOException("Buffer underrun");
+      
+      try{
+         if (stream.read(myBytes) == -1) {
+            throw new IOException("Buffer underrun");
+         }
+      }finally{
+         Lib.close(stream);
       }
+      
       String leadingPartOfFile = new String(myBytes);
-      myFileInputStream = null;
       String[] splitsBeforeAndAfter =
             leadingPartOfFile.split(Artifact.BEFORE_GUID_STRING + "|" + Artifact.AFTER_GUID_STRING);
       if (splitsBeforeAndAfter.length == 3) {
