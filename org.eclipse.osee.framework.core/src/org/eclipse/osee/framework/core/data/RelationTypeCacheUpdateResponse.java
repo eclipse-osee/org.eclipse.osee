@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.core.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationType;
 
@@ -37,7 +37,7 @@ public class RelationTypeCacheUpdateResponse {
       private final int id;
       private final String name;
       private final String guid;
-      private final ModificationType modType;
+      private final StorageState storageState;
 
       private final String sideAName;
       private final String sideBName;
@@ -46,12 +46,12 @@ public class RelationTypeCacheUpdateResponse {
       private final RelationTypeMultiplicity multiplicity;
       private final String defaultOrderTypeGuid;
 
-      public RelationTypeRow(int id, String name, String guid, ModificationType modType, String sideAName, String sideBName, int artifactTypeSideA, int artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
+      public RelationTypeRow(int id, String name, String guid, StorageState storageState, String sideAName, String sideBName, int artifactTypeSideA, int artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
          super();
          this.id = id;
          this.name = name;
          this.guid = guid;
-         this.modType = modType;
+         this.storageState = storageState;
          this.sideAName = sideAName;
          this.sideBName = sideBName;
          this.artifactTypeSideA = artifactTypeSideA;
@@ -80,8 +80,8 @@ public class RelationTypeCacheUpdateResponse {
          return guid;
       }
 
-      public ModificationType getModType() {
-         return modType;
+      public StorageState getStorageState() {
+         return storageState;
       }
 
       public String getSideBName() {
@@ -101,7 +101,7 @@ public class RelationTypeCacheUpdateResponse {
       }
 
       public String[] toArray() {
-         return new String[] {String.valueOf(getId()), getGuid(), getName(), getModType().name(), getSideAName(),
+         return new String[] {String.valueOf(getId()), getGuid(), getName(), getStorageState().name(), getSideAName(),
                getSideBName(), String.valueOf(getArtifactTypeSideA()), String.valueOf(getArtifactTypeSideB()),
                getMultiplicity().name(), getDefaultOrderTypeGuid()};
       }
@@ -112,7 +112,7 @@ public class RelationTypeCacheUpdateResponse {
          int id = Integer.valueOf(data[index++]);
          String guid = data[index++];
          String name = data[index++];
-         ModificationType modType = ModificationType.valueOf(data[index++]);
+         StorageState storageState = StorageState.valueOf(data[index++]);
 
          String sideAName = data[index++];
          String sideBName = data[index++];
@@ -121,7 +121,7 @@ public class RelationTypeCacheUpdateResponse {
          RelationTypeMultiplicity multiplicity = RelationTypeMultiplicity.valueOf(data[index++]);
          String defaultOrderTypeGuid = data[index++];
 
-         return new RelationTypeRow(id, name, guid, modType, sideAName, sideBName, artifactTypeSideA,
+         return new RelationTypeRow(id, name, guid, storageState, sideAName, sideBName, artifactTypeSideA,
                artifactTypeSideB, multiplicity, defaultOrderTypeGuid);
       }
    }
@@ -129,7 +129,7 @@ public class RelationTypeCacheUpdateResponse {
    public static RelationTypeCacheUpdateResponse fromCache(Collection<RelationType> types) throws OseeCoreException {
       List<RelationTypeRow> rows = new ArrayList<RelationTypeRow>();
       for (RelationType item : types) {
-         rows.add(new RelationTypeRow(item.getId(), item.getName(), item.getGuid(), item.getModificationType(),
+         rows.add(new RelationTypeRow(item.getId(), item.getName(), item.getGuid(), item.getStorageState(),
                item.getSideAName(), item.getSideBName(), item.getArtifactTypeSideA().getId(),
                item.getArtifactTypeSideB().getId(), item.getMultiplicity(), item.getDefaultOrderTypeGuid()));
       }

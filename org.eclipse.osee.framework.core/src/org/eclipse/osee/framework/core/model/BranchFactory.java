@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 
@@ -57,12 +57,12 @@ public class BranchFactory implements IOseeTypeFactory {
       return branch;
    }
 
-   public Branch createOrUpdate(IOseeCache<Branch> cache, int uniqueId, ModificationType modificationType, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
+   public Branch createOrUpdate(IOseeCache<Branch> cache, int uniqueId, StorageState storageState, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
       Branch branch = cache.getById(uniqueId);
       if (branch == null) {
          branch = create(guid, name, branchType, branchState, isArchived);
          branch.setId(uniqueId);
-         branch.setModificationType(modificationType);
+         branch.setStorageState(storageState);
       } else {
          cache.decache(branch);
          branch.setName(name);

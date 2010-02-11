@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
@@ -55,15 +55,15 @@ public class ArtifactTypeCacheUpdateResponse {
       private final String name;
       private final String guid;
       private final boolean isAbstract;
-      private final ModificationType modType;
+      private final StorageState storageState;
 
-      protected ArtifactTypeRow(int id, String guid, String name, boolean isAbstract, ModificationType modType) {
+      protected ArtifactTypeRow(int id, String guid, String name, boolean isAbstract, StorageState storageState) {
          super();
          this.id = id;
          this.guid = guid;
          this.name = name;
          this.isAbstract = isAbstract;
-         this.modType = modType;
+         this.storageState = storageState;
       }
 
       public int getId() {
@@ -82,8 +82,8 @@ public class ArtifactTypeCacheUpdateResponse {
          return isAbstract;
       }
 
-      public ModificationType getModType() {
-         return modType;
+      public StorageState getModType() {
+         return storageState;
       }
 
       public String[] toArray() {
@@ -96,8 +96,8 @@ public class ArtifactTypeCacheUpdateResponse {
          String guid = data[1];
          String name = data[2];
          boolean isAbstract = Boolean.valueOf(data[3]);
-         ModificationType modType = ModificationType.valueOf(data[4]);
-         return new ArtifactTypeRow(id, guid, name, isAbstract, modType);
+         StorageState storageState = StorageState.valueOf(data[4]);
+         return new ArtifactTypeRow(id, guid, name, isAbstract, storageState);
       }
 
       @Override
@@ -112,7 +112,7 @@ public class ArtifactTypeCacheUpdateResponse {
       List<Triplet<Integer, Integer, Integer>> artAttrs = new ArrayList<Triplet<Integer, Integer, Integer>>();
       for (ArtifactType art : types) {
          rows.add(new ArtifactTypeRow(art.getId(), art.getGuid(), art.getName(), art.isAbstract(),
-               art.getModificationType()));
+               art.getStorageState()));
 
          Integer artId = art.getId();
          Collection<ArtifactType> superTypes = art.getSuperArtifactTypes();

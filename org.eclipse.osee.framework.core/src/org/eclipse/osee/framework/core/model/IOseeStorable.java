@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -28,6 +28,6 @@ public interface IOseeStorable {
 
    void clearDirty();
 
-   public ModificationType getModificationType();
+   public StorageState getStorageState();
 
 }

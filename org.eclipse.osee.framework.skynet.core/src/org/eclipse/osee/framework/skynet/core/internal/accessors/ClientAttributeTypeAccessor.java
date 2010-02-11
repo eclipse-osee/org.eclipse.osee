@@ -62,7 +62,7 @@ public class ClientAttributeTypeAccessor extends AbstractClientDataAccessor<Attr
          if (enumId != null) {
             oseeEnumType = enumCache.getById(enumId);
          }
-         factory.createOrUpdate(cache, row.getId(), row.getModificationType(), row.getGuid(), row.getName(),
+         factory.createOrUpdate(cache, row.getId(), row.getStorageState(), row.getGuid(), row.getName(),
                row.getBaseAttributeTypeId(), row.getAttributeProviderId(), row.getFileTypeExtension(),
                row.getDefaultValue(), oseeEnumType, row.getMinOccurrences(), row.getMaxOccurrences(),
                row.getDescription(), row.getTaggerId());

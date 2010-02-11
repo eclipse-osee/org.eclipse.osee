@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.internal.Activator;
@@ -20,13 +20,13 @@ public abstract class AbstractOseeType extends NamedIdentity implements IOseeSto
    public static final String NAME_FIELD_KEY = "osee.name.field";
    public static final String UNIQUE_ID_FIELD_KEY = "osee.unique.id.field";
 
-   private ModificationType modificationType;
+   private StorageState itemState;
    private final Map<String, IOseeField<?>> fieldMap;
 
    protected AbstractOseeType(String guid, String name) {
       super(guid, name);
       this.fieldMap = new HashMap<String, IOseeField<?>>();
-      this.modificationType = ModificationType.NEW;
+      this.itemState = StorageState.CREATED;
 
       addField(UNIQUE_ID_FIELD_KEY, new UniqueIdField());
       addField(NAME_FIELD_KEY, new OseeField<String>(name));
@@ -128,11 +128,11 @@ public abstract class AbstractOseeType extends NamedIdentity implements IOseeSto
       }
    }
 
-   public ModificationType getModificationType() {
-      return modificationType;
+   public StorageState getStorageState() {
+      return itemState;
    }
 
-   public void setModificationType(ModificationType modificationType) {
-      this.modificationType = modificationType;
+   public void setStorageState(StorageState storageState) {
+      this.itemState = storageState;
    }
 }

@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.IBranchUpdateEvent;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
@@ -81,15 +81,15 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
 
       for (Branch branch : branches) {
          if (isDataDirty(branch)) {
-            switch (branch.getModificationType()) {
-               case NEW:
+            switch (branch.getStorageState()) {
+               case CREATED:
                   branch.setId(getDatabaseService().getSequence().getNextBranchId());
                   insertData.add(toInsertValues(branch));
                   break;
                case MODIFIED:
                   updateData.add(toUpdateValues(branch));
                   break;
-               case DELETED:
+               case PURGED:
                   deleteData.add(toDeleteValues(branch));
                   break;
                default:
@@ -107,8 +107,8 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       getDatabaseService().runBatchUpdate(connection, DELETE_BRANCH, deleteData);
 
       for (Branch branch : branches) {
-         if (branch.getModificationType() == ModificationType.NEW) {
-            branch.setModificationType(ModificationType.MODIFIED);
+         if (StorageState.PURGED != branch.getStorageState()) {
+            branch.setStorageState(StorageState.LOADED);
          }
          branch.clearDirty();
       }

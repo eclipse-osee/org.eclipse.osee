@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.model;
 import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeTypeFactory;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -62,7 +62,7 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
       return attributeType;
    }
 
-   public AttributeType createOrUpdate(IOseeCache<AttributeType> cache, int uniqueId, ModificationType modificationType, String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
+   public AttributeType createOrUpdate(IOseeCache<AttributeType> cache, int uniqueId, StorageState storageState, String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
       AttributeType attributeType = cache.getById(uniqueId);
       if (attributeType == null) {
          attributeType =
@@ -70,7 +70,7 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
                      minOccurrences, maxOccurrences, description, taggerId);
          attributeType.setOseeEnumType(oseeEnumType);
          attributeType.setId(uniqueId);
-         attributeType.setModificationType(modificationType);
+         attributeType.setStorageState(storageState);
       } else {
          cache.decache(attributeType);
          attributeType.setFields(typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,

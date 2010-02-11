@@ -49,7 +49,7 @@ public class AttributeTypeCacheUpdateResponse {
                      item.getAttributeProviderId(), item.getFileTypeExtension(), item.getDefaultValue(),
                      item.getMinOccurrences(), item.getMaxOccurrences(), item.getDescription(), item.getTaggerId());
          type.setId(item.getId());
-         type.setModificationType(item.getModificationType());
+         type.setStorageState(item.getStorageState());
          rows.add(type);
 
          if (item.getOseeEnumType() != null) {

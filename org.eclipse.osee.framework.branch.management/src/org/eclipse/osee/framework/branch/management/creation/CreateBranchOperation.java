@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.BranchCache;
@@ -27,6 +26,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -189,7 +189,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       if (passedPreConditions) {
          try {
             BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
-            branch.setModificationType(ModificationType.DELETED);
+            branch.setStorageState(StorageState.PURGED);
             branchCache.storeItems(branch);
             branchCache.decache(branch);
          } catch (OseeCoreException ex1) {

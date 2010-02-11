@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.AttributeTypeCacheUpdateResponse;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.AttributeTypeFactory;
@@ -28,9 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<AttributeTypeCacheUpdateResponse> {
 
    private static enum Fields {
-      ROW_COUNT,
-      ROW,
-      ATTR_TO_ENUM;
+      ROW_COUNT, ROW, ATTR_TO_ENUM;
    }
 
    private final IOseeModelFactoryServiceProvider provider;
@@ -79,7 +77,7 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
       return new String[] {type.getAttributeProviderId(), type.getBaseAttributeTypeId(), type.getDefaultValue(),
             type.getDescription(), type.getFileTypeExtension(), type.getGuid(), String.valueOf(type.getId()),
             String.valueOf(type.getMaxOccurrences()), String.valueOf(type.getMinOccurrences()),
-            type.getModificationType().name(), type.getName(), type.getTaggerId()};
+            type.getStorageState().name(), type.getName(), type.getTaggerId()};
    }
 
    private AttributeType createfromArray(AttributeTypeFactory factory, String[] data) throws OseeCoreException {
@@ -92,7 +90,7 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
       int uniqueId = Integer.valueOf(data[6]);
       int maxOccurrences = Integer.valueOf(data[7]);
       int minOccurrences = Integer.valueOf(data[8]);
-      ModificationType modType = ModificationType.valueOf(data[9]);
+      StorageState storageState = StorageState.valueOf(data[9]);
       String name = data[10];
       String taggerId = data[11];
 
@@ -100,7 +98,7 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
             factory.create(guid, name, baseAttributeTypeId, attributeProviderId, fileTypeExtension, defaultValue,
                   minOccurrences, maxOccurrences, description, taggerId);
       type.setId(uniqueId);
-      type.setModificationType(modType);
+      type.setStorageState(storageState);
       return type;
    }
 }

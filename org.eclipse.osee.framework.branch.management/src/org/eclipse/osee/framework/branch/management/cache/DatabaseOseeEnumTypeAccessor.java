@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
@@ -68,14 +68,14 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
                if (lastEnumTypeId != currentEnumTypeId) {
                   String enumTypeName = chStmt.getString("enum_type_name");
                   oseeEnumType =
-                        factory.createOrUpdate(cache, currentEnumTypeId, ModificationType.MODIFIED,
-                              currentEnumTypeGuid, enumTypeName);
+                        factory.createOrUpdate(cache, currentEnumTypeId, StorageState.LOADED, currentEnumTypeGuid,
+                              enumTypeName);
                   lastEnumTypeId = currentEnumTypeId;
                }
                OseeEnumEntry entry =
                      factory.createEnumEntry(chStmt.getString("enum_entry_guid"), chStmt.getString("name"),
                            chStmt.getInt("ordinal"));
-               entry.setModificationType(ModificationType.MODIFIED);
+               entry.setStorageState(StorageState.LOADED);
                entry.clearDirty();
                types.put(oseeEnumType, entry);
             } catch (OseeCoreException ex) {
@@ -102,15 +102,15 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
       List<Object[]> deleteData = new ArrayList<Object[]>();
       for (OseeEnumType oseeEnumType : oseeEnumTypes) {
          if (isDataDirty(oseeEnumType)) {
-            switch (oseeEnumType.getModificationType()) {
-               case NEW:
+            switch (oseeEnumType.getStorageState()) {
+               case CREATED:
                   oseeEnumType.setId(getSequence().getNextOseeEnumTypeId());
                   insertData.add(toInsertValues(oseeEnumType));
                   break;
                case MODIFIED:
                   updateData.add(toUpdateValues(oseeEnumType));
                   break;
-               case DELETED:
+               case PURGED:
                   deleteData.add(toDeleteValues(oseeEnumType));
                   break;
                default:
@@ -118,7 +118,8 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
             }
          }
          if (oseeEnumType.isFieldDirty(OseeEnumType.OSEE_ENUM_TYPE_ENTRIES_FIELD)) {
-            if (!oseeEnumType.getModificationType().isDeleted()) {
+            StorageState state = oseeEnumType.getStorageState();
+            if (StorageState.PURGED != state) {
                dirtyEntries.add(oseeEnumType);
             }
          }
@@ -129,8 +130,8 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
 
       storeOseeEnumEntries(dirtyEntries);
       for (OseeEnumType oseeEnumType : oseeEnumTypes) {
-         if (oseeEnumType.getModificationType() == ModificationType.NEW) {
-            oseeEnumType.setModificationType(ModificationType.MODIFIED);
+         if (StorageState.PURGED != oseeEnumType.getStorageState()) {
+            oseeEnumType.setStorageState(StorageState.LOADED);
          }
          oseeEnumType.clearDirty();
       }
@@ -141,8 +142,8 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
 
       for (OseeEnumType oseeEnumType : oseeEnumTypes) {
          for (OseeEnumEntry entry : oseeEnumType.values()) {
-            if (entry.getModificationType() == ModificationType.NEW) {
-               entry.setModificationType(ModificationType.MODIFIED);
+            if (StorageState.PURGED != entry.getStorageState()) {
+               entry.setStorageState(StorageState.LOADED);
             }
             entry.clearDirty();
          }
@@ -161,8 +162,8 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
             deleteData.add(toDeleteValues(type));
          }
          for (OseeEnumEntry entry : type.values()) {
-            switch (entry.getModificationType()) {
-               case NEW:
+            switch (entry.getStorageState()) {
+               case CREATED:
                   entry.setId(type.getId());
                   insertData.add(toInsertValues(entry));
                   break;

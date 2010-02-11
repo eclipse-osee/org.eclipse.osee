@@ -17,8 +17,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -73,8 +73,8 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
                String guid = chStmt.getString("rel_link_type_guid");
 
                RelationType relationType =
-                     factory.createOrUpdate(cache, typeId, ModificationType.MODIFIED, guid, typeName, sideAName,
-                           sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity, defaultOrderTypeGuid);
+                     factory.createOrUpdate(cache, typeId, StorageState.LOADED, guid, typeName, sideAName, sideBName,
+                           artifactTypeSideA, artifactTypeSideB, multiplicity, defaultOrderTypeGuid);
                relationType.clearDirty();
             } catch (OseeCoreException ex) {
                String message =
@@ -95,8 +95,8 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
       List<Object[]> updateData = new ArrayList<Object[]>();
       for (RelationType type : relationTypes) {
          if (type.isDirty()) {
-            switch (type.getModificationType()) {
-               case NEW:
+            switch (type.getStorageState()) {
+               case CREATED:
                   type.setId(getSequence().getNextRelationTypeId());
                   insertData.add(toInsertValues(type));
                   break;
@@ -116,8 +116,8 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
          connection.close();
       }
       for (RelationType type : relationTypes) {
-         if (type.getModificationType() == ModificationType.NEW) {
-            type.setModificationType(ModificationType.MODIFIED);
+         if (StorageState.PURGED != type.getStorageState()) {
+            type.setStorageState(StorageState.LOADED);
          }
          type.clearDirty();
       }

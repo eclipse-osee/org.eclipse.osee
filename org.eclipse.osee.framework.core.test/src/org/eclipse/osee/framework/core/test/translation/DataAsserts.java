@@ -169,7 +169,7 @@ public final class DataAsserts {
          Assert.assertEquals(expected.getId(), actual.getId());
          Assert.assertEquals(expected.getGuid(), actual.getGuid());
          Assert.assertEquals(expected.getName(), actual.getName());
-         Assert.assertEquals(expected.getModificationType(), actual.getModificationType());
+         Assert.assertEquals(expected.getStorageState(), actual.getStorageState());
          Assert.assertEquals(expected.isDirty(), actual.isDirty());
       }
    }

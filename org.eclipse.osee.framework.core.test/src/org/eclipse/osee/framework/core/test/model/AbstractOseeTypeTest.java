@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.test.model;
 
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
@@ -94,11 +94,18 @@ public class AbstractOseeTypeTest<T extends AbstractOseeType> {
 
    @Test
    public void testSetGetModificationType() {
-      Assert.assertEquals(ModificationType.NEW, type.getModificationType());
+      Assert.assertEquals(StorageState.CREATED, type.getStorageState());
       Assert.assertFalse(type.isDirty());
-      type.setModificationType(ModificationType.MODIFIED);
+
+      type.setStorageState(StorageState.MODIFIED);
       Assert.assertFalse(type.isDirty());
-      Assert.assertEquals(ModificationType.MODIFIED, type.getModificationType());
+
+      type.setStorageState(StorageState.PURGED);
+      Assert.assertFalse(type.isDirty());
+
+      type.setStorageState(StorageState.CREATED);
+      Assert.assertFalse(type.isDirty());
+      Assert.assertEquals(StorageState.CREATED, type.getStorageState());
    }
 
    @Test

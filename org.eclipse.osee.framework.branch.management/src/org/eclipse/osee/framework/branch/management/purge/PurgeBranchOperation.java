@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.BranchCache;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -118,7 +118,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
          BranchCache branchCache;
          try {
             branchCache = cachingService.getOseeCachingService().getBranchCache();
-            branch.setModificationType(ModificationType.DELETED);
+            branch.setStorageState(StorageState.PURGED);
             branchCache.storeItems(branch);
             branchCache.decache(branch);
          } catch (OseeCoreException ex) {

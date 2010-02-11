@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
@@ -105,8 +105,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
                String guid = chStmt.getString("art_type_guid");
 
                ArtifactType artifactType =
-                     factory.createOrUpdate(cache, artTypeId, ModificationType.MODIFIED, guid, isAbstract,
-                           artifactTypeName);
+                     factory.createOrUpdate(cache, artTypeId, StorageState.LOADED, guid, isAbstract, artifactTypeName);
                loadedTypes.add(artifactType);
             } catch (OseeDataStoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -195,8 +194,8 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
       for (ArtifactType type : types) {
          if (isDataDirty(type)) {
             int abstractValue = type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR;
-            switch (type.getModificationType()) {
-               case NEW:
+            switch (type.getStorageState()) {
+               case CREATED:
                   type.setId(getSequence().getNextArtifactTypeId());
                   insertData.add(new Object[] {type.getId(), type.getGuid(), type.getName(), abstractValue});
                   break;
@@ -222,8 +221,8 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
       storeAttributeTypeValidity(types);
 
       for (ArtifactType type : types) {
-         if (type.getModificationType() == ModificationType.NEW) {
-            type.setModificationType(ModificationType.MODIFIED);
+         if (StorageState.PURGED != type.getStorageState()) {
+            type.setStorageState(StorageState.LOADED);
          }
          type.clearDirty();
       }

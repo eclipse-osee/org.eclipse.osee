@@ -51,7 +51,7 @@ public class CreateOseeTypeChangesReportOperation extends AbstractOperation {
    private String[] getColumns(Collection<?> types) {
       List<String> columns = new ArrayList<String>();
       columns.add("Name");
-      columns.add("ModType");
+      columns.add("StorageState");
       if (!types.isEmpty()) {
          AbstractOseeType type = (AbstractOseeType) types.iterator().next();
          columns.addAll(type.getFieldNames());
@@ -66,7 +66,7 @@ public class CreateOseeTypeChangesReportOperation extends AbstractOperation {
       for (ArtifactType type : types) {
          List<String> data = new ArrayList<String>(columns.length);
          data.add(type.getName());
-         data.add(type.getModificationType().getDisplayName());
+         data.add(type.getStorageState().name());
          for (String fieldName : type.getFieldNames()) {
             boolean isDirty = type.isFieldDirty(fieldName);
             if (isDirty && ArtifactType.ARTIFACT_INHERITANCE_FIELD_KEY.equals(fieldName)) {
@@ -88,7 +88,7 @@ public class CreateOseeTypeChangesReportOperation extends AbstractOperation {
       for (AttributeType type : types) {
          List<String> data = new ArrayList<String>();
          data.add(type.getName());
-         data.add(type.getModificationType().getDisplayName());
+         data.add(type.getStorageState().name());
          for (String fieldName : type.getFieldNames()) {
             data.add(String.valueOf(type.isFieldDirty(fieldName)));
          }
@@ -103,7 +103,7 @@ public class CreateOseeTypeChangesReportOperation extends AbstractOperation {
       for (RelationType type : types) {
          List<String> data = new ArrayList<String>();
          data.add(type.getName());
-         data.add(type.getModificationType().getDisplayName());
+         data.add(type.getStorageState().name());
          for (String fieldName : type.getFieldNames()) {
             data.add(String.valueOf(type.isFieldDirty(fieldName)));
          }
@@ -118,7 +118,7 @@ public class CreateOseeTypeChangesReportOperation extends AbstractOperation {
       for (OseeEnumType type : types) {
          List<String> data = new ArrayList<String>();
          data.add(type.getName());
-         data.add(type.getModificationType().getDisplayName());
+         data.add(type.getStorageState().name());
          for (String fieldName : type.getFieldNames()) {
             boolean isDirty = type.isFieldDirty(fieldName);
             if (isDirty && OseeEnumType.OSEE_ENUM_TYPE_ENTRIES_FIELD.equals(fieldName)) {

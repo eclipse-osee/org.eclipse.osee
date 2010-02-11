@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
@@ -86,7 +86,7 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
                OseeEnumType oseeEnumType = enumCache.getById(enumTypeId);
 
                AttributeType attributeType =
-                     factory.createOrUpdate(cache, attributeTypeId, ModificationType.MODIFIED, guid, typeName,
+                     factory.createOrUpdate(cache, attributeTypeId, StorageState.LOADED, guid, typeName,
                            baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue, oseeEnumType,
                            minOccurrences, maxOccurrences, description, taggerId);
 
@@ -106,8 +106,8 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
       List<Object[]> updateData = new ArrayList<Object[]>();
       for (AttributeType type : types) {
          if (type.isDirty()) {
-            switch (type.getModificationType()) {
-               case NEW:
+            switch (type.getStorageState()) {
+               case CREATED:
                   type.setId(getSequence().getNextAttributeTypeId());
                   insertData.add(toInsertValues(type));
                   break;
@@ -122,8 +122,8 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
       getDatabaseService().runBatchUpdate(INSERT_ATTRIBUTE_TYPE, insertData);
       getDatabaseService().runBatchUpdate(UPDATE_ATTRIBUTE_TYPE, updateData);
       for (AttributeType type : types) {
-         if (type.getModificationType() == ModificationType.NEW) {
-            type.setModificationType(ModificationType.MODIFIED);
+         if (StorageState.PURGED != type.getStorageState()) {
+            type.setStorageState(StorageState.LOADED);
          }
          type.clearDirty();
       }

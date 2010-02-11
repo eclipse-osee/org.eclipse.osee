@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.data.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -98,8 +98,8 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
                boolean isArchived = BranchArchivedState.valueOf(chStmt.getInt("archived")).isArchived();
                String branchGuid = chStmt.getString("branch_guid");
                Branch branch =
-                     factory.createOrUpdate(cache, branchId, ModificationType.MODIFIED, branchGuid, branchName,
-                           branchType, branchState, isArchived);
+                     factory.createOrUpdate(cache, branchId, StorageState.LOADED, branchGuid, branchName, branchType,
+                           branchState, isArchived);
 
                Integer parentBranchId = chStmt.getInt("parent_branch_id");
                if (parentBranchId != BranchStoreOperation.NULL_PARENT_BRANCH_ID) {

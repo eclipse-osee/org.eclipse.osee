@@ -34,8 +34,8 @@ import org.eclipse.osee.framework.core.data.RelationTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -115,8 +115,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
    }
 
    private void handleError(HttpServletResponse resp, String request, Throwable th) throws IOException {
-      OseeLog.log(Activator.class, Level.SEVERE, String.format("Osee Cache request error: [%s]", request),
-            th);
+      OseeLog.log(Activator.class, Level.SEVERE, String.format("Osee Cache request error: [%s]", request), th);
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       resp.setContentType("text/plain");
       resp.getWriter().write(Lib.exceptionToString(th));
@@ -151,8 +150,8 @@ public class OseeCacheServlet extends OseeHttpServlet {
       BranchCache cache = caching.getBranchCache();
       if (updateRequest.isServerUpdateMessage()) {
          for (Branch branch : updated) {
-            if (branch.getModificationType() == ModificationType.NEW) {
-               branch.setModificationType(ModificationType.MODIFIED);
+            if (StorageState.CREATED == branch.getStorageState()) {
+               branch.setStorageState(StorageState.MODIFIED);
             }
             branch.clearDirty();
             cache.decache(branch);

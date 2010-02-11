@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -274,7 +275,9 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
          synchronized (this) {
             for (T type : toStore) {
                decache(type);
-               cache(type);
+               if (StorageState.PURGED != type.getStorageState()) {
+                  cache(type);
+               }
             }
          }
       }

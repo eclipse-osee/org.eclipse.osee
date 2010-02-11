@@ -3,7 +3,7 @@ package org.eclipse.osee.framework.core.data;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 
 public final class BranchRow {
    private final int branchId;
@@ -13,9 +13,9 @@ public final class BranchRow {
    private final BranchType branchType;
    private final BranchState branchState;
    private final BranchArchivedState branchArchived;
-   private final ModificationType modType;
+   private final StorageState storageState;
 
-   public BranchRow(int branchId, String branchGuid, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, ModificationType modType) {
+   public BranchRow(int branchId, String branchGuid, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, StorageState storageState) {
       super();
       this.branchId = branchId;
       this.branchGuid = branchGuid;
@@ -23,7 +23,7 @@ public final class BranchRow {
       this.branchType = branchType;
       this.branchState = branchState;
       this.branchArchived = branchArchived;
-      this.modType = modType;
+      this.storageState = storageState;
    }
 
    public int getBranchId() {
@@ -50,13 +50,13 @@ public final class BranchRow {
       return branchArchived;
    }
 
-   public ModificationType getModType() {
-      return modType;
+   public StorageState getStorageState() {
+      return storageState;
    }
 
    public String[] toArray() {
       return new String[] {getBranchArchived().name(), getBranchGuid(), String.valueOf(getBranchId()), getBranchName(),
-            getBranchState().name(), getBranchType().name(), getModType().name()};
+            getBranchState().name(), getBranchType().name(), getStorageState().name()};
    }
 
    public static BranchRow fromArray(String[] data) {
@@ -66,8 +66,8 @@ public final class BranchRow {
       String branchName = data[3];
       BranchState branchState = BranchState.valueOf(data[4]);
       BranchType branchType = BranchType.valueOf(data[5]);
-      ModificationType modType = ModificationType.valueOf(data[6]);
+      StorageState storageState = StorageState.valueOf(data[6]);
 
-      return new BranchRow(branchId, branchGuid, branchName, branchType, branchState, archived, modType);
+      return new BranchRow(branchId, branchGuid, branchName, branchType, branchState, archived, storageState);
    }
 }

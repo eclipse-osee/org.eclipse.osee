@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.core.model;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 
@@ -53,14 +53,14 @@ public class RelationTypeFactory implements IOseeTypeFactory {
       return relationType;
    }
 
-   public RelationType createOrUpdate(IOseeCache<RelationType> cache, int typeId, ModificationType modificationType, String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
+   public RelationType createOrUpdate(IOseeCache<RelationType> cache, int typeId, StorageState storageState, String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
       RelationType relationType = cache.getById(typeId);
       if (relationType == null) {
          relationType =
                create(guid, typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
                      defaultOrderTypeGuid);
          relationType.setId(typeId);
-         relationType.setModificationType(modificationType);
+         relationType.setStorageState(storageState);
       } else {
          cache.decache(relationType);
          relationType.setFields(typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,

@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.data.OseeEnumTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeEnumType;
 import org.eclipse.osee.framework.core.model.OseeEnumTypeFactory;
@@ -45,7 +45,7 @@ public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<OseeE
 
       for (String[] enumTypeRow : response.getEnumTypeRows()) {
          enumTypes.add(factory.createOrUpdate(cache, Integer.parseInt(enumTypeRow[0]),
-               ModificationType.valueOf(enumTypeRow[1]), enumTypeRow[2], enumTypeRow[3]));
+               StorageState.valueOf(enumTypeRow[1]), enumTypeRow[2], enumTypeRow[3]));
       }
 
       for (String[] enumEntryRow : response.getEnumEntryRows()) {

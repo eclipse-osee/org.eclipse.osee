@@ -59,7 +59,7 @@ public class ClientRelationTypeAccessor extends AbstractClientDataAccessor<Relat
          ArtifactType bSideType = artCache.getById(row.getArtifactTypeSideB());
 
          RelationType type =
-               factory.createOrUpdate(cache, row.getId(), row.getModType(), row.getGuid(), row.getName(),
+               factory.createOrUpdate(cache, row.getId(), row.getStorageState(), row.getGuid(), row.getName(),
                      row.getSideAName(), row.getSideBName(), aSideType, bSideType, row.getMultiplicity(),
                      row.getDefaultOrderTypeGuid());
          updatedItems.add(type);
