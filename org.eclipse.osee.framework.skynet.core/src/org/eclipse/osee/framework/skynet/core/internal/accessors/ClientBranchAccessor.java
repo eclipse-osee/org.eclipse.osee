@@ -65,7 +65,6 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
 
    @Override
    protected Collection<Branch> updateCache(IOseeCache<Branch> cache) throws OseeCoreException {
-      System.out.println("");
       BranchCacheUpdateResponse response = requestUpdateMessage(cache, CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
       ShallowArtifactFactory artFactory = new ShallowArtifactFactory((BranchCache) cache);
       return new BranchCacheUpdateUtil(getFactory(), transactionCache, artFactory).updateCache(response, cache);
