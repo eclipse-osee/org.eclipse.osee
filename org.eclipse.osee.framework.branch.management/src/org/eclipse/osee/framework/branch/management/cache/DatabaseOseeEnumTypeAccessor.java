@@ -118,8 +118,7 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
             }
          }
          if (oseeEnumType.isFieldDirty(OseeEnumType.OSEE_ENUM_TYPE_ENTRIES_FIELD)) {
-            StorageState state = oseeEnumType.getStorageState();
-            if (StorageState.PURGED != state) {
+            if (StorageState.PURGED != oseeEnumType.getStorageState()) {
                dirtyEntries.add(oseeEnumType);
             }
          }
@@ -158,7 +157,7 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> deleteData = new ArrayList<Object[]>();
       for (OseeEnumType type : oseeEnumTypes) {
-         if (type.getId() != IOseeStorable.UNPERSISTTED_VALUE) {
+         if (type.getId() != IOseeStorable.UNPERSISTED_VALUE) {
             deleteData.add(toDeleteValues(type));
          }
          for (OseeEnumEntry entry : type.values()) {
@@ -167,6 +166,7 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
                   entry.setId(type.getId());
                   insertData.add(toInsertValues(entry));
                   break;
+               case LOADED:
                case MODIFIED:
                   insertData.add(toInsertValues(entry));
                   break;
