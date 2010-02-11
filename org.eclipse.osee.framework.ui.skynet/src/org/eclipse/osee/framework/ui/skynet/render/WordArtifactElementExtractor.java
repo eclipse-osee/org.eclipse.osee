@@ -18,7 +18,6 @@ import java.util.LinkedList;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkParser;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.w3c.dom.DOMException;
@@ -31,11 +30,11 @@ import org.xml.sax.SAXException;
 /**
  * @author Jeff C. Phillips
  */
-public class ArtifactElementExtractor {
+public class WordArtifactElementExtractor {
    private Element oleDataElement;
    private final Document document;
    
-   public ArtifactElementExtractor(Document document) {
+   public WordArtifactElementExtractor(Document document) {
       super();
       this.document = document;
    }
@@ -140,7 +139,7 @@ public class ArtifactElementExtractor {
     * @param newArtifactElement 
     * @param element
     * @throws DOMException 
-    * @throws OseeWrappedException 
+    * @throws OseeCoreException 
     */
    private void populateNewArtifactElementFromHlink(Element newArtifactElement, Element element) throws OseeCoreException, DOMException {
       OseeLinkParser linkParser = new OseeLinkParser();

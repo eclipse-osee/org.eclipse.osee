@@ -116,8 +116,7 @@ public class UpdateArtifactJob extends UpdateJob {
             updateNativeArtifact(artifact);
          }
          else {
-            throw new OseeArgumentException(
-                                            "Artifact must be of type WordArtifact or NativeArtifact.");
+            throw new OseeArgumentException("Artifact must be of type WordArtifact or NativeArtifact.");
          }
       }
       else if (multiEditMatcher.matches()) {
@@ -158,12 +157,12 @@ public class UpdateArtifactJob extends UpdateJob {
       InputStream inputStream = new BufferedInputStream(new FileInputStream(workingFile));
       Document document;
       try{
-          document = Jaxp.readXmlDocument(workingFile);
+          document = Jaxp.readXmlDocument(inputStream);
       }finally{
        Lib.close(inputStream);  
       }
 
-      ArtifactElementExtractor extractor = new ArtifactElementExtractor(document);
+      WordArtifactElementExtractor extractor = new WordArtifactElementExtractor(document);
       Collection<Element> artElements = extractor.extract(isSingle);
       oleDataElement = extractor.getOleDataElement();
 
