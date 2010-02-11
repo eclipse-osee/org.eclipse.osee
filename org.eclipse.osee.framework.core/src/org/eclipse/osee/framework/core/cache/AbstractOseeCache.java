@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
-import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -96,7 +95,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       ensurePopulated();
       guidToTypeMap.remove(type.getGuid());
       decacheByName(type);
-      if (type.getId() != IOseeStorable.UNPERSISTED_VALUE) {
+      if (type.isIdValid()) {
          idToTypeMap.remove(type.getId());
       }
    }
@@ -159,7 +158,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    private void cacheById(T type) throws OseeCoreException {
       Conditions.checkNotNull(type, "type to cache");
       ensurePopulated();
-      if (type.getId() != IOseeStorable.UNPERSISTED_VALUE) {
+      if (type.isIdValid()) {
          idToTypeMap.put(type.getId(), type);
       }
    }

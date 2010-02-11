@@ -30,7 +30,7 @@ public final class UniqueIdField extends AbstractOseeField<Integer> {
 
    @Override
    public void set(Integer value) throws OseeCoreException {
-      if (get() == IOseeStorable.UNPERSISTED_VALUE) {
+      if (IOseeStorable.UNPERSISTED_VALUE.equals(get())) {
          isDirty |= Compare.isDifferent(get(), value);
          this.value = value;
       } else {

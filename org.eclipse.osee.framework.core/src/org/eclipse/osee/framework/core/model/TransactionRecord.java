@@ -136,4 +136,8 @@ public final class TransactionRecord implements IAdaptable {
    public void setBranchCache(BranchCache branchCache) {
       this.branchCache = branchCache;
    }
+
+   public boolean isIdValid() {
+      return getId() > 0;
+   }
 }

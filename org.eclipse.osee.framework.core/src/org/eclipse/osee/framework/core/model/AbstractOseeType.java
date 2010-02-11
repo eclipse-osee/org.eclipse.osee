@@ -135,4 +135,9 @@ public abstract class AbstractOseeType extends NamedIdentity implements IOseeSto
    public void setStorageState(StorageState storageState) {
       this.itemState = storageState;
    }
+
+   @Override
+   public boolean isIdValid() {
+      return !UNPERSISTED_VALUE.equals(getId());
+   }
 }

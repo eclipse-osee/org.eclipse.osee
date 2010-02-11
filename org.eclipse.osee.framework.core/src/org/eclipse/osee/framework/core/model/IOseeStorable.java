@@ -24,6 +24,8 @@ public interface IOseeStorable {
 
    void setId(int uniqueId) throws OseeCoreException;
 
+   boolean isIdValid();
+
    boolean isDirty();
 
    void clearDirty();
