@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.core;
 
+import java.io.Closeable;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 
-public abstract class OseeConnection {
+public abstract class OseeConnection implements Closeable{
 
    protected OseeConnection() {
 
