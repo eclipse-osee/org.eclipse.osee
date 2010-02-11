@@ -26,13 +26,15 @@ public class BranchCache extends AbstractOseeCache<Branch> {
    }
 
    public Branch getSystemRootBranch() throws OseeCoreException {
-      ensurePopulated();
       return get(CoreBranches.SYSTEM_ROOT);
    }
 
    public Branch getCommonBranch() throws OseeCoreException {
-      ensurePopulated();
-      return get(CoreBranches.COMMON);
+      Branch common = get(CoreBranches.COMMON);
+      if (common == null) {
+         throw new OseeCoreException("Common branch not found");
+      }
+      return common;
    }
 
    public MergeBranch findMergeBranch(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
