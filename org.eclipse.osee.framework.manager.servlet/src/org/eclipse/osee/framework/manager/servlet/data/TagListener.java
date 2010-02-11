@@ -86,7 +86,6 @@ public class TagListener extends TagListenerAdapter {
    synchronized public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime) {
       if (this.queryIds.contains(queryId)) {
          this.queryIds.remove(queryId);
-         // System.out.println(String.format("Tag query ids remaining: [%d]", this.queryIds.size()));
          if (this.queryIds.isEmpty() && queryCount == expectedTotal) {
             this.wasProcessed = true;
             this.notify();

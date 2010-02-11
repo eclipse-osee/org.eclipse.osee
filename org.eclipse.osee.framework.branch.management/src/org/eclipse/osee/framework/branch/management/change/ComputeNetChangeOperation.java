@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.branch.management.change;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.data.ChangeItem;
@@ -65,7 +64,6 @@ public class ComputeNetChangeOperation extends AbstractOperation {
       } else {
          monitor.worked(calculateWork(1.0));
       }
-      System.out.println("Commit change size: " + changes.size());
    }
 
    private ModificationType getNetModType(ChangeItem change) {
