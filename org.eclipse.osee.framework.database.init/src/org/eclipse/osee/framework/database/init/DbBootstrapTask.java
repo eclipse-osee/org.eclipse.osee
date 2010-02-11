@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.OseeInfo;
@@ -67,12 +67,14 @@ public class DbBootstrapTask implements IDbInitializationTask {
          DatabaseMetaData metaData = connection.getMetaData();
          SqlManager sqlManager = SqlFactory.getSqlManager(metaData);
          DbInit dbInit = new DbInit(sqlManager);
+
          DatabaseConfigurationData databaseConfigurationData = new DatabaseConfigurationData(getSchemaFiles());
          Map<String, SchemaData> userSpecifiedConfig = databaseConfigurationData.getUserSpecifiedSchemas();
          DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(userSpecifiedConfig.keySet());
          schemaExtractor.extractSchemaData();
          Map<String, SchemaData> currentDatabaseConfig = schemaExtractor.getSchemas();
          Set<String> schemas = userSpecifiedConfig.keySet();
+
          dbInit.dropIndices(schemas, userSpecifiedConfig, currentDatabaseConfig);
          dbInit.dropTables(schemas, userSpecifiedConfig, currentDatabaseConfig);
          if (SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.postgresql)) {
@@ -82,32 +84,30 @@ public class DbBootstrapTask implements IDbInitializationTask {
          dbInit.addTables(schemas, userSpecifiedConfig);
          dbInit.addIndices(schemas, userSpecifiedConfig);
       } finally {
-         connection.close();
+         Lib.close(connection);
       }
    }
 
    public void run() throws OseeCoreException {
+      Conditions.checkNotNull(configuration, "DbInitConfiguration Info");
+
       DbUtil.setDbInit(true);
       createOseeSchema();
-      initializeApplicationServer();
+      registerApplicationServer();
+      deleteBinaryBackingData();
+
       OseeInfo.putValue(OseeInfo.DB_ID_KEY, GUID.create());
       addDefaultPermissions();
 
-      // Create System Root
-      BranchManager.createSystemRootBranch();
-
-      if (configuration == null) {
-         throw new OseeStateException("configuration information must be provided");
-      }
       List<String> oseeTypes = configuration.getOseeTypeExtensionIds();
-      if (oseeTypes.isEmpty()) {
-         throw new OseeStateException("osee types cannot be empty");
-      }
+      Conditions.checkExpressionFailOnTrue(oseeTypes.isEmpty(), "osee types cannot be empty");
+
+      BranchManager.createSystemRootBranch();
       OseeTypesSetup oseeTypesSetup = new OseeTypesSetup();
       oseeTypesSetup.execute(oseeTypes);
    }
 
-   private static void initializeApplicationServer() throws OseeCoreException {
+   private static void registerApplicationServer() throws OseeCoreException {
       try {
          Map<String, String> parameters = new HashMap<String, String>();
          parameters.put("registerToLookup", "true");
@@ -127,9 +127,10 @@ public class DbBootstrapTask implements IDbInitializationTask {
             credential.setUserName(SystemUser.BootStrap.getName());
             return credential;
          }
-
       });
+   }
 
+   private static void deleteBinaryBackingData() throws OseeCoreException {
       boolean displayWarning = false;
       String server = HttpUrlBuilderClient.getInstance().getApplicationServerPrefix();
       try {
@@ -146,6 +147,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
       } catch (Exception ex) {
          displayWarning = true;
       }
+
       if (displayWarning) {
          OseeLog.log(DatabaseInitActivator.class, Level.WARNING, "Unable to delete binary data from application server");
       }

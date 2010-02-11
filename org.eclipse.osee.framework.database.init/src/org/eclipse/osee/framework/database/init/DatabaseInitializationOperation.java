@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -38,8 +38,10 @@ import org.osgi.framework.Bundle;
  * @author Roberto E. Escobar
  */
 public class DatabaseInitializationOperation {
-   private static final String dbInitExtensionPointId =
+
+   private static final String INIT_TASK_EXTENSION_ID =
          "org.eclipse.osee.framework.database.init.DatabaseInitializationTask";
+
    private static BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 
    private final String preSelectedChoice;
@@ -60,45 +62,43 @@ public class DatabaseInitializationOperation {
 
    private void execute() throws OseeCoreException {
       boolean isConfigured = false;
-      if (checkPreconditions()) {
-         ClientSessionManager.authenticate(new BaseCredentialProvider() {
-            @Override
-            public OseeCredential getCredential() throws OseeCoreException {
-               OseeCredential credential = super.getCredential();
-               credential.setUserName(SystemUser.BootStrap.getName());
-               return credential;
-            }
-         });
-         String dbName = ClientSessionManager.getDataStoreName();
-         String userName = ClientSessionManager.getDataStoreLoginName();
+      checkServerPreconditions();
 
-         if (ClientSessionManager.isProductionDataStore()) {
-            System.err.println(String.format(
-                  "You are not allowed to run config client against production: [%s].\nExiting.", dbName));
-            return;
+      ClientSessionManager.authenticate(new BaseCredentialProvider() {
+         @Override
+         public OseeCredential getCredential() throws OseeCoreException {
+            OseeCredential credential = super.getCredential();
+            credential.setUserName(SystemUser.BootStrap.getName());
+            return credential;
          }
+      });
+      String dbName = ClientSessionManager.getDataStoreName();
+      String userName = ClientSessionManager.getDataStoreLoginName();
+      String dbDriverName = ClientSessionManager.getDataStoreDriver();
+      if (ClientSessionManager.isProductionDataStore()) {
+         System.err.println(String.format(
+               "You are not allowed to run config client against production: [%s].\nExiting.", dbName));
+         return;
+      }
 
-         String line = null;
-         if (isPromptEnabled) {
-            System.out.println("\nAre you sure you want to configure: " + dbName + ":" + userName);
-            line = waitForUserResponse();
-         } else {
-            line = "Y";
-         }
-         if (line.equalsIgnoreCase("Y")) {
-            isConfigured = true;
-            OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Configuring Database...");
-            long startTime = System.currentTimeMillis();
+      String line = null;
+      if (isPromptEnabled) {
+         System.out.println(String.format("\nAre you sure you want to configure: [%s:%s] - [%s]", dbName, userName,
+               dbDriverName));
+         line = waitForUserResponse();
+      } else {
+         line = "Y";
+      }
+      if (line.equalsIgnoreCase("Y")) {
+         isConfigured = true;
+         OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Configuring Database...");
+         long startTime = System.currentTimeMillis();
 
-            try {
-               processTask();
-            } catch (Exception ex) {
-               OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex);
-               throw new OseeWrappedException(ex);
-            } finally {
-               System.out.println(String.format("Database Configuration completed in [%s] ms",
-                     Lib.getElapseString(startTime)));
-            }
+         try {
+            processTasks();
+         } finally {
+            System.out.println(String.format("Database Configuration completed in [%s] ms",
+                  Lib.getElapseString(startTime)));
          }
       }
 
@@ -107,29 +107,27 @@ public class DatabaseInitializationOperation {
       }
    }
 
-   private void processTask() throws Exception {
+   private void checkValidExtension(IExtension extension, String pointId) throws OseeCoreException {
+      Conditions.checkNotNull(extension, "Extension", "Unable to locate extension [" + pointId + "]");
+      String extensionPointId = extension.getExtensionPointUniqueIdentifier();
+      Conditions.checkExpressionFailOnTrue(!INIT_TASK_EXTENSION_ID.equals(extensionPointId),
+            "Unknown extension id [%s] from extension [%s]", extensionPointId, pointId);
+   }
+
+   private void processTasks() throws OseeCoreException {
       OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Begin Database Initialization...");
       DbInitConfiguration configuration = getConfiguration();
       for (String pointId : configuration.getTaskExtensionIds()) {
          IExtension extension = Platform.getExtensionRegistry().getExtension(pointId);
-         if (extension == null) {
-            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, "Unable to locate extension [" + pointId + "]");
-         } else {
-            String extsionPointId = extension.getExtensionPointUniqueIdentifier();
-            if (dbInitExtensionPointId.equals(extsionPointId)) {
-               runDbInitTasks(configuration, extension);
-            } else {
-               OseeLog.log(DatabaseInitializationOperation.class, Level.SEVERE,
-                     "Unknown extension id [" + extsionPointId + "] from extension [" + pointId + "]");
-            }
-         }
+         checkValidExtension(extension, pointId);
+         runDbInitTasks(configuration, extension);
       }
       OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Database Initialization Complete.");
    }
 
    /**
     * Call to get DB initialization Tasks from choice made by User
-    * 
+    *
     * @return initialization task list
     */
    private DbInitConfiguration getConfiguration() {
@@ -178,46 +176,43 @@ public class DatabaseInitializationOperation {
       return choices.get(selection);
    }
 
-   /**
-    * @param skynetDbTypesExtensions
-    * @param extensionIds
-    * @throws OseeCoreException
-    * @throws ClassNotFoundException
-    * @throws IllegalAccessException
-    * @throws InstantiationException
-    */
-   private static void runDbInitTasks(DbInitConfiguration configuration, IExtension extension) throws OseeCoreException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+   private static void runDbInitTasks(DbInitConfiguration configuration, IExtension extension) throws OseeCoreException {
       IConfigurationElement[] elements = extension.getConfigurationElements();
       String classname = null;
       String bundleName = null;
       String initRuleClassName = null;
       for (IConfigurationElement el : elements) {
-         if (el.getName().equals("DatabaseInitializationTask")) {
+         if ("DatabaseInitializationTask".equals(el.getName())) {
             classname = el.getAttribute("classname");
             bundleName = el.getContributor().getName();
             initRuleClassName = el.getAttribute("rule");
          }
       }
-      if (classname != null && bundleName != null) {
-         Bundle bundle = Platform.getBundle(bundleName);
-         boolean isExecutionAllowed = true;
-         if (Strings.isValid(initRuleClassName)) {
-            isExecutionAllowed = false;
-            Class<?> taskClass = bundle.loadClass(initRuleClassName);
-            IDbInitializationRule rule = (IDbInitializationRule) taskClass.newInstance();
-            isExecutionAllowed = rule.isAllowed();
-         }
 
-         OseeLog.log(DatabaseInitActivator.class, isExecutionAllowed ? Level.INFO : Level.WARNING, String.format(
-               "%s [%s] execution rule [%s]", isExecutionAllowed ? "Starting" : "Skipping",
-               extension.getUniqueIdentifier(), Strings.isValid(initRuleClassName) ? initRuleClassName : "Default"));
-         if (isExecutionAllowed) {
-            IDbInitializationTask task = (IDbInitializationTask) bundle.loadClass(classname).newInstance();
-            if (task instanceof DbBootstrapTask) {
-               ((DbBootstrapTask) task).setConfiguration(configuration);
+      try {
+         if (classname != null && bundleName != null) {
+            Bundle bundle = Platform.getBundle(bundleName);
+            boolean isExecutionAllowed = true;
+            if (Strings.isValid(initRuleClassName)) {
+               isExecutionAllowed = false;
+               Class<?> taskClass = bundle.loadClass(initRuleClassName);
+               IDbInitializationRule rule = (IDbInitializationRule) taskClass.newInstance();
+               isExecutionAllowed = rule.isAllowed();
             }
-            task.run();
+
+            OseeLog.log(DatabaseInitActivator.class, isExecutionAllowed ? Level.INFO : Level.WARNING, String.format(
+                  "%s [%s] execution rule [%s]", isExecutionAllowed ? "Starting" : "Skipping",
+                  extension.getUniqueIdentifier(), Strings.isValid(initRuleClassName) ? initRuleClassName : "Default"));
+            if (isExecutionAllowed) {
+               IDbInitializationTask task = (IDbInitializationTask) bundle.loadClass(classname).newInstance();
+               if (task instanceof DbBootstrapTask) {
+                  ((DbBootstrapTask) task).setConfiguration(configuration);
+               }
+               task.run();
+            }
          }
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
       }
    }
 
@@ -245,30 +240,19 @@ public class DatabaseInitializationOperation {
          connection.connect();
          canConnection = true;
       } catch (Exception ex) {
-
       }
       return canConnection;
    }
 
-   private boolean checkPreconditions() throws OseeCoreException {
+   private void checkServerPreconditions() throws OseeCoreException {
       String serverUrl = OseeClientProperties.getOseeApplicationServer();
-      if (Strings.isValid(serverUrl) != true) {
-         throw new OseeDataStoreException(
-               String.format(
-                     "Invalid resource server address [%s]. Database initialization requires an application server to be set by default. ",
-                     serverUrl));
-      }
+      Conditions.checkNotNullOrEmpty(serverUrl, "Application Server Address",
+            "Database initialization requires an application server to be set by default.");
 
       boolean serverOk = isApplicationServerAlive(serverUrl);
-      System.out.println(String.format("OSEE Application Server Validation [%s]", serverOk ? "PASSED" : "FAILED"));
-      if (serverOk != true) {
-         System.err.println(String.format(
-               "Error connecting to application server [%s].\n" + "Please ensure server is running and try again.",
-               serverUrl));
-         return false;
-      }
-
-      return true;
+      Conditions.checkExpressionFailOnTrue(!serverOk,
+            "Error connecting to application server [%s].\nPlease ensure server is running and try again.", serverUrl);
+      System.out.println("OSEE Application Server Validation [PASSED]");
    }
 
    public static void executeWithoutPrompting(String choice) throws OseeCoreException {
