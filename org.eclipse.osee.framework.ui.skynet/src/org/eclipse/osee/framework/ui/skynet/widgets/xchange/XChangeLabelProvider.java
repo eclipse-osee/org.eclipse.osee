@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -62,7 +63,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(ChangeXViewerFactory.Hrid)) {
             return change.getArtifact().getHumanReadableId();
          } else if (cCol.equals(ChangeXViewerFactory.lastModDate)) {
-            return String.valueOf(change.getArtifact().getLastModified());
+            return XDate.getDateStr(change.getArtifact().getLastModified(), XDate.MMDDYYHHMM);
          } else if (cCol.equals(ChangeXViewerFactory.paraNumber)) {
             String paragraphNum = "";
 
