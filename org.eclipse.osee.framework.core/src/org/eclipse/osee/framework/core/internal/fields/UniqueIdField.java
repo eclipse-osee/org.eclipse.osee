@@ -24,13 +24,13 @@ public final class UniqueIdField extends AbstractOseeField<Integer> {
 
    public UniqueIdField() {
       super();
-      this.value = IOseeStorable.UNPERSISTTED_VALUE;
+      this.value = IOseeStorable.UNPERSISTED_VALUE;
       isDirty = true;
    }
 
    @Override
    public void set(Integer value) throws OseeCoreException {
-      if (get() == IOseeStorable.UNPERSISTTED_VALUE) {
+      if (get() == IOseeStorable.UNPERSISTED_VALUE) {
          isDirty |= Compare.isDifferent(get(), value);
          this.value = value;
       } else {

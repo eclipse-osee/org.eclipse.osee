@@ -79,7 +79,7 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
    public void decache(TransactionRecord type) throws OseeCoreException {
       Conditions.checkNotNull(type, "type to de-cache");
       ensurePopulated();
-      if (type.getId() != IOseeStorable.UNPERSISTTED_VALUE) {
+      if (type.getId() != IOseeStorable.UNPERSISTED_VALUE) {
          transactionIdCache.remove(type.getId());
       }
    }

@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface IOseeStorable {
 
-   public final static Integer UNPERSISTTED_VALUE = Integer.MIN_VALUE;
+   public final static Integer UNPERSISTED_VALUE = Short.MIN_VALUE;
 
    int getId();
 

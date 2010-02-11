@@ -90,7 +90,7 @@ public abstract class AbstractOseeType extends NamedIdentity implements IOseeSto
    }
 
    public final int getId() {
-      return getFieldValueLogException(IOseeStorable.UNPERSISTTED_VALUE, UNIQUE_ID_FIELD_KEY);
+      return getFieldValueLogException(IOseeStorable.UNPERSISTED_VALUE, UNIQUE_ID_FIELD_KEY);
    }
 
    @Override

@@ -96,7 +96,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       ensurePopulated();
       guidToTypeMap.remove(type.getGuid());
       decacheByName(type);
-      if (type.getId() != IOseeStorable.UNPERSISTTED_VALUE) {
+      if (type.getId() != IOseeStorable.UNPERSISTED_VALUE) {
          idToTypeMap.remove(type.getId());
       }
    }
@@ -159,7 +159,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    private void cacheById(T type) throws OseeCoreException {
       Conditions.checkNotNull(type, "type to cache");
       ensurePopulated();
-      if (type.getId() != IOseeStorable.UNPERSISTTED_VALUE) {
+      if (type.getId() != IOseeStorable.UNPERSISTED_VALUE) {
          idToTypeMap.put(type.getId(), type);
       }
    }
