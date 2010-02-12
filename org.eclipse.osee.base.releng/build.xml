@@ -219,4 +219,32 @@
 
 	<target name="run" depends="init,build,cleanUp">
 	</target>
+	
+	<target name="check.ant-contrib" if="antContribJarUnavailable">
+		<condition property="thirdPartyDownloadLicenseAcceptanceOK">
+			<and>
+				<isset property="thirdPartyDownloadLicenseAcceptance" />
+				<or>
+					<equals arg1="${thirdPartyDownloadLicenseAcceptance}" arg2="Y" />
+					<equals arg1="${thirdPartyDownloadLicenseAcceptance}" arg2="I accept" />
+					<equals arg1="${thirdPartyDownloadLicenseAcceptance}" arg2="&quot;I accept&quot;" />
+				</or>
+			</and>
+		</condition>
+		<antcall target="get.ant-contrib" />
+		<available file="${relengBuilderDir}/lib/ant-contrib.jar" property="antContribJarAvailable" />
+		<fail unless="antContribJarAvailable">Error! 
+
+Ant-Contrib 1.0b2 is required. Download it from http://downloads.sourceforge.net/ant-contrib/ant-contrib-1.0b2-bin.zip,
+then place it in one of the following 4 locations. You can also redefine these paths in your build.properties file:
+
+$${relengCommonBuilderDir}/lib/ant-contrib.jar = ${relengCommonBuilderDir}/lib/ant-contrib.jar 
+$${relengBuilderDir}/lib/ant-contrib.jar       = ${relengBuilderDir}/lib/ant-contrib.jar
+$${thirdPartyJarsDir}/ant-contrib.jar          = ${thirdPartyJarsDir}/ant-contrib.jar
+	or
+/usr/share/java/ant-contrib.jar
+			
+Or, to download this automatically, see $${relengCommonBuilderDir}/build.properties#thirdPartyDownloadLicenseAcceptance.
+</fail>
+	</target>
 </project>
