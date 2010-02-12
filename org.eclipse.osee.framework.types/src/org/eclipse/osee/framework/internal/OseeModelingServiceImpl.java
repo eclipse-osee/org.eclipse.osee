@@ -113,6 +113,7 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       Operations.executeWorkAndCheckStatus(operation, monitor, -1);
 
       if (request.isPersistAllowed()) {
+         // TODO Make this call transaction based
          tempCache.storeAllModified();
          response.setPersisted(true);
          IOseeCachingService systemCachingService = cachingProvider.getOseeCachingService();
