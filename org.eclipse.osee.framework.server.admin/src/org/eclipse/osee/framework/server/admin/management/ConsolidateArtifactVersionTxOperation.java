@@ -68,7 +68,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       addressingToDelete.clear();
       previousNetGammaId = -1;
       previousBranchId = -1;
-      chStmt = getDatabaseService().getStatement();
+      chStmt = getDatabaseService().getStatement(connection);
       gammaJoin = JoinUtility.createExportImportJoinQuery();
    }
 
@@ -139,10 +139,11 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
             TxChange.getChangeType(chStmt.getInt("tx_current"));
 
             if (isNextArtifactGroup(netGammaId, branchId)) {
+               writeAddressingChanges(archived, false);
                if (modType == ModificationType.MODIFIED) {
-                  updateAddresssing(ModificationType.NEW, netGammaId, modType, transactionId, obsoleteGammaId);
+                  addToUpdateAddresssing(ModificationType.NEW, netGammaId, modType, transactionId, obsoleteGammaId);
                } else if (modType == ModificationType.NEW || modType == ModificationType.INTRODUCED || modType == ModificationType.DELETED || modType == ModificationType.MERGED) {
-                  updateAddresssing(modType, netGammaId, modType, transactionId, obsoleteGammaId);
+                  addToUpdateAddresssing(modType, netGammaId, modType, transactionId, obsoleteGammaId);
                } else {
                   throw new OseeStateException("unexpected mod type: " + modType);
                }
@@ -150,7 +151,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
                if (modType == ModificationType.MODIFIED || modType == ModificationType.NEW || modType == ModificationType.INTRODUCED) {
                   addressingToDelete.add(new Object[] {transactionId, obsoleteGammaId});
                } else if (modType == ModificationType.DELETED || modType == ModificationType.MERGED) {
-                  updateAddresssing(modType, netGammaId, modType, transactionId, obsoleteGammaId);
+                  addToUpdateAddresssing(modType, netGammaId, modType, transactionId, obsoleteGammaId);
                } else {
                   throw new OseeStateException("unexpected mod type: " + modType);
                }
@@ -165,10 +166,10 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
          }
       }
 
-      updateAddressing(archived);
+      writeAddressingChanges(archived, true);
    }
 
-   private void updateAddresssing(ModificationType netModType, long netGammaId, ModificationType modType, int transactionId, long obsoleteGammaId) {
+   private void addToUpdateAddresssing(ModificationType netModType, long netGammaId, ModificationType modType, int transactionId, long obsoleteGammaId) {
       if (obsoleteGammaId != netGammaId || modType != netModType) {
          updateAddressingData.add(new Object[] {netGammaId, netModType.getValue(), transactionId, obsoleteGammaId});
       }
@@ -178,17 +179,20 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       return previousNetGammaId != netGammaId || previousBranchId != branchId;
    }
 
-   private void updateAddressing(boolean archived) throws OseeDataStoreException {
-      ci.println("Number of txs rows deleted: " + getDatabaseService().runBatchUpdate(connection,
-            String.format(DELETE_TXS, archived ? "_archived" : ""), addressingToDelete));
+   private void writeAddressingChanges(boolean archived, boolean force) throws OseeDataStoreException {
+      String archivedStr = archived ? "_archived" : "";
+      if (addressingToDelete.size() > 10000 || force) {
+         ci.println("Number of txs" + archivedStr + " rows deleted: " + getDatabaseService().runBatchUpdate(connection,
+               String.format(DELETE_TXS, archivedStr), addressingToDelete));
+         addressingToDelete.clear();
+      }
 
-      addressingToDelete.clear();
+      if (updateAddressingData.size() > 10000 || force) {
+         ci.println("Number of txs" + archivedStr + " rows updated: " + getDatabaseService().runBatchUpdate(connection,
+               String.format(UPDATE_TXS_GAMMAS, archivedStr), updateAddressingData));
 
-      ci.println("Number of txs rows updated: " + getDatabaseService().runBatchUpdate(connection,
-            String.format(UPDATE_TXS_GAMMAS, archived ? "_archived" : ""), updateAddressingData));
-
-      updateAddressingData.clear();
-
+         updateAddressingData.clear();
+      }
    }
 
    private boolean isNextConceptualArtifact(int artifactId) {

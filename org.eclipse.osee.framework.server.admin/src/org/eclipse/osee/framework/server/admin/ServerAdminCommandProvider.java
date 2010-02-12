@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.server.admin.management.AdminCommands;
 import org.eclipse.osee.framework.server.admin.management.ConsolidateArtifactVersionsCommand;
 import org.eclipse.osee.framework.server.admin.management.FinishPartiallyArchivedBranchesCommand;
+import org.eclipse.osee.framework.server.admin.management.GarbageCollectionCommand;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 
@@ -82,6 +83,10 @@ public class ServerAdminCommandProvider implements CommandProvider {
       Operations.executeAsJob(new ConsolidateArtifactVersionsCommand(ci), false);
    }
 
+   public void _gc(CommandInterpreter ci) {
+      Operations.executeAsJob(new GarbageCollectionCommand(ci), false);
+   }
+
    public void _osee_shutdown(CommandInterpreter ci) {
       adminCommands.oseeShutdown(ci);
    }
@@ -99,6 +104,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        finish_partial_archives - move txs addressing to osee_txs_archived for archived branches\n");
       sb.append("        consolidate_artifact_versions - migrate to 0.9.2 database schema\n");
       sb.append("        osee_shutdown [-oseeOnly] - immediately release the listening port then waits for all existing operations to finish. \n");
+      sb.append("        gc - run java garbage collecction\n");
       sb.append(String.format("        reload_cache %s? - reloads server caches\n", Arrays.deepToString(
             OseeCacheEnum.values()).replaceAll(",", " | ")));
       sb.append(String.format("        clear_cache %s? - decaches all objects from the specified caches\n",
