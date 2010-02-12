@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
-import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.OseeEnumType;
 import org.eclipse.osee.framework.core.model.OseeEnumTypeFactory;
@@ -37,8 +36,10 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeEnumType> {
 
-   private static final String SELECT_OSEE_ENUM_TYPES =
-         "select oet.enum_type_name, oet.enum_type_guid, oetd.* from osee_enum_type oet, osee_enum_type_def oetd where oet.enum_type_id = oetd.enum_type_id order by oetd.enum_type_id, oetd.ordinal";
+   private static final String SELECT_OSEE_ENUM_TYPES = "select * from osee_enum_type oet";
+   private static final String SELECT_OSEE_ENUM_ENTRIES =
+         "select * from osee_enum_type_def order by enum_type_id, ordinal";
+
    private static final String INSERT_ENUM_TYPE =
          "insert into osee_enum_type (enum_type_id, enum_type_guid, enum_type_name) values (?,?,?)";
    private static final String UPDATE_ENUM_TYPE = "update osee_enum_type set enum_type_name=? where enum_type_id=?";
@@ -52,32 +53,21 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
       super(databaseProvider, factoryProvider);
    }
 
-   @Override
-   public void load(IOseeCache<OseeEnumType> cache) throws OseeCoreException {
-      HashCollection<OseeEnumType, OseeEnumEntry> types = new HashCollection<OseeEnumType, OseeEnumEntry>();
-      OseeEnumTypeFactory factory = getFactoryService().getOseeEnumTypeFactory();
+   private void loadEnumEntries(OseeEnumTypeFactory factory, HashCollection<Integer, OseeEnumEntry> entryTypes) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
-         chStmt.runPreparedQuery(SELECT_OSEE_ENUM_TYPES);
-         OseeEnumType oseeEnumType = null;
-         int lastEnumTypeId = -1;
+         chStmt.runPreparedQuery(SELECT_OSEE_ENUM_ENTRIES);
          while (chStmt.next()) {
             try {
-               int currentEnumTypeId = chStmt.getInt("enum_type_id");
-               String currentEnumTypeGuid = chStmt.getString("enum_type_guid");
-               if (lastEnumTypeId != currentEnumTypeId) {
-                  String enumTypeName = chStmt.getString("enum_type_name");
-                  oseeEnumType =
-                        factory.createOrUpdate(cache, currentEnumTypeId, StorageState.LOADED, currentEnumTypeGuid,
-                              enumTypeName);
-                  lastEnumTypeId = currentEnumTypeId;
-               }
-               OseeEnumEntry entry =
-                     factory.createEnumEntry(chStmt.getString("enum_entry_guid"), chStmt.getString("name"),
-                           chStmt.getInt("ordinal"));
+               Integer enumTypeId = chStmt.getInt("enum_type_id");
+               String enumEntryGuid = chStmt.getString("enum_entry_guid");
+               String enumEntryName = chStmt.getString("name");
+               int ordinal = chStmt.getInt("ordinal");
+
+               OseeEnumEntry entry = factory.createEnumEntry(enumEntryGuid, enumEntryName, ordinal);
                entry.setStorageState(StorageState.LOADED);
                entry.clearDirty();
-               types.put(oseeEnumType, entry);
+               entryTypes.put(enumTypeId, entry);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -85,12 +75,39 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
       } finally {
          chStmt.close();
       }
-      for (OseeEnumType oseeEnumType : types.keySet()) {
-         List<OseeEnumEntry> oseeEnumEntries = (List<OseeEnumEntry>) types.getValues(oseeEnumType);
-         if (oseeEnumEntries != null) {
-            oseeEnumType.setEntries(oseeEnumEntries);
-            oseeEnumType.clearDirty();
+   }
+
+   @Override
+   public void load(IOseeCache<OseeEnumType> cache) throws OseeCoreException {
+      OseeEnumTypeFactory factory = getFactoryService().getOseeEnumTypeFactory();
+
+      HashCollection<Integer, OseeEnumEntry> entryTypes = new HashCollection<Integer, OseeEnumEntry>();
+
+      loadEnumEntries(factory, entryTypes);
+
+      IOseeStatement chStmt = getDatabaseService().getStatement();
+      try {
+         chStmt.runPreparedQuery(SELECT_OSEE_ENUM_TYPES);
+         while (chStmt.next()) {
+            try {
+               Integer enumTypeId = chStmt.getInt("enum_type_id");
+               String enumTypeGuid = chStmt.getString("enum_type_guid");
+               String enumTypeName = chStmt.getString("enum_type_name");
+
+               OseeEnumType oseeEnumType =
+                     factory.createOrUpdate(cache, enumTypeId, StorageState.LOADED, enumTypeGuid, enumTypeName);
+
+               List<OseeEnumEntry> oseeEnumEntries = (List<OseeEnumEntry>) entryTypes.getValues(enumTypeId);
+               if (oseeEnumEntries != null) {
+                  oseeEnumType.setEntries(oseeEnumEntries);
+                  oseeEnumType.clearDirty();
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
          }
+      } finally {
+         chStmt.close();
       }
    }
 
@@ -118,9 +135,7 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
             }
          }
          if (oseeEnumType.isFieldDirty(OseeEnumType.OSEE_ENUM_TYPE_ENTRIES_FIELD)) {
-            if (StorageState.PURGED != oseeEnumType.getStorageState()) {
-               dirtyEntries.add(oseeEnumType);
-            }
+            dirtyEntries.add(oseeEnumType);
          }
       }
       getDatabaseService().runBatchUpdate(INSERT_ENUM_TYPE, insertData);
@@ -156,25 +171,24 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
    private void storeOseeEnumEntries(Collection<OseeEnumType> oseeEnumTypes) throws OseeCoreException {
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> deleteData = new ArrayList<Object[]>();
+
       for (OseeEnumType type : oseeEnumTypes) {
-         if (type.getId() != IOseeStorable.UNPERSISTED_VALUE) {
+         // Delete all type entries that have been inserted into the DB before
+         if (type.isIdValid()) {
             deleteData.add(toDeleteValues(type));
          }
+
+         //Re-add only entries that are valid
          for (OseeEnumEntry entry : type.values()) {
-            switch (entry.getStorageState()) {
-               case CREATED:
+            if (StorageState.PURGED != entry.getStorageState()) {
+               if (!entry.isIdValid()) {
                   entry.setId(type.getId());
-                  insertData.add(toInsertValues(entry));
-                  break;
-               case LOADED:
-               case MODIFIED:
-                  insertData.add(toInsertValues(entry));
-                  break;
-               default:
-                  break;
+               }
+               insertData.add(toInsertValues(entry));
             }
          }
       }
+
       getDatabaseService().runBatchUpdate(DELETE_ENUM_TYPE_DEF, deleteData);
       getDatabaseService().runBatchUpdate(INSERT_ENUM_TYPE_DEF, insertData);
    }
