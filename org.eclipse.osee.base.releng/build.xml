@@ -22,7 +22,13 @@
 
 		<delete dir="${buildDir}" failonerror="false" />
 		
-		<property name="writableBuildRoot" value="/opt/public/cbi/build" />
+		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+		
+		<!-- invoke a new Eclipse process and launch the build from the common.releng folder -->
+		<property name="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng" />
+		<property name="downloadsDir" value="${writableBuildRoot}/downloads" />
+		<property name="thirdPartyJarsDir" value="${writableBuildRoot}/3rdPartyJars" />
+		<property name="relengBaseBuilderDir" value="${workspaceDir}/org.eclipse.releng.basebuilder" />
 		<property name="thirdPartyJarsDir" value="${writableBuildRoot}/3rdPartyJars" />
 
 		<condition property="antContribJarUnavailable">
@@ -99,14 +105,6 @@
 		</fail>
 
 		<mkdir dir="${writableBuildRoot}" />
-		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
-		
-		<!-- invoke a new Eclipse process and launch the build from the common.releng folder -->
-		<property name="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng" />
-		<property name="downloadsDir" value="${writableBuildRoot}/downloads" />
-		<property name="thirdPartyJarsDir" value="${writableBuildRoot}/3rdPartyJars" />
-		<property name="relengBaseBuilderDir" value="${workspaceDir}/org.eclipse.releng.basebuilder" />
-
 		<mkdir dir="${buildDir}/eclipse" />
 		<mkdir dir="${downloadsDir}" />
 		<mkdir dir="${thirdPartyJarsDir}" />
