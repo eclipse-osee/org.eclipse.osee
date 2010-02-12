@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.model;
 
-import java.io.InputStream;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -24,12 +27,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageImport extends CoveragePackageBase implements ICoverage, ICoverageImportRecordProvider {
+public class CoverageImport extends CoveragePackageBase implements ICoverage {
 
    private Date runDate;
    private String location = "";
    private String blamName = "";
-   private ICoverageImportRecordProvider coverageImportRecordProvider;
+   private List<File> importRecordFiles = new ArrayList<File>();
+   private String importDirectory = null;
 
    public CoverageImport(String name) {
       this(name, new Date());
@@ -99,20 +103,20 @@ public class CoverageImport extends CoveragePackageBase implements ICoverage, IC
       return getRunDate();
    }
 
-   public void setCoverageImportRecordProvider(ICoverageImportRecordProvider coverageImportRecordProvider) {
-      this.coverageImportRecordProvider = coverageImportRecordProvider;
+   public void addImportRecordFile(File file) throws OseeArgumentException {
+      if (!file.exists()) throw new OseeArgumentException(String.format("Import Record file [%s] doesn't exist.", file));
+      importRecordFiles.add(file);
    }
 
-   @Override
-   public InputStream getImportRecordZipInputStream() throws OseeCoreException {
-      if (this.coverageImportRecordProvider != null) {
-         return this.coverageImportRecordProvider.getImportRecordZipInputStream();
-      }
-      return null;
+   public List<File> getImportRecordFiles() {
+      return importRecordFiles;
    }
 
-   public ICoverageImportRecordProvider getCoverageImportRecordProvider() {
-      return coverageImportRecordProvider;
+   public String getImportDirectory() {
+      return importDirectory;
    }
 
+   public void setImportDirectory(String importDirectory) {
+      this.importDirectory = importDirectory;
+   }
 }

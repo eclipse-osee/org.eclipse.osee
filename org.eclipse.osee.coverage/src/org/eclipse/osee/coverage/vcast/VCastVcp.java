@@ -18,9 +18,11 @@ public class VCastVcp {
 
    List<VcpSourceFile> sourceFiles = new ArrayList<VcpSourceFile>();
    List<VcpResultsFile> resultsFiles = new ArrayList<VcpResultsFile>();
+   private final String vcastDirectory;
 
    public VCastVcp(String vcastDirectory) {
-      File vCastVcpFile = new File(vcastDirectory + "/vcast.vcp");
+      this.vcastDirectory = vcastDirectory;
+      File vCastVcpFile = getFile();
       if (!vCastVcpFile.exists()) {
          throw new IllegalArgumentException(String.format("VectorCast vcast.vcp file doesn't exist [%s]",
                vcastDirectory));
@@ -44,6 +46,10 @@ public class VCastVcp {
             vcpResultsFile.addLine(line);
          }
       }
+   }
+
+   public File getFile() {
+      return new File(vcastDirectory + "/vcast.vcp");
    }
 
    public VcpSourceFile getSourceFile(int index) {

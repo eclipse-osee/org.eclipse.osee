@@ -15,6 +15,7 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -69,16 +70,23 @@ public class CoverageTestUtil {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       artifacts.addAll(getCoveragePackageArtifacts());
       artifacts.addAll(getCoverageUnitArtifacts());
+      System.err.println("Add back in");
+      //      artifacts.addAll(getCoverageRecordArtifacts());
       return artifacts;
    }
 
    public static Collection<Artifact> getCoverageUnitArtifacts() throws OseeCoreException {
-      return StaticIdManager.getArtifactsFromArtifactQuery(CoverageArtifactTypes.CoveragePackage, COVERAGE_STATIC_ID,
+      return StaticIdManager.getArtifactsFromArtifactQuery(CoverageArtifactTypes.CoverageUnit, COVERAGE_STATIC_ID,
             CoverageUtil.getBranch());
    }
 
    public static Collection<Artifact> getCoveragePackageArtifacts() throws OseeCoreException {
       return StaticIdManager.getArtifactsFromArtifactQuery(CoverageArtifactTypes.CoveragePackage, COVERAGE_STATIC_ID,
+            CoverageUtil.getBranch());
+   }
+
+   public static Collection<Artifact> getCoverageRecordArtifacts() throws OseeCoreException {
+      return StaticIdManager.getArtifactsFromArtifactQuery(CoreArtifactTypes.GeneralDocument, COVERAGE_STATIC_ID,
             CoverageUtil.getBranch());
    }
 

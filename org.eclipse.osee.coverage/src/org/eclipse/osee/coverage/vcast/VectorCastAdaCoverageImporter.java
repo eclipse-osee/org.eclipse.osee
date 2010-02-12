@@ -48,12 +48,13 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
    @Override
    public CoverageImport run(IProgressMonitor progressMonitor) {
       coverageImport = new CoverageImport("VectorCast Import");
-      coverageImport.setCoverageImportRecordProvider(this.vectorCastCoverageImportProvider);
       coverageImport.setCoverageUnitFileContentsProvider(new SimpleCoverageUnitFileContentsProvider());
+
       if (!Strings.isValid(vectorCastCoverageImportProvider.getVCastDirectory())) {
          coverageImport.getLog().logError("VectorCast directory must be specified");
          return coverageImport;
       }
+
       File file = new File(vectorCastCoverageImportProvider.getVCastDirectory());
       if (!file.exists()) {
          coverageImport.getLog().logError(
@@ -61,6 +62,22 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                      vectorCastCoverageImportProvider.getVCastDirectory()));
          return coverageImport;
       }
+
+      coverageImport.setImportDirectory(vectorCastCoverageImportProvider.getVCastDirectory());
+      // Add config files to import record
+      try {
+         coverageImport.addImportRecordFile(new File(
+               vectorCastCoverageImportProvider.getVCastDirectory() + "\\CCAST_.CFG"));
+      } catch (Exception ex) {
+         coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
+      }
+      try {
+         coverageImport.addImportRecordFile(new File(
+               vectorCastCoverageImportProvider.getVCastDirectory() + "\\build_info.xml"));
+      } catch (Exception ex) {
+         coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
+      }
+
       VCastVcp vCastVcp = null;
       try {
          vCastVcp = new VCastVcp(vectorCastCoverageImportProvider.getVCastDirectory());
@@ -68,7 +85,11 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
          coverageImport.getLog().logError("Exception reading vcast.vcp file: " + ex.getLocalizedMessage());
          return coverageImport;
       }
-
+      try {
+         coverageImport.addImportRecordFile(vCastVcp.getFile());
+      } catch (Exception ex) {
+         coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
+      }
       coverageImport.setLocation(vectorCastCoverageImportProvider.getVCastDirectory());
 
       // Create file and subprogram Coverage Units and execution line Coverage Items
@@ -90,6 +111,11 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
          }
          try {
             CoverageDataFile coverageDataFile = vcpSourceFile.getCoverageDataFile();
+            try {
+               coverageImport.addImportRecordFile(coverageDataFile.getFile());
+            } catch (Exception ex) {
+               coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
+            }
             for (CoverageDataUnit coverageDataUnit : coverageDataFile.getCoverageDataUnits()) {
                CoverageUnit fileCoverageUnit =
                      coverageImport.createCoverageUnit(null, vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME), "");
@@ -102,6 +128,12 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                   coverageImport.addCoverageUnit(fileCoverageUnit);
                }
                VcpSourceLisFile vcpSourceLisFile = vcpSourceFile.getVcpSourceLisFile();
+               try {
+                  coverageImport.addImportRecordFile(vcpSourceLisFile.getFile());
+               } catch (Exception ex) {
+                  coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
+               }
+
                fileCoverageUnit.setFileContents(vcpSourceLisFile.getText());
                int methodNum = 0;
                for (CoverageDataSubProgram coverageDataSubProgram : coverageDataUnit.getSubPrograms()) {
@@ -160,6 +192,12 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
             progressMonitor.subTask(str);
          }
          String testUnitName = vcpResultsFile.getValue(ResultsValue.FILENAME);
+         try {
+            coverageImport.addImportRecordFile(vcpResultsFile.getVcpResultsDatFile().getFile());
+         } catch (Exception ex) {
+            coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
+         }
+
          for (String fileNum : vcpResultsFile.getVcpResultsDatFile().getFileNumbers()) {
             CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);
             if (coverageUnit == null) {

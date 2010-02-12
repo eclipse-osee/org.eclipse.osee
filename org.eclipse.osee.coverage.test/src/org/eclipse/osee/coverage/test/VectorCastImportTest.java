@@ -7,7 +7,6 @@ package org.eclipse.osee.coverage.test;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import junit.framework.Assert;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -20,7 +19,6 @@ import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.ICoverage;
-import org.eclipse.osee.coverage.model.ICoverageImportRecordProvider;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
@@ -77,16 +75,11 @@ public class VectorCastImportTest {
    public void testImport() throws Exception {
       // Store file as CoverageUnit
       File file = OseeData.getFolder("vcast.wrk").getLocation().toFile();
-      final String filename = file.getAbsolutePath();
+      final String coverageInputDir = file.getAbsolutePath();
       Assert.assertTrue(file.exists());
 
       VectorCastAdaCoverageImporter vectorCastImporter =
             new VectorCastAdaCoverageImporter(new IVectorCastCoverageImportProvider() {
-
-               @Override
-               public InputStream getImportRecordZipInputStream() throws OseeCoreException {
-                  return null;
-               }
 
                @Override
                public boolean isResolveExceptionHandling() {
@@ -95,7 +88,7 @@ public class VectorCastImportTest {
 
                @Override
                public String getVCastDirectory() {
-                  return filename;
+                  return coverageInputDir;
                }
 
                @Override
@@ -155,7 +148,7 @@ public class VectorCastImportTest {
          }
 
          @Override
-         public Result saveImportRecord(SkynetTransaction transaction, ICoverageImportRecordProvider coverageImportRecordProvider) throws OseeCoreException {
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
             return Result.TrueResult;
          }
 
@@ -219,16 +212,64 @@ public class VectorCastImportTest {
 
    }
 
+   @Test
+   public void testImportRecord() throws Exception {
+      File file = OseeData.getFolder("vcast.wrk").getLocation().toFile();
+      final String coverageInputDir = file.getAbsolutePath();
+      Assert.assertTrue(file.exists());
+
+      VectorCastAdaCoverageImporter vectorCastImporter =
+            new VectorCastAdaCoverageImporter(new IVectorCastCoverageImportProvider() {
+
+               @Override
+               public boolean isResolveExceptionHandling() {
+                  return false;
+               }
+
+               @Override
+               public String getVCastDirectory() {
+                  return coverageInputDir;
+               }
+
+               @Override
+               public String getFileNamespace(String filename) {
+                  return "test";
+               }
+            });
+      coverageImport = vectorCastImporter.run(null);
+
+      OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage);
+      SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Save Import Record");
+      Result result = store.saveImportRecord(transaction, coverageImport);
+      Assert.assertTrue(result.isTrue());
+      transaction.execute();
+
+      Artifact packageArt = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+      Artifact foundRecordArt = null;
+      for (Artifact artifact : packageArt.getChildren()) {
+         if (artifact.getName().equals(OseeCoveragePackageStore.IMPORT_RECORD_NAME)) {
+            foundRecordArt = artifact;
+            CoverageTestUtil.registerAsTestArtifact(foundRecordArt);
+            foundRecordArt.persist();
+         }
+      }
+      Assert.assertNotNull(foundRecordArt);
+      Assert.assertEquals("General Document", foundRecordArt.getArtifactTypeName());
+
+   }
+
    /**
     * Create dir structure for importer to read
     */
    private static void createVCastFileset() throws OseeCoreException, IOException {
-      File topFolder = OseeData.getFolder("vcast.wrk").getLocation().toFile();
+      OseeData.getFolder("vcast.wrk").getLocation().toFile();
       Lib.writeStringToFile(AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/vcast.vcp")),
             OseeData.getFile("vcast.wrk/vcast.vcp"));
       Lib.writeStringToFile(AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/CCAST_.CFG")),
             OseeData.getFile("vcast.wrk/CCAST_.CFG"));
-      File vcastFolder = OseeData.getFolder("vcast.wrk/vcast").getLocation().toFile();
+      Lib.writeStringToFile(AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/CCAST_.CFG")),
+            OseeData.getFile("vcast.wrk/build_info.xml"));
+      OseeData.getFolder("vcast.wrk/vcast").getLocation().toFile();
       Lib.writeStringToFile(AFile.readFile(Activator.getInstance().getPluginFile(
             "support/vcastData/vcast/test_main.2.LIS")), OseeData.getFile("vcast.wrk/vcast/test_main.2.LIS"));
       Lib.writeStringToFile(AFile.readFile(Activator.getInstance().getPluginFile(
@@ -237,7 +278,7 @@ public class VectorCastImportTest {
             "support/vcastData/vcast/test_scheduler.2.LIS")), OseeData.getFile("vcast.wrk/vcast/test_scheduler.2.LIS"));
       Lib.writeStringToFile(AFile.readFile(Activator.getInstance().getPluginFile(
             "support/vcastData/vcast/test_scheduler.2.xml")), OseeData.getFile("vcast.wrk/vcast/test_scheduler.2.xml"));
-      File vcastResultsFolder = OseeData.getFolder("vcast.wrk/vcast/results").getLocation().toFile();
+      OseeData.getFolder("vcast.wrk/vcast/results").getLocation().toFile();
       Lib.writeStringToFile(AFile.readFile(Activator.getInstance().getPluginFile(
             "support/vcastData/vcast/results/test_unit_1")), OseeData.getFile("vcast.wrk/vcast/results/test_unit_1"));
       Lib.writeStringToFile(AFile.readFile(Activator.getInstance().getPluginFile(

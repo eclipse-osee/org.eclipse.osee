@@ -9,7 +9,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.model.ICoverageImportRecordProvider;
+import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -26,11 +26,11 @@ import org.eclipse.swt.widgets.Display;
  */
 public class SaveImportRecordAction extends Action {
    private final ISaveable saveable;
-   private final ICoverageImportRecordProvider coverageImportRecordProvider;
+   private final CoverageImport coverageImport;
 
-   public SaveImportRecordAction(ICoverageImportRecordProvider coverageImportRecordProvider, ISaveable saveable) {
+   public SaveImportRecordAction(CoverageImport coverageImport, ISaveable saveable) {
       super("Save Coverage Import Record");
-      this.coverageImportRecordProvider = coverageImportRecordProvider;
+      this.coverageImport = coverageImport;
       this.saveable = saveable;
    }
 
@@ -51,7 +51,7 @@ public class SaveImportRecordAction extends Action {
          try {
             SkynetTransaction transaction =
                   new SkynetTransaction(CoverageUtil.getBranch(), "Coverage - Save Import Record");
-            saveable.saveImportRecord(transaction, coverageImportRecordProvider);
+            saveable.saveImportRecord(transaction, coverageImport);
             transaction.execute();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

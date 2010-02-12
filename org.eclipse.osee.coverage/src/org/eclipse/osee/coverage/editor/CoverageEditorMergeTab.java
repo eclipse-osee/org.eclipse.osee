@@ -36,7 +36,6 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.ICoverage;
-import org.eclipse.osee.coverage.model.ICoverageImportRecordProvider;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -163,7 +162,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
                new CheckBoxDialog("Import Items", String.format("Importing [%d] items.", mergeItems.size()),
                      "Save Import Record?");
          if (dialog.open() == 0) {
-            if (dialog.isChecked() && coverageImport.getCoverageImportRecordProvider() == null) {
+            if (dialog.isChecked()) {
                AWorkbench.popup("No Import Record Provider, Import Record can not be saved");
                return;
             }
@@ -171,7 +170,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
             rd.report("Import");
             if (dialog.isChecked()) {
                SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Save Import Record");
-               saveImportRecord(transaction, coverageImport.getCoverageImportRecordProvider());
+               saveImportRecord(transaction, coverageImport);
                transaction.execute();
             }
             handleSearchButtonPressed();
@@ -415,9 +414,9 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    }
 
    @Override
-   public Result saveImportRecord(SkynetTransaction transaction, ICoverageImportRecordProvider coverageImportRecordProvider) throws OseeCoreException {
+   public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
       OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage);
-      Result result = store.saveImportRecord(transaction, coverageImportRecordProvider);
+      Result result = store.saveImportRecord(transaction, coverageImport);
       return result;
    }
 }

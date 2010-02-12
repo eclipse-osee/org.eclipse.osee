@@ -23,18 +23,23 @@ public class VcpSourceLisFile {
    File listFile = null;
    String[] lines = null;
    String text = null;
+   String lisFilename = null;
 
    public VcpSourceLisFile(String vcastDirectory, VcpSourceFile vcpSourceFile) {
-      String lisFilename =
+      lisFilename =
             vcastDirectory + "/vcast/" + vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME).replaceFirst("(.*)\\..*",
                   "$1") + ".LIS";
-      listFile = new File(lisFilename);
+      listFile = getFile();
       if (!listFile.exists()) {
          throw new IllegalArgumentException(String.format("VectorCast <filename>.LIS file doesn't exist [%s]",
                lisFilename));
       }
       text = AFile.readFile(listFile);
       lines = text.split("\n");
+   }
+
+   public File getFile() {
+      return new File(lisFilename);
    }
 
    public String[] getSection(String startLine, String endLine) {

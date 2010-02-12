@@ -5,24 +5,29 @@
  */
 package org.eclipse.osee.coverage.store;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Collection;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
-import org.eclipse.osee.coverage.model.ICoverageImportRecordProvider;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -36,7 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ElapsedTime;
 public class OseeCoveragePackageStore extends OseeCoverageStore implements ISaveable {
    private final CoveragePackage coveragePackage;
    private CoverageOptionManager coverageOptionManager = CoverageOptionManagerDefault.instance();
-   private String IMPORT_RECORD_NAME = "Import Record";
+   public static String IMPORT_RECORD_NAME = "Coverage Import Record";
 
    public OseeCoveragePackageStore(Artifact artifact) throws OseeCoreException {
       super(null, CoverageArtifactTypes.CoveragePackage);
@@ -122,8 +127,8 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       return Result.TrueResult;
    }
 
-   public Result saveImportRecord(SkynetTransaction transaction, ICoverageImportRecordProvider coverageImportRecordProvider) throws OseeCoreException {
-      if (coverageImportRecordProvider == null) return Result.FalseResult;
+   public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+      if (coverageImport == null) return Result.FalseResult;
       Artifact importRecordArt = null;
       for (Artifact artifact : getArtifact(false).getChildren()) {
          if (artifact.getName().equals(IMPORT_RECORD_NAME)) {
@@ -137,12 +142,24 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
                      IMPORT_RECORD_NAME);
          // must set the extension before setting content
          importRecordArt.setSoleAttributeFromString(CoreAttributeTypes.NATIVE_EXTENSION, "zip");
-         getArtifact(false).addChild(artifact);
+         getArtifact(false).addChild(importRecordArt);
+         getArtifact(false).persist(transaction);
       }
-      importRecordArt.setSoleAttributeFromStream(CoreAttributeTypes.NATIVE_CONTENT,
-            coverageImportRecordProvider.getImportRecordZipInputStream());
+      importRecordArt.setSoleAttributeFromStream(CoreAttributeTypes.NATIVE_CONTENT, getInputStream(coverageImport));
       importRecordArt.persist(transaction);
       return Result.TrueResult;
+   }
+
+   public static InputStream getInputStream(CoverageImport coverageImport) {
+      try {
+         File zipFile = OseeData.getFile("coverage.zip");
+         Lib.compressFiles(coverageImport.getImportDirectory(), coverageImport.getImportRecordFiles(),
+               zipFile.getAbsolutePath());
+         return new FileInputStream(zipFile);
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+      }
+      return null;
    }
 
    public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
