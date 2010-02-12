@@ -57,7 +57,9 @@
 	<target name="build" description="create one or more platform target archives">
 		<echo message="Generating ${buildType} build type target(s)..." />
 		<var name="platformBuildDir" value="${buildDirectory}" />
-
+		
+		<echo message="PlatformBuildDir:[${platformBuildDir}]" />
+		
 		<!-- for all the platform suffixes to build... -->
 		<for param="platformSuffix" list="${targetPlatforms}">
 			<sequential>
@@ -79,8 +81,8 @@
 						<var name="eclipseSuffix" value=".tar.gz" />
 					</else>
 				</if>
-				<var name="destArchiveName" value="${targetPrefix}-@{platformSuffix}${incubation}_${buildLabel}${platformArchiveSuffix}" />
-				<var name="destArchiveNamePath" value="${buildDirectory}/../${destArchiveName}" />
+				<var name="destArchiveName" value="${targetPrefix}-@{platformSuffix}${incubation}${platformArchiveSuffix}" />
+				<var name="destArchiveNamePath" value="${buildDirectory}/${destArchiveName}" />
 
 				<!-- get the Eclipse bundle if not already downloaded: only need linux-gtk to build, but need others to package up all-in-ones -->
 				<!-- <echo message="orig eclipse.base.file = ${eclipse.base.file}" /> -->

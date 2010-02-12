@@ -258,6 +258,7 @@
 
 		<copy flatten="true" toDir="${snapshotFolder}" failonerror="true" includeemptydirs="false">
 			<fileset dir="${buildFolder}/athena" includes="*.zip,*.tar,*.tar.gz" />
+			<fileset dir="${buildFolder}" includes="/athena/eclipse/label.properties" />
 		</copy>
 
 		<available file="${snapshotFolder}" property="containsFile" />
