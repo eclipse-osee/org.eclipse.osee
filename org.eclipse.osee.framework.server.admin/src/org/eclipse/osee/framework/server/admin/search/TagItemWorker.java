@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.TagQueueJoinQuery;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
-import org.eclipse.osee.framework.server.admin.Activator;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
+import org.eclipse.osee.framework.server.admin.internal.Activator;
 
 /**
  * @author Roberto E. Escobar

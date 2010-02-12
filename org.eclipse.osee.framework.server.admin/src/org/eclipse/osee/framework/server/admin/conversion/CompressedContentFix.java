@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.framework.resource.management.util.Resources;
-import org.eclipse.osee.framework.server.admin.Activator;
+import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**

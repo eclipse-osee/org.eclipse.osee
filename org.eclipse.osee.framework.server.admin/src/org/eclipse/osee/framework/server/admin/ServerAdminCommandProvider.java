@@ -14,6 +14,7 @@ import java.util.Arrays;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.server.admin.management.AdminCommands;
+import org.eclipse.osee.framework.server.admin.management.ConsolidateArtifactVersionsCommand;
 import org.eclipse.osee.framework.server.admin.management.FinishPartiallyArchivedBranchesCommand;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -77,6 +78,10 @@ public class ServerAdminCommandProvider implements CommandProvider {
       Operations.executeAsJob(new FinishPartiallyArchivedBranchesCommand(ci), false);
    }
 
+   public void _consolidate_artifact_versions(CommandInterpreter ci) {
+      Operations.executeAsJob(new ConsolidateArtifactVersionsCommand(ci), false);
+   }
+
    public void _osee_shutdown(CommandInterpreter ci) {
       adminCommands.oseeShutdown(ci);
    }
@@ -92,6 +97,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        remove_osee_version [version string]- removes the version string from the list of supported osee versions\n");
       sb.append("        change_attribute_uri_to_guid - renames attribute data stored on disk from HRID to Guid and updates database\n");
       sb.append("        finish_partial_archives - move txs addressing to osee_txs_archived for archived branches\n");
+      sb.append("        consolidate_artifact_versions - migrate to 0.9.2 database schema\n");
       sb.append("        osee_shutdown [-oseeOnly] - immediately release the listening port then waits for all existing operations to finish. \n");
       sb.append(String.format("        reload_cache %s? - reloads server caches\n", Arrays.deepToString(
             OseeCacheEnum.values()).replaceAll(",", " | ")));

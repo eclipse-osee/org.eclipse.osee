@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
-import org.eclipse.osee.framework.server.admin.Activator;
+import org.eclipse.osee.framework.server.admin.internal.Activator;
 
 /**
  * @author Roberto E. Escobar

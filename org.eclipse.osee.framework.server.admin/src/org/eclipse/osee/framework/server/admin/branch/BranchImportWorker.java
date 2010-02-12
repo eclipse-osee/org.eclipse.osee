@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.util.ResourceLocator;
-import org.eclipse.osee.framework.server.admin.Activator;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
+import org.eclipse.osee.framework.server.admin.internal.Activator;
 
 /**
  * @author Roberto E. Escobar

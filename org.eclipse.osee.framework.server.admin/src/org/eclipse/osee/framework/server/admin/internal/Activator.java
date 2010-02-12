@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.server.admin;
+package org.eclipse.osee.framework.server.admin.internal;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +27,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator implements BundleActivator, IOseeDatabaseServiceProvider {
-
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.server.admin";
    private static Activator instance;
 
    private final Map<OseeServiceTrackerId, ServiceTracker> mappedTrackers;

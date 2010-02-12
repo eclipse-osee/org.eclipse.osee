@@ -14,8 +14,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagItemStatistics;
 import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
-import org.eclipse.osee.framework.server.admin.Activator;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
+import org.eclipse.osee.framework.server.admin.internal.Activator;
 
 /**
  * @author Roberto E. Escobar

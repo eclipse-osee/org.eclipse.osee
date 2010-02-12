@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.server.admin.Activator;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
+import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**

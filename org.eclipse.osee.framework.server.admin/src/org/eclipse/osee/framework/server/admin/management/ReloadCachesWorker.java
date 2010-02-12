@@ -18,8 +18,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.server.admin.Activator;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
+import org.eclipse.osee.framework.server.admin.internal.Activator;
 
 /**
  * @author Roberto E. Escobar

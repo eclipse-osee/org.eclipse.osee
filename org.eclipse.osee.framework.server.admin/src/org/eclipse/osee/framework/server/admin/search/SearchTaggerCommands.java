@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.server.admin.search;
 
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.server.admin.Activator;
+import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**

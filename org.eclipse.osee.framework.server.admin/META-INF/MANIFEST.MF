@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Tool Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.server.admin;singleton:=true
 Bundle-Version: 0.9.1.qualifier
-Bundle-Activator: org.eclipse.osee.framework.server.admin.Activator
+Bundle-Activator: org.eclipse.osee.framework.server.admin.internal.Activator
 Bundle-Vendor: Boeing
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.runtime,
