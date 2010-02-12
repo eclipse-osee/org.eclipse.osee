@@ -191,7 +191,6 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
             BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
             branch.setStorageState(StorageState.PURGED);
             branchCache.storeItems(branch);
-            branchCache.decache(branch);
          } catch (OseeCoreException ex1) {
             OseeLog.log(Activator.class, Level.SEVERE, ex1);
          }
