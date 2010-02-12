@@ -221,9 +221,6 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
       storeAttributeTypeValidity(types);
 
       for (ArtifactType type : types) {
-         if (StorageState.PURGED != type.getStorageState()) {
-            type.setStorageState(StorageState.LOADED);
-         }
          type.clearDirty();
       }
    }

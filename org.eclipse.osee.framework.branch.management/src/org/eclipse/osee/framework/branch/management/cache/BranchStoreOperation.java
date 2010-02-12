@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.IBranchUpdateEvent;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
-import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
@@ -107,9 +106,6 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       getDatabaseService().runBatchUpdate(connection, DELETE_BRANCH, deleteData);
 
       for (Branch branch : branches) {
-         if (StorageState.PURGED != branch.getStorageState()) {
-            branch.setStorageState(StorageState.LOADED);
-         }
          branch.clearDirty();
       }
       try {

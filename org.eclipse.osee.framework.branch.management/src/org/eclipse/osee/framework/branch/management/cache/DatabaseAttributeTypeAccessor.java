@@ -122,9 +122,6 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
       getDatabaseService().runBatchUpdate(INSERT_ATTRIBUTE_TYPE, insertData);
       getDatabaseService().runBatchUpdate(UPDATE_ATTRIBUTE_TYPE, updateData);
       for (AttributeType type : types) {
-         if (StorageState.PURGED != type.getStorageState()) {
-            type.setStorageState(StorageState.LOADED);
-         }
          type.clearDirty();
       }
    }

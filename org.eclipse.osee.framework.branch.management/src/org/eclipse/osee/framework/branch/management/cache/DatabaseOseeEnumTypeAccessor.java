@@ -144,21 +144,8 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
 
       storeOseeEnumEntries(dirtyEntries);
       for (OseeEnumType oseeEnumType : oseeEnumTypes) {
-         if (StorageState.PURGED != oseeEnumType.getStorageState()) {
-            oseeEnumType.setStorageState(StorageState.LOADED);
-         }
          oseeEnumType.clearDirty();
-      }
-
-      insertData.clear();
-      updateData.clear();
-      deleteData.clear();
-
-      for (OseeEnumType oseeEnumType : oseeEnumTypes) {
          for (OseeEnumEntry entry : oseeEnumType.values()) {
-            if (StorageState.PURGED != entry.getStorageState()) {
-               entry.setStorageState(StorageState.LOADED);
-            }
             entry.clearDirty();
          }
       }

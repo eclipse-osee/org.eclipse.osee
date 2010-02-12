@@ -116,9 +116,6 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
          connection.close();
       }
       for (RelationType type : relationTypes) {
-         if (StorageState.PURGED != type.getStorageState()) {
-            type.setStorageState(StorageState.LOADED);
-         }
          type.clearDirty();
       }
    }

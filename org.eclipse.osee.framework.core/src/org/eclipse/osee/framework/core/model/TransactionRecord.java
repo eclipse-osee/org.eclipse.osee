@@ -130,7 +130,6 @@ public final class TransactionRecord implements IAdaptable {
    }
 
    public void clearDirty() {
-
    }
 
    public void setBranchCache(BranchCache branchCache) {

@@ -79,6 +79,12 @@ public abstract class AbstractOseeType extends NamedIdentity implements IOseeSto
    protected <T> void setField(String key, T value) throws OseeCoreException {
       IOseeField<T> field = getField(key);
       field.set(value);
+      if (field.isDirty()) {
+         StorageState oldState = getStorageState();
+         if (StorageState.CREATED != oldState && StorageState.PURGED != oldState) {
+            setStorageState(StorageState.MODIFIED);
+         }
+      }
    }
 
    protected <T> void setFieldLogException(String key, T value) {
@@ -123,6 +129,9 @@ public abstract class AbstractOseeType extends NamedIdentity implements IOseeSto
    }
 
    public final void clearDirty() {
+      if (StorageState.PURGED != getStorageState()) {
+         setStorageState(StorageState.LOADED);
+      }
       for (IOseeField<?> field : fieldMap.values()) {
          field.clearDirty();
       }
