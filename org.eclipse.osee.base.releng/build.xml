@@ -21,8 +21,67 @@
 		<property name="buildDir" value="${writableBuildRoot}/athena" />
 
 		<delete dir="${buildDir}" failonerror="false" />
-	</target>
+		
+		<property name="writableBuildRoot" value="/opt/public/cbi/build" />
+		<property name="thirdPartyJarsDir" value="${writableBuildRoot}/3rdPartyJars" />
 
+		<condition property="antContribJarUnavailable">
+			<not>
+				<or>
+					<available file="${relengCommonBuilderDir}/lib/ant-contrib.jar" type="file" />
+					<available file="${relengBuilderDir}/lib/ant-contrib.jar" type="file" />
+					<available file="${thirdPartyJarsDir}/ant-contrib.jar" type="file" />
+					<available file="/usr/share/java/ant-contrib.jar" type="file" />
+				</or>
+			</not>
+		</condition>
+		<antcall target="check.ant-contrib" />
+
+		<taskdef resource="net/sf/antcontrib/antlib.xml">
+			<classpath>
+				<pathelement path="${classpath}" />
+				<pathelement location="${relengCommonBuilderDir}/lib/ant-contrib.jar" />
+				<pathelement location="${relengBuilderDir}/lib/ant-contrib.jar" />
+				<pathelement location="${thirdPartyJarsDir}/ant-contrib.jar" />
+				<pathelement location="/usr/share/java/ant-contrib.jar" />
+			</classpath>
+		</taskdef>
+
+		<if>
+			<available file="${relengCommonBuilderDir}/tools/scripts/buildAllHelper.xml" type="file" />
+			<then>
+				<property name="helper" value="${relengCommonBuilderDir}/tools/scripts/buildAllHelper.xml" />
+			</then>
+			<else>
+				<property name="helper" value="tools/scripts/buildAllHelper.xml" />
+			</else>
+		</if>
+
+		<antfetch antfile="${helper}" return="buildcfg" target="genBuildCfg" />
+		<echo>Load properties from ${buildcfg}</echo>
+		<property file="${buildcfg}" />
+
+		<available file="${buildDirectory}/label.properties" property="label.properties.exists" />
+		<ant target="create.label.properties" antfile="${helper}" />
+		<property file="${buildDirectory}/label.properties" />
+
+		<echo message="Base OS: ${baseos}; Base Window System: ${basews}" />
+		<condition property="isLinuxGTK">
+			<equals arg1="${baseos}.${basews}" arg2="linux.gtk" />
+		</condition>
+		<condition property="isMacOSXcarbon">
+			<equals arg1="${baseos}.${basews}" arg2="macosx.carbon" />
+		</condition>
+		<condition property="isMacOSXcocoa">
+			<equals arg1="${baseos}.${basews}" arg2="macosx.cocoa" />
+		</condition>
+		<condition property="isWindows">
+			<equals arg1="${baseos}.${basews}" arg2="win32.win32" />
+		</condition>
+	</target>
+	
+	
+	
 	<target name="build">
 		<echo message="Workspace: ${WORKSPACE}" />
 		<echo message="Writable Build Root: ${writableBuildRoot}" />
@@ -170,7 +229,7 @@
 
 	</target>
 
-	<target name="createBase">
+	<target name="createBase" depends="init">
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
 		<ant antfile="${relengBuilderDir}/scripts/createEclipseTarget.xml" target="run" inheritall="true" inheritrefs="true" />
 		<!--<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />-->
