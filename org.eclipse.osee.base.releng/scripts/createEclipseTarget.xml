@@ -82,7 +82,7 @@
 					</else>
 				</if>
 				<var name="destArchiveName" value="${targetPrefix}-@{platformSuffix}${incubation}${platformArchiveSuffix}" />
-				<var name="destArchiveNamePath" value="${buildDirectory}/${destArchiveName}" />
+				<var name="destArchiveNamePath" value="${buildDirectory}/../${destArchiveName}" />
 
 				<!-- get the Eclipse bundle if not already downloaded: only need linux-gtk to build, but need others to package up all-in-ones -->
 				<!-- <echo message="orig eclipse.base.file = ${eclipse.base.file}" /> -->
@@ -128,7 +128,7 @@
 				<var name="thisEclipseURL" unset="true" />
 			</sequential>
 		</for>
-		<delete dir="${platformBuildDir}" includeemptydirs="true" quiet="true" failonerror="false" />
+		<delete dir="${platformBuildDir}" includeemptydirs="true" quiet="true" failonerror="false" excludes="**/label.properties"/>
 	</target>
 
 	<target name="createArchive">
