@@ -126,7 +126,7 @@
 				<var name="thisEclipseURL" unset="true" />
 			</sequential>
 		</for>
-		<delete dir="${platformBuildDir}/eclipse" includeemptydirs="true" quiet="true" failonerror="false" />
+		<delete dir="${platformBuildDir}" includeemptydirs="true" quiet="true" failonerror="false" />
 	</target>
 
 	<target name="createArchive">
