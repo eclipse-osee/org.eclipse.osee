@@ -40,15 +40,139 @@
 		</fail>
 
 		<mkdir dir="${writableBuildRoot}" />
-
+		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+		
 		<!-- invoke a new Eclipse process and launch the build from the common.releng folder -->
 		<property name="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng" />
-		<property name="relengBaseBuilderDir" value="${workspaceDir}/org.eclipse.releng.basebuilder" />
 		<property name="downloadsDir" value="${writableBuildRoot}/downloads" />
 		<property name="thirdPartyJarsDir" value="${writableBuildRoot}/3rdPartyJars" />
-			
+		<property name="relengBaseBuilderDir" value="${workspaceDir}/org.eclipse.releng.basebuilder" />
+
+		<mkdir dir="${buildDir}/eclipse" />
+		<mkdir dir="${downloadsDir}" />
+		<mkdir dir="${thirdPartyJarsDir}" />
+
+		<condition property="antContribJarUnavailable">
+			<not>
+				<or>
+					<available file="${relengCommonBuilderDir}/lib/ant-contrib.jar" type="file" />
+					<available file="${relengBuilderDir}/lib/ant-contrib.jar" type="file" />
+					<available file="${thirdPartyJarsDir}/ant-contrib.jar" type="file" />
+					<available file="/usr/share/java/ant-contrib.jar" type="file" />
+				</or>
+			</not>
+		</condition>
+		<antcall target="check.ant-contrib" />
+		<!-- This will fail if ant-contrib.jar cannot be found. You can install Ant-Contrib via RPM, or download it here:
+					http://downloads.sourceforge.net/ant-contrib/ant-contrib-1.0b2-bin.zip
+			-->
+		<taskdef resource="net/sf/antcontrib/antlib.xml">
+			<classpath>
+				<pathelement path="${classpath}" />
+				<pathelement location="${relengCommonBuilderDir}/lib/ant-contrib.jar" />
+				<pathelement location="${relengBuilderDir}/lib/ant-contrib.jar" />
+				<pathelement location="${thirdPartyJarsDir}/ant-contrib.jar" />
+				<pathelement location="/usr/share/java/ant-contrib.jar" />
+			</classpath>
+		</taskdef>
+
+		<!-- check if workspace projects exist -->
+		<for param="workspaceProject" list="${relengBaseBuilderDir}, ${relengCommonBuilderDir}, ${relengBuilderDir}" delimiter=", ">
+			<sequential>
+				<if>
+					<not>
+						<available file="@{workspaceProject}" type="dir" />
+					</not>
+					<then>
+						<fail>Error!
+	Workspace project @{workspaceProject} does not exist.
+	Please check it out from HEAD or its latest stable tag.</fail>
+					</then>
+				</if>
+			</sequential>
+		</for>
+
+		<if>
+			<available file="${relengCommonBuilderDir}/tools/scripts/buildAllHelper.xml" type="file" />
+			<then>
+				<property name="helper" value="${relengCommonBuilderDir}/tools/scripts/buildAllHelper.xml" />
+			</then>
+			<else>
+				<property name="helper" value="tools/scripts/buildAllHelper.xml" />
+			</else>
+		</if>
+
+		<ant target="get.pde.build.svn" antfile="${helper}" />
+		<ant target="get.ant4eclipse" antfile="${helper}" />
+
+		<if>
+			<not>
+				<isset property="JAVA_HOME" />
+			</not>
+			<then>
+				<property name="JAVA_HOME" value="${java.home}" />
+			</then>
+		</if>
+
+		<antfetch return="commandlineArgsList" target="initCommandlineArgsList" antfile="${helper}" />
+
+		<!-- generate -Dflags from known Ant variables: for complete list, see buildAllHelper.xml#initCommandlineArgsList -->
+		<var name="args" value="" />
+		<for param="arg" list="${commandlineArgsList}" delimiter=", 
+				">
+			<sequential>
+				<if>
+					<and>
+						<not>
+							<equals arg1="${@{arg}}" arg2="" />
+						</not>
+						<isset property="@{arg}" />
+					</and>
+					<then>
+						<var name="args" value="${args} -D@{arg}=${@{arg}}" />
+					</then>
+				</if>
+			</sequential>
+		</for>
+
+		<antfetch target="get.baseoswsarch" return="baseoswsarch" antfile="${helper}" />
+
+		<!-- launch basebuilder to do the build -->
+		<for param="launcherjar">
+			<path>
+				<fileset dir="${relengBaseBuilderDir}/plugins" includes="org.eclipse.equinox.launcher_*.jar" />
+			</path>
+			<sequential>
+
+				<echo>Run ${JAVA_HOME}/bin/java
+	  -enableassertions
+	  -jar @{launcherjar}
+	  -application org.eclipse.ant.core.antRunner
+	  -f ${relengBuilderDir}/build.xml createBase
+	  ${args} 
+	  ${baseoswsarch} </echo>
+
+				<java taskname="build" jvm="${JAVA_HOME}/bin/java" failonerror="true" maxmemory="400m" timeout="10800000" jar="@{launcherjar}" fork="true">
+					<syspropertyset>
+						<propertyref builtin="system" />
+					</syspropertyset>
+					<classpath>
+						<fileset dir="${relengBaseBuilderDir}/plugins" includes="org.eclipse.equinox.launcher_*.jar" />
+						<pathelement location="${relengBaseBuilderDir}/plugins" />
+					</classpath>
+					<jvmarg line="-enableassertions" />
+					<arg line=" -application org.eclipse.ant.core.antRunner" />
+					<arg line=" -f ${relengBuilderDir}/build.xml createBase" />
+					<arg line=" ${args} ${baseoswsarch}" />
+				</java>
+			</sequential>
+		</for>
+
+	</target>
+
+	<target name="createBase">
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
-		<ant antfile="${relengBuilderDir}/scripts/createEclipseTarget.xml" target="run" inheritall="true" inheritrefs="true"/>
+		<ant antfile="${relengBuilderDir}/scripts/createEclipseTarget.xml" target="run" inheritall="true" inheritrefs="true" />
 		<!--<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />-->
 
 	</target>
@@ -93,6 +217,6 @@
 		</move>
 	</target>
 
-	<target name="run" depends="init,build,createSnapshot,cleanUp">
+	<target name="run" depends="init,build,cleanUp">
 	</target>
 </project>
