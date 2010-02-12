@@ -114,7 +114,10 @@
 				</if>
 
 				<var name="install" value="${platformBuildDir}" />
-				<antcall target="installDependencies" inheritAll="true" />
+				<ant antfile="${helper}" target="run.director" inheritall="true"/>
+				
+				
+				<!--<antcall target="installDependencies" inheritAll="true" />-->
 				<var name="suffix" value="@{platformSuffix}" />
 				<antcall target="createArchive" inheritAll="true" />
 
