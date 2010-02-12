@@ -20,22 +20,6 @@
 	-->
 
 	<target name="init">
-		<property environment="env" />
-		<property name="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng" />
-		<property name="relengBaseBuilderDir" value="${workspaceDir}/org.eclipse.releng.basebuilder" />
-		<property name="downloadsDir" value="${writableBuildRoot}/downloads" />
-		<property name="thirdPartyJarsDir" value="${writableBuildRoot}/3rdPartyJars" />
-		<property name="buildDirectory" value="${writableBuildRoot}" />
-		<property name="buildLabel" value="builds/targetPlatform" />
-		
-		<property name="helper" value="${relengCommonBuilderDir}/tools/scripts/buildAllHelper.xml" />
-
-		<taskdef resource="net/sf/antcontrib/antlib.xml">
-			<classpath>
-				<pathelement path="${classpath}" />
-				<pathelement location="${3rdPartyJars}/ant-contrib.jar" />
-			</classpath>
-		</taskdef>
 		<if>
 			<not>
 				<isset property="targetPrefix" />
@@ -247,7 +231,7 @@
 				</if>
 			</sequential>
 		</for>
-		<if>
+	<!--	<if>
 			<available file="${buildDirectory}/${buildLabel}/${updateZip}" type="file" />
 			<then>
 				<echo>Install ${mainFeatureToBuildID} feature to ${install}</echo>
@@ -267,7 +251,7 @@
 					</unzip>
 				</then>
 			</elseif>
-		</if>
+		</if> -->
 	</target>
 
 	<target name="run" depends="init,build">
