@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -409,7 +408,7 @@ public class RelationManager {
    private static Artifact getRelatedArtifact(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
       List<Artifact> artifacts = getRelatedArtifacts(artifact, relationType, relationSide);
 
-      if (artifacts.size() == 0) {
+      if (artifacts.isEmpty()) {
          throw new ArtifactDoesNotExist(String.format("There is no artifact related to %s by a relation of type %s",
                artifact, relationType));
       }
@@ -457,7 +456,7 @@ public class RelationManager {
 
    public static void prepareRelationsForReload(Artifact artifact) {
       // weakness:  references held to links by other applications will continue to exist.
-      //We do not want to drop relation links for historical artifacts because the relation manager will clobber the current artifacts relations. 
+      //We do not want to drop relation links for historical artifacts because the relation manager will clobber the current artifacts relations.
       if (!artifact.isHistorical()) {
          relationsByType.removeValues(threadLocalKey.get().getKey(artifact));
       }
@@ -598,7 +597,7 @@ public class RelationManager {
    /**
     * Check whether artifactCount number of additional artifacts of type artifactType can be related to the artifact on
     * side relationSide for relations of type relationType
-    * 
+    *
     * @param relationType
     * @param relationSide
     * @param artifact
@@ -672,7 +671,7 @@ public class RelationManager {
    /**
     * This method should only be called for unordered Relation Types. It does not handle reordering relation types that
     * maintain order.
-    * 
+    *
     * @param artifact
     * @param relationType
     * @param relationSide
@@ -695,7 +694,7 @@ public class RelationManager {
 
    /**
     * Remove all relations stored in the list awaiting to be deleted.
-    * 
+    *
     * @throws OseeDataStoreException
     */
    public static void purgeRelationsFor(Artifact artifact) throws OseeDataStoreException {
