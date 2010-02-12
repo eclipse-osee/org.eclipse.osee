@@ -30,11 +30,7 @@ public class BranchCache extends AbstractOseeCache<Branch> {
    }
 
    public Branch getCommonBranch() throws OseeCoreException {
-      Branch common = get(CoreBranches.COMMON);
-      if (common == null) {
-         throw new OseeCoreException("Common branch not found");
-      }
-      return common;
+      return get(CoreBranches.COMMON);
    }
 
    public MergeBranch findMergeBranch(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
