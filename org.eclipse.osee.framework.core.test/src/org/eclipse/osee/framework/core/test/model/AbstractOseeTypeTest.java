@@ -94,18 +94,26 @@ public class AbstractOseeTypeTest<T extends AbstractOseeType> {
 
    @Test
    public void testSetGetModificationType() {
-      Assert.assertEquals(StorageState.CREATED, type.getStorageState());
+      Assert.assertEquals(StorageState.LOADED, type.getStorageState());
       Assert.assertFalse(type.isDirty());
 
       type.setStorageState(StorageState.MODIFIED);
       Assert.assertFalse(type.isDirty());
+      type.clearDirty();
+      Assert.assertFalse(type.isDirty());
+      Assert.assertEquals(StorageState.LOADED, type.getStorageState());
 
       type.setStorageState(StorageState.PURGED);
       Assert.assertFalse(type.isDirty());
+      type.clearDirty();
+      Assert.assertFalse(type.isDirty());
+      Assert.assertEquals(StorageState.PURGED, type.getStorageState());
 
       type.setStorageState(StorageState.CREATED);
       Assert.assertFalse(type.isDirty());
-      Assert.assertEquals(StorageState.CREATED, type.getStorageState());
+      type.clearDirty();
+      Assert.assertFalse(type.isDirty());
+      Assert.assertEquals(StorageState.LOADED, type.getStorageState());
    }
 
    @Test
