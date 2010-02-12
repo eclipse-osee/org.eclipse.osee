@@ -56,7 +56,7 @@
 
 	<target name="build" description="create one or more platform target archives">
 		<echo message="Generating ${buildType} build type target(s)..." />
-		<var name="platformBuildDir" value="${buildLabel}/platformBuildTmp" />
+		<var name="platformBuildDir" value="${buildDirectory}/${buildLabel}/platformBuildTmp" />
 
 		<!-- for all the platform suffixes to build... -->
 		<for param="platformSuffix" list="${targetPlatforms}">
@@ -114,10 +114,11 @@
 				</if>
 
 				<var name="install" value="${platformBuildDir}" />
-				<ant antfile="${helper}" target="run.director" inheritall="true"/>
+				<var name="eclipse-home" value="${install}/eclipse" />
+				<var name="dropins-home" value="${install}/eclipse/dropins" />
 				
-				
-				<!--<antcall target="installDependencies" inheritAll="true" />-->
+				<antcall target="installDependencies" inheritAll="true" />
+
 				<var name="suffix" value="@{platformSuffix}" />
 				<antcall target="createArchive" inheritAll="true" />
 
@@ -146,28 +147,7 @@
 	</target>
 
 
-	<!-- Target platform provisioning:
-        install all the specified features from the listed repos, one by one 
-		  eg., for repositoryURLs=http://download.eclipse.org/releases/ganymede/,...
-		  install featureIDsToInstall=org.eclipse.emf,org.eclipse.gef (two operations)
-				  - or -
-				 install all the specified features from the listed repos at the same time
-				 eg., for repositoryURLs=http://download.eclipse.org/releases/galileo/,...
-				 install featureIDsToInstall=org.eclipse.emf+org.eclipse.gef (one operation)
-				 
-				 install all the specified plugins from the listed repos, one by one 
-				 eg., for repositoryURLs=http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/updateSite,...
-				 install pluginIDsToInstall=org.apache.xml.resolver,javax.xml,org.apache.xml.serializer,org.apache.xerces,org.apache.xalan (five operations)
-				 install       IUsToInstall=org.apache.xml.resolver,javax.xml,org.apache.xml.serializer,org.apache.xerces,org.apache.xalan (five operations)
-				  - or -
-				 install all the specified plugins from the listed repos at the same time
-				 eg., for repositoryURLs=http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/updateSite,...
-				 install pluginIDsToInstall=org.apache.xml.resolver+javax.xml+org.apache.xml.serializer+org.apache.xerces+org.apache.xalan (one operation)
-				 install       IUsToInstall=org.apache.xml.resolver+javax.xml+org.apache.xml.serializer+org.apache.xerces+org.apache.xalan (one operation)
-	-->
 	<target name="installDependencies">
-		<property name="eclipse-home" value="${install}/eclipse" />
-		<property name="dropins-home" value="${install}/eclipse/dropins" />
 		<for param="whatToInstall" list="featureIDsToInstall,pluginIDsToInstall,IUsToInstall" delimiter="," keepgoing="true">
 			<sequential>
 				<if>
@@ -234,28 +214,41 @@
 				</if>
 			</sequential>
 		</for>
-	<!--	<if>
-			<available file="${buildDirectory}/${buildLabel}/${updateZip}" type="file" />
-			<then>
-				<echo>Install ${mainFeatureToBuildID} feature to ${install}</echo>
-				<ant target="run.director" antfile="${helper}">
-					<property name="p2.director.installType" value="IU" />
-					<property name="p2.director.installIU" value="${mainFeatureToBuildID}.group" />
-					<property name="p2.director.input.repo" value="jar:file:${buildDirectory}/${buildLabel}/${updateZip}!/" />
-					<property name="p2.director.destination" value="${eclipse-home}" />
-				</ant>
-			</then>
-			<elseif>
-				<available file="${buildDirectory}/${buildLabel}/${SDKZip}" type="file" />
-				<then>
-					<echo>Unpack SDKZip ${SDKZip} to ${dropins-home}</echo>
-					<unzip dest="${dropins-home}/${subprojectName}" overwrite="true">
-						<fileset dir="${baseLocation}/${buildID}" includes="**/${SDKZip}" />
-					</unzip>
-				</then>
-			</elseif>
-		</if> -->
+
+		<property name="getDependenciesHelper.xml" value="${relengCommonScriptsDir}/getDependenciesHelper.xml" />
+		<for param="dependencyfile" list="${required.dependency.files}" delimiter=", ">
+			<sequential>
+				<if>
+					<not>
+						<contains string="@{dependencyfile}" substring="eclipse-SDK-" casesensitive="false" />
+					</not>
+					<then>
+						<if>
+							<or>
+								<contains string="@{dependencyfile}" substring="master" casesensitive="false" />
+								<contains string="@{dependencyfile}" substring="update" casesensitive="false" />
+							</or>
+							<then>
+								<!-- unpack update site zip -->
+								<ant antfile="${getDependenciesHelper.xml}" target="unpackUpdateSite">
+									<property name="file" value="@{dependencyfile}" />
+									<property name="unpackDest" value="${dropins-home}/@{dependencyfile}_/eclipse/" />
+								</ant>
+							</then>
+							<else>
+								<!-- unpack normal zip -->
+								<ant antfile="${getDependenciesHelper.xml}" target="unpackBundle">
+									<property name="file" value="@{dependencyfile}" />
+									<property name="unpackDest" value="${dropins-home}/@{dependencyfile}_/" />
+								</ant>
+							</else>
+						</if>
+					</then>
+				</if>
+			</sequential>
+		</for>
 	</target>
+
 
 	<target name="run" depends="init,build">
 	</target>
