@@ -52,6 +52,6 @@ public class OseeInfo {
    }
 
    public static String getDatabaseGuid() throws OseeDataStoreException {
-      return getCachedValue(DB_ID_KEY);
+      return getValue(DB_ID_KEY);
    }
 }
