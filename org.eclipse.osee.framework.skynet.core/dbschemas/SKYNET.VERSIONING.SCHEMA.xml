@@ -305,17 +305,6 @@
 		</Index>
 	</Table>
 
-	<Table name="OSEE_BRANCH_ANCESTRY" schema="OSEE" tablespace="osee_data">
-		<Column id="ANCESTOR_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="DESCENDENT_ID" defaultValue="not null" type="INTEGER" />
-		<Constraint schema="OSEE" id="BRANCH_ID_FK2" type="FOREIGN KEY" appliesTo="ANCESTOR_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_BRANCH" column="BRANCH_ID"  />
-		</Constraint>
-		<Constraint schema="OSEE" id="BRANCH_ID_FK3" type="FOREIGN KEY" appliesTo="DESCENDENT_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_BRANCH" column="BRANCH_ID"  />
-		</Constraint>
-	</Table>
-	
 	<Table name="OSEE_TXS" schema="OSEE" tablespace="osee_data">
 		<Column id="BRANCH_ID" type="INTEGER" defaultValue="not null" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
@@ -337,7 +326,7 @@
 		</Index>
 	</Table>
 	
-	<Table name="OSEE_TXS_ARCHIVED" schema="OSEE" tablespace="osee_data">
+	<Table name="OSEE_TXS_ARCHIVED" schema="OSEE" tablespace="osee_secondary">
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="TX_CURRENT" defaultValue="not null" type="smallint" />
