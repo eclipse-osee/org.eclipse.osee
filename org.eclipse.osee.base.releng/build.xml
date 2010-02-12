@@ -230,8 +230,6 @@
 	<target name="createBase" depends="init">
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
 		<ant antfile="${relengBuilderDir}/scripts/createEclipseTarget.xml" target="run" inheritall="true" inheritrefs="true" />
-		<!--<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />-->
-
 	</target>
 
 	<target name="cleanUp">
