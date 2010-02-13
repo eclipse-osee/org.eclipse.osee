@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeConnectionProvider;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.internal.InternalActivator;
+import org.eclipse.osee.framework.database.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 public class OseeConnectionPoolImpl {
@@ -74,7 +74,7 @@ public class OseeConnectionPoolImpl {
       try {
          OseeConnectionImpl connection = getOseeConnection();
          connections.add(connection);
-         OseeLog.log(InternalActivator.class, Level.INFO, String.format("DbConnection: [%s] - [%d]", dbUrl,
+         OseeLog.log(Activator.class, Level.INFO, String.format("DbConnection: [%s] - [%d]", dbUrl,
                connections.size()));
          return connection;
       } catch (Throwable th) {
@@ -97,7 +97,7 @@ public class OseeConnectionPoolImpl {
             connection.expireLease();
          }
       } catch (OseeDataStoreException ex) {
-         OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          removeConnection(connection);
       }
    }

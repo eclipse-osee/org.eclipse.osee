@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.internal.InternalActivator;
+import org.eclipse.osee.framework.database.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -149,7 +149,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
       } catch (SQLException ex) {
          SQLException exlist;
          if ((exlist = ex.getNextException()) != null) {
-            OseeLog.log(InternalActivator.class, Level.SEVERE, "This is the nested exception", exlist);
+            OseeLog.log(Activator.class, Level.SEVERE, "This is the nested exception", exlist);
          }
          throw new OseeDataStoreException(
                "sql update failed: \n" + query + "\n" + StatementUtil.getBatchErrorMessage(dataList), ex);

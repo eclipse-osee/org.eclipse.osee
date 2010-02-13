@@ -67,13 +67,13 @@ public class DbConnectionInformation implements IDbConnectionInformation {
 
    @Override
    public void bind(IDbConnectionInformationContributor contributor) {
-      OseeLog.log(InternalActivator.class, Level.FINE, "binding " + contributor);
+      OseeLog.log(Activator.class, Level.FINE, "binding " + contributor);
       try {
          for (IDatabaseInfo info : contributor.getDbInformation()) {
             dbInfo.put(info.getId(), info);
          }
       } catch (Exception ex) {
-         OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       synchronized (myWait) {
          myWait.notifyAll();
@@ -88,7 +88,7 @@ public class DbConnectionInformation implements IDbConnectionInformation {
             dbInfo.remove(info.getDatabaseName());
          }
       } catch (Exception ex) {
-         OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 }

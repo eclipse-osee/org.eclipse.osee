@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.internal.InternalActivator;
+import org.eclipse.osee.framework.database.internal.Activator;
 
 /**
  * Handles connection recovery in the event of database connection being lost
@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.database.internal.InternalActivator;
 public final class ConnectionHandler {
 
    private static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
-      return InternalActivator.getInstance().getOseeDatabaseService();
+      return Activator.getInstance().getOseeDatabaseService();
    }
 
    /**

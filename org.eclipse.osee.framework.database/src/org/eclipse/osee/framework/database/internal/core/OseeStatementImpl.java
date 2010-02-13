@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
-import org.eclipse.osee.framework.database.internal.InternalActivator;
+import org.eclipse.osee.framework.database.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -143,7 +143,7 @@ public final class OseeStatementImpl implements IOseeStatement {
             connection = null;// this allows for multiple calls to runPreparedQuery to have an open connection
          }
       } catch (OseeDataStoreException ex) {
-         OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

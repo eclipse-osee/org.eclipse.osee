@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.database.core;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.database.internal.InternalActivator;
+import org.eclipse.osee.framework.database.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -47,7 +47,7 @@ public abstract class DbTransaction {
       boolean initialAutoCommit = true;
       OseeCoreException saveException = null;
       try {
-         OseeLog.log(InternalActivator.class, Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
+         OseeLog.log(Activator.class, Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
 
          initialAutoCommit = connection.getAutoCommit();
          connection.setAutoCommit(false);
@@ -55,7 +55,7 @@ public abstract class DbTransaction {
          handleTxWork(connection);
 
          connection.commit();
-         OseeLog.log(InternalActivator.class, Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
+         OseeLog.log(Activator.class, Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
       } catch (Exception ex) {
          connection.rollback();
          connection.destroy();
@@ -73,7 +73,7 @@ public abstract class DbTransaction {
             }
             handleTxFinally();
          } catch (OseeCoreException ex) {
-            OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
             if (saveException == null) {
                saveException = ex;
             }

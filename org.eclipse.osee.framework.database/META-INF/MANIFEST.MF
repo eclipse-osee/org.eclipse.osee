@@ -3,9 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Database Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.database;singleton:=true
 Bundle-Version: 0.9.1.qualifier
-Bundle-Activator: org.eclipse.osee.framework.database.internal.InternalActivator
+Bundle-Activator: org.eclipse.osee.framework.database.internal.Activator
 Export-Package: org.eclipse.osee.framework.database,
- org.eclipse.osee.framework.database.core
+ org.eclipse.osee.framework.database.core,
+ org.eclipse.osee.framework.database.operation
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: org.eclipse.core.runtime,

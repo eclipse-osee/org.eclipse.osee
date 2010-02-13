@@ -31,16 +31,16 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Roberto E. Escobar
  */
-public class InternalActivator implements BundleActivator, IOseeDatabaseServiceProvider, IOseeConnectionProvider {
-
+public class Activator implements BundleActivator, IOseeDatabaseServiceProvider, IOseeConnectionProvider {
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.database";
    private static final long TIMEOUT = 20000;
 
-   private static InternalActivator instance = null;
+   private static Activator instance = null;
 
    private final Map<OseeServiceTrackerId, ServiceTracker> mappedTrackers;
    private final List<ServiceRegistration> services;
 
-   public InternalActivator() {
+   public Activator() {
       this.mappedTrackers = new HashMap<OseeServiceTrackerId, ServiceTracker>();
       this.services = new ArrayList<ServiceRegistration>();
    }
@@ -79,7 +79,7 @@ public class InternalActivator implements BundleActivator, IOseeDatabaseServiceP
       mappedTrackers.put(trackerId, tracker);
    }
 
-   public static InternalActivator getInstance() {
+   public static Activator getInstance() {
       return instance;
    }
 

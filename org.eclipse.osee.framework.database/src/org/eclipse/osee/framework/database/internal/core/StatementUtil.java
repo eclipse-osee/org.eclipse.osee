@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
-import org.eclipse.osee.framework.database.internal.InternalActivator;
+import org.eclipse.osee.framework.database.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -64,7 +64,7 @@ public class StatementUtil {
          if (update >= 0) {
             returnCount += update;
          } else if (Statement.EXECUTE_FAILED == update) {
-            OseeLog.log(InternalActivator.class, Level.SEVERE, "sql execute failed.");
+            OseeLog.log(Activator.class, Level.SEVERE, "sql execute failed.");
          } else if (Statement.SUCCESS_NO_INFO == update) {
             returnCount++;
          }
@@ -77,7 +77,7 @@ public class StatementUtil {
          try {
             stmt.close();
          } catch (SQLException ex) {
-            OseeLog.log(InternalActivator.class, Level.WARNING, "Unable to close database statement: ", ex);
+            OseeLog.log(Activator.class, Level.WARNING, "Unable to close database statement: ", ex);
          }
       }
    }

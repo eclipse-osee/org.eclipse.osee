@@ -29,7 +29,7 @@ public class UriDbConnectionInfo implements IDbConnectionInformationContributor 
    public IDatabaseInfo[] getDbInformation() throws Exception {
       String uri = OseeProperties.getOseeConnectionInfoUri();
       if (Strings.isValid(uri)) {
-         OseeLog.log(InternalActivator.class, Level.INFO, String.format("Loading connection info from: [%s]", uri));
+         OseeLog.log(Activator.class, Level.INFO, String.format("Loading connection info from: [%s]", uri));
          URI connectionFile = null;
          if (!uri.contains("://")) {
             connectionFile = new File(uri).toURI();

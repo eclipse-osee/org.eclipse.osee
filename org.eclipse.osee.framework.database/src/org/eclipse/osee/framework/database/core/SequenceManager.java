@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.database.core;
 
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.internal.InternalActivator;
+import org.eclipse.osee.framework.database.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -23,7 +23,7 @@ public class SequenceManager {
    }
 
    private static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
-      return InternalActivator.getInstance().getOseeDatabaseService();
+      return Activator.getInstance().getOseeDatabaseService();
    }
 
    private static IOseeSequence getSequence() throws OseeDataStoreException {

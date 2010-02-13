@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.internal.InternalActivator;
+import org.eclipse.osee.framework.database.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
 /**
@@ -187,7 +187,7 @@ public class JoinUtility {
             }
             ConnectionHandler.runBatchUpdate(connection, joinItem.getInsertSql(), data);
             if (!sessionId.equals("")) {
-               InternalActivator.getInstance().getOseeDatabaseService().runPreparedUpdate(connection,
+               Activator.getInstance().getOseeDatabaseService().runPreparedUpdate(connection,
                      INSERT_INTO_JOIN_CLEANUP, getQueryId(), getJoinTableName(), sessionId);
             }
             this.storedSize = this.entries.size();
@@ -202,7 +202,7 @@ public class JoinUtility {
          int updated = 0;
          if (queryId != -1) {
             updated = ConnectionHandler.runPreparedUpdate(connection, joinItem.getDeleteSql(), queryId);
-            InternalActivator.getInstance().getOseeDatabaseService().runPreparedUpdate(connection, DELETE_FROM_JOIN,
+            Activator.getInstance().getOseeDatabaseService().runPreparedUpdate(connection, DELETE_FROM_JOIN,
                   getQueryId());
          }
          return updated;
