@@ -32,19 +32,19 @@ public class CreateCommitFunction extends AbstractOperation {
    private final HttpServletRequest req;
    private final HttpServletResponse resp;
    private final IOseeBranchServiceProvider branchServiceProvider;
-   private final IOseeDataTranslationProvider dataTransalatorProvider;
+   private final IOseeDataTranslationProvider dataTranslatorProvider;
 
-   public CreateCommitFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchServiceProvider branchServiceProvider, IOseeDataTranslationProvider dataTransalatorProvider) {
+   public CreateCommitFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchServiceProvider branchServiceProvider, IOseeDataTranslationProvider dataTranslatorProvider) {
       super("Commit Branch", Activator.PLUGIN_ID);
       this.req = req;
       this.resp = resp;
       this.branchServiceProvider = branchServiceProvider;
-      this.dataTransalatorProvider = dataTransalatorProvider;
+      this.dataTranslatorProvider = dataTranslatorProvider;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
+      IDataTranslationService service = dataTranslatorProvider.getTranslatorService();
       BranchCommitRequest data = service.convert(req.getInputStream(), CoreTranslatorId.BRANCH_COMMIT_REQUEST);
 
       BranchCommitResponse responseData = new BranchCommitResponse();
