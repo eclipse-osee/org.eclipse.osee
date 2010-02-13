@@ -29,7 +29,6 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.exception,
  org.eclipse.osee.framework.resource.management.util,
- org.eclipse.osee.framework.services,
  org.osgi.framework,
  org.osgi.util.tracker
 Bundle-ActivationPolicy: lazy

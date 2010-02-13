@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
+import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -39,7 +40,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
-import org.eclipse.osee.framework.services.IOseeModelingService;
 
 /**
  * @author Roberto E. Escobar

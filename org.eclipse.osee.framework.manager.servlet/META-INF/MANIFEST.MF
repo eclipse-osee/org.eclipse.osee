@@ -30,7 +30,6 @@ Import-Package: com.lowagie.text,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.exception,
  org.eclipse.osee.framework.search.engine,
- org.eclipse.osee.framework.services,
  org.osgi.framework,
  org.osgi.service.http,
  org.osgi.util.tracker

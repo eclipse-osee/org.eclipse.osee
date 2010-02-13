@@ -8,21 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.services;
+package org.eclipse.osee.framework.core.services;
 
-import java.io.OutputStream;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.OseeImportModelRequest;
-import org.eclipse.osee.framework.core.data.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeModelingService {
+public interface IOseeModelingServiceProvider {
 
-   void importOseeTypes(IProgressMonitor monitor, boolean isInitializing, OseeImportModelRequest request, OseeImportModelResponse response) throws OseeCoreException;
-
-   void exportOseeTypes(IProgressMonitor monitor, OutputStream outputStream) throws OseeCoreException;
-
+   IOseeModelingService getOseeModelingService() throws OseeCoreException;
 }

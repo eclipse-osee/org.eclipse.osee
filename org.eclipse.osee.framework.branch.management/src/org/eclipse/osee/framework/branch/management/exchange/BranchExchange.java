@@ -15,9 +15,9 @@ import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.exchange.handler.StandardOseeDbExportDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeLocatorProvider;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
+import org.eclipse.osee.framework.core.services.IOseeModelingServiceProvider;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
-import org.eclipse.osee.framework.services.IOseeModelingServiceProvider;
 
 /**
  * @author Roberto E. Escobar

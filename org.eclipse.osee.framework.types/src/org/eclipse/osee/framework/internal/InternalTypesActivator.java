@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactoryProvid
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.services.IOseeModelingService;
+import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

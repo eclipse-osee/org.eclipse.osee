@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactoryProvider;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.osee.CreateOseeTypeChangesReportOperation;
 import org.eclipse.osee.framework.osee.EMFCompareOperation;
@@ -39,7 +40,6 @@ import org.eclipse.osee.framework.osee.OseeTypeCache;
 import org.eclipse.osee.framework.osee.XTextToOseeTypeOperation;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
-import org.eclipse.osee.framework.services.IOseeModelingService;
 
 /**
  * @author Roberto E. Escobar
