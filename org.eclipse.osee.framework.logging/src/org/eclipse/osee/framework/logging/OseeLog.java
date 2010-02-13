@@ -22,22 +22,20 @@ public class OseeLog {
    private static StatusManager sm;
    private static OseeLogger log;
 
-   static void makevalid() {
-      sm = new StatusManager();
-      log = new OseeLogger();
+   private static synchronized void makevalid() {
+      if (log == null || sm == null) {
+         sm = new StatusManager();
+         log = new OseeLogger();
+      }
    }
 
    private static OseeLogger getLog() {
-      if (log == null || sm == null) {
-         makevalid();
-      }
+      makevalid();
       return log;
    }
 
    private static StatusManager getSM() {
-      if (sm == null || log == null) {
-         makevalid();
-      }
+      makevalid();
       return sm;
    }
 
@@ -57,18 +55,12 @@ public class OseeLog {
       getLog().log(activatorClass.getName(), level, message, th);
    }
 
-   // use log(Class<?> activatorClass, Level level, String message, Throwable th) instead (name2 is not used anyway)
-   @Deprecated
-   public static void log(String loggerName, String name2, Level level, String message, Throwable th) {
-      getLog().log(loggerName, level, message, th);
+   public static void format(Class<?> activatorClass, Level level, String message, Object... objects) {
+      getLog().format(activatorClass.getName(), level, message, objects);
    }
 
-   public static void format(String loggerName, Level level, String message, Object... objects) {
-      getLog().format(loggerName, level, message, objects);
-   }
-
-   public static void format(Throwable th, String loggerName, Level level, String message, Object... objects) {
-      getLog().format(th, loggerName, level, message, objects);
+   public static void format(Throwable th, Class<?> activatorClass, Level level, String message, Object... objects) {
+      getLog().format(th, activatorClass.getName(), level, message, objects);
    }
 
    public static void registerLoggerListener(ILoggerListener listener) {
@@ -115,9 +107,6 @@ public class OseeLog {
       getSM().deregister(listener);
    }
 
-   /**
-    * @param status
-    */
    public static void reportStatus(List<IHealthStatus> statuses) {
       for (IHealthStatus status : statuses) {
          reportStatus(status);
