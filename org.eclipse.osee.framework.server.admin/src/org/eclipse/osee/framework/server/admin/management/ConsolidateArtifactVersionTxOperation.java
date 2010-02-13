@@ -99,7 +99,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
 
    private void findObsoleteGammas() throws OseeCoreException {
       try {
-         chStmt.runPreparedQuery(10000, SELECT_ARTIFACT_VERSIONS);
+         chStmt.runPreparedQuery(99960, SELECT_ARTIFACT_VERSIONS);
          while (chStmt.next()) {
             int artifactId = chStmt.getInt("art_id");
 
