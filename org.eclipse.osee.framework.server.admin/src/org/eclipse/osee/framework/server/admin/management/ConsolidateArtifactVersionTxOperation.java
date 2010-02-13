@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Boeing.
+ * Copyright (c) 2010 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,9 @@ import org.eclipse.osee.framework.database.core.JoinUtility.ExportImportJoinQuer
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation {
    private static final String SELECT_ARTIFACT_VERSIONS =
          "select * from osee_artifact_version order by art_id, gamma_id";

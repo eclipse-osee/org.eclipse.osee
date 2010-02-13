@@ -35,6 +35,9 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
    private static final String SELECT_RELATIONS =
          "select * from osee_relation_link order by rel_link_type_id, a_art_id, b_art_id, gamma_id";

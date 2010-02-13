@@ -17,6 +17,7 @@ Import-Package: com.lowagie.text,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.logging,
+ org.eclipse.osgi.framework.console,
  org.osgi.framework,
  org.osgi.util.tracker
 Eclipse-ExtensibleAPI: true
