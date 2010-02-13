@@ -49,6 +49,8 @@
 		<echo message="Qualifier: ${forceContextQualifier}" />
 		<echo message="Fetch Tag: ${fetchTag}" />
 
+		<echo message="Eclipse Base URL: ${eclipse.base.url}" />
+		<echo message="Eclipse Base File: ${eclipse.base.file}" />
 		<fail message="Specify the build workspace path 'WORKSPACE'">
 			<condition>
 				<not>
