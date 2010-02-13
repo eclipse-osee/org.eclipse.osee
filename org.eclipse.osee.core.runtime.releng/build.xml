@@ -9,7 +9,6 @@
 			<format property="buildTimestamp" pattern="yyyyMMddHHmm" />
 		</tstamp>
 
-		<property name="eclipse.base.url=" value="${eclipseBase}" />
 		<property name="SNAPSHOT" value="false" />
 		<property name="forceContextQualifier" value="v${buildTimestamp}" />
 		<property name="fetchTag" value="HEAD" />
