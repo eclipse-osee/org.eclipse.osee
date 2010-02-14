@@ -35,7 +35,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
          "select * from osee_artifact_version order by art_id, gamma_id";
 
    private static final String SELECT_ADDRESSING =
-         "select txs.*, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_txs%s txs where idj.query_id = ? and idj.id2 = txs.gamma_id order by net_gamma_id, branch_id, transaction_id";
+         "select txs.*, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_txs%s txs where idj.query_id = ? and idj.id2 = txs.gamma_id order by net_gamma_id, branch_id, transaction_id, gamma_id desc";
 
    private static final String UPDATE_TXS_GAMMAS =
          "update osee_txs%s set gamma_id = ?, mod_type = ? where transaction_id = ? and gamma_id = ?";
@@ -55,8 +55,11 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    private IOseeStatement chStmt;
    private long previousNetGammaId;
    private int previousBranchId;
+   private int previuosTransactionId;
    private final boolean includeArchived;
    private final CommandInterpreter ci;
+   private int updateTxsCounter;
+   private int deleteTxsCounter;
 
    public ConsolidateArtifactVersionTxOperation(IOseeDatabaseServiceProvider provider, CommandInterpreter ci) {
       super(provider, "Consolidate Artifact Versions", Activator.PLUGIN_ID);
@@ -71,6 +74,9 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       addressingToDelete.clear();
       previousNetGammaId = -1;
       previousBranchId = -1;
+      previuosTransactionId = -1;
+      updateTxsCounter = 0;
+      deleteTxsCounter = 0;
       chStmt = getDatabaseService().getStatement(connection);
       gammaJoin = JoinUtility.createExportImportJoinQuery();
    }
@@ -99,7 +105,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
 
    private void findObsoleteGammas() throws OseeCoreException {
       try {
-         chStmt.runPreparedQuery(99960, SELECT_ARTIFACT_VERSIONS);
+         chStmt.runPreparedQuery(10000, SELECT_ARTIFACT_VERSIONS);
          while (chStmt.next()) {
             int artifactId = chStmt.getInt("art_id");
 
@@ -154,7 +160,9 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
                if (modType == ModificationType.MODIFIED || modType == ModificationType.NEW || modType == ModificationType.INTRODUCED) {
                   addressingToDelete.add(new Object[] {transactionId, obsoleteGammaId});
                } else if (modType == ModificationType.DELETED || modType == ModificationType.MERGED) {
-                  addToUpdateAddresssing(modType, netGammaId, modType, transactionId, obsoleteGammaId);
+                  if (previuosTransactionId != transactionId) { // can't use a gamma (netGammaId) more than once in a transaction
+                     addToUpdateAddresssing(modType, netGammaId, modType, transactionId, obsoleteGammaId);
+                  }
                } else {
                   throw new OseeStateException("unexpected mod type: " + modType);
                }
@@ -162,6 +170,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
 
             previousNetGammaId = netGammaId;
             previousBranchId = branchId;
+            previuosTransactionId = transactionId;
          }
       } finally {
          if (chStmt != null) {
@@ -184,15 +193,19 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
 
    private void writeAddressingChanges(boolean archived, boolean force) throws OseeDataStoreException {
       String archivedStr = archived ? "_archived" : "";
-      if (addressingToDelete.size() > 10000 || force) {
-         ci.println("Number of txs" + archivedStr + " rows deleted: " + getDatabaseService().runBatchUpdate(connection,
-               String.format(DELETE_TXS, archivedStr), addressingToDelete));
+      if (addressingToDelete.size() > 99960 || force) {
+         deleteTxsCounter +=
+               getDatabaseService().runBatchUpdate(connection, String.format(DELETE_TXS, archivedStr),
+                     addressingToDelete);
+         ci.println("Number of txs" + archivedStr + " rows deleted: " + deleteTxsCounter);
          addressingToDelete.clear();
       }
 
-      if (updateAddressingData.size() > 10000 || force) {
-         ci.println("Number of txs" + archivedStr + " rows updated: " + getDatabaseService().runBatchUpdate(connection,
-               String.format(UPDATE_TXS_GAMMAS, archivedStr), updateAddressingData));
+      if (updateAddressingData.size() > 99960 || force) {
+         updateTxsCounter +=
+               getDatabaseService().runBatchUpdate(connection, String.format(UPDATE_TXS_GAMMAS, archivedStr),
+                     updateAddressingData);
+         ci.println("Number of txs" + archivedStr + " rows updated: " + updateTxsCounter);
 
          updateAddressingData.clear();
       }
