@@ -35,7 +35,7 @@ import org.junit.BeforeClass;
 
 /**
  * This test is intended to be run against a demo database. It tests the purge logic by counting the rows of the version
- * and txs tables, createing artifacts, changing them and then purging them. If it works properly, all rows should be
+ * and txs tables, creating artifacts, changing them and then purging them. If it works properly, all rows should be
  * equal.
  * 
  * @author Donald G. Dunne
@@ -126,5 +126,4 @@ public class ArtifactPurgeTest {
       TestUtil.checkThatEqual(preCreateArtifactsCount, postPurgeCount);
 
    }
-
 }

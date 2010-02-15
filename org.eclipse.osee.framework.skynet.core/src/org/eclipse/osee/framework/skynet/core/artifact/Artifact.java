@@ -866,6 +866,10 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return sb.toString().replaceFirst(", $", "");
    }
 
+   public String getAttributesToString(IAttributeType attributeType) throws OseeCoreException {
+      return getAttributesToString(attributeType.getName());
+   }
+
    /**
     * All existing attributes matching a new value will be left untouched. Then for any remaining values, other existing
     * attributes will be changed to match or if need be new attributes will be added to stored these values. Finally any

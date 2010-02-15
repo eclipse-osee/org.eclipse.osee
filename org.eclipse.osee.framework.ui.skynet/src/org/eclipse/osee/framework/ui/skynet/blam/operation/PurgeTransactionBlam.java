@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 /**
  * @author Ryan D. Brooks
  */
-public class PurgeTransaction extends AbstractBlam {
+public class PurgeTransactionBlam extends AbstractBlam {
 
    @Override
    public String getName() {

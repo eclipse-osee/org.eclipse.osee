@@ -69,7 +69,6 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       lowLevelReqs.clear();
    }
 
-   
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Generate Report", 100);
@@ -104,8 +103,8 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
       excelWriter.writeRow("5.1  " + reqtypeName + "s Traceability to Subsystem Requirements");
       excelWriter.writeRow(reqtypeName, null, null, "Traceable Subsystem Requirement");
-      excelWriter.writeRow("Paragraph #", "Paragraph Title", "Qualification Method", "PIDS", "Paragraph #",
-            "Paragraph Title", Requirements.SUBSYSTEM);
+      excelWriter.writeRow("Paragraph #", "Paragraph Title", CoreAttributeTypes.QUALIFICATION_METHOD.getName(), "PIDS",
+            "Paragraph #", "Paragraph Title", Requirements.SUBSYSTEM);
 
       String[] row = new String[7];
 
@@ -113,7 +112,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
          row[0] = correct(lowLevelReq.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, ""));
          row[1] = lowLevelReq.getName();
          if (lowLevelReq.isOfType(reqtypeName)) {
-            row[2] = lowLevelReq.getAttributesToString("Qualification Method");
+            row[2] = lowLevelReq.getAttributesToString(CoreAttributeTypes.QUALIFICATION_METHOD);
 
             for (Artifact subSysReq : lowLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level)) {
                row[3] = getAssociatedSubSystem(subSysReq);

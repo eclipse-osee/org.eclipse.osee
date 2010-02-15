@@ -30,6 +30,8 @@ public class CoreAttributeTypes extends NamedIdentity implements IAttributeType 
    public static final CoreAttributeTypes PARAGRAPH_NUMBER =
          new CoreAttributeTypes("AAMFEQ3boD3sp6VfArAA", "Imported Paragraph Number");
    public static final CoreAttributeTypes PHONE = new CoreAttributeTypes("AAMFEbUkVSwKu4LSpWAA", "Phone");
+   public static final CoreAttributeTypes QUALIFICATION_METHOD =
+         new CoreAttributeTypes("AAMFERMRKHkM9k_Rg2QA", "Qualification Method");
    public static final CoreAttributeTypes WHOLE_WORD_CONTENT =
          new CoreAttributeTypes("AAMFEchZmAzZo2tHjVAA", "Whole Word Content");
    public static final CoreAttributeTypes WORD_TEMPLATE_CONTENT =

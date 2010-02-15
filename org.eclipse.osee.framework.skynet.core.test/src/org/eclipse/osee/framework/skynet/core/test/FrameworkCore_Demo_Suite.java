@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.test.cases.RelationOrderingTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.SevereLogMonitorTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.StaticIdManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.TransactionManagerTest;
+import org.eclipse.osee.framework.skynet.core.test.cases.TransactionPurgeTest;
 import org.eclipse.osee.framework.skynet.core.test.importing.ReqNumberingTest;
 import org.eclipse.osee.framework.skynet.core.test.relation.RelationTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.types.OseeCacheTestSuite;
@@ -40,10 +41,10 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {ArtifactQueryTestDemo.class, TransactionManagerTest.class, BranchTestSuite.class,
       BranchManagerTest.class, RelationTestSuite.class, OseeCacheTestSuite.class, ArtifactTypeInheritanceTest.class,
-      ArtifactPurgeTest.class, BranchPurgeTest.class, Artifact_setAttributeValues.class, CsvArtifactTest.class,
-      NativeArtifactTest.class, ConflictTest.class, ChangeManagerTest.class, SevereLogMonitorTest.class,
-      RelationDeletionTest.class, StaticIdManagerTest.class, BranchStateTest.class, DuplicateHridTest.class,
-      RelationOrderingTest.class, ReqNumberingTest.class})
+      ArtifactPurgeTest.class, BranchPurgeTest.class, TransactionPurgeTest.class, Artifact_setAttributeValues.class,
+      CsvArtifactTest.class, NativeArtifactTest.class, ConflictTest.class, ChangeManagerTest.class,
+      SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class, BranchStateTest.class,
+      DuplicateHridTest.class, RelationOrderingTest.class, ReqNumberingTest.class})
 /**
  * @author Donald G. Dunne
  */
