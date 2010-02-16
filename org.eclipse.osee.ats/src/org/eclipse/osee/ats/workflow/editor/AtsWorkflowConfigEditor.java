@@ -402,7 +402,9 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            AWorkbench.getActivePage().closeEditor(editor, false);
+            if (AWorkbench.getActivePage() != null) {
+               AWorkbench.getActivePage().closeEditor(editor, false);
+            }
          }
       });
    }
