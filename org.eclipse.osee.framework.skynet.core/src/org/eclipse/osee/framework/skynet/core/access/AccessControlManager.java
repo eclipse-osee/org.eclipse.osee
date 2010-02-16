@@ -11,6 +11,10 @@
 
 package org.eclipse.osee.framework.skynet.core.access;
 
+import static org.eclipse.osee.framework.core.enums.PermissionEnum.DENY;
+import static org.eclipse.osee.framework.core.enums.PermissionEnum.FULLACCESS;
+import static org.eclipse.osee.framework.core.enums.PermissionEnum.LOCK;
+import static org.eclipse.osee.framework.core.enums.PermissionEnum.READ;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -212,10 +216,6 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       return isValid;
    }
 
-   //   public static boolean hasPermission(Branch object, PermissionEnum permission) throws OseeCoreException {
-   //      
-   //   }
-
    public static boolean hasPermission(IAccessControllable object, PermissionEnum permission) throws OseeCoreException {
       return hasPermission(UserManager.getUser(), object, permission);
    }
@@ -228,7 +228,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
             return permissionEnum;
          }
       }
-      return PermissionEnum.FULLACCESS;
+      return FULLACCESS;
    }
 
    private static boolean hasPermission(Artifact subject, IAccessControllable object, PermissionEnum permission) {
@@ -248,18 +248,18 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
 
       branchPermission = getBranchPermission(subject, branch, permission);
 
-      if (branchPermission != PermissionEnum.DENY && userPermission != PermissionEnum.LOCK) {
+      if (branchPermission == DENY || userPermission == null) {
          userPermission = branchPermission;
       }
 
-      if (permission == PermissionEnum.READ && userPermission == PermissionEnum.LOCK) {
+      if (permission == READ && userPermission == LOCK) {
          return true;
       }
 
-      if (userPermission == null || userPermission == PermissionEnum.LOCK) {
+      if (userPermission == null || userPermission == LOCK) {
          return false;
       }
-      return userPermission.getRank() >= permission.getRank() && !userPermission.equals(PermissionEnum.DENY);
+      return userPermission.getRank() >= permission.getRank() && !userPermission.equals(DENY);
    }
 
    private static PermissionEnum getBranchPermission(Artifact subject, Branch branch, PermissionEnum permission) {
@@ -267,7 +267,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       AccessObject accessObject = BranchAccessObject.getBranchAccessObjectFromCache(branch);
 
       if (accessObject == null) {
-         userPermission = PermissionEnum.FULLACCESS;
+         userPermission = FULLACCESS;
       } else {
          userPermission = acquirePermissionRank(subject, accessObject, permission);
       }
@@ -636,6 +636,23 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
+
+   public static void main(String[] args) {
+      PermissionEnum[] a = {DENY, FULLACCESS, null};
+      PermissionEnum[] b = {LOCK, FULLACCESS, null};
+      for (int i = 0; i < 3; i++) {
+         for (int j = 0; j < 3; j++) {
+            PermissionEnum branchPermission = a[i];
+            PermissionEnum userPermission = b[j];
+            if (branchPermission == DENY || userPermission == null) {
+               System.out.print("T");
+            } else {
+               System.out.print("F");
+            }
+         }
+         System.out.println();
       }
    }
 }
