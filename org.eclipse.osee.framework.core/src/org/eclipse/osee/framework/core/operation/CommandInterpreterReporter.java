@@ -26,6 +26,7 @@ public class CommandInterpreterReporter implements OperationReporter {
    public void report(String... row) {
       for (String cell : row) {
          ci.print(cell);
+         ci.print("   ");
       }
       ci.println();
    }
