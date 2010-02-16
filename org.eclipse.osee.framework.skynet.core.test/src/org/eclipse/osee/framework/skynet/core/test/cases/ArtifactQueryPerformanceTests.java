@@ -94,8 +94,8 @@ public class ArtifactQueryPerformanceTests {
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testGetArtifactsByHRID took %dms for %d artifacts", elapsedTime, result.size()));
       assertTrue("No artifacts found", result.size() > 0);
-      assertTrue(String.format("Elapsed time for artifact by hrid query took %dms.  It should take less than 50ms.",
-            elapsedTime), elapsedTime < 50);
+      assertTrue(String.format("Elapsed time for artifact by hrid query took %dms.  It should take less than 180ms.",
+            elapsedTime), elapsedTime < 180);
    }
 
    @org.junit.Test
@@ -170,8 +170,8 @@ public class ArtifactQueryPerformanceTests {
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("loadAllBranch took %dms for %d artifacts", elapsedTime, result.size()));
       assertTrue("No artifacts found", result.size() > 0);
-      assertTrue(String.format("Elapsed time for loadAllBranch took %dms.  It should take less than 500000ms.",
-            elapsedTime), elapsedTime < 500000);
+      assertTrue(String.format("Elapsed time for loadAllBranch took %dms.  It should take less than 700000ms.",
+            elapsedTime), elapsedTime < 700000);
 
       // check for exceptions
       assertTrue(result.size() > 0);

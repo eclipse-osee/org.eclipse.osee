@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOpsExtensionManager;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -39,6 +40,7 @@ public class DatabaseIntegrityTest {
    }
 
    @Test
+   @Ignore
    public void testDatabaseIntegrity() {
       try {
          DatabaseHealthOperation operation = DatabaseHealthOpsExtensionManager.getVerifyOperationByName(operationId);
