@@ -169,7 +169,9 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
          builder.append(".value ");
          builder.append(operator + " ");
          builder.append(joinAlias);
-         builder.append(".id AND query_id = ? AND ");
+         builder.append(".id AND ");
+         builder.append(joinAlias);
+         builder.append(".query_id = ? AND ");
          builder.addParameter(joinQuery.getQueryId());
          joinQuery.store();
       }
