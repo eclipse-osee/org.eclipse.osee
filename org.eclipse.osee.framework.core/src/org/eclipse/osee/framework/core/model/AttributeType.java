@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.internal.fields.OseeField;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
- * Type information for dynamic attributes.
+ * Type information for attributes.
  * 
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
