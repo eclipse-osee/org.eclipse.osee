@@ -287,8 +287,18 @@ public class ArtifactQuery {
       return getArtifactListFromType(ArtifactTypeManager.getType(artifactTypeName), branch);
    }
 
-   public static List<Artifact> getArtifactListFromArtifactTypes(Collection<? extends IArtifactType> artifactTypes, IOseeBranch branch, boolean allowDeleted) throws OseeCoreException {
+   /**
+    * do not use this method if searching for a super type and its descendants, instead use getArtifactListFromTypeAnd
+    */
+   public static List<Artifact> getArtifactListFromTypes(Collection<? extends IArtifactType> artifactTypes, IOseeBranch branch, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactTypes, branch, FULL, allowDeleted).getArtifacts(1000, null);
+   }
+
+   public static List<Artifact> getArtifactListFromTypeWithInheritence(IArtifactType artifactType, IOseeBranch branch, boolean allowDeleted) throws OseeCoreException {
+      ArtifactType artifactTypeFull = ArtifactTypeManager.getType(artifactType);
+      Collection<ArtifactType> artifactTypes = artifactTypeFull.getAllDescendantTypes();
+      artifactTypes.add(artifactTypeFull);
+      return getArtifactListFromTypes(artifactTypes, branch, allowDeleted);
    }
 
    /**

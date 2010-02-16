@@ -11,13 +11,14 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.JoinUtility.AttributeJoinQuery;
+import org.eclipse.osee.framework.database.core.JoinUtility.CharJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
@@ -31,9 +32,10 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
    private Collection<String> values;
    private String txsAlias;
    private String attrAlias;
+   private String joinAlias;
    private final boolean historical;
    private final Operator operator;
-   private AttributeJoinQuery joinQuery;
+   private CharJoinQuery joinQuery;
 
    /**
     * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
@@ -121,7 +123,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
             this.value = values.iterator().next();
          } else {
             this.values = values;
-            joinQuery = JoinUtility.createAttributeJoinQuery();
+            joinQuery = JoinUtility.createCharJoinQuery(ClientSessionManager.getSessionId());
             for (String str : values) {
                joinQuery.add(str);
             }
@@ -135,6 +137,9 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
    public void addToTableSql(ArtifactQueryBuilder builder) {
       attrAlias = builder.appendAliasedTable("osee_attribute");
       txsAlias = builder.appendAliasedTable("osee_txs");
+      if (joinQuery != null) {
+         joinAlias = builder.appendAliasedTable(joinQuery.getJoinTableName());
+      }
    }
 
    @Override
@@ -153,24 +158,18 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
             }
             builder.append(" LIKE ");
          } else {
-            if (operator == Operator.NOT_EQUAL) {
-               builder.append("<>");
-            } else {
-               builder.append("=");
-            }
+            builder.append(operator.toString());
          }
          builder.append("? AND ");
          builder.addParameter(value);
       }
 
-      if (values != null && values.size() > 0) {
-
+      if (joinQuery != null) {
          builder.append(attrAlias);
          builder.append(".value ");
-         if (operator == Operator.NOT_EQUAL) {
-            builder.append("NOT ");
-         }
-         builder.append("IN ( SELECT value FROM osee_join_attribute WHERE attr_query_id = ? ) AND ");
+         builder.append(operator + " ");
+         builder.append(joinAlias);
+         builder.append(".id AND query_id = ? AND ");
          builder.addParameter(joinQuery.getQueryId());
          joinQuery.store();
       }
@@ -205,7 +204,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
          strB.append(value);
       }
 
-      if (values != null && values.size() > 0) {
+      if (joinQuery != null) {
          strB.append(attrAlias);
          strB.append("(" + Collections.toString(",", values) + ")");
       }

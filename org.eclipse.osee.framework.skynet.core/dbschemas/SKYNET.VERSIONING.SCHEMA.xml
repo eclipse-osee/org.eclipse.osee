@@ -72,7 +72,7 @@
 	
 	<Table name="OSEE_JOIN_CHAR_ID" schema="OSEE" tablespace="osee_data">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="ID" defaultValue="not null" type="VARCHAR" limits="28"/>			
+		<Column id="ID" defaultValue="not null" type="VARCHAR" limits="4000"/>			
 		<Index id="OSEE_JOIN_CHAR__Q_IDX" tablespace="osee_index">
 			<AppliesTo id="QUERY_ID"/>		
 		</Index>			

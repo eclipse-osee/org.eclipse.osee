@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.database.core.JoinUtility.CharIdQuery;
+import org.eclipse.osee.framework.database.core.JoinUtility.CharJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -61,7 +61,7 @@ public class ArtifactQueryBuilder {
    private boolean firstTable = true;
    private final boolean tableOrderForward;
    private final TransactionRecord transactionId;
-   private CharIdQuery guidJoinQuery;
+   private CharJoinQuery guidJoinQuery;
 
    /**
     * @param artId
@@ -345,7 +345,7 @@ public class ArtifactQueryBuilder {
    }
 
    private void addToGuidJoin() throws OseeDataStoreException {
-      guidJoinQuery = JoinUtility.createGuidJoinQuery(ClientSessionManager.getSessionId());
+      guidJoinQuery = JoinUtility.createCharJoinQuery(ClientSessionManager.getSessionId());
       for (String guid : guids) {
          guidJoinQuery.add(guid);
       }

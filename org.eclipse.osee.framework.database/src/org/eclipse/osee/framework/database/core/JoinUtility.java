@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
@@ -97,35 +98,35 @@ public class JoinUtility {
    }
 
    public static TransactionJoinQuery createTransactionJoinQuery() {
-      return new TransactionJoinQuery("");
+      return new TransactionJoinQuery(null);
    }
 
    public static IdJoinQuery createIdJoinQuery() {
-      return new IdJoinQuery("");
+      return new IdJoinQuery(null);
    }
 
    public static ArtifactJoinQuery createArtifactJoinQuery() {
-      return new ArtifactJoinQuery("");
+      return new ArtifactJoinQuery(null);
    }
 
    public static AttributeJoinQuery createAttributeJoinQuery() {
-      return new AttributeJoinQuery("");
+      return new AttributeJoinQuery(null);
    }
 
    public static SearchTagJoinQuery createSearchTagJoinQuery() {
-      return new SearchTagJoinQuery("");
+      return new SearchTagJoinQuery(null);
    }
 
    public static TagQueueJoinQuery createTagQueueJoinQuery() {
-      return new TagQueueJoinQuery("");
+      return new TagQueueJoinQuery(null);
    }
 
    public static ExportImportJoinQuery createExportImportJoinQuery() {
-      return new ExportImportJoinQuery("");
+      return new ExportImportJoinQuery(null);
    }
 
-   public static CharIdQuery createGuidJoinQuery(String sessionId) {
-      return new CharIdQuery(sessionId);
+   public static CharJoinQuery createCharJoinQuery(String sessionId) {
+      return new CharJoinQuery(sessionId);
    }
 
    public static List<Integer> getAllTagQueueQueryIds() throws OseeDataStoreException {
@@ -148,7 +149,7 @@ public class JoinUtility {
       protected Set<IJoinRow> entries;
       private boolean wasStored;
       private int storedSize;
-      private String sessionId;
+      private final String sessionId;
 
       protected JoinQueryEntry(JoinItem joinItem, String sessionId) {
          this.wasStored = false;
@@ -186,9 +187,9 @@ public class JoinUtility {
                data.add(joinArray.toArray());
             }
             ConnectionHandler.runBatchUpdate(connection, joinItem.getInsertSql(), data);
-            if (!sessionId.equals("")) {
-               Activator.getInstance().getOseeDatabaseService().runPreparedUpdate(connection,
-                     INSERT_INTO_JOIN_CLEANUP, getQueryId(), getJoinTableName(), sessionId);
+            if (sessionId != null) {
+               Activator.getInstance().getOseeDatabaseService().runPreparedUpdate(connection, INSERT_INTO_JOIN_CLEANUP,
+                     getQueryId(), getJoinTableName(), sessionId);
             }
             this.storedSize = this.entries.size();
             this.wasStored = true;
@@ -200,10 +201,12 @@ public class JoinUtility {
 
       public int delete(OseeConnection connection) throws OseeDataStoreException {
          int updated = 0;
+         IOseeDatabaseService databaseService = Activator.getInstance().getOseeDatabaseService();
          if (queryId != -1) {
-            updated = ConnectionHandler.runPreparedUpdate(connection, joinItem.getDeleteSql(), queryId);
-            Activator.getInstance().getOseeDatabaseService().runPreparedUpdate(connection, DELETE_FROM_JOIN,
-                  getQueryId());
+            updated = databaseService.runPreparedUpdate(connection, joinItem.getDeleteSql(), queryId);
+            if (sessionId != null) {
+               databaseService.runPreparedUpdate(connection, DELETE_FROM_JOIN, getQueryId());
+            }
          }
          return updated;
       }
@@ -284,7 +287,8 @@ public class JoinUtility {
          entries.add(new TempIdEntry(id));
       }
 
-      /* (non-Javadoc)
+      /*
+       * (non-Javadoc)
        * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
        */
       @Override
@@ -339,7 +343,8 @@ public class JoinUtility {
          entries.add(new TempTransactionEntry(gammaId, transactionId));
       }
 
-      /* (non-Javadoc)
+      /*
+       * (non-Javadoc)
        * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
        */
       @Override
@@ -444,7 +449,8 @@ public class JoinUtility {
          entries.add(new Entry(value));
       }
 
-      /* (non-Javadoc)
+      /*
+       * (non-Javadoc)
        * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
        */
       @Override
@@ -547,7 +553,8 @@ public class JoinUtility {
          entries.add(new GammaEntry(gammaId));
       }
 
-      /* (non-Javadoc)
+      /*
+       * (non-Javadoc)
        * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
        */
       @Override
@@ -602,7 +609,8 @@ public class JoinUtility {
          entries.add(new ExportImportEntry(id1, id2));
       }
 
-      /* (non-Javadoc)
+      /*
+       * (non-Javadoc)
        * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
        */
       @Override
@@ -611,38 +619,38 @@ public class JoinUtility {
       }
    }
 
-   public static final class CharIdQuery extends JoinQueryEntry {
+   public static final class CharJoinQuery extends JoinQueryEntry {
 
-      protected CharIdQuery(String sessionId) {
+      protected CharJoinQuery(String sessionId) {
          super(JoinItem.CHAR_ID, sessionId);
       }
 
-      private final class CharIdEntry implements IJoinRow {
-         private String charId;
+      private final class CharJoinEntry implements IJoinRow {
+         private final String value;
 
-         private CharIdEntry(String id) {
-            this.charId = id;
+         private CharJoinEntry(String value) {
+            this.value = value;
          }
 
          @Override
          public Object[] toArray() {
-            return new Object[] {getQueryId(), charId};
+            return new Object[] {getQueryId(), value};
          }
 
          @Override
          public int hashCode() {
-            return 37 * charId.hashCode();
+            return 37 * value.hashCode();
          }
 
          @Override
          public String toString() {
-            return String.format("char id=%s", charId);
+            return value;
          }
 
       }
 
-      public void add(String id) {
-         entries.add(new CharIdEntry(id));
+      public void add(String value) {
+         entries.add(new CharJoinEntry(value));
       }
 
       @Override
