@@ -47,16 +47,18 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn Hrid =
          new XViewerColumn("framework.change.hrid", "HRID", 50, SWT.LEFT, false, SortDataType.String, false, null);
    public static XViewerColumn lastModDate =
-      new XViewerColumn("attribute.Last Modified Date", "Last Modified Date", 50, SWT.LEFT, false, SortDataType.String, false, null);
+         new XViewerColumn("attribute.Last Modified Date", "Last Modified Date", 50, SWT.LEFT, false,
+               SortDataType.Date, false, null);
    public static XViewerColumn paraNumber =
          new XViewerColumn("attribute.Imported Paragraph Number", CoreAttributeTypes.PARAGRAPH_NUMBER.getName(), 50,
                SWT.LEFT, false, SortDataType.Paragraph_Number, false, null);
-   
+
    public static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
 
    public ChangeXViewerFactory() {
       super(NAMESPACE);
-      registerColumns(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, Artifact_Type, Hrid, paraNumber, lastModDate);
+      registerColumns(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, Artifact_Type, Hrid, paraNumber,
+            lastModDate);
       registerAllAttributeColumns();
    }
 
