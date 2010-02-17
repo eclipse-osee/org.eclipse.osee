@@ -104,8 +104,8 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
          if (testing || assignees.size() > 0) {
             OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(assignees, getIdString(sma),
                   NotifyType.Assigned.name(), String.format(
-                        "You have been set as the assignee of [%s] state [%s] titled ", sma.getArtifactTypeName(),
-                        sma.getStateMgr().getCurrentStateName(), sma.getName())));
+                        "You have been set as the assignee of [%s] in state [%s] titled [%s]",
+                        sma.getArtifactTypeName(), sma.getStateMgr().getCurrentStateName(), sma.getName())));
          }
       }
       if (types.contains(NotifyType.Subscribed)) {
