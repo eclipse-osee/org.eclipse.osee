@@ -20,6 +20,7 @@
     <xsd:element name="serviceUniqueId" type="xsd:string"/>
     <xsd:element name="brokerURI" type="xsd:string"/>
     <xsd:element name="refreshRateInSeconds" type="xsd:int"/>
+    <xsd:element name="stopping" type="xsd:boolean"/>
     <xsd:element name="serviceDescription" type="ServiceDescriptionPair" maxOccurs="unbounded"/>
   </xsd:sequence>
 </xsd:complexType>

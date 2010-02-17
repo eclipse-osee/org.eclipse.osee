@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.messaging.services.internal;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -17,10 +18,10 @@ import org.eclipse.osee.framework.messaging.services.messages.ServiceHealthReque
  * 
  */
 public class HealthRequestListener extends OseeMessagingListener {
-	private CompositeKeyHashMap<String, String, UpdateStatus> mapForReplys;
+	private CompositeKeyHashMap<String, String, List<UpdateStatus>> mapForReplys;
 
 	public HealthRequestListener(
-			CompositeKeyHashMap<String, String, UpdateStatus> mapForReplys) {
+			CompositeKeyHashMap<String, String, List<UpdateStatus>> mapForReplys) {
 		super(ServiceHealthRequest.class);
 		this.mapForReplys = mapForReplys;
 	}
@@ -30,9 +31,13 @@ public class HealthRequestListener extends OseeMessagingListener {
 			ReplyConnection replyConnection) {
 		if (replyConnection.isReplyRequested()) {
 			ServiceHealthRequest request = (ServiceHealthRequest)message;
-			UpdateStatus update = mapForReplys.get(request.getServiceName(), request.getServiceVersion());
-			if(update != null){
-				update.run();
+			List<UpdateStatus> updates = mapForReplys.get(request.getServiceName(), request.getServiceVersion());
+			if(updates != null){
+				for(UpdateStatus update:updates){
+					if(update != null){
+						update.run();
+					}
+				}
 			}
 		}
 	}

@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.messaging.internal;
 import org.eclipse.osee.framework.messaging.MessagingGateway;
 import org.eclipse.osee.framework.messaging.future.MessageService;
 import org.eclipse.osee.framework.messaging.internal.old.MessagingGatewayImpl;
+import org.eclipse.osee.framework.messaging.services.internal.ServiceLookupAndRegistrarLifeCycle;
+import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -26,7 +28,7 @@ public class Activator implements BundleActivator {
 
    private ServiceRegistration msgServiceRegistration;
    private MessageServiceProviderImpl messageServiceProviderImpl;
-   
+   private ServiceLookupAndRegistrarLifeCycle serviceLookupAndRegistrarLifeCycle;
    // old
    private ServiceRegistration registration;
    private MessagingGatewayImpl messaging;
@@ -36,7 +38,10 @@ public class Activator implements BundleActivator {
    public void start(BundleContext context) throws Exception {
       this.context = context;
       me = this;
-      messageServiceProviderImpl = new MessageServiceProviderImpl();
+      serviceLookupAndRegistrarLifeCycle = new ServiceLookupAndRegistrarLifeCycle(context, ExportClassLoader.getInstance());
+      serviceLookupAndRegistrarLifeCycle.open(true);
+      
+      messageServiceProviderImpl = new MessageServiceProviderImpl(ExportClassLoader.getInstance());
       messageServiceProviderImpl.start();
       msgServiceRegistration = context.registerService(MessageService.class.getName(), messageServiceProviderImpl.getMessageService(), null);
 

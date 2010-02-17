@@ -14,6 +14,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface MessageService {
 
+   ConnectionNode getDefault() throws OseeCoreException;	
+	
    ConnectionNode get(NodeInfo nodeInfo) throws OseeCoreException;
 
    Collection<NodeInfo> getAvailableConnections();

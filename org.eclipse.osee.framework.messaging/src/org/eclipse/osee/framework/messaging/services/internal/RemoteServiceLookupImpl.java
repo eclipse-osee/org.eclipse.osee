@@ -7,13 +7,14 @@ package org.eclipse.osee.framework.messaging.services.internal;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.future.ConnectionNode;
 import org.eclipse.osee.framework.messaging.services.BaseMessages;
@@ -69,15 +70,26 @@ public class RemoteServiceLookupImpl implements RemoteServiceLookup {
 				notification.onServiceUpdate(serviceHealth.getServiceHealth());
 			}
 		} else {
-			ServiceHealthRequest request = new ServiceHealthRequest();
-			request.setServiceName(serviceName);
-			request.setServiceVersion(serviceVersion);
-			try {
-				connectionNode.send(BaseMessages.ServiceHealthRequest, request, new OseeMessagingStatusImpl(String.format("Failed to send Health Request for %s [%s]", serviceName, serviceVersion), RemoteServiceLookup.class));
-			} catch (OseeCoreException ex) {
-				OseeLog.log(RemoteServiceLookupImpl.class, Level.SEVERE, ex);
-			}
+		   sendOutRequest(serviceName, serviceVersion);
 		}
+	}
+	
+	public void sendOutRequestsForServiceHealth(){
+	   Set<Pair<String, String>> pairs = callbacks.keySet();
+	   for(Pair<String, String> pair:pairs){
+	      sendOutRequest(pair.getFirst(), pair.getSecond());
+	   }
+	}
+	
+	private void sendOutRequest(String serviceName, String serviceVersion){
+	   ServiceHealthRequest request = new ServiceHealthRequest();
+      request.setServiceName(serviceName);
+      request.setServiceVersion(serviceVersion);
+      try {
+         connectionNode.send(BaseMessages.ServiceHealthRequest, request, new OseeMessagingStatusImpl(String.format("Failed to send Health Request for %s [%s]", serviceName, serviceVersion), RemoteServiceLookup.class));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(RemoteServiceLookupImpl.class, Level.SEVERE, ex);
+      }
 	}
 
 	private void addListener(String serviceName, String serviceVersion,

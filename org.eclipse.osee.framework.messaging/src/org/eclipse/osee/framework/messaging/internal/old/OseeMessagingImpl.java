@@ -3,13 +3,9 @@ package org.eclipse.osee.framework.messaging.internal.old;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
-
 import org.apache.activemq.camel.CamelConnectionFactory;
-import org.apache.activemq.camel.component.ActiveMQComponent;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.jms.JmsComponent;
-import org.apache.camel.impl.DefaultCamelContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.Component;
@@ -47,31 +43,31 @@ public class OseeMessagingImpl implements OseeMessaging {
 
 	void start() throws Exception {
 
-		DefaultCamelContext context = new DefaultCamelContext();
-
-		activeMqRemoteConnectionFactory.setAlwaysSessionAsync(true);
-		activeMqRemoteConnectionFactory.setAlwaysSyncSend(false);
-		/*
-		 * if we use failover: sends pend not sure about route adding, probably
-		 * pend also. Need to thread those operations so we don't block
-		 * applications use transport listener for lifecycle events
-		 */
-		activeMqRemoteConnectionFactory.setTransportListener(jmsTransport);
-		activeMqRemoteConnectionFactory.setCamelContext(context);
-		activeMqRemoteConnectionFactory.getCamelContext().addComponent(
-				Component.JMS.getComponentName(),
-				JmsComponent.jmsComponent(activeMqRemoteConnectionFactory));
-
-		vmConnectionFactory.setCamelContext(context);
-		vmConnectionFactory.getCamelContext().addComponent(
-				Component.VM.getComponentName(),
-				ActiveMQComponent.jmsComponent(vmConnectionFactory));
-		vmConnectionFactory.setObjectMessageSerializationDefered(true);
-
-		template = activeMqRemoteConnectionFactory.getCamelContext()
-				.createProducerTemplate();
-		activeMqRemoteConnectionFactory.getCamelContext().start();
-		jmsTransport.setAvailable(true);
+//		DefaultCamelContext context = new DefaultCamelContext();
+//
+//		activeMqRemoteConnectionFactory.setAlwaysSessionAsync(true);
+//		activeMqRemoteConnectionFactory.setAlwaysSyncSend(false);
+//		/*
+//		 * if we use failover: sends pend not sure about route adding, probably
+//		 * pend also. Need to thread those operations so we don't block
+//		 * applications use transport listener for lifecycle events
+//		 */
+//		activeMqRemoteConnectionFactory.setTransportListener(jmsTransport);
+//		activeMqRemoteConnectionFactory.setCamelContext(context);
+////		activeMqRemoteConnectionFactory.getCamelContext().addComponent(
+////				Component.JMS.getComponentName(),
+////				JmsComponent.jmsComponent(activeMqRemoteConnectionFactory));
+//
+//		vmConnectionFactory.setCamelContext(context);
+//		vmConnectionFactory.getCamelContext().addComponent(
+//				Component.VM.getComponentName(),
+//				ActiveMQComponent.jmsComponent(vmConnectionFactory));
+//		vmConnectionFactory.setObjectMessageSerializationDefered(true);
+//
+//		template = activeMqRemoteConnectionFactory.getCamelContext()
+//				.createProducerTemplate();
+//		activeMqRemoteConnectionFactory.getCamelContext().start();
+//		jmsTransport.setAvailable(true);
 	}
 
 	void stop() throws Exception {
@@ -193,6 +189,7 @@ public class OseeMessagingImpl implements OseeMessaging {
 						}
 						@Override
 						public void fail(Throwable th) {
+							th.printStackTrace();
 							OseeLog.log(Activator.class, Level.SEVERE, th);
 						}
 					});

@@ -6,11 +6,12 @@
 package org.eclipse.osee.framework.messaging.services.internal;
 
 import java.net.URI;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.messaging.future.ConnectionNode;
 import org.eclipse.osee.framework.messaging.services.BaseMessages;
@@ -19,58 +20,77 @@ import org.eclipse.osee.framework.messaging.services.ServiceInfoPopulator;
 
 /**
  * @author b1528444
- *
  */
 public class RemoteServiceRegistrarImpl implements RemoteServiceRegistrar {
 
-	private ConnectionNode connectionNode;
-	private ConcurrentHashMap<String, ScheduledFuture<?>> map;
-	private CompositeKeyHashMap<String, String, UpdateStatus> mapForReplys;
-	private ScheduledExecutorService executor;
-	private HealthRequestListener healthRequestListener;
-	
-	public RemoteServiceRegistrarImpl(ConnectionNode node, ScheduledExecutorService executor) {
-		this.connectionNode = node;
-		this.executor = executor;
-		map = new ConcurrentHashMap<String, ScheduledFuture<?>>();
-		mapForReplys = new CompositeKeyHashMap<String, String, UpdateStatus>(8,	true);
-		healthRequestListener = new HealthRequestListener(mapForReplys);
-	}
-	
-	public void start(){
-		connectionNode.subscribe(BaseMessages.ServiceHealthRequest,
-				healthRequestListener,
-				new OseeMessagingStatusImpl("Failed to subscribe to " + BaseMessages.ServiceHealthRequest.getName(),
-						RemoteServiceRegistrarImpl.class));	
-	}
-	
-	public void stop(){
-		connectionNode.subscribe(BaseMessages.ServiceHealthRequest,
-				healthRequestListener,
-				new OseeMessagingStatusImpl("Failed to subscribe to " + BaseMessages.ServiceHealthRequest.getName(),
-						RemoteServiceRegistrarImpl.class));
-	}
+   private ConnectionNode connectionNode;
+   private ConcurrentHashMap<String, ScheduledFuture<?>> map;
+   private ConcurrentHashMap<String, UpdateStatus> mapOfUpdateStatus;
+   private CompositeKeyHashMap<String, String, List<UpdateStatus>> mapForReplys;
+   private ScheduledExecutorService executor;
+   private HealthRequestListener healthRequestListener;
 
-	@Override
-	public void registerService(String serviceName, String serviceVersion, String serviceUniqueId, URI broker,
-			ServiceInfoPopulator infoPopulator, int refreshRateInSeconds) {
-		UpdateStatus updateStatus = new UpdateStatus(this.connectionNode, serviceName, serviceVersion, serviceUniqueId, broker, refreshRateInSeconds, infoPopulator);
-		ScheduledFuture<?> scheduled = executor.scheduleAtFixedRate(updateStatus, 0, refreshRateInSeconds, TimeUnit.SECONDS);
-		map.put(serviceName+serviceVersion+serviceUniqueId, scheduled);
-		
-		UpdateStatus updateStatusForReply = new UpdateStatus(this.connectionNode, serviceName, serviceVersion, serviceUniqueId, broker, refreshRateInSeconds, infoPopulator);
-		mapForReplys.put(serviceName, serviceVersion, updateStatusForReply);
-	}
+   public RemoteServiceRegistrarImpl(ConnectionNode node, ScheduledExecutorService executor) {
+      this.connectionNode = node;
+      this.executor = executor;
+      mapOfUpdateStatus = new ConcurrentHashMap<String, UpdateStatus>();
+      map = new ConcurrentHashMap<String, ScheduledFuture<?>>();
+      mapForReplys = new CompositeKeyHashMap<String, String, List<UpdateStatus>>(8, true);
+      healthRequestListener = new HealthRequestListener(mapForReplys);
+   }
 
-	@Override
-	public boolean unregisterService(String serviceName,
-			String serviceVersion, String serviceUniqueId) {
-		ScheduledFuture<?> scheduled = map.remove(serviceName+serviceVersion+serviceUniqueId);
-		if(scheduled == null){
-			return false; 
-		} else {
-			return scheduled.cancel(false);
-		}
-	}
+   public void start() {
+      connectionNode.subscribe(BaseMessages.ServiceHealthRequest, healthRequestListener, new OseeMessagingStatusImpl("Failed to subscribe to " + BaseMessages.ServiceHealthRequest.getName(), RemoteServiceRegistrarImpl.class));
+   }
 
+   public void stop() {
+      connectionNode.subscribe(BaseMessages.ServiceHealthRequest, healthRequestListener, new OseeMessagingStatusImpl("Failed to subscribe to " + BaseMessages.ServiceHealthRequest.getName(), RemoteServiceRegistrarImpl.class));
+   }
+
+   @Override
+   public void registerService(String serviceName, String serviceVersion, String serviceUniqueId, URI broker, ServiceInfoPopulator infoPopulator, int refreshRateInSeconds) {
+      String key = serviceName + serviceVersion + serviceUniqueId;
+      if (!mapOfUpdateStatus.containsKey(key)) {
+         UpdateStatus updateStatus = new UpdateStatus(this.connectionNode, serviceName, serviceVersion, serviceUniqueId, broker, refreshRateInSeconds, infoPopulator);
+         ScheduledFuture<?> scheduled = executor.scheduleAtFixedRate(updateStatus, 0, refreshRateInSeconds, TimeUnit.SECONDS);
+         map.put(key, scheduled);
+         mapOfUpdateStatus.put(key, updateStatus);
+         addToReplyMap(serviceName, serviceVersion, updateStatus);
+      }
+   }
+
+   @Override
+   public boolean unregisterService(String serviceName, String serviceVersion, String serviceUniqueId) {
+      String key = serviceName + serviceVersion + serviceUniqueId; 
+      
+      UpdateStatus updateStatus = mapOfUpdateStatus.remove(key);
+      if(updateStatus != null){
+         updateStatus.close();
+         removeFromReplyMap(serviceName, serviceVersion, updateStatus);
+      }
+      
+      ScheduledFuture<?> scheduled = map.remove(key);
+      if (scheduled == null) {
+         return false;
+      } else {
+         return scheduled.cancel(false);
+      }
+   }
+
+   public void addToReplyMap(String serviceName, String serviceVersion, UpdateStatus updateForReply) {
+      List<UpdateStatus> list = mapForReplys.get(serviceName, serviceVersion);
+      if (list == null) {
+         list = new CopyOnWriteArrayList<UpdateStatus>();
+         mapForReplys.put(serviceName, serviceVersion, list);
+      }
+      list.add(updateForReply);
+   }
+
+   public boolean removeFromReplyMap(String serviceName, String serviceVersion, UpdateStatus updateForReply) {
+      List<UpdateStatus> list = mapForReplys.get(serviceName, serviceVersion);
+      if (list != null) {
+         return list.remove(updateForReply);
+      }
+      return false;
+   }
 }

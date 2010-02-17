@@ -26,6 +26,7 @@ public class OseeMessagingStatusImpl implements OseeMessagingStatusCallback {
 	
 	@Override
 	public void fail(Throwable th) {
+		th.printStackTrace();
 		OseeLog.log(clazz, Level.SEVERE, message, th);
 	}
 

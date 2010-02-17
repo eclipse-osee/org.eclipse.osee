@@ -1,11 +1,10 @@
-package org.eclipse.osee.framework.messaging.internal;
+package org.eclipse.osee.framework.messaging.internal.camel;
 
 import java.util.Map;
-
-import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.camel.Exchange;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.future.ConnectionNode;
+import org.eclipse.osee.framework.messaging.internal.JAXBUtil;
 
 /**
  * @author b1528444
@@ -31,11 +30,10 @@ public class ProcessorTranslator implements org.apache.camel.Processor {
 			messageBody = JAXBUtil.unmarshal(exchange.getIn().getBody()
 					.toString(), pojoType);
 		}
-		Object obj = headers.get("JMSReplyTo");
-		if(obj != null && obj instanceof ActiveMQDestination){
+		Object obj = headers.get("OSEEReplyTo");
+		if(obj != null){
 			Object correlationId = headers.get("JMSDestination");
-			ActiveMQDestination q = (ActiveMQDestination)obj;
-			final String destString = q.getPhysicalName();
+			final String destString = obj.toString();
 			ReplyConnectionImpl replyConnectionImpl = new ReplyConnectionImpl(destString, connectionNode, correlationId);
 			listener.process(messageBody, headers, replyConnectionImpl);
 		} else {

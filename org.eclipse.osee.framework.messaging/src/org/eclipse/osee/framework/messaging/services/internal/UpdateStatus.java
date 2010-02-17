@@ -7,7 +7,6 @@ package org.eclipse.osee.framework.messaging.services.internal;
 
 import java.net.URI;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.future.ConnectionNode;
 import org.eclipse.osee.framework.messaging.services.BaseMessages;
@@ -33,13 +32,14 @@ public class UpdateStatus implements Runnable {
 		health.setServiceVersion(serviceVersion);
 		health.setServiceUniqueId(serviceUniqueId);
 		health.setRefreshRateInSeconds(refreshRateInSeconds);
+		health.setStopping(false);
 		errorMsg = String.format("Failed to send %s to %s v[%s][%s]", BaseMessages.ServiceHealth.getName(), health.getServiceName(),
 				health.getServiceVersion(), health.getServiceUniqueId());
 		this.infoPopulator = infoPopulator;
 	}
 	
 	@Override
-	public void run() {
+	public synchronized void run() {
 		try {
 			health.getServiceDescription().clear();
 			infoPopulator.updateServiceInfo(health.getServiceDescription());
@@ -48,5 +48,10 @@ public class UpdateStatus implements Runnable {
 			OseeLog.log(UpdateStatus.class, Level.SEVERE, ex);
 		}
 	}
+
+   public synchronized void close() {
+      health.setStopping(true);
+      run();
+   }
 
 }

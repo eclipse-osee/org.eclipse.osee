@@ -1,40 +1,36 @@
-package org.eclipse.osee.framework.messaging.internal;
+package org.eclipse.osee.framework.messaging.internal.camel;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.camel.ProducerTemplate;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.future.NodeInfo;
 
-class SendReplyMessageRunnable implements Runnable {
+class SendMessageRunnable extends SendMessage {
 
 	private final NodeInfo nodeInfo;
 	private final String topic;
 	private final Object body;
 	private final OseeMessagingStatusCallback statusCallback;
-	private final ProducerTemplate template; 
-	private final String replyMessageId;
+	private final ProducerTemplate template;
 
-	public SendReplyMessageRunnable(ProducerTemplate template,
-			NodeInfo nodeInfo, String topic, Object body, String replyMessageId,
+	public SendMessageRunnable(String version, String sourceId, ProducerTemplate template, NodeInfo nodeInfo,
+			String topic, Object body,
 			OseeMessagingStatusCallback statusCallback) {
+		super(version, sourceId);
 		this.template = template;
 		this.nodeInfo = nodeInfo;
 		this.topic = topic;
 		this.body = body;
 		this.statusCallback = statusCallback;
-		this.replyMessageId = replyMessageId;
 	}
 
 	@Override
 	public void run() {
 		try {
-			Map<String, Object> headers = new HashMap<String, Object>();
-			headers.put("JMSReplyTo", replyMessageId);
-//			template.requestBodyAndHeaders(arg0, arg1, arg2)
+			Map<String, Object> headers = getBaseHeader();
 			template.sendBodyAndHeaders(nodeInfo.getComponentNameForRoutes()
-					+ topic + "?preserveMessageQos=true", body, headers);
+						+ topic, body, headers);
 			statusCallback.success();
 		} catch (Exception ex) {
 			statusCallback.fail(ex);

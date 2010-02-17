@@ -17,4 +17,5 @@ public interface MessageID extends Named, Identity{
 	String getMessageDestination();
 	Class<?> getSerializationClass();
 	boolean isReplyRequired();
+	boolean isTopic();
 }

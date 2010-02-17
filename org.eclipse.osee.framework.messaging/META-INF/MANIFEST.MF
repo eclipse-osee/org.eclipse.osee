@@ -159,10 +159,16 @@ Import-Package: javax.jms,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.osee.framework.plugin.core.util,
  org.osgi.framework,
- org.osgi.util.tracker;version="1.4.0"
+ org.osgi.util.tracker;version="1.4.0",
+ org.springframework.context;version="2.5.6"
 Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
 Export-Package: org.eclipse.osee.framework.messaging,
  org.eclipse.osee.framework.messaging.definitions,
- org.eclipse.osee.framework.messaging.id
+ org.eclipse.osee.framework.messaging.future,
+ org.eclipse.osee.framework.messaging.id,
+ org.eclipse.osee.framework.messaging.services,
+ org.eclipse.osee.framework.messaging.services.messages

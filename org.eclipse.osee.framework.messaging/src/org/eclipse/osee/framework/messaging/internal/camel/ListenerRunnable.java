@@ -1,4 +1,4 @@
-package org.eclipse.osee.framework.messaging.internal;
+package org.eclipse.osee.framework.messaging.internal.camel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,33 +39,38 @@ class ListenerRunnable implements Runnable {
 	public void run() {
 		try {
 			if (add) {
-				context.addRoutes(new RouteBuilder() {
-					@Override
-					public void configure() {
-						String path = nodeInfo.getComponentNameForRoutes()
-								+ topic;
-						from(path).id("mySpecialId_" + listener.hashCode())
-								.process(
-										new ProcessorTranslator(connectionNode,
-												listener));
-					}
-				});
+				synchronized (context.getRouteDefinitions()) {
+					context.addRoutes(new RouteBuilder() {
+						@Override
+						public void configure() {
+							String path = nodeInfo.getComponentNameForRoutes()
+									+ topic;
+							from(path).id("mySpecialId_" + listener.hashCode())
+									.process(
+											new ProcessorTranslator(
+													connectionNode, listener));
+						}
+					});
+				}
 			} else {
 				String path = nodeInfo.getComponentNameForRoutes() + topic;
 				List<RouteDefinition> toRemove = new ArrayList<RouteDefinition>();
-				for (RouteDefinition def : context.getRouteDefinitions()) {
-					String id = def.getId();
-					if(id == null){
-						System.out.println(def);
-					} else if(id.equals("mySpecialId_" + listener.hashCode())){
-						for(FromDefinition from:def.getInputs()){
-							if(from.getUri().equals(path)){
-								toRemove.add(def);
+				synchronized (context.getRouteDefinitions()) {
+					for (RouteDefinition def : context.getRouteDefinitions()) {
+						String id = def.getId();
+						if (id == null) {
+							System.out.println(def);
+						} else if (id.equals("mySpecialId_"
+								+ listener.hashCode())) {
+							for (FromDefinition from : def.getInputs()) {
+								if (from.getUri().equals(path)) {
+									toRemove.add(def);
+								}
 							}
 						}
 					}
+					context.removeRouteDefinitions(toRemove);
 				}
-				context.removeRouteDefinitions(toRemove);
 			}
 			statusCallback.success();
 		} catch (Exception ex) {
