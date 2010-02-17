@@ -144,7 +144,7 @@ public class ArtifactQueryPerformanceTests {
                   CoreArtifactTypes.WorkRuleDefinition);
 
       long startTime = System.currentTimeMillis();
-      List<Artifact> result = ArtifactQuery.getArtifactListFromArtifactTypes(artTypes, common, false);
+      List<Artifact> result = ArtifactQuery.getArtifactListFromTypes(artTypes, common, false);
       long elapsedTime = System.currentTimeMillis() - startTime;
 
       System.out.println(String.format("testGetArtifactsByArtTypes took %dms for %d artifacts", elapsedTime,
