@@ -34,7 +34,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
 /**
  * @author Ryan Schmitt
  */
-public class TransactionPurgeTest {
+public class PurgeTransactionTest {
    private Branch branch;
    Collection<Artifact> softArts;
    private int createId;
