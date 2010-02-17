@@ -282,7 +282,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
 
       private static Artifact getOrCreateTestCaseFolder(SkynetTransaction transaction) throws OseeCoreException {
-         return getOrCreateTestUnitSubFolder(transaction, Requirements.TEST_CASES);
+         return getOrCreateTestUnitSubFolder(transaction, "Test Cases");
       }
 
       private static Artifact getOrCreateCodeUnitFolder(SkynetTransaction transaction) throws OseeCoreException {

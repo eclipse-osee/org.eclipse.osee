@@ -480,6 +480,10 @@ artifactType "Requirement" extends "Artifact" {
    attribute "PublishInline"
 }
 
+abstract artifactType "Direct Software Requirement" extends "Abstract Software Requirement" {
+	guid "BtMwyalHkHkrRo7D0aAA"
+}
+
 abstract artifactType "Abstract Software Requirement" extends "Requirement" {
    guid "ABNAYPwV6H4EkjQ3+QQA"
    attribute "CSCI"
@@ -491,11 +495,11 @@ abstract artifactType "Abstract Software Requirement" extends "Requirement" {
    attribute "Training Effectivity"
 }
 
-artifactType "Software Requirement" extends "MS Word Template", "Abstract Software Requirement" {
+artifactType "Software Requirement" extends "MS Word Template", "Direct Software Requirement" {
    guid "AAMFDiAwhRFXwIyapJAA"
 }
 
-artifactType "Indirect Software Requirement" extends "Software Requirement" {
+artifactType "Indirect Software Requirement" extends "Abstract Software Requirement", "MS Word Template" {
    guid "AAMFDiC7HRQMqr5S0QwA"
 }
 

@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.config.demo.config.PopulateDemoActions;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams;
@@ -25,8 +24,9 @@ import org.eclipse.osee.ats.navigate.CreateNewVersionItem;
 import org.eclipse.osee.ats.navigate.IAtsNavigateItem;
 import org.eclipse.osee.ats.navigate.ReleaseVersionItem;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
-import org.eclipse.osee.ats.world.search.ArtifactTypesSearchItem;
+import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
@@ -124,8 +124,8 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", "Actions"));
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Decision Review", "Decision Review"));
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all PeerToPeer Review", "PeerToPeer Review"));
-      new SearchNavigateItem(adminItems, new ArtifactTypesSearchItem("Show all Team Workflows",
-            TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()));
+      new SearchNavigateItem(adminItems, new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows",
+            AtsArtifactTypes.TeamWorkflow));
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", "Task"));
 
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health", FrameworkImage.LASER);

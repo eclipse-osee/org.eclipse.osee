@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.CompareTwoStringsAction;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.health.ValidateChangeReportByHrid;
 import org.eclipse.osee.ats.health.ValidateChangeReports;
@@ -37,7 +36,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
-import org.eclipse.osee.ats.world.search.ArtifactTypesSearchItem;
+import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
@@ -207,8 +206,8 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
                   new ArtifactTypeSearchItem("Show all Decision Review", "Decision Review"));
             new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all PeerToPeer Review",
                   "PeerToPeer Review"));
-            new SearchNavigateItem(adminItems, new ArtifactTypesSearchItem("Show all Team Workflows",
-                  TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()));
+            new SearchNavigateItem(adminItems, new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows",
+                  AtsArtifactTypes.TeamWorkflow));
             new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", "Task"));
 
             new DoesNotWorkItemAts(adminItems);

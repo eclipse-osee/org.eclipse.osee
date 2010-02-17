@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 
 /**
  * @author Roberto E. Escobar
@@ -48,7 +47,8 @@ public class RequirementData extends BaseTraceDataCache {
    @Override
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
       List<Artifact> allSwRequirements =
-            ArtifactQuery.getArtifactListFromTypes(Requirements.getAllSoftwareRequirementTypes(), getBranch(), false);
+            ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.AbstractSoftwareRequirement,
+                  getBranch(), false);
       populateTraceMap(monitor, allSwRequirements, allSwRequirementsMap);
 
       for (Artifact requirement : getAllSwRequirements()) {
@@ -74,7 +74,7 @@ public class RequirementData extends BaseTraceDataCache {
 
    /**
     * Get Requirement Artifact based on traceMark mark
-    *
+    * 
     * @param traceMark
     * @return requirement artifact
     */
@@ -85,7 +85,7 @@ public class RequirementData extends BaseTraceDataCache {
    /**
     * Get Requirement Artifact based on traceMark mark if it fails, check if trace mark is a structured requirement and
     * try again
-    *
+    * 
     * @param traceMark
     * @return requirement artifact
     */

@@ -16,11 +16,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -57,10 +57,9 @@ public class SetRequirementCategory extends AbstractBlam {
       reqPriorities = extractor.getReqPriorities();
 
       if (bulkLoad) {
-         for (ArtifactType artifactType : Requirements.getAllSoftwareRequirementTypes()) {
-            for (Artifact req : ArtifactQuery.getArtifactListFromType(artifactType, branch)) {
-               reqs.put(req.getName().trim(), req);
-            }
+         for (Artifact req : ArtifactQuery.getArtifactListFromTypeWithInheritence(
+               CoreArtifactTypes.AbstractSoftwareRequirement, branch, false)) {
+            reqs.put(req.getName().trim(), req);
          }
       }
 

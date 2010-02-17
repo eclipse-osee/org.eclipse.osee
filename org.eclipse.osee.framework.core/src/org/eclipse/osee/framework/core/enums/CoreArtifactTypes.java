@@ -38,12 +38,22 @@ public class CoreArtifactTypes extends NamedIdentity implements IArtifactType {
          new CoreArtifactTypes("AAMFDiAwhRFXwIyapJAA", "Software Requirement");
    public static final CoreArtifactTypes SoftwareRequirementDrawing =
          new CoreArtifactTypes("ABNClhgUfwj6A3EAArQA", "Software Requirement Drawing");
+   public static final CoreArtifactTypes SoftwareRequirementFunction =
+         new CoreArtifactTypes("ABNBwZMdFgEDTVQ7pTAA", "Software Requirement Function");
+   public static final CoreArtifactTypes SoftwareRequirementProcedure =
+         new CoreArtifactTypes("ABNBLPY4LnIKtcON0mgA", "Software Requirement Procedure");
+   public static final CoreArtifactTypes DirectSoftwareRequirement =
+         new CoreArtifactTypes("BtMwyalHkHkrRo7D0aAA", "Direct Software Requirement");
    public static final CoreArtifactTypes SubsystemRequirement =
          new CoreArtifactTypes("AAMFDiN9KiAkhuLqOhQA", "Subsystem Requirement");
    public static final CoreArtifactTypes TestPlanElement =
          new CoreArtifactTypes("ATi_kUpvPBiW2upYC_wA", "Test Plan Element");
    public static final CoreArtifactTypes TestProcedure =
          new CoreArtifactTypes("AAMFDjsjiGhoWpqM4PQA", "Test Procedure");
+   public static final CoreArtifactTypes TestProcedureNative =
+         new CoreArtifactTypes("AAMFDiWs_HdDJTbPPQgA", "Test Procedure Native");
+   public static final CoreArtifactTypes TestProcedureWML =
+         new CoreArtifactTypes("AAMFDiUeCG3KWx5XqeQA", "Test Procedure WML");
    public static final CoreArtifactTypes TestResultNative =
          new CoreArtifactTypes("ATkaanWmHH3PkhGNVjwA", "Test Result Native");
    public static final CoreArtifactTypes TestResultWML =
@@ -53,6 +63,8 @@ public class CoreArtifactTypes extends NamedIdentity implements IArtifactType {
          new CoreArtifactTypes("AAMFDhLY2TnADPA_EQQA", "Universal Group");
    public static final CoreArtifactTypes User = new CoreArtifactTypes("AAMFDhmr+Dqqe5pn3kAA", "User");
    public static final CoreArtifactTypes UserGroup = new CoreArtifactTypes("AAMFDhrEbXqZKPfWkwAA", "User Group");
+   public static final CoreArtifactTypes WorkItemDefinition =
+         new CoreArtifactTypes("ABNM6pIn_x_3e6a3aIgA", "Work Item Definition");
    public static final CoreArtifactTypes WorkFlowDefinition =
          new CoreArtifactTypes("AAMFDh16eQ1GIHPWlYQA", "Work Flow Definition");
    public static final CoreArtifactTypes WorkPageDefinition =

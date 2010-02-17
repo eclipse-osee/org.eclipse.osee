@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -70,14 +69,9 @@ public class WorkItemDefinitionFactory {
          }
 
          // This load is faster than loading each by artifact type
-         Collection<IArtifactType> artifactTypeNames = new ArrayList<IArtifactType>(4);
-         artifactTypeNames.add(CoreArtifactTypes.WorkRuleDefinition);
-         artifactTypeNames.add(CoreArtifactTypes.WorkPageDefinition);
-         artifactTypeNames.add(CoreArtifactTypes.WorkFlowDefinition);
-         artifactTypeNames.add(CoreArtifactTypes.WorkWidgetDefinition);
-         for (Artifact art : ArtifactQuery.getArtifactListFromTypes(artifactTypeNames,
+         for (Artifact art : ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.WorkItemDefinition,
                BranchManager.getCommonBranch(), false)) {
-            if (art.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
+            if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
                addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
             } else if (art.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
                addItemDefinition(WriteType.New, new WorkWidgetDefinition(art), art);
@@ -93,7 +87,7 @@ public class WorkItemDefinitionFactory {
    /**
     * This should only be called on database initialization or when new work item definitions are created during
     * run-time.
-    *
+    * 
     * @param workItemDefinition
     * @param artifact
     */
@@ -214,7 +208,7 @@ public class WorkItemDefinitionFactory {
    /**
     * Call to get dynamic definitions based on data specified. This is intended for extenders to be able to provide
     * widgets that are either conditionally added or are configured dynamically based on dynamic circumstances
-    *
+    * 
     * @param data
     * @return list of WorkItemDefinitions
     */

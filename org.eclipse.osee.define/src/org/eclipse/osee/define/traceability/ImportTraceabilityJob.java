@@ -238,11 +238,6 @@ public class ImportTraceabilityJob extends Job {
       return codeUnits;
    }
 
-   /**
-    * Get all direct and indirect software requirements
-    * 
-    * @return requirement data
-    */
    public RequirementData getRequirementData() {
       return requirementData;
    }
