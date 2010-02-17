@@ -72,5 +72,9 @@ public enum TestMessages implements MessageID {
 	public String getMessageDestination() {
 		return destination;
 	}
-
+	
+   @Override
+   public boolean isTopic() {
+      return true;
+   }
 }

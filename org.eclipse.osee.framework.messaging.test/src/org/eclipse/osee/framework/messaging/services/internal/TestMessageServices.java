@@ -11,9 +11,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
-
 import junit.framework.Assert;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
@@ -36,9 +34,9 @@ import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;
  */
 public class TestMessageServices extends BaseBrokerTesting{
 
-	private static String BROKER_URI_SERVER = "tcp://localhost:61606";
-	private static String BROKER_URI = "failover:tcp://localhost:61606";
-	@org.junit.Before
+	private static String BROKER_URI_SERVER = "tcp://localhost:61616";
+	private static String BROKER_URI = "tcp://localhost:61616";
+//	@org.junit.Before
 	public void startBroker(){
 		try {
 			startEmbeddedBroker("testBroker", BROKER_URI_SERVER);
@@ -47,7 +45,7 @@ public class TestMessageServices extends BaseBrokerTesting{
 		}	
 	}
 	
-	@org.junit.After
+//	@org.junit.After
 	public void stopBroker(){
 		try {
 			stopEmbeddedBroker("testBroker", BROKER_URI_SERVER);
@@ -55,7 +53,7 @@ public class TestMessageServices extends BaseBrokerTesting{
 			ex.printStackTrace();
 		}	
 	}
-	
+//	@Ignore
 	@org.junit.Test
 	public void testServiceUpClientComesUp() throws Exception{
 		ConnectionNode connection = getMessaging().get(new NodeInfo("osee-jms", new URI(BROKER_URI)));
@@ -72,18 +70,22 @@ public class TestMessageServices extends BaseBrokerTesting{
 		TestNotification testNotification = new TestNotification();
 		lookup.register("testService", "1002", testNotification);
 		
-		testWait(1000);
+		testWait(3000);
 		Assert.assertTrue(testNotification.getServiceUpdates() >= 1);
 		int currentNumberOfUpdates = testNotification.getServiceUpdates();
-		testWait(61000);
+		testWait(35000);
 		
-		Assert.assertEquals(currentNumberOfUpdates + 2, testNotification.getServiceUpdates());
+		Assert.assertEquals(currentNumberOfUpdates + 1, testNotification.getServiceUpdates());
 		Assert.assertTrue(registrar.unregisterService("testService", "1002", "some.service.id"));
+		
+		testWait(1000);
+		
+		Assert.assertEquals(1, testNotification.getServiceAway());//message from unregister
 		
 		testWait(90000);
 		
-		Assert.assertEquals(1, testNotification.getServiceAway());
-		Assert.assertEquals(currentNumberOfUpdates + 2, testNotification.getServiceUpdates());
+		Assert.assertEquals(2, testNotification.getServiceAway());//service renewal timout
+		Assert.assertEquals(currentNumberOfUpdates + 1, testNotification.getServiceUpdates());
 		Assert.assertTrue(lookup.unregister("testService", "1002", testNotification));
 		
 		registrar.stop();
@@ -91,6 +93,7 @@ public class TestMessageServices extends BaseBrokerTesting{
 		testWait(2000);
 	}
 	
+//	@Ignore
 	@org.junit.Test
 	public void testClientUpServiceComesUp() throws Exception{
 		ConnectionNode connection = getMessaging().get(new NodeInfo("osee-jms", new URI(BROKER_URI)));
@@ -106,21 +109,25 @@ public class TestMessageServices extends BaseBrokerTesting{
 		lookup.register("testService", "1002", testNotification);
 		
 		registrar.registerService("testService", "1002", "some.service.id", new URI("tcp://localhost:666"), new TestPopulator(), 30);
-		testWait(1000);
+		testWait(3000);
 		
 		Assert.assertTrue(testNotification.getServiceUpdates() >= 1);
 		int currentNumberOfUpdates = testNotification.getServiceUpdates();
 		
-		testWait(61000);
+		testWait(35000);
 		
-		Assert.assertEquals(currentNumberOfUpdates + 2, testNotification.getServiceUpdates());
+		Assert.assertEquals(currentNumberOfUpdates + 1, testNotification.getServiceUpdates());
 		Assert.assertTrue(registrar.unregisterService("testService", "1002", "some.service.id"));
 		
-		testWait(90000);
+		testWait(1000);
+      
+      Assert.assertEquals(1, testNotification.getServiceAway());//message from unregister
+      
+      testWait(90000);
+      
+      Assert.assertEquals(2, testNotification.getServiceAway());//service renewal timout
 		
-		Assert.assertEquals(1, testNotification.getServiceAway());
-		
-		Assert.assertEquals(currentNumberOfUpdates + 2, testNotification.getServiceUpdates());
+		Assert.assertEquals(currentNumberOfUpdates + 1, testNotification.getServiceUpdates());
 		Assert.assertTrue(lookup.unregister("testService", "1002", testNotification));
 		
 		lookup.stop();
@@ -128,6 +135,7 @@ public class TestMessageServices extends BaseBrokerTesting{
 		testWait(2000);
 	}
 	
+//	@Ignore
 	@org.junit.Test
 	public void testServiceComesUpClientGetsReply() throws Exception{
 		ConnectionNode connection = getMessaging().get(new NodeInfo("osee-jms", new URI(BROKER_URI)));
@@ -135,8 +143,9 @@ public class TestMessageServices extends BaseBrokerTesting{
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
 		
 		RemoteServiceRegistrar registrar = new RemoteServiceRegistrarImpl(connection, executor);
-		registrar.registerService("testService", "1002", "some.service.id", new URI("tcp://localhost:666"), new TestPopulator(), 50000);
 		registrar.start();
+		registrar.registerService("testService", "1002", "some.service.id", new URI("tcp://localhost:666"), new TestPopulator(), 50000);
+		
 		
 		testWait(2000);
 		RemoteServiceLookup lookup = new RemoteServiceLookupImpl(connection, executor);
@@ -155,6 +164,7 @@ public class TestMessageServices extends BaseBrokerTesting{
 		testWait(2000);
 	}
 	
+//	@Ignore
 	@org.junit.Test
 	public void testReply() throws Exception{
 		ConnectionNode connection = getMessaging().get(new NodeInfo("osee-jms", new URI(BROKER_URI)));
@@ -162,10 +172,12 @@ public class TestMessageServices extends BaseBrokerTesting{
 		TestReplyListener replyReciever = new TestReplyListener();
 		connection.subscribe(TestMessages.replyTopic, service, new OseeMessagingStatusImpl("failed to subscribe", TestMessageServices.class));
 		connection.subscribeToReply(TestMessages.replyTopic, replyReciever);
+		testWait(1000);
 		System.out.println(System.currentTimeMillis());
 		connection.send(TestMessages.replyTopic, "test", new BasicOseeMessagingStatus());
 		System.out.println(System.currentTimeMillis());
-		testWait(2000);
+		testWait(5000);
+		System.out.println(System.currentTimeMillis());
 		Assert.assertEquals(1, service.sentReply);
 		Assert.assertEquals(1, replyReciever.receivedReply);
 		connection.unsubscribe(TestMessages.replyTopic, service, new OseeMessagingStatusImpl("failed to subscribe", TestMessageServices.class));
@@ -181,15 +193,14 @@ public class TestMessageServices extends BaseBrokerTesting{
 			if(replyConnection.isReplyRequested()){
 				try {
 					System.out.println(System.currentTimeMillis());
-					System.out.println(msg);
+					System.out.println(System.currentTimeMillis() +" reply requested - " + msg);
 					replyConnection.send(msg, null, new BasicOseeMessagingStatus());
 					sentReply++;
 				} catch (OseeCoreException ex) {
 					ex.printStackTrace();
 				}
 			} else {
-				System.out.println(System.currentTimeMillis());
-				System.out.println(message);
+				System.out.println(System.currentTimeMillis() +" got a reply - " + message);
 				if(message.toString().equals(msg)){
 					receivedReply++;
 				}
@@ -200,6 +211,7 @@ public class TestMessageServices extends BaseBrokerTesting{
 	private class BasicOseeMessagingStatus implements OseeMessagingStatusCallback	{
 		@Override
 		public void fail(Throwable th) {
+			th.printStackTrace();
 			OseeLog.log(BasicOseeMessagingStatus.class, Level.SEVERE, th);
 		}
 		@Override

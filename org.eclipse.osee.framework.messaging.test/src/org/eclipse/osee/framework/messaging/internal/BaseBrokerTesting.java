@@ -39,7 +39,7 @@ public class BaseBrokerTesting {
 	
 	@org.junit.Before
 	public void beforeTest(){
-		messageServiceProviderImpl = new MessageServiceProviderImpl();
+		messageServiceProviderImpl = new MessageServiceProviderImpl(Thread.currentThread().getContextClassLoader());
 		brokers = new ConcurrentHashMap<String, BrokerService>();
 		try {
 			messageServiceProviderImpl.start();
