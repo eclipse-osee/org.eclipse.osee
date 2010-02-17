@@ -48,7 +48,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    private final HashMap<String, List<Artifact>> subsysToSubsysReqsMap;
    private final List<Artifact> lowLevelReqs;
    private final HashSet<Artifact> components;
-   private String reqtypeName;
+   private Collection<ArtifactType> lowerLevelTypes;
 
    @Override
    public String getName() {
@@ -74,12 +74,12 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       monitor.beginTask("Generate Report", 100);
 
       init();
-      ArtifactType reqType = variableMap.getArtifactType("Low Level Requirement Type");
-      reqtypeName = reqType.getName();
+      lowerLevelTypes = variableMap.getCollection(ArtifactType.class, "Low Level Requirement Type(s)");
+
       initLowLevelRequirements(variableMap.getArtifacts("Lower Level Requirements"));
       initAllocationComponents(variableMap.getArtifacts("Allocation Components"));
 
-      Branch branch = variableMap.getBranch("Branch");
+      Branch branch = lowLevelReqs.get(0).getBranch();
 
       monitor.subTask("Loading Higher Level Requirements"); // bulk load to improve performance
       monitor.worked(1);
@@ -93,7 +93,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       generateSubsystemToLowLevelReqTrace();
 
       excelWriter.endWorkbook();
-      IFile iFile = OseeData.getIFile("Subsystem_To_" + reqtypeName + "_Trace.xml");
+      IFile iFile = OseeData.getIFile("Subsystem_To_Lower_Level_Trace.xml");
       AIFile.writeToFile(iFile, charBak);
       Program.launch(iFile.getLocation().toOSString());
    }
@@ -101,17 +101,17 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    private void generateLowLevelToSubsystemTrace() throws IOException, OseeCoreException {
       excelWriter.startSheet("5.1", 7);
 
-      excelWriter.writeRow("5.1  " + reqtypeName + "s Traceability to Subsystem Requirements");
-      excelWriter.writeRow(reqtypeName, null, null, "Traceable Subsystem Requirement");
-      excelWriter.writeRow("Paragraph #", "Paragraph Title", CoreAttributeTypes.QUALIFICATION_METHOD.getName(), "PIDS",
-            "Paragraph #", "Paragraph Title", Requirements.SUBSYSTEM);
+      excelWriter.writeRow("5.1  Lower Level Requirements Traceability to Subsystem Requirements");
+      excelWriter.writeRow("Lower Level Requirements", null, null, "Traceable Subsystem Requirement");
+      excelWriter.writeRow("Paragraph #", "Paragraph Title", "Qualification Method", "PIDS", "Paragraph #",
+            "Paragraph Title", Requirements.SUBSYSTEM);
 
       String[] row = new String[7];
 
       for (Artifact lowLevelReq : lowLevelReqs) {
          row[0] = correct(lowLevelReq.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, ""));
          row[1] = lowLevelReq.getName();
-         if (lowLevelReq.isOfType(reqtypeName)) {
+         if (isLowerLevelRequirement(lowLevelReq)) {
             row[2] = lowLevelReq.getAttributesToString(CoreAttributeTypes.QUALIFICATION_METHOD);
 
             for (Artifact subSysReq : lowLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level)) {
@@ -135,10 +135,19 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       excelWriter.endSheet();
    }
 
+   private boolean isLowerLevelRequirement(Artifact artifact) throws OseeCoreException {
+      for (ArtifactType artifactType : lowerLevelTypes) {
+         if (artifact.isOfType(artifactType)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    private void generateSubsystemToLowLevelReqTrace() throws IOException, OseeCoreException {
       excelWriter.startSheet("5.2", 6);
 
-      excelWriter.writeRow("5.2  Subsystem Requirements Allocation Traceability to " + reqtypeName + "s");
+      excelWriter.writeRow("5.2  Subsystem Requirements Allocation Traceability to Lower Level Requirements");
       excelWriter.writeRow();
 
       int count = 1;
@@ -148,8 +157,8 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
          excelWriter.writeRow();
          excelWriter.writeRow();
-         excelWriter.writeRow("5.2." + count++ + " " + subSysName + " Requirements Allocation Traceability to " + reqtypeName + "s");
-         excelWriter.writeRow(Requirements.SUBSYSTEM_REQUIREMENT, null, "Traceable " + reqtypeName, null);
+         excelWriter.writeRow("5.2." + count++ + " " + subSysName + " Requirements Allocation Traceability to Lower Level Requirements");
+         excelWriter.writeRow(Requirements.SUBSYSTEM_REQUIREMENT, null, "Traceable Lower Level Requirements", null);
          excelWriter.writeRow("Paragraph #", "Paragraph Title", "Paragraph #", "Paragraph Title");
 
          String[] row = new String[4];
@@ -231,7 +240,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" toolTip=\"Select a requirements branch.\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Lower Level Requirements\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Allocation Components\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Low Level Requirement Type\" defaultValue=\"Software Requirement\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Lower Level Requirements\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Allocation Components\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Low Level Requirement Type(s)\" multiSelect=\"true\" /></xWidgets>";
    }
 
    @Override
