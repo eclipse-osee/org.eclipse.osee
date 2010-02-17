@@ -3,8 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Jini Plug-in (Incubation)
 Bundle-SymbolicName: net.jini;singleton:=true
 Bundle-Version: 2.1.0.qualifier
-Bundle-ClassPath: jini.jar,
- jini2_1/lib/browser.jar,
+Bundle-ClassPath: jini2_1/lib/browser.jar,
  jini2_1/lib/checkconfigurationfile.jar,
  jini2_1/lib/checkser.jar,
  jini2_1/lib/classdep.jar,
