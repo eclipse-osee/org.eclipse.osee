@@ -6,13 +6,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.core.internal.fields.AbstractOseeField;
 import org.eclipse.osee.framework.core.internal.fields.IOseeField;
 import org.eclipse.osee.framework.core.internal.fields.OseeField;
 import org.eclipse.osee.framework.core.internal.fields.UniqueIdField;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 public abstract class AbstractOseeType extends NamedIdentity implements IOseeStorable {
@@ -43,9 +43,7 @@ public abstract class AbstractOseeType extends NamedIdentity implements IOseeSto
    @SuppressWarnings("unchecked")
    protected <T> IOseeField<T> getField(String key) throws OseeCoreException {
       IOseeField<T> field = (AbstractOseeField<T>) fieldMap.get(key);
-      if (field == null) {
-         throw new OseeArgumentException(String.format("Field [%s] was null", key));
-      }
+      Conditions.checkNotNull(field, String.format("Field [%s]", key));
       return field;
    }
 
