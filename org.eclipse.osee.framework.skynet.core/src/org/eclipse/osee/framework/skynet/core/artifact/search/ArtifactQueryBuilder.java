@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -103,7 +104,7 @@ public class ArtifactQueryBuilder {
       this(null, artifactId, null, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel, true);
    }
 
-   public ArtifactQueryBuilder(String guidOrHrid, IOseeBranch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(String guidOrHrid, IOseeBranch branch, boolean allowDeleted, ArtifactLoad loadLevel) throws OseeCoreException {
       this(null, 0, null, ensureValid(guidOrHrid), null, branch, null, allowDeleted, loadLevel, true);
    }
 
@@ -186,9 +187,9 @@ public class ArtifactQueryBuilder {
       return criteria.toArray(new AbstractArtifactSearchCriteria[criteria.size()]);
    }
 
-   private static String ensureValid(String id) {
+   private static String ensureValid(String id) throws OseeArgumentException {
       if (id == null) {
-         throw new IllegalArgumentException("The id can not be null.");
+         throw new OseeArgumentException("The id can not be null.");
       }
       return id;
    }

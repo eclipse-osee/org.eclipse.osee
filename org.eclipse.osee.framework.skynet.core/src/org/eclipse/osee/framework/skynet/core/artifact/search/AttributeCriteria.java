@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -68,18 +69,19 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
    /**
     * Constructor for search criteria that finds an attribute of the given type with its current value exactly equal to
     * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
-    * if the single value constructor was called. This search does not support the wildcard for multiple values.
+    * if the single value constructor was called. This search does not support the wildcard for multiple values. Throws
+    * OseeArgumentException values is empty or null
     * 
     * @param attributeTypeName
     * @param values
     * @throws OseeCoreException
     */
    public AttributeCriteria(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
-      this(attributeType, null, values, false, Operator.EQUAL);
+      this(attributeType, null, validate(values), false, Operator.EQUAL);
    }
 
    public AttributeCriteria(String attributeTypeName, Collection<String> values) throws OseeCoreException {
-      this(toAttributeType(attributeTypeName), null, values, false, Operator.EQUAL);
+      this(toAttributeType(attributeTypeName), null, validate(values), false, Operator.EQUAL);
    }
 
    /**
@@ -93,7 +95,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * @throws OseeCoreException
     */
    public AttributeCriteria(String attributeTypeName, Collection<String> values, Operator operator) throws OseeCoreException {
-      this(toAttributeType(attributeTypeName), null, values, false, operator);
+      this(toAttributeType(attributeTypeName), null, validate(values), false, operator);
    }
 
    /**
@@ -111,6 +113,13 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
 
    private static AttributeType toAttributeType(String attributeTypeName) throws OseeCoreException {
       return attributeTypeName == null ? null : AttributeTypeManager.getType(attributeTypeName);
+   }
+
+   private static Collection<String> validate(Collection<String> values) throws OseeArgumentException {
+      if (values == null || values.isEmpty()) {
+         throw new OseeArgumentException("values provided to AttributeCriteria must not be null or empty");
+      }
+      return values;
    }
 
    public AttributeCriteria(IAttributeType attributeType, String value, Collection<String> values, boolean historical, Operator operator) throws OseeDataStoreException, OseeTypeDoesNotExist {
@@ -137,7 +146,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
    public void addToTableSql(ArtifactQueryBuilder builder) {
       attrAlias = builder.appendAliasedTable("osee_attribute");
       txsAlias = builder.appendAliasedTable("osee_txs");
-      if (joinQuery != null) {
+      if (joinQuery != null && operator == Operator.EQUAL) {
          joinAlias = builder.appendAliasedTable(joinQuery.getJoinTableName());
       }
    }
@@ -165,13 +174,21 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       }
 
       if (joinQuery != null) {
-         builder.append(attrAlias);
-         builder.append(".value ");
-         builder.append(operator + " ");
-         builder.append(joinAlias);
-         builder.append(".id AND ");
-         builder.append(joinAlias);
-         builder.append(".query_id = ? AND ");
+         if (operator == Operator.EQUAL) {
+            builder.append(attrAlias);
+            builder.append(".value = ");
+            builder.append(joinAlias);
+            builder.append(".id AND ");
+            builder.append(joinAlias);
+            builder.append(".query_id = ? AND ");
+         } else {
+            builder.append("NOT EXISTS (SELECT 1 from ");
+            builder.append(joinQuery.getJoinTableName());
+            builder.append(" WHERE id = ");
+            builder.append(attrAlias);
+            builder.append(".value AND query_id = ?) AND ");
+         }
+
          builder.addParameter(joinQuery.getQueryId());
          joinQuery.store();
       }
