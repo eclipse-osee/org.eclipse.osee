@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.osee.core.feature.test"
       label="%featureName"
-      version="0.9.1.qualifier"
+      version="0.9.2.qualifier"
       provider-name="%featureProvider">
 
    <description>
@@ -20,7 +20,7 @@
    <requires>
       <import plugin="org.junit4" version="4.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osee.framework.jdk.core" version="0.4.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.osee.core.feature" version="0.9.1.qualifier" match="greaterOrEqual"/>
+      <import feature="org.eclipse.osee.core.feature" version="0.9.2.qualifier" match="greaterOrEqual"/>
    </requires>
 
    <plugin

@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.osee.framework.ui.feature"
       label="%featureName"
-      version="0.9.1.qualifier"
+      version="0.9.2.qualifier"
       provider-name="%providerName"
       plugin="org.eclipse.osee.framework.ui.product">
 
@@ -74,9 +74,9 @@
       <import plugin="org.eclipse.xtext.log4j"/>
       <import plugin="org.eclipse.osee.ote.define"/>
       <import plugin="org.eclipse.osee.framework.svn"/>
-      <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.1.qualifier" match="greaterOrEqual"/>
-      <import feature="org.eclipse.osee.core.ui.feature" version="0.9.1.qualifier" match="greaterOrEqual"/>
-      <import feature="org.eclipse.osee.core.feature" version="0.9.1.qualifier" match="greaterOrEqual"/>
+      <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.2.qualifier" match="greaterOrEqual"/>
+      <import feature="org.eclipse.osee.core.ui.feature" version="0.9.2.qualifier" match="greaterOrEqual"/>
+      <import feature="org.eclipse.osee.core.feature" version="0.9.2.qualifier" match="greaterOrEqual"/>
    </requires>
 
    <plugin
