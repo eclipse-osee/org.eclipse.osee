@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jsk-lib.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib-ext/jsk-policy.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/browser.jar" sourcepath="jini2_1/source.zip"/>
@@ -17,7 +19,6 @@
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jini-core.jar" sourcepath="jini2_1/source.zip"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jini-ext.jar" sourcepath="jini2_1/source.zip"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jsk-debug-policy.jar" sourcepath="net.jinisrc.zip"/>
-	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jsk-lib.jar" sourcepath="net.jinisrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jsk-platform.jar" sourcepath="net.jinisrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jsk-resources.jar" sourcepath="net.jinisrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/mahalo.jar" sourcepath="net.jinisrc.zip"/>
