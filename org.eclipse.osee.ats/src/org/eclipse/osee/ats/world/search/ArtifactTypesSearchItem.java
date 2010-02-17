@@ -41,7 +41,7 @@ public class ArtifactTypesSearchItem extends WorldUISearchItem {
       if (artifactTypes == null || artifactTypes.size() == 0) {
          throw new OseeArgumentException("Inavlid search \"" + getName() + "\"");
       }
-      return ArtifactQuery.getArtifactListFromArtifactTypes(artifactTypes, AtsUtil.getAtsBranch(), false);
+      return ArtifactQuery.getArtifactListFromTypes(artifactTypes, AtsUtil.getAtsBranch(), false);
    }
 
    @Override
