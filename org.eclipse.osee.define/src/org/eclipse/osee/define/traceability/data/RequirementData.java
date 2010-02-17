@@ -48,8 +48,7 @@ public class RequirementData extends BaseTraceDataCache {
    @Override
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
       List<Artifact> allSwRequirements =
-            ArtifactQuery.getArtifactListFromArtifactTypes(Requirements.getAllSoftwareRequirementTypes(), getBranch(),
-                  false);
+            ArtifactQuery.getArtifactListFromTypes(Requirements.getAllSoftwareRequirementTypes(), getBranch(), false);
       populateTraceMap(monitor, allSwRequirements, allSwRequirementsMap);
 
       for (Artifact requirement : getAllSwRequirements()) {
@@ -75,7 +74,7 @@ public class RequirementData extends BaseTraceDataCache {
 
    /**
     * Get Requirement Artifact based on traceMark mark
-    * 
+    *
     * @param traceMark
     * @return requirement artifact
     */
@@ -86,7 +85,7 @@ public class RequirementData extends BaseTraceDataCache {
    /**
     * Get Requirement Artifact based on traceMark mark if it fails, check if trace mark is a structured requirement and
     * try again
-    * 
+    *
     * @param traceMark
     * @return requirement artifact
     */
