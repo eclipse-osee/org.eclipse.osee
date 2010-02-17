@@ -319,9 +319,10 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    }
 
    /**
-    * Currently this method provides support for quasi artifact type inheritance
+    * Determines if this artifact type equals, or is a sub-type of, the artifact type specified by the
+    * <code>otherType</code> parameter.
     * 
-    * @param artifactType
+    * @param artifactTypeName
     * @return whether this artifact's type or any of its super-types (any ancestor type) are the specified type
     * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist
@@ -330,6 +331,14 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return artifactType.inheritsFrom(ArtifactTypeManager.getType(artifactTypeName));
    }
 
+   /**
+    * Determines if this artifact type equals, or is a sub-type of, the artifact type specified by the
+    * <code>otherType</code> parameter.
+    * 
+    * @param oseeType
+    * @return
+    * @throws OseeCoreException
+    */
    public boolean isOfType(IArtifactType oseeType) throws OseeCoreException {
       return artifactType.inheritsFrom(oseeType);
    }
