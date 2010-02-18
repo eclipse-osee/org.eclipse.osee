@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
-import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -377,7 +376,7 @@ public class ArtifactQuery {
             300, null);
    }
 
-   public static List<Artifact> getArtifactListFromAttribute(AttributeType attributeType, String attributeValue, IOseeBranch branch) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromAttribute(IAttributeType attributeType, String attributeValue, IOseeBranch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeType, attributeValue)).getArtifacts(
             300, null);
    }
@@ -385,9 +384,8 @@ public class ArtifactQuery {
    /**
     * Return all artifacts that have one or more attributes of given type regardless of the value
     */
-   public static List<Artifact> getArtifactListFromAttributeType(String attributeTypeName, IOseeBranch branch) throws OseeCoreException {
-      return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeTypeName)).getArtifacts(300,
-            null);
+   public static List<Artifact> getArtifactListFromAttributeType(IAttributeType attributeType, IOseeBranch branch) throws OseeCoreException {
+      return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeType)).getArtifacts(300, null);
    }
 
    private static ArtifactQueryBuilder queryFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, IOseeBranch branch) throws OseeCoreException {

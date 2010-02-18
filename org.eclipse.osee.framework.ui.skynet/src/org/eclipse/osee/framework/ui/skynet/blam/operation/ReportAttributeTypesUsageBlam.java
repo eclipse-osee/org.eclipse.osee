@@ -33,6 +33,7 @@ public class ReportAttributeTypesUsageBlam extends AbstractBlam {
       return "Report Attribute Types Usage";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Report Usage of AttributeTypes on Branch", IProgressMonitor.UNKNOWN);
 
@@ -42,7 +43,7 @@ public class ReportAttributeTypesUsageBlam extends AbstractBlam {
       xResultData.addRaw(AHTML.beginMultiColumnTable(100, 1));
       xResultData.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"AttributeType", "Occurances"}));
       for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
-         Collection<Artifact> arts = ArtifactQuery.getArtifactListFromAttributeType(attributeType.getName(), branch);
+         Collection<Artifact> arts = ArtifactQuery.getArtifactListFromAttributeType(attributeType, branch);
          xResultData.addRaw(AHTML.addRowMultiColumnTable(attributeType.getName(), String.valueOf(arts.size())));
       }
       xResultData.addRaw(AHTML.endMultiColumnTable());
@@ -59,6 +60,7 @@ public class ReportAttributeTypesUsageBlam extends AbstractBlam {
       return "Performs ArtifactQuery search on all attribyte types for a selected branch and reports usage by \"current\" artifacts.";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
    }

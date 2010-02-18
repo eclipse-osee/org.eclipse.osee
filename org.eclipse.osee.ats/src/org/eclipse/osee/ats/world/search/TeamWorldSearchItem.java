@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -45,7 +46,9 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 public class TeamWorldSearchItem extends WorldUISearchItem {
 
    public enum ReleasedOption {
-      Released, UnReleased, Both
+      Released,
+      UnReleased,
+      Both
    };
    private Collection<TeamDefinitionArtifact> teamDefs;
    private final boolean recurseChildren;
@@ -100,9 +103,11 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    }
 
    public Collection<String> getProductSearchName() {
-      if (teamDefNames != null)
+      if (teamDefNames != null) {
          return teamDefNames;
-      else if (teamDefs != null) return Artifacts.artNames(teamDefs);
+      } else if (teamDefs != null) {
+         return Artifacts.artNames(teamDefs);
+      }
       return new ArrayList<String>();
    }
 
@@ -144,8 +149,11 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          }
       }
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
-      criteria.add(new AttributeCriteria(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
-            teamDefinitionGuids));
+      if (teamDefinitionGuids.isEmpty()) {
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition));
+      } else {
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition, teamDefinitionGuids));
+      }
 
       if (!showFinished) {
          List<String> cancelOrComplete = new ArrayList<String>(2);

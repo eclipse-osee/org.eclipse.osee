@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -57,7 +58,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
       if (pcrIds != null && pcrIds.size() > 0) {
          criteria.add(new AttributeCriteria(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), pcrIds));
       } else {
-         criteria.add(new AttributeCriteria(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName()));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.LegacyPCRId));
       }
 
       if (teamDefs != null && teamDefs.size() > 0) {

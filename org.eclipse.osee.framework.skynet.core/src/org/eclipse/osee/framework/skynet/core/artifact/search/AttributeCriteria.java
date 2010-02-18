@@ -62,8 +62,8 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * @param value
     * @throws OseeCoreException
     */
-   public AttributeCriteria(String attributeTypeName) throws OseeCoreException {
-      this(attributeTypeName, null, false);
+   public AttributeCriteria(IAttributeType attributeType) throws OseeCoreException {
+      this(attributeType, null, null, false, Operator.EQUAL);
    }
 
    /**

@@ -27,6 +27,7 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ATSNote;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -139,8 +140,6 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    private void fixNotesStateNames() throws OseeCoreException {
       Map<String, Integer> valueToGammaId = new HashMap<String, Integer>();
       String SELECT_QUERY = "select * from osee_attribute where value like '%quot; State%'";
-      String UPDATE_QUERY = "update osee_attribute set value = ? where gamma_id = ?";
-
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_QUERY);
@@ -176,7 +175,6 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    private void convertAtsStateNotesAndDefectItemsUserIds() throws OseeCoreException {
       String SELECT_QUERY = "select * from osee_attribute where value like ? and attr_type_id in (84,92,72,73)";
-      String UPDATE_QUERY = "update osee_attribute set value = ? where gamma_id = ?";
       Map<String, String> oldIdToNewId = new HashMap<String, String>();
       oldIdToNewId.put("<va053c>", "<1588621>");
       oldIdToNewId.put("<fw314c>", "<1631765>");
@@ -229,7 +227,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          Matcher m = traxPattern.matcher(comment);
          if (m.find()) {
             String first = m.group(1);
-            String second = m.group(2);
+            m.group(2);
             String newComment = first;
             if (!comment.equals(newComment)) {
                renamed = true;
@@ -279,7 +277,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          Matcher m = traxPattern.matcher(branch.getName());
          if (m.find()) {
             String first = m.group(1);
-            String second = m.group(2);
+            m.group(2);
             String newBranchName = first;
             if (!branchName.equals(newBranchName)) {
                renamed = true;
@@ -446,8 +444,8 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    private void fixTestTaskResolutions() throws OseeCoreException {
       System.out.println("Started fixTestTaskResolutions...");
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromAttributeType(
-            ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), AtsUtil.getAtsBranch())) {
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromAttributeType(AtsAttributeTypes.Resolution,
+            AtsUtil.getAtsBranch())) {
          if (artifact instanceof TaskArtifact) {
             TaskArtifact taskArt = (TaskArtifact) artifact;
             String resolution =
