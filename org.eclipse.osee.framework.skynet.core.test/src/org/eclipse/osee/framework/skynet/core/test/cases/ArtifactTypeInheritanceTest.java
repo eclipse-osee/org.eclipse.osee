@@ -18,8 +18,10 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * High-level test to ensure demo artifact types correctly inherit from artifact
@@ -27,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
  * @author Roberto E. Escobar
  */
 public class ArtifactTypeInheritanceTest {
-
    @org.junit.Test
    public void testIsOfTypeWithNull() throws OseeCoreException {
       ArtifactType baseArtifactType = ArtifactTypeManager.getType("Artifact");
@@ -49,12 +50,13 @@ public class ArtifactTypeInheritanceTest {
       Set<ArtifactType> allTypes = new HashSet<ArtifactType>(ArtifactTypeManager.getAllTypes());
       allTypes.remove(baseArtifactType);
 
-      Collection<AttributeType> baseAttributeTypes = baseArtifactType.getAttributeTypes(CoreBranches.SYSTEM_ROOT);
+      Branch branch = BranchManager.getBranch(CoreBranches.SYSTEM_ROOT);
+      Collection<AttributeType> baseAttributeTypes = baseArtifactType.getAttributeTypes(branch);
 
       Assert.assertTrue(baseAttributeTypes.size() > 0); // Must have at least name
 
       for (ArtifactType artifactType : allTypes) {
-         Collection<AttributeType> childAttributeTypes = artifactType.getAttributeTypes(CoreBranches.SYSTEM_ROOT);
+         Collection<AttributeType> childAttributeTypes = artifactType.getAttributeTypes(branch);
          Collection<AttributeType> complement = Collections.setComplement(baseAttributeTypes, childAttributeTypes);
          Assert.assertTrue(String.format("[%s] did not inherit %s ", artifactType.getName(), complement),
                complement.isEmpty());

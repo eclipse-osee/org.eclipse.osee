@@ -76,7 +76,9 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
       if (!teamTasksCache.containsKey(sma)) {
          Collection<TaskArtifact> taskArtifacts =
                sma.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
-         if (taskArtifacts.size() == 0) return taskArtifacts;
+         if (taskArtifacts.size() == 0) {
+            return taskArtifacts;
+         }
          teamTasksCache.put(sma, taskArtifacts);
       }
       return teamTasksCache.get(sma);
@@ -99,7 +101,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
 
    public static List<Artifact> getArtifactsByActive(ArtifactType artifactType, Active active) throws OseeCoreException {
       AtsBulkLoad.run(true);
-      return ArtifactCache.getArtifactsByType(artifactType, active);
+      return AtsUtil.getActive(ArtifactCache.getArtifactsByType(artifactType), active, null);
    }
 
    public static Artifact getSoleArtifactByName(IArtifactType artifactType, String name) throws OseeCoreException {
@@ -123,10 +125,10 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
                WorkItemDefinitionFactory.deCache(artifact);
             }
             if (artifact instanceof TaskArtifact) {
-               teamTasksCache.remove(((TaskArtifact) artifact.getParent()));
+               teamTasksCache.remove(artifact.getParent());
             }
             if (artifact instanceof TaskableStateMachineArtifact) {
-               teamTasksCache.remove((TaskableStateMachineArtifact) artifact);
+               teamTasksCache.remove(artifact);
             }
          }
       } catch (Exception ex) {
@@ -148,10 +150,10 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
             WorkItemDefinitionFactory.deCache(artifact);
          }
          if (artifact instanceof TaskArtifact) {
-            teamTasksCache.remove(((TaskArtifact) artifact.getParent()));
+            teamTasksCache.remove(artifact.getParent());
          }
          if (artifact instanceof TaskableStateMachineArtifact) {
-            teamTasksCache.remove((TaskableStateMachineArtifact) artifact);
+            teamTasksCache.remove(artifact);
          }
       }
       for (Artifact artifact : transData.cacheAddedArtifacts) {
@@ -169,18 +171,18 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
                   new WorkFlowDefinition(artifact), artifact);
          }
          if (artifact instanceof TaskArtifact) {
-            teamTasksCache.remove(((TaskArtifact) artifact.getParent()));
+            teamTasksCache.remove(artifact.getParent());
          }
          if (artifact instanceof TaskableStateMachineArtifact) {
-            teamTasksCache.remove((TaskableStateMachineArtifact) artifact);
+            teamTasksCache.remove(artifact);
          }
       }
       for (Artifact artifact : transData.getArtifactsInRelations(ChangeType.All, AtsRelationTypes.SmaToTask_Task)) {
          if (artifact instanceof TaskArtifact) {
-            teamTasksCache.remove(((TaskArtifact) artifact.getParent()));
+            teamTasksCache.remove(artifact.getParent());
          }
          if (artifact instanceof TaskableStateMachineArtifact) {
-            teamTasksCache.remove((TaskableStateMachineArtifact) artifact);
+            teamTasksCache.remove(artifact);
          }
       }
       for (Artifact artifact : transData.getArtifactsInRelations(ChangeType.All, CoreRelationTypes.WorkItem__Child)) {

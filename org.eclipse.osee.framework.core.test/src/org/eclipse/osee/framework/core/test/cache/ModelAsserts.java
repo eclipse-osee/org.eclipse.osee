@@ -19,7 +19,6 @@ import junit.framework.Assert;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.IOseeTypeFactory;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -249,7 +248,7 @@ public class ModelAsserts {
       }
    }
 
-   public static void checkAttributes(AbstractOseeCache<ArtifactType> artCache, AbstractOseeCache<AttributeType> attrCache, String artTypeGuid, IOseeBranch branch, String... attributeGuids) throws OseeCoreException {
+   public static void checkAttributes(AbstractOseeCache<ArtifactType> artCache, AbstractOseeCache<AttributeType> attrCache, String artTypeGuid, Branch branch, String... attributeGuids) throws OseeCoreException {
       ArtifactType artifactType = artCache.getByGuid(artTypeGuid);
       Assert.assertNotNull(artifactType);
 

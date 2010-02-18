@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -44,7 +46,12 @@ public class AttributeTypeManager {
       return Activator.getInstance().getOseeCacheService().getAttributeTypeCache();
    }
 
-   public static Collection<AttributeType> getValidAttributeTypes(IOseeBranch branch) throws OseeCoreException {
+   public static BranchCache getBranchCache() {
+      return Activator.getInstance().getOseeCacheService().getBranchCache();
+   }
+
+   public static Collection<AttributeType> getValidAttributeTypes(IOseeBranch branchToken) throws OseeCoreException {
+      Branch branch = getBranchCache().get(branchToken);
       Set<AttributeType> attributeTypes = new HashSet<AttributeType>(100);
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
          attributeTypes.addAll(artifactType.getAttributeTypes(branch));

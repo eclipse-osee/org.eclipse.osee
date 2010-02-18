@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -50,10 +51,15 @@ public class ArtifactTypeManager {
    }
 
    public static ArtifactTypeCache getCache() {
-      return Activator.getInstance().getOseeCacheService().getArtifactTypeCache();
+      return getCacheService().getArtifactTypeCache();
    }
 
-   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeType attributeType, IOseeBranch branch) throws OseeCoreException {
+   public static IOseeCachingService getCacheService() {
+      return Activator.getInstance().getOseeCacheService();
+   }
+
+   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeType attributeType, IOseeBranch branchToken) throws OseeCoreException {
+      Branch branch = getCacheService().getBranchCache().get(branchToken);
       List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
       for (ArtifactType artifactType : getAllTypes()) {
          if (artifactType.isValidAttributeType(attributeType, branch)) {

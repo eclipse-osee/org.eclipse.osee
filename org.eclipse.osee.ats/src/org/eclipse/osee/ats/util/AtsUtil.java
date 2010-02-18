@@ -12,10 +12,12 @@
 package org.eclipse.osee.ats.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
@@ -24,6 +26,7 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
@@ -38,9 +41,11 @@ import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeGroup;
@@ -84,7 +89,6 @@ public final class AtsUtil {
    private static boolean emailEnabled = true;
    public static Color ACTIVE_COLOR = new Color(null, 206, 212, 241);
    private static OseeGroup atsAdminGroup = null;
-   private static boolean goalEnabled = false;
    private static final Date today = new Date();
    public static int MILLISECS_PER_DAY = 1000 * 60 * 60 * 24;
 
@@ -117,16 +121,6 @@ public final class AtsUtil {
     * @return the enableGoal
     */
    public static boolean isGoalEnabled() {
-      if (true) {
-         return false;
-      }
-      try {
-         if (ArtifactTypeManager.getType(AtsArtifactTypes.Goal) != null) {
-            return goalEnabled;
-         }
-      } catch (OseeCoreException ex) {
-         // do nothing
-      }
       return false;
    }
 
@@ -417,4 +411,35 @@ public final class AtsUtil {
       return item;
    }
 
+   /**
+    * TODO Remove duplicate Active flags, need to convert all ats.Active to Active in DB
+    * 
+    * @param <A>
+    * @param artifacts to iterate through
+    * @param active state to validate against; Both will return all artifacts matching type
+    * @param clazz type of artifacts to consider; null for all
+    * @return set of Artifacts of type clazz that match the given active state of the "Active" or "ats.Active" attribute
+    *         value. If no attribute exists, Active == true; If does exist then attribute value "yes" == true, "no" ==
+    *         false.
+    */
+   @SuppressWarnings("unchecked")
+   public static <A extends Artifact> List<A> getActive(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws OseeCoreException {
+      List<A> results = new ArrayList<A>();
+      Collection<? extends Artifact> artsOfClass =
+            clazz != null ? Collections.castMatching(clazz, artifacts) : artifacts;
+      for (Artifact art : artsOfClass) {
+         if (active == Active.Both) {
+            results.add((A) art);
+         } else {
+            // assume active unless otherwise specified
+            boolean attributeActive = ((A) art).getSoleAttributeValue(AtsAttributeTypes.Active, false);
+            if (active == Active.Active && attributeActive) {
+               results.add((A) art);
+            } else if (active == Active.InActive && !attributeActive) {
+               results.add((A) art);
+            }
+         }
+      }
+      return results;
+   }
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +18,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeUser;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.UserInDatabaseMultipleTimes;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
-import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -41,13 +40,11 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
  * @author Roberto E. Escobar
  */
 public final class UserManager {
-
    private static final String CACHE_PREFIX = "userManager.";
    private static boolean userCacheIsLoaded = false;
    private static boolean duringMainUserCreation = false;
 
    private UserManager() {
-
    }
 
    /**
@@ -67,15 +64,18 @@ public final class UserManager {
     * @return shallow copy of ArrayList of all active users in the datastore sorted by user name
     */
    public static List<User> getUsers() throws OseeCoreException {
-      return getUsers(Active.Active);
+      List<User> allUsers = getFromCache();
+      List<User> activeUsers = new ArrayList<User>(allUsers.size());
+      for (User user : allUsers) {
+         if (user.isActive()) {
+            activeUsers.add(user);
+         }
+      }
+      return activeUsers;
    }
 
-   public static List<User> getActiveAndInactiveUsers() throws OseeCoreException {
-      return getUsers(Active.Both);
-   }
-
-   public static List<User> getInactiveUsers() throws OseeCoreException {
-      return getUsers(Active.InActive);
+   public static List<User> getUsersAll() throws OseeCoreException {
+      return getFromCache();
    }
 
    public static List<User> getUsersSortedByName() throws OseeCoreException {
@@ -85,20 +85,14 @@ public final class UserManager {
    }
 
    public static List<User> getUsersAllSortedByName() throws OseeCoreException {
-      List<User> users = getUsers(Active.Both);
+      List<User> users = getFromCache();
       Collections.sort(users);
       return users;
    }
 
    private static List<User> getFromCache() throws OseeCoreException {
-      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(CoreArtifactTypes.User));
-   }
-
-   private static List<User> getUsers(Active userStatus) throws OseeCoreException {
       ensurePopulated();
-      ArtifactType userType = ArtifactTypeManager.getTypeByGuid(CoreArtifactTypes.User.getGuid());
-      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(userType,
-            userStatus));
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(CoreArtifactTypes.User));
    }
 
    /**
@@ -107,7 +101,6 @@ public final class UserManager {
     * @return String[]
     */
    public static String[] getUserNames() throws OseeCoreException {
-      ensurePopulated();
       List<User> allUsers = getFromCache();
       String[] userNames = new String[allUsers.size()];
       int index = 0;
@@ -145,7 +138,6 @@ public final class UserManager {
    }
 
    public static boolean userExistsWithName(String name) throws OseeCoreException {
-      ensurePopulated();
       for (User tempUser : getFromCache()) {
          if (tempUser.getName().equals(name)) {
             return true;
@@ -162,7 +154,6 @@ public final class UserManager {
     * @throws OseeCoreException
     */
    public static User getUserByName(String name) throws OseeCoreException {
-      ensurePopulated();
       for (User tempUser : getFromCache()) {
          if (tempUser.getName().equals(name)) {
             return tempUser;
@@ -293,5 +284,4 @@ public final class UserManager {
       }
       return false;
    }
-
 }

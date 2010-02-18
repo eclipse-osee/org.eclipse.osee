@@ -58,7 +58,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public static String ARTIFACT_NAME = "Team Definition";
    public static Set<TeamDefinitionArtifact> EMPTY_SET = new HashSet<TeamDefinitionArtifact>();
    public static enum TeamDefinitionOptions {
-      TeamUsesVersions, RequireTargetedVersion
+      TeamUsesVersions,
+      RequireTargetedVersion
    };
 
    public TeamDefinitionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
@@ -117,7 +118,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       if (topTeamDef == null) {
          return java.util.Collections.emptyList();
       }
-      return Collections.castAll(Artifacts.getActive(Artifacts.getChildrenOfTypeSet(topTeamDef,
+      return Collections.castAll(AtsUtil.getActive(Artifacts.getChildrenOfTypeSet(topTeamDef,
             TeamDefinitionArtifact.class, false), active, TeamDefinitionArtifact.class));
    }
 
@@ -205,7 +206,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       if (topTeamDef == null) {
          return java.util.Collections.emptyList();
       }
-      return Collections.castAll(Artifacts.getActive(Artifacts.getChildrenOfTypeSet(topTeamDef,
+      return Collections.castAll(AtsUtil.getActive(Artifacts.getChildrenOfTypeSet(topTeamDef,
             TeamDefinitionArtifact.class, false), active, TeamDefinitionArtifact.class));
    }
 

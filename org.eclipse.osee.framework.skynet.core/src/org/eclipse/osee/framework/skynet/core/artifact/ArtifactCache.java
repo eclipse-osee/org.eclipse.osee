@@ -17,17 +17,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
-
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * @author Ryan D. Brooks
@@ -127,8 +124,8 @@ public class ArtifactCache {
          byArtifactTypeCache.put(artifact.getArtifactType(), new ArtifactKey(artifact), obj);
       }
    }
-   
-   public static void deCache(Artifact artifact)throws OseeCoreException{
+
+   public static void deCache(Artifact artifact) throws OseeCoreException {
       if (artifact.isHistorical()) {
          historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
          historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
@@ -251,10 +248,6 @@ public class ArtifactCache {
          }
       }
       return items;
-   }
-
-   public static List<Artifact> getArtifactsByType(IArtifactType artifactType, Active active) throws OseeCoreException {
-      return Artifacts.getActive(getArtifactsByType(artifactType), active, null);
    }
 
    /**

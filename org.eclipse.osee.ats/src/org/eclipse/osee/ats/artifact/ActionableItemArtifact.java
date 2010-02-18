@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -54,9 +55,11 @@ public class ActionableItemArtifact extends Artifact {
 
    public static List<ActionableItemArtifact> getTopLevelActionableItems(Active active) throws OseeCoreException {
       ActionableItemArtifact topAi = getTopActionableItem();
-      if (topAi == null) return java.util.Collections.emptyList();
-      return Collections.castAll(Artifacts.getActive(Artifacts.getChildrenOfTypeSet(topAi,
-            ActionableItemArtifact.class, false), active, ActionableItemArtifact.class));
+      if (topAi == null) {
+         return java.util.Collections.emptyList();
+      }
+      return Collections.castAll(AtsUtil.getActive(Artifacts.getChildrenOfTypeSet(topAi, ActionableItemArtifact.class,
+            false), active, ActionableItemArtifact.class));
    }
 
    public Collection<User> getLeads() throws OseeCoreException {
@@ -110,8 +113,9 @@ public class ActionableItemArtifact extends Artifact {
          if (art instanceof ActionableItemArtifact) {
             aiaTeams.add((ActionableItemArtifact) art);
             for (Artifact childArt : aia.getChildren()) {
-               if (childArt instanceof ActionableItemArtifact) getActionableItemsFromItemAndChildren(
-                     (ActionableItemArtifact) childArt, aiaTeams);
+               if (childArt instanceof ActionableItemArtifact) {
+                  getActionableItemsFromItemAndChildren((ActionableItemArtifact) childArt, aiaTeams);
+               }
             }
          }
       }

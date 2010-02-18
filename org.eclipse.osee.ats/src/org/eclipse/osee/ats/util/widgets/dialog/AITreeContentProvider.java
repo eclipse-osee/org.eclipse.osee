@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -33,13 +34,13 @@ public class AITreeContentProvider implements ITreeContentProvider {
 
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
-      if (parentElement instanceof Collection)
+      if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
-      else if (parentElement instanceof ActionableItemArtifact) {
+      } else if (parentElement instanceof ActionableItemArtifact) {
          try {
-            ActionableItemArtifact ai = ((ActionableItemArtifact) parentElement);
-            return Artifacts.getActive(Artifacts.getChildrenOfTypeSet(ai, ActionableItemArtifact.class, false),
-                  active, ActionableItemArtifact.class).toArray();
+            ActionableItemArtifact ai = (ActionableItemArtifact) parentElement;
+            return AtsUtil.getActive(Artifacts.getChildrenOfTypeSet(ai, ActionableItemArtifact.class, false), active,
+                  ActionableItemArtifact.class).toArray();
          } catch (Exception ex) {
          }
       }
