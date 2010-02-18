@@ -117,7 +117,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    private void updataConflicts(String columnName) throws OseeCoreException {
       updateConflictsData.clear();
       try {
-         chStmt.runPreparedQuery(10000, String.format(SELECT_CONFLICTS, columnName), gammaJoin.getQueryId());
+         chStmt.runPreparedQuery(10000, String.format(SELECT_CONFLICTS, columnName, columnName), gammaJoin.getQueryId());
          while (chStmt.next()) {
             chStmt.getLong("columnName");
             updateConflictsData.add(new Object[] {chStmt.getLong("net_gamma_id"), chStmt.getInt("merge_branch_id"),
