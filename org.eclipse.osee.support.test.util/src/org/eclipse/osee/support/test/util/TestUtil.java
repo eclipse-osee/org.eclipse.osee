@@ -109,6 +109,7 @@ public class TestUtil {
                } else {
                   System.err.println("SevereLogging Exception: " + status.getMessage());
                }
+               numExceptions++;
             }
          }
          if (numExceptions > 0) {
