@@ -36,8 +36,7 @@ public class DbTestUnitProviderTest {
 
    @AfterClass
    public static void cleanup() throws OseeCoreException {
-      System.err.println("Put back in");
-      //      TestUnitStore.clearStore();
+      TestUnitStore.clearStore();
    }
 
    /**
