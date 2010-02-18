@@ -215,6 +215,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    @Override
+   public String getWorldViewGoals() throws OseeCoreException {
+      return Artifacts.toString("; ", getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
+   }
+
+   @Override
    public double getWorldViewWeeklyBenefit() throws OseeCoreException {
       return 0;
    }

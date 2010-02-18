@@ -467,6 +467,17 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Artifacts.toString("; ", groups);
    }
 
+   @Override
+   public String getWorldViewGoals() throws OseeCoreException {
+      Set<Artifact> groups = new HashSet<Artifact>();
+      groups.addAll(getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
+      // Roll up if same for all children
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         groups.addAll(team.getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
+      }
+      return Artifacts.toString("; ", groups);
+   }
+
    public String getWorldViewNumeric1() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {

@@ -50,10 +50,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       InWork, Completed, Cancelled
    };
 
-   /**
-    * @throws OseeDataStoreException
-    * @throws
-    */
    public TaskArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
@@ -69,8 +65,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
 
    /**
     * Allow parent SMA's assignees and all privileged users up Team tree
-    * 
-    * @throws OseeCoreException
     */
    @Override
    public Set<User> getPrivilegedUsers() throws OseeCoreException {

@@ -171,7 +171,9 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
                   topAHI.addBottom(teamAHI);
                }
             }
-            topAHI.addBottom(new TasksActionHyperItem(taskArts));
+            if (taskArts.size() > 0) {
+               topAHI.addBottom(new TasksActionHyperItem(taskArts));
+            }
          }
 
          if (activeEditorIsActionEditor()) {

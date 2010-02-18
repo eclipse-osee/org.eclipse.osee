@@ -10,17 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
 /**
  * @author Donald G. Dunne
@@ -31,14 +37,6 @@ public class GoalArtifact extends StateMachineArtifact {
       InWork, Completed, Cancelled
    };
 
-   /**
-    * @param parentFactory
-    * @param guid
-    * @param humanReadableId
-    * @param branch
-    * @param artifactType
-    * @throws OseeDataStoreException
-    */
    public GoalArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       registerAtsWorldRelation(AtsRelationTypes.Goal_Member);
@@ -95,6 +93,29 @@ public class GoalArtifact extends StateMachineArtifact {
    @Override
    public String getHyperTargetVersion() {
       return null;
+   }
+
+   public static GoalArtifact createGoal(String title) throws OseeCoreException {
+      GoalArtifact goalArt =
+            (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal, AtsUtil.getAtsBranch());
+      goalArt.setName(title);
+      goalArt.getLog().addLog(LogType.Originated, "", "");
+
+      // Initialize state machine
+      goalArt.getStateMgr().initializeStateMachine(GoalState.InWork.name(),
+            Collections.singleton(UserManager.getUser()));
+      goalArt.getLog().addLog(LogType.StateEntered, GoalState.InWork.name(), "");
+      return goalArt;
+   }
+
+   public List<Artifact> getMembers() throws OseeCoreException {
+      return getRelatedArtifacts(AtsRelationTypes.Goal_Member, false);
+   }
+
+   public void addMember(Artifact artifact) throws OseeCoreException {
+      if (!getMembers().contains(artifact)) {
+         addRelation(AtsRelationTypes.Goal_Member, artifact);
+      }
    }
 
 }

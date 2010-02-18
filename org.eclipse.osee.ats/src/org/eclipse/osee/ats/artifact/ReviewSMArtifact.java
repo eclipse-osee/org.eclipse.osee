@@ -49,13 +49,6 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       None, Transition, Commit
    };
 
-   /**
-    * @param parentFactory
-    * @param guid
-    * @param humanReadableId
-    * @param branch
-    * @throws OseeDataStoreException
-    */
    public ReviewSMArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }

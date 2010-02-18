@@ -209,6 +209,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
             new SearchNavigateItem(adminItems, new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows",
                   AtsArtifactTypes.TeamWorkflow));
             new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", "Task"));
+            new CreateGoalTestArtifacts(adminItems);
 
             new DoesNotWorkItemAts(adminItems);
 

@@ -121,6 +121,9 @@ public final class AtsUtil {
     * @return the enableGoal
     */
    public static boolean isGoalEnabled() {
+      if (true) {
+         return false;
+      }
       return false;
    }
 

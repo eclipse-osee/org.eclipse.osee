@@ -27,9 +27,6 @@ public class TasksActionHyperItem extends ActionHyperItem {
 
    private final Collection<TaskArtifact> taskArtifacts;
 
-   /**
-    * @param hyperartifact
-    */
    public TasksActionHyperItem(Collection<TaskArtifact> taskArtifacts) {
       super(new TasksHyperViewArtifact(taskArtifacts));
       this.taskArtifacts = taskArtifacts;

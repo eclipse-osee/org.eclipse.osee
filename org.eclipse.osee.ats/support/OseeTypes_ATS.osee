@@ -105,7 +105,7 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
    attribute "ats.State"
 }
 
-abstract artifactType "Goal" extends "ats.State Machine" {
+artifactType "Goal" extends "ats.State Machine" {
    guid "ABMgU119UjI_Q23Yu+gA"
    attribute "ats.Weekly Benefit"
    attribute "ats.Change Type"
