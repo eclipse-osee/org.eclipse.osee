@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.messaging.internal;
 
+import org.eclipse.osee.framework.messaging.services.internal.TestMessageServices;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
  
@@ -12,6 +13,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
   TestSendingAndRecieving.class,
   TestBrokerServiceInterruptions.class,
+  TestMessageServices.class
 })
 public class IntegrationSuite {
 }

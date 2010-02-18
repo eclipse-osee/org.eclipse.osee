@@ -32,11 +32,12 @@ import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;
  * @author b1528444
  *
  */
-public class TestMessageServices extends BaseBrokerTesting{
+public class TestMessageServices extends BaseBrokerTesting {
 
 	private static String BROKER_URI_SERVER = "tcp://localhost:61616";
 	private static String BROKER_URI = "tcp://localhost:61616";
-//	@org.junit.Before
+
+	@org.junit.Before
 	public void startBroker(){
 		try {
 			startEmbeddedBroker("testBroker", BROKER_URI_SERVER);
@@ -45,7 +46,7 @@ public class TestMessageServices extends BaseBrokerTesting{
 		}	
 	}
 	
-//	@org.junit.After
+	@org.junit.After
 	public void stopBroker(){
 		try {
 			stopEmbeddedBroker("testBroker", BROKER_URI_SERVER);
@@ -53,6 +54,7 @@ public class TestMessageServices extends BaseBrokerTesting{
 			ex.printStackTrace();
 		}	
 	}
+	
 //	@Ignore
 	@org.junit.Test
 	public void testServiceUpClientComesUp() throws Exception{

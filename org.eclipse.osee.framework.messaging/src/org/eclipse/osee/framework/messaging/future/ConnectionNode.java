@@ -23,10 +23,9 @@ public interface ConnectionNode {
    public void send(MessageID topic, Object body, final OseeMessagingStatusCallback statusCallback) throws OseeCoreException;
    
    public void sendWithCorrelationId(String topic, Object body, Class<?> clazz, Object correlationId, final OseeMessagingStatusCallback statusCallback) throws OseeCoreException;
-   /**
-    * 
-    */
-   public void stop();
 
+   public void addConnectionListener(ConnectionListener connectionListener);
+   public void removeConnectionListener(ConnectionListener connectionListener);
+   public void stop();
 
 }

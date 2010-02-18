@@ -8,7 +8,6 @@ package org.eclipse.osee.framework.messaging.internal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.future.NodeInfo;
 

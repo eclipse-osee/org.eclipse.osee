@@ -11,7 +11,7 @@ package org.eclipse.osee.framework.messaging;
 public enum SystemTopic implements MessageID {
 
 	JMS_HEALTH_STATUS("topic:jms.health.status"),
-	KILL_TEST_JMS_BROKER("topic:jms.kill.broker");
+	KILL_TEST_JMS_BROKER("jms.kill.broker");
 
 	private String name;
 

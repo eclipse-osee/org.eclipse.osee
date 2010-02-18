@@ -7,13 +7,8 @@ package org.eclipse.osee.framework.messaging.internal;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Map;
-
-import org.eclipse.osee.framework.messaging.OseeMessagingListener;
-import org.eclipse.osee.framework.messaging.ReplyConnection;
-import org.eclipse.osee.framework.messaging.SystemTopic;
-import org.eclipse.osee.framework.messaging.test.msg.TestMessage;
+import org.eclipse.osee.framework.messaging.future.ConnectionListener;
+import org.eclipse.osee.framework.messaging.future.ConnectionNode;
 
 
 /**
@@ -21,6 +16,7 @@ import org.eclipse.osee.framework.messaging.test.msg.TestMessage;
  */
 public class TestBrokerServiceInterruptions extends BaseBrokerTesting {
 
+//   @Ignore
 	@org.junit.Test
 	public void testBrokerComesUpAfterAppsRunning() throws Exception {
 		testJMSSendShouldFail(getMessaging());
@@ -34,67 +30,51 @@ public class TestBrokerServiceInterruptions extends BaseBrokerTesting {
 		stopBroker();
 	}
 
-	//@org.junit.Test
-	public void testBrokerGoingDownTriggersComponentEvent() throws Exception {
+//	@Ignore
+	@org.junit.Test
+	public void testBrokerGoingDownTriggersConnectionEvent() throws Exception {
 		startBroker();
 
 		testJMSSendShouldPass(getMessaging());
 
-		// have to add this so that we have an existing JMS connection,
-		// otherwise no interrupted event
-		getMessaging().get(DefaultNodeInfos.OSEE_JMS_DEFAULT).subscribe(TestMessages.TestTopic,
-				new OseeMessagingListener() {
-					@Override
-					public void process(Object message,
-							Map<String, Object> headers,
-							ReplyConnection replyConnection) {
-					}
-				}, new MessageStatusTest(true));
 
-		MessageStatusTest status1 = new MessageStatusTest(true);
-		ComponentListenerTest testListener = new ComponentListenerTest(false);
-		getMessaging().get(DefaultNodeInfos.OSEE_VM).subscribe( SystemTopic.JMS_HEALTH_STATUS,
-				testListener, status1);
-		status1.waitForStatus(500);
+		ConnectionNode connectionNode = getMessaging().get(DefaultNodeInfos.OSEE_JMS_DEFAULT);
+		TestConnectionListener connectionListener = new TestConnectionListener();
+		connectionNode.addConnectionListener(connectionListener);
 
-		assertTrue("Jms Component Listener should be notified to on.",
-				testListener.isJmsAvailable());
-
-		MessageStatusTest status2 = new MessageStatusTest(true);
-		ComponentListenerTest testListener2 = new ComponentListenerTest(true);
-		getMessaging().get(DefaultNodeInfos.OSEE_VM).subscribe(SystemTopic.JMS_HEALTH_STATUS,
-				testListener2, status2);
-		status2.waitForStatus(500);
-
+		assertTrue(connectionListener.isConnected());
+		
 		stopBroker();
-
-		assertFalse("Jms Component Listener was not notified to be off.",
-				testListener2.isJmsAvailable());
+		
+		testWait(65000);//currently we ping the broker every minute to see if it still exists, so we've allowed enough time for a timeout
+		
+		assertFalse(connectionListener.isConnected());
+		
 	}
 
-	private class ComponentListenerTest extends OseeMessagingListener {
+	private class TestConnectionListener implements ConnectionListener {
 
-		private boolean jmsAvailable;
+	   private boolean isConnected = false;
+	   
+      @Override
+      public void connected(ConnectionNode node) {
+         System.out.println("connected from test listner");
+         isConnected = true;
+      }
 
-		public ComponentListenerTest(boolean initialState) {
-			jmsAvailable = initialState;
-		}
+      public boolean isConnected() {
+         return isConnected;
+      }
 
-		boolean isJmsAvailable() {
-			return jmsAvailable;
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.osee.framework.messaging.OseeMessagingListener#process(java.lang.Object, java.util.Map, org.eclipse.osee.framework.messaging.ReplyConnection)
-		 */
-		@Override
-		public void process(Object message, Map<String, Object> headers,
-				ReplyConnection replyConnection) {
-			TestMessage msg = (TestMessage)message;
-		}
-
+      @Override
+      public void notConnected(ConnectionNode node) {
+         System.out.println("not connected from test listener");
+         isConnected = false;
+      }
 	}
+	
 
+//	@Ignore
 	@org.junit.Test
 	public void testBrokerGoingDownSendFails() throws Exception {
 		startBroker();
@@ -106,6 +86,7 @@ public class TestBrokerServiceInterruptions extends BaseBrokerTesting {
 		testJMSSendShouldFail(getMessaging());
 	}
 
+//	@Ignore
 	@org.junit.Test
 	public void testBrokerGoingDownSubscribeFails() throws Exception {
 		startBroker();

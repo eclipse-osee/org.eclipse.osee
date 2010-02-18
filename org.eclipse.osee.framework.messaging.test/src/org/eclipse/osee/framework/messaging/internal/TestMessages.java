@@ -6,6 +6,7 @@
 package org.eclipse.osee.framework.messaging.internal;
 
 import org.eclipse.osee.framework.messaging.MessageID;
+import org.eclipse.osee.framework.messaging.test.msg.TestMessage;
 
 /**
  * @author b1528444
@@ -13,8 +14,8 @@ import org.eclipse.osee.framework.messaging.MessageID;
  */
 public enum TestMessages implements MessageID {
 	TestTopic(true, "ABVlXX3B9UaWogL++MgA", "topic:someTopic", null),
-	JMS_TOPIC(true, "ABWApt8OtWlAnz5CJXQA", "topic:test.topic.Mynewthing.removeme", null),
-	VM_TOPIC(true, "ABWHSTHuTlQb5xWueMAA", "topic:inThisJVM", null),
+	JMS_TOPIC(true, "ABWApt8OtWlAnz5CJXQA", "topic:test.topic.Mynewthing.removeme", TestMessage.class),
+	VM_TOPIC(true, "ABWHSTHuTlQb5xWueMAA", "topic:inThisJVM", TestMessage.class),
 	test(true, "ABWoNNdp0RnrO5T5bWwA", "test", null),
 	test2(true, "ABWpvHZTpBTR+PhVrwgA","test2", null),
 	replyTopic(true, "ABWswvHPoR6RpnW9oGAA","topic:someTopicThatNeedsAReply", null, true);
@@ -41,6 +42,7 @@ public enum TestMessages implements MessageID {
 		this.name = name;
 		this.clazz = clazz;
 		this.isReplyRequired = false;
+		this.guid = guid;
 		if(isTopic){
 			destination = "topic:"+guid;
 		} else {

@@ -8,9 +8,7 @@ package org.eclipse.osee.framework.messaging.internal;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import java.util.Map;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
@@ -27,7 +25,7 @@ public class TestSendingAndRecieving extends BaseBrokerTesting {
 
 	@org.junit.Test
 	public void testSendingAndRecievingUsingJMS() {
-		stopBroker();
+//		stopBroker();
 		startBroker();
 		try {
 			messagesReceived = 0;
@@ -55,6 +53,7 @@ public class TestSendingAndRecieving extends BaseBrokerTesting {
 							getMessaging().get(
 									DefaultNodeInfos.OSEE_JMS_DEFAULT).send(
 											TestMessages.JMS_TOPIC, message, status2);
+							System.out.println("sending " + i);
 						} catch (OseeCoreException ex) {
 							fail(ex.getMessage());
 						}
@@ -71,12 +70,13 @@ public class TestSendingAndRecieving extends BaseBrokerTesting {
 					messagesToSend == messagesReceived);
 
 		} catch (Exception ex) {
+		   ex.printStackTrace();
 			fail(ex.getMessage());
 		}
 		stopBroker();
 	}
 
-//	@org.junit.Test
+	@org.junit.Test
 	public void testSendingAndRecievingUsingVM() {
 		try {
 			messagesReceived = 0;

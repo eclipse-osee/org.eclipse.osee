@@ -20,19 +20,22 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.MessageID;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
-import org.eclipse.osee.framework.messaging.future.ConnectionNode;
+import org.eclipse.osee.framework.messaging.future.ConnectionListener;
+import org.eclipse.osee.framework.messaging.future.ConnectionNodeFailoverSupport;
 import org.eclipse.osee.framework.messaging.future.NodeInfo;
 
 /**
  * @author b1528444
  */
-public class ConnectionNodeActiveMq implements ConnectionNode, MessageListener {
+class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageListener {
 
    private String version;
    private String sourceId;
@@ -44,22 +47,36 @@ public class ConnectionNodeActiveMq implements ConnectionNode, MessageListener {
    private MessageConsumer replyToConsumer;
    private Map<String, OseeMessagingListener> replyListeners;
    private Map<String, ActiveMqMessageListenerWrapper> regularListeners;
+   private boolean started = false;
 
    private MessageProducer replyProducer;
 
-   public ConnectionNodeActiveMq(String version, String sourceId, NodeInfo nodeInfo, ExecutorService executor, Connection connection) throws JMSException {
+   public ConnectionNodeActiveMq(String version, String sourceId, NodeInfo nodeInfo, ExecutorService executor) throws JMSException {
       this.version = version;
       this.sourceId = sourceId;
       this.nodeInfo = nodeInfo;
       this.executor = executor;
-      this.connection = connection;
       regularListeners = new ConcurrentHashMap<String, ActiveMqMessageListenerWrapper>();
       replyListeners = new ConcurrentHashMap<String, OseeMessagingListener>();
-      session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-      temporaryTopic = session.createTemporaryTopic();
-      replyToConsumer = session.createConsumer(temporaryTopic);
-      replyToConsumer.setMessageListener(this);
-      replyProducer = session.createProducer(null);
+   }
+
+   public synchronized void start() throws OseeCoreException {
+      if (started) {
+         return;
+      }
+      try {
+         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER, ActiveMQConnection.DEFAULT_PASSWORD, nodeInfo.getUri().toASCIIString());
+         connection = factory.createConnection();
+         session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+         temporaryTopic = session.createTemporaryTopic();
+         replyToConsumer = session.createConsumer(temporaryTopic);
+         replyToConsumer.setMessageListener(this);
+         replyProducer = session.createProducer(null);
+         connection.start();
+         started = true;
+      } catch (JMSException ex) {
+         throw new OseeWrappedException(ex);
+      }
    }
 
    @Override
@@ -74,8 +91,13 @@ public class ConnectionNodeActiveMq implements ConnectionNode, MessageListener {
                msg.setJMSReplyTo(temporaryTopic);
             }
             producer.send(msg);
+            statusCallback.success();
          }
       } catch (JMSException ex) {
+         statusCallback.fail(ex);
+         throw new OseeWrappedException(ex);
+      } catch (NullPointerException ex) {
+         statusCallback.fail(ex);
          throw new OseeWrappedException(ex);
       }
    }
@@ -90,7 +112,11 @@ public class ConnectionNodeActiveMq implements ConnectionNode, MessageListener {
          msg.setJMSCorrelationID(correlationId.toString());
 
          producer.send(msg);
+         statusCallback.success();
       } catch (JMSException ex) {
+         statusCallback.fail(ex);
+         throw new OseeWrappedException(ex);
+      } catch (NullPointerException ex) {
          statusCallback.fail(ex);
          throw new OseeWrappedException(ex);
       }
@@ -100,19 +126,25 @@ public class ConnectionNodeActiveMq implements ConnectionNode, MessageListener {
    public void subscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
       Topic destination;
       try {
-         ActiveMqMessageListenerWrapper wrapperListener = regularListeners.get(messageId.getGuid());
-         if (wrapperListener == null) {
-            wrapperListener = new ActiveMqMessageListenerWrapper(replyProducer, session);
-            regularListeners.put(messageId.getGuid(), wrapperListener);
-            destination = session.createTopic(messageId.getGuid());
-            MessageConsumer consumer = session.createConsumer(destination);
-            consumer.setMessageListener(wrapperListener);
+         if (isConnectedThrow()) {
+            ActiveMqMessageListenerWrapper wrapperListener = regularListeners.get(messageId.getGuid());
+            if (wrapperListener == null) {
+               wrapperListener = new ActiveMqMessageListenerWrapper(replyProducer, session);
+               regularListeners.put(messageId.getGuid(), wrapperListener);
+               destination = session.createTopic(messageId.getGuid());
+               MessageConsumer consumer = session.createConsumer(destination);
+               consumer.setMessageListener(wrapperListener);
+            }
+            wrapperListener.addListener(listener);
+            statusCallback.success();
+         } else {
+            statusCallback.fail(new OseeCoreException("This connection is not started."));
          }
-         wrapperListener.addListener(listener);
       } catch (JMSException ex) {
          statusCallback.fail(ex);
+      } catch (NullPointerException ex) {
+         statusCallback.fail(ex);
       }
-      statusCallback.success();
    }
 
    @Override
@@ -121,11 +153,9 @@ public class ConnectionNodeActiveMq implements ConnectionNode, MessageListener {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.future.ConnectionNode#unsubscribe(org.eclipse.osee.framework.messaging.MessageID, org.eclipse.osee.framework.messaging.OseeMessagingListener, org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback)
-    */
    @Override
    public void unsubscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
+      statusCallback.success();
    }
 
    @Override
@@ -151,11 +181,48 @@ public class ConnectionNodeActiveMq implements ConnectionNode, MessageListener {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.future.ConnectionNode#stop()
-    */
    @Override
-   public void stop() {
+   public synchronized void stop() {
+      try {
+         if (session != null) {
+            session.close();
+         }
+      } catch (JMSException ex) {
+         OseeLog.log(ConnectionNodeActiveMq.class, Level.SEVERE, ex);
+      }
+      try {
+         if (connection != null) {
+            connection.close();
+         }
+      } catch (JMSException ex) {
+         OseeLog.log(ConnectionNodeActiveMq.class, Level.SEVERE, ex);
+      }
+   }
+
+   @Override
+   public boolean isConnected() {
+      try {
+         return isConnectedThrow();
+      } catch (JMSException ex) {
+         started = false;
+         return false;
+      }
+   }
+
+   private boolean isConnectedThrow() throws JMSException {
+      if (connection == null || started == false) {
+         return false;
+      }
+      connection.getMetaData();
+      return true;
+   }
+
+   @Override
+   public void addConnectionListener(ConnectionListener connectionListener) {
+   }
+
+   @Override
+   public void removeConnectionListener(ConnectionListener connectionListener) {
    }
 
 }

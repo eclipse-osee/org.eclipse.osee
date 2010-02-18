@@ -15,7 +15,8 @@ public class MessageStatusTest implements OseeMessagingStatusCallback {
 
 	private volatile boolean isDone = false;
 	private volatile boolean timedOut = false;
-	private boolean shouldPass;
+	private volatile boolean waitedOnStatus = false;
+ 	private boolean shouldPass;
 
 	public MessageStatusTest(boolean shouldPass){
 		this.shouldPass = shouldPass;
@@ -23,7 +24,11 @@ public class MessageStatusTest implements OseeMessagingStatusCallback {
 	
 	@Override
 	public void fail(Throwable th) {
-		if(timedOut){
+	   if(waitedOnStatus){
+         return;
+      }
+      
+	   if(timedOut){
 			return;
 		}
 		if(shouldPass){
@@ -36,6 +41,10 @@ public class MessageStatusTest implements OseeMessagingStatusCallback {
 
 	@Override
 	public void success() {
+	   if(waitedOnStatus){
+	      return;
+	   }
+	   
 		if(timedOut){
 			return;
 		}
@@ -63,5 +72,6 @@ public class MessageStatusTest implements OseeMessagingStatusCallback {
 				org.junit.Assert.assertTrue(true);
 			}
 		}
+		waitedOnStatus = true;
 	}
 }
