@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.message;
 
 import java.lang.ref.WeakReference;
+
 import org.eclipse.osee.ote.core.IUserSession;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.enums.ScriptTypeEnum;
@@ -87,11 +88,11 @@ public abstract class MessageSystemTestScript extends TestScript implements ITes
       return msgSysEnvironment.get().setTimerFor(listener, time);
    }
 
-   public void onScriptSetup() {
+   public final void onScriptSetup() {
       msgSysEnvironment.get().onScriptSetup();
    }
 
-   public void onScriptComplete() throws InterruptedException {
+   public final void onScriptComplete() throws InterruptedException {
       msgSysEnvironment.get().onScriptComplete();
    }
 
