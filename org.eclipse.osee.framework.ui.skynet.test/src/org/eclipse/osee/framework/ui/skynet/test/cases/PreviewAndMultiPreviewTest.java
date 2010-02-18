@@ -263,7 +263,7 @@ public class PreviewAndMultiPreviewTest {
       if (!artifacts.isEmpty()) {
          try {
             monitorLog = TestUtil.severeLoggingStart();
-            List<Artifact> newMultiArts = new ArrayList<Artifact>();
+            new ArrayList<Artifact>();
             Artifact multiArt1 =
                   ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
                         getClass().getSimpleName() + "3");
@@ -276,7 +276,7 @@ public class PreviewAndMultiPreviewTest {
                   ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
                         getClass().getSimpleName() + "1");
             multiArt3.persist();
-            newMultiArts = Arrays.asList(multiArt1, multiArt2, multiArt3);
+            Arrays.asList(multiArt1, multiArt2, multiArt3);
             RendererManager.previewInJob(artifacts);
             Assert.assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
             Assert.assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
@@ -321,11 +321,11 @@ public class PreviewAndMultiPreviewTest {
       if (!artifacts.isEmpty()) {
          try {
             monitorLog = TestUtil.severeLoggingStart();
-            List<Artifact> arts = new ArrayList<Artifact>();
+            new ArrayList<Artifact>();
             Artifact art =
                   ArtifactTypeManager.addArtifact("Test Procedure WML", branch, getClass().getSimpleName() + "4");
             art.persist();
-            arts = Arrays.asList(art);
+            Arrays.asList(art);
             RendererManager.previewInJob(artifacts);
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
             Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
@@ -340,6 +340,7 @@ public class PreviewAndMultiPreviewTest {
 
    @After
    public void tearDown() throws Exception {
+      monitorLog = TestUtil.severeLoggingStart();
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1),
             PreviewAndMultiPreviewTest.class.getSimpleName());
       TestUtil.severeLoggingEnd(monitorLog);
