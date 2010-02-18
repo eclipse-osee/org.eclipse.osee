@@ -37,6 +37,12 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    private static final String SELECT_ADDRESSING =
          "select txs.*, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_txs%s txs where idj.query_id = ? and idj.id2 = txs.gamma_id order by net_gamma_id, branch_id, transaction_id, gamma_id desc";
 
+   private static final String SELECT_CONFLICTS =
+         "select con.merge_branch_id, con.source_gamma_id, con.%s obsolete_gamma_id, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_conflict con where idj.query_id = ? and idj.id2 = con.obsolete_gamma_id";
+
+   private static final String UPDATE_CONFLICTS =
+         "update osee_conflict set %s = ? where merge_branch_id = ?, con.source_gamma_id = ?";
+
    private static final String UPDATE_TXS_GAMMAS =
          "update osee_txs%s set gamma_id = ?, mod_type = ? where transaction_id = ? and gamma_id = ?";
 
@@ -48,6 +54,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    private final List<Long> obsoleteGammas = new ArrayList<Long>();
    private final List<Object[]> addressingToDelete = new ArrayList<Object[]>(13000);
    private final List<Object[]> updateAddressingData = new ArrayList<Object[]>(5000);
+   private final List<Object[]> updateConflictsData = new ArrayList<Object[]>(5000);
    private ExportImportJoinQuery gammaJoin;
    private OseeConnection connection;
    private int previousArtifactId;
@@ -94,13 +101,34 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
             DELETE_ARTIFACT_VERSIONS, deleteArtifactVersionData));
       deleteArtifactVersionData = null;
 
+      updataConflicts("source_gamma_id");
+      updataConflicts("dest_gamma_id");
+
       gammaJoin.store(connection);
       determineAffectedAddressing(false);
       if (includeArchived) {
          determineAffectedAddressing(true);
       }
+
       gammaJoin.delete(connection);
 
+   }
+
+   private void updataConflicts(String columnName) throws OseeCoreException {
+      updateConflictsData.clear();
+      try {
+         chStmt.runPreparedQuery(10000, String.format(SELECT_CONFLICTS, columnName));
+         while (chStmt.next()) {
+            chStmt.getLong("obsolete_gamma_id");
+            updateConflictsData.add(new Object[] {chStmt.getLong("net_gamma_id"), chStmt.getInt("merge_branch_id"),
+                  chStmt.getLong("source_gamma_id")});
+         }
+      } finally {
+         if (chStmt != null) {
+            chStmt.close();
+         }
+      }
+      getDatabaseService().runBatchUpdate(connection, String.format(UPDATE_CONFLICTS, columnName), updateConflictsData);
    }
 
    private void findObsoleteGammas() throws OseeCoreException {
