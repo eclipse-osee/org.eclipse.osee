@@ -41,7 +41,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
          "select con.merge_branch_id, con.source_gamma_id, con.%s as obsolete_gamma_id, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_conflict con where idj.query_id = ? and idj.id2 = con.obsolete_gamma_id";
 
    private static final String UPDATE_CONFLICTS =
-         "update osee_conflict set %s = ? where merge_branch_id = ?, con.source_gamma_id = ?";
+         "update osee_conflict set %s = ? where merge_branch_id = ? and source_gamma_id = ?";
 
    private static final String UPDATE_TXS_GAMMAS =
          "update osee_txs%s set gamma_id = ?, mod_type = ? where transaction_id = ? and gamma_id = ?";
