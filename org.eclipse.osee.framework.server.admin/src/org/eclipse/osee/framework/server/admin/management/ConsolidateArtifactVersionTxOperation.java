@@ -38,7 +38,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
          "select txs.*, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_txs%s txs where idj.query_id = ? and idj.id2 = txs.gamma_id order by net_gamma_id, branch_id, transaction_id, gamma_id desc";
 
    private static final String SELECT_CONFLICTS =
-         "select con.merge_branch_id, con.source_gamma_id, con.%s as obsolete_gamma_id, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_conflict con where idj.query_id = ? and idj.id2 = con.obsolete_gamma_id";
+         "select con.merge_branch_id, con.source_gamma_id, con.%s, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_conflict con where idj.query_id = ? and idj.id2 = con.%s";
 
    private static final String UPDATE_CONFLICTS =
          "update osee_conflict set %s = ? where merge_branch_id = ? and source_gamma_id = ?";
@@ -119,7 +119,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       try {
          chStmt.runPreparedQuery(10000, String.format(SELECT_CONFLICTS, columnName), gammaJoin.getQueryId());
          while (chStmt.next()) {
-            chStmt.getLong("obsolete_gamma_id");
+            chStmt.getLong("columnName");
             updateConflictsData.add(new Object[] {chStmt.getLong("net_gamma_id"), chStmt.getInt("merge_branch_id"),
                   chStmt.getLong("source_gamma_id")});
          }
