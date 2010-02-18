@@ -5,7 +5,6 @@
  */
 package jms.activemq.launch;
 
-import java.util.logging.Level;
 import javax.jms.Connection;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -17,7 +16,6 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 public class RunActiveMq implements IApplication {
 	private static String BROKER_URI;
@@ -55,7 +53,7 @@ public class RunActiveMq implements IApplication {
                   stopBrokerInNewThread();
                   System.err.println("did something with a kill message");
                } catch (Exception ex) {
-                  OseeLog.log(RunActiveMq.class, Level.SEVERE, ex);
+                  ex.printStackTrace();
                }
             }
          });
@@ -75,7 +73,7 @@ public class RunActiveMq implements IApplication {
 		try {
 			broker.stop();
 		} catch (Exception ex) {
-			OseeLog.log(RunActiveMq.class, Level.SEVERE, ex);
+			ex.printStackTrace();
 		}
 	}
 
