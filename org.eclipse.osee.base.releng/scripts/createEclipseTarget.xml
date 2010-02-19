@@ -68,6 +68,12 @@
 					<then>
 						<var name="platformArchiveSuffix" value=".zip" />
 					</then>
+					<elseif>
+						<equals arg1="@{platformSuffix}" arg2="solaris-gtk" />
+						<then>
+							<var name="eclipseSuffix" value=".zip" />
+						</then>
+					</elseif>
 					<else>
 						<var name="platformArchiveSuffix" value=".tar" />
 					</else>
@@ -77,6 +83,12 @@
 					<then>
 						<var name="eclipseSuffix" value=".zip" />
 					</then>
+					<elseif>
+						<equals arg1="@{platformSuffix}" arg2="solaris-gtk" />
+						<then>
+							<var name="eclipseSuffix" value=".zip" />
+						</then>
+					</elseif>
 					<else>
 						<var name="eclipseSuffix" value=".tar.gz" />
 					</else>
@@ -108,6 +120,12 @@
 					<then>
 						<unzip src="${downloadsDir}/${thisEclipseFile}" dest="${platformBuildDir}" />
 					</then>
+					<elseif>
+						<equals arg1="@{platformSuffix}" arg2="solaris-gtk" />
+						<then>
+							<unzip src="${downloadsDir}/${thisEclipseFile}" dest="${platformBuildDir}" />
+						</then>
+					</elseif>
 					<else>
 						<gunzip src="${downloadsDir}/${thisEclipseFile}" dest="${platformBuildDir}/tarFile.tar" />
 						<untar src="${platformBuildDir}/tarFile.tar" dest="${platformBuildDir}" />
@@ -140,6 +158,14 @@
 					<fileset dir="${platformBuildDir}" />
 				</zip>
 			</then>
+			<elseif>
+				<equals arg1="@{suffix}" arg2="solaris-gtk" />
+				<then>
+					<zip destfile="${destArchiveNamePath}" update="true">
+						<fileset dir="${platformBuildDir}" />
+					</zip>
+				</then>
+			</elseif>
 			<else>
 				<tar destfile="${destArchiveNamePath}" basedir="${platformBuildDir}" />
 				<gzip src="${destArchiveNamePath}" destfile="${destArchiveNamePath}.gz" />
