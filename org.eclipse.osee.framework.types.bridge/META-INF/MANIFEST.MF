@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osee Types Bridge
 Bundle-SymbolicName: org.eclipse.osee.framework.types.bridge;singleton:=true
-Bundle-Version: 0.9.1.qualifier
+Bundle-Version: 0.9.2.qualifier
 Bundle-Activator: org.eclipse.osee.framework.types.bridge.internal.Activator
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.ui,
