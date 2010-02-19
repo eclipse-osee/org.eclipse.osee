@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.ExportImportJoinQuery;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
-import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**
  * @author Ryan D. Brooks
@@ -63,15 +63,13 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    private long previousNetGammaId;
    private int previousBranchId;
    private int previuosTransactionId;
-   private final boolean includeArchived;
-   private final CommandInterpreter ci;
+   private final OperationReporter reporter;
    private int updateTxsCounter;
    private int deleteTxsCounter;
 
-   public ConsolidateArtifactVersionTxOperation(IOseeDatabaseServiceProvider provider, CommandInterpreter ci) {
+   public ConsolidateArtifactVersionTxOperation(IOseeDatabaseServiceProvider provider, OperationReporter reporter) {
       super(provider, "Consolidate Artifact Versions", Activator.PLUGIN_ID);
-      this.ci = ci;
-      this.includeArchived = Boolean.parseBoolean(ci.nextArgument());
+      this.reporter = reporter;
    }
 
    private void init() throws OseeCoreException {
@@ -91,27 +89,24 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       this.connection = connection;
-      // also osee_conflict
       init();
 
       findObsoleteGammas();
-      ci.println("gamma join size: " + gammaJoin.size());
+      reporter.report("gamma join size: " + gammaJoin.size());
 
-      ci.println("Number of artifact version rows deleted: " + getDatabaseService().runBatchUpdate(connection,
+      reporter.report("Number of artifact version rows deleted: " + getDatabaseService().runBatchUpdate(connection,
             DELETE_ARTIFACT_VERSIONS, deleteArtifactVersionData));
       deleteArtifactVersionData = null;
+
+      gammaJoin.store(connection);
 
       updataConflicts("source_gamma_id");
       updataConflicts("dest_gamma_id");
 
-      gammaJoin.store(connection);
       determineAffectedAddressing(false);
-      if (includeArchived) {
-         determineAffectedAddressing(true);
-      }
+      determineAffectedAddressing(true);
 
       gammaJoin.delete(connection);
-
    }
 
    private void updataConflicts(String columnName) throws OseeCoreException {
@@ -163,7 +158,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
 
    private void determineAffectedAddressing(boolean archived) throws OseeCoreException {
       try {
-         ci.println("query id: " + gammaJoin.getQueryId());
+         reporter.report("query id: " + gammaJoin.getQueryId());
          chStmt.runPreparedQuery(10000, String.format(SELECT_ADDRESSING, archived ? "_archived" : ""),
                gammaJoin.getQueryId());
 
@@ -225,7 +220,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
          deleteTxsCounter +=
                getDatabaseService().runBatchUpdate(connection, String.format(DELETE_TXS, archivedStr),
                      addressingToDelete);
-         ci.println("Number of txs" + archivedStr + " rows deleted: " + deleteTxsCounter);
+         reporter.report("Number of txs" + archivedStr + " rows deleted: " + deleteTxsCounter);
          addressingToDelete.clear();
       }
 
@@ -233,7 +228,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
          updateTxsCounter +=
                getDatabaseService().runBatchUpdate(connection, String.format(UPDATE_TXS_GAMMAS, archivedStr),
                      updateAddressingData);
-         ci.println("Number of txs" + archivedStr + " rows updated: " + updateTxsCounter);
+         reporter.report("Number of txs" + archivedStr + " rows updated: " + updateTxsCounter);
 
          updateAddressingData.clear();
       }
