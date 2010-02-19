@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.Assert;
 
 /**
  * @author Ryan Schmitt
@@ -102,6 +103,10 @@ public class PurgeTransactionTest {
       PurgeTransactionJob purge = new PurgeTransactionJob(transactionId);
       Jobs.startJob(purge);
       purge.join();
+      Throwable ex = purge.getResult().getException();
+      if (ex != null) {
+         Assert.fail(ex.getMessage());
+      }
       DbUtil.getTableRowCounts(dbCount, tables);
    }
 

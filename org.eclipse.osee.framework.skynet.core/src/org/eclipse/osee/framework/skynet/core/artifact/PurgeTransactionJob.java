@@ -56,6 +56,8 @@ public class PurgeTransactionJob extends Job {
    private final static String DELETE_ATTRIBUTES = "DELETE FROM osee_attribute " + DELETE_POSTFIX;
    private final static String DELETE_RELATIONS = "DELETE FROM osee_relation_link " + DELETE_POSTFIX;
 
+   private final static String DELETE_TXS = "delete from osee_txs where transaction_id = ?;";
+
    private final static String TRANSACATION_GAMMA_IN_USE =
          "Select txs1.transaction_id from osee_txs txs1, osee_txs txs2, osee_join_transaction jn where txs1.transaction_id = jn.transaction_id AND txs1.gamma_id = txs2.gamma_id and txs2.transaction_id != txs1.transaction_id AND jn.query_id = ?";
 
@@ -120,6 +122,7 @@ public class PurgeTransactionJob extends Job {
             deleteItemEntriesForTransactions(connection, monitor, txsToDeleteQuery.getQueryId());
             deleteTransactionsFromTxDetails(connection, monitor, txsToDeleteQuery.getQueryId());
 
+            deleteTxCurrent(connection);
             updateTxCurrent(connection, monitor);
          } catch (OseeCoreException ex) {
             if (connection != null && connection.isClosed() != true) {
@@ -131,10 +134,6 @@ public class PurgeTransactionJob extends Job {
          if (connection != null && connection.isClosed() != true) {
             txsToDeleteQuery.delete(connection);
             ArtifactLoader.clearQuery(connection, artifactJoinId);
-            for (int txId : txIdsToDelete) {
-               ConnectionHandler.runBatchUpdate("delete from osee_txs where transaction_id=?", new ArrayList<Object[]>(
-                     Integer.valueOf(txId)));
-            }
          }
       }
 
@@ -215,6 +214,12 @@ public class PurgeTransactionJob extends Job {
          monitor.subTask("Updating Previous Tx to Current");
          ConnectionHandler.runPreparedUpdate(conn, UPDATE_TXS, artifactJoinId, artifactJoinId, artifactJoinId);
          monitor.worked(1);
+      }
+
+      private void deleteTxCurrent(OseeConnection connection) throws OseeCoreException {
+         for (int txId : txIdsToDelete) {
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_TXS, Integer.valueOf(txId));
+         }
       }
 
       private void setChildBranchBaselineTxs(OseeConnection connection, IProgressMonitor monitor, HashCollection<Branch, TxDeleteInfo> transactions) throws OseeDataStoreException {
