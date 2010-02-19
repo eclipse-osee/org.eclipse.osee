@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.action.CompareTwoStringsAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 import org.osgi.framework.Bundle;
 
@@ -61,6 +63,7 @@ public class CoverageNavigateViewItems extends XNavigateViewItems {
       items.add(new XNavigateItemAction(null, new DeleteCoveragePackageAction(), DeleteCoveragePackageAction.OSEE_IMAGE));
       items.add(new XNavigateItemAction(null, new ConfigureCoverageMethodsAction(),
             ConfigureCoverageMethodsAction.OSEE_IMAGE));
+      items.add(new XNavigateItemAction(null, new CompareTwoStringsAction(), FrameworkImage.EDIT));
 
       try {
          if (SystemGroup.OseeAdmin.isCurrentUserMember()) {

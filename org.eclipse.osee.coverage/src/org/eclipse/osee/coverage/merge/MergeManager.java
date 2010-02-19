@@ -21,6 +21,8 @@ import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -37,12 +39,10 @@ public class MergeManager {
    }
 
    public List<IMergeItem> getMergeItems() throws OseeStateException {
-      if (mergeItems == null) {
-         mergeItems = new ArrayList<IMergeItem>();
-         processedImportCoverages.clear();
-         for (ICoverage importCoverage : coverageImport.getChildren()) {
-            processImportCoverage(importCoverage);
-         }
+      List<IMergeItem> mergeItems = new ArrayList<IMergeItem>();
+      processedImportCoverages.clear();
+      for (ICoverage importCoverage : coverageImport.getChildren()) {
+         processImportCoverage(importCoverage, mergeItems, null);
       }
       if (mergeItems.size() == 0) {
          mergeItems.add(new MessageMergeItem("Nothing to Import"));
@@ -50,11 +50,21 @@ public class MergeManager {
       return mergeItems;
    }
 
-   private void processImportCoverage(ICoverage importCoverage) throws OseeStateException {
+   public XResultData getMergeDetails(ICoverage importCoverageItem, XResultData resultData) throws OseeStateException {
+      List<IMergeItem> mergeItems = new ArrayList<IMergeItem>();
+      processImportCoverage(importCoverageItem, mergeItems, resultData);
+      return resultData;
+   }
+
+   private void processImportCoverage(ICoverage importCoverage, List<IMergeItem> mergeItems, XResultData resultData) throws OseeStateException {
       boolean debug = false;
       if (debug) {
          System.err.println("Merging check " + importCoverage);
       }
+      if (resultData != null) {
+         resultData.log("\n\nMerging check " + importCoverage);
+      }
+
       MatchItem matchItem = getPackageCoverageItem(importCoverage);
       // No matching coverage package item, Add this and all children
       if (MatchType.isNoMatch(matchItem.getMatchType())) {
@@ -73,6 +83,20 @@ public class MergeManager {
          boolean moreImportChildrenThanPackageChildren = importItemChildren.size() > packageItemChildren.size();
          boolean morePackageChildrenThanImportChildren = packageItemChildren.size() > importItemChildren.size();
          boolean sameNumberChildren = importItemChildren.size() == packageItemChildren.size();
+         if (resultData != null) {
+            resultData.log(AHTML.getLabelValueStr("moreImportChildrenThanPackageChildren",
+                  String.valueOf(moreImportChildrenThanPackageChildren)));
+            resultData.log(AHTML.getLabelValueStr("morePackageChildrenThanImportChildren",
+                  String.valueOf(morePackageChildrenThanImportChildren)));
+            resultData.log(AHTML.getLabelValueStr("sameNumberChildren", String.valueOf(sameNumberChildren)));
+
+            for (ICoverage coverage : packageItemChildren) {
+               resultData.log(AHTML.getLabelValueStr("Package Child => ", String.valueOf(coverage)));
+            }
+            for (ICoverage coverage : importItemChildren) {
+               resultData.log(AHTML.getLabelValueStr("Import Child => ", String.valueOf(coverage)));
+            }
+         }
 
          if (debug) {
             if (importCoverage.getGuid().equals("AAte3i2bH3L1MvsFMqAA")) {
@@ -89,10 +113,15 @@ public class MergeManager {
             importItemToMatchItem.put(childCoverage, childMatchItem);
          }
 
-         if (debug) {
+         if (debug || resultData != null) {
             //          Print out match results
             for (Entry<ICoverage, MatchItem> entry : importItemToMatchItem.entrySet()) {
-               System.out.println(String.format("MatchItem[%s]", entry.getValue()));
+               if (resultData != null) {
+                  resultData.log(AHTML.getLabelValueStr("MatchItem => ", String.valueOf(entry.getValue())));
+               }
+               if (debug) {
+                  System.out.println(String.format("MatchItem[%s]", entry.getValue()));
+               }
             }
          }
 
@@ -101,7 +130,7 @@ public class MergeManager {
          if (sameNumberChildren && MatchItem.isAllMatchType(MatchType.FullMatches, importItemToMatchItem.values())) {
             // process all children
             for (ICoverage childCoverage : importItemChildren) {
-               processImportCoverage(childCoverage);
+               processImportCoverage(childCoverage, mergeItems, resultData);
             }
          }
          // Same number children coverage items and either matches or just name is different, name change; 
@@ -194,7 +223,7 @@ public class MergeManager {
                   MatchItem childMatchItem = importItemToMatchItem.get(childCoverage);
                   // This child matches, just process children
                   if (childMatchItem.getMatchType() == MatchType.Match__Name_And_Order_Num) {
-                     processImportCoverage(childCoverage);
+                     processImportCoverage(childCoverage, mergeItems, resultData);
                   }
                   // This child is new, mark as added; no need to process children cause their new
                   if (childMatchItem.getMatchType() == MatchType.No_Match__Name_Or_Order_Num) {
@@ -239,7 +268,7 @@ public class MergeManager {
                mergeItems.add(new MergeItemGroup(MergeType.Add_With_Moves, groupMergeItems, true));
                // Process children that should be processed
                for (ICoverage childCoverage : processChildrenItems) {
-                  processImportCoverage(childCoverage);
+                  processImportCoverage(childCoverage, mergeItems, resultData);
                }
             }
          }

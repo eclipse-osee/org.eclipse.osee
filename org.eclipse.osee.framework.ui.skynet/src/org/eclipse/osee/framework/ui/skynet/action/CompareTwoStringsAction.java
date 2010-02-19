@@ -8,18 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.actions;
+package org.eclipse.osee.framework.ui.skynet.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryEntryDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 /**
  * @author Donald G. Dunne
@@ -27,31 +29,30 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class CompareTwoStringsAction extends Action {
 
    public CompareTwoStringsAction() {
-      setText("Compare Two Strings - Compare Editor");
+      setText("Compare Two Strings");
       setToolTipText(getText());
    }
 
    @Override
    public void run() {
       try {
-         EntryDialog ed = new EntryDialog(getText(), "Enter First String");
+         final EntryEntryDialog ed =
+               new EntryEntryDialog(getText(), "Enter Strings to Compare", "String 1", "String 2");
+         ed.setModeless();
          ed.setFillVertically(true);
-         if (ed.open() != 0) {
-            return;
-         }
-         String firstStr = ed.getEntry();
-         ed = new EntryDialog(getText(), "Enter Second String");
-         ed.setFillVertically(true);
-         if (ed.open() != 0) {
-            return;
-         }
-         String secondStr = ed.getEntry();
-         CompareHandler compareHandler =
-               new CompareHandler(new CompareItem("First", firstStr, System.currentTimeMillis()), new CompareItem(
-                     "Second", secondStr, System.currentTimeMillis()), null);
-         compareHandler.compare();
+         ed.setOkListener(new Listener() {
+
+            @Override
+            public void handleEvent(Event event) {
+               CompareHandler compareHandler =
+                     new CompareHandler(new CompareItem("First", ed.getEntry(), System.currentTimeMillis()),
+                           new CompareItem("Second", ed.getEntry2(), System.currentTimeMillis()), null);
+               compareHandler.compare();
+            }
+         });
+         ed.open();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

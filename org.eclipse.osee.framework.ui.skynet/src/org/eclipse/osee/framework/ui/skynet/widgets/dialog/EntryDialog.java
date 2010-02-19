@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.IShellCloseEvent;
@@ -47,7 +48,7 @@ import org.eclipse.swt.widgets.Shell;
 
 public class EntryDialog extends MessageDialog {
 
-   private XText text;
+   protected XText text;
    private Composite areaComposite;
    private String entryText = "";
    private NumberFormat numberFormat;
@@ -56,6 +57,8 @@ public class EntryDialog extends MessageDialog {
    private Label errorLabel;
    private boolean fillVertically = false;
    private Button fontButton;
+   private String label;
+   private Integer textHeight = null;
 
    private final List<IShellCloseEvent> closeEventListeners = new ArrayList<IShellCloseEvent>();
    private final String dialogTitle;
@@ -83,9 +86,11 @@ public class EntryDialog extends MessageDialog {
          setInitialButtonState();
       }
    };
+   protected Composite customAreaParent;
 
    @Override
    protected Control createCustomArea(Composite parent) {
+      this.customAreaParent = parent;
       areaComposite = new Composite(parent, SWT.NONE);
       areaComposite.setLayout(new GridLayout(2, false));
       areaComposite.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
@@ -94,6 +99,14 @@ public class EntryDialog extends MessageDialog {
       createErrorLabel(areaComposite);
       createTextBox();
 
+      createOpenInEditorHyperlink(parent);
+      createExtendedArea(areaComposite);
+      areaComposite.layout();
+      parent.layout();
+      return areaComposite;
+   }
+
+   protected void createOpenInEditorHyperlink(Composite parent) {
       if (isFillVertically()) {
          HyperLinkLabel edit = new HyperLinkLabel(parent, SWT.None);
          edit.setText("open in editor");
@@ -112,10 +125,6 @@ public class EntryDialog extends MessageDialog {
             }
          });
       }
-      createExtendedArea(areaComposite);
-      areaComposite.layout();
-      parent.layout();
-      return areaComposite;
    }
 
    private void createErrorLabel(Composite parent) {
@@ -126,7 +135,7 @@ public class EntryDialog extends MessageDialog {
       composite.setLayoutData(gd1);
 
       if (fillVertically) {
-         createVerticalFill(composite);
+         createClearFixedFontWidgets(composite);
       }
 
       errorLabel = new Label(composite, SWT.NONE);
@@ -139,7 +148,7 @@ public class EntryDialog extends MessageDialog {
       }
    }
 
-   private void createVerticalFill(Composite headerComp) {
+   protected void createClearFixedFontWidgets(Composite headerComp) {
       // Create error label
       Button button = new Button(headerComp, SWT.PUSH);
       button.setText("Clear");
@@ -166,18 +175,20 @@ public class EntryDialog extends MessageDialog {
       });
    }
 
-   private Font getFont() {
+   protected Font getFont() {
       return FontManager.getFont("Courier New", 8, SWT.NORMAL);
    }
 
    private void createTextBox() {
-      text = new XText();
+      text = new XText(Strings.isValid(label) ? label : "");
       text.setFillHorizontally(true);
       text.setFocus();
-      text.setDisplayLabel(false);
+      if (!Strings.isValid(label)) {
+         text.setDisplayLabel(false);
+      }
       if (fillVertically) {
          text.setFillVertically(true);
-         text.setHeight(200);
+         text.setHeight(textHeight == null ? 200 : textHeight);
          text.setFont(getFont());
       }
       text.createWidgets(areaComposite, 2);
@@ -293,6 +304,14 @@ public class EntryDialog extends MessageDialog {
 
    public void addShellCloseEventListeners(IShellCloseEvent event) {
       closeEventListeners.add(event);
+   }
+
+   public void setLabel(String label) {
+      this.label = label;
+   }
+
+   public void setTextHeight(Integer textHeight) {
+      this.textHeight = textHeight;
    }
 
 }

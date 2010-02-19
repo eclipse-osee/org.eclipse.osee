@@ -20,6 +20,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.action.LinkWithImportItemAction;
+import org.eclipse.osee.coverage.action.ShowMergeDetailsAction;
 import org.eclipse.osee.coverage.editor.params.CoverageParameters;
 import org.eclipse.osee.coverage.editor.params.CoverageParametersComposite;
 import org.eclipse.osee.coverage.editor.params.CoverageParametersTextFilter;
@@ -90,6 +91,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    private CoverageParametersComposite coverageParametersComposite;
    private CoverageParameters coverageParameters;
    LinkWithImportItemAction linkWithImportItemAction;
+   ShowMergeDetailsAction showMergeDetailsAction;
    private MergeManager mergeManager;
    private boolean loading = false;
    private CoverageParametersTextFilter parametersFilter;
@@ -213,6 +215,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
       linkWithImportItemAction = new LinkWithImportItemAction();
       linkWithImportItemAction.setPackageXViewer(xPackageViewer1, coveragePackage);
+
       new ActionContributionItem(linkWithImportItemAction).fill(leftToolBar, 0);
       new ActionContributionItem(new RefreshAction(xPackageViewer1)).fill(leftToolBar, 0);
       new ActionContributionItem(xPackageViewer1.getXViewer().getCustomizeAction()).fill(leftToolBar, 0);
@@ -236,6 +239,11 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       xImportViewer2.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       linkWithImportItemAction.setImportXViewer(xImportViewer2);
+
+      showMergeDetailsAction = new ShowMergeDetailsAction();
+      showMergeDetailsAction.setPackageXViewer(xPackageViewer1, coveragePackage);
+      showMergeDetailsAction.setImportXViewer(xImportViewer2, coverageImport);
+      new ActionContributionItem(showMergeDetailsAction).fill(rightToolBar, 0);
       new ActionContributionItem(reloadAction).fill(rightToolBar, 0);
       new ActionContributionItem(new RefreshAction(xPackageViewer1)).fill(rightToolBar, 0);
       new ActionContributionItem(xImportViewer2.getXViewer().getCustomizeAction()).fill(rightToolBar, 0);
