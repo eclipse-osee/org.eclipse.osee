@@ -21,7 +21,6 @@ import org.eclipse.osgi.framework.console.CommandInterpreter;
  * @author Ryan D. Brooks
  */
 public class TxCurrentsAndModTypesCommand extends BaseServerCommand {
-   private boolean isFixOperationEnabled;
 
    public TxCurrentsAndModTypesCommand(CommandInterpreter ci) {
       super("TxCurrents And Mod Types", ci);
@@ -29,8 +28,6 @@ public class TxCurrentsAndModTypesCommand extends BaseServerCommand {
 
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
-      isFixOperationEnabled = Boolean.parseBoolean(getCommandInterpreter().nextArgument());
-
       try {
          checkAndFix("osee_artifact_version", "art_id", monitor);
          checkAndFix("osee_attribute", "attr_id", monitor);
@@ -43,6 +40,6 @@ public class TxCurrentsAndModTypesCommand extends BaseServerCommand {
 
    private void checkAndFix(String tableName, String columnName, IProgressMonitor monitor) throws Exception {
       doSubWork(new InvalidTxCurrentsAndModTypes(tableName, columnName, new CommandInterpreterReporter(
-            getCommandInterpreter()), isFixOperationEnabled), monitor, 0.3);
+            getCommandInterpreter()), true), monitor, 0.3);
    }
 }
