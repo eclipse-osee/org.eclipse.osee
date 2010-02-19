@@ -9,7 +9,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.future.NodeInfo;
+import org.eclipse.osee.framework.messaging.NodeInfo;
 
 /**
  * @author b1528444

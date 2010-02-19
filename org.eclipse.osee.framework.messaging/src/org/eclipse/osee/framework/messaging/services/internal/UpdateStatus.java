@@ -8,7 +8,7 @@ package org.eclipse.osee.framework.messaging.services.internal;
 import java.net.URI;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.future.ConnectionNode;
+import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.services.BaseMessages;
 import org.eclipse.osee.framework.messaging.services.ServiceInfoPopulator;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;

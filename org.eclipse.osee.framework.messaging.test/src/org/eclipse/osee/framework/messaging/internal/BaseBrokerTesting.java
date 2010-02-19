@@ -20,11 +20,11 @@ import org.apache.activemq.broker.BrokerService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.ConnectionNode;
+import org.eclipse.osee.framework.messaging.MessageService;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.messaging.SystemTopic;
-import org.eclipse.osee.framework.messaging.future.ConnectionNode;
-import org.eclipse.osee.framework.messaging.future.MessageService;
 import org.eclipse.osee.framework.messaging.test.msg.TestMessage;
 
 /**

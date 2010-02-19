@@ -14,10 +14,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.future.ConnectionNode;
-import org.eclipse.osee.framework.messaging.future.ConnectionNodeFactory;
-import org.eclipse.osee.framework.messaging.future.MessageService;
-import org.eclipse.osee.framework.messaging.future.NodeInfo;
+import org.eclipse.osee.framework.messaging.ConnectionNode;
+import org.eclipse.osee.framework.messaging.ConnectionNodeFactory;
+import org.eclipse.osee.framework.messaging.MessageService;
+import org.eclipse.osee.framework.messaging.NodeInfo;
 
 /**
  * @author b1122182

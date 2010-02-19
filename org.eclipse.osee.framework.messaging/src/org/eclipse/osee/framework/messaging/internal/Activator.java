@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.internal;
 
+import org.eclipse.osee.framework.messaging.MessageService;
 import org.eclipse.osee.framework.messaging.MessagingGateway;
-import org.eclipse.osee.framework.messaging.future.MessageService;
 import org.eclipse.osee.framework.messaging.internal.old.MessagingGatewayImpl;
 import org.eclipse.osee.framework.messaging.services.internal.ServiceLookupAndRegistrarLifeCycle;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;

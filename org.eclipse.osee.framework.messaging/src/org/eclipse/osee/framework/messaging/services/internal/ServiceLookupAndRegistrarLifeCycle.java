@@ -11,7 +11,7 @@ import java.util.logging.Level;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.future.MessageService;
+import org.eclipse.osee.framework.messaging.MessageService;
 import org.eclipse.osee.framework.messaging.services.RemoteServiceLookup;
 import org.eclipse.osee.framework.messaging.services.RemoteServiceRegistrar;
 import org.osgi.framework.BundleContext;

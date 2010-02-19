@@ -12,12 +12,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.ConnectionListener;
+import org.eclipse.osee.framework.messaging.ConnectionNode;
+import org.eclipse.osee.framework.messaging.ConnectionNodeFailoverSupport;
 import org.eclipse.osee.framework.messaging.MessageID;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
-import org.eclipse.osee.framework.messaging.future.ConnectionListener;
-import org.eclipse.osee.framework.messaging.future.ConnectionNode;
-import org.eclipse.osee.framework.messaging.future.ConnectionNodeFailoverSupport;
 
 /**
  * @author b1528444 This is written using ActiveMQ as the use case. So it will only retry connection and it will keep
@@ -49,12 +49,6 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
       if(!lastConnectedState){
          run();
       }
-   }
-
-   @Override
-   public void sendWithCorrelationId(String topic, Object body, Class<?> clazz, Object correlationId, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
-      attemptSmartConnect();
-      connectionNode.sendWithCorrelationId(topic, body, clazz, correlationId, statusCallback);
    }
 
    @Override

@@ -25,12 +25,12 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.ConnectionListener;
+import org.eclipse.osee.framework.messaging.ConnectionNodeFailoverSupport;
 import org.eclipse.osee.framework.messaging.MessageID;
+import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
-import org.eclipse.osee.framework.messaging.future.ConnectionListener;
-import org.eclipse.osee.framework.messaging.future.ConnectionNodeFailoverSupport;
-import org.eclipse.osee.framework.messaging.future.NodeInfo;
 
 /**
  * @author b1528444
@@ -95,26 +95,6 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
             producer.send(msg);
             statusCallback.success();
          }
-      } catch (JMSException ex) {
-         statusCallback.fail(ex);
-         throw new OseeWrappedException(ex);
-      } catch (NullPointerException ex) {
-         statusCallback.fail(ex);
-         throw new OseeWrappedException(ex);
-      }
-   }
-
-   @Override
-   public void sendWithCorrelationId(String topic, Object body, Class<?> clazz, Object correlationId, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
-      try {
-         Topic destination = session.createTopic(topic);
-         MessageProducer producer = session.createProducer(destination);
-         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-         Message msg = activeMqUtil.createMessage(session, clazz, body);
-         msg.setJMSCorrelationID(correlationId.toString());
-
-         producer.send(msg);
-         statusCallback.success();
       } catch (JMSException ex) {
          statusCallback.fail(ex);
          throw new OseeWrappedException(ex);

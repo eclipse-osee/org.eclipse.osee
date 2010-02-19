@@ -13,9 +13,9 @@ import javax.jms.JMSException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.future.ConnectionNode;
-import org.eclipse.osee.framework.messaging.future.ConnectionNodeFactory;
-import org.eclipse.osee.framework.messaging.future.NodeInfo;
+import org.eclipse.osee.framework.messaging.ConnectionNode;
+import org.eclipse.osee.framework.messaging.ConnectionNodeFactory;
+import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.framework.messaging.internal.FailoverConnectionNode;
 
 /**

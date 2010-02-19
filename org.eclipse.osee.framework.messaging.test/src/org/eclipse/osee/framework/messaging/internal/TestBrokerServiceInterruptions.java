@@ -7,8 +7,8 @@ package org.eclipse.osee.framework.messaging.internal;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import org.eclipse.osee.framework.messaging.future.ConnectionListener;
-import org.eclipse.osee.framework.messaging.future.ConnectionNode;
+import org.eclipse.osee.framework.messaging.ConnectionListener;
+import org.eclipse.osee.framework.messaging.ConnectionNode;
 
 
 /**

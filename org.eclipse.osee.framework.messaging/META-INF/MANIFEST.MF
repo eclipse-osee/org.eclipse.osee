@@ -104,7 +104,6 @@ Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
 Export-Package: org.eclipse.osee.framework.messaging,
  org.eclipse.osee.framework.messaging.definitions,
- org.eclipse.osee.framework.messaging.future,
  org.eclipse.osee.framework.messaging.id,
  org.eclipse.osee.framework.messaging.services,
  org.eclipse.osee.framework.messaging.services.messages

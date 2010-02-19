@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.future.ConnectionNode;
+import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.services.BaseMessages;
 import org.eclipse.osee.framework.messaging.services.RemoteServiceLookup;
 import org.eclipse.osee.framework.messaging.services.ServiceNotification;
