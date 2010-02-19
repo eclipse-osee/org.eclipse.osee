@@ -197,6 +197,10 @@ public class AHTML {
       return "<pre>" + str + "</pre>";
    }
 
+   public static String blockQuote(String str) {
+      return "<blockquote>" + str + "</blockquote>";
+   }
+
    public static String newline() {
       return newline(1);
    }

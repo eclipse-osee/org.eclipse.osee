@@ -90,11 +90,13 @@ public class MergeManager {
                   String.valueOf(morePackageChildrenThanImportChildren)));
             resultData.log(AHTML.getLabelValueStr("sameNumberChildren", String.valueOf(sameNumberChildren)));
 
+            resultData.log(AHTML.bold("Package Children:"));
             for (ICoverage coverage : packageItemChildren) {
-               resultData.log(AHTML.getLabelValueStr("Package Child => ", String.valueOf(coverage)));
+               resultData.addRaw(AHTML.blockQuote(String.valueOf(coverage).replaceAll(" ", "&nbsp")));
             }
+            resultData.log(AHTML.bold("Import Children:"));
             for (ICoverage coverage : importItemChildren) {
-               resultData.log(AHTML.getLabelValueStr("Import Child => ", String.valueOf(coverage)));
+               resultData.addRaw(AHTML.blockQuote(String.valueOf(coverage).replaceAll(" ", "&nbsp")));
             }
          }
 
@@ -113,15 +115,15 @@ public class MergeManager {
             importItemToMatchItem.put(childCoverage, childMatchItem);
          }
 
-         if (debug || resultData != null) {
-            //          Print out match results
+         if (resultData != null) {
+            resultData.log(AHTML.bold("Match Items:"));
             for (Entry<ICoverage, MatchItem> entry : importItemToMatchItem.entrySet()) {
-               if (resultData != null) {
-                  resultData.log(AHTML.getLabelValueStr("MatchItem => ", String.valueOf(entry.getValue())));
-               }
-               if (debug) {
-                  System.out.println(String.format("MatchItem[%s]", entry.getValue()));
-               }
+               resultData.addRaw(AHTML.blockQuote(String.valueOf(entry.getValue()).replaceAll(" ", "&nbsp")));
+            }
+         }
+         if (debug) {
+            for (Entry<ICoverage, MatchItem> entry : importItemToMatchItem.entrySet()) {
+               System.out.println(String.format("MatchItem[%s]", entry.getValue()));
             }
          }
 
