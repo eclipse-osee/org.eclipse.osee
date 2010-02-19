@@ -37,11 +37,8 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    private static final String SELECT_ADDRESSING =
          "select txs.*, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_txs%s txs where idj.query_id = ? and idj.id2 = txs.gamma_id order by net_gamma_id, branch_id, transaction_id, gamma_id desc";
 
-   private static final String SELECT_CONFLICTS =
-         "select con.merge_branch_id, con.source_gamma_id, con.%s, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_conflict con where idj.query_id = ? and idj.id2 = con.%s";
-
    private static final String UPDATE_CONFLICTS =
-         "update osee_conflict set %s = ? where merge_branch_id = ? and source_gamma_id = ?";
+         "update osee_conflict set %s = (select gamma_id from osee_artifact_version where conflict_id = art_id) where conflict_type = 3";
 
    private static final String UPDATE_TXS_GAMMAS =
          "update osee_txs%s set gamma_id = ?, mod_type = ? where transaction_id = ? and gamma_id = ?";
@@ -110,20 +107,8 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    }
 
    private void updataConflicts(String columnName) throws OseeCoreException {
-      updateConflictsData.clear();
-      try {
-         chStmt.runPreparedQuery(10000, String.format(SELECT_CONFLICTS, columnName, columnName), gammaJoin.getQueryId());
-         while (chStmt.next()) {
-            chStmt.getLong("columnName");
-            updateConflictsData.add(new Object[] {chStmt.getLong("net_gamma_id"), chStmt.getInt("merge_branch_id"),
-                  chStmt.getLong("source_gamma_id")});
-         }
-      } finally {
-         if (chStmt != null) {
-            chStmt.close();
-         }
-      }
-      getDatabaseService().runBatchUpdate(connection, String.format(UPDATE_CONFLICTS, columnName), updateConflictsData);
+      int count = getDatabaseService().runPreparedUpdate(connection, String.format(UPDATE_CONFLICTS, columnName));
+      reporter.report(String.format("updated %s in %d rows", columnName, count));
    }
 
    private void findObsoleteGammas() throws OseeCoreException {
