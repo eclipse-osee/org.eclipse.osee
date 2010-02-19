@@ -37,15 +37,16 @@ import org.eclipse.osee.support.test.util.TestUtil;
 public class PurgeTransactionTest {
    private Branch branch;
    Collection<Artifact> softArts;
-   private int createId;
    private SkynetTransaction createTransaction;
    private SkynetTransaction modifyTransaction;
+   private int createId;
+   private int modifyId;
    private Map<String, Integer> preCreateCount;
    private Map<String, Integer> preModifyCount;
    private Map<String, Integer> postModifyPurgeCount;
    private Map<String, Integer> postCreatePurgeCount;
    private static final List<String> tables =
-         Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs",
+         Arrays.asList("osee_attribute", /* "osee_artifact", */"osee_relation_link", "osee_tx_details", "osee_txs",
                "osee_artifact_version");
 
    @org.junit.Test
@@ -56,12 +57,12 @@ public class PurgeTransactionTest {
       int initialTxCurrents = getCurrentRows();
 
       modifyArtifacts();
-      purge(modifyTransaction, postModifyPurgeCount);
+      purge(modifyId, postModifyPurgeCount);
       TestUtil.checkThatEqual(preModifyCount, postModifyPurgeCount);
 
       assertEquals("Purge Transaction did not correctly update tx_current.", initialTxCurrents, getCurrentRows());
 
-      purge(createTransaction, postCreatePurgeCount);
+      purge(createId, postCreatePurgeCount);
       TestUtil.checkThatEqual(preCreateCount, postCreatePurgeCount);
    }
 
@@ -71,10 +72,10 @@ public class PurgeTransactionTest {
       preModifyCount = new HashMap<String, Integer>();
       postModifyPurgeCount = new HashMap<String, Integer>();
       postCreatePurgeCount = new HashMap<String, Integer>();
-      DbUtil.getTableRowCounts(preCreateCount, tables);
    }
 
    private void createArtifacts() throws Exception {
+      DbUtil.getTableRowCounts(preCreateCount, tables);
       createTransaction = new SkynetTransaction(branch, "Purge Transaction Test");
       softArts =
             FrameworkTestUtil.createSimpleArtifacts(Requirements.SOFTWARE_REQUIREMENT, 10, getClass().getSimpleName(),
@@ -87,16 +88,18 @@ public class PurgeTransactionTest {
    }
 
    private void modifyArtifacts() throws Exception {
+      DbUtil.getTableRowCounts(preModifyCount, tables);
       modifyTransaction = new SkynetTransaction(branch, "Purge Transaction Test");
       for (Artifact softArt : softArts) {
          softArt.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, getClass().getSimpleName());
          softArt.persist(modifyTransaction);
       }
+      modifyId = modifyTransaction.getTransactionNumber();
       modifyTransaction.execute();
    }
 
-   private void purge(SkynetTransaction transaction, Map<String, Integer> dbCount) throws Exception {
-      PurgeTransactionJob purge = new PurgeTransactionJob(transaction.getTransactionNumber());
+   private void purge(int transactionId, Map<String, Integer> dbCount) throws Exception {
+      PurgeTransactionJob purge = new PurgeTransactionJob(transactionId);
       Jobs.startJob(purge);
       purge.join();
       DbUtil.getTableRowCounts(dbCount, tables);

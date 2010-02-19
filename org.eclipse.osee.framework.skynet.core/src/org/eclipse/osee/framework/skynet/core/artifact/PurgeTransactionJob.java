@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -26,8 +25,8 @@ import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.DbTransaction;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
@@ -50,19 +49,6 @@ public class PurgeTransactionJob extends Job {
    private static final String DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS =
          "DELETE FROM osee_tx_details WHERE transaction_id IN (SELECT txj1.transaction_id FROM osee_join_transaction txj1 WHERE txj1.query_id = ?)";
 
-   private static final String SELECT_ATTRIBUTES_TO_UPDATE =
-         "SELECT maxt, txs2.gamma_id FROM osee_attribute att2,  osee_txs txs2, (SELECT MAX(txs1.transaction_id) AS  maxt, att1.attr_id AS atid, txd1.branch_id FROM osee_attribute att1, osee_txs txs1, osee_tx_details txd1 WHERE att1.gamma_id = txs1.gamma_id and txs1.transaction_id >= ? AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? GROUP BY att1.attr_id, txd1.branch_id) new_stuff WHERE atid = att2.attr_id AND att2.gamma_id = txs2.gamma_id AND txs2.transaction_id = maxt and txs2.transaction_id >= ?";
-   private static final String SELECT_ARTIFACTS_TO_UPDATE =
-         "SELECT maxt, txs1.gamma_id FROM osee_artifact_version arv2,  osee_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, arv1.art_id AS art, txd1.branch_id FROM osee_artifact_version arv1, osee_txs txs2, osee_tx_details txd1 WHERE arv1.gamma_id = txs2.gamma_id and txs2.transaction_id >= ? AND txs2.transaction_id = txd1.transaction_id AND txd1.branch_id = ? GROUP BY arv1.art_id, txd1.branch_id) new_stuff WHERE art = arv2.art_id AND arv2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id >= ?";
-   private static final String SELECT_RELATIONS_TO_UPDATE =
-         "SELECT maxt, txs1.gamma_id FROM osee_relation_link rel2, osee_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, rel1.rel_link_id AS rel_id, txd1.branch_id FROM osee_relation_link rel1, osee_txs txs2, osee_tx_details txd1 WHERE rel1.gamma_id = txs2.gamma_id and txs2.transaction_id >= ?  AND txs2.transaction_id = txd1.transaction_id AND txd1.branch_id = ? GROUP BY rel1.rel_link_id, txd1.branch_id) new_stuff WHERE rel_id = rel2.rel_link_id AND rel2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id >= ?";
-
-   private static final String UPDATE_TX_CURRENT =
-         "UPDATE osee_txs txs1 SET tx_current = 1 where txs1.mod_type <> 3 and txs1.gamma_id IN (SELECT txj1.gamma_id from osee_join_transaction txj1 WHERE txj1.gamma_id = txs1.gamma_id AND txj1.transaction_id = txs1.transaction_id AND txj1.query_id = ?)";
-
-   private static final String UPDATE_TX_CURRENT_DELETED_ITEMS =
-         "UPDATE osee_txs txs1 SET tx_current = 2 where txs1.mod_type = 3 and txs1.gamma_id IN (SELECT txj1.gamma_id from osee_join_transaction txj1 WHERE txj1.gamma_id = txs1.gamma_id AND txj1.transaction_id = txs1.transaction_id AND txj1.query_id = ?)";
-
    private static final String DELETE_POSTFIX =
          "outerTb where outerTb.gamma_id = (SELECT txj1.gamma_id from osee_join_transaction txj1 WHERE outerTb.gamma_id = txj1.gamma_id AND txj1.query_id = ?)";
 
@@ -72,7 +58,6 @@ public class PurgeTransactionJob extends Job {
 
    private final static String TRANSACATION_GAMMA_IN_USE =
          "Select txs1.transaction_id from osee_txs txs1, osee_txs txs2, osee_join_transaction jn where txs1.transaction_id = jn.transaction_id AND txs1.gamma_id = txs2.gamma_id and txs2.transaction_id != txs1.transaction_id AND jn.query_id = ?";
-   private final static String GET_ARTIFACTS = "Select * from osee_join_artifact where query_id = ?";
 
    private final static String LOAD_ARTIFACTS =
          "INSERT INTO osee_join_artifact (query_id, art_id, branch_id, insert_time) (Select ?, art_id, det.branch_id,  CURRENT_TIMESTAMP from osee_txs txs, osee_attribute att, osee_join_transaction tran, osee_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id and det.transaction_id = txs.transaction_id) UNION (Select ?, art_id, det.branch_id,  CURRENT_TIMESTAMP from osee_txs txs, osee_artifact_version art, osee_join_transaction tran, osee_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = art.gamma_id and det.transaction_id = txs.transaction_id) UNION (Select ?, a_art_id as art_id, det.branch_id,  CURRENT_TIMESTAMP from osee_txs txs, osee_relation_link rel, osee_join_transaction tran, osee_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id and det.transaction_id = txs.transaction_id) UNION (Select ?, b_art_id as art_id, det.branch_id,  CURRENT_TIMESTAMP from osee_txs txs, osee_relation_link rel, osee_join_transaction tran, osee_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id and det.transaction_id = txs.transaction_id)";
@@ -83,20 +68,12 @@ public class PurgeTransactionJob extends Job {
    private final boolean force;
    private int artifactJoinId;
 
-   /**
-    * @param name
-    * @param transactionIdNumber
-    */
    public PurgeTransactionJob(boolean force, int... txIdsToDelete) {
       super(String.format("Delete transactions: %s", Arrays.toString(txIdsToDelete)));
       this.txIdsToDelete = txIdsToDelete;
       this.force = force;
    }
 
-   /**
-    * @param name
-    * @param transactionIdNumber
-    */
    public PurgeTransactionJob(int... txIdsToDelete) {
       this(true, txIdsToDelete);
    }
@@ -154,12 +131,13 @@ public class PurgeTransactionJob extends Job {
          if (connection != null && connection.isClosed() != true) {
             txsToDeleteQuery.delete(connection);
             ArtifactLoader.clearQuery(connection, artifactJoinId);
+            for (int txId : txIdsToDelete) {
+               ConnectionHandler.runBatchUpdate("delete from osee_txs where transaction_id=?", new ArrayList<Object[]>(
+                     Integer.valueOf(txId)));
+            }
          }
       }
 
-      /**
-       * @throws OseeDataStoreException
-       */
       private void getAffectedArtifacts(OseeConnection connection, IProgressMonitor monitor, int transactionQueryId) throws OseeDataStoreException {
          artifactJoinId = ArtifactLoader.getNewQueryId();
          ConnectionHandler.runPreparedUpdate(connection, LOAD_ARTIFACTS, artifactJoinId, transactionQueryId,
@@ -233,18 +211,6 @@ public class PurgeTransactionJob extends Job {
          }
       }
 
-      private int getMinTransaction(Collection<TxDeleteInfo> infos) {
-         int toReturn = Integer.MAX_VALUE;
-         for (TxDeleteInfo info : infos) {
-            TransactionRecord previous = info.getPreviousTx();
-            if (previous != null) {
-               int toCheck = previous.getId();
-               toReturn = Math.min(toReturn, toCheck);
-            }
-         }
-         return toReturn != Integer.MAX_VALUE ? toReturn : -1;
-      }
-
       private void updateTxCurrent(OseeConnection conn, IProgressMonitor monitor) throws OseeDataStoreException {
          monitor.subTask("Updating Previous Tx to Current");
          ConnectionHandler.runPreparedUpdate(conn, UPDATE_TXS, artifactJoinId, artifactJoinId, artifactJoinId);
@@ -259,8 +225,8 @@ public class PurgeTransactionJob extends Job {
             if (previousTransaction != null) {
                int toDeleteTransaction = entry.getTxToDelete().getId();
 
-               data.add(new Object[] {String.valueOf(toDeleteTransaction),
-                     String.valueOf(previousTransaction.getId()), "%" + toDeleteTransaction});
+               data.add(new Object[] {String.valueOf(toDeleteTransaction), String.valueOf(previousTransaction.getId()),
+                     "%" + toDeleteTransaction});
             }
          }
          if (data.size() > 0) {
