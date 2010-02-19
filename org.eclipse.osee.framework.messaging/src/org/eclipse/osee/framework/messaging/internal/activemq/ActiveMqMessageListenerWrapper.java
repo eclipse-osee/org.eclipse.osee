@@ -29,11 +29,13 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
    private List<OseeMessagingListener> listeners;
    private MessageProducer producer;
    private Session session;
+   private ActiveMqUtil activeMqUtil;
    
-   ActiveMqMessageListenerWrapper(MessageProducer producer, Session session){
+   ActiveMqMessageListenerWrapper(ActiveMqUtil activeMqUtil, MessageProducer producer, Session session){
       this.producer = producer;
       this.session = session;
       listeners = new CopyOnWriteArrayList<OseeMessagingListener>();
+      this.activeMqUtil = activeMqUtil;
    }
 
    public void addListener(OseeMessagingListener listener){
@@ -54,7 +56,7 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
          if(destReply != null){
             ActiveMQDestination dest = (ActiveMQDestination)jmsMessage.getJMSDestination();
             String correlationId = dest.getPhysicalName();
-            ReplyConnectionActiveMqImpl replyConnectionActiveMqImpl = new ReplyConnectionActiveMqImpl(session, producer, destReply, correlationId);
+            ReplyConnectionActiveMqImpl replyConnectionActiveMqImpl = new ReplyConnectionActiveMqImpl(activeMqUtil, session, producer, destReply, correlationId);
             process(jmsMessage, replyConnectionActiveMqImpl);
          } else {
             process(jmsMessage, new ReplyConnectionActiveMqImpl());
@@ -69,7 +71,7 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
 	private void process(javax.jms.Message message, ReplyConnection replyConnection) throws JMSException, OseeCoreException{
 	   Map<String, Object> headers = new HashMap<String, Object>();
 	   for(OseeMessagingListener listener:listeners){
-	      listener.process(ActiveMqUtil.translateMessage(message, listener.getClazz()), headers, replyConnection);
+	      listener.process(activeMqUtil.translateMessage(message, listener.getClazz()), headers, replyConnection);
 	   }
 	}
 }

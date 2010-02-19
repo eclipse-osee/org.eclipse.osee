@@ -20,7 +20,11 @@ import org.eclipse.osee.framework.messaging.internal.JAXBUtil;
  */
 class ActiveMqUtil {
 
-   static Object translateMessage(Message message, Class<?> clazz) throws OseeCoreException, JMSException {
+   ActiveMqUtil(){
+      
+   }
+   
+   Object translateMessage(Message message, Class<?> clazz) throws OseeCoreException, JMSException {
       Object messageBody = message;
       if (message instanceof TextMessage) {
          String text = ((TextMessage) message).getText();
@@ -42,7 +46,7 @@ class ActiveMqUtil {
       return messageBody;
    }
    
-   static Message createMessage(Session session, Class<?> clazz, Object body) throws OseeCoreException, JMSException {
+   Message createMessage(Session session, Class<?> clazz, Object body) throws OseeCoreException, JMSException {
       body = tryToGetSerialized(clazz, body);
       if (body instanceof String) {
          return session.createTextMessage((String) body);
@@ -55,7 +59,7 @@ class ActiveMqUtil {
       }
    }
    
-   private static Object tryToGetSerialized(Class<?> clazz, Object body) throws OseeCoreException {
+   private Object tryToGetSerialized(Class<?> clazz, Object body) throws OseeCoreException {
       if (clazz != null) {
          try {
             return JAXBUtil.marshal(body);

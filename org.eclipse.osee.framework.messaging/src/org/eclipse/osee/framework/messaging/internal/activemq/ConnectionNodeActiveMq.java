@@ -50,12 +50,14 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    private boolean started = false;
 
    private MessageProducer replyProducer;
+   private ActiveMqUtil activeMqUtil;
 
    public ConnectionNodeActiveMq(String version, String sourceId, NodeInfo nodeInfo, ExecutorService executor) throws JMSException {
       this.version = version;
       this.sourceId = sourceId;
       this.nodeInfo = nodeInfo;
       this.executor = executor;
+      activeMqUtil = new ActiveMqUtil();
       regularListeners = new ConcurrentHashMap<String, ActiveMqMessageListenerWrapper>();
       replyListeners = new ConcurrentHashMap<String, OseeMessagingListener>();
    }
@@ -86,7 +88,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
             Topic destination = session.createTopic(topic.getGuid());
             MessageProducer producer = session.createProducer(destination);
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-            Message msg = ActiveMqUtil.createMessage(session, topic.getSerializationClass(), body);
+            Message msg = activeMqUtil.createMessage(session, topic.getSerializationClass(), body);
             if (topic.isReplyRequired()) {
                msg.setJMSReplyTo(temporaryTopic);
             }
@@ -108,7 +110,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          Topic destination = session.createTopic(topic);
          MessageProducer producer = session.createProducer(destination);
          producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-         Message msg = ActiveMqUtil.createMessage(session, clazz, body);
+         Message msg = activeMqUtil.createMessage(session, clazz, body);
          msg.setJMSCorrelationID(correlationId.toString());
 
          producer.send(msg);
@@ -129,7 +131,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          if (isConnectedThrow()) {
             ActiveMqMessageListenerWrapper wrapperListener = regularListeners.get(messageId.getGuid());
             if (wrapperListener == null) {
-               wrapperListener = new ActiveMqMessageListenerWrapper(replyProducer, session);
+               wrapperListener = new ActiveMqMessageListenerWrapper(activeMqUtil, replyProducer, session);
                regularListeners.put(messageId.getGuid(), wrapperListener);
                destination = session.createTopic(messageId.getGuid());
                MessageConsumer consumer = session.createConsumer(destination);
@@ -171,7 +173,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          if (correlationId != null) {
             OseeMessagingListener listener = replyListeners.get(correlationId);
             if (listener != null) {
-               listener.process(ActiveMqUtil.translateMessage(jmsMessage, listener.getClazz()), new HashMap(), new ReplyConnectionActiveMqImpl());
+               listener.process(activeMqUtil.translateMessage(jmsMessage, listener.getClazz()), new HashMap(), new ReplyConnectionActiveMqImpl());
             }
          }
       } catch (JMSException ex) {

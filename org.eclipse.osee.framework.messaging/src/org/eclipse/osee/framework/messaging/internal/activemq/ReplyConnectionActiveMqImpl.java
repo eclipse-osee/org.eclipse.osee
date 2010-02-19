@@ -27,13 +27,15 @@ class ReplyConnectionActiveMqImpl implements ReplyConnection {
    private Destination destReply;
    private String correlationId;
    private Session session;
+   private ActiveMqUtil activeMqUtil;
    
-   ReplyConnectionActiveMqImpl(Session session, MessageProducer producer, Destination destReply, String correlationId) {
+   ReplyConnectionActiveMqImpl(ActiveMqUtil activeMqUtil, Session session, MessageProducer producer, Destination destReply, String correlationId) {
       isReplyRequested = true;
       this.producer = producer;
       this.destReply = destReply;
       this.correlationId = correlationId;
       this.session = session;
+      this.activeMqUtil = activeMqUtil;
    }
 
    ReplyConnectionActiveMqImpl() {
@@ -48,7 +50,7 @@ class ReplyConnectionActiveMqImpl implements ReplyConnection {
    @Override
    public void send(Object body, Class<?> clazz, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
       try {
-         Message message = ActiveMqUtil.createMessage(session, clazz, body);
+         Message message = activeMqUtil.createMessage(session, clazz, body);
          message.setJMSCorrelationID(correlationId);
          producer.send(destReply, message);
       } catch (JMSException ex) {
