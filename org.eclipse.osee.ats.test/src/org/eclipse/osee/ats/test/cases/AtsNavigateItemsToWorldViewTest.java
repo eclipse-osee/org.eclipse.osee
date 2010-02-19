@@ -496,7 +496,6 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    public Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, Class<?> clazz, int numOfType, User user, TableLoadOption tableLoadOption) throws Exception {
-      // Close all open world editors
       WorldEditor.closeAll();
       // Find the correct navigate item
       if (user != null && item instanceof SearchNavigateItem) {
