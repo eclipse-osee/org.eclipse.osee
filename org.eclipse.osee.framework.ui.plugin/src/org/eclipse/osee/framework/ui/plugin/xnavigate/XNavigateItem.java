@@ -39,10 +39,12 @@ public class XNavigateItem {
 
    public void addChild(XNavigateItem item) {
       children.add(item);
+      item.setParent(this);
    }
 
    public void removeChild(XNavigateItem item) {
       children.remove(item);
+      item.setParent(null);
    }
 
    public List<XNavigateItem> getChildren() {

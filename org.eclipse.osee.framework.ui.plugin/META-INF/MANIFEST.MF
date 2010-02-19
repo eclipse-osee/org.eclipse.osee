@@ -30,5 +30,6 @@ Import-Package: org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
