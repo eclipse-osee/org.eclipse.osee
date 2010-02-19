@@ -10,6 +10,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.database.operation.InvalidTxCurrentsAndModTypes;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 import org.eclipse.swt.SWT;
@@ -57,7 +58,11 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
       @Override
       public void report(String... row) {
          resultsTab.addRow(new ResultsXViewerRow(row));
+      }
 
+      @Override
+      public void report(Throwable th) {
+         report(Lib.exceptionToString(th));
       }
    }
 

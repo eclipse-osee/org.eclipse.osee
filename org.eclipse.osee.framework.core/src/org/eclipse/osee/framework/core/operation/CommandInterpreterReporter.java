@@ -31,4 +31,8 @@ public class CommandInterpreterReporter implements OperationReporter {
       ci.println();
    }
 
+   @Override
+   public void report(Throwable th) {
+      ci.printStackTrace(th);
+   }
 }

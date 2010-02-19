@@ -16,4 +16,6 @@ package org.eclipse.osee.framework.core.operation;
 public interface OperationReporter {
 
    public abstract void report(String... row);
+
+   public abstract void report(Throwable th);
 }
