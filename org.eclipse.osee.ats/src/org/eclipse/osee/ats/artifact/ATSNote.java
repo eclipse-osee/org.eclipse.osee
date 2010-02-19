@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.artifact;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -68,7 +69,11 @@ public class ATSNote {
       }
       NoteItem logItem = new NoteItem(type, state, date.getTime() + "", user, msg);
       List<NoteItem> logItems = getNoteItems();
-      logItems.add(logItem);
+      if (logItems.size() == 0) {
+         logItems = Arrays.asList(logItem);
+      } else {
+         logItems.add(logItem);
+      }
       saveNoteItems(logItems);
    }
 
