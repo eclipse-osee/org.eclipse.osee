@@ -69,9 +69,13 @@ public class Activator implements BundleActivator {
 		connectionServiceTracker.close();
 		connectionServiceTracker = null;
 
-		service.stop();
-		service = null;
 		registration.unregister();
+		try {
+			service.stop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		service = null;
 	}
 
 	public static void log(Level level, String message, Throwable t) {

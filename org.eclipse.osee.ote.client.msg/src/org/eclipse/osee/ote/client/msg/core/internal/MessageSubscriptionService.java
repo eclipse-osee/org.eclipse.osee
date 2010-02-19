@@ -114,6 +114,7 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 	 * terminated and all IO resources will be closed.
 	 */
 	public void shutdown()  {
+		OseeLog.log(MessageSubscriptionService.class, Level.INFO, "shutting down subscription service");
 		clientService.removeDictionaryListener(this);
 		clientService.removeConnectionListener(this);
 		shutdownDispatcher();
