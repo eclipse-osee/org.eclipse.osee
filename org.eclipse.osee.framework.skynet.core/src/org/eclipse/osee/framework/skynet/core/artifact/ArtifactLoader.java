@@ -87,8 +87,8 @@ public final class ArtifactLoader {
       List<Artifact> artifacts = new ArrayList<Artifact>(fetchSize);
       try {
          IOseeStatement chStmt = ConnectionHandler.getStatement();
+         String sql = null;
          try {
-            String sql;
             if (historical) {
                sql = ClientSessionManager.getSql(OseeSql.LOAD_HISTORICAL_ARTIFACTS);
             } else {
@@ -112,6 +112,9 @@ public final class ArtifactLoader {
                previousArtId = artId;
                previousBranchId = branchId;
             }
+         } catch (OseeDataStoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, sql == null ? "SQL unknown" : sql, ex);
+            throw ex;
          } finally {
             chStmt.close();
          }
@@ -196,7 +199,7 @@ public final class ArtifactLoader {
 
    /**
     * should only be used in tandem with with selectArtifacts()
-    * 
+    *
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     *           selectArtifacts
     */
@@ -206,7 +209,7 @@ public final class ArtifactLoader {
 
    /**
     * should only be used in tandem with with selectArtifacts()
-    * 
+    *
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     *           selectArtifacts
     */
