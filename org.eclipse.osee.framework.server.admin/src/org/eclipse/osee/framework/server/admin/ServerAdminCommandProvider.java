@@ -105,7 +105,6 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        osee_version - displays the supported osee versions\n");
       sb.append("        add_osee_version [version string]- add the version string to the list of supported osee versions\n");
       sb.append("        remove_osee_version [version string]- removes the version string from the list of supported osee versions\n");
-      sb.append("        change_attribute_uri_to_guid - renames attribute data stored on disk from HRID to Guid and updates database\n");
       sb.append("        finish_partial_archives - move txs addressing to osee_txs_archived for archived branches\n");
       sb.append("        consolidate_artifact_versions - migrate to 0.9.2 database schema\n");
       sb.append("        tx_currents - detect and optionaly fix tx current and mod types inconsistencies\n");
