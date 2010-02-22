@@ -419,7 +419,11 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       cleanupClassReferences();
       OseeTestThread.clearThreadReferences();
       for (ITestEnvironmentListener listener : envListeners) {
-         listener.onEnvironmentKilled(this);
+    	  try {
+    		  listener.onEnvironmentKilled(this);
+    	  } catch (Exception e) {
+    		  OseeLog.log(TestEnvironment.class, Level.SEVERE, "exception during listener notification", e);
+    	  }
       }
       envListeners.clear();
       if (getRunManager() != null) {
