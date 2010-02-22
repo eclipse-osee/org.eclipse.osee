@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import java.util.Map.Entry;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.messaging.services.ServiceNotification;
@@ -36,14 +36,12 @@ class MonitorTimedOutServices implements Runnable {
 		Set<Pair<String, String>> keySet = map.keySet();
 		for(Pair<String, String> pair:keySet){
 			Map<String, ServiceHealthPlusTimeout> items = map.get(pair.getFirst(), pair.getSecond());
-			for(String key:items.keySet()){
-				ServiceHealthPlusTimeout serviceHealthPlusTimeout = items.get(key);
-				if(serviceHealthPlusTimeout.isTimedOut(currentSystemTime)){
-					System.out.println(pair.getFirst() + pair.getSecond() + key);
-					toRemove.add(new ThreeItems(pair.getFirst(), pair.getSecond(), key));
+			for(Entry<String, ServiceHealthPlusTimeout> key:items.entrySet()){
+				if(key.getValue().isTimedOut(currentSystemTime)){
+					toRemove.add(new ThreeItems(pair.getFirst(), pair.getSecond(), key.getKey()));
 					List<ServiceNotification> list = callbacks.get(pair.getFirst(), pair.getSecond());
 					for(ServiceNotification notify:list){
-						notify.onServiceGone(serviceHealthPlusTimeout.getServiceHealth());
+						notify.onServiceGone(key.getValue().getServiceHealth());
 					}
 				}
 			}
@@ -59,7 +57,7 @@ class MonitorTimedOutServices implements Runnable {
 		}
 	}
 
-	private class ThreeItems {
+	private static class ThreeItems {
 		
 		String first;
 		String second;

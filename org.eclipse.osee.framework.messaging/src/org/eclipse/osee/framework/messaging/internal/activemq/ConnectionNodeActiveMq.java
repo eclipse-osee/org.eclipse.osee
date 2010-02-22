@@ -37,10 +37,10 @@ import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
  */
 class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageListener {
 
-   private String version;
-   private String sourceId;
+//   private String version;
+//   private String sourceId;
    private NodeInfo nodeInfo;
-   private ExecutorService executor;
+//   private ExecutorService executor;
    private Connection connection;
    private Session session;
    private TemporaryTopic temporaryTopic;
@@ -53,10 +53,10 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    private ActiveMqUtil activeMqUtil;
 
    public ConnectionNodeActiveMq(String version, String sourceId, NodeInfo nodeInfo, ExecutorService executor) throws JMSException {
-      this.version = version;
-      this.sourceId = sourceId;
+//      this.version = version;
+//      this.sourceId = sourceId;
       this.nodeInfo = nodeInfo;
-      this.executor = executor;
+//      this.executor = executor;
       activeMqUtil = new ActiveMqUtil();
       regularListeners = new ConcurrentHashMap<String, ActiveMqMessageListenerWrapper>();
       replyListeners = new ConcurrentHashMap<String, OseeMessagingListener>();
@@ -82,7 +82,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    }
 
    @Override
-   public void send(MessageID topic, Object body, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
+   public synchronized void send(MessageID topic, Object body, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
       try {
          if (topic.isTopic()) {
             Topic destination = session.createTopic(topic.getGuid());
@@ -105,7 +105,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    }
 
    @Override
-   public void subscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
+   public synchronized void subscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
       Topic destination;
       try {
          if (isConnectedThrow()) {
@@ -153,7 +153,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          if (correlationId != null) {
             OseeMessagingListener listener = replyListeners.get(correlationId);
             if (listener != null) {
-               listener.process(activeMqUtil.translateMessage(jmsMessage, listener.getClazz()), new HashMap(), new ReplyConnectionActiveMqImpl());
+               listener.process(activeMqUtil.translateMessage(jmsMessage, listener.getClazz()), new HashMap<String, Object>(), new ReplyConnectionActiveMqImpl());
             }
          }
       } catch (JMSException ex) {
@@ -182,7 +182,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    }
 
    @Override
-   public boolean isConnected() {
+   public synchronized boolean isConnected() {
       try {
          return isConnectedThrow();
       } catch (JMSException ex) {
@@ -191,7 +191,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       }
    }
 
-   private boolean isConnectedThrow() throws JMSException {
+   private synchronized boolean isConnectedThrow() throws JMSException {
       if (connection == null || started == false) {
          return false;
       }

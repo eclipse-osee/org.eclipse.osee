@@ -41,7 +41,7 @@ public class NodeInfo {
 	}
 
 	public boolean isVMComponent() {
-		return getComponentName().equals(Component.VM);
+		return getComponentName().equals(Component.VM.getComponentName());
 	}
 
 	/*
