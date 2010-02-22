@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
+import org.eclipse.osee.ote.service.core.ConnectionServiceTracker;
 import org.eclipse.osee.ote.service.core.OteClientEndpointReceive;
 import org.eclipse.osee.ote.service.core.OteClientEndpointSend;
 import org.eclipse.osee.ote.service.core.TestClientServiceImpl;
@@ -26,56 +27,23 @@ import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator implements BundleActivator {
 
-	private ServiceRegistration registration;
-	private TestClientServiceImpl service;
-	private ServiceTracker connectionServiceTracker;
-	private MessagingGatewayBindTracker messagingGatewayTracker;
-	
+	private ConnectionServiceTracker connectionServiceTracker;
 	
 	public void start(BundleContext context) throws Exception {
 
-      connectionServiceTracker = new ServiceTracker(context, IConnectionService.class.getName(), null);
-      connectionServiceTracker.open();
+	      
+      connectionServiceTracker = new ConnectionServiceTracker(context);
+      connectionServiceTracker.open(true);
 
-      OteClientEndpointReceive endpointReceive = new OteClientEndpointReceive();
-      OteClientEndpointSend endpointSend = new OteClientEndpointSend();
-      
-      messagingGatewayTracker = new MessagingGatewayBindTracker(context, endpointSend, endpointReceive);
-      messagingGatewayTracker.open(true);
-      
-      IConnectionService connectionService = (IConnectionService) connectionServiceTracker.getService();
-      service = new TestClientServiceImpl(connectionService, endpointSend, endpointReceive);
-      
-      ExtensionDefinedObjects<IOteRuntimeLibraryProvider> definedObjects = new ExtensionDefinedObjects<IOteRuntimeLibraryProvider>(
-            "org.eclipse.osee.ote.client.libraryProvidier", "LibraryProvider", "className");
-      try {
-         List<IOteRuntimeLibraryProvider> providers = definedObjects.getObjects();
-         service.addLibraryProvider(providers);
-      } catch (Exception ex) {
-         log(Level.SEVERE, "failed to process OTE runtime library provider extensions", ex);
-      }
 
-      service.init();
-      // register the service
-      registration = context.registerService(IOteClientService.class.getName(), service, new Hashtable());
 	}
 
 	public void stop(BundleContext context) throws Exception {
-		IConnectionService connectionService = (IConnectionService) connectionServiceTracker.getService();
-		connectionService.removeListener(service);
 
 		// close the service tracker
-		messagingGatewayTracker.close();
 		connectionServiceTracker.close();
 		connectionServiceTracker = null;
 
-		registration.unregister();
-		try {
-			service.stop();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		service = null;
 	}
 
 	public static void log(Level level, String message, Throwable t) {
