@@ -40,5 +40,6 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.eclipse.osee.ote.core.internal.Activator
 Import-Package: org.apache.xml.serialize,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.messaging,
  org.eclipse.osee.framework.messaging.id
