@@ -12,6 +12,8 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+
+import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.ote.core.ConnectionRequestResult;
 import org.eclipse.osee.ote.core.IRemoteUserSession;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
@@ -26,4 +28,5 @@ public interface IHostTestEnvironment extends Remote {
 
    ConnectionRequestResult requestEnvironment(IRemoteUserSession session, TestEnvironmentConfig config) throws RemoteException;
 
+   EnhancedProperties getProperties() throws RemoteException;
 }

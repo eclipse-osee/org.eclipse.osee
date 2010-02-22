@@ -11,9 +11,7 @@
 package org.eclipse.osee.ote.core.environment.interfaces;
 
 import java.lang.reflect.Constructor;
-import org.eclipse.osee.ote.core.enums.SupportedScriptTypes;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
-import org.eclipse.osee.ote.core.environment.TestServerMode;
 
 public interface ITestEnvironmentServiceConfig {
    /**
@@ -28,13 +26,9 @@ public interface ITestEnvironmentServiceConfig {
 	 */
    public String getName();
 
-   public TestServerMode getMode();
-
    public String getServerTitle();
 
    public String getOutfileLocation();
-
-   public SupportedScriptTypes getSupportedScriptTypes();
 
    /**
     * gets the Constructor for the creating new environments
