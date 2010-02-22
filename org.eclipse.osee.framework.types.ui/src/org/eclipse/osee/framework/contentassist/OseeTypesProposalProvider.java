@@ -60,4 +60,10 @@ public class OseeTypesProposalProvider extends AbstractOseeTypesProposalProvider
          acceptor.accept(proposal);
       }
    }
+
+   @Override
+   public void completeAddEnum_EntryGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeAddEnum_EntryGuid(model, assignment, context, acceptor);
+      completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
+   }
 }
