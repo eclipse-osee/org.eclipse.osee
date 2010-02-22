@@ -32,9 +32,6 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
    Collection<TeamDefinitionArtifact> teamDefs;
    TeamDefinitionTreeWithChildrenDialog dialog = null;
 
-   /**
-    * @param label
-    */
    public XHyperlabelTeamDefinitionSelection(String label) {
       super(label, true, WorldEditor.TITLE_MAX_LENGTH);
    }
@@ -64,9 +61,9 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
    public boolean handleSelection() {
       try {
          if (teamDefs == null) {
-            dialog = new TeamDefinitionTreeWithChildrenDialog(Active.Active);
+            dialog = new TeamDefinitionTreeWithChildrenDialog(Active.Both);
          } else {
-            dialog = new TeamDefinitionTreeWithChildrenDialog(Active.Active, teamDefs);
+            dialog = new TeamDefinitionTreeWithChildrenDialog(Active.Both, teamDefs);
          }
          int result = dialog.open();
          if (result == 0) {
@@ -83,9 +80,6 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
       return false;
    }
 
-   /**
-    * @param teamDefs the teamDefs to set
-    */
    public void setTeamDefs(Collection<TeamDefinitionArtifact> teamDefs) {
       this.teamDefs = teamDefs;
       if (dialog != null) {

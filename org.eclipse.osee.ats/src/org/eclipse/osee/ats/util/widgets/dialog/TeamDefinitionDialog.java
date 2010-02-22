@@ -26,9 +26,6 @@ import org.eclipse.swt.widgets.Display;
  */
 public class TeamDefinitionDialog extends org.eclipse.ui.dialogs.ListDialog {
 
-   /**
-    * 
-    */
    public TeamDefinitionDialog(String title, String message) {
       super(Display.getCurrent().getActiveShell());
       this.setTitle(title);

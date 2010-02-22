@@ -104,7 +104,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       }
       try {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-         ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Both));
+         ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Active));
          int result = ld.open();
          if (result == 0) {
             selectedTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
