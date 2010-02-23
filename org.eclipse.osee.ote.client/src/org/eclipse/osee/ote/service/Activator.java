@@ -10,42 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.service;
 
-import java.util.Hashtable;
-import java.util.List;
 import java.util.logging.Level;
-
-import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.ote.service.core.ConnectionServiceTracker;
-import org.eclipse.osee.ote.service.core.OteClientEndpointReceive;
-import org.eclipse.osee.ote.service.core.OteClientEndpointSend;
-import org.eclipse.osee.ote.service.core.TestClientServiceImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator implements BundleActivator {
 
 	private ServiceRegistration registration;
-	private TestClientServiceImpl service;
    private ConnectionServiceTracker connectionServiceTracker;
 	private MessagingGatewayBindTracker messagingGatewayTracker;
 	private ExportClassLoaderCreationTracker exportClassLoaderCreationTracker;
 	
 	
 	public void start(BundleContext context) throws Exception {
-
-      
       connectionServiceTracker = new ConnectionServiceTracker(context);
       connectionServiceTracker.open(true);
-      
-
-      service.init();
-      // register the service
-      registration = context.registerService(IOteClientService.class.getName(), service, new Hashtable());
-      
+   
       exportClassLoaderCreationTracker = new ExportClassLoaderCreationTracker(context);
       exportClassLoaderCreationTracker.open(true);
 	}
