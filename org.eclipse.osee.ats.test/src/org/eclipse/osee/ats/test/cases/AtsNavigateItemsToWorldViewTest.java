@@ -112,12 +112,13 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    @org.junit.Test
-   public void testUserSearchMyFavoritesTest() throws Exception {
+   public void testSearchMyFavorites() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Favorites, true);
+      UserSearchWorkflowSearchItem dwl =
+            (UserSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
+      dwl.setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
+      dwl.setSelected(UserSearchOption.Favorites, true);
       runGeneralUserSearchTest(item, 3);
       runGeneralXColTest(20, false);
       // test the task tab - this is being done via open ats task editor
@@ -135,7 +136,7 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    @org.junit.Test
-   public void testUserSearchMySubscribedTest() throws Exception {
+   public void testSearchMySubscribed() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -147,7 +148,7 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    @org.junit.Test
-   public void testUserSearchMyReviewsTest() throws Exception {
+   public void testSearchMyReviews() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -164,7 +165,7 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    @org.junit.Test
-   public void testUserSearchMyReviewsAllTest() throws Exception {
+   public void testSearchMyReviewsAll() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -183,7 +184,7 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    @org.junit.Test
-   public void testUserSearchMyOriginatorTest() throws Exception {
+   public void testSearchMyOriginator() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -199,7 +200,7 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    @org.junit.Test
-   public void testUserSearchMyOriginatorAllTest() throws Exception {
+   public void testSearchMyOriginatorAll() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -225,13 +226,14 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    @org.junit.Test
-   public void testUserSearchMyCompletedTest() throws Exception {
+   public void testSearchMyCompleted() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCompleted, true);
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
+      UserSearchWorkflowSearchItem dwl =
+            (UserSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
+      dwl.setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
+      dwl.setSelected(UserSearchOption.IncludeCompleted, true);
+      dwl.setSelected(UserSearchOption.IncludeTasks, false);
       editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
@@ -256,7 +258,7 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    @org.junit.Test
-   public void testUserSearchOtherUserReviewsTest() throws Exception {
+   public void testSearchOtherUserReviews() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -271,7 +273,7 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    @org.junit.Test
-   public void testUserSearchOtherUserAllReviewsTest() throws Exception {
+   public void testSearchOtherUserAllReviews() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -287,7 +289,7 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    @org.junit.Test
-   public void testUserSearchOtherUserFavoritesTest() throws Exception {
+   public void testSearchOtherUserFavorites() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
@@ -299,7 +301,7 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    @org.junit.Test
-   public void testUserSearchOtherUserSubscribedTest() throws Exception {
+   public void testSearchOtherUserSubscribed() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
