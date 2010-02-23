@@ -61,6 +61,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       checkForMultipleVersionsInOneTransaction();
       checkForIdenticalAddressingInDifferentTransactions();
       checkForMultipleCurrents();
+      checkForInvalidModType();
 
       if (issueDetected()) {
          for (Address address : addresses) {
@@ -71,6 +72,17 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
                logIssue("corrected txCurrent: " + address.correctedTxCurrent, address);
                currentData.add(new Object[] {address.correctedTxCurrent.getValue(), address.transactionId,
                      address.gammaId});
+            }
+         }
+      }
+   }
+
+   private void checkForInvalidModType() {
+      boolean notInBaseline = !addresses.get(addresses.size() - 1).isBaselineTx;
+      if (notInBaseline) {
+         for (Address address : addresses) {
+            if (address.modType == ModificationType.MERGED) {
+               logIssue("found merged mod type for item not in baseline: ", address);
             }
          }
       }

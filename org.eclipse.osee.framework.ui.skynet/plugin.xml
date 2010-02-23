@@ -1672,12 +1672,6 @@
   <extension
         point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
      <DatabaseHealthOperation
-           className="org.eclipse.osee.framework.ui.skynet.dbHealth.PopulateNewArtsTable">
-     </DatabaseHealthOperation>
-  </extension>
-  <extension
-        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
-     <DatabaseHealthOperation
            className="org.eclipse.osee.framework.ui.skynet.dbHealth.ItemsDeletedWithNoOtherModification">
      </DatabaseHealthOperation>
   </extension>
