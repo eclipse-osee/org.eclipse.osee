@@ -47,11 +47,16 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
 
    private static final String DELETE_ARTIFACT_VERSIONS = "delete from osee_artifact_version where gamma_id = ?";
 
+   private static final String SET_BASELINE_TRANSACTION =
+         "UPDATE osee_branch ob SET ob.baseline_transaction_id = (SELECT otd.transaction_id FROM osee_tx_details otd WHERE otd.branch_id = ob.branch_id AND otd.tx_type = 1)";
+
+   private static final String POPULATE_ARTS =
+         "insert into osee_arts(gamma_id, art_id, art_type_id, guid, human_readable_id) select gamma_id, art.art_id, art_type_id, guid, human_readable_id from osee_artifact art, osee_artifact_version arv where art.art_id = arv.art_id and not exists (select 1 from osee_arts arts where art.art_id = arts.art_id)";
+
    private List<Long[]> deleteArtifactVersionData;
    private final List<Long> obsoleteGammas = new ArrayList<Long>();
    private final List<Object[]> addressingToDelete = new ArrayList<Object[]>(13000);
    private final List<Object[]> updateAddressingData = new ArrayList<Object[]>(5000);
-   private final List<Object[]> updateConflictsData = new ArrayList<Object[]>(5000);
    private ExportImportJoinQuery gammaJoin;
    private OseeConnection connection;
    private int previousArtifactId;
@@ -100,6 +105,10 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       updataConflicts("source_gamma_id");
       updataConflicts("dest_gamma_id");
 
+      setBaselineTransactions();
+
+      populateArts();
+
       determineAffectedAddressing(false);
       determineAffectedAddressing(true);
 
@@ -109,6 +118,16 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    private void updataConflicts(String columnName) throws OseeCoreException {
       int count = getDatabaseService().runPreparedUpdate(connection, String.format(UPDATE_CONFLICTS, columnName));
       reporter.report(String.format("updated %s in %d rows", columnName, count));
+   }
+
+   private void setBaselineTransactions() throws OseeCoreException {
+      int count = getDatabaseService().runPreparedUpdate(connection, SET_BASELINE_TRANSACTION);
+      reporter.report(String.format("updated %d baseline transactions", count));
+   }
+
+   private void populateArts() throws OseeCoreException {
+      int count = getDatabaseService().runPreparedUpdate(connection, POPULATE_ARTS);
+      reporter.report(String.format("inserted %d rows into osee_arts", count));
    }
 
    private void findObsoleteGammas() throws OseeCoreException {
