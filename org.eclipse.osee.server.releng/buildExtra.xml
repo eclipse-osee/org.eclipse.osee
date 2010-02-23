@@ -37,49 +37,38 @@
 	<target name="extraPackaging">
 		<propertyregex property="updateSiteFile" input="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-Update-" casesensitive="false" override="true" />
 		<property name="tempAppServerFolder" value="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp" />
-		
+
 		<mkdir dir="${tempAppServerFolder}" />
-		
+
 		<unzip src="${buildDirectory}/${buildLabel}/${updateSiteFile}" dest="${tempAppServerFolder}">
-			<patternset includes="plugins/*" excludes="features/*,*.jar,*.xml" />
+			<patternset includes="plugins/*" excludes="features/*,*.jar,*.xml,*source_*.jar" />
 		</unzip>
-		
+
 		<mkdir dir="${tempAppServerFolder}/configuration" />
 		<property name="configFolder" value="${tempAppServerFolder}/configuration" />
 		<property name="pluginsFolder" value="${tempAppServerFolder}/plugins" />
-		
+
 		<antcall target="generateConfigIni" inheritall="true" />
-				
+
 		<pathconvert property="launcherBundlePath" setonempty="false">
 			<path>
 				<fileset dir="${pluginsFolder}">
-					<include name="org.eclipse.equinox.launcher_*.jar" />
+					<include name="org.eclipse.osgi_*.jar" />
 				</fileset>
 			</path>
 		</pathconvert>
 		<propertyregex property="launcherJar" override="true" input="${launcherBundlePath}" regexp="[^/]+$" select="\0" casesensitive="false" />
-		
-		<ant antfile="${relengBuilderDir}/scripts/createServerLaunch.xml" target="generateAll" inheritall="true" />
 
-		<propertyregex property="serverRuntimeFile" input="${updateSiteFile}" defaultvalue="server-runtime.zip" regexp="-Update-" replace="-Application-Server-" casesensitive="false" override="true" />
+		<ant antfile="${relengBuilderDir}/scripts/createServerLaunch.xml" target="generateAll" inheritall="true" />
+		<copy file="${relengBuilderDir}/scripts/server.pl" todir="${tempAppServerFolder}" />
+
+		<propertyregex property="serverRuntimeFile" input="${updateSiteFile}" defaultvalue="server-runtime.zip" regexp="-Update-" replace="-osgi-runtime-" casesensitive="false" override="true" />
 
 		<zip destfile="${buildDirectory}/${buildLabel}/${serverRuntimeFile}">
 			<fileset dir="${tempAppServerFolder}" />
 		</zip>
 		<delete dir="${tempAppServerFolder}" quiet="true" />
-		<!--<antcall target="deleteZips" inheritall="true" />-->
 	</target>
-
-	<!--<target name="deleteZips">
-		<echo message="deleteZips" />
-		<propertyregex property="allZip" input="${updateSiteFile}" defaultvalue="" regexp="-Update-" replace="-AllFeaturesAndPlugins-" casesensitive="false" override="true" />
-		<propertyregex property="sdkZip" input="${updateSiteFile}" defaultvalue="" regexp="-Update-" replace="-SDK-" casesensitive="false" override="true" />
-
-		<delete file="${buildDirectory}/${buildLabel}/${allZip}" quiet="true" />
-		<delete file="${buildDirectory}/${buildLabel}/${allZip}.md5" quiet="true" />
-		<delete file="${buildDirectory}/${buildLabel}/${sdkZip}" quiet="true" />
-		<delete file="${buildDirectory}/${buildLabel}/${sdkZip}.md5" quiet="true" />
-	</target>-->
 
 	<target name="generateConfigIni">
 		<echo file="${configFolder}/config.ini" append="false" message="osgi.bundles= \${line.separator}\${line.separator}" />

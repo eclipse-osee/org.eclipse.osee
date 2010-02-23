@@ -16,11 +16,11 @@
 	<loadfile property="postlaunchScript" encoding="utf-8" failonerror="true" srcfile="${relengBuilderDir}/scripts/post_server_launch_template.txt" />
 
 	<target name="generateTemplate">
-		<generate.launch connection.id="[id from connection file]" extraargs="-Dosee.connection.info.uri=[custom connection file path] -Dosee.application.server.data=[binary data path]" filepath="${tempAppServerFolder}/runExample.sh" isexecutable="false" launcher="${launcherJar}" serverport="8089" servertelnetport="8090" />
+		<generate.launch connection.id="[id from connection file]" extraVMArgs="-Dosee.connection.info.uri=[custom connection file path] -Dosee.application.server.data=[binary data path]" filepath="${tempAppServerFolder}/runExample.sh" isexecutable="false" launcher="${launcherJar}" serverport="8089" servertelnetport="8090" />
 	</target>
 
 	<target name="generateDerbyLaunch">
-		<generate.launch connection.id="derby" extraargs="-Dosee.derby.server=127.0.0.1:1621" filepath="${tempAppServerFolder}/runDerby.sh" launcher="${launcherJar}" serverport="8089" servertelnetport="8090" />
+		<generate.launch connection.id="derby" extraVMArgs="-Dosee.derby.server=127.0.0.1:1621" filepath="${tempAppServerFolder}/runDerby.sh" launcher="${launcherJar}" serverport="8089" servertelnetport="8090" />
 	</target>
 
 	<target name="generateLocalPostgresLaunch">
@@ -37,7 +37,8 @@
 		<attribute name="serverTelnetPort" />
 		<attribute name="serverMaxMem" default="1024m" />
 		<attribute name="connection.id" />
-		<attribute name="extraArgs" default=" " />
+		<attribute name="extraVMArgs" default=" " />
+		<attribute name="extraArgs" default="-configuration configuration" />
 		<attribute name="isExecutable" default="true" />
 		<attribute name="extraScript" default=" " />
 		<sequential>
@@ -48,10 +49,11 @@
 ## Custom Config				
 EQUINOX_LAUNCHER=@{launcher}
 OSEE_DATABASE_CONNECTION_ID=@{connection.id}
-OSGI_TELNET_PORT=@{serverTelnetPort}
 OSEE_SERVER_MAX_MEMORY=@{serverMaxMem}
 OSEE_APP_SERVER_PORT=@{serverPort}
-OSEE_APP_SERVER_EXTRA_VMARGS=@{extraArgs}			
+OSGI_TELNET_PORT=@{serverTelnetPort}
+OSEE_APP_SERVER_EXTRA_VMARGS=@{extraVMArgs}
+OSEE_APP_ARGS=@{extraArgs}
 @{extraScript}	
 ######################################################################
 			</echo>
