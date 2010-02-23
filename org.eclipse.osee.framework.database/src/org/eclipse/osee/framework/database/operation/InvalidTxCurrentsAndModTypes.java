@@ -81,7 +81,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       boolean notInBaseline = !addresses.get(addresses.size() - 1).isBaselineTx;
       if (notInBaseline) {
          for (Address address : addresses) {
-            if (address.modType == ModificationType.MERGED) {
+            if (!address.purge && address.modType == ModificationType.MERGED) {
                logIssue("found merged mod type for item not in baseline: ", address);
             }
          }
@@ -218,7 +218,9 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
                         chStmt.getInt("tx_current"));
 
             if (!address.isSimilar(previousAddress)) {
-               consolidateAddressing();
+               if (!addresses.isEmpty()) {
+                  consolidateAddressing();
+               }
                addresses.clear();
             }
 
