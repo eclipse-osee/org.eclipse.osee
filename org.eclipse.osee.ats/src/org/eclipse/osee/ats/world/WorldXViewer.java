@@ -463,6 +463,20 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
+      } else if (treeColumn.getData().equals(WorldXViewerFactory.Points_Col)) {
+         try {
+            Set<TeamWorkFlowArtifact> smas = new HashSet<TeamWorkFlowArtifact>();
+            for (TreeItem item : treeItems) {
+               Artifact art = (Artifact) item.getData();
+               if (art instanceof TeamWorkFlowArtifact) {
+                  smas.add((TeamWorkFlowArtifact) art);
+               }
+            }
+            PromptChangeUtil.promptChangePoints(smas, true);
+            return;
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
       }
       if (!(treeColumn.getData() instanceof XViewerAttributeColumn) && !(treeColumn.getData() instanceof XViewerAtsAttributeColumn)) {
          AWorkbench.popup("ERROR", "Column is not attribute and thus not multi-editable " + treeColumn.getText());
@@ -513,7 +527,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
 
    @Override
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      if (treeColumn.getData().equals(WorldXViewerFactory.Groups_Col)) {
+      if (treeColumn.getData().equals(WorldXViewerFactory.Groups_Col) || treeColumn.getData().equals(
+            WorldXViewerFactory.Points_Col)) {
          return true;
       }
       if (!(treeColumn.getData() instanceof XViewerColumn)) {
@@ -953,6 +968,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          } else if (xCol.equals(WorldXViewerFactory.Work_Package_Col)) {
             modified =
                   PromptChangeUtil.promptChangeAttribute(sma, ATSAttributes.WORK_PACKAGE_ATTRIBUTE, persist, false);
+         } else if (xCol.equals(WorldXViewerFactory.Points_Col)) {
+            modified = PromptChangeUtil.promptChangePoints(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Numeric1_Col)) {
             modified = PromptChangeUtil.promptChangeFloatAttribute(sma, ATSAttributes.NUMERIC1_ATTRIBUTE, persist);
          } else if (xCol.equals(WorldXViewerFactory.Numeric2_Col)) {

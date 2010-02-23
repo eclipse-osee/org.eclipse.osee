@@ -237,6 +237,16 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return sb.toString().replaceFirst(", $", "");
    }
 
+   public String getWorldViewPoint() throws OseeCoreException {
+      StringBuffer sb = new StringBuffer();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (!team.getWorldViewPoint().equals("")) {
+            sb.append(team.getWorldViewPoint() + ", ");
+         }
+      }
+      return sb.toString().replaceFirst(", $", "");
+   }
+
    public String getWorldViewNumberOfTasks() throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {

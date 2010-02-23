@@ -8,20 +8,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
+package org.eclipse.osee.ats.util;
 
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -31,27 +39,32 @@ import org.eclipse.ui.dialogs.ListDialog;
 /**
  * @author Donald G. Dunne
  */
-public class ChangeTypeDialog extends ListDialog {
+public class ChangePointDialog extends ListDialog {
 
-   ChangeType selected = null;
+   String selected = null;
+   boolean clearSelected = false;
 
-   public ChangeTypeDialog(Shell parent) {
+   public ChangePointDialog(Shell parent) {
       super(parent);
       setContentProvider(new ArrayContentProvider());
-      setLabelProvider(new ChangeLabelProvider());
-      setInput(ChangeType.values());
+      setLabelProvider(new PointLabelProvider());
+      try {
+         setInput(AttributeTypeManager.getEnumerationValues(ATSAttributes.POINTS_ATTRIBUTE.getStoreName()));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
       setShellStyle(getShellStyle() | SWT.RESIZE);
-      setTitle("Select Change Type");
+      setTitle("Select Point");
    }
 
-   public ChangeType getSelection() {
-      return (ChangeType) getResult()[0];
+   public String getSelection() {
+      return (String) getResult()[0];
    }
 
    @Override
    protected Control createDialogArea(Composite container) {
 
-      (new Label(container, SWT.NONE)).setText("     Select Change Type:");
+      (new Label(container, SWT.NONE)).setText("     Select Point:");
 
       Control c = super.createDialogArea(container);
       GridData gd = new GridData(GridData.FILL_BOTH);
@@ -67,6 +80,16 @@ public class ChangeTypeDialog extends ListDialog {
          getTableViewer().setSelection(new StructuredSelection(sel.toArray(new Object[sel.size()])));
          getTableViewer().getTable().setFocus();
       }
+
+      Button clearButton = new Button(getTableViewer().getTable().getParent(), SWT.PUSH);
+      clearButton.setText("clear");
+      clearButton.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            clearSelected = true;
+            close();
+         }
+      });
       return c;
    }
 
@@ -79,16 +102,14 @@ public class ChangeTypeDialog extends ListDialog {
       super.okPressed();
    }
 
-   public class ChangeLabelProvider implements ILabelProvider {
+   public class PointLabelProvider implements ILabelProvider {
 
       public Image getImage(Object arg0) {
-         ChangeType type = (ChangeType) arg0;
-         return type.getImage();
+         return null;
       }
 
       public String getText(Object arg0) {
-         ChangeType type = (ChangeType) arg0;
-         return type.name();
+         return arg0.toString();
       }
 
       public void addListener(ILabelProviderListener arg0) {
@@ -106,8 +127,12 @@ public class ChangeTypeDialog extends ListDialog {
 
    }
 
-   public void setSelected(ChangeType selected) {
+   public void setSelected(String selected) {
       this.selected = selected;
+   }
+
+   public boolean isClearSelected() {
+      return clearSelected;
    }
 
 }

@@ -251,6 +251,44 @@ public class PromptChangeUtil {
       }
    }
 
+   public static boolean promptChangePoints(StateMachineArtifact sma, boolean persist) throws OseeStateException {
+      if (sma.isTeamWorkflow()) {
+         return promptChangePoints(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
+      }
+      return false;
+   }
+
+   public static boolean promptChangePoints(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) throws OseeStateException {
+
+      final ChangePointDialog dialog = new ChangePointDialog(Display.getCurrent().getActiveShell());
+      try {
+         if (teams.size() == 1) {
+            dialog.setSelected(teams.iterator().next().getWorldViewPoint());
+         }
+         if (dialog.open() == 0) {
+
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Points");
+
+            for (TeamWorkFlowArtifact team : teams) {
+               if (dialog.isClearSelected() || !team.getWorldViewPoint().equals(dialog.getSelection())) {
+                  if (dialog.isClearSelected()) {
+                     team.deleteAttributes(ATSAttributes.POINTS_ATTRIBUTE.getStoreName());
+                  } else {
+                     team.setSoleAttributeFromString(ATSAttributes.POINTS_ATTRIBUTE.getStoreName(),
+                           dialog.getSelection());
+                  }
+                  team.saveSMA(transaction);
+               }
+            }
+            transaction.execute();
+         }
+         return true;
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't change points", ex);
+         return false;
+      }
+   }
+
    public static boolean promptChangePriority(StateMachineArtifact sma, boolean persist) throws OseeStateException {
       if (sma.isTeamWorkflow()) {
          return promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) sma), persist);

@@ -84,6 +84,8 @@ public class ATSAttributes {
          new ATSAttributes("Work Package", "Designated accounting work package for completing workflow.");
    public static final ATSAttributes COMMIT_MANAGER_WIDGET =
          new ATSAttributes("Commit Manager", "Commit branches to parent and parallel branches.");
+   public static final ATSAttributes POINTS_ATTRIBUTE =
+         new ATSAttributes("Points", "Abstract value that describes risk, complexity, and size of Actions.");
    public static final ATSAttributes NUMERIC1_ATTRIBUTE =
          new ATSAttributes("Numeric1", "Open field for user to be able to enter numbers for sorting.");
    public static final ATSAttributes NUMERIC2_ATTRIBUTE =

@@ -183,6 +183,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          XNavigateItem utilItems = new XNavigateItem(null, "Util", FrameworkImage.GEAR);
          new ImportActionsViaSpreadsheet(utilItems);
          new XNavigateItemAction(utilItems, new CompareTwoStringsAction(), FrameworkImage.EDIT);
+         new GenerateGuid(utilItems);
          items.add(utilItems);
 
          BlamContributionManager.addBlamOperationsToNavigator(items);

@@ -750,6 +750,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getSoleAttributeValue(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName(), "");
    }
 
+   public String getWorldViewPoint() throws OseeCoreException {
+      return getSoleAttributeValue(ATSAttributes.POINTS_ATTRIBUTE.getStoreName(), "");
+   }
+
    public String getWorldViewNumeric1() throws OseeCoreException {
       return AtsUtil.doubleToI18nString(getSoleAttributeValue(ATSAttributes.NUMERIC1_ATTRIBUTE.getStoreName(), 0.0),
             true);

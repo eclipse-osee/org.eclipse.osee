@@ -237,6 +237,9 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Work_Package_Col)) {
             return wva.getWorldViewWorkPackage();
          }
+         if (xCol.equals(WorldXViewerFactory.Points_Col)) {
+            return wva.getWorldViewPoint();
+         }
          if (xCol.equals(WorldXViewerFactory.Numeric1_Col)) {
             return wva.getWorldViewNumeric1();
          }
