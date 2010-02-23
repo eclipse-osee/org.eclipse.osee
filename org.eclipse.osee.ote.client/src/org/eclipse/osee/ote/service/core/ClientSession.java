@@ -19,6 +19,7 @@ import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.Message;
+import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.core.AbstractRemoteSession;
 import org.eclipse.osee.ote.core.ConnectionRequestResult;
 import org.eclipse.osee.ote.core.IRemoteUserSession;
@@ -169,6 +170,7 @@ public class ClientSession extends AbstractRemoteSession {
       if (lock.tryLock(TIMEOUT, TimeUnit.MINUTES)) {
          try {
             IRemoteUserSession exportedSession = (IRemoteUserSession) connector.export(this);
+            Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
             ConnectionRequestResult result = testHost.requestEnvironment(exportedSession, config);
             if (result.getStatus().getStatus()) {
                return new TestHostConnection(connector, result.getEnvironment(), result.getSessionKey());

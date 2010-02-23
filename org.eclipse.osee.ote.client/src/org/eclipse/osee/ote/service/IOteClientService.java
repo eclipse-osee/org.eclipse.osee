@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.service;
 
 import java.net.InetAddress;
 import java.util.Collection;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
@@ -58,7 +59,7 @@ public interface IOteClientService {
     */
    void addDictionaryListener(IMessageDictionaryListener listener);
 
-   void removeConnectionFilters(ITestEnvironmentFilter filter);
+//   void removeConnectionFilters(ITestEnvironmentFilter filter);
 
    void removeConnectionListener(ITestConnectionListener listener);
 

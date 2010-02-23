@@ -14,6 +14,6 @@ import java.net.URI;
 public interface RemoteServiceRegistrar {
 	void start();
 	void stop();
-	void registerService(String serviceName, String serviceVersion, String serviceUniqueId, URI broker, ServiceInfoPopulator infoPopulator, int refreshRateInSeconds);
+	RegisteredServiceReference registerService(String serviceName, String serviceVersion, String serviceUniqueId, URI broker, ServiceInfoPopulator infoPopulator, int refreshRateInSeconds);
 	boolean unregisterService(String serviceName, String serviceVersion, String serviceUniqueId);
 }

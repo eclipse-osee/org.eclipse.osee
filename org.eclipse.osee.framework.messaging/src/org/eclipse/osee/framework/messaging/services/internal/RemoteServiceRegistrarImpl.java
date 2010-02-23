@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.services.BaseMessages;
 import org.eclipse.osee.framework.messaging.services.RemoteServiceRegistrar;
 import org.eclipse.osee.framework.messaging.services.ServiceInfoPopulator;
+import org.eclipse.osee.framework.messaging.services.RegisteredServiceReference;
 
 /**
  * @author b1528444
@@ -48,8 +49,8 @@ public class RemoteServiceRegistrarImpl implements RemoteServiceRegistrar {
    }
 
    @Override
-   public void registerService(String serviceName, String serviceVersion, String serviceUniqueId, URI broker, ServiceInfoPopulator infoPopulator, int refreshRateInSeconds) {
-      String key = serviceName + serviceVersion + serviceUniqueId;
+   public RegisteredServiceReference registerService(String serviceName, String serviceVersion, String serviceUniqueId, URI broker, ServiceInfoPopulator infoPopulator, int refreshRateInSeconds) {
+      String key = getKey(serviceName, serviceVersion, serviceUniqueId);
       if (!mapOfUpdateStatus.containsKey(key)) {
          UpdateStatus updateStatus = new UpdateStatus(this.connectionNode, serviceName, serviceVersion, serviceUniqueId, broker, refreshRateInSeconds, infoPopulator);
          ScheduledFuture<?> scheduled = executor.scheduleAtFixedRate(updateStatus, 0, refreshRateInSeconds, TimeUnit.SECONDS);
@@ -57,11 +58,16 @@ public class RemoteServiceRegistrarImpl implements RemoteServiceRegistrar {
          mapOfUpdateStatus.put(key, updateStatus);
          addToReplyMap(serviceName, serviceVersion, updateStatus);
       }
+      return new ServiceReferenceImp(mapOfUpdateStatus.get(key));
+   }
+   
+   private String getKey(String serviceName, String serviceVersion, String serviceUniqueId){
+      return serviceName + serviceVersion + serviceUniqueId;
    }
 
    @Override
    public boolean unregisterService(String serviceName, String serviceVersion, String serviceUniqueId) {
-      String key = serviceName + serviceVersion + serviceUniqueId; 
+      String key =  getKey(serviceName, serviceVersion, serviceUniqueId); 
       
       UpdateStatus updateStatus = mapOfUpdateStatus.remove(key);
       if(updateStatus != null){
@@ -92,5 +98,12 @@ public class RemoteServiceRegistrarImpl implements RemoteServiceRegistrar {
          return list.remove(updateForReply);
       }
       return false;
+   }
+
+   void updateService(String key) {
+      UpdateStatus update = mapOfUpdateStatus.get(key);
+      if(update != null){
+         update.run();
+      }
    }
 }

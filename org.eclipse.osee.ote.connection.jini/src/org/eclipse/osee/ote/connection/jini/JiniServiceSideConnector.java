@@ -68,7 +68,7 @@ public class JiniServiceSideConnector extends JiniConnector implements
 
 	@Override
 	public Remote getService() {
-		return service;
+		return serviceProxy;
 	}
 
 	@Override

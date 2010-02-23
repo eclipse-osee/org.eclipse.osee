@@ -10,11 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
 import org.eclipse.osee.connection.service.IServiceConnector;
-import org.eclipse.osee.ote.core.OSEEPerson1_4;
 
 /**
  * @author Ken J. Aguilar
@@ -81,12 +77,12 @@ public class OteServiceProperties {
    /**
     * @return the dateStart
     */
-   public Date getDateStarted() {
-      return (Date) connector.getProperty("date", null);
+   public String getDateStarted() {
+      return (String) connector.getProperty("date", NA);
    }
 
-   public Collection<OSEEPerson1_4> getUserList() {
-      return (Collection<OSEEPerson1_4>) connector.getProperty("user_list", new LinkedList<OSEEPerson1_4>());
+   public String getUserList() {
+      return (String) connector.getProperty("user_list", NA);
    }
 
    public void printStats() {

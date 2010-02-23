@@ -93,7 +93,9 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
          @Override
          public IStatus run(IProgressMonitor monitor) throws Exception {
             // Attempt to obtain current workbench User - if service is available
-            getWorkbenchUserService().getUser();
+            if(getWorkbenchUserService() != null){
+               getWorkbenchUserService().getUser();
+            }
             return Status.OK_STATUS;
          }
       }, TestCoreGuiPlugin.class, "org.eclipse.osee.ote.ui", false);

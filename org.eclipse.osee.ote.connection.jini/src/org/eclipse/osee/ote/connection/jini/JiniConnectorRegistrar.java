@@ -91,29 +91,35 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
    }
 
    @Override
-   public synchronized void onConnectorsAdded(
-	    Collection<IServiceConnector> connectors) {
-      for (IServiceConnector connector : connectors) {
-         if (connector.getConnectorType().equals(JiniServiceSideConnector.TYPE)) {
-            System.out.println("found jini server side connector");
-            JiniServiceSideConnector jiniConnector = (JiniServiceSideConnector) connector;
-            HashSet<ServiceRegistrar> list = new HashSet<ServiceRegistrar>(serviceRegistrars);
-            serverSideConnectors.put(jiniConnector, list);
-            for (ServiceRegistrar registrar : list) {
-               try {
-                  final ServiceRegistration registration = registrar.register(
-                                                                              jiniConnector.getServiceItem(),
-                                                                              Long.MAX_VALUE);
-                  jiniConnector.addRegistration(registration, registrar);
-               }
-               catch (RemoteException ex) {
-                  Activator.log(Level.WARNING, "Error registering service", ex);
-               }
-            }
-
-         }
-      }
-   }
+	public synchronized void onConnectorsAdded(
+			Collection<IServiceConnector> connectors) {
+		for (IServiceConnector connector : connectors) {
+			if (connector.getConnectorType().equals(
+					JiniServiceSideConnector.TYPE)) {
+				System.out.println("found jini server side connector");
+				HashSet<ServiceRegistrar> list = new HashSet<ServiceRegistrar>(
+						serviceRegistrars);
+				if (connector instanceof JiniServiceSideConnector) {
+					serverSideConnectors.put(
+							(JiniServiceSideConnector) connector, list);
+					for (ServiceRegistrar registrar : list) {
+						try {
+							final ServiceRegistration registration = registrar
+									.register(
+											((JiniServiceSideConnector) connector)
+													.getServiceItem(),
+											Long.MAX_VALUE);
+							((JiniServiceSideConnector) connector)
+									.addRegistration(registration, registrar);
+						} catch (RemoteException ex) {
+							Activator.log(Level.WARNING,
+									"Error registering service", ex);
+						}
+					}
+				}
+			}
+		}
+	}
 
    public synchronized void shutdown() {
       if (!isShutdown) {
