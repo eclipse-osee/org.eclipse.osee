@@ -41,9 +41,6 @@ public final class ArtifactCache {
 
    /**
     * Cache the artifact so that we can avoid creating duplicate instances of an artifact
-    *
-    * @param artifact
-    * @throws OseeCoreException
     */
    static void cache(Artifact artifact) throws OseeCoreException {
       AbstractArtifactCache cache = getCache(artifact);
@@ -82,10 +79,6 @@ public final class ArtifactCache {
    /**
     * This method is called by attributes and relations when their dirty state changes. This way, when an artifact is
     * dirty we can hold onto a strong reference and when it is not dirty we can have a weak reference.
-    *
-    * @param artId
-    * @param branchId
-    * @throws OseeCoreException
     */
    public static void updateCachedArtifact(int artId, int branchId) throws OseeCoreException {
       ACTIVE_CACHE.updateReferenceType(artId, branchId);
