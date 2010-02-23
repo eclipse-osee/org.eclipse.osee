@@ -139,7 +139,7 @@ public class ArtifactQuery {
       Artifact artifact = ArtifactCache.getActive(guidOrHrid, branch);
       if (artifact != null) {
          if (artifact.isDeleted() && !allowDeleted) {
-            return null;
+            throw new ArtifactDoesNotExist("Deleted artifact unexpectedly returned");
          }
          return artifact;
       }

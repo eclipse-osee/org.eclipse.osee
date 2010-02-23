@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ARTIFACT_TABLE;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -31,7 +30,6 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -53,10 +51,9 @@ public class ArtifactPersistenceManager {
          "SELECT txs2.gamma_id, txd2.tx_type, txs2.transaction_id FROM osee_tx_details txd2, osee_txs txs2, osee_attribute atr2 where txd2.transaction_id = txs2.transaction_id and txs2.gamma_id = atr2.gamma_id and txd2.branch_id = ? and atr2.attr_id = ?";
 
    private static final String ARTIFACT_SELECT =
-         "SELECT osee_artifact.art_id, txd1.branch_id FROM osee_artifact, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
+         "SELECT osee_artifact.art_id, txd1.branch_id FROM osee_artifact, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE " + "osee_artifact.art_id=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
 
-   private static final String ARTIFACT_ID_SELECT =
-         "SELECT " + SkynetDatabase.ARTIFACT_TABLE.columns("art_id") + " FROM " + SkynetDatabase.ARTIFACT_TABLE + " WHERE ";
+   private static final String ARTIFACT_ID_SELECT = "SELECT osee_artifact.art_id FROM osee_artifact WHERE ";
 
    private static final String ARTIFACT_NEW_ON_BRANCH =
          "select txd.tx_type from osee_artifact_version arv, osee_txs txs, osee_tx_details txd WHERE arv.art_id = ? and arv.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id = txd.transaction_id and txd.tx_type = 1";
@@ -104,7 +101,7 @@ public class ArtifactPersistenceManager {
 
          while (iter.hasNext()) {
             primitive = iter.next();
-            sql.append(SkynetDatabase.ARTIFACT_TABLE.column("art_id") + " in (");
+            sql.append("osee_artifact.art_id" + " in (");
             sql.append(getSelectArtIdSql(primitive, dataList, branch));
 
             if (iter.hasNext()) {
@@ -116,7 +113,7 @@ public class ArtifactPersistenceManager {
          ISearchPrimitive primitive = null;
          Iterator<ISearchPrimitive> iter = searchCriteria.iterator();
 
-         sql.append(SkynetDatabase.ARTIFACT_TABLE.column("art_id") + " IN(SELECT art_id FROM " + ARTIFACT_TABLE + ", (");
+         sql.append("osee_artifact.art_id IN(SELECT art_id FROM osee_artifact, (");
 
          while (iter.hasNext()) {
             primitive = iter.next();
@@ -143,33 +140,18 @@ public class ArtifactPersistenceManager {
    }
 
    /**
-    * @param transaction if the transaction is null then persist is not called otherwise
-    * @param overrideDeleteCheck if <b>true</b> deletes without checking preconditions
-    * @param artifacts The artifacts to delete.
+    * @param transaction
+    *           if the transaction is null then persist is not called
+    * @param overrideDeleteCheck
+    *           if <b>true</b> deletes without checking preconditions
+    * @param artifacts
+    *           The artifacts to delete.
     */
    public static void deleteArtifact(SkynetTransaction transaction, boolean overrideDeleteCheck, final Artifact... artifacts) throws OseeCoreException {
-      if (artifacts.length == 0) {
-         return;
-      }
-
       if (!overrideDeleteCheck) {
-         // Confirm artifacts are fit to delete
-         for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-            IStatus result = check.isDeleteable(Arrays.asList(artifacts));
-            if (!result.isOK()) {
-               throw new OseeStateException(result.getMessage());
-            }
-         }
+         performDeleteChecks(artifacts);
       }
-      //Bulk Load Artifacts
-      Collection<Integer> artIds = new LinkedList<Integer>();
-      for (Artifact artifact : artifacts) {
-         for (RelationLink link : artifact.getRelationsAll(false)) {
-            if (link.getRelationType().isOrdered()) {
-               artIds.add(artifact.getArtId() == link.getAArtifactId() ? link.getBArtifactId() : link.getAArtifactId());
-            }
-         }
-      }
+      Collection<Integer> artIds = bulkLoadArtifacts(artifacts);
       Branch branch = artifacts[0].getBranch();
       ArtifactQuery.getArtifactListFromIds(artIds, branch);
 
@@ -178,14 +160,38 @@ public class ArtifactPersistenceManager {
       }
    }
 
+   private static void performDeleteChecks(Artifact... artifacts) throws OseeCoreException {
+      // Confirm artifacts are fit to delete
+      for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
+         IStatus result = check.isDeleteable(Arrays.asList(artifacts));
+         if (!result.isOK()) {
+            throw new OseeStateException(result.getMessage());
+         }
+      }
+   }
+
+   private static Collection<Integer> bulkLoadArtifacts(Artifact... artifacts) {
+      Collection<Integer> artIds = new LinkedList<Integer>();
+      for (Artifact artifact : artifacts) {
+         for (RelationLink link : artifact.getRelationsAll(false)) {
+            if (link.getRelationType().isOrdered()) {
+               artIds.add(artifact.getArtId() == link.getAArtifactId() ? link.getBArtifactId() : link.getAArtifactId());
+            }
+         }
+      }
+      return artIds;
+   }
+
    private static void deleteTrace(Artifact artifact, SkynetTransaction transaction, boolean reorderRelations) throws OseeCoreException {
       if (!artifact.isDeleted()) {
-         // This must be done first since the the actual deletion of an artifact clears out the link manager
+         // This must be done first since the the actual deletion of an
+         // artifact clears out the link manager
          for (Artifact childArtifact : artifact.getChildren()) {
             deleteTrace(childArtifact, transaction, false);
          }
          try {
-            ArtifactCache.deCache(artifact);
+            // calling deCache here creates a race condition when the handleRelationModifiedEvent listeners fire - RS
+            //          ArtifactCache.deCache(artifact);
             artifact.internalSetDeleted();
             RelationManager.deleteRelationsAll(artifact, reorderRelations);
             if (transaction != null) {
@@ -210,7 +216,7 @@ public class ArtifactPersistenceManager {
       TransactionRecord transId =
             TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
       long totalTime = System.currentTimeMillis();
-      //Get attribute Gammas
+      // Get attribute Gammas
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       RevertAction revertAction = null;
       try {
@@ -224,10 +230,12 @@ public class ArtifactPersistenceManager {
    }
 
    /**
-    * Should NOT be used for relation types that maintain order. Not handled yet
+    * Should NOT be used for relation types that maintain order. Not handled
+    * yet
     */
    public static void revertRelationLink(OseeConnection connection, RelationLink link) throws OseeCoreException {
-      //Only reverts relation links that don't span multiple branches.  Need to revisit if additional functionality is needed.
+      // Only reverts relation links that don't span multiple branches. Need
+      // to revisit if additional functionality is needed.
       if (!link.getArtifactA().getBranch().equals(link.getArtifactB().getBranch())) {
          throw new OseeArgumentException(String.format("Can not revert Relation %d. Relation spans multiple branches",
                link.getRelationId()));
@@ -263,7 +271,7 @@ public class ArtifactPersistenceManager {
       TransactionRecord transId =
             TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
       long totalTime = System.currentTimeMillis();
-      //Get attribute Gammas
+      // Get attribute Gammas
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          chStmt.runPreparedQuery(GET_GAMMAS_ARTIFACT_REVERT, branchId, artId, branchId, artId, artId, branchId, artId);

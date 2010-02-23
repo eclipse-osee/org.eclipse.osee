@@ -131,7 +131,7 @@ public class AtsDeleteManager {
                   // perform the delete/purge
                   if (purge) {
                      new PurgeArtifacts(allDeleteArts).execute();
-                  } else {
+                  } else if (allDeleteArts.size() > 0) {
                      SkynetTransaction transaction =
                            new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete ATS Objects");
                      ArtifactPersistenceManager.deleteArtifact(transaction, false,
