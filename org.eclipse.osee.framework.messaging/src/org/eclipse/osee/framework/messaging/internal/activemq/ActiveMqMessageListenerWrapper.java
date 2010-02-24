@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
+import org.eclipse.osee.framework.messaging.internal.Activator;
 
 /**
  * @author b1528444
@@ -73,5 +74,6 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
 	   for(OseeMessagingListener listener:listeners){
 	      listener.process(activeMqUtil.translateMessage(message, listener.getClazz()), headers, replyConnection);
 	   }
+	   OseeLog.log(Activator.class, Level.FINE, String.format("recieved message %s - %s", message.getJMSDestination().toString(), message.toString()));
 	}
 }

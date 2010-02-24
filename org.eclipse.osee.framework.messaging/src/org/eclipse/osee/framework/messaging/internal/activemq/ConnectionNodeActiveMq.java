@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.messaging.MessageID;
 import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
+import org.eclipse.osee.framework.messaging.internal.Activator;
 
 /**
  * @author b1528444
@@ -97,6 +98,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
                msg.setJMSReplyTo(temporaryTopic);
             }
             producer.send(msg);
+            OseeLog.log(Activator.class, Level.FINE, String.format("Sending message %s - %s", topic.getName(), topic.getGuid()));
             statusCallback.success();
          }
       } catch (JMSException ex) {
@@ -208,6 +210,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       } catch (OseeCoreException ex) {
          OseeLog.log(ConnectionNodeActiveMq.class, Level.SEVERE, ex);
       }
+      OseeLog.log(Activator.class, Level.FINE, String.format("recieved reply message %s", jmsMessage.toString()));
    }
 
    @Override

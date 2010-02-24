@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.messaging.internal.activemq;
 
+import java.util.logging.Level;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -12,8 +13,10 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
+import org.eclipse.osee.framework.messaging.internal.Activator;
 
 
 /**
@@ -53,6 +56,7 @@ class ReplyConnectionActiveMqImpl implements ReplyConnection {
          Message message = activeMqUtil.createMessage(session, clazz, body);
          message.setJMSCorrelationID(correlationId);
          producer.send(destReply, message);
+         OseeLog.log(Activator.class, Level.INFO, String.format("Sending Reply Message %s", message.toString()));
       } catch (JMSException ex) {
          statusCallback.fail(ex);
          throw new OseeWrappedException(ex);
