@@ -62,6 +62,15 @@ public class CoverageUtil {
       return true;
    }
 
+   public static CoverageItem getCoverageItemMatchingOrder(Collection<? extends ICoverage> items, CoverageItem coverageItem) {
+      for (ICoverage coverage : items) {
+         if (coverage instanceof CoverageItem && ((CoverageItem) coverage).getOrderNumber().equals(coverageItem)) {
+            return (CoverageItem) coverage;
+         }
+      }
+      return null;
+   }
+
    public static KeyedImage getCoveragePackageBaseImage(CoveragePackageBase coveragePackageBase) {
       if (coveragePackageBase instanceof CoverageImport) {
          return CoverageImage.COVERAGE_IMPORT;

@@ -23,6 +23,7 @@ import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**
@@ -163,15 +164,15 @@ public class MergeManager {
 
             // Case: All match, some added, and none moved (name-only)
             // Action: just add new ones and process all children
-            if (isOnlyAddNewOnes(nameOnlyImportToPackageCoverage)) {
+            if (isOnlyAddNewOnes(nameOnlyImportToPackageCoverage, packageItemChildren, importItemToMatchItem)) {
                handleOnlyAddNewOnes(mergeItems, importItemChildren, importItemToMatchItem, resultData);
             }
 
             // Case: All match, some added, and some moved
             // Action: Process children of Matches; Add ones that were not Name-Only; Move ones that were
             else {
-               handleSomeAddedSomeMoved(mergeItems, nameOnlyImportToPackageCoverage, importItemChildren,
-                     importItemToMatchItem, resultData);
+               handleSomeAddedSomeMoved(mergeItems, nameOnlyImportToPackageCoverage, packageItemChildren,
+                     importItemChildren, importItemToMatchItem, resultData);
             }
 
          }
@@ -184,7 +185,7 @@ public class MergeManager {
       return;
    }
 
-   private void handleSomeAddedSomeMoved(List<IMergeItem> mergeItems, Map<ICoverage, ICoverage> nameOnlyImportToPackageCoverage, Collection<? extends ICoverage> importItemChildren, Map<ICoverage, MatchItem> importItemToMatchItem, XResultData resultData) throws OseeCoreException {
+   private void handleSomeAddedSomeMoved(List<IMergeItem> mergeItems, Map<ICoverage, ICoverage> nameOnlyImportToPackageCoverage, Collection<? extends ICoverage> packageItemChildren, Collection<? extends ICoverage> importItemChildren, Map<ICoverage, MatchItem> importItemToMatchItem, XResultData resultData) throws OseeCoreException {
       List<IMergeItem> groupMergeItems = new ArrayList<IMergeItem>();
       List<ICoverage> processChildrenItems = new ArrayList<ICoverage>();
       for (ICoverage childCoverage : importItemChildren) {
@@ -200,6 +201,10 @@ public class MergeManager {
                   false));
             processedImportCoverages.add(childMatchItem.getImportItem());
             processChildrenItems.add(childCoverage);
+         } else if (isChildCoverageItemAndNeedsUpdate(packageItemChildren, childCoverage)) {
+            CoverageItem packageCoverageItem =
+                  CoverageUtil.getCoverageItemMatchingOrder(packageItemChildren, (CoverageItem) childCoverage);
+            groupMergeItems.add(new MergeItem(MergeType.Rename_Coverage_Item, packageCoverageItem, childCoverage, false));
          }
          // This child is new, mark as added; no need to process children cause their new
          else {
@@ -215,8 +220,33 @@ public class MergeManager {
 
    }
 
-   private boolean isOnlyAddNewOnes(Map<ICoverage, ICoverage> nameOnlyImportToPackageCoverage) {
-      return (nameOnlyImportToPackageCoverage.size() == 0);
+   /**
+    * If CoverageItem has a maching item with same order number, just update name
+    */
+   private boolean isChildCoverageItemAndNeedsUpdate(Collection<? extends ICoverage> packageItemChildren, ICoverage childCoverage) {
+      if (!(childCoverage instanceof CoverageItem)) return false;
+      CoverageItem packageCoverageItem =
+            CoverageUtil.getCoverageItemMatchingOrder(packageItemChildren, (CoverageItem) childCoverage);
+      if (packageCoverageItem != null) return true;
+      return false;
+   }
+
+   private boolean isOnlyAddNewOnes(Map<ICoverage, ICoverage> nameOnlyImportToPackageCoverage, Collection<? extends ICoverage> packageItemChildren, Map<ICoverage, MatchItem> importItemToMatchItem) {
+      // If no items match name-only then potential add
+      if (nameOnlyImportToPackageCoverage.size() != 0) return false;
+      // If any of the No_Match import order number match package number, than not an addOnly
+      for (Entry<ICoverage, MatchItem> pair : importItemToMatchItem.entrySet()) {
+         ICoverage importChild = pair.getKey();
+         if (!Strings.isValid(importChild.getOrderNumber())) continue;
+         if (pair.getValue().getMatchType() == MatchType.No_Match__Name_Or_Order_Num) {
+            for (ICoverage packageItem : packageItemChildren) {
+               if (packageItem.getOrderNumber().equals(importChild.getOrderNumber())) {
+                  return false;
+               }
+            }
+         }
+      }
+      return true;
    }
 
    /**
