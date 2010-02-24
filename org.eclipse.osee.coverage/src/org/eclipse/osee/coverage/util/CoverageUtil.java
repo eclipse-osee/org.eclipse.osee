@@ -64,7 +64,8 @@ public class CoverageUtil {
 
    public static CoverageItem getCoverageItemMatchingOrder(Collection<? extends ICoverage> items, CoverageItem coverageItem) {
       for (ICoverage coverage : items) {
-         if (coverage instanceof CoverageItem && ((CoverageItem) coverage).getOrderNumber().equals(coverageItem)) {
+         if (coverage instanceof CoverageItem && ((CoverageItem) coverage).getOrderNumber().equals(
+               coverageItem.getOrderNumber())) {
             return (CoverageItem) coverage;
          }
       }
