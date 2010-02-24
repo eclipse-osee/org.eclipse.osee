@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -64,21 +65,21 @@ public class VcpSourceFile {
       }
    }
 
-   public VcpSourceLineFile getVcpSourceLineFile() {
+   public VcpSourceLineFile getVcpSourceLineFile() throws OseeCoreException {
       if (vcpSourceLineFile == null) {
          vcpSourceLineFile = new VcpSourceLineFile(vcastDirectory, this);
       }
       return vcpSourceLineFile;
    }
 
-   public VcpSourceLisFile getVcpSourceLisFile() {
+   public VcpSourceLisFile getVcpSourceLisFile() throws OseeCoreException {
       if (vcpSourceLisFile == null) {
          vcpSourceLisFile = new VcpSourceLisFile(vcastDirectory, this);
       }
       return vcpSourceLisFile;
    }
 
-   public CoverageDataFile getCoverageDataFile() {
+   public CoverageDataFile getCoverageDataFile() throws OseeCoreException {
       if (coverageDataFile == null) {
          coverageDataFile =
                new CoverageDataFile(vcastDirectory + "/vcast/" + getValue(SourceValue.SOURCE_FILENAME).replaceAll(

@@ -17,6 +17,7 @@ import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.osee.ats.workflow.editor.actions.EditAction;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.ui.actions.ActionFactory;
 
 /**
@@ -34,7 +35,7 @@ class AtsWorkflowConfigEditorContextMenuProvider extends ContextMenuProvider {
     * 
     * @param viewer the editor's graphical viewer
     * @param registry the editor's action registry
-    * @throws IllegalArgumentException if registry is <tt>null</tt>.
+    * @throws OseeArgumentException if registry is <tt>null</tt>.
     */
    public AtsWorkflowConfigEditorContextMenuProvider(EditPartViewer viewer, ActionRegistry registry) {
       super(viewer);

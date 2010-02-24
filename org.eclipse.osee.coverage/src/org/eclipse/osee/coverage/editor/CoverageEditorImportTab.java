@@ -72,7 +72,7 @@ public class CoverageEditorImportTab extends FormPage {
    private Composite destroyableComposite;
    private boolean isSimulateImput = false;
 
-   public CoverageEditorImportTab(CoverageEditor coverageEditor) {
+   public CoverageEditorImportTab(CoverageEditor coverageEditor) throws OseeCoreException {
       super(coverageEditor, "Import", "Import");
       this.coverageEditor = coverageEditor;
       this.coveragePackageBase = coverageEditor.getCoveragePackageBase();
@@ -282,9 +282,13 @@ public class CoverageEditorImportTab extends FormPage {
                   coverageEditor, coverageImport);
       coverageImportIndex = coverageEditor.addFormPage(coverageImportTab);
 
-      coverageEditorMergeTab =
-            new CoverageEditorMergeTab("Import Merge", coverageEditor,
-                  (CoveragePackage) coverageEditor.getCoveragePackageBase(), coverageImport);
+      try {
+         coverageEditorMergeTab =
+               new CoverageEditorMergeTab("Import Merge", coverageEditor,
+                     (CoveragePackage) coverageEditor.getCoveragePackageBase(), coverageImport);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+      }
       coverageEditorMergeIndex = coverageEditor.addFormPage(coverageEditorMergeTab);
    }
 

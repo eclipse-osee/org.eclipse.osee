@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats;
 
 import java.util.ArrayList;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
 /**
  * @author Donald G. Dunne
@@ -18,13 +19,13 @@ import java.util.ArrayList;
 public enum NoteType {
    Comment, Question, Error, Other;
 
-   public static NoteType getType(String type) {
+   public static NoteType getType(String type) throws OseeArgumentException {
       for (NoteType e : NoteType.values()) {
          if (e.name().equals(type)) {
             return e;
          }
       }
-      throw new IllegalArgumentException("Unhandled NoteType");
+      throw new OseeArgumentException("Unhandled NoteType");
    }
 
    public static ArrayList<String> getNames() {

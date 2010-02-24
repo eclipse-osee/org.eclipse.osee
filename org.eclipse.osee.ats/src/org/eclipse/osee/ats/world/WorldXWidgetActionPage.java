@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -141,7 +142,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    }
 
    @Override
-   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
+   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() throws OseeArgumentException {
       if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
          return ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).getDynamicWidgetLayoutListener();
       }

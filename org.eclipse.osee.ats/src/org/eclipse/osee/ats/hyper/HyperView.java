@@ -142,11 +142,7 @@ public class HyperView extends ViewPart implements IPartListener {
    }
 
    enum RelationEnum {
-      TOP,
-      BOTTOM,
-      BOTTOM2,
-      LEFT,
-      RIGHT
+      TOP, BOTTOM, BOTTOM2, LEFT, RIGHT
    };
 
    public boolean provideBackForwardActions() {
@@ -282,16 +278,15 @@ public class HyperView extends ViewPart implements IPartListener {
 
    private void printBackList(String inStr) {
       final boolean debug = false;
-      if (!debug) {
-         return;
+      if (debug) {
+         StringBuilder builder = new StringBuilder();
+         builder.append(inStr + "backList : [");
+         for (int i = 0; i < backList.size(); i++) {
+            builder.append(i + " ");
+         }
+         builder.append("] index: " + backListIndex);
+         System.err.println(builder.toString());
       }
-      StringBuilder builder = new StringBuilder();
-      builder.append(inStr + "backList : [");
-      for (int i = 0; i < backList.size(); i++) {
-         builder.append(i + " ");
-      }
-      builder.append("] index: " + backListIndex);
-      System.err.println(builder.toString());
    }
 
    private void backListClearToIndex() {

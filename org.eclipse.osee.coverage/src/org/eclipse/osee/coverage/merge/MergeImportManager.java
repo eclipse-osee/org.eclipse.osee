@@ -215,7 +215,6 @@ public class MergeImportManager {
          CoverageUnit importCoverageUnit = (CoverageUnit) importItem;
 
          MatchItem matchItem = mergeManager.getPackageCoverageItem(importItem);
-         ICoverage packageItem = matchItem == null ? null : matchItem.getPackageItem();
          // Determine if item already exists first
          if (MatchType.isMatch(matchItem.getMatchType())) {
             // save assignees and notes and RATIONALE before child overwrites

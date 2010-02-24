@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.vue;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
 /**
  * @author Roberto E. Escobar
  */
 public class AtsDbConfig {
 
-   protected void executeLoadAIsAndTeamsAction(String bundleId) {
+   protected void executeLoadAIsAndTeamsAction(String bundleId) throws OseeCoreException {
       LoadAIsAndTeamsAction.executeForDbConfig(bundleId);
    }
 }

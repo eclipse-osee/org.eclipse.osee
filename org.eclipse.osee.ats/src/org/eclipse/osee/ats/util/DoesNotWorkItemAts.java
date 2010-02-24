@@ -119,6 +119,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       AWorkbench.popup("Completed", "Complete");
    }
 
+   @SuppressWarnings("unused")
    private void myWorldTimeTest() throws OseeCoreException {
       AtsBulkLoad.run(true);
       //      ElapsedTime time = new ElapsedTime("My World via Relations");
@@ -137,6 +138,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    }
 
+   @SuppressWarnings("unused")
    private void fixNotesStateNames() throws OseeCoreException {
       Map<String, Integer> valueToGammaId = new HashMap<String, Integer>();
       String SELECT_QUERY = "select * from osee_attribute where value like '%quot; State%'";
@@ -199,6 +201,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       }
    }
 
+   @SuppressWarnings("unused")
    private void renameTransactionComments() throws OseeCoreException {
       List<String> notRenamed = new ArrayList<String>();
       Map<String, Integer> commentToTransId = new HashMap<String, Integer>();
@@ -263,6 +266,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    }
 
+   @SuppressWarnings("unused")
    private void renameBranches() throws OseeCoreException {
       List<String> notRenamed = new ArrayList<String>();
       Pattern traxPattern = Pattern.compile("^(..... - TRAX RPCR .*)( - TRAX RPCR .*)$");
@@ -316,6 +320,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    }
 
+   @SuppressWarnings("unused")
    private void deleteDuplicateCommonBranchDuplicateRelations() throws OseeCoreException {
       XResultData rd = new XResultData();
       rd.log(getName());
@@ -388,6 +393,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       rd.log(str);
    }
 
+   @SuppressWarnings("unused")
    private void purgeHrids() throws OseeCoreException {
       String[] hrids = AFile.readFile("O:\\hrids_to_delete.txt").split("\r\n");
       int x = 0;
@@ -427,6 +433,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    }
 
+   @SuppressWarnings("unused")
    private void convertAtsLogUserIds(SkynetTransaction transaction) throws OseeCoreException {
       List<String> hrids =
             Arrays.asList("NKYBF", "J1Z48", "ZY4W5", "U9H58", "9713S", "83XVW", "59B9X", "TQD1J", "UVM7U", "HZT73",
@@ -442,6 +449,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       }
    }
 
+   @SuppressWarnings("unused")
    private void fixTestTaskResolutions() throws OseeCoreException {
       System.out.println("Started fixTestTaskResolutions...");
       for (Artifact artifact : ArtifactQuery.getArtifactListFromAttributeType(AtsAttributeTypes.Resolution,
@@ -497,7 +505,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    //      newActionTx.execute();
    //   }
 
-   private static final boolean fixIt = false;
+   //   private static final boolean fixIt = false;
 
    //   public void cleanXViewerCustomizations() throws OseeCoreException {
    //      for (User user : SkynetAuthentication.getUsers()) {

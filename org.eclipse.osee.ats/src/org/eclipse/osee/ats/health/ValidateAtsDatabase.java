@@ -463,23 +463,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private static Attribute<?> getLatestAttribute(List<Attribute<Object>> attributes) {
-      int gammaId = 0;
-      for (Attribute<?> attr : attributes) {
-         if (attr.getGammaId() > gammaId) {
-            gammaId = attr.getGammaId();
-         }
-      }
-      if (gammaId != 0) {
-         for (Attribute<?> attr : attributes) {
-            if (attr.getGammaId() == gammaId) {
-               return attr;
-            }
-         }
-      }
-      return null;
-   }
-
    private void testAtsActionsHaveTeamWorkflow(Collection<Artifact> artifacts) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
          if (artifact instanceof ActionArtifact) {

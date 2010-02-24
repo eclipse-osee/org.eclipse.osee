@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -40,8 +41,7 @@ public class VcpResultsFile {
       if (m.find()) {
          ResultsValue resultsValue = ResultsValue.valueOf(m.group(1));
          if (resultsValue == null) {
-            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled VcpResultsFile value [%s]",
-                  m.group(1)));
+            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled VcpResultsFile value [%s]", m.group(1)));
          } else {
             resultsValues.put(resultsValue, m.group(2));
          }
@@ -50,7 +50,7 @@ public class VcpResultsFile {
       }
    }
 
-   public VcpResultsDatFile getVcpResultsDatFile() {
+   public VcpResultsDatFile getVcpResultsDatFile() throws OseeCoreException {
       if (vcpResultsDatFile == null) {
          vcpResultsDatFile = new VcpResultsDatFile(vcastDirectory, this);
       }

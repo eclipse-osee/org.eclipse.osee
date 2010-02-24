@@ -718,7 +718,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          for (TeamWorkFlowArtifact teamArt : getTeamWorkFlowArtifacts()) {
             if (teamArt.getTeamDefinition().equals(teamDef)) {
                AWorkbench.popup("ERROR", "Team already exist");
-               throw new IllegalArgumentException(
+               throw new OseeArgumentException(
                      "Team \"" + teamDef + "\" already exists for Action " + getHumanReadableId());
             }
          }

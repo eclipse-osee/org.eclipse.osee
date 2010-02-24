@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -461,7 +462,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       if (!hasWorkRule(ruleId)) {
          Artifact artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ruleId);
          if (artifact == null) {
-            throw new IllegalArgumentException("Rule \"" + ruleId + "\" does not exist.");
+            throw new OseeArgumentException("Rule \"" + ruleId + "\" does not exist.");
          } else {
             addRelation(CoreRelationTypes.WorkItem__Child, artifact);
          }

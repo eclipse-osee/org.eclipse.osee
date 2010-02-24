@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.artifact;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.eclipse.osee.ats.NoteType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -38,7 +39,7 @@ public class NoteItem {
       this.type = type;
    }
 
-   public NoteItem(String type, String state, String date, User user, String msg) {
+   public NoteItem(String type, String state, String date, User user, String msg) throws OseeCoreException {
       this(NoteType.getType(type), state, date, user, msg);
    }
 

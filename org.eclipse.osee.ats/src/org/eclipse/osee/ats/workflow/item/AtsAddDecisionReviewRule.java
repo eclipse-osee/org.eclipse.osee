@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -80,7 +81,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
     */
    public static DecisionReviewArtifact createNewDecisionReview(WorkRuleDefinition atsAddDecisionReviewRule, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, DecisionRuleOption... decisionRuleOption) throws OseeCoreException {
       if (!atsAddDecisionReviewRule.getId().startsWith(AtsAddDecisionReviewRule.ID)) {
-         throw new IllegalArgumentException("WorkRuleDefinition must be AtsAddDecisionReviewRule.ID");
+         throw new OseeArgumentException("WorkRuleDefinition must be AtsAddDecisionReviewRule.ID");
       }
       String title = getValueOrDefault(teamArt, atsAddDecisionReviewRule, DecisionParameter.title);
       if (Artifacts.artNames(ReviewManager.getReviews(teamArt)).contains(title)) {

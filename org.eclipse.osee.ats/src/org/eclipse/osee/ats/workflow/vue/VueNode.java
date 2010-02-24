@@ -14,6 +14,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.vue.DiagramNode.PageType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 
 /**
@@ -40,24 +42,18 @@ public class VueNode {
       return "[" + workPage.getPageType() + " (" + vueId + ") " + workPage.getName() + "]";
    }
 
-   /**
-    * @return Returns the workPage.
-    */
    public DiagramNode getWorkPage() {
       return workPage;
    }
 
-   /**
-    * 
-    */
-   public VueNode(String vueXml) {
+   public VueNode(String vueXml) throws OseeCoreException {
       super();
       this.vueXml = vueXml;
       workPage = new DiagramNode(ATSXWidgetOptionResolver.getInstance());
       processVueXml(vueXml);
    }
 
-   public void processVueXml(String xml) {
+   public void processVueXml(String xml) throws OseeCoreException {
       String noteXml = AXml.getTagData(xml, "notes");
       noteXml = noteXml.replaceAll("%nl;", "\r");
       noteXml = noteXml.replaceAll("%sp;", " ");
@@ -68,7 +64,7 @@ public class VueNode {
       else if (getShape() == VueNode.Shape.rectangle) workPage.setPageType(PageType.ActionableItem);
    }
 
-   public void getDetails() {
+   public void getDetails() throws OseeCoreException {
       Matcher m = Pattern.compile("<child.*? label=\"(.*?)\" ").matcher(vueXml);
       if (m.find())
          workPage.setName(m.group(1));
@@ -79,7 +75,7 @@ public class VueNode {
       if (m.find())
          shape = Shape.getShape(m.group(1));
       else
-         throw new IllegalArgumentException("Can't determine shape name");
+         throw new OseeArgumentException("Can't determine shape name");
       m = Pattern.compile("<child.*? ID=\"(.*?)\" ").matcher(vueXml);
       if (m.find())
          vueId = m.group(1);

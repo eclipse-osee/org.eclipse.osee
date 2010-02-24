@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.vcast.CoverageDataUnit.CoverageDataType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.w3c.dom.Document;
@@ -25,12 +27,12 @@ public class CoverageDataFile {
    private static final Pattern lineNumToBranchesPattern = Pattern.compile("\\{([0-9]+);\\s*([0-9]+)\\}");
    private final String coverageDataFilename;
 
-   public CoverageDataFile(String coverageDataFilename) {
+   public CoverageDataFile(String coverageDataFilename) throws OseeCoreException {
 
       this.coverageDataFilename = coverageDataFilename;
       File coverageDataFile = getFile();
       if (!coverageDataFile.exists()) {
-         throw new IllegalArgumentException(String.format("VectorCast coverage data file doesn't exist [%s]",
+         throw new OseeArgumentException(String.format("VectorCast coverage data file doesn't exist [%s]",
                coverageDataFilename));
       }
       String fileStr = AFile.readFile(coverageDataFile);

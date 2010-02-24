@@ -85,7 +85,7 @@ public class ConnectionReconnectCommand extends Command {
          return false;
       }
       // return false, if the connection exists already
-      for (Iterator iter = newSource.getSourceConnections().iterator(); iter.hasNext();) {
+      for (Iterator<?> iter = newSource.getSourceConnections().iterator(); iter.hasNext();) {
          Connection conn = (Connection) iter.next();
          // return false if a newSource -> oldTarget connection exists already
          // and it is a different instance than the connection-field
@@ -105,7 +105,7 @@ public class ConnectionReconnectCommand extends Command {
          return false;
       }
       // return false, if the connection exists already
-      for (Iterator iter = newTarget.getTargetConnections().iterator(); iter.hasNext();) {
+      for (Iterator<?> iter = newTarget.getTargetConnections().iterator(); iter.hasNext();) {
          Connection conn = (Connection) iter.next();
          // return false if a oldSource -> newTarget connection exists already
          // and it is a differenct instance that the connection-field

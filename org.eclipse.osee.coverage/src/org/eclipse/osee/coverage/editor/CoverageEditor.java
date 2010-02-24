@@ -181,7 +181,8 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
    }
 
    public static void addToToolBar(IToolBarManager manager, CoverageEditor coverageEditor) {
-      manager.add(OseeUiActions.createBugAction(SkynetGuiPlugin.getInstance(), coverageEditor, EDITOR_ID, "Lba Code Promote"));
+      manager.add(OseeUiActions.createBugAction(SkynetGuiPlugin.getInstance(), coverageEditor, EDITOR_ID,
+            "Lba Code Promote"));
       manager.update(true);
    }
 
@@ -195,14 +196,14 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
       });
    }
 
-   public CoveragePackageBase getCoveragePackageBase() {
+   public CoveragePackageBase getCoveragePackageBase() throws OseeCoreException {
       return getCoverageEditorInput().getCoveragePackageBase();
    }
 
-   public CoverageEditorInput getCoverageEditorInput() {
+   public CoverageEditorInput getCoverageEditorInput() throws OseeCoreException {
       IEditorInput editorInput = getEditorInput();
       if (!(editorInput instanceof CoverageEditorInput)) {
-         throw new IllegalArgumentException("Editor Input not CoverageEditorInput");
+         throw new OseeArgumentException("Editor Input not CoverageEditorInput");
       }
       return (CoverageEditorInput) getEditorInput();
    }

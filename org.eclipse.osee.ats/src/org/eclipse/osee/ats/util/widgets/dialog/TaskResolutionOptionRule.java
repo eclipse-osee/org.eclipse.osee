@@ -39,10 +39,6 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       addWorkDataKeyValue(ATS_TASK_OPTIONS_TAG, value);
    }
 
-   /**
-    * @param artifact
-    * @throws Exception
-    */
    public TaskResolutionOptionRule(Artifact artifact) throws OseeCoreException {
       super(artifact);
       fromXml(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), ""));
@@ -60,15 +56,14 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       if (wids.size() == 0) return null;
       WorkItemDefinition workItemDefinition = wids.iterator().next();
       if (workItemDefinition != null) {
-         TaskResolutionOptionRule taskResolutionOptionRule =
-               new TaskResolutionOptionRule(null, GUID.create(), null);
+         TaskResolutionOptionRule taskResolutionOptionRule = new TaskResolutionOptionRule(null, GUID.create(), null);
          taskResolutionOptionRule.fromXml(workItemDefinition.getWorkDataValue(ATS_TASK_OPTIONS_TAG));
          return taskResolutionOptionRule;
       }
       return null;
    }
 
-   public void setFromDoc(Document doc) {
+   public void setFromDoc(Document doc) throws OseeCoreException {
       NodeList nodes = doc.getElementsByTagName(TaskResOptionDefinition.ATS_TASK_OPTION_TAG);
       if (nodes.getLength() > 0) {
          for (int x = 0; x < nodes.getLength(); x++) {
@@ -88,7 +83,7 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       }
    }
 
-   public String toXml() {
+   public String toXml() throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       sb.append("<" + TaskResOptionDefinition.ATS_TASK_OPTION_TAG + ">\n");
       for (TaskResOptionDefinition def : options) {

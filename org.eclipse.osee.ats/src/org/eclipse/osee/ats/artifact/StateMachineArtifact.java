@@ -331,7 +331,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       try {
          LogItem item = getLog().getStateEvent(LogType.StateCancelled);
          if (item == null) {
-            throw new IllegalArgumentException("No Cancelled Event");
+            throw new OseeArgumentException("No Cancelled Event");
          }
          for (WorkPageDefinition toWorkPageDefinition : getWorkFlowDefinition().getToPages(getWorkPageDefinition())) {
             if (toWorkPageDefinition.getPageName().equals(item.getState())) {

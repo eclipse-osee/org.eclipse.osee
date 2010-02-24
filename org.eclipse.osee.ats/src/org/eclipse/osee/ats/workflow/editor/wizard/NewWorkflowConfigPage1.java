@@ -81,7 +81,7 @@ public class NewWorkflowConfigPage1 extends WizardPage {
 
    public XWidget getXWidget(String attrName) throws OseeArgumentException {
       if (page == null) {
-         throw new IllegalArgumentException("WorkPage == null");
+         throw new OseeArgumentException("WorkPage == null");
       }
       return page.getLayoutData(attrName).getXWidget();
    }

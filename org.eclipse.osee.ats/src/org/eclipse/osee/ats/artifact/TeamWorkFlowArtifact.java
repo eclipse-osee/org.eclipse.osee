@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -207,7 +208,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    public TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException, OseeCoreException {
       String guid = this.getSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), "");
-      if (guid == null || guid.equals("")) throw new IllegalArgumentException(
+      if (guid == null || guid.equals("")) throw new OseeArgumentException(
             "TeamWorkflow [" + getHumanReadableId() + "] has no TeamDefinition associated.");
       return AtsCacheManager.getTeamDefinitionArtifact(guid);
    }

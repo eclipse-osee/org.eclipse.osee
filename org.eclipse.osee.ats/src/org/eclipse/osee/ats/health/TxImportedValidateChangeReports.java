@@ -260,10 +260,6 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
          this.aliases.clear();
       }
 
-      public boolean hasAliases() {
-         return this.aliases.size() > 0;
-      }
-
       public Set<String> getAliases() {
          return this.aliases;
       }

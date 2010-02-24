@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -70,7 +71,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
 
-      if (getSearchVersionArtifact() == null) throw new IllegalArgumentException("Invalid release version");
+      if (getSearchVersionArtifact() == null) throw new OseeArgumentException("Invalid release version");
 
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
       for (Artifact art : getSearchVersionArtifact().getTargetedForTeamArtifacts())

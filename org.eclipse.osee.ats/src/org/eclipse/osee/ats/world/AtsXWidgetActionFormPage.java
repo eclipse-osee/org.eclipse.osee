@@ -105,7 +105,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       });
    }
 
-   private Section createParametersSection(IManagedForm managedForm, Composite body) {
+   private Section createParametersSection(IManagedForm managedForm, Composite body) throws OseeCoreException {
       parameterSection = toolkit.createSection(body, Section.NO_TITLE);
       parameterSection.setText("Parameters");
       parameterSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -149,7 +149,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       return parameterSection;
    }
 
-   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
+   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() throws OseeCoreException {
       return null;
    }
 

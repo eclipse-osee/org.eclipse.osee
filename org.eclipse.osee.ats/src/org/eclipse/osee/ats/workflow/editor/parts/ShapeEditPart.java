@@ -31,6 +31,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.model.Connection;
 import org.eclipse.osee.ats.workflow.editor.model.EllipticalShape;
 import org.eclipse.osee.ats.workflow.editor.model.ModelElement;
@@ -38,6 +39,10 @@ import org.eclipse.osee.ats.workflow.editor.model.RectangleShape;
 import org.eclipse.osee.ats.workflow.editor.model.Shape;
 import org.eclipse.osee.ats.workflow.editor.model.commands.ConnectionCreateCommand;
 import org.eclipse.osee.ats.workflow.editor.model.commands.ConnectionReconnectCommand;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * EditPart used for Shape instances (more specific for EllipticalShape and RectangularShape instances).
@@ -108,26 +113,31 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 
    @Override
    protected IFigure createFigure() {
-      IFigure f = createFigureForModel();
-      f.setOpaque(true); // non-transparent figure
-      f.setBackgroundColor(ColorConstants.green);
-      return f;
+      IFigure f;
+      try {
+         f = createFigureForModel();
+         f.setOpaque(true); // non-transparent figure
+         f.setBackgroundColor(ColorConstants.green);
+         return f;
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+      return null;
    }
 
    /**
     * Return a IFigure depending on the instance of the current model element. This allows this EditPart to be used for
-    * both sublasses of Shape.
+    * both subclasses of Shape.
     */
-   protected IFigure createFigureForModel() {
+   protected IFigure createFigureForModel() throws OseeCoreException {
       if (getModel() instanceof EllipticalShape) {
          return new Ellipse();
       }
       if (getModel() instanceof RectangleShape) {
          return new RoundedRectangle();
-      } else {
-         // if Shapes gets extended the conditions above must be updated
-         throw new IllegalArgumentException();
       }
+      // if Shapes gets extended the conditions above must be updated
+      throw new OseeArgumentException("Unsupported Shape");
    }
 
    /**
@@ -145,7 +155,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
       return (Shape) getModel();
    }
 
-   protected ConnectionAnchor getConnectionAnchor() {
+   protected ConnectionAnchor getConnectionAnchor() throws OseeCoreException {
       if (anchor == null) {
          if (getModel() instanceof EllipticalShape) {
             anchor = new EllipseAnchor(getFigure());
@@ -153,36 +163,56 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
             anchor = new ChopboxAnchor(getFigure());
          } else {
             // if Shapes gets extended the conditions above must be updated
-            throw new IllegalArgumentException("unexpected model");
+            throw new OseeArgumentException("unexpected model");
          }
       }
       return anchor;
    }
 
    @Override
-   protected List getModelSourceConnections() {
+   protected List<?> getModelSourceConnections() {
       return getCastedModel().getSourceConnections();
    }
 
    @Override
-   protected List getModelTargetConnections() {
+   protected List<?> getModelTargetConnections() {
       return getCastedModel().getTargetConnections();
    }
 
    public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
-      return getConnectionAnchor();
+      try {
+         return getConnectionAnchor();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+      return null;
    }
 
    public ConnectionAnchor getSourceConnectionAnchor(Request request) {
-      return getConnectionAnchor();
+      try {
+         return getConnectionAnchor();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+      return null;
    }
 
    public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
-      return getConnectionAnchor();
+      try {
+         return getConnectionAnchor();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+      return null;
    }
 
    public ConnectionAnchor getTargetConnectionAnchor(Request request) {
-      return getConnectionAnchor();
+      try {
+         return getConnectionAnchor();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+      return null;
    }
 
    public void propertyChange(PropertyChangeEvent evt) {

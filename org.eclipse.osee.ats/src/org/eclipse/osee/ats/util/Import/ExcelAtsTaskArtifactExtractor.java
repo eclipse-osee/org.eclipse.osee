@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
@@ -219,7 +220,7 @@ public class ExcelAtsTaskArtifactExtractor {
                            percent = percent * 100;
                         }
                      } catch (Exception ex) {
-                        throw new IllegalArgumentException(String.format("Invalid Percent Complete \"%s\" for row %d",
+                        throw new OseeArgumentException(String.format("Invalid Percent Complete \"%s\" for row %d",
                               str, rowNum));
                      }
                      int percentInt = percent.intValue();
@@ -232,7 +233,7 @@ public class ExcelAtsTaskArtifactExtractor {
                      try {
                         hours = new Double(str);
                      } catch (Exception ex) {
-                        throw new IllegalArgumentException(String.format("Invalid Hours Spent \"%s\" for row %d", str,
+                        throw new OseeArgumentException(String.format("Invalid Hours Spent \"%s\" for row %d", str,
                               rowNum));
                      }
                      sma.getStateMgr().updateMetrics(hours, sma.getStateMgr().getPercentComplete(), true);
@@ -244,7 +245,7 @@ public class ExcelAtsTaskArtifactExtractor {
                      try {
                         hours = new Double(str);
                      } catch (Exception ex) {
-                        throw new IllegalArgumentException(String.format("Invalid Estimated Hours \"%s\" for row %d",
+                        throw new OseeArgumentException(String.format("Invalid Estimated Hours \"%s\" for row %d",
                               str, rowNum));
                      }
                      taskArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hours);

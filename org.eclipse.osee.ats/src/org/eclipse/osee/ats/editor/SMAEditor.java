@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -118,18 +119,23 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
    @Override
    protected void addPages() {
 
-      IEditorInput editorInput = getEditorInput();
-      if (editorInput instanceof SMAEditorInput) {
-         SMAEditorInput aei = (SMAEditorInput) editorInput;
-         if (aei.getArtifact() != null) {
-            if (aei.getArtifact() instanceof StateMachineArtifact) {
-               sma = (StateMachineArtifact) aei.getArtifact();
-            } else {
-               throw new IllegalArgumentException("SMAEditorInput artifact must be StateMachineArtifact");
+      try {
+         IEditorInput editorInput = getEditorInput();
+         if (editorInput instanceof SMAEditorInput) {
+            SMAEditorInput aei = (SMAEditorInput) editorInput;
+            if (aei.getArtifact() != null) {
+               if (aei.getArtifact() instanceof StateMachineArtifact) {
+                  sma = (StateMachineArtifact) aei.getArtifact();
+               } else {
+                  throw new OseeArgumentException("SMAEditorInput artifact must be StateMachineArtifact");
+               }
             }
+         } else {
+            throw new OseeArgumentException("Editor Input not SMAEditorInput");
          }
-      } else {
-         throw new IllegalArgumentException("Editor Input not SMAEditorInput");
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         return;
       }
 
       if (sma == null) {

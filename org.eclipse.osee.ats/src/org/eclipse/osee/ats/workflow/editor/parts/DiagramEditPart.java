@@ -103,7 +103,7 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements Proper
    }
 
    @Override
-   protected List getModelChildren() {
+   protected List<?> getModelChildren() {
       return getCastedModel().getChildren(); // return a list of shapes
    }
 

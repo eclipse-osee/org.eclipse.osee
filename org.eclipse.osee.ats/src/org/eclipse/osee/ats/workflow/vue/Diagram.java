@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -43,18 +45,18 @@ public class Diagram {
       nodes.add(page);
    }
 
-   public DiagramNode getPage(String pageName) {
+   public DiagramNode getPage(String pageName) throws OseeCoreException {
       List<DiagramNode> pages = getPages(pageName);
-      if (pages.size() > 1) throw new IllegalArgumentException(
+      if (pages.size() > 1) throw new OseeArgumentException(
             "Multiple node of same name found in workflow => " + getId() + " Use getPages.");
       return pages.iterator().next();
    }
 
-   public List<DiagramNode> getPages(String pageName) {
+   public List<DiagramNode> getPages(String pageName) throws OseeCoreException {
       List<DiagramNode> foundPages = new ArrayList<DiagramNode>();
       for (DiagramNode page : nodes)
          if (page.getName().equals(pageName)) foundPages.add(page);
-      if (foundPages.size() == 0) throw new IllegalArgumentException(
+      if (foundPages.size() == 0) throw new OseeArgumentException(
             "Invalid node Name \"" + pageName + "\" from workflow => " + getId());
       return foundPages;
    }

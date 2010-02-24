@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.config.demo.artifact;
 
 import java.util.Arrays;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -39,7 +40,7 @@ public class DemoArtifactFactory extends ArtifactFactory {
       if (artifactType.getName().equals(DemoReqTeamWorkflowArtifact.ARTIFACT_NAME)) {
          return new DemoReqTeamWorkflowArtifact(this, guid, humandReadableId, branch, artifactType);
       }
-      throw new IllegalArgumentException("did not recognize the artifact type: " + artifactType.getName());
+      throw new OseeArgumentException("did not recognize the artifact type: " + artifactType.getName());
    }
 
 }

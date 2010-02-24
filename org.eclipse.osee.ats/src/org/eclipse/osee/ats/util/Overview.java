@@ -209,6 +209,7 @@ public class Overview {
       return builder.toString();
    }
 
+   @SuppressWarnings("deprecation")
    public void addRelationTable(String name, IRelationEnumeration side, Artifact parent) {
       try {
          List<Artifact> arts = parent.getRelatedArtifacts(side);

@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
@@ -43,7 +44,7 @@ public class AtsStatePercentCompleteWeightRule extends WorkRuleDefinition {
             if (percent < 0.0 || percent > 1) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE,
                      "Invalid percent value \"" + value + "\" (must be 0..1) for rule " + workRuleDefinition.getId(),
-                     new IllegalArgumentException());
+                     new OseeArgumentException("state map exception"));
             } else {
                stateToWeight.put(stateName, percent);
             }
@@ -52,7 +53,7 @@ public class AtsStatePercentCompleteWeightRule extends WorkRuleDefinition {
                   AtsPlugin.class,
                   Level.SEVERE,
                   "Invalid percent value \"" + value + "\" (must be float 0..1) for rule " + workRuleDefinition.getId(),
-                  new IllegalArgumentException());
+                  new OseeArgumentException("state map exception"));
          }
       }
       return stateToWeight;

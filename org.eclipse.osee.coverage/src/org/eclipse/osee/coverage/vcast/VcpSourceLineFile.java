@@ -12,7 +12,8 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverageUnitFileContentsProvider;
 import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 
 /**
@@ -26,17 +27,16 @@ public class VcpSourceLineFile {
    File resultsFile = null;
    private final VcpSourceFile vcpSourceFile;
 
-   public VcpSourceLineFile(String vcastDirectory, VcpSourceFile vcpSourceFile) {
+   public VcpSourceLineFile(String vcastDirectory, VcpSourceFile vcpSourceFile) throws OseeCoreException {
       this.vcpSourceFile = vcpSourceFile;
       String lineFilename = vcastDirectory + "/vcast/LINE." + vcpSourceFile.getValue(SourceValue.UNIT_NUMBER);
       resultsFile = new File(lineFilename);
       if (!resultsFile.exists()) {
-         throw new IllegalArgumentException(
-               String.format("VectorCast LINE.<num> file doesn't exist [%s]", lineFilename));
+         throw new OseeArgumentException(String.format("VectorCast LINE.<num> file doesn't exist [%s]", lineFilename));
       }
    }
 
-   public void createCoverageUnits(CoverageUnit parentCoverageUnit, ICoverageUnitFileContentsProvider fileContentsProvider) throws OseeStateException {
+   public void createCoverageUnits(CoverageUnit parentCoverageUnit, ICoverageUnitFileContentsProvider fileContentsProvider) throws OseeCoreException {
       VcpSourceLisFile vcpSourceLisFile = vcpSourceFile.getVcpSourceLisFile();
       String contents = AFile.readFile(resultsFile);
       Matcher m = pattern.matcher(contents);

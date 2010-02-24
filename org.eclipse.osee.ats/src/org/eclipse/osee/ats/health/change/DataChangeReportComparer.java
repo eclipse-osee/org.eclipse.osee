@@ -10,21 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.health.change;
 
-
 /**
  * @author Jeff C. Phillips
  */
-public abstract class DataChangeReportComparer implements Comparable{
+public abstract class DataChangeReportComparer implements Comparable<Object> {
    private final String content;
-   
-   public DataChangeReportComparer(String content){
+
+   public DataChangeReportComparer(String content) {
       this.content = content;
       processContent(content);
    }
-   
+
    public abstract void processContent(String content);
-   
-   public String getContent(){
+
+   public String getContent() {
       return content;
    }
 }

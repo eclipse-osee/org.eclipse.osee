@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -71,7 +72,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    public void getProduct() throws OseeCoreException {
       if (groupName == null) return;
       if (group == null && branch != null) group = UniversalGroup.getGroups(groupName, branch).iterator().next();
-      if (group == null) throw new IllegalArgumentException("Can't Find Universal Group for " + getName());
+      if (group == null) throw new OseeArgumentException("Can't Find Universal Group for " + getName());
    }
 
    @Override

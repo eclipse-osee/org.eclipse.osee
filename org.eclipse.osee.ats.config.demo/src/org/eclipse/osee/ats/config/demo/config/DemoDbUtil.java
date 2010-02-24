@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.config.demo.artifact.DemoCodeTeamWorkflowArtifact;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -36,7 +37,7 @@ public class DemoDbUtil {
    public static String INTERFACE_INITIALIZATION = "Interface Initialization";
    private static List<DemoCodeTeamWorkflowArtifact> codeArts;
 
-   public static List<DemoCodeTeamWorkflowArtifact> getSampleCodeWorkflows() throws Exception {
+   public static List<DemoCodeTeamWorkflowArtifact> getSampleCodeWorkflows() throws OseeCoreException {
       if (codeArts == null) {
          codeArts = new ArrayList<DemoCodeTeamWorkflowArtifact>();
          for (String actionName : new String[] {"SAW (committed) Reqt Changes for Diagram View",
@@ -53,23 +54,27 @@ public class DemoDbUtil {
       return codeArts;
    }
 
-   public static void sleep(long milliseconds) throws Exception {
+   public static void sleep(long milliseconds) throws OseeCoreException {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Sleeping " + milliseconds);
-      Thread.sleep(milliseconds);
+      try {
+         Thread.sleep(milliseconds);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Awake");
    }
 
-   public static Result isDbPopulatedWithDemoData(Branch branch) throws Exception {
+   public static Result isDbPopulatedWithDemoData(Branch branch) throws OseeCoreException {
       if (DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Robot, branch).size() != 6) return new Result(
             "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
       return Result.TrueResult;
    }
 
-   public static Collection<Artifact> getSoftwareRequirements(SoftwareRequirementStrs str, Branch branch) throws Exception {
+   public static Collection<Artifact> getSoftwareRequirements(SoftwareRequirementStrs str, Branch branch) throws OseeCoreException {
       return getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, str.name(), branch);
    }
 
-   public static Collection<Artifact> getArtTypeRequirements(String artifactType, String artifactNameStr, Branch branch) throws Exception {
+   public static Collection<Artifact> getArtTypeRequirements(String artifactType, String artifactNameStr, Branch branch) throws OseeCoreException {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getName());
       Collection<Artifact> arts =
@@ -83,7 +88,7 @@ public class DemoDbUtil {
    };
    public static String HAPTIC_CONSTRAINTS_REQ = "Haptic Constraints";
 
-   public static Artifact getInterfaceInitializationSoftwareRequirement(Branch branch) throws Exception {
+   public static Artifact getInterfaceInitializationSoftwareRequirement(Branch branch) throws OseeCoreException {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
       return ArtifactQuery.getArtifactFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, INTERFACE_INITIALIZATION,

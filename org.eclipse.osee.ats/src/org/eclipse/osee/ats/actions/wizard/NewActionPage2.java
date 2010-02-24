@@ -130,7 +130,7 @@ public class NewActionPage2 extends WizardPage {
 
    protected XWidget getXWidget(String attrName) throws OseeArgumentException {
       if (page == null) {
-         throw new IllegalArgumentException("WorkPage == null");
+         throw new OseeArgumentException("WorkPage == null");
       }
       return page.getLayoutData(attrName).getXWidget();
    }

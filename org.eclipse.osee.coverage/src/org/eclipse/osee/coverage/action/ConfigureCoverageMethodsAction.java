@@ -74,7 +74,6 @@ public class ConfigureCoverageMethodsAction extends Action {
                entryDiag.setEntry(coverageOptions);
                if (entryDiag.open() == 0) {
                   coverageOptions = entryDiag.getEntry();
-                  boolean error = false;
                   try {
                      CoverageOptionManager manager = new CoverageOptionManager(coverageOptions);
                      if (manager.get().size() == 0) {

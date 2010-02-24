@@ -15,6 +15,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.vcast.VcpResultsFile.ResultsValue;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
@@ -33,12 +35,12 @@ public class VcpResultsDatFile {
    Pattern valuePattern = Pattern.compile("\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
    String resultFilename = null;
 
-   public VcpResultsDatFile(String vcastDirectory, VcpResultsFile vcpResultsFile) {
+   public VcpResultsDatFile(String vcastDirectory, VcpResultsFile vcpResultsFile) throws OseeCoreException {
       resultFilename = vcastDirectory + "/vcast/results/" + vcpResultsFile.getValue(ResultsValue.FILENAME);
       File resultsFile = getFile();
       if (!resultsFile.exists()) {
-         throw new IllegalArgumentException(String.format("VectorCast resultsFile file doesn't exist [%s]",
-               resultFilename));
+         throw new OseeArgumentException(
+               String.format("VectorCast resultsFile file doesn't exist [%s]", resultFilename));
       }
       for (String resultsLine : AFile.readFile(resultsFile).split("\n")) {
          if (Strings.isValid(resultsLine)) {

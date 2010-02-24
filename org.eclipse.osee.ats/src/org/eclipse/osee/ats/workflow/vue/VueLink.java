@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.workflow.vue;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -30,10 +32,7 @@ public class VueLink {
       return "[" + vueId + " - " + name + " - " + fromVueId + " --> " + toVueId + " - " + (multiDirectional ? "multiDirectional]" : "singleDirection]");
    }
 
-   /**
-    * 
-    */
-   public VueLink(String xml) {
+   public VueLink(String xml) throws OseeCoreException {
       super();
       this.xml = xml;
       Matcher m =
@@ -49,7 +48,7 @@ public class VueLink {
             fromVueId = m.group(1);
             toVueId = m.group(2);
             multiDirectional = true;
-         } else if (xml.contains("arrowState=\"0\"")) throw new IllegalArgumentException(
+         } else if (xml.contains("arrowState=\"0\"")) throw new OseeArgumentException(
                "Non-directional links not supported. id = " + getVueId());
       }
    }

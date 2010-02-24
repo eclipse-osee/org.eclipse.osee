@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.Composite;
  * @author Donald G. Dunne
  */
 public class AtsConfigWizardPage1 extends WizardPage {
-   private final AtsConfigWizard wizard;
    private WorkPage page;
 
    /**
@@ -45,7 +44,6 @@ public class AtsConfigWizardPage1 extends WizardPage {
    public AtsConfigWizardPage1(AtsConfigWizard actionWizard) {
       super("Create New ATS Configuration", "Create ATS Configuration", null);
       setMessage("Enter configuration information.");
-      this.wizard = actionWizard;
    }
 
    private final XModifiedListener xModListener = new XModifiedListener() {
@@ -148,7 +146,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
 
    public XWidget getXWidget(String attrName) throws OseeArgumentException {
       if (page == null) {
-         throw new IllegalArgumentException("WorkPage == null");
+         throw new OseeArgumentException("WorkPage == null");
       }
       return page.getLayoutData(attrName).getXWidget();
    }

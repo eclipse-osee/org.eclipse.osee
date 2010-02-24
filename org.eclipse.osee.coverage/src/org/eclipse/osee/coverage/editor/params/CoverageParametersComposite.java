@@ -247,7 +247,7 @@ public class CoverageParametersComposite extends Composite {
 
    public XWidget getXWidget(String attrName) throws OseeArgumentException {
       if (page == null) {
-         throw new IllegalArgumentException("WorkPage == null");
+         throw new OseeArgumentException("WorkPage == null");
       }
       if (page.getLayoutData(attrName) == null) {
          return null;

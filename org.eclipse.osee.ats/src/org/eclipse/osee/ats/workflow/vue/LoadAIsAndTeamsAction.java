@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -38,6 +37,7 @@ import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.workflow.vue.DiagramNode.PageType;
 import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -83,9 +83,9 @@ public class LoadAIsAndTeamsAction {
    /**
     * This method is package private to prevent others from using it - only AtsDbConfig children are allowed access;
     * 
-    * @param bundleId
+    * @throws OseeCoreException
     */
-   static void executeForDbConfig(String bundleId) {
+   static void executeForDbConfig(String bundleId) throws OseeCoreException {
       new LoadAIsAndTeamsAction(false, bundleId, true).run();
    }
 
@@ -93,7 +93,7 @@ public class LoadAIsAndTeamsAction {
       new LoadAIsAndTeamsAction(false, bundleId, !AtsUtil.isProductionDb()).run();
    }
 
-   private void run() {
+   private void run() throws OseeCoreException {
       if (prompt && !MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Import ATS Config?",
             "Importing ATS Config from ActionableItems.vue.\n\nAre you sure?")) {
          return;
@@ -139,29 +139,25 @@ public class LoadAIsAndTeamsAction {
       return resources;
    }
 
-   private void processWorkflow(final Diagram workFlow) {
+   private void processWorkflow(final Diagram workFlow) throws OseeCoreException {
       if (workFlow == null) {
-         throw new IllegalArgumentException("ATS config items can't be loaded.");
+         throw new OseeArgumentException("ATS config items can't be loaded.");
       }
 
-      try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Load AIs and Teams");
-         // Get or create ATS root artifact
-         Artifact atsHeading = AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Load AIs and Teams");
+      // Get or create ATS root artifact
+      Artifact atsHeading = AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
 
-         // Create Actionable Items
-         DiagramNode workPage = workFlow.getPage("Actionable Items");
-         addActionableItem(atsHeading, workPage, transaction);
+      // Create Actionable Items
+      DiagramNode workPage = workFlow.getPage("Actionable Items");
+      addActionableItem(atsHeading, workPage, transaction);
 
-         // Create Teams
-         workPage = workFlow.getPage("Teams");
-         addTeam(atsHeading, workPage, transaction);
+      // Create Teams
+      workPage = workFlow.getPage("Teams");
+      addTeam(atsHeading, workPage, transaction);
 
-         atsHeading.persist(transaction);
-         transaction.execute();
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
+      atsHeading.persist(transaction);
+      transaction.execute();
    }
 
    private User getUserByName(String name, boolean create, SkynetTransaction transaction) throws OseeCoreException {
@@ -214,7 +210,7 @@ public class LoadAIsAndTeamsAction {
                   User u = getUserByName(name, allowUserCreation, transaction);
                   members.add(u);
                } else {
-                  throw new IllegalArgumentException(
+                  throw new OseeArgumentException(
                         "Unhandled AtsConfig Line\"" + line + "\" in diagram page \"" + page.getName() + "\"");
                }
             }
@@ -228,7 +224,7 @@ public class LoadAIsAndTeamsAction {
                if (actItem != null) {
                   actionableItems.add(actItem);
                } else {
-                  throw new IllegalArgumentException(
+                  throw new OseeArgumentException(
                         "Can't retrieve Actionable Item \"" + childPage.getName() + "\" with id " + childPage.getId());
                }
             }

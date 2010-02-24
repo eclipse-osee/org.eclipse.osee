@@ -45,7 +45,7 @@ public class ConnectionCreateCommand extends Command {
    private final Shape source;
    /** Target endpoint for the connection. */
    private Shape target;
-   private final Class clazz;
+   private final Class<?> clazz;
 
    /**
     * Instantiate a command that can create a connection between two shapes.
@@ -72,7 +72,7 @@ public class ConnectionCreateCommand extends Command {
          return false;
       }
       // return false, if the source -> target connection exists already
-      for (Iterator iter = source.getSourceConnections().iterator(); iter.hasNext();) {
+      for (Iterator<?> iter = source.getSourceConnections().iterator(); iter.hasNext();) {
          Connection conn = (Connection) iter.next();
          if (conn.getTarget().equals(target)) {
             return false;

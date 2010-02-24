@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -199,7 +200,7 @@ public class StateManager {
     * @throws Exception
     */
    public void setAssignee(String stateName, User assignee) throws OseeCoreException {
-      if (!isStateVisited(stateName)) throw new IllegalArgumentException("State " + stateName + " does not exist.");
+      if (!isStateVisited(stateName)) throw new OseeArgumentException("State " + stateName + " does not exist.");
       SMAState state = getSMAState(stateName, false);
       state.setAssignee(assignee);
       putState(state);

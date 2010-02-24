@@ -9,6 +9,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 
 /**
@@ -20,12 +22,11 @@ public class VCastVcp {
    List<VcpResultsFile> resultsFiles = new ArrayList<VcpResultsFile>();
    private final String vcastDirectory;
 
-   public VCastVcp(String vcastDirectory) {
+   public VCastVcp(String vcastDirectory) throws OseeCoreException {
       this.vcastDirectory = vcastDirectory;
       File vCastVcpFile = getFile();
       if (!vCastVcpFile.exists()) {
-         throw new IllegalArgumentException(String.format("VectorCast vcast.vcp file doesn't exist [%s]",
-               vcastDirectory));
+         throw new OseeArgumentException(String.format("VectorCast vcast.vcp file doesn't exist [%s]", vcastDirectory));
       }
       VcpSourceFile vcpSourceFile = null;
       VcpResultsFile vcpResultsFile = null;

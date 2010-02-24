@@ -5,14 +5,11 @@
  */
 package org.eclipse.osee.coverage.action;
 
-import java.util.Arrays;
-import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.merge.MatchItem;
-import org.eclipse.osee.coverage.merge.MatchType;
 import org.eclipse.osee.coverage.merge.MergeItemGroup;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.CoveragePackage;
@@ -33,7 +30,6 @@ public class LinkWithImportItemAction extends Action {
    private XCoverageMergeViewer packageXViewer;
    private XCoverageMergeViewer importXViewer;
    private CoveragePackage coveragePackage;
-   private final Collection<MatchType> matchTypes = Arrays.asList(MatchType.Match__Name_And_Order_Num);
 
    public LinkWithImportItemAction() {
       super("Link with Import Item", Action.AS_CHECK_BOX);

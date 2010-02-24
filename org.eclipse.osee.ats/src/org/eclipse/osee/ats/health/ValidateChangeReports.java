@@ -340,7 +340,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       return AXml.addTagData("AttrChg", sb.toString());
    }
 
-   private static boolean isXmlChangeDataEqual(String currentData, String storedData) {
+   private static boolean isXmlChangeDataEqual(String currentData, String storedData) throws OseeCoreException {
       int checkSum1 = getCheckSum(currentData);
       int checkSum2 = getCheckSum(storedData);
 

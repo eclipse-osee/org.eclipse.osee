@@ -47,13 +47,6 @@ import org.eclipse.swt.widgets.Display;
  */
 final class AtsWorkflowConfigEditorPaletteFactory {
 
-   /** Preference ID used to persist the palette location. */
-   private static final String PALETTE_DOCK_LOCATION = "ShapesEditorPaletteFactory.Location";
-   /** Preference ID used to persist the palette size. */
-   private static final String PALETTE_SIZE = "ShapesEditorPaletteFactory.Size";
-   /** Preference ID used to persist the flyout palette's state. */
-   private static final String PALETTE_STATE = "ShapesEditorPaletteFactory.State";
-
    /** Create the "States" drawer. */
    private static PaletteContainer createStatesDrawer() {
       PaletteDrawer componentsDrawer = new PaletteDrawer("States");

@@ -86,7 +86,7 @@ class DiagramTreeEditPart extends AbstractTreeEditPart implements PropertyChange
    }
 
    @Override
-   protected List getModelChildren() {
+   protected List<?> getModelChildren() {
       return getCastedModel().getChildren(); // a list of shapes
    }
 

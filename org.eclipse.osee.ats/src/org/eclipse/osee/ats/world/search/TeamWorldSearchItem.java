@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -119,7 +120,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    /**
     * Loads all team definitions if specified by name versus by team definition class
     * 
-    * @throws IllegalArgumentException
+    * @throws OseeArgumentException
     */
    public void getTeamDefs() throws OseeCoreException {
       if (teamDefNames != null && teamDefs == null) {

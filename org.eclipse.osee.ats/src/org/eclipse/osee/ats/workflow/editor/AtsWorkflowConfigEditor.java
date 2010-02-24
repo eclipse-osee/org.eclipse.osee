@@ -341,7 +341,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
        * Create a new outline page for the shapes editor.
        * 
        * @param viewer a viewer (TreeViewer instance) used for this outline page
-       * @throws IllegalArgumentException if editor is null
+       * @throws OseeArgumentException if editor is null
        */
       public ShapesOutlinePage(EditPartViewer viewer) {
          super(viewer);

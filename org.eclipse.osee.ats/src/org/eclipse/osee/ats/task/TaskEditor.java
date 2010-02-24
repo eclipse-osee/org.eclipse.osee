@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItemProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -156,7 +157,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
          IEditorInput editorInput = getEditorInput();
          if (!(editorInput instanceof TaskEditorInput)) {
-            throw new IllegalArgumentException("Editor Input not TaskEditorInput");
+            throw new OseeArgumentException("Editor Input not TaskEditorInput");
          }
 
          createMainTab();

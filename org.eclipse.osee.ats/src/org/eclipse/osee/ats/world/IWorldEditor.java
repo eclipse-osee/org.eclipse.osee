@@ -27,7 +27,7 @@ public interface IWorldEditor {
 
    public IActionable getIActionable();
 
-   public IWorldEditorProvider getWorldEditorProvider();
+   public IWorldEditorProvider getWorldEditorProvider() throws OseeCoreException;
 
    public void createToolBarPulldown(Menu menu);
 

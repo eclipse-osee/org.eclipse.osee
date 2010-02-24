@@ -131,6 +131,7 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
       return iXTaskViewer;
    }
 
+   @SuppressWarnings("unchecked")
    public void add(Collection<TaskArtifact> taskArts) {
       if (getTaskXViewer().getInput() == null) {
          getTaskXViewer().setInput(Collections.singleton(taskArts));

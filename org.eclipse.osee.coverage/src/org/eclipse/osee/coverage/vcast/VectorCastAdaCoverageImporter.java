@@ -198,37 +198,41 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
             coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
          }
 
-         for (String fileNum : vcpResultsFile.getVcpResultsDatFile().getFileNumbers()) {
-            CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);
-            if (coverageUnit == null) {
-               coverageImport.getLog().logError(
-                     String.format("coverageUnit doesn't exist for unit_number [%s]", fileNum));
-               continue;
-            }
-            for (Pair<String, HashSet<String>> methodExecutionPair : vcpResultsFile.getVcpResultsDatFile().getMethodExecutionPairs(
-                  fileNum)) {
-               String methodNum = methodExecutionPair.getFirst();
-               Set<String> executeNums = methodExecutionPair.getSecond();
-               for (String executeNum : executeNums) {
-                  // Find or create new coverage item for method num /execution line
-                  CoverageItem coverageItem = coverageUnit.getCoverageItem(methodNum, executeNum);
-                  if (coverageItem == null) {
-                     coverageImport.getLog().logError(
-                           String.format("Can't retrieve method [%s] from coverageUnit [%s] for test unit [%s]",
-                                 methodNum, coverageUnit, testUnitName));
-                  } else {
-                     coverageItem.setCoverageMethod(CoverageOptionManager.Test_Unit);
-                     try {
-                        coverageItem.addTestUnitName(testUnitName);
-                     } catch (OseeCoreException ex) {
+         try {
+            for (String fileNum : vcpResultsFile.getVcpResultsDatFile().getFileNumbers()) {
+               CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);
+               if (coverageUnit == null) {
+                  coverageImport.getLog().logError(
+                        String.format("coverageUnit doesn't exist for unit_number [%s]", fileNum));
+                  continue;
+               }
+               for (Pair<String, HashSet<String>> methodExecutionPair : vcpResultsFile.getVcpResultsDatFile().getMethodExecutionPairs(
+                     fileNum)) {
+                  String methodNum = methodExecutionPair.getFirst();
+                  Set<String> executeNums = methodExecutionPair.getSecond();
+                  for (String executeNum : executeNums) {
+                     // Find or create new coverage item for method num /execution line
+                     CoverageItem coverageItem = coverageUnit.getCoverageItem(methodNum, executeNum);
+                     if (coverageItem == null) {
                         coverageImport.getLog().logError(
-                              String.format("Can't store test unit [%s] for coverageUnit [%s]; exception [%s]",
-                                    testUnitName, coverageUnit, ex.getLocalizedMessage()));
+                              String.format("Can't retrieve method [%s] from coverageUnit [%s] for test unit [%s]",
+                                    methodNum, coverageUnit, testUnitName));
+                     } else {
+                        coverageItem.setCoverageMethod(CoverageOptionManager.Test_Unit);
+                        try {
+                           coverageItem.addTestUnitName(testUnitName);
+                        } catch (OseeCoreException ex) {
+                           coverageImport.getLog().logError(
+                                 String.format("Can't store test unit [%s] for coverageUnit [%s]; exception [%s]",
+                                       testUnitName, coverageUnit, ex.getLocalizedMessage()));
 
+                        }
                      }
                   }
                }
             }
+         } catch (Exception ex) {
+            coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
          }
       }
 

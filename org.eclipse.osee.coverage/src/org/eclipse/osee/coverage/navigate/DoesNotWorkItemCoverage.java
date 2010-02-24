@@ -91,6 +91,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       Lib.compressFiles(base, files, "C://UserData//try.zip");
    }
 
+   @SuppressWarnings("unused")
    private void importTestUnitNamesToDbTables() throws Exception {
       // BlkII Code Coverage Branch
       Branch branch = BranchManager.getBranchByGuid("QyUb5GYLbDS3AmXKZWgA");
@@ -132,6 +133,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       rd.report("Test Unit Import");
    }
 
+   @SuppressWarnings("unused")
    private void fixCoverageItemNames() throws Exception {
       Pattern linePattern = Pattern.compile("^[0-9]+ [0-9]+(.*?)$");
       // BlkII Code Coverage Branch
@@ -173,6 +175,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       transaction.execute();
    }
 
+   @SuppressWarnings("unused")
    private void fixCoverageInformation() throws Exception {
       // BlkII Code Coverage Branch
       Branch branch = BranchManager.getBranchByGuid("QyUb5GYLbDS3AmXKZWgA");

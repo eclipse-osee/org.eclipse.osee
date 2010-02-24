@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.workflow.vue;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -25,22 +27,19 @@ public class VueDiagram {
    private static Pattern childPattern =
          Pattern.compile("<child(.*?)>(.*?)</child>", Pattern.DOTALL | Pattern.MULTILINE);
 
-   /**
-    * @param vueXml
-    */
-   public VueDiagram(String workflowId, String vueXml) {
+   public VueDiagram(String workflowId, String vueXml) throws OseeCoreException {
       workflow = new Diagram(workflowId);
       processXml(vueXml);
    }
 
-   private void processXml(String xml) {
+   private void processXml(String xml) throws OseeCoreException {
       Matcher m = childPattern.matcher(xml);
       while (m.find()) {
          String childParms = m.group(1);
          String matchStr = m.group();
          // System.out.println("Processing child "+childParms);
          if (childParms.contains("xsi:type=\"group\"")) {
-            throw new IllegalArgumentException("Can't use grouping in diagram");
+            throw new OseeArgumentException("Can't use grouping in diagram");
          } else if (childParms.contains("xsi:type=\"link\"")) {
             VueLink link = new VueLink(matchStr);
             links.add(link);
@@ -49,17 +48,17 @@ public class VueDiagram {
             vuePages.add(vuePage);
             workflow.addPage(vuePage.getWorkPage());
          } else {
-            throw new IllegalArgumentException("Unhandled xsi:type");
+            throw new OseeArgumentException("Unhandled xsi:type");
          }
       }
       for (VueLink link : links) {
          VueNode fromVuePage = getPageFromVueId(link.getFromVueId());
          if (fromVuePage == null) {
-            throw new IllegalArgumentException("Can't retrieve fromVuePage with id " + link.getFromVueId());
+            throw new OseeArgumentException("Can't retrieve fromVuePage with id " + link.getFromVueId());
          }
          VueNode toVuePage = getPageFromVueId(link.getToVueId());
          if (toVuePage == null) {
-            throw new IllegalArgumentException(
+            throw new OseeArgumentException(
                   "Can't retrieve toVuePage " + link.getToVueId() + " fromVuePage " + link.getFromVueId() + " named \"" + fromVuePage.getWorkPage().getName() + "\"");
          }
          fromVuePage.getWorkPage().addToPage(toVuePage.getWorkPage(), link.getName().equals("return"));
@@ -72,7 +71,7 @@ public class VueDiagram {
             if (fromVuePage.getWorkPage().getDefaultToPage() == null)
                fromVuePage.getWorkPage().setDefaultToPage(toVuePage.getWorkPage());
             else
-               throw new IllegalArgumentException(
+               throw new OseeArgumentException(
                      "Can't have 2 default transitions. Page " + fromVuePage.getWorkPage().getName());
          }
       }

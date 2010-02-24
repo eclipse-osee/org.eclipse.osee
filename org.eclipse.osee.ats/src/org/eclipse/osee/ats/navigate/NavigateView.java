@@ -208,9 +208,7 @@ public class NavigateView extends ViewPart implements IActionable {
       toolbarManager.add(new OpenChangeReportByIdAction());
       toolbarManager.add(new OpenWorldByIdAction());
       toolbarManager.add(new OpenWorkflowByIdAction());
-      if (AtsUtil.isGoalEnabled()) {
-         toolbarManager.add(new NewGoal());
-      }
+      toolbarManager.add(new NewGoal());
       toolbarManager.add(new NewAction());
 
       OseeUiActions.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Navigator");

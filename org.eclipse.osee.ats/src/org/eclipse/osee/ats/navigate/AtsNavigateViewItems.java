@@ -102,9 +102,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
          items.add(new SearchNavigateItem(null, new MySubscribedSearchItem("My Subscribed", user)));
-         if (AtsUtil.isGoalEnabled()) {
-            items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user, GoalSearchState.InWork)));
-         }
+         items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user, GoalSearchState.InWork)));
          items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new VisitedItems(null));
          items.add(new XNavigateItemAction(null, new NewAction(), AtsImage.NEW_ACTION));

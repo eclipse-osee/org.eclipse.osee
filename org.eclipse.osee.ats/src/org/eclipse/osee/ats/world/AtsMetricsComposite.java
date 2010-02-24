@@ -178,13 +178,6 @@ public class AtsMetricsComposite extends ScrolledComposite {
       return null;
    }
 
-   private boolean isUsingEstimatedReleaseDateFromOverride() throws OseeCoreException {
-      if (estimatedReleaseXDate != null && estimatedReleaseXDate.getDate() != null) {
-         return true;
-      }
-      return false;
-   }
-
    public void computeScrollSize() {
       this.computeScrollSize(mainComp);
    }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.dialog;
 
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.swt.SWT;
 import org.w3c.dom.Element;
@@ -35,8 +37,6 @@ public class TaskResOptionDefinition {
    }
 
    /**
-    * @param name
-    * @param desc
     * @param completeable true/false of whether option allows task to be transitioned to complete
     */
    public TaskResOptionDefinition(String name, String desc, String completeable, String color, String defaultPercent) {
@@ -47,7 +47,7 @@ public class TaskResOptionDefinition {
       this(name, desc, completeable, "", defaultPercent);
    }
 
-   public void setFromElement(Element element) {
+   public void setFromElement(Element element) throws OseeCoreException {
       for (int x = 0; x < element.getAttributes().getLength(); x++) {
          Node node = element.getAttributes().item(x);
          String nodeName = node.getNodeName();
@@ -62,7 +62,7 @@ public class TaskResOptionDefinition {
          else if (nodeName.equals(Field.percent.name()))
             percent = node.getNodeValue();
          else
-            throw new IllegalArgumentException("Unknow Task Resolution Option Attribute \"" + nodeName + "\"");
+            throw new OseeArgumentException("Unknow Task Resolution Option Attribute \"" + nodeName + "\"");
       }
    }
 
@@ -120,7 +120,7 @@ public class TaskResOptionDefinition {
       name, desc, complete, percent, color
    };
 
-   public void setFromXml(String xml) {
+   public void setFromXml(String xml) throws OseeCoreException {
       for (Field field : Field.values()) {
          String data = AXml.getTagData(xml, field.name());
          if (field == Field.name)
@@ -134,11 +134,11 @@ public class TaskResOptionDefinition {
          else if (field == Field.complete)
             setComplete(data.equals("true"));
          else
-            throw new IllegalArgumentException("Unexpected field");
+            throw new OseeArgumentException("Unexpected field");
       }
    }
 
-   public String toXml() {
+   public String toXml() throws OseeCoreException {
       StringBuffer sb = new StringBuffer("<" + ATS_TASK_OPTION_TAG + ">");
       for (Field field : Field.values()) {
          String str = "";
@@ -153,7 +153,7 @@ public class TaskResOptionDefinition {
          else if (field == Field.complete)
             str = (isCompleteable() ? "true" : "false");
          else
-            throw new IllegalArgumentException("Unexpected field");
+            throw new OseeCoreException("Unexpected field");
          sb.append(AXml.addTagData(field.name(), str));
       }
       sb.append("</" + ATS_TASK_OPTION_TAG + ">");

@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -179,10 +180,10 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
       });
    }
 
-   public IWorldEditorProvider getWorldEditorProvider() {
+   public IWorldEditorProvider getWorldEditorProvider() throws OseeArgumentException {
       IEditorInput editorInput = getEditorInput();
       if (!(editorInput instanceof WorldEditorInput)) {
-         throw new IllegalArgumentException("Editor Input not WorldEditorInput");
+         throw new OseeArgumentException("Editor Input not WorldEditorInput");
       }
       WorldEditorInput worldEditorInput = (WorldEditorInput) editorInput;
       return worldEditorInput.getIWorldEditorProvider();

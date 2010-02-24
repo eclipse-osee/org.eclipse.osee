@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -209,7 +210,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
    }
 
-   private void makeAction1ReqChanges(ActionArtifact actionArt) throws Exception {
+   private void makeAction1ReqChanges(ActionArtifact actionArt) throws OseeCoreException {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Making Action 1 Requirement Changes");
       TeamWorkFlowArtifact reqTeam = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
@@ -219,13 +220,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
 
       if (reqTeam == null) {
-         throw new IllegalArgumentException("Can't locate Req team.");
+         throw new OseeArgumentException("Can't locate Req team.");
       }
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
       Result result = reqTeam.getBranchMgr().createWorkingBranch(null, false);
       if (result.isFalse()) {
-         throw new IllegalArgumentException(new StringBuilder("Error creating working branch: ").append(
-               result.getText()).toString());
+         throw new OseeArgumentException(
+               new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
       }
 
       DemoDbUtil.sleep(5000);
@@ -299,13 +300,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
 
       if (reqTeam == null) {
-         throw new IllegalArgumentException("Can't locate Req team.");
+         throw new OseeArgumentException("Can't locate Req team.");
       }
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
       Result result = reqTeam.getBranchMgr().createWorkingBranch(null, false);
       if (result.isFalse()) {
-         throw new IllegalArgumentException(new StringBuilder("Error creating working branch: ").append(
-               result.getText()).toString());
+         throw new OseeArgumentException(
+               new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
       }
 
       DemoDbUtil.sleep(5000);
@@ -346,13 +347,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
 
       if (reqTeam == null) {
-         throw new IllegalArgumentException("Can't locate Req team.");
+         throw new OseeArgumentException("Can't locate Req team.");
       }
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating working branch");
       Result result = reqTeam.getBranchMgr().createWorkingBranch(null, false);
       if (result.isFalse()) {
-         throw new IllegalArgumentException(new StringBuilder("Error creating working branch: ").append(
-               result.getText()).toString());
+         throw new OseeArgumentException(
+               new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
       }
 
       DemoDbUtil.sleep(5000);

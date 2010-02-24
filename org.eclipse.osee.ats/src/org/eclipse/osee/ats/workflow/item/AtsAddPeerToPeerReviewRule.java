@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -74,7 +75,7 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
     */
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(WorkRuleDefinition atsAddPeerToPeerReviewRule, TeamWorkFlowArtifact teamArt, SkynetTransaction transaction) throws OseeCoreException {
       if (!atsAddPeerToPeerReviewRule.getId().startsWith(AtsAddPeerToPeerReviewRule.ID)) {
-         throw new IllegalArgumentException("WorkRuleDefinition must be AtsAddPeerToPeerReviewRule.ID");
+         throw new OseeArgumentException("WorkRuleDefinition must be AtsAddPeerToPeerReviewRule.ID");
       }
       String title = getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.title);
       if (Artifacts.artNames(ReviewManager.getReviews(teamArt)).contains(title)) {
