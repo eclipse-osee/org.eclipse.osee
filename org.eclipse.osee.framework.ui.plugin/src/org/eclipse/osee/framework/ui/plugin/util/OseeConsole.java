@@ -85,7 +85,13 @@ public class OseeConsole {
 
    public void shutdown() {
       thread.interrupt();
+      try {
+		thread.join(5000);
+	} catch (InterruptedException e) {
+		e.printStackTrace();
+	} finally {      
       ConsolePlugin.getDefault().getConsoleManager().removeConsoles(new IConsole[] {console});
+	}
    }
 
    public static final int CONSOLE_ERROR = 0;
