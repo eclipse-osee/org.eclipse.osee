@@ -78,11 +78,11 @@ public class OteServiceProperties {
     * @return the dateStart
     */
    public String getDateStarted() {
-      return (String) connector.getProperty("date", NA);
+      return connector.getProperty("date", NA).toString();
    }
 
    public String getUserList() {
-      return (String) connector.getProperty("user_list", NA);
+      return connector.getProperty("user_list", NA).toString();
    }
 
    public void printStats() {
