@@ -34,6 +34,7 @@ public class AtsGoalInWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName());
    }
 

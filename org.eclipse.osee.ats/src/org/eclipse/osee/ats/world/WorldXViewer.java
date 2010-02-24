@@ -527,8 +527,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
 
    @Override
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      if (treeColumn.getData().equals(WorldXViewerFactory.Groups_Col) || treeColumn.getData().equals(
-            WorldXViewerFactory.Points_Col)) {
+      if (treeColumn.getData().equals(WorldXViewerFactory.Groups_Col)) {
          return true;
       }
       if (!(treeColumn.getData() instanceof XViewerColumn)) {
@@ -974,6 +973,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             modified = PromptChangeUtil.promptChangeFloatAttribute(sma, ATSAttributes.NUMERIC1_ATTRIBUTE, persist);
          } else if (xCol.equals(WorldXViewerFactory.Numeric2_Col)) {
             modified = PromptChangeUtil.promptChangeFloatAttribute(sma, ATSAttributes.NUMERIC2_ATTRIBUTE, persist);
+         } else if (xCol.equals(WorldXViewerFactory.Goal_Order_Vote_Col)) {
+            modified =
+                  PromptChangeUtil.promptChangeAttribute(sma, ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Category_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, ATSAttributes.CATEGORY_ATTRIBUTE, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Category2_Col)) {

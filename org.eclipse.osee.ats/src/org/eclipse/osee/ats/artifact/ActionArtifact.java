@@ -512,6 +512,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Collections.toString(";", strs);
    }
 
+   public String getWorldViewGoalOrderVote() throws OseeCoreException {
+      return "";
+   }
+
    public String getWorldViewWorkPackage() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {

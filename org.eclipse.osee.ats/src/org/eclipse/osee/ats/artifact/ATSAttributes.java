@@ -90,6 +90,8 @@ public class ATSAttributes {
          new ATSAttributes("Numeric1", "Open field for user to be able to enter numbers for sorting.");
    public static final ATSAttributes NUMERIC2_ATTRIBUTE =
          new ATSAttributes("Numeric2", "Open field for user to be able to enter numbers for sorting.");
+   public static final ATSAttributes GOAL_ORDER_VOTE_ATTRIBUTE =
+         new ATSAttributes("Goal Order Vote", "Vote for order item belongs to within goal.");
    public static final ATSAttributes CATEGORY_ATTRIBUTE =
          new ATSAttributes("Category", "Open field for user to be able to enter text to use for categorizing/sorting.");
    public static final ATSAttributes CATEGORY2_ATTRIBUTE =

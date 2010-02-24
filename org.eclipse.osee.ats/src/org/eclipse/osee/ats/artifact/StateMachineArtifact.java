@@ -764,6 +764,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
             true);
    }
 
+   public String getWorldViewGoalOrderVote() throws OseeCoreException {
+      return getSoleAttributeValue(ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE.getStoreName(), "");
+   }
+
    public String getWorldViewCategory() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName(), "");
    }

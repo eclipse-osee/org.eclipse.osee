@@ -119,6 +119,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.LOCATION_ATTRIBUTE, "XTextDam", XOption.REQUIRED,
             XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE, "XTextDam"));
+      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.CATEGORY_ATTRIBUTE, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.SMA_NOTE_ATTRIBUTE, "XTextDam",

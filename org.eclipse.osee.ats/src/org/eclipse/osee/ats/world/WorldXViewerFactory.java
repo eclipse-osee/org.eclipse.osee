@@ -120,6 +120,12 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Numeric2_Col =
          new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".numeric2", ATSAttributes.NUMERIC2_ATTRIBUTE, 40, SWT.LEFT,
                false, SortDataType.Float, true);
+   public static final XViewerColumn Goal_Order =
+         new XViewerColumn(COLUMN_NAMESPACE + ".goalOrder", "Goal Order", 40, SWT.LEFT, false, SortDataType.Float,
+               true, "Order of item within displayed goal.  Editing this field changes order.");
+   public static final XViewerColumn Goal_Order_Vote_Col =
+         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".goalOrderVote", ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE,
+               80, SWT.LEFT, false, SortDataType.String, true);
    public static final XViewerColumn Category_Col =
          new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".category", ATSAttributes.CATEGORY_ATTRIBUTE, 80, SWT.LEFT,
                false, SortDataType.String, true);
@@ -270,17 +276,17 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                Actionable_Items_Col, User_Community_Col, ID_Col, Created_Date_Col, Version_Target_Col, Team_Col,
                Notes_Col, Deadline_Col, Annual_Cost_Avoidance_Col, Description_Col, Legacy_PCR_Col, Decision_Col,
                Resolution_Col, Groups_Col, Goals_Col, Estimated_Release_Date_Col, Estimated_Completion_Date_Col,
-               Release_Date_Col, Work_Package_Col, Category_Col, Category2_Col, Category3_Col, Related_To_State_Col,
-               Estimated_Hours_Col, Weekly_Benefit_Hrs_Col, Remaining_Hours_Col, Percent_Complete_State_Col,
-               Percent_Complete_State_Task_Col, Percent_Complete_State_Review_Col, Percent_Complete_Total_Col,
-               Hours_Spent_State_Col, Hours_Spent_State_Task_Col, Hours_Spent_State_Review_Col, Hours_Spent_Total_Col,
-               Total_Hours_Spent_Col, Originator_Col, Implementor_Col, Review_Author_Col, Review_Moderator_Col,
-               Review_Reviewer_Col, Review_Decider_Col, Completed_Date_Col, Cancelled_Date_Col, Work_Days_Needed_Col,
-               Percent_Rework_Col, Branch_Status_Col, Number_of_Tasks_Col, Number_of_Tasks_Remining_Col,
-               Last_Modified_Col, Last_Statused_Col, Validation_Required_Col, Review_Major_Defects,
-               Review_Minor_Defects, Review_Issues, Actions_Initiating_Workflow_Col, Artifact_Type_Col,
-               Originating_Workflow, Parent_ID_Col, Days_In_Current_State, Parent_State_Col, Points_Col, Numeric1_Col,
-               Numeric2_Col};
+               Release_Date_Col, Work_Package_Col, Category_Col, Category2_Col, Category3_Col, Goal_Order_Vote_Col,
+               Related_To_State_Col, Estimated_Hours_Col, Weekly_Benefit_Hrs_Col, Remaining_Hours_Col,
+               Percent_Complete_State_Col, Percent_Complete_State_Task_Col, Percent_Complete_State_Review_Col,
+               Percent_Complete_Total_Col, Hours_Spent_State_Col, Hours_Spent_State_Task_Col,
+               Hours_Spent_State_Review_Col, Hours_Spent_Total_Col, Total_Hours_Spent_Col, Originator_Col,
+               Implementor_Col, Review_Author_Col, Review_Moderator_Col, Review_Reviewer_Col, Review_Decider_Col,
+               Completed_Date_Col, Cancelled_Date_Col, Work_Days_Needed_Col, Percent_Rework_Col, Branch_Status_Col,
+               Number_of_Tasks_Col, Number_of_Tasks_Remining_Col, Last_Modified_Col, Last_Statused_Col,
+               Validation_Required_Col, Review_Major_Defects, Review_Minor_Defects, Review_Issues,
+               Actions_Initiating_Workflow_Col, Artifact_Type_Col, Originating_Workflow, Parent_ID_Col,
+               Days_In_Current_State, Parent_State_Col, Points_Col, Numeric1_Col, Numeric2_Col};
    private static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {
