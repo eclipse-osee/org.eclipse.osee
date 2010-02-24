@@ -19,9 +19,8 @@ import org.eclipse.osee.framework.plugin.core.IWorkbenchUserService;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
-import org.eclipse.osee.ote.service.IOteClientService;
 import org.eclipse.osee.ote.ui.IOteConsoleService;
-import org.eclipse.osee.ote.ui.OteRemoteConsole;
+import org.eclipse.osee.ote.ui.RemoteConsoleLauncher;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
@@ -36,12 +35,11 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
    private static TestCoreGuiPlugin pluginInstance;
 
    private ServiceRegistration oteConsoleServiceRegistration;
-   private ServiceTracker oteClientServiceTracker;
    private ServiceTracker workbenchUserServiceTracker;
 
-   private OteRemoteConsole remoteConsole;
-   private IOteConsoleService oteConsoleService;
+   private OteConsoleServiceImpl oteConsoleService;
 
+   private RemoteConsoleLauncher tracker;
    public TestCoreGuiPlugin() {
       super();
       pluginInstance = this;
@@ -58,12 +56,10 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
       workbenchUserServiceTracker = new ServiceTracker(context, IWorkbenchUserService.class.getName(), null);
       workbenchUserServiceTracker.open();
 
-      oteClientServiceTracker = new ServiceTracker(context, IOteClientService.class.getName(), null);
-      oteClientServiceTracker.open();
 
       if (System.getProperty("NO_OTE_REMOTE_CONSOLE") == null) {
-    	  remoteConsole = new OteRemoteConsole();
-    	  getOteClientService().addConnectionListener(remoteConsole);
+    	  tracker = new RemoteConsoleLauncher();
+    	  tracker.open(true);
       }
       
       if (System.getProperty("NO_OTE_ARTIFACT_BULK_LOAD") == null) {
@@ -73,18 +69,17 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
 
    @Override
    public void stop(BundleContext context) throws Exception {
-      getOteClientService().removeConnectionListener(remoteConsole);
-      if (oteClientServiceTracker != null) {
-         oteClientServiceTracker.close();
-      }
       if (workbenchUserServiceTracker != null) {
          workbenchUserServiceTracker.close();
       }
       if (oteConsoleServiceRegistration != null) {
          oteConsoleServiceRegistration.unregister();
+         oteConsoleService.close();
       }
       pluginInstance = null;
-      remoteConsole.close();
+      if (tracker != null) {
+    	  tracker.close();
+      }
       super.stop(context);
    }
 
@@ -122,10 +117,6 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
 
    public IOteConsoleService getOteConsoleService() {
       return oteConsoleService;
-   }
-
-   public IOteClientService getOteClientService() {
-      return (IOteClientService) oteClientServiceTracker.getService();
    }
 
 }

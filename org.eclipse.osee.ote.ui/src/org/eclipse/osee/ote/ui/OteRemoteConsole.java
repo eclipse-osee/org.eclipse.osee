@@ -19,6 +19,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
+import org.eclipse.osee.ote.service.IOteClientService;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
 import org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin;
 
@@ -27,7 +28,10 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
    private IRemoteCommandConsole remoteConsole;
    private ITestEnvironment env;
 
-   public OteRemoteConsole() throws RemoteException {
+   private final IOteClientService clientService;
+   public OteRemoteConsole(IOteClientService clientService) {
+	   this.clientService =clientService;
+	   clientService.addConnectionListener(this);
    }
 
    private boolean isOteConsoleServiceAvailable() {
@@ -50,7 +54,8 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
       }
    }
 
-   public void close() throws RemoteException {
+   public void close() {
+	   clientService.removeConnectionListener(this);
       if (env != null) {
          try {
             env.closeCommandConsole(remoteConsole);
@@ -89,11 +94,7 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
 
    @Override
    public void onPreDisconnect(ConnectionEvent event) {
-      try {
          close();
-      } catch (RemoteException e) {
-         OseeLog.log(TestCoreGuiPlugin.class, Level.SEVERE, "exception while closing remote console", e);
-      }
    }
 
 }

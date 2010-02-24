@@ -77,4 +77,7 @@ public class OteConsoleServiceImpl implements IOteConsoleService {
       getConsole().write(value, type, popup);
    }
 
+   public void close() {
+	   getConsole().shutdown();
+   }
 }
