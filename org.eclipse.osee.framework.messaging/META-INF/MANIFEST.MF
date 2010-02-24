@@ -7,6 +7,17 @@ Bundle-Activator: org.eclipse.osee.framework.messaging.internal.Activator
 Bundle-Vendor: Eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.jms,
+ javax.management,
+ javax.management.j2ee;version="1.1.1",
+ javax.management.j2ee.statistics;version="1.1.1",
+ javax.management.loading,
+ javax.management.modelmbean,
+ javax.management.monitor,
+ javax.management.openmbean,
+ javax.management.relation,
+ javax.management.remote,
+ javax.management.remote.rmi,
+ javax.management.timer,
  org.apache.activemq,
  org.apache.activemq.advisory,
  org.apache.activemq.blob,

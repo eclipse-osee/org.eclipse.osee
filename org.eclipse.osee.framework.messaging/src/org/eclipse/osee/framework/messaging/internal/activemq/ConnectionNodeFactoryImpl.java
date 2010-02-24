@@ -9,13 +9,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
-import javax.jms.JMSException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.ConnectionNodeFactory;
 import org.eclipse.osee.framework.messaging.NodeInfo;
+import org.eclipse.osee.framework.messaging.internal.Activator;
 import org.eclipse.osee.framework.messaging.internal.FailoverConnectionNode;
 
 /**
@@ -36,18 +35,16 @@ public class ConnectionNodeFactoryImpl implements ConnectionNodeFactory {
    }
 
    @Override
-   public ConnectionNode create(NodeInfo nodeInfo) throws OseeCoreException {
+   public synchronized ConnectionNode create(NodeInfo nodeInfo) {
+      final ConnectionNodeActiveMq node = new ConnectionNodeActiveMq(version, sourceId, nodeInfo, executor);
+      OseeLog.log(Activator.class, Level.FINEST, "Going to start a connection node.");
       try {
-         ConnectionNodeActiveMq node = new ConnectionNodeActiveMq(version, sourceId, nodeInfo, executor);
-         try{
-            node.start();
-         } catch (OseeCoreException ex){
-            OseeLog.log(ConnectionNodeFactoryImpl.class, Level.SEVERE, ex);  
-         }
-         return new FailoverConnectionNode(node, scheduledExecutor);
-      } catch (JMSException ex) {
-         throw new OseeWrappedException(ex);
+         node.start();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(ConnectionNodeFactoryImpl.class, Level.SEVERE, ex);
       }
+      OseeLog.log(Activator.class, Level.FINE, "Started a connection node.");
+      return new FailoverConnectionNode(node, scheduledExecutor);
    }
 
 }

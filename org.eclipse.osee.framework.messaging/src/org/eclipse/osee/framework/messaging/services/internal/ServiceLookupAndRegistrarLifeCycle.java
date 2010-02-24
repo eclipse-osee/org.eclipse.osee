@@ -8,10 +8,10 @@ package org.eclipse.osee.framework.messaging.services.internal;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.MessageService;
+import org.eclipse.osee.framework.messaging.internal.Activator;
 import org.eclipse.osee.framework.messaging.services.RemoteServiceLookup;
 import org.eclipse.osee.framework.messaging.services.RemoteServiceRegistrar;
 import org.osgi.framework.BundleContext;
@@ -42,17 +42,29 @@ public class ServiceLookupAndRegistrarLifeCycle extends ServiceTracker {
 
 	@Override
 	public Object addingService(ServiceReference reference) {
-		MessageService messageService = (MessageService) context.getService(reference);
+	   OseeLog.log(Activator.class, Level.INFO, String.format("Found %s service.", MessageService.class.getName()));
+	   OseeLog.log(Activator.class, Level.FINEST, String.format("GOING TO GET THE REF"));
+	   MessageService messageService = (MessageService) context.getService(reference);
+		OseeLog.log(Activator.class, Level.FINEST, String.format("got the service ref"));
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+		OseeLog.log(Activator.class, Level.FINEST, String.format("got exec"));
 		try{
+		   OseeLog.log(Activator.class, Level.FINEST, String.format("set context classloader"));
 			Thread.currentThread().setContextClassLoader(contextClassLoader);
+			OseeLog.log(Activator.class, Level.FINEST, String.format("done set context classloader"));
 			RemoteServiceRegistrar registrar = new RemoteServiceRegistrarImpl(messageService.getDefault(), executor);
+			OseeLog.log(Activator.class, Level.FINEST, String.format("Getting ready to start %s.", RemoteServiceRegistrarImpl.class.getName()));
 			registrar.start();
+			OseeLog.log(Activator.class, Level.FINEST, String.format("started %s.", RemoteServiceRegistrarImpl.class.getName()));
 			RemoteServiceLookup lookup = new RemoteServiceLookupImpl(messageService.getDefault(), executor);
+			OseeLog.log(Activator.class, Level.FINEST, String.format("Getting ready to start %s.", RemoteServiceLookupImpl.class.getName()));
 			lookup.start();
+			OseeLog.log(Activator.class, Level.FINEST, String.format("started %s.", RemoteServiceLookupImpl.class.getName()));
 			
 			lookupRegistration = context.registerService(RemoteServiceLookup.class.getName(), lookup, null);
+			OseeLog.log(Activator.class, Level.INFO, String.format("Registered %s.", RemoteServiceLookup.class.getName()));
 			registrarRegistration = context.registerService(RemoteServiceRegistrar.class.getName(), registrar, null);
+			OseeLog.log(Activator.class, Level.INFO, String.format("Registered %s.", RemoteServiceRegistrar.class.getName()));
 		} catch (OseeCoreException ex){
 			OseeLog.log(ServiceLookupAndRegistrarLifeCycle.class, Level.SEVERE, ex);
 		}

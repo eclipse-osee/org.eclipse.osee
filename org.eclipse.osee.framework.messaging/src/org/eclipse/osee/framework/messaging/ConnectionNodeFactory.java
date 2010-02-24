@@ -5,13 +5,12 @@
  */
 package org.eclipse.osee.framework.messaging;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author b1122182
  */
 public interface ConnectionNodeFactory {
 
-   ConnectionNode create(NodeInfo nodeInfo) throws OseeCoreException;
+   ConnectionNode create(NodeInfo nodeInfo);
    
 }

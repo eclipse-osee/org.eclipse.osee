@@ -50,6 +50,7 @@ public class MessageServiceImpl implements MessageService {
 				OseeLog.log(MessageServiceImpl.class, Level.SEVERE, ex1);
 			}
 		}
+		OseeLog.log(Activator.class, Level.FINER, String.format("Default URI for message Service [%s]", defaultURI.toASCIIString()));
 		return defaultURI;
 	}
 
@@ -73,8 +74,10 @@ public class MessageServiceImpl implements MessageService {
    public ConnectionNode get(NodeInfo nodeInfo) throws OseeCoreException {
       ConnectionNode node = connectionNodes.get(nodeInfo);
       if (node == null) {
+         OseeLog.log(Activator.class, Level.FINEST, String.format("going to create a new Connection Node for [%s]", nodeInfo.toString()));
          node = factory.create(nodeInfo);
          connectionNodes.put(nodeInfo, (ConnectionNode)node);
+         OseeLog.log(Activator.class, Level.FINE, String.format("Created a new Connection Node for [%s]", nodeInfo.toString()));
       }
       return node;
    }
