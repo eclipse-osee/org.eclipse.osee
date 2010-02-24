@@ -61,7 +61,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       checkForMultipleVersionsInOneTransaction();
       checkForIdenticalAddressingInDifferentTransactions();
       checkForMultipleCurrents();
-      checkForInvalidModType();
+      checkForInvalidMergedModType();
 
       if (issueDetected()) {
          for (Address address : addresses) {
@@ -72,17 +72,22 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
                logIssue("corrected txCurrent: " + address.correctedTxCurrent, address);
                currentData.add(new Object[] {address.correctedTxCurrent.getValue(), address.transactionId,
                      address.gammaId});
+            } else {
+               System.out.println("would have fixed merge here");
             }
          }
       }
    }
 
-   private void checkForInvalidModType() {
-      boolean notInBaseline = !addresses.get(addresses.size() - 1).isBaselineTx;
-      if (notInBaseline) {
-         for (Address address : addresses) {
-            if (!address.purge && address.modType == ModificationType.MERGED) {
-               logIssue("found merged mod type for item not in baseline: ", address);
+   private void checkForInvalidMergedModType() {
+      int index = addresses.size() - 1;
+      if (!addresses.get(index).isBaselineTx) {
+         for (; index > -1; index--) {
+            if (!addresses.get(index).purge) {
+               if (addresses.get(index).modType == ModificationType.MERGED) {
+                  logIssue("found merged mod type for item not in baseline: ", addresses.get(index));
+               }
+               return;
             }
          }
       }
