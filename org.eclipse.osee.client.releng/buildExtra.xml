@@ -42,8 +42,5 @@
 	<target name="preProcess" />
 	<target name="postProcess" />
 	<target name="postBuild" />
-	<target name="extraPackaging">
-		<!-- Create All-In-Ones = OSEE Client + Base-->
-
-	</target>
+	<target name="extraPackaging"/>
 </project>
