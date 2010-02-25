@@ -8,8 +8,6 @@ package org.eclipse.osee.ote.service;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -18,7 +16,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.MessageService;
-import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
@@ -107,14 +104,16 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
    private void requestJmsJiniBridgeConnector(
 			ServiceHealth serviceHealth) {
 		try {
-			ConnectionNode connectionNode = messageService.get(new NodeInfo("oseejms1", new URI(serviceHealth.getBrokerURI())));
+//			ConnectionNode connectionNode = messageService.get(new NodeInfo(serviceHealth.getServiceUniqueId(), new URI(serviceHealth.getBrokerURI())));
+		   ConnectionNode connectionNode = messageService.getDefault();
 			connectionNode.subscribeToReply(OteBaseMessages.RequestOteHost, myOteServiceRequestHandler);
 			connectionNode.send(OteBaseMessages.RequestOteHost, serviceHealth.getServiceUniqueId(), this);
 		} catch (OseeCoreException ex) {
-			ex.printStackTrace();
-		} catch (URISyntaxException ex) {
-			ex.printStackTrace();
+		   OseeLog.log(Activator.class, Level.SEVERE, ex);
 		}
+//		catch (URISyntaxException ex) {
+//			OseeLog.log(Activator.class, Level.SEVERE, ex);
+//		}
 	}
 
 	private boolean isNewService(ServiceHealth serviceHealth) {
@@ -159,9 +158,9 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
 					connectionService.addConnector(connector);
 				}
 			} catch (IOException ex) {
-				ex.printStackTrace();
+			   OseeLog.log(Activator.class, Level.SEVERE, ex);
 			} catch (ClassNotFoundException ex) {
-				ex.printStackTrace();
+			   OseeLog.log(Activator.class, Level.SEVERE, ex);
 			}
 		}
 	}

@@ -158,7 +158,7 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
                connected();
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(FailoverConnectionNode.class, Level.SEVERE, ex);
+            OseeLog.log(FailoverConnectionNode.class, Level.FINE, ex);
             notConnected();
          }
       } 

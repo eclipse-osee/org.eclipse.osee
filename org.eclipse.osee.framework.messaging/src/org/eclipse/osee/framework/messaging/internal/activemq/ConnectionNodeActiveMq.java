@@ -82,7 +82,6 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          connection.start();
          started = true;
       } catch (JMSException ex) {
-         ex.printStackTrace();
          throw new OseeWrappedException(ex);
       }
    }
