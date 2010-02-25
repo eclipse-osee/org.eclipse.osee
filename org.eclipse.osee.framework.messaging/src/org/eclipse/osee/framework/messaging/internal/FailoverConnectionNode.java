@@ -190,4 +190,19 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
       }
    }
 
+   @Override
+   public String getSenders() {
+      return connectionNode.getSenders();
+   }
+
+   @Override
+   public String getSubscribers() {
+      return connectionNode.getSubscribers();
+   }
+
+   @Override
+   public String getSummary() {
+      return connectionNode.getSummary();
+   }
+
 }

@@ -76,4 +76,8 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
 	   }
 	   OseeLog.log(Activator.class, Level.FINE, String.format("recieved message %s - %s", message.getJMSDestination().toString(), message.toString()));
 	}
+	
+	List<OseeMessagingListener> getListeners(){
+	   return listeners;
+	}
 }

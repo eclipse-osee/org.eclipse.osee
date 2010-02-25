@@ -25,4 +25,7 @@ public interface ConnectionNode {
 
    public void stop();
 
+   String getSummary();
+   String getSubscribers();
+   String getSenders();
 }

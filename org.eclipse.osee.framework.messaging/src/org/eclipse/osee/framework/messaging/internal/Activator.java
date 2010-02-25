@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.messaging.MessagingGateway;
 import org.eclipse.osee.framework.messaging.internal.old.MessagingGatewayImpl;
 import org.eclipse.osee.framework.messaging.services.internal.ServiceLookupAndRegistrarLifeCycle;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
+import org.eclipse.osgi.framework.console.CommandProvider;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -32,6 +33,7 @@ public class Activator implements BundleActivator {
    // old
    private ServiceRegistration registration;
    private MessagingGatewayImpl messaging;
+   private ServiceRegistration msgCommandProvider;
 
    
    
@@ -45,6 +47,7 @@ public class Activator implements BundleActivator {
       messageServiceProviderImpl.start();
       msgServiceRegistration = context.registerService(MessageService.class.getName(), messageServiceProviderImpl.getMessageService(), null);
 
+      msgCommandProvider = context.registerService(CommandProvider.class.getName(), new MessageServiceConsole(messageServiceProviderImpl.getMessageService()), null);
       //old
       messaging = new MessagingGatewayImpl();
       registration = context.registerService(MessagingGateway.class.getName(), messaging, null);
@@ -58,7 +61,7 @@ public class Activator implements BundleActivator {
          msgServiceRegistration.unregister();
       }
       messageServiceProviderImpl.stop();
-
+      msgCommandProvider.unregister();
       //old
       if (registration != null) {
          registration.unregister();

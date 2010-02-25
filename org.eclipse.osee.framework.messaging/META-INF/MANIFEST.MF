@@ -123,6 +123,7 @@ Import-Package: javax.jms,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.plugin.core.util,
+ org.eclipse.osgi.framework.console;version="1.0.0",
  org.osgi.framework,
  org.osgi.util.tracker;version="1.4.0"
 Bundle-ActivationPolicy: lazy

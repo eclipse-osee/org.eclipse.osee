@@ -7,6 +7,7 @@ package org.eclipse.osee.framework.messaging.internal.activemq;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
@@ -255,5 +256,52 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    @Override
    public void removeConnectionListener(ConnectionListener connectionListener) {
    }
+   
+   
+   @Override
+   public String getSenders() {
+      StringBuilder sb = new StringBuilder();
+      for(Entry<Topic, MessageProducer> entry:this.messageProducerCache.entrySet()){
+         try {
+            sb.append(String.format("Topic [%s] \n", entry.getKey().getTopicName()));
+            sb.append(String.format("\tProducer Destination [%s]\n", entry.getValue().getDestination().toString()));
+         } catch (JMSException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+      return sb.toString();
+   }
 
+   @Override
+   public String getSubscribers() {
+      StringBuilder sb = new StringBuilder();
+      for(Entry<Topic, MessageConsumer> entry:this.messageConsumerCache.entrySet()){
+         try {
+            sb.append(String.format("Topic [%s] \n", entry.getKey().getTopicName()));
+            sb.append(String.format("\tConsumer Selector [%s]\n", entry.getValue().getMessageSelector()));
+            MessageListener listener = entry.getValue().getMessageListener();
+            if(listener instanceof ActiveMqMessageListenerWrapper){
+               sb.append("\tConsumer Listeners:\n");   
+               for(OseeMessagingListener item:((ActiveMqMessageListenerWrapper)listener).getListeners()){
+                  sb.append(String.format("\t\t%s\n", item.toString()));   
+               }
+            }
+         } catch (JMSException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+      return sb.toString();
+   }
+
+   @Override
+   public String getSummary() {
+      StringBuilder sb = new StringBuilder();
+      sb.append(nodeInfo.toString());
+      sb.append("\n");
+      sb.append(String.format("\tisStarted[%b]\n", started));
+      sb.append(getSenders());
+      sb.append(getSubscribers());
+      return sb.toString();
+   }
+   
 }
