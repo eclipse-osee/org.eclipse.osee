@@ -11,12 +11,14 @@
 package org.eclipse.osee.framework.server.admin;
 
 import java.util.Arrays;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.server.admin.management.AdminCommands;
 import org.eclipse.osee.framework.server.admin.management.ConsolidateArtifactVersionsCommand;
 import org.eclipse.osee.framework.server.admin.management.FinishPartiallyArchivedBranchesCommand;
 import org.eclipse.osee.framework.server.admin.management.GarbageCollectionCommand;
+import org.eclipse.osee.framework.server.admin.management.SchedulingCommand;
 import org.eclipse.osee.framework.server.admin.management.TxCurrentsAndModTypesCommand;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -88,6 +90,10 @@ public class ServerAdminCommandProvider implements CommandProvider {
       Operations.executeAsJob(new GarbageCollectionCommand(ci), false);
    }
 
+   public void _schedule(CommandInterpreter ci) {
+      Operations.executeAsJob(new SchedulingCommand(ci), false);
+   }
+
    public void _tx_currents(CommandInterpreter ci) {
       Operations.executeAsJob(new TxCurrentsAndModTypesCommand(ci), false);
    }
@@ -110,6 +116,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        tx_currents - detect and optionaly fix tx current and mod types inconsistencies\n");
       sb.append("        osee_shutdown [-oseeOnly] - immediately release the listening port then waits for all existing operations to finish. \n");
       sb.append("        gc - run java garbage collecction\n");
+      sb.append("        schedule <delay seconds> <iterations> <command> - runs the command after the specified delay and repeat given number of times\n");
       sb.append(String.format("        reload_cache %s? - reloads server caches\n", Arrays.deepToString(
             OseeCacheEnum.values()).replaceAll(",", " | ")));
       sb.append(String.format("        clear_cache %s? - decaches all objects from the specified caches\n",

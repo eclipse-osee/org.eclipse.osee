@@ -17,14 +17,23 @@ import org.eclipse.osgi.framework.console.CommandInterpreter;
 /**
  * @author Ryan D. Brooks
  */
-public class GarbageCollectionCommand extends BaseServerCommand {
+public class SchedulingCommand extends BaseServerCommand {
+   private final long delayMiliseconds;
+   private final int iterations;
+   private final String command;
 
-   public GarbageCollectionCommand(CommandInterpreter ci) {
-      super("Run Garbage Collection", ci);
+   public SchedulingCommand(CommandInterpreter ci) {
+      super("Schedule", ci);
+      delayMiliseconds = Integer.parseInt(ci.nextArgument()) * 1000;
+      iterations = Integer.parseInt(ci.nextArgument());
+      command = ci.nextArgument();
    }
 
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
-      System.gc();
+      for (int i = 0; i < iterations; i++) {
+         Thread.sleep(delayMiliseconds);
+         getCommandInterpreter().execute(command);
+      }
    }
 }
