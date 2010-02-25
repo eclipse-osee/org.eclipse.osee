@@ -17,31 +17,6 @@
       %license
    </license>
 
-   <requires>
-      <import plugin="org.apache.commons.codec"/>
-      <import plugin="org.apache.commons.httpclient"/>
-      <import plugin="org.apache.commons.lang"/>
-      <import plugin="org.apache.xerces"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.jobs"/>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="com.lowagie.text"/>
-      <import plugin="org.junit4"/>
-      <import plugin="org.eclipse.osgi.services"/>
-      <import plugin="org.eclipse.equinox.app"/>
-      <import plugin="javax.servlet"/>
-      <import plugin="org.apache.derby"/>
-      <import plugin="org.eclipse.xtext"/>
-      <import plugin="org.eclipse.xtext.util"/>
-      <import plugin="org.eclipse.emf.ecore"/>
-      <import plugin="org.eclipse.emf.common"/>
-      <import plugin="org.antlr.runtime"/>
-      <import plugin="org.eclipse.emf.compare" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.compare.diff" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.emf.compare.match" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtext.log4j"/>
-   </requires>
-
    <plugin
          id="org.eclipse.osee.framework.jdk.core"
          download-size="0"
