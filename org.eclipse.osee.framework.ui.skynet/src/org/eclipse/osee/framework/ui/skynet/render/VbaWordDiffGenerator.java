@@ -14,7 +14,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamCatcher;
 
 /**
@@ -43,7 +44,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private boolean finalized;
    private boolean initialized;
    private boolean first;
-   private String diffPath = null;
+   private final String diffPath = null;
    private boolean merge = false;
 
    public VbaWordDiffGenerator() {
@@ -107,7 +108,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    }
 
    @Override
-   public void finish(String vbScriptPath, boolean show) throws OseeWrappedException {
+   public void finish(String vbScriptPath, boolean show) throws OseeCoreException {
       finalized = true;
       if (show) {
          builder.append("    visible = True\n");
@@ -122,7 +123,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    }
 
    @Override
-   public File getFile(String path) throws OseeWrappedException {
+   public File getFile(String path) throws OseeCoreException {
       if (!finalized) {
          return null;
       }
@@ -130,13 +131,13 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          FileOutputStream out = new FileOutputStream(path != null ? path : "c:\\UserData\\compareDocs.vbs");
          out.write(builder.toString().getBytes(), 0, builder.toString().getBytes().length);
          out.close();
-         return new File(path != null ? path : "c:\\UserData\\compareDocs.vbs");
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
+      return new File(path != null ? path : "c:\\UserData\\compareDocs.vbs");
    }
 
-   private void compare(File vbDiffScript) throws OseeWrappedException {
+   private void compare(File vbDiffScript) throws OseeCoreException {
       try {
          String cmd[] = {"cmd", "/s /c", "\"" + vbDiffScript.getPath() + "\""};
 
@@ -149,9 +150,9 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          outputCatcher.start();
          proc.waitFor();
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       } catch (InterruptedException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 }

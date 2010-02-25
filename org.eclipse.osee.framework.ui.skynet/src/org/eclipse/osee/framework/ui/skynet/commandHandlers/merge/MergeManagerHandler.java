@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -51,8 +50,7 @@ public class MergeManagerHandler extends CommandHandler {
             try {
                Branch toBranch = BranchManager.getBranch(Integer.parseInt(arg0.getParameter(BranchView.BRANCH_ID)));
                if (selectedBranch != null && toBranch != null) {
-                  MergeView.openView(selectedBranch, toBranch,
-                        TransactionManager.getStartEndPoint(selectedBranch).getFirst());
+                  MergeView.openView(selectedBranch, toBranch, selectedBranch.getBaseTransaction());
                }
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -81,9 +79,9 @@ public class MergeManagerHandler extends CommandHandler {
                if (selectedBranch != null && !ConflictManagerInternal.getDestinationBranchesMerged(
                      selectedBranch.getId()).isEmpty()) {
                   enabled = true;
-               }else{
-               enabled =
-                     (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.hasParentBranch());
+               } else {
+                  enabled =
+                        selectedBranch != null && !(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact) && selectedBranch.hasParentBranch();
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

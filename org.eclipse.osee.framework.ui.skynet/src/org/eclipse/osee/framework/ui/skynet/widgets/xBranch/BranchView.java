@@ -21,7 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.action.TableCustomizationAction;
 import org.eclipse.nebula.widgets.xviewer.action.ViewSelectedCellDataAction;
 import org.eclipse.nebula.widgets.xviewer.action.ViewTableReportAction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,7 +45,7 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * Displays persisted changes made to an artifact.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class BranchView extends ViewPart implements IActionable, IBranchEventListener, ITransactionsDeletedEventListener {
@@ -128,12 +128,12 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       return "";
    }
 
-   public static void revealBranch(Branch branch) throws OseeWrappedException {
+   public static void revealBranch(Branch branch) throws OseeCoreException {
       try {
          BranchView branchView = (BranchView) AWorkbench.getActivePage().showView(VIEW_ID);
          branchView.reveal(branch);
       } catch (PartInitException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 

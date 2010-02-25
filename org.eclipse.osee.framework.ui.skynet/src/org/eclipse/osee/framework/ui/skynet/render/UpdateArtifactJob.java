@@ -23,9 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -33,8 +31,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -65,7 +63,8 @@ public class UpdateArtifactJob extends UpdateJob {
    private static final Pattern multiPattern = Pattern.compile(".*[^()]*");
    private Element oleDataElement;
    private String singleGuid = null;
-   private static final boolean DEBUG = "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Renderer"));
+   private static final boolean DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Renderer"));
 
    public UpdateArtifactJob() {
       super("Update Artifact");
@@ -75,10 +74,8 @@ public class UpdateArtifactJob extends UpdateJob {
    protected IStatus run(IProgressMonitor monitor) {
       try {
          processUpdate();
-      }
-      catch (Exception ex) {
-         return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK,
-                           ex.getLocalizedMessage(), ex);
+      } catch (Exception ex) {
+         return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
       }
       return Status.OK_STATUS;
    }
@@ -89,8 +86,7 @@ public class UpdateArtifactJob extends UpdateJob {
          String guid = WordUtil.getGUIDFromFile(workingFile);
          if (guid == null) {
             processNonWholeDocumentUpdates(branch);
-         }
-         else {
+         } else {
             Artifact myArtifact = ArtifactQuery.getArtifactFromId(guid, branch);
             updateWholeDocumentArtifact(myArtifact);
          }
@@ -107,32 +103,25 @@ public class UpdateArtifactJob extends UpdateJob {
          singleGuid = singleEditMatcher.group(1);
          artifact = ArtifactQuery.getArtifactFromId(singleGuid, branch);
 
-         if (artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT.getName())
-             || artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT.getName())) {
+         if (artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT.getName()) || artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT.getName())) {
             isSingleEdit = true;
             wordArtifactUpdate(isSingleEdit, branch);
-         }
-         else if (artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT.getName())) {
+         } else if (artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT.getName())) {
             updateNativeArtifact(artifact);
-         }
-         else {
+         } else {
             throw new OseeArgumentException("Artifact must be of type WordArtifact or NativeArtifact.");
          }
-      }
-      else if (multiEditMatcher.matches()) {
+      } else if (multiEditMatcher.matches()) {
          isSingleEdit = false;
          wordArtifactUpdate(isSingleEdit, branch);
-      }
-      else {
+      } else {
          throw new OseeArgumentException("File name did not contain the artifact guid");
       }
    }
 
    private void logUpdateSkip(Artifact artifact) {
-      OseeLog.log(
-                  SkynetGuiPlugin.class,
-                  Level.INFO,
-                  String.format("Skipping update - artifact [%s] is read-only", artifact.toString()));
+      OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format("Skipping update - artifact [%s] is read-only",
+            artifact.toString()));
    }
 
    private void updateNativeArtifact(Artifact artifact) throws OseeCoreException, FileNotFoundException {
@@ -142,12 +131,10 @@ public class UpdateArtifactJob extends UpdateJob {
             stream = new BufferedInputStream(new FileInputStream(workingFile));
             artifact.setSoleAttributeFromStream(CoreAttributeTypes.NATIVE_CONTENT.getName(), stream);
             artifact.persist();
-         }
-         finally {
+         } finally {
             Lib.close(stream);
          }
-      }
-      else {
+      } else {
          logUpdateSkip(artifact);
       }
    }
@@ -156,10 +143,10 @@ public class UpdateArtifactJob extends UpdateJob {
       List<String> deletedGuids = new LinkedList<String>();
       InputStream inputStream = new BufferedInputStream(new FileInputStream(workingFile));
       Document document;
-      try{
-          document = Jaxp.readXmlDocument(inputStream);
-      }finally{
-       Lib.close(inputStream);  
+      try {
+         document = Jaxp.readXmlDocument(inputStream);
+      } finally {
+         Lib.close(inputStream);
       }
 
       WordArtifactElementExtractor extractor = new WordArtifactElementExtractor(document);
@@ -175,8 +162,7 @@ public class UpdateArtifactJob extends UpdateJob {
 
             if (artifact == null) {
                deletedGuids.add(guid);
-            }
-            else {
+            } else {
                if (artifact.isReadOnly()) {
                   logUpdateSkip(artifact);
                   continue;
@@ -185,27 +171,25 @@ public class UpdateArtifactJob extends UpdateJob {
 
                if (oleDataElement == null && containsOleData) {
                   artifact.setSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "");
+               } else if (oleDataElement != null && singleArtifact) {
+                  artifact.setSoleAttributeFromStream(WordAttribute.OLE_DATA_NAME, new ByteArrayInputStream(
+                        WordTemplateRenderer.getFormattedContent(oleDataElement)));
                }
-               else if (oleDataElement != null && singleArtifact) {
-                  artifact.setSoleAttributeFromStream(WordAttribute.OLE_DATA_NAME,
-                                                      new ByteArrayInputStream(
-                                                                               WordTemplateRenderer.getFormattedContent(oleDataElement)));
-               }
-               String content;
+               String content = null;
                try {
-                  content = Lib.inputStreamToString(new ByteArrayInputStream(
-                                                                             WordTemplateRenderer.getFormattedContent(artElement)));
-               }
-               catch (IOException ex) {
-                  throw new OseeWrappedException(ex);
+                  content =
+                        Lib.inputStreamToString(new ByteArrayInputStream(
+                              WordTemplateRenderer.getFormattedContent(artElement)));
+               } catch (IOException ex) {
+                  OseeExceptions.wrapAndThrow(ex);
                }
                // Only update if editing a single artifact or if in
                // multi-edit mode only update if the artifact has at least one textual change (if
                // the MUTI_EDIT_SAVE_ALL_CHANGES preference is not set).
-               boolean multiSave = UserManager.getUser().getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES)
-                                   || !WordUtil.textOnly(artifact.getSoleAttributeValue(
-                                                                                        WordAttribute.WORD_TEMPLATE_CONTENT).toString()).equals(
-                                                                                                                                                WordUtil.textOnly(content));
+               boolean multiSave =
+                     UserManager.getUser().getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES) || !WordUtil.textOnly(
+                           artifact.getSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT).toString()).equals(
+                           WordUtil.textOnly(content));
 
                if (singleArtifact || multiSave) {
                   // TODO
@@ -228,11 +212,10 @@ public class UpdateArtifactJob extends UpdateJob {
                artifact.persist();
             }
          }
-      }
-      finally {
+      } finally {
          if (!deletedGuids.isEmpty()) {
-            throw new OseeStateException("The following deleted artifacts could not be saved: "
-                                         + Collections.toString(",", deletedGuids));
+            throw new OseeStateException("The following deleted artifacts could not be saved: " + Collections.toString(
+                  ",", deletedGuids));
          }
       }
    }
@@ -244,19 +227,16 @@ public class UpdateArtifactJob extends UpdateJob {
          try {
             inputStream = new BufferedInputStream(new FileInputStream(workingFile));
             content = Lib.inputStreamToString(inputStream);
-         }
-         catch (IOException ex) {
-            throw new OseeWrappedException(ex);
-         }
-         finally {
+         } catch (IOException ex) {
+            OseeExceptions.wrapAndThrow(ex);
+         } finally {
             Lib.close(inputStream);
          }
          LinkType linkType = LinkType.OSEE_SERVER_LINK;
          content = WordMlLinkHandler.unlink(linkType, artifact, content);
          artifact.setSoleAttributeFromString(WordAttribute.WHOLE_WORD_CONTENT, content);
          artifact.persist();
-      }
-      else {
+      } else {
          logUpdateSkip(artifact);
       }
    }
@@ -274,7 +254,6 @@ public class UpdateArtifactJob extends UpdateJob {
             return attributes.item(i).getNodeValue();
          }
       }
-      throw new OseeArgumentException("didn't find the guid attribure in element: "
-                                      + artifactElement);
+      throw new OseeArgumentException("didn't find the guid attribure in element: " + artifactElement);
    }
 }

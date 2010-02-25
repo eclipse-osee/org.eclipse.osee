@@ -209,14 +209,6 @@
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindInvalidUTF8Chars"/>
 	</extension>
        <extension
-             id="CopyTransactionDataToBaseline"
-             name="Copy Transaction Data To Baseline"
-             point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-          <Operation
-                className="org.eclipse.osee.framework.ui.skynet.blam.operation.CopyTransactionDataToBaseline">
-          </Operation>
-       </extension>
-       <extension
              id="FindArtifactsWithMinAttributeContraintProblems"
              point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
           <Operation

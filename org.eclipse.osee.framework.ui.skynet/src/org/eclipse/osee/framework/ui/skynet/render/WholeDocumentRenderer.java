@@ -18,8 +18,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
@@ -78,9 +78,8 @@ public class WholeDocumentRenderer extends WordRenderer {
 
    @Override
    public InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+      InputStream stream = null;
       try {
-         InputStream stream;
-
          if (artifact == null) {
             stream = Streams.convertStringToInputStream(WordWholeDocumentAttribute.getEmptyDocumentContent(), "UTF-8");
          } else {
@@ -97,10 +96,10 @@ public class WholeDocumentRenderer extends WordRenderer {
             content = WordMlLinkHandler.link(linkType, artifact, content);
             stream = Streams.convertStringToInputStream(content, "UTF-8");
          }
-         return stream;
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
+      return stream;
    }
 
    @Override

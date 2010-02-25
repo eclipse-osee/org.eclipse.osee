@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  */
 public class DatastoreStatistics extends AbstractBlam {
    private static final String SELECT_ARTIFACT_COUNTS =
-         "select count(1) as total, name FROM osee_artifact_type ary, osee_artifact art where ary.art_type_id = art.art_type_id group by name order by total desc";
+         "select count(1) as total, name FROM osee_artifact_type ary, osee_arts art where ary.art_type_id = art.art_type_id group by art_id, name order by total desc";
 
    @Override
    public String getName() {

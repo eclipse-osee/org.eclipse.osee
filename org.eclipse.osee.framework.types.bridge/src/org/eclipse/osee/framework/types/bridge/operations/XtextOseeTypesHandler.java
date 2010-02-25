@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.types.bridge.operations;
 import java.net.URI;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -30,7 +30,7 @@ public class XtextOseeTypesHandler implements IOseeTypesHandler {
          IOperation operation = new OseeTypesImportOperation(uri, false, false, true);
          Operations.executeWorkAndCheckStatus(operation, monitor, -1);
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 

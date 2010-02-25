@@ -53,7 +53,7 @@ public class BranchCreationHandler extends CommandHandler {
       try {
          if (backingData instanceof Branch) {
             Branch branch = (Branch) backingData;
-            parentTransactionId = TransactionManager.getLastTransaction(branch);
+            parentTransactionId = TransactionManager.getHeadTransaction(branch);
          } else if (backingData instanceof TransactionRecord) {
 
             parentTransactionId = (TransactionRecord) backingData;

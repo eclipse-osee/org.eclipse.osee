@@ -5,10 +5,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.AttributeBasedArtifactResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.GuidBasedArtifactResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.NewArtifactImportResolver;
-import org.eclipse.osee.framework.skynet.core.importing.resolvers.AttributeBasedArtifactResolver;
 
 public enum MatchingStrategy {
    ATTRIBUTE(), GUID(), NONE();

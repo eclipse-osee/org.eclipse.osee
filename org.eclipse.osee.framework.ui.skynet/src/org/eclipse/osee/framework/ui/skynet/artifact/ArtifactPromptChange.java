@@ -22,7 +22,7 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -222,17 +222,16 @@ public class ArtifactPromptChange {
       return false;
    }
 
-   private static String getSafeValue(String value, NumberFormat format) throws OseeWrappedException {
-      if (format == null) {
-         return value;
+   private static String getSafeValue(String value, NumberFormat format) throws OseeCoreException {
+      String toReturn = value;
+      if (format != null) {
+         try {
+            toReturn = String.valueOf(format.parse(value).doubleValue()); // TODO check for dot in integers
+         } catch (ParseException ex) {
+            OseeExceptions.wrapAndThrow(ex);
+         }
       }
-
-      try {
-         String safeValue = String.valueOf(format.parse(value).doubleValue()); // TODO check for dot in integers
-         return safeValue;
-      } catch (ParseException ex) {
-         throw new OseeWrappedException(ex);
-      }
+      return toReturn;
    }
 
    private static void updateSmaAttributes(final Collection<? extends Artifact> smas, String attributeName, NumberFormat format, EntryDialog ed) throws OseeCoreException {

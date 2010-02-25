@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
  */
 public class AddTemplateText implements ITemplateTask {
 
-   private String template;
-   private int begin;
-   private int end;
+   private final String template;
+   private final int begin;
+   private final int end;
 
    /**
     * @param last
@@ -37,7 +37,7 @@ public class AddTemplateText implements ITemplateTask {
    }
 
    @Override
-   public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) throws OseeWrappedException {
+   public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) throws OseeCoreException {
       wordMl.addWordMl(template.subSequence(begin, end));
    }
 

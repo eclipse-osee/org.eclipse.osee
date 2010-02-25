@@ -31,11 +31,11 @@ public class ArtifactGuis {
    }
 
    private static final String OTHER_EDIT_SQL =
-         "select distinct t3.branch_id from osee_artifact_version t1, osee_txs t2, osee_tx_details t3, (select min(transaction_id) as min_tx_id, branch_id from osee_tx_details group by branch_id) t4, osee_branch t5 where t1.art_id = ? and t1.gamma_id = t2.gamma_id and t2.transaction_id <> t4.min_tx_id and t2.transaction_id = t3.transaction_id and t3.branch_id = t4.branch_id and t4.branch_id <> ? and t5.parent_branch_id = ? and t4.branch_id = t5.branch_id and t5.archived = 0";
+      "select distinct t2.branch_id from osee_arts t1, osee_txs t2, (select min(transaction_id) as min_tx_id, branch_id from osee_txs group by branch_id) t3, osee_branch t5 where t1.art_id = ? and t1.gamma_id = t2.gamma_id and t2.transaction_id <> t3.min_tx_id and t2.transaction_id = t2.transaction_id and t2.branch_id = t3.branch_id and t3.branch_id <> ? and t5.parent_branch_id = ? and t3.branch_id = t5.branch_id and t5.archived = 0";
 
    /**
     * Returns all the other branches this artifact has been editted on, besides modifications to program branch.
-    * 
+    *
     * @param artifact
     * @throws OseeCoreException
     */
@@ -132,8 +132,8 @@ public class ArtifactGuis {
       public void run() {
          synchronized (notifee) {
             yes =
-                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
-                        question);
+               MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
+                     question);
             done = true;
             notifee.notifyAll();
          }

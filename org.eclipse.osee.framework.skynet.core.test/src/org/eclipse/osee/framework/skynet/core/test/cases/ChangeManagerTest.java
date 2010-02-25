@@ -34,10 +34,12 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Tests the Change Manager.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class ChangeManagerTest {
@@ -81,7 +83,13 @@ public class ChangeManagerTest {
       assertTrue("Check artifact is still new", checkArtifactModType(newArtifact, ModificationType.NEW));
       modArtifact.setSoleAttributeFromString(WordAttribute.WORD_TEMPLATE_CONTENT, "changed content");
       modArtifact.persist();
-      assertTrue("Check artifact has changed", checkArtifactModType(modArtifact, ModificationType.MODIFIED));
+      assertTrue("Check artifact has changed", checkArtifactModType(modArtifact, ModificationType.NEW));
+   }
+
+   @Ignore
+   @Test
+   public void testArtifactTypeChange(){
+      // TODO Add artifact type change
    }
 
    @After

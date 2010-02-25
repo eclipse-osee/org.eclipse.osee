@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,7 +22,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  * @author Ryan D. Brooks
  */
 public class FindInvalidUTF8Chars extends AbstractBlam {
-   private static final String READ_ATTRIBUTE_VALUES = "SELECT art_id, value FROM " + ATTRIBUTE_VERSION_TABLE;
+   private static final String READ_ATTRIBUTE_VALUES = "SELECT art_id, value FROM osee_attribute";
 
    @Override
    public String getName() {

@@ -20,9 +20,9 @@ import java.util.Set;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -271,11 +271,11 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
          throw new OseeArgumentException("The enum xml definition must not be null or empty");
       }
 
-      Document document;
+      Document document = null;
       try {
          document = Jaxp.readXmlDocument(xmlDefinition);
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
       enumTypeName = attributeTypeName;
       Element choicesElement = document.getDocumentElement();

@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -35,7 +34,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -124,7 +123,7 @@ public class WordTemplateProcessor {
    /**
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts Only used by Publish SRS
-    * 
+    *
     * @throws IOException
     */
    public void publishWithExtensionTemplates(VariableMap variableMap, Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
@@ -142,7 +141,7 @@ public class WordTemplateProcessor {
    /**
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts. Only used by Publish SRS
-    * 
+    *
     * @param variableMap = will be filled with artifacts when specified in the template
     * @param artifacts = null if the template defines the artifacts to be used in the publishing
     * @param template
@@ -153,13 +152,13 @@ public class WordTemplateProcessor {
     * @throws OseeCoreException
     */
    public InputStream applyTemplate(VariableMap variableMap, List<Artifact> artifacts, String template, IFolder folder, String outlineNumber, String outlineType, PresentationType presentationType) throws OseeCoreException {
-      WordMLProducer wordMl;
-      CharBackedInputStream charBak;
+      WordMLProducer wordMl = null;
+      CharBackedInputStream charBak = null;
       try {
          charBak = new CharBackedInputStream();
          wordMl = new WordMLProducer(charBak);
       } catch (CharacterCodingException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
 
       this.outlineNumber =
@@ -194,7 +193,7 @@ public class WordTemplateProcessor {
             try {
                processExtensionTemplate(elementValue, variableMap, folder, wordMl, presentationType, template);
             } catch (CoreException ex) {
-               throw new OseeWrappedException(ex);
+               OseeExceptions.wrapAndThrow(ex);
             }
          } else {
             throw new OseeArgumentException("Invalid input: " + elementType);
@@ -477,7 +476,7 @@ public class WordTemplateProcessor {
       return theMap;
    }
 
-   public static void writeXMLMetaDataWrapper(WordMLProducer wordMl, String name, String guid, String attributeId, String contentString) throws OseeWrappedException {
+   public static void writeXMLMetaDataWrapper(WordMLProducer wordMl, String name, String guid, String attributeId, String contentString) throws OseeCoreException {
       wordMl.addWordMl("<ns0:" + name + " xmlns:ns0=\"" + WordTemplateRenderer.ARTIFACT_SCHEMA + "\" " + guid + " " + attributeId + ">");
       wordMl.addWordMl(contentString);
       wordMl.addWordMl("</ns0:" + name + "><w:p/>");

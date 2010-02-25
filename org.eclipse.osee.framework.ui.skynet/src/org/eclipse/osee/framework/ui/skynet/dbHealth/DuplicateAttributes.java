@@ -29,7 +29,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
          "SELECT attr1.art_id, aty1.NAME, attr1.attr_id as attr_id_1, attr2.attr_id as attr_id_2, attr1.value as value_1, attr2.value as value_2, attr1.uri as uri_1, attr2.uri as uri_2, attr1.gamma_id as gamma_id_1, attr2.gamma_id as gamma_id_2 FROM osee_attribute attr1, osee_attribute attr2, osee_attribute_type  aty1 WHERE attr1.art_id = attr2.art_id AND attr1.attr_id < attr2.attr_id AND attr1.attr_type_id = attr2.attr_type_id AND attr1.attr_type_id = aty1.attr_type_id AND aty1.max_occurence = 1  AND EXISTS (SELECT 'x' FROM osee_txs txs1 WHERE txs1.gamma_id = attr1.gamma_id AND tx_current = 1) AND EXISTS (SELECT 'x' FROM osee_txs txs2 WHERE txs2.gamma_id = attr2.gamma_id and tx_current = 1) order by aty1.NAME, attr1.art_id";
 
    private static final String BRANCHES_WITH_ONLY_ATTR =
-         "SELECT DISTINCT branch_id FROM osee_tx_details det WHERE EXISTS (SELECT 'x' FROM osee_txs txs, osee_attribute att WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?) %s (SELECT DISTINCT branch_id FROM osee_tx_details det WHERE EXISTS (SELECT 'x' FROM osee_txs txs, osee_attribute att WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?))";
+         "SELECT DISTINCT txs1.branch_id FROM osee_txs txs1 WHERE EXISTS (SELECT 'x' FROM osee_txs txs2, osee_attribute att2 WHERE txs1.transaction_id = txs2.transaction_id AND txs2.gamma_id = att2.gamma_id AND att2.attr_id = ?) %s (SELECT DISTINCT txs3.branch_id FROM osee_txs txs3 WHERE EXISTS (SELECT 'x' FROM osee_txs txs4, osee_attribute att4 WHERE txs3.transaction_id = txs4.transaction_id AND txs4.gamma_id = att4.gamma_id AND att4.attr_id = ?))";
 
    private static final String DELETE_ATTR = "DELETE FROM osee_attribute WHERE attr_id = ?";
 
@@ -159,9 +159,10 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
          AttributeData attributeData1 = duplicate.getAttributeData1();
          AttributeData attributeData2 = duplicate.getAttributeData2();
          builder.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(duplicate.getArtId()),
-               String.valueOf(attributeData1.getAttrId()), String.valueOf(attributeData2.getAttrId()), duplicate.name,
-               attributeData1.getValue(), attributeData2.getValue(), attributeData1.getUri(), attributeData2.getUri(),
-               String.valueOf(attributeData1.getGamma()), String.valueOf(attributeData2.getGamma()), fixMessage}));
+               String.valueOf(attributeData1.getAttrId()), String.valueOf(attributeData2.getAttrId()),
+               duplicate.getName(), attributeData1.getValue(), attributeData2.getValue(), attributeData1.getUri(),
+               attributeData2.getUri(), String.valueOf(attributeData1.getGamma()),
+               String.valueOf(attributeData2.getGamma()), fixMessage}));
          count++;
       }
       return count;
@@ -191,7 +192,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
       return "Deletes attributes that have been identified as duplicates by attr id.";
    }
 
-   private final class AttributeData {
+   private final static class AttributeData {
       private final int attrId;
       private final String value;
       private final String uri;
@@ -232,7 +233,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
       }
    }
 
-   private final class DuplicateAttributeData {
+   private final static class DuplicateAttributeData {
       private final AttributeData attributeData1;
       private final AttributeData attributeData2;
 

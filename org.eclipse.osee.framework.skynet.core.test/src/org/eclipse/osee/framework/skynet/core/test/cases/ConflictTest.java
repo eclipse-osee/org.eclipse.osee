@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.conflict.RelationConflict;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -49,17 +49,17 @@ public class ConflictTest {
    private static final String[] NO_TX_CURRENT_SET =
          {
                "SELECT distinct t1.",
-               ", det.branch_id FROM osee_tx_details det, osee_txs txs, ",
-               " t1 WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = t1.gamma_id AND txs.tx_current = 0 %s SELECT distinct t2.",
-               ", det.branch_id FROM osee_tx_details det, osee_txs txs, ",
-               " t2 WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = t2.gamma_id AND txs.tx_current != 0"};
+               ", txs1.branch_id FROM osee_txs txs1, ",
+               " t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current = 0 %s SELECT distinct t2.",
+               ", txs2.branch_id FROM osee_txs txs2, ",
+               " t2 WHERE txs2.gamma_id = t2.gamma_id AND txs2.tx_current != 0"};
 
    private static final String[] MULTIPLE_TX_CURRENT_SET =
          {
                "SELECT resulttable.branch_id, resulttable.",
-               ", COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txd1.branch_id, t1.",
-               " FROM osee_tx_details txd1, osee_txs txs1, ",
-               " t1 WHERE txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = t1.gamma_id AND txs1.tx_current != 0) resulttable GROUP BY resulttable.branch_id, resulttable.",
+               ", COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txs1.branch_id, t1.",
+               " FROM osee_txs txs1, ",
+               " t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current != 0) resulttable GROUP BY resulttable.branch_id, resulttable.",
                " HAVING(COUNT(resulttable.branch_id) > 1) order by branch_id"};
 
    @BeforeClass
@@ -75,7 +75,7 @@ public class ConflictTest {
    /**
     * Test method for
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)} .
-    * 
+    *
     * @throws Exception
     */
    @org.junit.Test
@@ -96,13 +96,12 @@ public class ConflictTest {
       try {
          conflicts =
                ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(), TransactionManager.getStartEndPoint(
-                           ConflictTestManager.getSourceBranch()).getFirst(), new NullProgressMonitor());
+                     ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(), new NullProgressMonitor());
       } catch (Exception ex) {
-         fail(ex.getMessage());
+         fail(Lib.exceptionToString(ex));
       }
       assertEquals("Number of conflicts found is not equal to the number of conflicts expected",
-            ConflictTestManager.numberOfConflicts(), conflicts.toArray().length);
+            ConflictTestManager.numberOfConflicts(), conflicts.size());
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
             monitorLog.getSevereLogs().size() == 0);
    }
@@ -110,7 +109,7 @@ public class ConflictTest {
    /**
     * Test method for
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)} .
-    * 
+    *
     * @throws Exception
     */
    @org.junit.Test
@@ -125,8 +124,7 @@ public class ConflictTest {
       try {
          Collection<Conflict> conflicts =
                ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(), TransactionManager.getStartEndPoint(
-                           ConflictTestManager.getSourceBranch()).getFirst(), new NullProgressMonitor());
+                     ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(), new NullProgressMonitor());
          int whichChange = 1;
 
          for (Conflict conflict : conflicts) {
@@ -143,8 +141,7 @@ public class ConflictTest {
 
          conflicts =
                ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(), TransactionManager.getStartEndPoint(
-                           ConflictTestManager.getSourceBranch()).getFirst(), new NullProgressMonitor());
+                     ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(), new NullProgressMonitor());
 
          for (Conflict conflict : conflicts) {
             assertTrue(
@@ -153,7 +150,7 @@ public class ConflictTest {
 
          }
       } catch (Exception ex) {
-         fail(ex.getMessage());
+         fail(Lib.exceptionToString(ex));
       }
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
             monitorLog.getAllLogs().size() == 0);
@@ -181,10 +178,11 @@ public class ConflictTest {
 
    @org.junit.Test
    public void testCommitFiltering() throws OseeCoreException {
-      checkNoTxCurrent("art_id", "osee_artifact_version");
+      checkNoTxCurrent("art_id", "osee_arts");
       checkNoTxCurrent("attr_id", "osee_attribute");
       checkNoTxCurrent("rel_link_id", "osee_relation_link");
-      checkMultipleTxCurrent("art_id", "osee_artifact_version");
+
+      checkMultipleTxCurrent("art_id", "osee_arts");
       checkMultipleTxCurrent("attr_id", "osee_attribute");
       checkMultipleTxCurrent("rel_link_id", "osee_relation_link");
 
@@ -270,12 +268,12 @@ public class ConflictTest {
             System.out.println("\n");
          }
          assertEquals("The merge Branch does not contain the expected number of artifacts: ",
-               ConflictTestManager.numberOfArtifactsOnMergeBranch(), artifacts.toArray().length);
+               ConflictTestManager.numberOfArtifactsOnMergeBranch(), artifacts.size());
       } catch (Exception ex) {
          fail(ex.getMessage());
       }
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
-            monitorLog.getAllLogs().size() == 0);
+            monitorLog.getAllLogs().isEmpty());
    }
 
 }

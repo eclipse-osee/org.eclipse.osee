@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -42,17 +43,17 @@ import org.eclipse.search.ui.text.Match;
  */
 final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
    private final String queryString;
-   private final String[] attributeTypeNames;
+   private final IAttributeType[] attributeTypes;
    private final boolean includeDeleted;
    private final boolean matchWordOrder;
    private final Branch branch;
    private final boolean findAllMatchLocations;
    private final boolean isCaseSensitive;
 
-   RemoteArtifactSearch(String queryString, Branch branch, boolean includeDeleted, boolean matchWordOrder, boolean findAllMatchLocations, boolean isCaseSensitive, String... attributeTypeNames) {
+   RemoteArtifactSearch(String queryString, Branch branch, boolean includeDeleted, boolean matchWordOrder, boolean findAllMatchLocations, boolean isCaseSensitive, IAttributeType... attributeTypes) {
       this.branch = branch;
       this.includeDeleted = includeDeleted;
-      this.attributeTypeNames = attributeTypeNames;
+      this.attributeTypes = attributeTypes;
       this.queryString = queryString;
       this.matchWordOrder = matchWordOrder;
       this.findAllMatchLocations = findAllMatchLocations;
@@ -79,8 +80,8 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          optionsList.add("Case Sensitive");
       }
 
-      if (attributeTypeNames != null && attributeTypeNames.length > 0) {
-         optionsList.add(String.format("Attribute Type Filter:%s", Arrays.deepToString(attributeTypeNames)));
+      if (attributeTypes != null && attributeTypes.length > 0) {
+         optionsList.add(String.format("Attribute Type Filter:%s", Arrays.deepToString(attributeTypes)));
       }
 
       String options =
@@ -101,7 +102,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       try {
          List<ArtifactMatch> matches =
                ArtifactQuery.getArtifactMatchesFromAttributeKeywords(branch, queryString, matchWordOrder,
-                     includeDeleted, findAllMatchLocations, isCaseSensitive, attributeTypeNames);
+                     includeDeleted, findAllMatchLocations, isCaseSensitive, attributeTypes);
 
          endOfloadTime = System.currentTimeMillis();
 

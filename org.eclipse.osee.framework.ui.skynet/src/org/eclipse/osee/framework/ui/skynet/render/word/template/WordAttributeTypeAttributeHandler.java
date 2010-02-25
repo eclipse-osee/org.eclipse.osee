@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
 import java.util.Collection;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

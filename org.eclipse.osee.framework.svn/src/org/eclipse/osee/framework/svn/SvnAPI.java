@@ -24,7 +24,9 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.svn.entry.IRepositoryEntry;
 import org.eclipse.osee.framework.svn.entry.NullRepositoryEntry;
 import org.eclipse.osee.framework.svn.entry.RepositoryEntry;
@@ -47,15 +49,24 @@ import org.eclipse.ui.PlatformUI;
  */
 public class SvnAPI {
    private static SvnAPI instance = null;
+   private static final String SVN_REPOSITORY_TYPE = "SVN";
 
    private SvnAPI() {
    }
 
-   protected static SvnAPI getInstance() {
+   public static SvnAPI getInstance() {
       if (instance == null) {
          instance = new SvnAPI();
       }
       return instance;
+   }
+
+   public boolean isSVNRepositoryType(String repositoryType) {
+      return SVN_REPOSITORY_TYPE.equalsIgnoreCase(repositoryType);
+   }
+
+   public boolean isValidUrl(String url) {
+      return SVNUtility.isValidSVNURL(url);
    }
 
    protected boolean isSvn(File file) {
@@ -113,13 +124,33 @@ public class SvnAPI {
       remoteStorage.addRepositoryLocation(newRepository);
    }
 
-   public void checkOut(String[] fileToCheckout, final IProgressMonitor monitor) {
-      HashMap<String, IRepositoryResource> checkoutMap = toMap(getRepositoryResources(fileToCheckout));
+   public void checkOut(String[] filesToCheckout, final IProgressMonitor monitor) {
+      checkOut(filesToCheckout, null, monitor);
+   }
+
+   public IStatus checkOut(String[] filesToCheckout, String wsLocation, final IProgressMonitor monitor) {
+      IStatus status = Status.OK_STATUS;
+      HashMap<String, IRepositoryResource> checkoutMap = toMap(getRepositoryResources(filesToCheckout));
       if (checkoutMap.size() > 0) {
-         CheckoutOperationBuilder operationBuilder = new CheckoutOperationBuilder(checkoutMap);
+         CheckoutOperationBuilder operationBuilder = new CheckoutOperationBuilder(checkoutMap, wsLocation);
          CheckoutOperation op = operationBuilder.getOperation();
          op.run(monitor);
+         status = op.getStatus();
       }
+      return status;
+   }
+
+   public IRepositoryRoot getRepositoryRoot(String url) {
+      IRepositoryRoot repository = null;
+      IRepositoryLocation[] locations = SVNRemoteStorage.instance().getRepositoryLocations();
+      for (IRepositoryLocation location : locations) {
+         IRepositoryRoot root = location.getRoot();
+         String repositoryUrl = root.getUrl();
+         if (url.startsWith(repositoryUrl)) {
+            repository = root;
+         }
+      }
+      return repository;
    }
 
    private IRepositoryResource[] getRepositoryResources(String[] fileToCheckout) {
@@ -158,10 +189,12 @@ public class SvnAPI {
       private CheckoutOperation checkoutOperation;
       private final HashMap<String, IRepositoryResource> checkoutMap;
       private boolean callbackReceived;
+      private final String location;
 
-      public CheckoutOperationBuilder(HashMap<String, IRepositoryResource> checkoutMap) {
+      public CheckoutOperationBuilder(HashMap<String, IRepositoryResource> checkoutMap, String location) {
          this.checkoutMap = checkoutMap;
          this.callbackReceived = false;
+         this.location = location;
       }
 
       public void callbackReceived() {
@@ -217,12 +250,12 @@ public class SvnAPI {
                   if (EclipseVersion.isVersion("3.3")) {
                      Constructor<?> constructor =
                            clazz.getConstructor(Map.class, boolean.class, String.class, boolean.class);
-                     toReturn = (CheckoutOperation) constructor.newInstance(operateMap, false, null, true);
+                     toReturn = (CheckoutOperation) constructor.newInstance(operateMap, false, location, true);
                   } else if (EclipseVersion.isVersion("3.4")) {
                      Constructor<?> constructor =
                            clazz.getConstructor(Map.class, boolean.class, String.class, int.class);
                      toReturn =
-                           (CheckoutOperation) constructor.newInstance(operateMap, true, null, Depth.INFINITY, true);
+                           (CheckoutOperation) constructor.newInstance(operateMap, true, location, Depth.INFINITY, true);
                   }
                } catch (Exception ex) {
                   throw new UnsupportedOperationException();

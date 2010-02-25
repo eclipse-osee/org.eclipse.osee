@@ -29,8 +29,8 @@ import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -104,7 +104,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
 
    private final class FindAllWordAttributesNeedingFix extends AbstractOperation {
       private static final String GET_ATTRS =
-            "SELECT * FROM osee_attribute t1, osee_artifact t3 WHERE t1.attr_type_id = ? AND t1.art_id = t3.art_id AND t1.uri is not null order by t1.gamma_id asc"; // and t1.attr_id = 1155574";
+            "SELECT DISTINCT(art.human_readable_id), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_arts art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != '' order by attr.gamma_id asc"; // and t1.attr_id = 1155574";
 
       private final List<AttrData> attributesWithErrors;
 
@@ -193,12 +193,12 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
                toReturn = new Resource(resourcePath, result, sourceOutputStream.toByteArray());
             }
          } catch (Exception ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          } finally {
             try {
                sourceOutputStream.close();
             } catch (IOException ex) {
-               throw new OseeWrappedException(ex);
+               OseeExceptions.wrapAndThrow(ex);
             }
          }
          return toReturn;

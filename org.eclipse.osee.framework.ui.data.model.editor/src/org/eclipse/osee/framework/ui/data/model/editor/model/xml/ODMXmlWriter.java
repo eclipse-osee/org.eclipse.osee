@@ -20,7 +20,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
  */
 public class ODMXmlWriter {
 
-   private final XMLStreamWriter writer;
-   private final ODMXmlFactory xmlDataTypeFactory;
+   private XMLStreamWriter writer;
+   private ODMXmlFactory xmlDataTypeFactory;
 
    public ODMXmlWriter(OutputStream outputStream) throws OseeCoreException {
       try {
@@ -44,7 +44,7 @@ public class ODMXmlWriter {
          writer.writeStartElement("oseeTypes");
          xmlDataTypeFactory = new ODMXmlFactory();
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
@@ -80,7 +80,7 @@ public class ODMXmlWriter {
             writeCollection(monitor, artifactCache);
          }
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 

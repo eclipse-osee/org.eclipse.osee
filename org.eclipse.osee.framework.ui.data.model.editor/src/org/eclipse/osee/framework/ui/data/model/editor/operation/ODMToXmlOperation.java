@@ -16,7 +16,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.xml.ODMXmlWriter;
@@ -46,7 +46,7 @@ public class ODMToXmlOperation {
             writeToMultiFiles(monitor);
          }
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       } finally {
          monitor.subTask("");
          monitor.done();

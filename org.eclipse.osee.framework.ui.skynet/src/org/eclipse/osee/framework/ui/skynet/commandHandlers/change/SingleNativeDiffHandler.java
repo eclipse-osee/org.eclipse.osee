@@ -11,12 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.change;
 
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;

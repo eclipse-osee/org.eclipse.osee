@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
@@ -906,12 +905,17 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    @Override
    public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
       try {
-         if (sourceBranch == null || destBranch == null || sourceBranch.getId() != transData.getId() && destBranch.getId() != transData.getId() && ConflictManagerInternal.getMergeBranchId(
-               sourceBranch.getId(), destBranch.getId()) != transData.getId()) {
+         if (sourceBranch == null || destBranch == null) {
             return;
          }
+         if (sourceBranch.getId() != transData.getBranchId() && destBranch.getId() != transData.getBranchId()) {
+            Branch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destBranch);
+            if (mergeBranch == null || mergeBranch.getId() != transData.getBranchId()) {
+               return;
+            }
+         }
       } catch (OseeCoreException ex) {
-         //ignore the exception for an event don't want them poping up on people for no reason
+         //ignore the exception for an event don't want them popping up on people for no reason
       }
       final MergeView mergeView = this;
       Displays.ensureInDisplayThread(new Runnable() {

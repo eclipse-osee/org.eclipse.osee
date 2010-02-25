@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -60,7 +59,7 @@ import org.eclipse.ui.PlatformUI;
 public class MergeUtility {
    /*
     * This has all of the GUI prompts that help a user know what's going on
-    * when they set a merge. 
+    * when they set a merge.
     */
    public static final String CLEAR_PROMPT =
          "This attribute has had Merge changes made are you sure you want to overwrite them? All changes will be lost.";
@@ -100,21 +99,27 @@ public class MergeUtility {
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
 
    public static void clearValue(Conflict conflict, Shell shell, boolean prompt) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
-      if (conflict == null) return;
+      if (conflict == null) {
+         return;
+      }
       if (okToOverwriteEditedValue(conflict, shell, prompt)) {
          conflict.clearValue();
       }
    }
 
    public static void setToDest(Conflict conflict, Shell shell, boolean prompt) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
-      if (conflict == null) return;
+      if (conflict == null) {
+         return;
+      }
       if (okToOverwriteEditedValue(conflict, shell, prompt)) {
          conflict.setToDest();
       }
    }
 
    public static void setToSource(Conflict conflict, Shell shell, boolean prompt) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
-      if (conflict == null) return;
+      if (conflict == null) {
+         return;
+      }
       if (okToOverwriteEditedValue(conflict, shell, prompt)) {
          conflict.setToSource();
       }
@@ -137,7 +142,9 @@ public class MergeUtility {
     * that is in not in the skynet core package.
     */
    public static String showCompareFile(Artifact art1, Artifact art2, String fileName) throws Exception {
-      if (art1 == null || art2 == null) return " ";
+      if (art1 == null || art2 == null) {
+         return " ";
+      }
       return RendererManager.diff(art1, art2, true, new VariableMap("fileName", fileName));
    }
 
@@ -146,7 +153,9 @@ public class MergeUtility {
     * that is in not in the skynet core package.
     */
    public static String CreateMergeDiffFile(Artifact art1, Artifact art2, String fileName) throws Exception {
-      if (art1 == null || art2 == null) return " ";
+      if (art1 == null || art2 == null) {
+         return " ";
+      }
       return RendererManager.merge(art1, art2, fileName, false);
    }
 
@@ -155,7 +164,9 @@ public class MergeUtility {
     * that is in not in the skynet core package.
     */
    public static void mergeEditableDiffFiles(Artifact art1, String art1FileName, String art2FileName, String fileName, boolean show, boolean editable) throws Exception {
-      if (art1 == null) return;
+      if (art1 == null) {
+         return;
+      }
       RendererManager.merge(art1, null, AIFile.constructIFile(art1FileName), AIFile.constructIFile(art2FileName),
             fileName.substring(fileName.lastIndexOf('\\') + 1), show);
    }
@@ -165,8 +176,8 @@ public class MergeUtility {
          if (conflict.getSourceBranch() == null) {
             return null;
          }
-         TransactionRecord id = TransactionManager.getStartEndPoint(conflict.getSourceBranch()).getFirst();
-         return ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), id, true);
+         TransactionRecord baseTransaction = conflict.getSourceBranch().getBaseTransaction();
+         return ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), baseTransaction, true);
       } catch (OseeCoreException ex) {
          OseeLog.log(MergeUtility.class, Level.SEVERE, ex);
       }
@@ -292,7 +303,7 @@ public class MergeUtility {
                               attributeConflict.getArtifact(),
                               sourceChangeFile,
                               destChangeFile,
-                              "Source_Dest_Merge_" + attributeConflict.getArtifact().getSafeName() + "(" + attributeConflict.getArtifact().getGuid() + ")" + (new Date()).toString().replaceAll(
+                              "Source_Dest_Merge_" + attributeConflict.getArtifact().getSafeName() + "(" + attributeConflict.getArtifact().getGuid() + ")" + new Date().toString().replaceAll(
                                     ":", ";") + ".xml", false, true);
 
                         monitor.worked(40);

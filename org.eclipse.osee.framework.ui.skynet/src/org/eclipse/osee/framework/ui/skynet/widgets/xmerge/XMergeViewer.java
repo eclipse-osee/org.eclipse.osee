@@ -205,8 +205,9 @@ public class XMergeViewer extends XWidget implements IAdaptable {
             monitor.beginTask("ApplyingPreviousMerge", conflicts.length);
             for (Conflict conflict : conflicts) {
                try {
-                  conflict.applyPreviousMerge(ConflictManagerInternal.getMergeBranchId(
-                        conflict.getSourceBranch().getId(), destBranchId), destBranchId);
+                  Branch destinationBranch = BranchManager.getBranch(destBranchId);
+                  Branch mergeBranch = BranchManager.getMergeBranch(conflict.getSourceBranch(), destinationBranch);
+                  conflict.applyPreviousMerge(mergeBranch.getId(), destBranchId);
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                } finally {

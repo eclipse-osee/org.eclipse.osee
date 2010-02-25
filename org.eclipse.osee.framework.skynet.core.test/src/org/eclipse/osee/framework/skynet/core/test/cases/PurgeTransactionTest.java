@@ -16,21 +16,23 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionJob;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.Assert;
 
 /**
  * @author Ryan Schmitt
@@ -47,8 +49,7 @@ public class PurgeTransactionTest {
    private Map<String, Integer> postModifyPurgeCount;
    private Map<String, Integer> postCreatePurgeCount;
    private static final List<String> tables =
-         Arrays.asList("osee_attribute", /* "osee_artifact", */"osee_relation_link", "osee_tx_details", "osee_txs",
-               "osee_artifact_version");
+         Arrays.asList("osee_attribute", "osee_arts", "osee_relation_link", "osee_tx_details", "osee_txs");
 
    @org.junit.Test
    public void testPurgeTransaction() throws Exception {
@@ -100,13 +101,9 @@ public class PurgeTransactionTest {
    }
 
    private void purge(int transactionId, Map<String, Integer> dbCount) throws Exception {
-      PurgeTransactionJob purge = new PurgeTransactionJob(transactionId);
-      Jobs.startJob(purge);
-      purge.join();
-      Throwable ex = purge.getResult().getException();
-      if (ex != null) {
-         Assert.fail(ex.getMessage());
-      }
+      IOseeDatabaseServiceProvider databaseProvider = Activator.getInstance();
+      PurgeTransactionOperation purgeOp = new PurgeTransactionOperation(databaseProvider, transactionId);
+      Operations.executeWorkAndCheckStatus(purgeOp, new NullProgressMonitor(), -1);
       DbUtil.getTableRowCounts(dbCount, tables);
    }
 

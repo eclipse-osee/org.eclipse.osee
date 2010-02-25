@@ -17,7 +17,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.ui.data.model.editor.model.DataType;
 
 /**
@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.DataType;
  */
 public class ODMXmlReader {
 
-   private final ODMXmlFactory xmlDataTypeFactory;
-   private final XMLStreamReader reader;
+   private ODMXmlFactory xmlDataTypeFactory;
+   private XMLStreamReader reader;
 
    public ODMXmlReader(InputStream inputStream) throws OseeCoreException {
       try {
@@ -34,7 +34,7 @@ public class ODMXmlReader {
          reader = factory.createXMLStreamReader(inputStream, "UTF-8");
          xmlDataTypeFactory = new ODMXmlFactory();
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 

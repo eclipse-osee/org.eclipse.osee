@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.util.filteredTree;
 
 import java.util.Collection;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;

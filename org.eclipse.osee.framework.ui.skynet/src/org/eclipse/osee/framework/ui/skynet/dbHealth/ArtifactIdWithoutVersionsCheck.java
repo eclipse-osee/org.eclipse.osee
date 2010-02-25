@@ -27,25 +27,22 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
 
    private static final String GET_INVALID_A_ART_IDS =
-         "select item.a_art_id as artId, item.rel_link_id as itemId from osee_relation_link item where NOT EXISTS (select oav.art_id from osee_artifact_version oav where oav.art_id = item.a_art_id)";
+      "select item.a_art_id as artId, item.rel_link_id as itemId from osee_relation_link item where NOT EXISTS (select oav.art_id from osee_arts oav where oav.art_id = item.a_art_id)";
 
    private static final String GET_INVALID_B_ART_IDS =
-         "select item.b_art_id as artId, item.rel_link_id as itemId from osee_relation_link item where NOT EXISTS (select oav.art_id from osee_artifact_version oav where oav.art_id = item.b_art_id)";
+      "select item.b_art_id as artId, item.rel_link_id as itemId from osee_relation_link item where NOT EXISTS (select oav.art_id from osee_arts oav where oav.art_id = item.b_art_id)";
 
    private static final String GET_INVALID_ATTR_IDS_ART_IDS =
-         "select item.art_id as artId, item.attr_id as itemId from osee_attribute item where NOT EXISTS (select oav.art_id from osee_artifact_version oav where oav.art_id = item.art_id)";
-
-   private static final String GET_INVALID_ART_IDS =
-         "select item.art_id as artId from osee_artifact item where NOT EXISTS (select oav.art_id from osee_artifact_version oav where oav.art_id = item.art_id)";
+      "select item.art_id as artId, item.attr_id as itemId from osee_attribute item where NOT EXISTS (select oav.art_id from osee_arts oav where oav.art_id = item.art_id)";
 
    private static final String GET_INVALID_ACL_ART_IDS =
-         "select item.art_id as artId from osee_artifact_acl item where NOT EXISTS (select oav.art_id from osee_artifact_version oav where oav.art_id = item.art_id)";
+      "select item.art_id as artId from osee_artifact_acl item where NOT EXISTS (select oav.art_id from osee_arts oav where oav.art_id = item.art_id)";
 
    /**
     * @param operationName
     */
    public ArtifactIdWithoutVersionsCheck() {
-      super("Artifact Id Without osee_artifact_version Table Entry");
+      super("Artifact Id Without osee_arts Table Entry");
    }
 
    @Override
@@ -53,7 +50,7 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
       Set<Integer> allInvalidArtIds = new HashSet<Integer>();
       List<ItemEntry> itemsToDelete = new ArrayList<ItemEntry>();
 
-      itemsToDelete.add(new ItemEntry("osee_relation_link", "rel_link_id", "a_art_id", // 
+      itemsToDelete.add(new ItemEntry("osee_relation_link", "rel_link_id", "a_art_id", //
             getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_A_ART_IDS, true)));
 
       itemsToDelete.add(new ItemEntry("osee_relation_link", "rel_link_id", "b_art_id", //
@@ -66,8 +63,6 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
             getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_ACL_ART_IDS, false)));
 
       int beforeArtifactCheck = allInvalidArtIds.size();
-      itemsToDelete.add(new ItemEntry("osee_artifact", "art_id", "art_id", //
-            getInvalidEntries(monitor, allInvalidArtIds, GET_INVALID_ART_IDS, false)));
 
       setItemsToFix(allInvalidArtIds.size());
       createReport(monitor, beforeArtifactCheck, getItemsToFixCount(), itemsToDelete);
@@ -138,7 +133,7 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
 
    @Override
    public String getCheckDescription() {
-      return "Verifies that artifact entries in the relation, attribute and artifact tables have a valid entry in the osee_artifact_version table.";
+      return "Verifies that artifact entries in the relation, attribute and artifact tables have a valid entry in the osee_arts table.";
    }
 
    @Override

@@ -14,7 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
@@ -46,20 +46,14 @@ public class DuplicateHridTest {
 
    /* Queries the database and grabs the first HRID it sees */
    private static String get_used_HRID() throws OseeDataStoreException {
-      String ret;
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
-      try {
-         chStmt.runPreparedQuery(GET_ARTIFACTS);
-         chStmt.next();
-         ret = chStmt.getString("human_readable_id");
-      } finally {
-         chStmt.close();
+      String toReturn = ConnectionHandler.runPreparedQueryFetchString("", GET_ARTIFACTS);
+      if (!HumanReadableId.isValid(toReturn)) {
+         throw new OseeDataStoreException("No valid HRIDs found");
       }
-      return ret;
+      return toReturn;
    }
 
-   private static final String GET_ARTIFACTS =
-         "SELECT t1.guid,  t1.human_readable_id,  t3.name FROM osee_artifact t1, osee_artifact_type t3 ";
+   private static final String GET_ARTIFACTS = "SELECT t1.human_readable_id FROM osee_arts t1, osee_artifact_type t3";
 
    private static final char[][] chars =
          new char[][] {

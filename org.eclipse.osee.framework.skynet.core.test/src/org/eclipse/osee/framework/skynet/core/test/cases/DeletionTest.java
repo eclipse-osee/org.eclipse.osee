@@ -15,21 +15,24 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Collection;
 import java.util.LinkedList;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionJob;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionOperation;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.junit.Before;
@@ -40,33 +43,33 @@ import org.junit.Before;
 public class DeletionTest {
 
    private static final String CHECK_FOR_ZERO_TX_CURRENT =
-         "SELECT tx_current, txs.transaction_id FROM osee_tx_details det, osee_txs txs, osee_artifact_version art WHERE det.branch_id = ? AND det.transaction_id < ? AND det.transaction_id = txs.transaction_id AND txs.tx_current != 0 AND txs.gamma_id = art.gamma_id and art.art_id = ?";
+      "SELECT txs.tx_current, txs.transaction_id FROM osee_txs txs, osee_arts art WHERE txs.branch_id = ? AND txs.transaction_id < ? AND txs.tx_current != 0 AND txs.gamma_id = art.gamma_id and art.art_id = ?";
    private static final String CHECK_FOR_DELETED_TX_CURRENT =
-         "SELECT tx_current, txs.transaction_id FROM osee_tx_details det, osee_txs txs, osee_artifact_version art WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.tx_current = 2 AND txs.gamma_id = art.gamma_id and art.art_id = ?";
+      "SELECT txs.tx_current, txs.transaction_id FROM osee_txs txs, osee_arts art WHERE txs.branch_id = ? AND txs.tx_current = 2 AND txs.gamma_id = art.gamma_id and art.art_id = ?";
 
    private static final String CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE =
-         "SELECT tx_current, txs.transaction_id FROM osee_tx_details det, osee_txs txs, osee_attribute att WHERE det.branch_id = ? AND det.transaction_id < ? AND det.transaction_id = txs.transaction_id AND txs.tx_current != 0 AND txs.gamma_id = att.gamma_id and att.attr_id = ?";
+      "SELECT txs.tx_current, txs.transaction_id FROM osee_txs txs, osee_attribute att WHERE txs.branch_id = ? AND txs.transaction_id < ? AND txs.tx_current != 0 AND txs.gamma_id = att.gamma_id and att.attr_id = ?";
    private static final String CHECK_FOR_DELETED_TX_CURRENT_ATTRIBUTE =
-         "SELECT tx_current, txs.transaction_id FROM osee_tx_details det, osee_txs txs, osee_attribute att WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.tx_current = ? AND txs.gamma_id = att.gamma_id and att.attr_id = ?";
+      "SELECT txs.tx_current, txs.transaction_id FROM osee_txs txs, osee_attribute att WHERE txs.branch_id = ? AND txs.tx_current = ? AND txs.gamma_id = att.gamma_id and att.attr_id = ?";
 
    private static final String CHECK_FOR_ZERO_TX_CURRENT_RELATION =
-         "SELECT tx_current, txs.transaction_id FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE det.branch_id = ? AND det.transaction_id < ? AND det.transaction_id = txs.transaction_id AND txs.tx_current != 0 AND txs.gamma_id = rel.gamma_id and rel.rel_link_id = ?";
+      "SELECT txs.tx_current, txs.transaction_id FROM osee_txs txs, osee_relation_link rel WHERE txs.branch_id = ? AND txs.transaction_id < ? AND txs.tx_current != 0 AND txs.gamma_id = rel.gamma_id and rel.rel_link_id = ?";
    private static final String CHECK_FOR_DELETED_TX_CURRENT_RELATION =
-         "SELECT tx_current, txs.transaction_id FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.tx_current = ? AND txs.gamma_id = rel.gamma_id and rel.rel_link_id = ?";
+      "SELECT txs.tx_current, txs.transaction_id FROM osee_txs txs, osee_relation_link rel WHERE txs.branch_id = ? AND txs.tx_current = ? AND txs.gamma_id = rel.gamma_id and rel.rel_link_id = ?";
 
    private static final String GET_DELETED_TRANSACTION = "SELECT * FROM osee_txs WHERE transaction_id = ?";
 
    private static final String GET_ARTIFACT_DEBUG =
-         "Select det.branch_id, det.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, art.art_id FROM osee_tx_details det, osee_txs txs, osee_artifact_version art WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = art.gamma_id AND art.art_id = ?";
+      "select txs.branch_id, txs.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, art.art_id FROM osee_txs txs, osee_arts art WHERE txs.branch_id = ? AND txs.gamma_id = art.gamma_id AND art.art_id = ?";
 
    private static final String GET_ATTRIBUTE_DEBUG =
-         "Select det.branch_id, det.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, att.art_id, att.attr_id FROM osee_tx_details det, osee_txs txs, osee_attribute att WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?";
+      "select txs.branch_id, txs.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, att.art_id, att.attr_id FROM osee_txs txs, osee_attribute att WHERE txs.branch_id = ? AND txs.gamma_id = att.gamma_id AND att.attr_id = ?";
 
    private static final String GET_RELATION_DEBUG =
-         "Select det.branch_id, det.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, rel.rel_link_id, rel.a_art_id, rel.b_art_id FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_id = ?";
+      "select txs.branch_id, txs.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, rel.rel_link_id, rel.a_art_id, rel.b_art_id FROM osee_txs txs, osee_relation_link rel WHERE txs.branch_id = ? AND txs.gamma_id = rel.gamma_id AND rel.rel_link_id = ?";
 
    private static final boolean DEBUG =
-         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
+      "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
 
    private static final boolean DELETE_TRANSACTION_TEST = true;
    private static final boolean INDIVIDUAL_DELETE_TEST = true;
@@ -173,16 +176,14 @@ public class DeletionTest {
       //OK now lets delete the transaction and check for the same thing
 
       if (DELETE_TRANSACTION_TEST) {
-         Job job = new PurgeTransactionJob(true, deletionTransaction);
-         job.setUser(true);
-         job.setPriority(Job.LONG);
-         job.schedule();
-         job.join();
+         IOseeDatabaseServiceProvider databaseProvider = Activator.getInstance();
+         PurgeTransactionOperation purgeOp = new PurgeTransactionOperation(databaseProvider, true, deletionTransaction);
+         Operations.executeWorkAndCheckStatus(purgeOp, new NullProgressMonitor(), -1);
 
          if (DEBUG) {
             System.err.println("Deleting the Transaction");
          }
-         //This is only a DB deletion so it won't be reflected in the 
+         //This is only a DB deletion so it won't be reflected in the
          for (Artifact artifact : artifactsToCheck) {
             if (DEBUG) {
                dumpArtifact(artifact);
@@ -269,12 +270,12 @@ public class DeletionTest {
          if (ConflictTestManager.getArtifacts(true, ConflictTestManager.DELETION_ATTRIBUTE_TEST_QUERY).size() > 0) {
 
             Artifact artifactForDeletionCheck =
-                  ConflictTestManager.getArtifacts(true, ConflictTestManager.DELETION_ATTRIBUTE_TEST_QUERY).get(0);
+               ConflictTestManager.getArtifacts(true, ConflictTestManager.DELETION_ATTRIBUTE_TEST_QUERY).get(0);
 
             if (artifactForDeletionCheck != null) {
                Attribute<?> attribute = artifactForDeletionCheck.getAttributes().get(0);
                RelationLink relation =
-                     artifactForDeletionCheck.getRelations(RelationTypeManager.getType("Default Hierarchical")).get(0);
+                  artifactForDeletionCheck.getRelations(RelationTypeManager.getType("Default Hierarchical")).get(0);
                attribute.delete();
                relation.delete(true);
                artifactForDeletionCheck.persist();

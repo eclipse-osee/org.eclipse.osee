@@ -28,10 +28,11 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       getResultsProvider().clearTabs();
 
-      checkAndFix("osee_artifact_version", "art_id", monitor);
+      checkAndFix("osee_arts", "art_id", monitor);
       checkAndFix("osee_attribute", "attr_id", monitor);
       checkAndFix("osee_relation_link", "rel_link_id", monitor);
    }
+
 
    private void checkAndFix(String tableName, String columnName, IProgressMonitor monitor) throws Exception {
       ResultsEditorTableTab resultsTab = new ResultsEditorTableTab(tableName + " currents");
@@ -47,7 +48,7 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
       doSubWork(new InvalidTxCurrentsAndModTypes(tableName, columnName, new ResultsReporter(resultsTab),
             isFixOperationEnabled()), monitor, 0.3);
    }
-
+   
    private static class ResultsReporter implements OperationReporter {
       private final ResultsEditorTableTab resultsTab;
 

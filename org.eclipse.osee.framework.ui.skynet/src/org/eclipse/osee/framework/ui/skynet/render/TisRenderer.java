@@ -16,7 +16,7 @@ import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -86,13 +86,14 @@ public class TisRenderer extends WordTemplateRenderer {
       handlers.add(new WordAttributeTypeAttributeHandler());
       handlers.add(new BasicTemplateAttributeHandler());
       WordTemplateManager wtm = new WordTemplateManager(template, handlers);
+      CharBackedInputStream charBak = null;
       try {
-         CharBackedInputStream charBak = new CharBackedInputStream();
+         charBak = new CharBackedInputStream();
          WordMLProducer wordMl = new WordMLProducer(charBak);
          wtm.processArtifacts(wordMl, variableMap.getArtifacts(wtm.getArtifactSet()));
-         return charBak;
       } catch (CharacterCodingException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
+      return charBak;
    }
 }

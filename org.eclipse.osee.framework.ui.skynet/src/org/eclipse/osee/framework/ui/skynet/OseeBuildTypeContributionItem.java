@@ -38,7 +38,7 @@ public class OseeBuildTypeContributionItem extends OseeContributionItem {
 
    private static final String ID = "osee.build.type";
 
-   private static String TOOLTIP = "Build [%s : %s]\nDouble-Click for details";
+   private static String TOOLTIP = "Version [%s]\nBuild Type[%s]\nDouble-Click for details";
 
    private OseeBuildTypeContributionItem() {
       super(ID);

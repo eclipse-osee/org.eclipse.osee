@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -68,7 +68,7 @@ public class WordMLProducer extends Producer {
       alphabetMap.put("C.0", 3);
    }
 
-   public CharSequence startOutlineSubSection(CharSequence font, CharSequence headingText, String outlineType) throws OseeWrappedException {
+   public CharSequence startOutlineSubSection(CharSequence font, CharSequence headingText, String outlineType) throws OseeCoreException {
       if (okToStartSubsection()) {
          outlineNumber[++outlineLevel]++;
          CharSequence paragraphNumber = getOutlineNumber();
@@ -84,15 +84,15 @@ public class WordMLProducer extends Producer {
       }
    };
 
-   private void append(CharSequence value) throws OseeWrappedException {
+   private void append(CharSequence value) throws OseeCoreException {
       try {
          strB.append(value);
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
-   public void startOutlineSubSection(CharSequence style, CharSequence outlineNumber, CharSequence font, CharSequence headingText) throws OseeWrappedException {
+   public void startOutlineSubSection(CharSequence style, CharSequence outlineNumber, CharSequence font, CharSequence headingText) throws OseeCoreException {
       append("<wx:sub-section>");
       append("<w:p><w:pPr><w:pStyle w:val=\"");
       append(style);
@@ -144,11 +144,11 @@ public class WordMLProducer extends Producer {
       return template;
    }
 
-   public void endOutlineSubSection() throws OseeWrappedException {
+   public void endOutlineSubSection() throws OseeCoreException {
       endOutlineSubSection(false);
    }
 
-   private void endOutlineSubSection(boolean force) throws OseeWrappedException {
+   private void endOutlineSubSection(boolean force) throws OseeCoreException {
       if (!force && flattenedLevelCount > 0) {
          flattenedLevelCount--;
       } else {
@@ -160,15 +160,15 @@ public class WordMLProducer extends Producer {
       }
    }
 
-   public void addWordMl(CharSequence wordMl) throws OseeWrappedException {
+   public void addWordMl(CharSequence wordMl) throws OseeCoreException {
       append(wordMl);
    }
 
-   public void startParagraph() throws OseeWrappedException {
+   public void startParagraph() throws OseeCoreException {
       append("<w:p>");
    }
 
-   public void createSubDoc(String fileName) throws OseeWrappedException {
+   public void createSubDoc(String fileName) throws OseeCoreException {
       if (fileName == null || fileName.length() == 0) {
          throw new IllegalArgumentException("The file name can not be null or empty.");
       }
@@ -176,7 +176,7 @@ public class WordMLProducer extends Producer {
       append(SUB_DOC.replace(FILE_NAME, fileName));
    }
 
-   public void createHyperLinkDoc(String fileName) throws OseeWrappedException {
+   public void createHyperLinkDoc(String fileName) throws OseeCoreException {
       if (fileName == null || fileName.length() == 0) {
          throw new IllegalArgumentException("The file name can not be null or empty.");
       }
@@ -184,7 +184,7 @@ public class WordMLProducer extends Producer {
       append(HYPER_LINK_DOC.replace(FILE_NAME, fileName));
    }
 
-   public void resetListValue() throws OseeWrappedException {
+   public void resetListValue() throws OseeCoreException {
       // extra paragraph needed to support WORD's bug to add in a trailing zero when using field codes
       startParagraph();
       endParagraph();
@@ -194,35 +194,35 @@ public class WordMLProducer extends Producer {
       endParagraph();
    }
 
-   public void endParagraph() throws OseeWrappedException {
+   public void endParagraph() throws OseeCoreException {
       append("</w:p>");
    }
 
-   public void startTable() throws OseeWrappedException {
+   public void startTable() throws OseeCoreException {
       append("<wx:sub-section><w:tbl>");
    }
 
-   public void endTable() throws OseeWrappedException {
+   public void endTable() throws OseeCoreException {
       append("</w:tbl></wx:sub-section>");
    }
 
-   public void startTableRow() throws OseeWrappedException {
+   public void startTableRow() throws OseeCoreException {
       append("<w:tr>");
    }
 
-   public void endTableRow() throws OseeWrappedException {
+   public void endTableRow() throws OseeCoreException {
       append("</w:tr>");
    }
 
-   public void startTableColumn() throws OseeWrappedException {
+   public void startTableColumn() throws OseeCoreException {
       append("<w:tc>");
    }
 
-   public void endTableColumn() throws OseeWrappedException {
+   public void endTableColumn() throws OseeCoreException {
       append("</w:tc>");
    }
 
-   public void addTableColumns(String... datas) throws OseeWrappedException {
+   public void addTableColumns(String... datas) throws OseeCoreException {
       for (String data : datas) {
          startTableColumn();
          addParagraph(data);
@@ -230,25 +230,25 @@ public class WordMLProducer extends Producer {
       }
    }
 
-   public void addTableRow(String... datas) throws OseeWrappedException {
+   public void addTableRow(String... datas) throws OseeCoreException {
       startTableRow();
       addTableColumns(datas);
       endTableRow();
    }
 
-   public void addParagraphNoEscape(CharSequence text) throws OseeWrappedException {
+   public void addParagraphNoEscape(CharSequence text) throws OseeCoreException {
       append("<w:p><w:r><w:t>");
       append(text);
       append("</w:t></w:r></w:p>");
    }
 
-   public void addParagraph(CharSequence text) throws OseeWrappedException {
+   public void addParagraph(CharSequence text) throws OseeCoreException {
       append("<w:p><w:r><w:t>");
       append(Xml.escape(text));
       append("</w:t></w:r></w:p>");
    }
 
-   public void addParagraphBold(CharSequence text) throws OseeWrappedException {
+   public void addParagraphBold(CharSequence text) throws OseeCoreException {
       append("<w:p><w:r><w:rPr><w:b/></w:rPr><w:t>");
       append(Xml.escape(text));
       append("</w:t><w:rPr><w:b/></w:rPr></w:r></w:p>");
@@ -256,16 +256,16 @@ public class WordMLProducer extends Producer {
 
    /**
     * This method will escape the provided text.
-    * @param text 
-    * @throws OseeWrappedException 
+    * @param text
+    * @throws OseeWrappedException
     */
-   public void addTextInsideParagraph(CharSequence text) throws OseeWrappedException {
+   public void addTextInsideParagraph(CharSequence text) throws OseeCoreException {
       append("<w:r><w:t>");
       append(Xml.escape(text));
       append("</w:t></w:r>");
    }
 
-   public void addTextInsideParagraph(CharSequence text, String rgbHexColor) throws OseeWrappedException {
+   public void addTextInsideParagraph(CharSequence text, String rgbHexColor) throws OseeCoreException {
       if (rgbHexColor == null) {
          throw new IllegalArgumentException("rgbHexColor can not be null");
       }
@@ -281,13 +281,13 @@ public class WordMLProducer extends Producer {
       append("</w:t></w:r>");
    }
 
-   public void addOleData(CharSequence oleData) throws OseeWrappedException {
+   public void addOleData(CharSequence oleData) throws OseeCoreException {
       append("<w:docOleData>");
       append(oleData);
       append("</w:docOleData>");
    }
 
-   private CharSequence getOutlineNumber() throws OseeWrappedException {
+   private CharSequence getOutlineNumber() throws OseeCoreException {
       StringBuilder strB = new StringBuilder();
       for (int i = 1; i < outlineLevel; i++) {
          strB.append(String.valueOf(outlineNumber[i]));
@@ -324,7 +324,7 @@ public class WordMLProducer extends Producer {
     * Sets the page layout to either portrait/landscape depending on the artifacts pageType attribute value. Note: This
     * call should be done after processing each artifact so if a previous artifact was landscaped the following artifact
     * would be set back to portrait.
-    * 
+    *
     * @throws OseeCoreException
     */
    public void setPageLayout(Artifact artifact) throws OseeCoreException {

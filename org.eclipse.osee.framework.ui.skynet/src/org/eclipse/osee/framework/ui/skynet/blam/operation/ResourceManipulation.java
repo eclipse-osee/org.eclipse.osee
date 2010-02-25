@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -62,7 +62,7 @@ public class ResourceManipulation extends AbstractBlam {
          Boolean.parseBoolean(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));
 
    private static final String GET_ATTRS =
-         "SELECT * FROM osee_attribute t1, osee_artifact t3 WHERE t1.attr_type_id = ? AND t1.art_id = t3.art_id AND t1.uri is not null";
+         "SELECT DISTINCT(art.human_readable_id), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_arts art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != ''";
    private static final String GET_ATTRS_TEST = GET_ATTRS + " AND t1.gamma_id = 4259157";
 
    private final Collection<String> badData = new LinkedList<String>();
@@ -338,12 +338,12 @@ public class ResourceManipulation extends AbstractBlam {
             toReturn = new Resource(resourcePath, result, sourceOutputStream.toByteArray());
          }
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       } finally {
          try {
             sourceOutputStream.close();
          } catch (IOException ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
       return toReturn;

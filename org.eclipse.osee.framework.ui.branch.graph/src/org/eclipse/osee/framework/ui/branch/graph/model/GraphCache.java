@@ -18,7 +18,6 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -107,10 +106,11 @@ public class GraphCache {
       if (toReturn == null) {
          toReturn = new BranchModel(branch);
 
-         Pair<TransactionRecord, TransactionRecord> startAndEnd = TransactionManager.getStartEndPoint(branch);
-         addTxsToBranchModel(toReturn, startAndEnd.getFirst());
-         if (startAndEnd.getFirst().equals(startAndEnd.getSecond())) {
-            addTxsToBranchModel(toReturn, startAndEnd.getSecond());
+
+         TransactionRecord headTransaction = TransactionManager.getHeadTransaction(branch);
+         addTxsToBranchModel(toReturn,  branch.getBaseTransaction());
+         if ( branch.getBaseTransaction().equals(headTransaction)) {
+            addTxsToBranchModel(toReturn, headTransaction);
          }
          addBranchModel(toReturn);
       }

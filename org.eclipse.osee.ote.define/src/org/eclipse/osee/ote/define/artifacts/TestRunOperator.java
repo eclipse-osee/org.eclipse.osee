@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -39,7 +39,7 @@ public class TestRunOperator {
    private static final OteArtifactFetcher<Artifact> TEST_SCRIPT_ARTIFACT_FETCHER =
          new OteArtifactFetcher<Artifact>(OteArtifactTypes.TEST_SCRIPT);
 
-   private Artifact artifact;
+   private final Artifact artifact;
 
    public TestRunOperator(Artifact artifact) throws OseeArgumentException {
       checkForNull(artifact);
@@ -133,11 +133,13 @@ public class TestRunOperator {
    }
 
    public String getOutfileContents() throws OseeCoreException {
+      String toReturn = null;
       try {
-         return Lib.inputStreamToString(new URI(getOutfileUrl()).toURL().openStream());
+         toReturn = Lib.inputStreamToString(new URI(getOutfileUrl()).toURL().openStream());
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
+      return toReturn;
    }
 
    public Attribute<InputStream> getOutfileAttribute() throws AttributeDoesNotExist, OseeCoreException {
@@ -164,8 +166,8 @@ public class TestRunOperator {
       Artifact fetched = null;
       try {
          fetched =
-               getTestRunFetcher().searchForUniqueArtifactMatching(OteAttributeTypes.CHECKSUM.getName(),
-                     getChecksum(), artifact.getBranch());
+               getTestRunFetcher().searchForUniqueArtifactMatching(OteAttributeTypes.CHECKSUM.getName(), getChecksum(),
+                     artifact.getBranch());
       } catch (Exception ex) {
       }
       return fetched == null;

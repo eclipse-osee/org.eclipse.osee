@@ -14,15 +14,19 @@ package org.eclipse.osee.framework.ui.skynet.search;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -64,7 +68,7 @@ public class QuickSearchOptionComposite extends Composite {
    private final Map<String, Boolean> optionsMap;
 
    private final Set<String> mutuallyExclusiveOptionSet;
-   private final Map<String, IOptionConfigurationHandler> configurableOptionSet;
+   private final Map<String, IOptionConfigurationHandler<?>> configurableOptionSet;
    private Composite wordOrderComposite;
 
    public QuickSearchOptionComposite(Composite parent, int style) {
@@ -73,7 +77,7 @@ public class QuickSearchOptionComposite extends Composite {
       this.textAreas = new HashMap<String, Text>();
       this.optionsMap = new LinkedHashMap<String, Boolean>();
       this.mutuallyExclusiveOptionSet = new HashSet<String>();
-      this.configurableOptionSet = new HashMap<String, IOptionConfigurationHandler>();
+      this.configurableOptionSet = new HashMap<String, IOptionConfigurationHandler<?>>();
 
       for (String option : SearchOption.asLabels()) {
          this.optionsMap.put(option, false);
@@ -107,34 +111,13 @@ public class QuickSearchOptionComposite extends Composite {
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
    }
 
-   private void updateTextArea(Text text, String[] data) {
-      text.setText(StringUtils.join(data, ", "));
-   }
-
-   public Map<String, Boolean> getOptions() {
-      return optionsMap;
-   }
-
-   public Map<String, String[]> getConfigurations() {
-      Map<String, String[]> toReturn = new HashMap<String, String[]>();
-      for (String key : configurableOptionSet.keySet()) {
-         toReturn.put(key, configurableOptionSet.get(key).getConfiguration());
-      }
-      return toReturn;
-   }
-
    public boolean isOptionSelected(String key) {
       Boolean value = optionsMap.get(key);
       return value != null ? value.booleanValue() : false;
    }
 
-   public String[] getConfiguration(String key) {
-      IOptionConfigurationHandler handler = this.configurableOptionSet.get(key);
-      if (handler != null) {
-         return handler.getConfiguration();
-      } else {
-         return new String[0];
-      }
+   public IOptionConfigurationHandler<?> getConfiguration(String key) {
+      return this.configurableOptionSet.get(key);
    }
 
    private void initializeOptions(Map<String, Boolean> options) {
@@ -175,7 +158,7 @@ public class QuickSearchOptionComposite extends Composite {
    }
 
    private Button createButton(Composite parent, String option) {
-      final IOptionConfigurationHandler configHandler = configurableOptionSet.get(option);
+      final IOptionConfigurationHandler<?> configHandler = configurableOptionSet.get(option);
       Composite mainComposite = parent;
       if (configHandler != null) {
          mainComposite = new Composite(parent, SWT.NONE);
@@ -234,7 +217,7 @@ public class QuickSearchOptionComposite extends Composite {
          label.setText(option + ":");
 
          final Text text = new Text(mainComposite, SWT.READ_ONLY | SWT.BORDER);
-         text.setText(StringUtils.join(configHandler.getConfiguration(), ", "));
+         text.setText(configHandler.toString());
          GridData data = new GridData(SWT.FILL, SWT.FILL, true, false);
          data.minimumWidth = 100;
          text.setLayoutData(data);
@@ -249,7 +232,7 @@ public class QuickSearchOptionComposite extends Composite {
             public void widgetSelected(SelectionEvent e) {
                if (configHandler != null) {
                   configHandler.configure();
-                  updateTextArea(text, configHandler.getConfiguration());
+                  text.setText(configHandler.toString());
                }
             }
          });
@@ -283,19 +266,22 @@ public class QuickSearchOptionComposite extends Composite {
       return isOptionSelected(SearchOption.Attribute_Type_Filter.asLabel());
    }
 
-   public String[] getAttributeTypeFilter() {
-      return isAttributeTypeFilterEnabled() ? getConfiguration(SearchOption.Attribute_Type_Filter.asLabel()) : null;
+   public IAttributeType[] getAttributeTypeFilter() {
+      IOptionConfigurationHandler<?> handler = getConfiguration(SearchOption.Attribute_Type_Filter.asLabel());
+      IAttributeType[] types = (IAttributeType[]) handler.getConfigData();
+      return isAttributeTypeFilterEnabled() ? types : new IAttributeType[0];
    }
 
    public void saveState(IMemento memento) {
       for (String option : optionsMap.keySet()) {
          memento.putString(OPTIONS_KEY_ID + option.replaceAll(" ", "_"), optionsMap.get(option).toString());
       }
-      Map<String, String[]> data = getConfigurations();
-      for (String key : data.keySet()) {
-         String[] config = data.get(key);
+
+      for (Entry<String, IOptionConfigurationHandler<?>> entry : configurableOptionSet.entrySet()) {
+         IOptionConfigurationHandler<?> handler = entry.getValue();
+         String[] config = handler.toStore();
          if (config != null && config.length > 0) {
-            memento.putString(OPTION_CONFIGS_KEY_ID + key.replaceAll(" ", "_"), StringUtils.join(config,
+            memento.putString(OPTION_CONFIGS_KEY_ID + entry.getKey().replaceAll(" ", "_"), StringUtils.join(config,
                   ENTRY_SEPARATOR));
          }
       }
@@ -322,12 +308,12 @@ public class QuickSearchOptionComposite extends Composite {
 
    private void initializeConfigurations(Map<String, String[]> items) {
       for (String key : items.keySet()) {
-         IOptionConfigurationHandler handler = configurableOptionSet.get(key);
+         IOptionConfigurationHandler<?> handler = configurableOptionSet.get(key);
          if (handler != null) {
-            handler.setConfiguration(items.get(key));
+            handler.loadFrom(items.get(key));
             Text text = textAreas.get(key);
             if (text != null) {
-               updateTextArea(text, handler.getConfiguration());
+               text.setText(handler.toString());
             }
          }
       }
@@ -347,13 +333,17 @@ public class QuickSearchOptionComposite extends Composite {
       }
    }
 
-   private interface IOptionConfigurationHandler {
+   private interface IOptionConfigurationHandler<T> {
 
-      public void setConfiguration(String[] strings);
+      public void loadFrom(String[] strings);
+
+      public String[] toStore();
+
+      public String toString();
 
       public void configure();
 
-      public String[] getConfiguration();
+      public T[] getConfigData();
 
       public String getConfigToolTip();
 
@@ -385,17 +375,17 @@ public class QuickSearchOptionComposite extends Composite {
 
       private static String[] labels = null;
       private static String[] mutuallyExclusive = null;
-      private static Map<String, IOptionConfigurationHandler> configurable = null;
+      private static Map<String, IOptionConfigurationHandler<?>> configurable = null;
       private final String helpContext;
       private final String toolTip;
       private final boolean isRadio;
-      private final IOptionConfigurationHandler configHandler;
+      private final IOptionConfigurationHandler<?> configHandler;
 
       SearchOption(String helpContext, String toolTip, boolean isRadio) {
          this(helpContext, toolTip, isRadio, null);
       }
 
-      SearchOption(String helpContext, String toolTip, boolean isRadio, IOptionConfigurationHandler configHandler) {
+      SearchOption(String helpContext, String toolTip, boolean isRadio, IOptionConfigurationHandler<?> configHandler) {
          this.helpContext = "";
          this.toolTip = toolTip;
          this.isRadio = isRadio;
@@ -418,7 +408,7 @@ public class QuickSearchOptionComposite extends Composite {
          return configHandler != null;
       }
 
-      public IOptionConfigurationHandler getConfigHandler() {
+      public IOptionConfigurationHandler<?> getConfigHandler() {
          return configHandler;
       }
 
@@ -435,9 +425,9 @@ public class QuickSearchOptionComposite extends Composite {
          return mutuallyExclusive;
       }
 
-      public static Map<String, IOptionConfigurationHandler> getConfigurableOptions() {
+      public static Map<String, IOptionConfigurationHandler<?>> getConfigurableOptions() {
          if (configurable == null) {
-            configurable = new HashMap<String, IOptionConfigurationHandler>();
+            configurable = new HashMap<String, IOptionConfigurationHandler<?>>();
             for (SearchOption option : SearchOption.values()) {
                if (option.isConfigurable()) {
                   configurable.put(option.asLabel(), option.getConfigHandler());
@@ -459,11 +449,21 @@ public class QuickSearchOptionComposite extends Composite {
       }
    }
 
-   private final static class AttributeTypeFilterConfigHandler implements IOptionConfigurationHandler {
-      private final List<String> configuration;
+   private final static class AttributeTypeComparator implements Comparator<IAttributeType> {
+
+      @Override
+      public int compare(IAttributeType o1, IAttributeType o2) {
+         return o1.getName().compareTo(o2.getName());
+      }
+
+   }
+   private final static class AttributeTypeFilterConfigHandler implements IOptionConfigurationHandler<IAttributeType> {
+      private final List<IAttributeType> configuration;
+      private final Comparator<IAttributeType> attrTypeComparator;
 
       public AttributeTypeFilterConfigHandler() {
-         this.configuration = new ArrayList<String>();
+         this.attrTypeComparator = new AttributeTypeComparator();
+         this.configuration = new ArrayList<IAttributeType>();
          this.configuration.add(getDefault());
       }
 
@@ -476,13 +476,9 @@ public class QuickSearchOptionComposite extends Composite {
             dialog.setMessage("Select attribute types to search in.");
 
             List<AttributeType> selectedElements = new ArrayList<AttributeType>();
-            if (configuration.contains("All")) {
-               selectedElements.addAll(taggableItems);
-            } else {
-               for (AttributeType type : taggableItems) {
-                  if (configuration.contains(type.getName())) {
-                     selectedElements.add(type);
-                  }
+            for (AttributeType type : taggableItems) {
+               if (configuration.contains(type.getName())) {
+                  selectedElements.add(type);
                }
             }
             dialog.setInitialElementSelections(selectedElements);
@@ -491,19 +487,14 @@ public class QuickSearchOptionComposite extends Composite {
             if (result == Window.OK) {
                configuration.clear();
                Collection<AttributeType> results = dialog.getSelection();
-               if (org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(taggableItems, results).isEmpty()) {
-                  // All were selected
-                  configuration.add("All");
-               } else {
-                  for (AttributeType selected : results) {
-                     configuration.add(selected.getName());
-                  }
-                  if (configuration.isEmpty()) {
-                     configuration.add(getDefault());
-                  }
+               for (AttributeType selected : results) {
+                  configuration.add(selected);
+               }
+               if (configuration.isEmpty()) {
+                  configuration.add(getDefault());
                }
             }
-            Collections.sort(configuration);
+            Collections.sort(configuration, attrTypeComparator);
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
@@ -515,28 +506,57 @@ public class QuickSearchOptionComposite extends Composite {
       }
 
       @Override
-      public String[] getConfiguration() {
+      public IAttributeType[] getConfigData() {
          if (configuration.isEmpty()) {
             configuration.add(getDefault());
          }
-         return configuration.toArray(new String[configuration.size()]);
+         return configuration.toArray(new IAttributeType[configuration.size()]);
       }
 
-      public String getDefault() {
-         return "Name";
+      public IAttributeType getDefault() {
+         return CoreAttributeTypes.NAME;
       }
 
       @Override
-      public void setConfiguration(String[] items) {
+      public void loadFrom(String[] items) {
          if (items != null) {
             configuration.clear();
             for (String entry : items) {
-               configuration.add(entry);
+               try {
+                  AttributeType type = AttributeTypeManager.getTypeByGuid(entry);
+                  configuration.add(type);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
             }
          }
          if (configuration.isEmpty()) {
             configuration.add(getDefault());
          }
+      }
+
+      @Override
+      public String toString() {
+         Collection<AttributeType> taggableItems;
+         try {
+            taggableItems = AttributeTypeManager.getTaggableTypes();
+            if (taggableItems.size() == configuration.size()) {
+               return "All";
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+         return StringUtils.join(configuration, ", ");
+      }
+
+      @Override
+      public String[] toStore() {
+         String[] guids = new String[configuration.size()];
+         int index = 0;
+         for (IAttributeType type : configuration) {
+            guids[index++] = type.getGuid();
+         }
+         return guids;
       }
    }
 

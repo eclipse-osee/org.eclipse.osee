@@ -66,7 +66,7 @@ public class LoadGraphOperation implements IExceptionableRunnable {
       monitor.beginTask(getName(), TOTAL_STEPS);
       monitor.worked(SHORT_TASK_STEPS);
       try {
-         TransactionRecord transaction = TransactionManager.getLastTransaction(resource);
+         TransactionRecord transaction = TransactionManager.getHeadTransaction(resource);
          if (editor != null) {
             ((BranchGraphEditorInput) editor.getEditorInput()).setTransactionId(transaction);
          }

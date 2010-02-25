@@ -48,8 +48,7 @@ public class ArtifactPurgeTest {
    private Map<String, Integer> postPurgeCount;
 
    private static final List<String> tables =
-         Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs",
-               "osee_artifact_version");
+      Arrays.asList("osee_attribute", "osee_arts", "osee_relation_link", "osee_tx_details", "osee_txs");
 
    @BeforeClass
    public static void testInitialize() throws Exception {
@@ -97,12 +96,12 @@ public class ArtifactPurgeTest {
       // Count rows in tables prior to purge
       DbUtil.getTableRowCounts(preCreateArtifactsCount, tables);
 
-      // Create some software artifacts      
+      // Create some software artifacts
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2.getName());
       SkynetTransaction transaction = new SkynetTransaction(branch, "Test purge artifacts");
       Collection<Artifact> softArts =
-            FrameworkTestUtil.createSimpleArtifacts(Requirements.SOFTWARE_REQUIREMENT, 10, getClass().getSimpleName(),
-                  branch);
+         FrameworkTestUtil.createSimpleArtifacts(Requirements.SOFTWARE_REQUIREMENT, 10, getClass().getSimpleName(),
+               branch);
       for (Artifact softArt : softArts) {
          softArt.persist(transaction);
       }
@@ -126,4 +125,5 @@ public class ArtifactPurgeTest {
       TestUtil.checkThatEqual(preCreateArtifactsCount, postPurgeCount);
 
    }
+
 }

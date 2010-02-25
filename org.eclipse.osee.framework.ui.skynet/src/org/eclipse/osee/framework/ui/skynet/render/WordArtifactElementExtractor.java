@@ -14,9 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkParser;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;

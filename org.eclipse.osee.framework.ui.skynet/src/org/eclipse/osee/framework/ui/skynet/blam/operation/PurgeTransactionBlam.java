@@ -16,8 +16,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionJob;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -31,6 +30,7 @@ public class PurgeTransactionBlam extends AbstractBlam {
       return "Delete Transaction";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       List<Integer> txs = Lib.stringToIntegerList(variableMap.getString("Transaction List"));
       boolean force = variableMap.getBoolean("Force Delete");
@@ -38,8 +38,7 @@ public class PurgeTransactionBlam extends AbstractBlam {
       for (int index = 0; index < txs.size(); index++) {
          txIds[index] = txs.get(index);
       }
-      Job job = new PurgeTransactionJob(force, txIds);
-      Jobs.startJob(job);
+      Job job = BranchManager.purgeTransactions(null, force, txIds);
       job.join();
    }
 
@@ -53,6 +52,7 @@ public class PurgeTransactionBlam extends AbstractBlam {
       return builder.toString();
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
    }

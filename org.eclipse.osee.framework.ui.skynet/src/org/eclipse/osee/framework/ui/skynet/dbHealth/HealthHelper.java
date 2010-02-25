@@ -29,39 +29,39 @@ import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
  */
 public class HealthHelper {
    public static final String ALL_BACKING_GAMMAS =
-         "(SELECT gamma_id FROM osee_artifact_version UNION SELECT gamma_id FROM osee_attribute UNION SELECT gamma_id FROM osee_relation_link)";
+         "(SELECT gamma_id FROM osee_arts UNION SELECT gamma_id FROM osee_attribute UNION SELECT gamma_id FROM osee_relation_link)";
 
    private static final String[] NO_TX_CURRENT_SET =
          {
                "SELECT distinct t1.",
-               ", det.branch_id FROM osee_tx_details det, osee_txs txs, ",
-               " t1 WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = t1.gamma_id AND txs.tx_current = 0 %s SELECT distinct t2.",
-               ", det.branch_id FROM osee_tx_details det, osee_txs txs, ",
-               " t2 WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = t2.gamma_id AND txs.tx_current != 0"};
+               ", txs1.branch_id FROM osee_txs txs1, ",
+               " t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current = 0 %s SELECT distinct t2.",
+               ", txs2.branch_id FROM osee_txs txs2, ",
+               " t2 WHERE txs2.gamma_id = t2.gamma_id AND txs2.tx_current != 0"};
 
    private static final String[] MULTIPLE_TX_CURRENT_SET =
          {
                "SELECT resulttable.branch_id, resulttable.",
-               ", COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txd1.branch_id, t1.",
-               " FROM osee_tx_details txd1, osee_txs txs1, ",
-               " t1 WHERE txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = t1.gamma_id AND txs1.tx_current != 0) resulttable GROUP BY resulttable.branch_id, resulttable.",
+               ", COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txs1.branch_id, t1.",
+               " FROM osee_txs txs1, ",
+               " t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current != 0) resulttable GROUP BY resulttable.branch_id, resulttable.",
                " HAVING(COUNT(resulttable.branch_id) > 1) order by branch_id"};
 
    private static final String[] NO_TX_CURRENT_CLEANUP =
          {
-               "UPDATE osee_txs set tx_current = CASE WHEN mod_type = 3 THEN 2 WHEN mod_type = 5 THEN 3 ELSE 1 END WHERE (gamma_id, transaction_id) = (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, ",
+               "UPDATE osee_txs SET tx_current = CASE WHEN mod_type = 3 THEN 2 WHEN mod_type = 5 THEN 3 ELSE 1 END WHERE (gamma_id, transaction_id) = (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, ",
                " t1 WHERE t1.",
-               " = ? AND t1.gamma_id = txs1.gamma_id AND txs1.transaction_id = (SELECT max(txs.transaction_id) FROM osee_tx_details det, osee_txs txs, ",
-               " t2 WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = t2.gamma_id AND t2.",
+               " = ? AND t1.gamma_id = txs1.gamma_id AND txs1.transaction_id = (SELECT max(txs.transaction_id) FROM osee_txs txs, ",
+               " t2 WHERE txs.branch_id = ? AND txs.gamma_id = t2.gamma_id AND t2.",
                " = ?))"};
 
    private static final String[] DUPLICATE_TX_CURRENT_CLEANUP =
          {
-               "UPDATE osee_txs set tx_current = 0 WHERE (gamma_id, transaction_id) in (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, ",
+               "UPDATE osee_txs SET tx_current = 0 WHERE (gamma_id, transaction_id) in (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, ",
                " t1 WHERE t1.",
-               " = ? AND t1.gamma_id = txs1.gamma_id AND txs1.transaction_id != (SELECT max(txs.transaction_id) FROM osee_tx_details det, osee_txs txs, ",
-               " t2 WHERE det.branch_id = ? AND txs.tx_current != 0 AND det.transaction_id = txs.transaction_id AND txs.gamma_id = t2.gamma_id AND t2.",
-               " = ?)AND txs1.transaction_id in (Select transaction_id FROM osee_tx_details WHERE branch_id = ?))"};
+               " = ? AND t1.gamma_id = txs1.gamma_id AND txs1.transaction_id != (SELECT max(txs.transaction_id) FROM osee_txs txs, ",
+               " t2 WHERE txs.branch_id = ? AND txs.tx_current != 0 AND txs.gamma_id = t2.gamma_id AND t2.",
+               " = ?)AND txs1.branch_id = ?)"};
 
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));

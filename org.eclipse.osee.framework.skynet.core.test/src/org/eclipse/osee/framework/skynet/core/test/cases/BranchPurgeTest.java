@@ -44,8 +44,7 @@ public class BranchPurgeTest {
    private final Map<String, Integer> postCreateBranchCount = new HashMap<String, Integer>();
    private final Map<String, Integer> postPurgeCount = new HashMap<String, Integer>();
    List<String> tables =
-         Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs",
-               "osee_artifact_version");
+      Arrays.asList("osee_attribute", "osee_arts", "osee_relation_link", "osee_tx_details", "osee_txs");
 
    /**
     * @throws java.lang.Exception
@@ -64,16 +63,16 @@ public class BranchPurgeTest {
 
       // create a new working branch
       Branch branch =
-            BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_2, getClass().getSimpleName(),
-                  UserManager.getUser(SystemUser.OseeSystem));
+         BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_2, getClass().getSimpleName(),
+               UserManager.getUser(SystemUser.OseeSystem));
 
       TestUtil.sleep(4000);
 
-      // create some software artifacts      
+      // create some software artifacts
       SkynetTransaction transaction = new SkynetTransaction(branch, "Test purge branch");
       Collection<Artifact> softArts =
-            FrameworkTestUtil.createSimpleArtifacts(Requirements.SOFTWARE_REQUIREMENT, 10, getClass().getSimpleName(),
-                  branch);
+         FrameworkTestUtil.createSimpleArtifacts(Requirements.SOFTWARE_REQUIREMENT, 10, getClass().getSimpleName(),
+               branch);
       for (Artifact softArt : softArts) {
          softArt.persist(transaction);
       }

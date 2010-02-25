@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.plugin.internal;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.plugin.core.IActionReportingService;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.osgi.framework.BundleContext;
@@ -93,10 +93,12 @@ public class OseePluginUiActivator extends OseeUiActivator {
    }
 
    public IActionReportingService getActionReportingService() throws OseeCoreException {
+      IActionReportingService service = null;
       try {
-         return (IActionReportingService) tracker.waitForService(3000);
+         service = (IActionReportingService) tracker.waitForService(3000);
       } catch (InterruptedException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
+      return service;
    }
 }
