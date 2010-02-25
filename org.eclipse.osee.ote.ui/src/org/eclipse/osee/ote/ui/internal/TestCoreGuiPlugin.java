@@ -11,13 +11,11 @@
 package org.eclipse.osee.ote.ui.internal;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.plugin.core.IWorkbenchUserService;
-import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
 import org.eclipse.osee.ote.ui.IOteConsoleService;
 import org.eclipse.osee.ote.ui.RemoteConsoleLauncher;
@@ -61,9 +59,9 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
     	  tracker = new RemoteConsoleLauncher();
     	  tracker.open(true);
       }
-      
+
       if (System.getProperty("NO_OTE_ARTIFACT_BULK_LOAD") == null) {
-    	  startOTEArtifactBulkLoad();
+         startOTEArtifactBulkLoad();
       }
    }
 
@@ -84,16 +82,15 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
    }
 
    private void startOTEArtifactBulkLoad() {
-      Jobs.runInJob("OTE Persistance Bulk Load", new IExceptionableRunnable() {
+      Operations.executeAsJob(new AbstractOperation("OTE Persistance Bulk Load", PLUGIN_ID) {
+
          @Override
-         public IStatus run(IProgressMonitor monitor) throws Exception {
-            // Attempt to obtain current workbench User - if service is available
-            if(getWorkbenchUserService() != null){
+         protected void doWork(IProgressMonitor monitor) throws Exception {
+            if (getWorkbenchUserService() != null) {
                getWorkbenchUserService().getUser();
             }
-            return Status.OK_STATUS;
          }
-      }, TestCoreGuiPlugin.class, "org.eclipse.osee.ote.ui", false);
+      }, false);
    }
 
    private IWorkbenchUserService getWorkbenchUserService() throws OseeCoreException {
@@ -101,7 +98,7 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
       try {
          service = (IWorkbenchUserService) workbenchUserServiceTracker.waitForService(3000);
       } catch (InterruptedException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
       return service;
    }
