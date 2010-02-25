@@ -78,7 +78,7 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * BranchManager contains methods necessary for ATS objects to interact with creation, view and commit of branches.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsBranchManager {
@@ -101,8 +101,7 @@ public class AtsBranchManager {
                AWorkbench.popup("ERROR", "Can't access parent branch");
                return;
             }
-            MergeView.openView(getWorkingBranch(), branch,
-                  TransactionManager.getStartEndPoint(getWorkingBranch()).getFirst());
+            MergeView.openView(getWorkingBranch(), branch, getWorkingBranch().getBaseTransaction());
 
          } else if (isCommittedBranchExists()) {
             TransactionRecord transactionId = getTransactionIdOrPopupChoose("Show Merge Manager", true);
@@ -118,7 +117,7 @@ public class AtsBranchManager {
 
    /**
     * Return true if merge branch exists in DB (whether archived or not)
-    * 
+    *
     * @param destinationBranch
     * @return true
     * @throws OseeCoreException
@@ -179,8 +178,7 @@ public class AtsBranchManager {
 
    public void showMergeManager(Branch destinationBranch) throws OseeCoreException {
       if (isWorkingBranchInWork()) {
-         MergeView.openView(getWorkingBranch(), destinationBranch, TransactionManager.getStartEndPoint(
-               getWorkingBranch()).getFirst());
+         MergeView.openView(getWorkingBranch(), destinationBranch, getWorkingBranch().getBaseTransaction());
       } else if (isCommittedBranchExists()) {
          for (TransactionRecord transactionId : getTransactionIds(true)) {
             if (transactionId.getBranchId() == destinationBranch.getId()) {
@@ -256,7 +254,7 @@ public class AtsBranchManager {
       Collection<TransactionRecord> committedTransactions =
             TransactionManager.getCommittedArtifactTransactionIds(teamArt);
       for (TransactionRecord transactionId : committedTransactions) {
-         // exclude working branches including branch states that are re-baselined 
+         // exclude working branches including branch states that are re-baselined
          if (transactionId.getBranch().getBranchType().isBaselineBranch()) {
             transactionIds.add(transactionId);
          }
@@ -299,7 +297,7 @@ public class AtsBranchManager {
 
    /**
     * Either return a single commit transaction or user must choose from a list of valid commit transactions
-    * 
+    *
     * @param title
     * @param showMergeManager
     * @return TransactionRecord
@@ -460,7 +458,7 @@ public class AtsBranchManager {
    /**
     * Return working branch associated with SMA; This data is cached across all workflows with the cache being updated
     * by local and remote events.
-    * 
+    *
     * @return Branch
     */
    public Branch getWorkingBranch() throws OseeCoreException {
@@ -471,7 +469,7 @@ public class AtsBranchManager {
     * Return working branch associated with SMA, even if it's been archived; This data is cached across all workflows
     * with the cache being updated by local and remote events. Filters out rebaseline branches (which are working
     * branches also).
-    * 
+    *
     * @param includeDeleted
     * @return Branch
     */
@@ -496,7 +494,7 @@ public class AtsBranchManager {
 
    /**
     * Returns true if there is a working branch that is not archived
-    * 
+    *
     * @return result
     * @throws OseeCoreException
     */
@@ -507,7 +505,7 @@ public class AtsBranchManager {
    /**
     * Returns true if there was ever a commit of a working branch regardless of whether the working branch is archived
     * or not.
-    * 
+    *
     * @return result
     * @throws OseeCoreException
     */
@@ -522,8 +520,8 @@ public class AtsBranchManager {
             teamArt.getTargetedForVersion().getParallelVersions(configObjects);
          }
       } else {
-         if (teamArt.isTeamWorkflow() && (teamArt).getTeamDefinition().getParentBranch() != null) {
-            configObjects.add((teamArt).getTeamDefinition());
+         if (teamArt.isTeamWorkflow() && teamArt.getTeamDefinition().getParentBranch() != null) {
+            configObjects.add(teamArt.getTeamDefinition());
          }
       }
       return configObjects;
@@ -535,8 +533,8 @@ public class AtsBranchManager {
             return teamArt.getTargetedForVersion();
          }
       } else {
-         if (teamArt.isTeamWorkflow() && (teamArt).getTeamDefinition().getParentBranch() != null) {
-            return (teamArt).getTeamDefinition();
+         if (teamArt.isTeamWorkflow() && teamArt.getTeamDefinition().getParentBranch() != null) {
+            return teamArt.getTeamDefinition();
          }
       }
       return null;
@@ -586,7 +584,7 @@ public class AtsBranchManager {
 
    /**
     * Return true if all commit destination branches are configured and have been committed to
-    * 
+    *
     * @return true
     * @throws OseeCoreException
     */
@@ -612,7 +610,7 @@ public class AtsBranchManager {
 
    /**
     * Perform error checks and popup confirmation dialogs associated with creating a working branch.
-    * 
+    *
     * @param pageId if specified, WorkPage gets callback to provide confirmation that branch can be created
     * @param popup if true, errors are popped up to user; otherwise sent silently in Results
     * @return Result return of status
@@ -700,7 +698,7 @@ public class AtsBranchManager {
 
       // If not defined in version, check for parent branch from team definition
       if (parentBranch == null && teamArt.isTeamWorkflow()) {
-         parentBranch = (teamArt).getTeamDefinition().getParentBranch();
+         parentBranch = teamArt.getTeamDefinition().getParentBranch();
       }
 
       // If not defined, return null
@@ -720,7 +718,7 @@ public class AtsBranchManager {
             // Create reviews as necessary
             SkynetTransaction transaction =
                   new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Transition");
-            createNecessaryBranchEventReviews(StateEventType.CreateBranch, (teamArt), transaction);
+            createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, transaction);
             transaction.execute();
             return Status.OK_STATUS;
          }
@@ -821,7 +819,7 @@ public class AtsBranchManager {
       if (branchCommitted) {
          // Create reviews as necessary
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Commit");
-         createNecessaryBranchEventReviews(StateEventType.CommitBranch, (teamArt), transaction);
+         createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, transaction);
          transaction.execute();
       }
    }
@@ -871,7 +869,7 @@ public class AtsBranchManager {
 
    /**
     * Return ChangeData represented by commit to commitConfigArt or earliest commit if commitConfigArt == null
-    * 
+    *
     * @param commitConfigArt that configures commit or null
     */
    public ChangeData getChangeData(ICommitConfigArtifact commitConfigArt) throws OseeCoreException {

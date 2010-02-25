@@ -17,11 +17,14 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Roberto E. Escobar
  */
 public enum StorageState {
-   LOADED(0), CREATED(1), MODIFIED(2), PURGED(3);
+   LOADED(0),
+   CREATED(1),
+   MODIFIED(2),
+   PURGED(3);
 
-   int value;
+   private final int value;
 
-   StorageState(int value) {
+   private StorageState(int value) {
       this.value = value;
    }
 

@@ -59,7 +59,7 @@ public class CoverageItemPersistTest {
    }
 
    /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getArtifact(boolean)}.
+    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#asArtifact(boolean)}.
     */
    @Test
    public void testGetArtifact() throws OseeCoreException {
@@ -97,7 +97,7 @@ public class CoverageItemPersistTest {
    }
 
    /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getArtifact(boolean)}.
+    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#asArtifact(boolean)}.
     */
    @Test
    public void testGetArtifact2() throws OseeCoreException {

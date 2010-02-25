@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 public class DatabaseTransactionRecordAccessor implements ITransactionDataAccessor {
 
    private static final String SELECT_BASE_TRANSACTION =
-         "select * from osee_tx_details WHERE branch_id = ? AND tx_type = " + TransactionDetailsType.Baselined;
+         "select txd.* from osee_branch ob, osee_tx_details txd WHERE ob.branch_id = ? AND ob.baseline_transaction_id = txd.transaction_id";
 
    private static final String SELECT_BY_TRANSACTION = "select * from osee_tx_details WHERE transaction_id = ?";
 

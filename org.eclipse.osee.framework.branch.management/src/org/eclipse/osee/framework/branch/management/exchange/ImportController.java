@@ -42,8 +42,8 @@ import org.eclipse.osee.framework.branch.management.exchange.transform.V0_9_0Tra
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -126,11 +126,11 @@ public final class ImportController {
       loadImportTrace(manifestHandler.getSourceDatabaseId(), manifestHandler.getSourceExportDate());
    }
 
-   public void transformExportItem(ExportItem exportItem, Rule rule) throws OseeWrappedException {
+   public void transformExportItem(ExportItem exportItem, Rule rule) throws OseeCoreException {
       try {
          rule.process(exportDataProvider.getFile(exportItem));
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
@@ -161,11 +161,11 @@ public final class ImportController {
          ExchangeUtil.readExchange(tempFile, transformer);
          tempFile.delete();
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       } catch (XMLStreamException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       } catch (SAXException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
@@ -263,7 +263,7 @@ public final class ImportController {
          if (ex instanceof OseeCoreException) {
             throw (OseeCoreException) ex;
          }
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 

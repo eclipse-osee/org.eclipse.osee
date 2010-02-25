@@ -16,7 +16,6 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.sql.Types;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.IVariantData;
 import org.eclipse.osee.framework.jdk.core.type.VariantData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -26,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Roberto E. Escobar
  */
 public class ResultSetProcessor {
-   public static IVariantData parse(IOseeStatement chStmt) throws OseeDataStoreException, OseeWrappedException {
+   public static IVariantData parse(IOseeStatement chStmt) throws OseeDataStoreException {
       IVariantData toReturn = new VariantData();
       int numberOfColumns = chStmt.getColumnCount() + 1;
       for (int index = 1; index < numberOfColumns; index++) {
@@ -78,13 +77,13 @@ public class ResultSetProcessor {
       return String.format("Unable to convert [%s] of raw type [%s] to string.", name, typeName);
    }
 
-   private static byte[] streamToByteArray(InputStream inputStream) throws OseeWrappedException {
+   private static byte[] streamToByteArray(InputStream inputStream) throws OseeDataStoreException {
       byte[] toReturn = new byte[0];
       if (inputStream != null) {
          try {
             toReturn = Lib.inputStreamToBytes(inputStream);
          } catch (IOException ex) {
-            throw new OseeWrappedException(ex);
+            throw new OseeDataStoreException(ex);
          }
       }
       return toReturn;

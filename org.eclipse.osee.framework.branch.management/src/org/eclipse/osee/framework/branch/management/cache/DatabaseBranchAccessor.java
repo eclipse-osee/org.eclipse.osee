@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -47,9 +46,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
 
-   private static final String SELECT_BRANCHES =
-         "SELECT ob.*, txd.transaction_id FROM osee_branch ob, osee_tx_details txd WHERE ob.branch_id = txd.branch_id and txd.tx_type = " + TransactionDetailsType.Baselined.getId();
-
+   private static final String SELECT_BRANCHES = "SELECT * FROM osee_branch";
    private static final String SELECT_MERGE_BRANCHES = "SELECT * FROM osee_merge";
 
    private final TransactionCache txCache;
@@ -106,7 +103,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
                   childToParent.put(branch, parentBranchId);
                }
                branchToSourceTx.put(branch, chStmt.getInt("parent_transaction_id"));
-               branchToBaseTx.put(branch, chStmt.getInt("transaction_id"));
+               branchToBaseTx.put(branch, chStmt.getInt("baseline_transaction_id"));
                associatedArtifact.put(branch, chStmt.getInt("associated_art_id"));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

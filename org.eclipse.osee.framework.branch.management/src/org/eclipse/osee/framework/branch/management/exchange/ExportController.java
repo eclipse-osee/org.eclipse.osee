@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.branch.management.exchange.export.AbstractDbEx
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -154,7 +154,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
             }
          }
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       } finally {
          cleanUp(connection, taskList);
       }

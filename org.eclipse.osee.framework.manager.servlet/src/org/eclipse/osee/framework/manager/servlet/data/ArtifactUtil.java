@@ -22,13 +22,13 @@ public class ArtifactUtil {
    private static final String DEFAULT_ATTRIBUTE_DATA_PROVIDER = "%DefaultAttributeDataProvider";
 
    private static String URI_BY_GUID_PREFIX =
-         "SELECT attr1.uri FROM osee_artifact art1, osee_attribute attr1, osee_attribute_type attyp1, osee_attribute_provider_type oapt1, %s txs1, osee_tx_details txd1";
+         "SELECT attr1.uri FROM osee_arts art1, osee_attribute attr1, osee_attribute_type attyp1, osee_attribute_provider_type oapt1, %s txs1";
 
    private static String URI_BY_GUID_AND_BRANCH_ID =
-         URI_BY_GUID_PREFIX + " WHERE art1.art_id = attr1.art_id AND attr1.attr_type_id = attyp1.attr_type_id AND oapt1.attr_provider_type_id = attyp1.attr_provider_type_id AND attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txs1.tx_current = 1 AND art1.guid = ? AND NOT oapt1.attribute_provider_class LIKE ? AND txd1.branch_id = ?";
+         URI_BY_GUID_PREFIX + " WHERE art1.art_id = attr1.art_id AND attr1.attr_type_id = attyp1.attr_type_id AND oapt1.attr_provider_type_id = attyp1.attr_provider_type_id AND attr1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND art1.guid = ? AND NOT oapt1.attribute_provider_class LIKE ? AND txs1.branch_id = ?";
 
    private static String URI_BY_GUID_AND_BRANCH_NAME =
-         URI_BY_GUID_PREFIX + ", osee_branch ob1 WHERE art1.art_id = attr1.art_id AND attr1.attr_type_id = attyp1.attr_type_id AND oapt1.attr_provider_type_id = attyp1.attr_provider_type_id AND attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ob1.branch_id AND txs1.tx_current = 1 AND art1.guid = ? AND NOT oapt1.attribute_provider_class LIKE ? AND ob1.branch_name = ?";
+         URI_BY_GUID_PREFIX + ", osee_branch ob1 WHERE art1.art_id = attr1.art_id AND attr1.attr_type_id = attyp1.attr_type_id AND oapt1.attr_provider_type_id = attyp1.attr_provider_type_id AND attr1.gamma_id = txs1.gamma_id AND txs1.branch_id = ob1.branch_id AND txs1.tx_current = 1 AND art1.guid = ? AND NOT oapt1.attribute_provider_class LIKE ? AND ob1.branch_name = ?";
 
    public static String getUri(String guid, int branchId) throws OseeDataStoreException {
       BranchArchivedState state = isArchived(branchId);

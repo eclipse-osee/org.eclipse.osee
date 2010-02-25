@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.world.search;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Return all ATS Objects that a user is related to through logs, review roles, defects and etc.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class UserRelatedToAtsObjectSearch extends UserSearchItem {
@@ -45,16 +45,18 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
 
-      if (isCancelled()) return EMPTY_SET;
+      if (isCancelled()) {
+         return EMPTY_SET;
+      }
 
       List<Artifact> arts = new ArrayList<Artifact>();
       if (activeObjectsOnly) {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), user.getUserId(),
-               false, false, false, ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName()));
+               false, false, false, AtsAttributeTypes.AtsCurrentState));
       } else {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), user.getUserId(),
-               false, false, false, ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               ATSAttributes.STATE_ATTRIBUTE.getStoreName(), ATSAttributes.LOG_ATTRIBUTE.getStoreName()));
+               false, false, false, AtsAttributeTypes.AtsCurrentState, AtsAttributeTypes.AtsState,
+               AtsAttributeTypes.AtsLog));
       }
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamLead_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team));
@@ -62,7 +64,9 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_Artifact));
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.PrivilegedMember_Team));
 
-      if (isCancelled()) return EMPTY_SET;
+      if (isCancelled()) {
+         return EMPTY_SET;
+      }
       return arts;
    }
 

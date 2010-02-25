@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 
@@ -44,7 +44,7 @@ public class V0_9_0Transformer implements IOseeDbExportTransformer {
          importController.transformExportItem(ExportItem.OSEE_TXS_DATA, txsTransformer);
          txsTransformer.finish();
       } catch (XMLStreamException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
 
       importController.deleteExportItem("osee.branch.definitions.xml");

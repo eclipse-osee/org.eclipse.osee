@@ -13,14 +13,11 @@ package org.eclipse.osee.framework.branch.management.internal;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.branch.management.change.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.branch.management.change.LoadChangeDataOperation;
 import org.eclipse.osee.framework.branch.management.commit.CommitDbOperation;
 import org.eclipse.osee.framework.branch.management.creation.CreateBranchOperation;
 import org.eclipse.osee.framework.branch.management.purge.PurgeBranchOperation;
-import org.eclipse.osee.framework.branch.management.update.UpdateBranchOperation;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
@@ -34,11 +31,14 @@ import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeReportRequest;
 import org.eclipse.osee.framework.core.data.ChangeReportResponse;
 import org.eclipse.osee.framework.core.data.PurgeBranchRequest;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
@@ -126,6 +126,7 @@ public class OseeBranchService implements IOseeBranchService {
          ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, srcTx, destTx, null, response.getChangeItems()));
       }
       ops.add(new ComputeNetChangeOperation(response.getChangeItems()));
+      ops.add(new AddArtifactChangeData(response.getChangeItems()));
 
       String opName = String.format("Gathering changes");
       IOperation op = new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
@@ -137,48 +138,44 @@ public class OseeBranchService implements IOseeBranchService {
       BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
       IOperation operation =
             new PurgeBranchOperation(branchCache.getById(request.getBranchId()), cachingService, oseeDatabaseProvider);
-      Operations.executeWork(operation, new NullProgressMonitor(), -1);
-      try {
-         Operations.checkForStatusSeverityMask(operation.getStatus(), IStatus.ERROR | IStatus.WARNING);
-      } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
-      }
+      Operations.executeWorkAndCheckStatus(operation, monitor, -1);
    }
 
    @Override
    public void updateBranchArchiveState(IProgressMonitor monitor, ChangeBranchArchiveStateRequest request) throws OseeCoreException {
-      IOperation operation =
-            new UpdateBranchOperation(oseeDatabaseProvider, cachingService, request.getBranchId(), request.getState());
-      Operations.executeWork(operation, new NullProgressMonitor(), -1);
-      try {
-         Operations.checkForStatusSeverityMask(operation.getStatus(), IStatus.ERROR | IStatus.WARNING);
-      } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
-      }
+      handleBranchChange(monitor, "Branch Archive State Change", request.getBranchId(), null, null, request.getState());
    }
 
    @Override
    public void updateBranchState(IProgressMonitor monitor, ChangeBranchStateRequest request) throws OseeCoreException {
-      IOperation operation =
-            new UpdateBranchOperation(oseeDatabaseProvider, cachingService, request.getBranchId(), request.getState());
-      Operations.executeWork(operation, new NullProgressMonitor(), -1);
-      try {
-         Operations.checkForStatusSeverityMask(operation.getStatus(), IStatus.ERROR | IStatus.WARNING);
-      } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
-      }
+      handleBranchChange(monitor, "Branch State Change", request.getBranchId(), request.getState(), null, null);
    }
 
    @Override
    public void updateBranchType(IProgressMonitor monitor, ChangeBranchTypeRequest request) throws OseeCoreException {
-      IOperation operation =
-            new UpdateBranchOperation(oseeDatabaseProvider, cachingService, request.getBranchId(), request.getType());
-      Operations.executeWork(operation, new NullProgressMonitor(), -1);
-      try {
-         Operations.checkForStatusSeverityMask(operation.getStatus(), IStatus.ERROR | IStatus.WARNING);
-      } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
-      }
+      handleBranchChange(monitor, "Branch Type Change", request.getBranchId(), null, request.getType(), null);
    }
 
+   private void handleBranchChange(IProgressMonitor monitor, String opName, final int branchId, final BranchState branchState, final BranchType branchType, final BranchArchivedState archivedState) throws OseeCoreException {
+      IOperation operation = new AbstractOperation(opName, Activator.PLUGIN_ID) {
+
+         @Override
+         protected void doWork(IProgressMonitor monitor) throws Exception {
+            BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
+            Branch branch = branchCache.getById(branchId);
+
+            if (branchType != null) {
+               branch.setBranchType(branchType);
+            }
+            if (branchState != null) {
+               branch.setBranchState(branchState);
+            }
+            if (archivedState != null) {
+               branch.setArchived(archivedState.isArchived());
+            }
+            branchCache.storeItems(branch);
+         }
+      };
+      Operations.executeWorkAndCheckStatus(operation, monitor, -1);
+   }
 }

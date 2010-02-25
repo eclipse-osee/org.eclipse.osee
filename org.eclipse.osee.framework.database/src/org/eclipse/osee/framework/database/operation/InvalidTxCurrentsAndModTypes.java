@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.database.internal.Activator;
  */
 public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private static final String SELECT_ADDRESSES =
-         "select %s, txd.branch_id, txd.transaction_id, tx_type, txs.gamma_id, mod_type, tx_current from %s t1, osee_txs txs, osee_tx_details txd where t1.gamma_id = txs.gamma_id and txs.transaction_id = txd.transaction_id order by txd.branch_id, %s, txd.transaction_id desc, txs.gamma_id desc";
+         "select %s, txs.branch_id, txs.transaction_id, txs.gamma_id, txs.mod_type, txs.tx_current, txd.tx_type from %s t1, osee_txs txs, osee_tx_details txd where t1.gamma_id = txs.gamma_id and txd.transaction_id = txs.transaction_id and txs.branch_id = txd.branch_id order by txs.branch_id, %s, txs.transaction_id desc, txs.gamma_id desc";
 
    private static final String DELETE_ADDRESS = "delete from osee_txs where transaction_id = ? and gamma_id = ?";
    private static final String UPDATE_ADDRESS =
@@ -81,7 +81,8 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
    private void checkForInvalidMergedModType() {
       int index = addresses.size() - 1;
-      if (!addresses.get(index).isBaselineTx) {
+      Address lastAddress = addresses.get(index);
+      if (!lastAddress.isBaselineTx()) {
          for (; index > -1; index--) {
             if (!addresses.get(index).purge) {
                if (addresses.get(index).modType == ModificationType.MERGED) {
@@ -142,27 +143,30 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       }
    }
 
-   private static class Address {
+   private static final class Address {
       final int branchId;
       final int itemId;
       final int transactionId;
       final long gammaId;
-      final boolean isBaselineTx;
       final ModificationType modType;
       final TxChange txCurrent;
-
+      final boolean isBaseline;
       TxChange correctedTxCurrent;
       boolean purge;
 
-      public Address(int branchId, int itemId, int transactionId, int txType, long gammaId, int modType, int txCurrent) throws OseeArgumentException {
+      public Address(boolean isBaseline, int branchId, int itemId, int transactionId, long gammaId, ModificationType modType, TxChange txCurrent) throws OseeArgumentException {
          super();
          this.branchId = branchId;
          this.itemId = itemId;
          this.transactionId = transactionId;
          this.gammaId = gammaId;
-         this.modType = ModificationType.getMod(modType);
-         this.txCurrent = TxChange.getChangeType(txCurrent);
-         this.isBaselineTx = TransactionDetailsType.toEnum(txType) == TransactionDetailsType.Baselined;
+         this.modType = modType;
+         this.txCurrent = txCurrent;
+         this.isBaseline = isBaseline;
+      }
+
+      public boolean isBaselineTx() {
+         return isBaseline;
       }
 
       public boolean isSimilar(Address other) {
@@ -217,10 +221,12 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
          Address previousAddress = null;
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
+            ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+            TxChange txCurrent = TxChange.getChangeType(chStmt.getInt("tx_current"));
+            TransactionDetailsType type = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
             Address address =
-                  new Address(chStmt.getInt("branch_id"), chStmt.getInt(columnName), chStmt.getInt("transaction_id"),
-                        chStmt.getInt("tx_type"), chStmt.getLong("gamma_id"), chStmt.getInt("mod_type"),
-                        chStmt.getInt("tx_current"));
+                  new Address(type.isBaseline(), chStmt.getInt("branch_id"), chStmt.getInt(columnName),
+                        chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id"), modType, txCurrent);
 
             if (!address.isSimilar(previousAddress)) {
                if (!addresses.isEmpty()) {

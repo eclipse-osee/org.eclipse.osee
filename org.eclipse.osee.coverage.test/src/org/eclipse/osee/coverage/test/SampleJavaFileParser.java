@@ -21,7 +21,8 @@ import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverageUnitFileContentsProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -35,18 +36,16 @@ public class SampleJavaFileParser {
    private static final Pattern executeLine = Pattern.compile("^(.*)\\s+//\\s+(\\w+),\\s+(\\w+),\\s+([\\w\\|]+)$");
 
    public static CoverageUnit createCodeUnit(URL url, ICoverageUnitFileContentsProvider fileContentsProvider) throws OseeCoreException {
+      Conditions.checkNotNull(url, "url", "Valid filename must be specified");
+      InputStream inputStream = null;
+      CoverageUnit fileCoverageUnit = null;
       try {
-         if (url == null) {
-            throw new IllegalArgumentException("Valid filename must be specified");
-         }
-         InputStream inputStream = url.openStream();
-         if (inputStream == null) {
-            throw new IllegalArgumentException(String.format("File doesn't exist [%s]", url));
-         }
+         inputStream = url.openStream();
+         Conditions.checkNotNull(inputStream, "input stream", String.format("File doesn't exist [%s]", url));
          // Store file as CoverageUnit
          File file = new File(url.getFile());
          String filename = file.getCanonicalFile().getName();
-         CoverageUnit fileCoverageUnit = new CoverageUnit(null, filename, url.getFile(), fileContentsProvider);
+         fileCoverageUnit = new CoverageUnit(null, filename, url.getFile(), fileContentsProvider);
          String fileStr = Lib.inputStreamToString(inputStream);
          Matcher m = packagePattern.matcher(fileStr);
          if (m.find()) {
@@ -100,9 +99,9 @@ public class SampleJavaFileParser {
             }
 
          }
-         return fileCoverageUnit;
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
+      return fileCoverageUnit;
    }
 }

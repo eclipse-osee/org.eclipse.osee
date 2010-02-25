@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.io.InputStream;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 
 /**
@@ -61,11 +62,11 @@ public class OseeCredential extends OseeClientInfo {
 
    /**
     * Create new instance from XML input
-    * 
+    *
     * @param OseeCredential the new instance
     * @throws OseeWrappedException
     */
-   public static OseeCredential fromXml(InputStream inputStream) throws OseeWrappedException {
+   public static OseeCredential fromXml(InputStream inputStream) throws OseeCoreException {
       OseeCredential session = new OseeCredential();
       session.loadfromXml(inputStream);
       return session;

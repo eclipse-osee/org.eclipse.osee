@@ -29,9 +29,6 @@ public class JoinUtility {
    private static final String INSERT_INTO_JOIN_ARTIFACT =
          "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id) VALUES (?, ?, ?, ?)";
 
-   private static final String INSERT_INTO_JOIN_ATTRIBUTE =
-         "INSERT INTO osee_join_attribute (attr_query_id, insert_time, value) VALUES (?, ?, ?)";
-
    private static final String INSERT_INTO_JOIN_TRANSACTION =
          "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) VALUES (?, ?, ?, ?)";
 
@@ -54,7 +51,6 @@ public class JoinUtility {
    private static final String DELETE_FROM_JOIN_ID = "DELETE FROM osee_join_id WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_TRANSACTION = "DELETE FROM osee_join_transaction WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_ARTIFACT = "DELETE FROM osee_join_artifact WHERE query_id = ?";
-   private static final String DELETE_FROM_JOIN_ATTRIBUTE = "DELETE FROM osee_join_attribute WHERE attr_query_id = ?";
    private static final String DELETE_FROM_JOIN_SEARCH_TAGS = "DELETE FROM osee_join_search_tags WHERE query_id = ?";
    private static final String DELETE_FROM_TAG_GAMMA_QUEUE = "DELETE FROM osee_tag_gamma_queue WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_EXPORT_IMPORT = "DELETE FROM osee_join_export_import WHERE query_id =?";
@@ -65,7 +61,6 @@ public class JoinUtility {
    public enum JoinItem {
       TRANSACTION(INSERT_INTO_JOIN_TRANSACTION, DELETE_FROM_JOIN_TRANSACTION),
       ARTIFACT(INSERT_INTO_JOIN_ARTIFACT, DELETE_FROM_JOIN_ARTIFACT),
-      ATTRIBUTE(INSERT_INTO_JOIN_ATTRIBUTE, DELETE_FROM_JOIN_ATTRIBUTE),
       SEARCH_TAGS(INSERT_INTO_JOIN_SEARCH_TAGS, DELETE_FROM_JOIN_SEARCH_TAGS),
       TAG_GAMMA_QUEUE(INSERT_INTO_TAG_GAMMA_QUEUE, DELETE_FROM_TAG_GAMMA_QUEUE),
       EXPORT_IMPORT(INSERT_INTO_JOIN_EXPORT_IMPORT, DELETE_FROM_JOIN_EXPORT_IMPORT),
@@ -107,10 +102,6 @@ public class JoinUtility {
 
    public static ArtifactJoinQuery createArtifactJoinQuery() {
       return new ArtifactJoinQuery(null);
-   }
-
-   public static AttributeJoinQuery createAttributeJoinQuery() {
-      return new AttributeJoinQuery(null);
    }
 
    public static SearchTagJoinQuery createSearchTagJoinQuery() {
@@ -402,60 +393,6 @@ public class JoinUtility {
       @Override
       public String getJoinTableName() {
          return "osee_join_artifact";
-      }
-   }
-
-   public static final class AttributeJoinQuery extends JoinQueryEntry {
-
-      private final class Entry implements IJoinRow {
-         private final String value;
-
-         private Entry(String value) {
-            this.value = value;
-         }
-
-         public Object[] toArray() {
-            return new Object[] {getQueryId(), getInsertTime(), value != null ? value : SQL3DataType.VARCHAR};
-         }
-
-         @Override
-         public boolean equals(Object obj) {
-            if (obj == this) {
-               return true;
-            }
-            if (!(obj instanceof Entry)) {
-               return false;
-            }
-            Entry other = (Entry) obj;
-            return other.value == null && this.value == null || other.value != null && this.value != null && this.value.equals(other.value);
-         }
-
-         @Override
-         public int hashCode() {
-            return 37 * (value != null ? value.hashCode() : -1);
-         }
-
-         @Override
-         public String toString() {
-            return String.format("attr_value=%s", value);
-         }
-      }
-
-      private AttributeJoinQuery(String sessionId) {
-         super(JoinItem.ATTRIBUTE, sessionId);
-      }
-
-      public void add(String value) {
-         entries.add(new Entry(value));
-      }
-
-      /*
-       * (non-Javadoc)
-       * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
-       */
-      @Override
-      public String getJoinTableName() {
-         return "osee_join_attribute";
       }
    }
 

@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.ITranslatorId;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -42,7 +42,7 @@ public class DataTranslationService implements IDataTranslationService {
       Conditions.checkNotNull(txId, "translator Id");
 
       T object = null;
-      if ((propertyStore != null) && !propertyStore.isEmpty()) {
+      if (propertyStore != null && !propertyStore.isEmpty()) {
          ITranslator<?> translator = getTranslator(txId);
          object = (T) translator.convert(propertyStore);
       }
@@ -101,24 +101,28 @@ public class DataTranslationService implements IDataTranslationService {
       Conditions.checkNotNull(inputStream, "inputStream");
       Conditions.checkNotNull(txId, "translator Id");
 
+      T toReturn = null;
       PropertyStore propertyStore = new PropertyStore();
       try {
          propertyStore.load(inputStream);
-         return convert(propertyStore, txId);
+         toReturn = convert(propertyStore, txId);
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
+      return toReturn;
    }
 
    @Override
    public <T> InputStream convertToStream(T object, ITranslatorId txId) throws OseeCoreException {
       PropertyStore propertyStore = convert(object, txId);
+      InputStream inputStream = null;
       ByteArrayOutputStream buffer = new ByteArrayOutputStream();
       try {
          propertyStore.save(buffer);
-         return new ByteArrayInputStream(buffer.toByteArray());
+         inputStream = new ByteArrayInputStream(buffer.toByteArray());
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
+      return inputStream;
    }
 }

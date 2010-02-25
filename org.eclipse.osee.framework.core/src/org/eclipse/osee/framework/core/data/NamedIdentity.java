@@ -35,13 +35,13 @@ public class NamedIdentity implements Identity, Named {
 
    @Override
    public int hashCode() {
-      return guid.hashCode();
+      return getGuid().hashCode();
    }
 
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof NamedIdentity) {
-         return guid.equals(((NamedIdentity) obj).guid);
+         return getGuid().equals(((NamedIdentity) obj).getGuid());
       }
       return false;
    }

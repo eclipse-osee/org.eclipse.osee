@@ -28,20 +28,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * @author Megumi Telles
  */
 public class AtsNavigateQuickSearch extends WorldUISearchItem {
-   private String searchStr;
+   private final String searchStr;
    private boolean includeCompleteCancelled = false;
 
-   /**
-    * @param name
-    */
-   public AtsNavigateQuickSearch(String name) {
-      super(name);
-   }
-
-   public AtsNavigateQuickSearch(String name, String searchStr) {
-      super(name);
-      this.searchStr = searchStr;
-   }
 
    public AtsNavigateQuickSearch(String name, String searchStr, boolean includeCompleteCancelled) {
       super(name);

@@ -19,14 +19,14 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.init.TableElement.TableDescriptionFields;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public class DatabaseConfigurationData {
 
-   private List<URL> filesToProcess;
+   private final List<URL> filesToProcess;
 
    public DatabaseConfigurationData(List<URL> filesToProcess) {
       this.filesToProcess = filesToProcess;
@@ -53,7 +53,7 @@ public class DatabaseConfigurationData {
                }
             }
          } catch (SQLException ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
 

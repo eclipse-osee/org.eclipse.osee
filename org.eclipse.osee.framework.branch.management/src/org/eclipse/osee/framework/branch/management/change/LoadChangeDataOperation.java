@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.data.RelationChangeItem;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -42,7 +41,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  */
 public class LoadChangeDataOperation extends AbstractOperation {
    private static final String SELECT_SOURCE_BRANCH_CHANGES =
-         "select txs.transaction_id, gamma_id, mod_type from osee_txs txs, osee_tx_details txd where txs.branch_id = ? and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.tx_type = ?";
+         "select txs.transaction_id, gamma_id, mod_type from osee_txs txs where txs.branch_id = ? and txs.tx_current <> ? and txs.transaction_id <> ?";
 
    private static final String SELECT_SOURCE_TRANSACTION_CHANGES =
          "select gamma_id, mod_type from osee_txs txs where txs.branch_id = ? and txs.transaction_id = ?";
@@ -100,7 +99,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       loadRelationItemIdsBasedOnGammas(monitor, txJoin.getQueryId(), relationChangesByItemId);
       txJoin.delete();
 
-      loadByItemId(monitor, "osee_artifact_version", "art_id", artifactChangesByItemId, null);
+      loadByItemId(monitor, "osee_arts", "art_id", artifactChangesByItemId, null);
       loadByItemId(monitor, "osee_attribute", "attr_id", attributeChangesByItemId, "value");
       loadByItemId(monitor, "osee_relation_link", "rel_link_id", relationChangesByItemId, "rationale");
 
@@ -118,7 +117,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
          switch (loadChangesEnum) {
             case FROM_ALL_BRANCH_TRANSACTIONS:
                chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
-                     TxChange.NOT_CURRENT.getValue(), TransactionDetailsType.NonBaselined.getId());
+                     TxChange.NOT_CURRENT.getValue(), sourceTransactionId.getBranch().getBaseTransaction().getId());
                currentTransactionNumber = sourceTransactionId.getId();
                break;
             case FROM_SINGLE_TRANSACTION:
@@ -147,7 +146,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private void loadArtifactItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
       IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       String query =
-            "select art_id, txj.gamma_id from osee_artifact_version id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
+            "select art_id, txj.gamma_id from osee_arts id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
       try {
          chStmt.runPreparedQuery(10000, query, queryId);
@@ -294,37 +293,43 @@ public class LoadChangeDataOperation extends AbstractOperation {
       }
    }
 
-   private void loadNonCurrentSourceData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, String columnValueName) throws OseeCoreException {
+   private void loadNonCurrentSourceData(IProgressMonitor monitor, String tableName, String idColumnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, String columnValueName) throws OseeCoreException {
       IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       String query;
 
       try {
+         String valueColumnName = columnValueName != null ? "item." + columnValueName + "," : "";
          query =
-               "select " + (columnValueName != null ? "item." + columnValueName + ", item." + columnName : "item." + columnName) + ", txs.gamma_id, txs.mod_type, txd.tx_type, txs.transaction_id from osee_join_id idj, " //
-                     + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
-                     " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ? order by idj.id, txs.transaction_id asc";
+               "select " + valueColumnName + "item." + idColumnName + ", txs.gamma_id, txs.mod_type, txs.transaction_id from osee_join_id idj, " //
+                     + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + idColumnName + //
+                     " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? order by idj.id, txs.transaction_id asc";
 
          chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
                getSourceBranchId());
 
+         int baselineTransactionId = sourceTransactionId.getBranch().getBaseTransaction().getId();
          int previousItemId = -1;
          boolean isFirstSet = false;
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
+            int itemId = chStmt.getInt(idColumnName);
+            Integer transactionId = chStmt.getInt("transaction_id");
+            ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+            Long gammaId = chStmt.getLong("gamma_id");
 
-            int itemId = chStmt.getInt(columnName);
-            boolean isBaseline =
-                  TransactionDetailsType.toEnum(chStmt.getInt("tx_type")) == TransactionDetailsType.Baselined;
+            String value = null;
+            if (columnValueName != null) {
+               value = chStmt.getString(columnValueName);
+            }
+
             ChangeItem change = changesByItemId.get(itemId);
-
             if (previousItemId != itemId) {
                isFirstSet = false;
             }
-
-            if (isBaseline) {
-               loadVersionData(chStmt, change.getBaselineVersion(), columnValueName);
+            if (baselineTransactionId == transactionId) {
+               loadVersionData(change.getBaselineVersion(), transactionId, gammaId, modType, value);
             } else if (!isFirstSet) {
-               loadVersionData(chStmt, change.getFirstNonCurrentChange(), columnValueName);
+               loadVersionData(change.getFirstNonCurrentChange(), transactionId, gammaId, modType, value);
                isFirstSet = true;
             }
 
@@ -335,17 +340,14 @@ public class LoadChangeDataOperation extends AbstractOperation {
       }
    }
 
-   private void loadVersionData(IOseeStatement chStmt, ChangeVersion versionedChange, String columnValueName) throws OseeArgumentException, OseeDataStoreException {
+   private void loadVersionData(ChangeVersion versionedChange, Integer transactionId, Long gammaId, ModificationType modType, String value) throws OseeArgumentException, OseeDataStoreException {
       // Tolerates the case of having more than one version of an item on a
       // baseline transaction by picking the most recent one
-      if (versionedChange.getGammaId() == null || versionedChange.getGammaId() < chStmt.getLong("gamma_id")) {
-         if (columnValueName != null) {
-            versionedChange.setValue(chStmt.getString(columnValueName));
-         }
-
-         versionedChange.setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
-         versionedChange.setGammaId(chStmt.getLong("gamma_id"));
-         versionedChange.setTransactionNumber(chStmt.getInt("transaction_id"));
+      if (versionedChange.getGammaId() == null || versionedChange.getGammaId().compareTo(gammaId) < 0) {
+         versionedChange.setValue(value);
+         versionedChange.setModType(modType);
+         versionedChange.setGammaId(gammaId);
+         versionedChange.setTransactionNumber(transactionId);
       }
    }
 }

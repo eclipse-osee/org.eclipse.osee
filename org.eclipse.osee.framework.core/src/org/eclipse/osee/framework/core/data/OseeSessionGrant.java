@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.data;
 
 import java.io.InputStream;
 import java.util.Properties;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -114,7 +114,7 @@ public class OseeSessionGrant extends BaseExchangeData {
       this.backingData.put(OSEE_CLIENT_BUILD_DESIGNATION, designation);
    }
 
-   public static OseeSessionGrant fromXml(InputStream inputStream) throws OseeWrappedException {
+   public static OseeSessionGrant fromXml(InputStream inputStream) throws OseeCoreException {
       OseeSessionGrant session = new OseeSessionGrant();
       session.loadfromXml(inputStream);
       return session;

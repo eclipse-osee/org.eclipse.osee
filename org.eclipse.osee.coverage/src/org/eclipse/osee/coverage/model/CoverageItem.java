@@ -17,7 +17,7 @@ import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -245,7 +245,7 @@ public class CoverageItem implements ICoverage {
       try {
          store.load(xml);
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
       if (!store.getId().equals(PROPERTY_STORE_ID)) {
          throw new OseeArgumentException(String.format("Invalid store id [%s] for CoverageItem", store.getId()));
@@ -292,11 +292,13 @@ public class CoverageItem implements ICoverage {
       if (Strings.isValid(name)) {
          store.put("name", name);
       }
+      String toReturn = null;
       try {
-         return store.save();
+         toReturn = store.save();
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
+      return toReturn;
    }
 
    @Override

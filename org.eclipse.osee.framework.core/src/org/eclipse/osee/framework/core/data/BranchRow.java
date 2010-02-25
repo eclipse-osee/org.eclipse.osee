@@ -67,7 +67,6 @@ public final class BranchRow {
       BranchState branchState = BranchState.valueOf(data[4]);
       BranchType branchType = BranchType.valueOf(data[5]);
       StorageState storageState = StorageState.valueOf(data[6]);
-
       return new BranchRow(branchId, branchGuid, branchName, branchType, branchState, archived, storageState);
    }
 }

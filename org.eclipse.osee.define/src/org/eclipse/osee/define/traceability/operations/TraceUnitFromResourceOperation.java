@@ -25,7 +25,7 @@ import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandl
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
@@ -91,7 +91,7 @@ public class TraceUnitFromResourceOperation {
             throw new OseeArgumentException(String.format("Invalid test unit trace id(s) [%s]", notFound));
          }
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 

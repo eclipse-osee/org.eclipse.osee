@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Properties;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
@@ -33,31 +35,31 @@ public class BaseExchangeData implements Serializable {
 
    /**
     * Set data from XML input stream
-    * 
+    *
     * @param xml inputStream
     * @throws OseeWrappedException
     */
-   protected void loadfromXml(InputStream inputStream) throws OseeWrappedException {
+   protected void loadfromXml(InputStream inputStream) throws OseeCoreException {
       try {
          PropertyStoreWriter writer = new PropertyStoreWriter();
          writer.load(backingData, inputStream);
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
    /**
     * Write to output stream
-    * 
+    *
     * @param outputStream
     * @throws OseeWrappedException
     */
-   public void write(OutputStream outputStream) throws OseeWrappedException {
+   public void write(OutputStream outputStream) throws OseeCoreException {
       try {
          PropertyStoreWriter writer = new PropertyStoreWriter();
          writer.save(backingData, outputStream);
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 

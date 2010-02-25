@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.data;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 
 /**
@@ -93,11 +94,11 @@ public class OseeServerInfo extends BaseExchangeData {
 
    /**
     * Create new instance from XML input
-    * 
+    *
     * @param OseeServerInfo the new instance
     * @throws OseeWrappedException
     */
-   public static OseeServerInfo fromXml(InputStream inputStream) throws OseeWrappedException {
+   public static OseeServerInfo fromXml(InputStream inputStream) throws OseeCoreException {
       OseeServerInfo serverInfo = new OseeServerInfo();
       serverInfo.loadfromXml(inputStream);
       return serverInfo;

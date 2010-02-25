@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.ArtifactJoinQuery;
@@ -34,14 +36,7 @@ import org.eclipse.osee.framework.search.engine.SearchResult.ArtifactMatch;
  * @author Roberto E. Escobar
  */
 public class SearchEngineServlet extends OseeHttpServlet {
-
    private static final long serialVersionUID = 3722992788943330970L;
-
-   @Override
-   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      HttpSearchInfo searchInfo = HttpSearchInfo.loadFromGet(request);
-      executeSearch(searchInfo, response, true);
-   }
 
    @Override
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -60,9 +55,16 @@ public class SearchEngineServlet extends OseeHttpServlet {
    private void executeSearch(HttpSearchInfo searchInfo, HttpServletResponse response, boolean wasFromGet) throws IOException {
       try {
          ISearchEngine searchEngine = Activator.getInstance().getSearchEngine();
+         AttributeTypeCache attributeTypeCache = Activator.getInstance().getOseeCache().getAttributeTypeCache();
+         String[] attributeTypeGuids = searchInfo.getAttributeTypeGuids();
+         AttributeType[] attributeTypes = new AttributeType[attributeTypeGuids.length];
+         int index = 0;
+         for (String attributeTypeGuid : attributeTypeGuids) {
+            attributeTypes[index++] = attributeTypeCache.getByGuid(attributeTypeGuid);
+         }
+
          SearchResult results =
-               searchEngine.search(searchInfo.getQuery(), searchInfo.getId(), searchInfo.getOptions(),
-                     searchInfo.getAttributeTypes());
+               searchEngine.search(searchInfo.getQuery(), searchInfo.getId(), searchInfo.getOptions(), attributeTypes);
          response.setStatus(wasFromGet ? HttpServletResponse.SC_OK : HttpServletResponse.SC_ACCEPTED);
          if (!results.isEmpty()) {
             long start = System.currentTimeMillis();
@@ -104,7 +106,7 @@ public class SearchEngineServlet extends OseeHttpServlet {
 
    /**
     * <match artId="" branchId=""> <attr gammaId=""><location start="" end="" /></attr> </match>
-    * 
+    *
     * @throws Exception
     */
    private void sendAsXml(HttpServletResponse response, SearchResult results) throws Exception {

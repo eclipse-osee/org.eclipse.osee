@@ -31,9 +31,6 @@ import org.eclipse.osee.framework.resource.management.Options;
  */
 public class ExchangeDb {
 
-   private static final String ARTIFACT_TYPE_ID = "art_type_id";
-   private static final String ATTRIBUTE_TYPE_ID = "attr_type_id";
-   private static final String RELATION_TYPE_ID = "rel_link_type_id";
    public static final String GAMMA_ID = "gamma_id";
    public static final String TRANSACTION_ID = "transaction_id";
    public static final String ATTRIBUTE_ID = "attr_id";
@@ -101,10 +98,7 @@ public class ExchangeDb {
          "SELECT txs1.GAMMA_ID, txs1.TRANSACTION_ID, txs1.TX_CURRENT, txs1.MOD_TYPE FROM osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
 
    private static final String ARTIFACT_TABLE_QUERY =
-         "SELECT DISTINCT (art1.art_id), art1.GUID, art1.HUMAN_READABLE_ID, art1.ART_TYPE_ID FROM osee_artifact art1, osee_artifact_version artv1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE art1.art_id = artv1.art_id AND artv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
-
-   private static final String ARTIFACT_VERSION_QUERY =
-         "SELECT DISTINCT (artv1.GAMMA_ID), artv1.ART_ID FROM osee_artifact_version artv1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE artv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
+         "SELECT DISTINCT (art1.GAMMA_ID), art1.art_id, art1.GUID, art1.HUMAN_READABLE_ID, art1.ART_TYPE_ID FROM osee_arts art1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE art1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
 
    private static final String ATTRIBUTE_TABLE_QUERY =
          "SELECT DISTINCT (attr1.GAMMA_ID), attr1.ATTR_ID, attr1.ART_ID, attr1.VALUE, attr1.ATTR_TYPE_ID, attr1.URI FROM osee_attribute attr1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
@@ -132,7 +126,6 @@ public class ExchangeDb {
       items.add(new RelationalExportItem(ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY));
       items.add(new RelationalExportItem(ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY));
       items.add(new RelationalExportItem(ExportItem.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItem.OSEE_ARTIFACT_VERSION_DATA, ARTIFACT_VERSION_QUERY));
       items.add(new RelationalExportItem(ExportItem.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY));
       items.add(new RelationalExportItem(ExportItem.OSEE_RELATION_LINK_DATA, RELATION_LINK_TABLE_QUERY));
       items.add(new RelationalExportItem(ExportItem.OSEE_MERGE_DATA, MERGE_TABLE_QUERY));

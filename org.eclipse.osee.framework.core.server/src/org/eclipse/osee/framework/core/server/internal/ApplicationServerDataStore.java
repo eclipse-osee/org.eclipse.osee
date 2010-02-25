@@ -99,6 +99,7 @@ public class ApplicationServerDataStore {
       return status;
    }
 
+   @SuppressWarnings("unchecked")
    static boolean updateServerState(OseeServerInfo applicationServerInfo, boolean state) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(UPDATE_LOOKUP_TABLE, state ? 1 : 0, applicationServerInfo.getServerAddress(),
             applicationServerInfo.getPort());

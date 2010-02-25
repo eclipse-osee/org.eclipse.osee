@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -124,12 +124,12 @@ public class SessionManagementServlet extends OseeHttpServlet {
                response.getOutputStream());
 
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       } finally {
          try {
             response.getOutputStream().flush();
          } catch (IOException ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
    }
@@ -143,13 +143,13 @@ public class SessionManagementServlet extends OseeHttpServlet {
          response.setContentType("text/plain");
          response.getWriter().write(String.format("Session [%s] released.", sessionId));
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       } finally {
          try {
             response.getWriter().flush();
             response.getWriter().close();
          } catch (IOException ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
    }

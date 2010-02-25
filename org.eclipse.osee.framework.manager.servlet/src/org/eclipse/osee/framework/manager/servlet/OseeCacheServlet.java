@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
@@ -81,15 +81,9 @@ public class OseeCacheServlet extends OseeHttpServlet {
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");
          resp.setCharacterEncoding("UTF-8");
-         InputStream inputStream = null;
-         OutputStream outputStream = null;
-         try {
-            inputStream = service.convertToStream(pair.getFirst(), pair.getSecond());
-            outputStream = resp.getOutputStream();
-            Lib.inputStreamToOutputStream(inputStream, outputStream);
-         } catch (IOException ex) {
-            throw new OseeWrappedException(ex);
-         }
+         InputStream inputStream = service.convertToStream(pair.getFirst(), pair.getSecond());
+         OutputStream outputStream = resp.getOutputStream();
+         Lib.inputStreamToOutputStream(inputStream, outputStream);
       } catch (Exception ex) {
          OseeLog.log(getClass(), Level.SEVERE, ex);
       }
@@ -134,7 +128,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
          inputStream = req.getInputStream();
          updateRequest = service.convert(inputStream, CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST);
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       } finally {
          Lib.close(inputStream);
       }
@@ -166,7 +160,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
          resp.setCharacterEncoding("UTF-8");
          resp.getWriter().write("Branch Store Successful");
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
@@ -180,7 +174,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
          inputStream = req.getInputStream();
          updateRequest = service.convert(inputStream, CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST);
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       } finally {
          Lib.close(inputStream);
       }
@@ -197,7 +191,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
          outputStream = resp.getOutputStream();
          Lib.inputStreamToOutputStream(inputStream, outputStream);
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 

@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet.data;
 
-import java.util.Enumeration;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
 import org.eclipse.osee.framework.search.engine.SearchOptions;
@@ -27,20 +24,21 @@ public class HttpSearchInfo {
    private final String branchId;
    private final String queryString;
    private final SearchOptions options;
-   private final String[] attributeTypes;
+   private final String[] attributeTypeGuids;
 
-   public HttpSearchInfo(String branchId, SearchOptions options, String queryString, String... attributeTypes) {
+   private HttpSearchInfo(String branchId, SearchOptions options, String queryString, String... attributeTypeGuids) {
       super();
       this.branchId = branchId;
       this.options = options;
       this.queryString = queryString;
-      this.attributeTypes = attributeTypes != null ? attributeTypes : new String[0];
+      this.attributeTypeGuids = attributeTypeGuids;
    }
 
    public String getQuery() {
       return queryString;
    }
 
+   @Override
    public String toString() {
       return queryString;
    }
@@ -53,33 +51,8 @@ public class HttpSearchInfo {
       return options;
    }
 
-   public String[] getAttributeTypes() {
-      return attributeTypes;
-   }
-
-   @SuppressWarnings("unchecked")
-   public static HttpSearchInfo loadFromGet(HttpServletRequest request) {
-      SearchOptions options = new SearchOptions();
-      String queryString = null;
-      String branchId = null;
-      String[] attributeTypes = null;
-      Enumeration<String> enumeration = request.getParameterNames();
-      while (enumeration.hasMoreElements()) {
-         String name = enumeration.nextElement();
-         String value = request.getParameter(name);
-         if (name.equalsIgnoreCase("query")) {
-            queryString = value;
-         } else if (name.equalsIgnoreCase("branchId")) {
-            branchId = value;
-         } else {
-            if (name.equalsIgnoreCase("name only")) {
-               attributeTypes = new String[] {"Name"};
-            } else {
-               options.put(name.toLowerCase(), value);
-            }
-         }
-      }
-      return new HttpSearchInfo(branchId, options, queryString, attributeTypes);
+   public String[] getAttributeTypeGuids() {
+      return attributeTypeGuids;
    }
 
    public static HttpSearchInfo loadFromPost(HttpServletRequest request) throws Exception {
@@ -95,7 +68,8 @@ public class HttpSearchInfo {
       options.put(SearchOptionsEnum.find_all_locations.asStringOption(), propertyStore.get("find all locations"));
       options.put(SearchOptionsEnum.case_sensitive.asStringOption(), propertyStore.get("case sensitive"));
 
-      return new HttpSearchInfo(propertyStore.get("branchId"), options, propertyStore.get("query"),
-            propertyStore.getArray("attributeType"));
+      String[] attributeTypeStrs = propertyStore.getArray("attributeType");
+      return new HttpSearchInfo(propertyStore.get("branchId"), options, propertyStore.get("query"),attributeTypeStrs
+            );
    }
 }

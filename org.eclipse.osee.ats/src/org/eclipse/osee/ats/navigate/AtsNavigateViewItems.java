@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -60,6 +61,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateContributionManager;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateExtensionPointData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
@@ -102,7 +105,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
          items.add(new SearchNavigateItem(null, new MySubscribedSearchItem("My Subscribed", user)));
-         items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user, GoalSearchState.InWork)));
+            items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user, GoalSearchState.InWork)));
          items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new VisitedItems(null));
          items.add(new XNavigateItemAction(null, new NewAction(), AtsImage.NEW_ACTION));
@@ -220,6 +223,15 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
             // new ActionNavigateItem(adminItems, new XViewerViewAction());
             // new ActionNavigateItem(adminItems, new OpenEditorAction());
             // new CreateBugFixesItem(adminItems);
+
+            XNavigateItem extra = new XNavigateItemFolder(adminItems, "Other");
+            Set<XNavigateExtensionPointData> extraItems =
+                  XNavigateContributionManager.getNavigateItems(NavigateView.VIEW_ID);
+            for (XNavigateExtensionPointData extraItem : extraItems) {
+               for (XNavigateItem navigateItem : extraItem.getNavigateItems()) {
+                  extra.addChild(navigateItem);
+               }
+            }
 
             items.add(adminItems);
          }

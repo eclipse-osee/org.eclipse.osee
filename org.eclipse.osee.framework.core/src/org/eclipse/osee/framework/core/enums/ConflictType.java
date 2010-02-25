@@ -10,12 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
 /**
  * @author Theron Virgin
  */
 public enum ConflictType {
 
-   ATTRIBUTE(1), RELATION(2), ARTIFACT(3);
+   ATTRIBUTE(1),
+   RELATION(2),
+   ARTIFACT(3);
    private final int value;
 
    ConflictType(int value) {
@@ -24,5 +29,14 @@ public enum ConflictType {
 
    public final int getValue() {
       return value;
+   }
+
+   public static ConflictType valueOf(int value) throws OseeCoreException {
+      for (ConflictType type : values()) {
+         if (type.value == value) {
+            return type;
+         }
+      }
+      throw new OseeArgumentException(String.format("[%s] is not a valid ConflictType"));
    }
 }

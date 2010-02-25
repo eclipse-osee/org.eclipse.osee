@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -152,7 +152,7 @@ public class UiToTestBlam extends AbstractBlam {
             }
             appendable.append("\n");
          } catch (Exception ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
    }

@@ -139,7 +139,7 @@ public final class Lib {
 
    /**
     * this version of changeExtension will work even if the extension we want to replace contains a .
-    * 
+    *
     * @param str
     * @param oldExt
     * @param newExt
@@ -155,7 +155,7 @@ public final class Lib {
 
    /**
     * Move an object one before the previous object
-    * 
+    *
     * @param list
     * @param obj
     * @return true if successful
@@ -174,7 +174,7 @@ public final class Lib {
 
    /**
     * Move an object one after the next object
-    * 
+    *
     * @param obj
     * @return true if successful
     */
@@ -311,7 +311,7 @@ public final class Lib {
    /**
     * Delete the current file and all empty parents. The method will stop deleting empty parents once it reaches the
     * stopAt parent.
-    * 
+    *
     * @param stopAt path of the parent file to stop deleting at
     * @param file to delete
     * @return status <b>true</b> if successful
@@ -336,7 +336,7 @@ public final class Lib {
 
    /**
     * Deletes all files from directory
-    * 
+    *
     * @param directory
     */
    public static void emptyDirectory(File directory) {
@@ -512,7 +512,7 @@ public final class Lib {
    /**
     * usage: char[] buf = new char[5500000]; for (Iterator iter = files.iterator(); iter.hasNext(); ) { // for each file
     * File file = (File)iter.next(); buf = Lib.fileToChars(file, buf);
-    * 
+    *
     * @param file
     * @param buf
     * @return char[]
@@ -554,7 +554,7 @@ public final class Lib {
 
    /**
     * Get file extension from the file path
-    * 
+    *
     * @param filepath
     * @return file extension
     */
@@ -635,7 +635,7 @@ public final class Lib {
     * Sets up an error, input, and output stream for the given process. The error stream gives all information coming
     * FROM the process through it's err stream. The "outThread" will be what come from the FROM the process through it's
     * normal output stream. The "inThread" is the stream for issuing commands TO the process.
-    * 
+    *
     * @param proc The process whose streams we are setting up
     * @param output Where all info coming FROM the minicom is sent
     * @param input Where all data going TO the minicom is sent
@@ -896,7 +896,7 @@ public final class Lib {
 
    /**
     * Returns an array list of File objects
-    * 
+    *
     * @param fileList
     * @param rootPath
     * @param fileNameP
@@ -913,7 +913,7 @@ public final class Lib {
    /**
     * Assumptions: block comments are not nested and comment blocks have an ending Note: may be fooled by string
     * literals that contains the block comment indicators
-    * 
+    *
     * @param charBuf
     * @return CharBuffer
     */
@@ -944,7 +944,7 @@ public final class Lib {
 
    /**
     * Remove the file extension from the file path
-    * 
+    *
     * @param filepath
     * @return modified file path
     */
@@ -962,7 +962,7 @@ public final class Lib {
 
    /**
     * Remove the file extension from the file path
-    * 
+    *
     * @param string
     * @return string with no leading or trailing
     */
@@ -973,7 +973,7 @@ public final class Lib {
 
    /**
     * Determine if file is a compressed file
-    * 
+    *
     * @param file to check
     * @return <b>true</b> if the files is a compressed file
     */
@@ -1170,7 +1170,7 @@ public final class Lib {
    /**
     * Returns a list of the arguments in the source String passed. It assumes that the first character is a '(' and
     * matches till it finds the matching ')'.
-    * 
+    *
     * @param source
     * @return String[]
     */
@@ -1258,7 +1258,7 @@ public final class Lib {
    /**
     * Returns a list of Strings representing each comma separated string in the string passed. It ignores commas inside
     * () or {}.
-    * 
+    *
     * @param source
     * @return String[]
     */
@@ -1303,7 +1303,7 @@ public final class Lib {
 
    /**
     * Finds the index of the closing bracket for a function.
-    * 
+    *
     * @param start -the index of the character AFTER the opening bracket for the function
     * @param seq -sequence containing the local function
     * @return -the index of the matching bracket to the opening bracket of this function
@@ -1372,7 +1372,7 @@ public final class Lib {
 
    /**
     * This method takes in any name separated by underscores and converts it into a java standard variable name.
-    * 
+    *
     * @param name
     * @return java variable name
     */
@@ -1456,7 +1456,7 @@ public final class Lib {
 
    /**
     * Determine is OS is windows
-    * 
+    *
     * @return <b>true</b> if OS is windows
     */
    public static boolean isWindows() {
@@ -1580,9 +1580,13 @@ public final class Lib {
       if (Strings.isValid(zipTarget) != true) {
          throw new IllegalArgumentException("Error target zip filename is invalid");
       }
-      ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipTarget));
-      compressDirectory(directory.getPath(), directory, out, includeSubDirectories);
-      out.close();
+      ZipOutputStream outputStream = null;
+      try {
+         outputStream = new ZipOutputStream(new FileOutputStream(zipTarget));
+         compressDirectory(directory.getPath(), directory, outputStream, includeSubDirectories);
+      } finally {
+         Lib.close(outputStream);
+      }
    }
 
    public static String decompressStream(InputStream inputStream, OutputStream outputStream) throws IOException {
@@ -1685,7 +1689,7 @@ public final class Lib {
 
    /**
     * Determine whether the input stream is word xml content.
-    * 
+    *
     * @param inputStream
     * @return <b>true</b> is the input stream is word xml content.
     */

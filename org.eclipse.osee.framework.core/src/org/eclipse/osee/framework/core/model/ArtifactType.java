@@ -143,7 +143,7 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
    /**
     * Determines if this artifact type equals, or is a sub-type of, the artifact type specified by the
     * <code>otherType</code> parameter.
-    * 
+    *
     * @param otherType artifact type to check against
     * @return whether this artifact type inherits from otherType
     */

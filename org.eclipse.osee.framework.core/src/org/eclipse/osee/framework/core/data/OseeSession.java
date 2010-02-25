@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.data;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 
 /**
@@ -76,7 +77,7 @@ public class OseeSession extends OseeClientInfo {
 
    /**
     * Set the last interaction name
-    * 
+    *
     * @param lastInteractionName
     */
    public void setLastInteraction(String lastInteractionName) {
@@ -85,7 +86,7 @@ public class OseeSession extends OseeClientInfo {
 
    /**
     * Set the last interaction date
-    * 
+    *
     * @param timestamp
     */
    public void setLastInteractionDate(Timestamp timestamp) {
@@ -94,7 +95,7 @@ public class OseeSession extends OseeClientInfo {
 
    /**
     * Get a the session id and version in a single string
-    * 
+    *
     * @param the session id and version
     */
    public String getSessionIdAndVersion() {
@@ -103,11 +104,11 @@ public class OseeSession extends OseeClientInfo {
 
    /**
     * Create new instance from XML input
-    * 
+    *
     * @param OseeSession the new instance
     * @throws OseeWrappedException
     */
-   public static OseeSession fromXml(InputStream inputStream) throws OseeWrappedException {
+   public static OseeSession fromXml(InputStream inputStream) throws OseeCoreException {
       OseeSession session = new OseeSession();
       session.loadfromXml(inputStream);
       return session;

@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
@@ -223,7 +223,7 @@ public class InternalClientSessionManager {
       return session;
    }
 
-   private static ByteArrayInputStream asInputStream(OseeCredential credential) throws OseeWrappedException {
+   private static ByteArrayInputStream asInputStream(OseeCredential credential) throws OseeCoreException {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       credential.write(outputStream);
 
@@ -232,7 +232,7 @@ public class InternalClientSessionManager {
       return new ByteArrayInputStream(outputStream.toByteArray());
    }
 
-   private static OseeSessionGrant fromEncryptedBytes(byte[] rawData) throws OseeWrappedException {
+   private static OseeSessionGrant fromEncryptedBytes(byte[] rawData) throws OseeCoreException {
       OseeSessionGrant session = null;
       InputStream inputStream = null;
       try {
@@ -244,7 +244,7 @@ public class InternalClientSessionManager {
             try {
                inputStream.close();
             } catch (IOException ex) {
-               throw new OseeWrappedException(ex);
+               OseeExceptions.wrapAndThrow(ex);
             }
          }
       }

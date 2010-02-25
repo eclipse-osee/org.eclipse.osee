@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchField;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
@@ -35,10 +36,10 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
    protected static final int NULL_PARENT_BRANCH_ID = -1;
 
    private static final String INSERT_BRANCH =
-         "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state) VALUES (?,?,?,?,?,?,?,?,?)";
+         "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
    private static final String UPDATE_BRANCH =
-         "update osee_branch SET branch_name = ?, parent_branch_id = ?, parent_transaction_id = ?, archived = ?, associated_art_id = ?, branch_type = ?, branch_state = ? where branch_id = ?";
+         "update osee_branch SET branch_name = ?, parent_branch_id = ?, parent_transaction_id = ?, archived = ?, associated_art_id = ?, branch_type = ?, branch_state = ?, baseline_transaction_id = ? where branch_id = ?";
 
    private static final String DELETE_BRANCH = "DELETE from osee_branch where branch_id = ?";
 
@@ -53,19 +54,25 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
 
    private Object[] toInsertValues(Branch branch) throws OseeCoreException {
       Branch parentBranch = branch.getParentBranch();
+      TransactionRecord baseTxRecord = branch.getBaseTransaction();
       int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
+      int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
+
       return new Object[] {branch.getId(), branch.getGuid(), branch.getName(), parentBranchId,
             branch.getSourceTransaction().getId(), branch.getArchiveState().getValue(),
             branch.getAssociatedArtifact().getArtId(), branch.getBranchType().getValue(),
-            branch.getBranchState().getValue()};
+            branch.getBranchState().getValue(), baselineTransaction};
    }
 
    private Object[] toUpdateValues(Branch branch) throws OseeCoreException {
       Branch parentBranch = branch.getParentBranch();
+      TransactionRecord baseTxRecord = branch.getBaseTransaction();
       int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
+      int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
       return new Object[] {branch.getName(), parentBranchId, branch.getSourceTransaction().getId(),
             branch.getArchiveState().getValue(), branch.getAssociatedArtifact().getArtId(),
-            branch.getBranchType().getValue(), branch.getBranchState().getValue(), branch.getId()};
+            branch.getBranchType().getValue(), branch.getBranchState().getValue(), baselineTransaction,
+            branch.getId()};
    }
 
    private Object[] toDeleteValues(Branch branch) throws OseeDataStoreException {
@@ -122,6 +129,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
             BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, //
             BranchField.BRANCH_STATE_FIELD_KEY, //
             BranchField.BRANCH_TYPE_FIELD_KEY, //
-            BranchField.BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY);
+            BranchField.BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY, //
+            BranchField.BRANCH_BASE_TRANSACTION);
    }
 }

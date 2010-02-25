@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.core;
 
+import java.io.Closeable;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
  * @author Jeff C. Phillips
  * @author Ryan D. Brooks
  */
-public interface IOseeStatement {
+public interface IOseeStatement extends Closeable {
 
    void runPreparedQuery(String query, Object... data) throws OseeDataStoreException;
 
@@ -37,7 +38,7 @@ public interface IOseeStatement {
    /**
     * Invokes a stored procedure parameters of type SQL3DataType are registered as Out parameters and all others are set
     * as in parameters
-    * 
+    *
     * @param query
     * @param data
     * @throws OseeDataStoreException
@@ -89,7 +90,7 @@ public interface IOseeStatement {
    /**
     * Returns the number of rows in the result set. Once this method returns the result set will be pointing to the last
     * row
-    * 
+    *
     * @return the number of rows in the result set
     * @throws OseeDataStoreException
     */
@@ -101,7 +102,7 @@ public interface IOseeStatement {
 
    /**
     * should not be used by application code because it is less readable than using the column name
-    * 
+    *
     * @param columnIndex
     * @return value
     * @throws OseeDataStoreException
@@ -112,7 +113,7 @@ public interface IOseeStatement {
 
    /**
     * should not be used by application code because it is less readable than using the column name
-    * 
+    *
     * @param columnIndex
     * @return value
     * @throws OseeDataStoreException
@@ -121,7 +122,7 @@ public interface IOseeStatement {
 
    /**
     * should not be used by application code because it is less readable than using the column name
-    * 
+    *
     * @param columnIndex
     * @return value
     * @throws OseeDataStoreException

@@ -21,7 +21,7 @@ public class UpdatePreviousTxCurrent {
    private final IdJoinQuery attributeJoin = JoinUtility.createIdJoinQuery();
    private final IdJoinQuery relationJoin = JoinUtility.createIdJoinQuery();
    private static final String UPDATE_TXS_NOT_CURRENT =
-         "update osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " where branch_id = ? AND gamma_id = ? and tx_current <> ? and transaction_id = ?";
+      "update osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " where branch_id = ? AND gamma_id = ? and tx_current <> ? and transaction_id = ?";
 
    public UpdatePreviousTxCurrent(Branch branch, OseeConnection connection) {
       this.branch = branch;
@@ -41,7 +41,7 @@ public class UpdatePreviousTxCurrent {
    }
 
    public void updateTxNotCurrents() throws OseeDataStoreException {
-      updateTxNotCurrents("osee_artifact_version", "art_id", artifactJoin);
+      updateTxNotCurrents("osee_arts", "art_id", artifactJoin);
       updateTxNotCurrents("osee_attribute", "attr_id", attributeJoin);
       updateTxNotCurrents("osee_relation_link", "rel_link_id", relationJoin);
    }
@@ -56,7 +56,7 @@ public class UpdatePreviousTxCurrent {
       List<Object[]> updateData = new ArrayList<Object[]>();
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       String query =
-            "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id idj, " + tableName + " item, osee_txs txs WHERE idj.query_id = ? and idj.id = item." + columnName + " AND item.gamma_id = txs.gamma_id AND txs.branch_id = ?";
+         "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id idj, " + tableName + " item, osee_txs txs WHERE idj.query_id = ? and idj.id = item." + columnName + " AND item.gamma_id = txs.gamma_id AND txs.branch_id = ?";
 
       try {
          chStmt.runPreparedQuery(10000, query, queryId, branch.getId());

@@ -20,7 +20,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -119,7 +119,7 @@ public class BuildTypeIdentifier {
                   streamReader.next();
                }
             } catch (XMLStreamException ex) {
-               throw new OseeWrappedException(ex);
+               OseeExceptions.wrapAndThrow(ex);
             } finally {
                Lib.close(reader);
             }
