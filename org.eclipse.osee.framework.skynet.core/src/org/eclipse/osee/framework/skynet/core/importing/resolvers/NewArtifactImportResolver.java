@@ -17,7 +17,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -81,9 +81,9 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
             artifact.setSoleAttributeFromStream(entry.getKey(), new BufferedInputStream(
                   entry.getValue().toURL().openStream()));
          } catch (MalformedURLException ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          } catch (IOException ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
    }

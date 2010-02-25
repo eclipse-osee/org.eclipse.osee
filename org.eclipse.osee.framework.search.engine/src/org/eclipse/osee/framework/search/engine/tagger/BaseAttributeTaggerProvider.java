@@ -13,7 +13,10 @@ package org.eclipse.osee.framework.search.engine.tagger;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -39,15 +42,19 @@ public abstract class BaseAttributeTaggerProvider implements IAttributeTaggerPro
       return Strings.isValid(value) ? value : WordsUtil.EMPTY_STRING;
    }
 
-   protected InputStream getValueAsStream(AttributeData attributeData) throws Exception {
+   protected InputStream getValueAsStream(AttributeData attributeData) throws OseeCoreException {
       InputStream inputStream = getExtendedDataAsStream(attributeData);
       if (inputStream == null) {
-         inputStream = new ByteArrayInputStream(attributeData.getStringValue().getBytes("UTF-8"));
+         try {
+            inputStream = new ByteArrayInputStream(attributeData.getStringValue().getBytes("UTF-8"));
+         } catch (UnsupportedEncodingException ex) {
+            OseeExceptions.wrapAndThrow(ex);
+         }
       }
       return inputStream;
    }
 
-   private InputStream getExtendedDataAsStream(AttributeData attributeData) throws Exception {
+   private InputStream getExtendedDataAsStream(AttributeData attributeData) throws OseeCoreException {
       InputStream toReturn = null;
       if (attributeData.isUriValid()) {
          Options options = new Options();

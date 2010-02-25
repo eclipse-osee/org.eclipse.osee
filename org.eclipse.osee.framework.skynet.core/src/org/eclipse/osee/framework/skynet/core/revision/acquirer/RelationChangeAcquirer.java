@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
@@ -46,16 +45,12 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
 
          //Changes per a branch
          if (hasBranch) {
+            fromTransactionId = getSourceBranch().getBaseTransaction();
+            toTransactionId = TransactionManager.getHeadTransaction(getSourceBranch());
             chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_RELATION),
-                  getSourceBranch().getId());
-
-            Pair<TransactionRecord, TransactionRecord> branchStartEndTransaction =
-                  TransactionManager.getStartEndPoint(getSourceBranch());
-
-            fromTransactionId = branchStartEndTransaction.getFirst();
-            toTransactionId = branchStartEndTransaction.getSecond();
-         }//Changes per a transaction
-         else {
+                  getSourceBranch().getId(), fromTransactionId.getId());
+         }
+         else {//Changes per a transaction
             toTransactionId = getTransaction();
 
             if (getSpecificArtifact() != null) {

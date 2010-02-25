@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -56,9 +53,9 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
 
    public String getTableSql(List<Object> dataList, Branch branch) {
       String transactionCheck =
-            fromTransactionNumber.equals(toTransactionNumber) ? TRANSACTIONS_TABLE.column("transaction_id") + " = ?" : TRANSACTIONS_TABLE.column("transaction_id") + " > ? " + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + " <= ?";
+            fromTransactionNumber.equals(toTransactionNumber) ? "txs.transaction_id = ?" : "txs.transaction_id > ? AND txs.transaction_id <= ?";
       String tables =
-            "(SELECT " + RELATION_LINK_VERSION_TABLE.columns("a_art_id") + " AS art_id " + " FROM " + RELATION_LINK_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + transactionCheck + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " UNION ALL SELECT " + RELATION_LINK_VERSION_TABLE.columns("b_art_id") + " AS art_id " + " FROM " + RELATION_LINK_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + transactionCheck + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + ") t1";
+            "(SELECT rel.a_art_id AS art_id FROM osee_relation_link rel, osee_txs txs WHERE rel.gamma_id = txs.gamma_id AND " + transactionCheck + " AND txs.branch_id = ? UNION ALL SELECT rel.b_art_id AS art_id FROM osee_relation_link rel, osee_txs txs WHERE rel.gamma_id = txs.gamma_id AND " + transactionCheck + " AND txs.branch_id=?) t1";
       if (!fromTransactionNumber.equals(toTransactionNumber)) {
          dataList.add(fromTransactionNumber);
       }

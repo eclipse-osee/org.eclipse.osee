@@ -8,9 +8,13 @@ Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
 Import-Package: org.eclipse.core.runtime,
+ org.eclipse.osee.framework.core.cache,
  org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.server,
+ org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,

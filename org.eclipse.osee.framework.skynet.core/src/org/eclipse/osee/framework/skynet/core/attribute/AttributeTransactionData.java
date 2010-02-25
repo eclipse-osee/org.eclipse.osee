@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SequenceManager;
@@ -80,7 +80,7 @@ public class AttributeTransactionData extends BaseTransactionData {
          try {
             HttpProcessor.delete(AttributeURL.getDeleteURL(daoToSql.getUri()));
          } catch (Exception ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
    }

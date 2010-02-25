@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.resource.management.IResource;
 
 /**
@@ -30,11 +30,13 @@ public class Resource implements IResource {
    }
 
    public InputStream getContent() throws OseeCoreException {
+      InputStream stream = null;
       try {
-         return uri.toURL().openStream();
+         stream = uri.toURL().openStream();
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
+      return stream;
    }
 
    public URI getLocation() {

@@ -27,10 +27,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class ArtifactTransactionData extends BaseTransactionData {
    private static final String INSERT_ARTIFACT =
-         "INSERT INTO osee_artifact (art_id, art_type_id, guid, human_readable_id) VALUES (?, ?, ?, ?)";
-
-   private static final String INSERT_ARTIFACT_VERSION =
-         "INSERT INTO osee_artifact_version (art_id, gamma_id) VALUES (?,?)";
+         "INSERT INTO osee_arts (gamma_id, art_id, art_type_id, guid, human_readable_id) VALUES (?,?,?,?,?)";
 
    private final Artifact artifact;
 
@@ -48,11 +45,8 @@ public class ArtifactTransactionData extends BaseTransactionData {
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
       if (!useExistingBackingData()) {
-         if (!artifact.isInDb()) {
-            internalAddInsertToBatch(transaction, 1, INSERT_ARTIFACT, artifact.getArtId(), artifact.getArtTypeId(),
-                  artifact.getGuid(), artifact.getHumanReadableId());
-         }
-         internalAddInsertToBatch(transaction, 2, INSERT_ARTIFACT_VERSION, getItemId(), getGammaId());
+         internalAddInsertToBatch(transaction, 1, INSERT_ARTIFACT, getGammaId(), artifact.getArtId(),
+               artifact.getArtTypeId(), artifact.getGuid(), artifact.getHumanReadableId());
       }
    }
 

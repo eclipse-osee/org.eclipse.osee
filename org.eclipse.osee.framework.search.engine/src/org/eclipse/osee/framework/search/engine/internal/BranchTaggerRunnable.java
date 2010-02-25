@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
@@ -55,7 +56,10 @@ public class BranchTaggerRunnable implements Runnable {
             String sql = AttributeDataStore.getAllTaggableGammasByBranchQuery(branchId);
             chStmt.runPreparedQuery(sql, AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
             while (chStmt.next()) {
-               addEntry(connection, chStmt.getLong("gamma_id"));
+               String taggerId = chStmt.getString("tagger_id");
+               if (Strings.isValid(taggerId)) {
+                  addEntry(connection, chStmt.getLong("gamma_id"));
+               }
             }
          } finally {
             chStmt.close();

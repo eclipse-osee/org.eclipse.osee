@@ -42,7 +42,7 @@ public class ArtifactQuery {
 
    /**
     * search for exactly one artifact by one its id - otherwise throw an exception
-    * 
+    *
     * @param artId the id of the desired artifact
     * @param branch
     * @return exactly one artifact by one its id - otherwise throw an exception
@@ -54,7 +54,7 @@ public class ArtifactQuery {
 
    /**
     * search for exactly one artifact by one its id - otherwise throw an exception
-    * 
+    *
     * @param artId the id of the desired artifact
     * @param branch
     * @param allowDeleted whether to return the artifact even if it has been deleted
@@ -75,7 +75,7 @@ public class ArtifactQuery {
 
    /**
     * Checks for existence of an artifact by id
-    * 
+    *
     * @param artifactId the id of the desired artifact
     * @param branch
     * @param allowDeleted whether to return the artifact even if it has been deleted
@@ -87,7 +87,7 @@ public class ArtifactQuery {
 
    /**
     * Checks for existence of an artifact by one its guid or human readable id - otherwise throw an exception
-    * 
+    *
     * @param guidOrHrid either the guid or human readable id of the desired artifact
     * @param branch
     * @param allowDeleted whether to return the artifact even if it has been deleted
@@ -99,7 +99,7 @@ public class ArtifactQuery {
 
    /**
     * Checks for existence of an artifact by one its guid or human readable id - otherwise throw an exception
-    * 
+    *
     * @param guidOrHrid either the guid or human readable id of the desired artifact
     * @param branch
     * @return one artifact by one its guid or human readable id if it exists, otherwise null
@@ -110,7 +110,7 @@ public class ArtifactQuery {
 
    /**
     * search for exactly one artifact by one its guid or human readable id - otherwise throw an exception
-    * 
+    *
     * @param guidOrHrid either the guid or human readable id of the desired artifact
     * @param branch
     * @return exactly one artifact by one its guid or human readable id - otherwise throw an exception
@@ -123,7 +123,7 @@ public class ArtifactQuery {
 
    /**
     * search for exactly one artifact by one its guid or human readable id - otherwise throw an exception
-    * 
+    *
     * @param guidOrHrid either the guid or human readable id of the desired artifact
     * @param branch
     * @param allowDeleted whether to return the artifact even if it has been deleted
@@ -148,7 +148,7 @@ public class ArtifactQuery {
 
    /**
     * search for exactly one artifact based on its type and name - otherwise throw an exception
-    * 
+    *
     * @return exactly one artifact based on its type and name - otherwise throw an exception
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
@@ -168,7 +168,7 @@ public class ArtifactQuery {
 
    /**
     * Checks for existence of an artifact based on its type and name
-    * 
+    *
     * @return one artifact based on its type and name if it exists, otherwise null
     */
    public static Artifact checkArtifactFromTypeAndName(IArtifactType artifactTypeToken, String artifactName, IOseeBranch branch) throws OseeCoreException {
@@ -178,7 +178,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts with any of the given artifact ids
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromIds(Collection<Integer> artifactIds, IOseeBranch branch) throws OseeCoreException {
@@ -187,7 +187,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts with any of the given artifact hrids or guids
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromIds(List<String> guidOrHrids, IOseeBranch branch) throws OseeCoreException {
@@ -226,7 +226,7 @@ public class ArtifactQuery {
    /**
     * search for exactly one artifact based on its type and an attribute of a given type and value - otherwise throw an
     * exception
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
@@ -244,7 +244,7 @@ public class ArtifactQuery {
    /**
     * search for exactly one artifact based on its type and an attribute of a given type and value - otherwise throw an
     * exception
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
@@ -302,7 +302,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts of the given type on a particular branch that satisfy the given criteria
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromTypeAnd(IArtifactType artifactType, IOseeBranch branch, int artifactCountEstimate, List<AbstractArtifactSearchCriteria> criteria) throws OseeCoreException {
@@ -311,7 +311,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts on a particular branch that satisfy the given criteria
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromCriteria(IOseeBranch branch, int artifactCountEstimate, List<AbstractArtifactSearchCriteria> criteria) throws OseeCoreException {
@@ -320,7 +320,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts on a particular branch that satisfy the given criteria
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromCriteria(IOseeBranch branch, int artifactCountEstimate, AbstractArtifactSearchCriteria... criteria) throws OseeCoreException {
@@ -329,7 +329,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts related
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getRelatedArtifactList(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
@@ -339,7 +339,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts by relation
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromRelation(RelationType relationType, RelationSide relationSide, IOseeBranch branch) throws OseeCoreException {
@@ -349,7 +349,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts of the given type with an attribute of the given type and value
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, IOseeBranch branch) throws OseeCoreException {
@@ -359,7 +359,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts of the given type with an attribute of the given type and value
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromTypeAndAttribute(IArtifactType artifactType, String attributeTypeName, String attributeValue, IOseeBranch branch) throws OseeCoreException {
@@ -435,7 +435,7 @@ public class ArtifactQuery {
     * </li>
     * </ul>
     * </p>
-    * 
+    *
     * @param queryString keywords to match
     * @param matchWordOrder <b>true</b> ensures the query string words exist in order; <b>false</b> matches words in any
     *           order
@@ -443,7 +443,7 @@ public class ArtifactQuery {
     * @param allowDeleted <b>true</b> includes deleted artifacts in results; <b>false</b> omits deleted artifacts
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getArtifactListFromAttributeKeywords(IOseeBranch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, boolean isCaseSensitive, String... attributeTypes) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromAttributeKeywords(IOseeBranch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, boolean isCaseSensitive, IAttributeType... attributeTypes) throws OseeCoreException {
       return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, isCaseSensitive, attributeTypes).getArtifacts(
             FULL, null, false, false, allowDeleted);
    }
@@ -451,12 +451,12 @@ public class ArtifactQuery {
    /**
     * Searches for keywords in attributes and returning match location information such as artifact where match was
     * found, attribute containing the match and match location in attribute data.
-    * 
+    *
     * @see #getArtifactsFromAttributeWithKeywords
     * @param findAllMatchLocations when set to <b>true</b> returns all match locations instead of just returning the
     *           first one. When returning all match locations, search performance may be slow.
     */
-   public static List<ArtifactMatch> getArtifactMatchesFromAttributeKeywords(IOseeBranch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, boolean findAllMatchLocations, boolean isCaseSensitive, String... attributeTypes) throws OseeCoreException {
+   public static List<ArtifactMatch> getArtifactMatchesFromAttributeKeywords(IOseeBranch branch, String queryString, boolean matchWordOrder, boolean allowDeleted, boolean findAllMatchLocations, boolean isCaseSensitive, IAttributeType... attributeTypes) throws OseeCoreException {
       return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, isCaseSensitive, attributeTypes).getArtifactsWithMatches(
             FULL, null, false, false, allowDeleted, findAllMatchLocations);
    }

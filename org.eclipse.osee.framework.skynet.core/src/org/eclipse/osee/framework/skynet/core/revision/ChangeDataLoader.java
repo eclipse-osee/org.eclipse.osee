@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.HttpChangeDataRequester;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
@@ -90,7 +89,7 @@ public class ChangeDataLoader {
             }
 
             monitor.subTask("Build Change Display Objects");
-            //The artifacts have been previously bulk loaded for performance      
+            //The artifacts have been previously bulk loaded for performance
             change = asChange(item, artifact, branch, fromTransactionId, toTransactionId, wasValue, isHistorical);
          } catch (Exception ex) {
             change = new ErrorChange(branch, item.getArtId(), ex.toString());
@@ -104,6 +103,8 @@ public class ChangeDataLoader {
 
    private Change asChange(ChangeItem item, Artifact artifact, IOseeBranch branch, TransactionRecord fromTransactionId, TransactionRecord toTransactionId, String wasValue, boolean isHistorical) throws OseeCoreException {
       Change change = null;
+      // TODO create artifact item
+      // HERE
       if (item instanceof ArtifactChangeItem) {
          change =
                new ArtifactChange(branch, artifact.getArtifactType(),
@@ -185,8 +186,8 @@ public class ChangeDataLoader {
          sourceTransactionId = transactionId;
       } else {
          destinationTransactionId =
-               TransactionManager.getLastTransaction(BranchManager.getBranch(sourceBranch).getParentBranch());
-         sourceTransactionId = TransactionManager.getLastTransaction(sourceBranch);
+               TransactionManager.getHeadTransaction(BranchManager.getBranch(sourceBranch).getParentBranch());
+         sourceTransactionId = TransactionManager.getHeadTransaction(sourceBranch);
       }
       ChangeReportResponse response =
             HttpChangeDataRequester.getChanges(sourceTransactionId, destinationTransactionId, monitor, isHistorical);

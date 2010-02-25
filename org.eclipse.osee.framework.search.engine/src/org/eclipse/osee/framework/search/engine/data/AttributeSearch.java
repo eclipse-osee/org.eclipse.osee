@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.SearchOptions;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
@@ -29,19 +30,14 @@ public final class AttributeSearch implements ITagCollector {
    private final int branchId;
    private final SearchOptions options;
    private final Set<Long> tagStore;
-   private final Set<String> attributeTypes;
+   private final AttributeType[] attributeTypes;
 
-   public AttributeSearch(String searchString, int branchId, SearchOptions options, String... attributeTypes) {
+   public AttributeSearch(String searchString, int branchId, SearchOptions options, AttributeType... attributeTypes) {
       this.tagStore = new HashSet<Long>();
       this.branchId = branchId;
       this.searchString = searchString;
       this.options = options;
-      this.attributeTypes = new HashSet<String>();
-      if (attributeTypes != null) {
-         for (String value : attributeTypes) {
-            this.attributeTypes.add(value);
-         }
-      }
+      this.attributeTypes = attributeTypes;
    }
 
    public Set<AttributeData> getMatchingAttributes() throws Exception {
@@ -52,6 +48,7 @@ public final class AttributeSearch implements ITagCollector {
       if (toReturn == null) {
          toReturn = Collections.emptySet();
       }
+
       OseeLog.log(AttributeSearch.class, Level.INFO, String.format("Attribute Search Query found [%d] in [%d] ms",
             toReturn.size(), System.currentTimeMillis() - start));
       return toReturn;

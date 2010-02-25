@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
@@ -63,14 +62,12 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          }
          //Changes per a branch
          if (hasBranch) {
+            fromTransactionId = getSourceBranch().getBaseTransaction();
+            toTransactionId = TransactionManager.getHeadTransaction(getSourceBranch());
             chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS),
-                  getSourceBranch().getId());
+                  getSourceBranch().getId(), fromTransactionId.getId());
 
-            Pair<TransactionRecord, TransactionRecord> branchStartEndTransaction =
-                  TransactionManager.getStartEndPoint(getSourceBranch());
 
-            fromTransactionId = branchStartEndTransaction.getFirst();
-            toTransactionId = branchStartEndTransaction.getSecond();
          }//Changes per transaction number
          else {
             toTransactionId = getTransaction();

@@ -34,20 +34,19 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.UpdateBranchOperation;
@@ -60,7 +59,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * Provides access to all branches as well as support for creating branches of all types
- * 
+ *
  * @author Ryan D. Brooks
  */
 public class BranchManager {
@@ -92,7 +91,7 @@ public class BranchManager {
 
    /**
     * Excludes branches of type MERGE and SYSTEM_ROOT
-    * 
+    *
     * @return branches that are not archived and are of type STANDARD, TOP_LEVEL, or BASELINE
     * @throws OseeCoreException
     */
@@ -105,7 +104,7 @@ public class BranchManager {
 
    /**
     * Excludes branches of type MERGE and SYSTEM_ROOT
-    * 
+    *
     * @return branches that are of type STANDARD, TOP_LEVEL, or BASELINE
     * @throws OseeCoreException
     */
@@ -164,7 +163,11 @@ public class BranchManager {
    }
 
    public static Branch getBranch(IOseeBranch branch) throws OseeCoreException {
-      return getBranchByGuid(branch.getGuid());
+      if (branch instanceof Branch) {
+         return (Branch) branch;
+      } else {
+         return getBranchByGuid(branch.getGuid());
+      }
    }
 
    public static Branch getBranchByGuid(String guid) throws OseeCoreException {
@@ -183,7 +186,15 @@ public class BranchManager {
     * returns the merge branch for this source destination pair from the cache or null if not found
     */
    public static MergeBranch getMergeBranch(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      return getCache().findMergeBranch(sourceBranch, destinationBranch);
+      BranchCache cache = getCache();
+      // If someone else made a branch on another machine, we may not know about it
+      // so refresh the cache.
+      MergeBranch mergeBranch = cache.findMergeBranch(sourceBranch, destinationBranch);
+      if (mergeBranch == null) {
+         cache.reloadCache();
+         mergeBranch = cache.findMergeBranch(sourceBranch, destinationBranch);
+      }
+      return mergeBranch;
    }
 
    public static boolean doesMergeBranchExist(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
@@ -224,7 +235,7 @@ public class BranchManager {
 
    /**
     * Update branch
-    * 
+    *
     * @param Job
     */
    public static Job updateBranch(final Branch branch, final ConflictResolverOperation resolver) {
@@ -235,7 +246,7 @@ public class BranchManager {
    /**
     * Completes the update branch operation by committing latest parent based branch with branch with changes. Then
     * swaps branches so we are left with the most current branch containing latest changes.
-    * 
+    *
     * @param Job
     */
    public static Job completeUpdateBranch(final ConflictManagerExternal conflictManager, final boolean archiveSourceBranch, final boolean overwriteUnresolvedConflicts) {
@@ -249,7 +260,7 @@ public class BranchManager {
       try {
          HttpPurgeBranchRequester.purge(branch);
       } catch (RuntimeException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
@@ -268,7 +279,7 @@ public class BranchManager {
    /**
     * Delete a branch from the system. (This operation will set the branch state to deleted. This operation is
     * undo-able)
-    * 
+    *
     * @param branchId
     */
    public static Job deleteBranch(final Branch branch) {
@@ -278,7 +289,7 @@ public class BranchManager {
    /**
     * Commit the net changes from the source branch into the destination branch. If there are conflicts between the two
     * branches, the source branch changes will override those on the destination branch.
-    * 
+    *
     * @param monitor
     * @param conflictManager
     * @param archiveSourceBranch
@@ -310,7 +321,7 @@ public class BranchManager {
 
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    * 
+    *
     * @param transactionIdNumber
     */
    public static void purgeTransactions(final int... transactionIdNumbers) {
@@ -319,12 +330,21 @@ public class BranchManager {
 
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    * 
+    *
     * @param transactionIdNumber
     */
    public static void purgeTransactions(IJobChangeListener jobChangeListener, final int... transactionIdNumbers) {
-      Jobs.startJob(new PurgeTransactionJob(transactionIdNumbers), jobChangeListener);
+      purgeTransactions(jobChangeListener, false, transactionIdNumbers);
+   }
 
+   /**
+    * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
+    *
+    * @param transactionIdNumber
+    */
+   public static Job purgeTransactions(IJobChangeListener jobChangeListener, boolean force, final int... transactionIdNumbers) {
+      IOperation op = new PurgeTransactionOperation(Activator.getInstance(), force, transactionIdNumbers);
+      return Operations.executeAsJob(op, true, Job.LONG, jobChangeListener);
    }
 
    /**
@@ -373,7 +393,7 @@ public class BranchManager {
 
    /**
     * Creates a new Branch based on the transaction number selected and the parent branch.
-    * 
+    *
     * @param parentTransactionId
     * @param childBranchName
     * @throws OseeCoreException
@@ -392,30 +412,30 @@ public class BranchManager {
 
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
-    * 
+    *
     * @param parentTransactionId
     * @param childBranchName
     * @throws OseeCoreException
     */
    public static Branch createWorkingBranch(IOseeBranch parentBranch, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
-      TransactionRecord parentTransactionId = TransactionManager.getLastTransaction(parentBranch);
+      TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(parentTransactionId, childBranchName, null, associatedArtifact);
    }
 
    public static Branch createWorkingBranch(IOseeBranch parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
-      TransactionRecord parentTransactionId = TransactionManager.getLastTransaction(parentBranch);
+      TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(parentTransactionId, childBranch.getName(), childBranch.getGuid(), associatedArtifact);
    }
 
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
-    * 
+    *
     * @param parentTransactionId
     * @param childBranchName
     * @throws OseeCoreException
     */
    public static Branch createBaselineBranch(IOseeBranch parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
-      TransactionRecord parentTransactionId = TransactionManager.getLastTransaction(parentBranch);
+      TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       String creationComment = String.format("Branch Creation for %s", childBranch.getName());
       return HttpBranchCreation.createBranch(BranchType.BASELINE, parentTransactionId.getId(),
             parentTransactionId.getBranch().getId(), childBranch.getName(), childBranch.getGuid(), associatedArtifact,
@@ -424,7 +444,7 @@ public class BranchManager {
 
    /**
     * Creates a new root branch, imports skynet types and initializes.
-    * 
+    *
     * @param branchName
     * @param initializeArtifacts adds common artifacts needed by most normal root branches
     * @throws Exception
@@ -439,6 +459,9 @@ public class BranchManager {
    }
 
    public static Branch createSystemRootBranch() throws OseeCoreException {
+      if (branchExists(CoreBranches.SYSTEM_ROOT)) {
+         throw new OseeStateException("System Root branch already exists");
+      }
       return HttpBranchCreation.createBranch(BranchType.SYSTEM_ROOT, 1, NULL_PARENT_BRANCH_ID,
             CoreBranches.SYSTEM_ROOT.getName(), CoreBranches.SYSTEM_ROOT.getGuid(), null,
             CoreBranches.SYSTEM_ROOT.getName() + " Creation", -1, -1);
@@ -469,6 +492,7 @@ public class BranchManager {
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
+
       }
    }
 
@@ -531,8 +555,7 @@ public class BranchManager {
    }
 
    public static boolean hasChanges(Branch branch) throws OseeCoreException {
-      Pair<TransactionRecord, TransactionRecord> transactions = TransactionManager.getStartEndPoint(branch);
-      return transactions.getFirst() != transactions.getSecond();
+      return branch.getBaseTransaction() != TransactionManager.getHeadTransaction(branch);
    }
 
    public static boolean isChangeManaged(Branch branch) throws OseeCoreException {

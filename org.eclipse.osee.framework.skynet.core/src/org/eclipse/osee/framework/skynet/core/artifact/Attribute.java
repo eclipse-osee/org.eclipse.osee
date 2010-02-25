@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -56,7 +56,7 @@ public abstract class Attribute<T> {
                providerClass.getConstructor(new Class[] {Attribute.class});
          attributeDataProvider = providerConstructor.newInstance(new Object[] {this});
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
 
       if (setDefaultValue) {
@@ -77,7 +77,7 @@ public abstract class Attribute<T> {
 
    /**
     * Base implementation does nothing. Subclasses may override to do setup that depends on the attribute state data.
-    * 
+    *
     * @throws OseeCoreException
     */
    protected void uponInitialize() throws OseeCoreException {
@@ -160,7 +160,7 @@ public abstract class Attribute<T> {
    /**
     * Subclasses must provide an implementation of this method and in general should not override the other set value
     * methods
-    * 
+    *
     * @param value
     * @throws OseeCoreException
     */
@@ -195,10 +195,6 @@ public abstract class Attribute<T> {
    protected void markAsChanged(ModificationType modificationType) throws OseeStateException {
       setDirtyFlag(true);
       this.modificationType = modificationType;
-
-      if (modificationType != ModificationType.ARTIFACT_DELETED) {
-         getArtifact().onAttributeModify();
-      }
 
       // Kick Local Event
       try {
@@ -247,7 +243,7 @@ public abstract class Attribute<T> {
 
    /**
     * Currently this method provides support for quasi attribute type inheritance
-    * 
+    *
     * @param artifactType
     * @return whether this attribute's type or any of its super-types are the specified type
     */
@@ -257,7 +253,7 @@ public abstract class Attribute<T> {
 
    /**
     * Currently this method provides support for quasi attribute type inheritance
-    * 
+    *
     * @param artifactType
     * @return whether this attribute's type or any of its super-types are the specified type
     */
@@ -271,7 +267,7 @@ public abstract class Attribute<T> {
 
    /**
     * Deletes the attribute
-    * 
+    *
     * @throws OseeStateException
     */
    public final void setArtifactDeleted() throws OseeStateException {
@@ -280,7 +276,7 @@ public abstract class Attribute<T> {
 
    /**
     * Deletes the attribute
-    * 
+    *
     * @throws OseeStateException
     */
    public final void delete() throws OseeStateException {

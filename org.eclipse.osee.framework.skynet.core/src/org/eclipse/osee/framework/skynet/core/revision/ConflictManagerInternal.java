@@ -18,9 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -35,7 +33,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
@@ -65,35 +62,17 @@ public class ConflictManagerInternal {
    private static final String GET_COMMIT_TRANSACTION_COMMENT =
          "SELECT transaction_id FROM osee_tx_details WHERE osee_comment = ? AND branch_id = ?";
 
-   private static final boolean DEBUG =
-         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
-
    private ConflictManagerInternal() {
    }
 
    public static List<Conflict> getConflictsPerBranch(TransactionRecord commitTransaction, IProgressMonitor monitor) throws OseeCoreException {
-      long time = System.currentTimeMillis();
-      long totalTime = time;
-
       monitor.beginTask(String.format("Loading Merge Manager for Transaction %d", commitTransaction.getId()), 100);
       monitor.subTask("Finding Database stored conflicts");
-      if (DEBUG) {
-         System.out.println(String.format("\nDiscovering Conflicts based on Transaction ID: %d",
-               commitTransaction.getId()));
-         totalTime = System.currentTimeMillis();
-      }
       ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();
-      if (DEBUG) {
-         System.out.println("Running Query to find conflicts stored in the DataBase");
-         time = System.currentTimeMillis();
-      }
       try {
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_HISTORICAL_ATTRIBUTES),
                commitTransaction.getId());
-         if (DEBUG) {
-            System.out.println(String.format("          Query finished in %s", Lib.getElapseString(time)));
-         }
          while (chStmt.next()) {
             AttributeConflict attributeConflict =
                   new AttributeConflict(chStmt.getInt("source_gamma_id"), chStmt.getInt("dest_gamma_id"),
@@ -101,16 +80,12 @@ public class ConflictManagerInternal {
                         chStmt.getInt("attr_id"), chStmt.getInt("attr_type_id"),
                         BranchManager.getBranch(chStmt.getInt("merge_branch_id")),
                         BranchManager.getBranch(chStmt.getInt("dest_branch_id")));
+            attributeConflict.setStatus(ConflictStatus.valueOf(chStmt.getInt("status")));
             conflicts.add(attributeConflict);
-
-            attributeConflict.setStatus(ConflictStatus.getStatus(chStmt.getInt("status")));
          }
-         monitor.done();
       } finally {
          chStmt.close();
-      }
-      if (DEBUG) {
-         debugDump(conflicts, totalTime);
+         monitor.done();
       }
       return conflicts;
    }
@@ -119,8 +94,8 @@ public class ConflictManagerInternal {
       @SuppressWarnings("unused")
       // This is for bulk loading so we do not loose are references
       Collection<Artifact> bulkLoadedArtifacts;
-      ArrayList<ConflictBuilder> conflictBuilders = new ArrayList<ConflictBuilder>();
-      ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
+      List<ConflictBuilder> conflictBuilders = new ArrayList<ConflictBuilder>();
+      List<Conflict> conflicts = new ArrayList<Conflict>();
       Set<Integer> artIdSet = new HashSet<Integer>();
       Set<Integer> artIdSetDontShow = new HashSet<Integer>();
       Set<Integer> artIdSetDontAdd = new HashSet<Integer>();
@@ -133,18 +108,10 @@ public class ConflictManagerInternal {
          } catch (TransactionDoesNotExist ex) {
          }
       }
-      long totalTime = 0;
       if (sourceBranch != null && destinationBranch != null) {
          monitor.beginTask(String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getId(),
                destinationBranch.getId()), 100);
          monitor.subTask("Finding Database stored conflicts");
-
-         if (DEBUG) {
-            System.out.println(String.format(
-                  "\nDiscovering Conflicts based on Source Branch: %d Destination Branch: %d", sourceBranch.getId(),
-                  destinationBranch.getId()));
-            totalTime = System.currentTimeMillis();
-         }
       }
       if (sourceBranch == null || destinationBranch == null) {
          throw new OseeArgumentException(String.format("Source Branch = %s Destination Branch = %s",
@@ -158,11 +125,12 @@ public class ConflictManagerInternal {
       //         BranchManager.persist(sourceBranch);
       //      }
 
-      int transactionId = findCommonTransaction(sourceBranch, destinationBranch);
+      TransactionRecord commonTransaction = findCommonTransaction(sourceBranch, destinationBranch);
+
       loadArtifactVersionConflictsNew(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
-            artIdSetDontShow, artIdSetDontAdd, monitor, transactionId);
+            artIdSetDontShow, artIdSetDontAdd, monitor, commonTransaction);
       loadAttributeConflictsNew(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
-            monitor, transactionId);
+            monitor, commonTransaction);
       for (Integer integer : artIdSetDontAdd) {
          artIdSet.remove(integer);
       }
@@ -170,9 +138,6 @@ public class ConflictManagerInternal {
          return conflicts;
       }
 
-      if (DEBUG) {
-         System.out.println(String.format(" Conflicts found in %s", Lib.getElapseString(totalTime)));
-      }
       monitor.subTask("Creating and/or maintaining the Merge Branch");
       Branch mergeBranch =
             BranchManager.getOrCreateMergeBranch(sourceBranch, destinationBranch, new ArrayList<Integer>(artIdSet));
@@ -184,35 +149,34 @@ public class ConflictManagerInternal {
 
       bulkLoadedArtifacts = preloadConflictArtifacts(sourceBranch, destinationBranch, mergeBranch, artIdSet, monitor);
 
-      long time = System.currentTimeMillis();
+      System.currentTimeMillis();
       //Don't create the conflicts for attributes on an artifact that is deleted etc.
       for (ConflictBuilder conflictBuilder : conflictBuilders) {
-         Conflict conflict = conflictBuilder.getConflict(mergeBranch, artIdSetDontShow);
+         Conflict conflict = getConflict(conflictBuilder, mergeBranch, artIdSetDontShow);
          if (conflict != null) {
             conflicts.add(conflict);
-            conflict.computeStatus();
          }
       }
-      if (DEBUG) {
-         System.out.println(String.format("    Creating conflict objects and setting their status to completed in %s",
-               Lib.getElapseString(time)));
-      }
       cleanUpConflictDB(conflicts, mergeBranch.getId(), monitor);
-      if (DEBUG) {
-         debugDump(conflicts, totalTime);
-      }
       return conflicts;
    }
 
+   private static Conflict getConflict(ConflictBuilder conflictBuilder, Branch mergeBranch, Set<Integer> artIdSetDontShow) throws OseeCoreException {
+      Conflict conflict = conflictBuilder.getConflict(mergeBranch, artIdSetDontShow);
+      if (conflict != null) {
+         try {
+            conflict.computeStatus();
+         } catch (OseeCoreException ex) {
+            throw ex;
+         }
+      }
+      return conflict;
+   }
+
    private static Collection<Artifact> preloadConflictArtifacts(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<Integer> artIdSet, IProgressMonitor monitor) throws OseeCoreException {
-      long time = 0;
       Collection<Artifact> artifacts = null;
 
       monitor.subTask("Preloading Artifacts Associated with the Conflicts");
-      if (DEBUG) {
-         System.out.println("Prelodaing Conflict Artifacts");
-         time = System.currentTimeMillis();
-      }
       if (artIdSet != null && !artIdSet.isEmpty()) {
          int queryId = ArtifactLoader.getNewQueryId();
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
@@ -227,9 +191,6 @@ public class ConflictManagerInternal {
          artifacts =
                ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, false, true);
       }
-      if (DEBUG) {
-         System.out.println(String.format("    Preloading took %s", Lib.getElapseString(time)));
-      }
       monitor.worked(25);
       return artifacts;
    }
@@ -243,27 +204,24 @@ public class ConflictManagerInternal {
     * @throws OseeCoreException
     */
 
-   private static void loadArtifactVersionConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IProgressMonitor monitor, int transactionId) throws OseeCoreException {
-      long time = 0;
-      if (DEBUG) {
-         System.out.println("Finding Artifact Version Conflicts");
-         System.out.println("    Running the Artifact Conflict Query");
-         time = System.currentTimeMillis();
-      }
+   private static void loadArtifactVersionConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IProgressMonitor monitor, TransactionRecord transactionId) throws OseeCoreException {
+      boolean hadEntries = false;
+
       monitor.subTask("Finding Artifact Version Conflicts");
+
       IOseeStatement chStmt = ConnectionHandler.getStatement();
-
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ARTIFACTS), sourceBranch.getId(),
-               destinationBranch.getId(), transactionId);
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ARTIFACTS),
+               sourceBranch.getId(),
+               sourceBranch.getBaseTransaction().getId(),
+               destinationBranch.getId(),
+               destinationBranch.getBaseTransaction().getId(),
+               transactionId != null ? transactionId.getId() : 0);
 
-         if (!chStmt.next()) {
-            return;
-         }
          ArtifactConflictBuilder artifactConflictBuilder;
          int artId = 0;
-
-         do {
+         while (chStmt.next()) {
+            hadEntries = true;
             int nextArtId = chStmt.getInt("art_id");
             int sourceGamma = chStmt.getInt("source_gamma");
             int destGamma = chStmt.getInt("dest_gamma");
@@ -287,16 +245,16 @@ public class ConflictManagerInternal {
                   artIdSetDontAdd.add(artId);
                }
             }
-         } while (chStmt.next());
+         }
       } finally {
          chStmt.close();
       }
-      if (DEBUG) {
-         System.out.println(String.format("         Query completed in %s ", Lib.getElapseString(time)));
-      }
-      monitor.worked(20);
-      for (Integer integer : artIdSet) {
-         artIdSetDontShow.add(integer);
+
+      if (hadEntries) {
+         monitor.worked(20);
+         for (Integer integer : artIdSet) {
+            artIdSetDontShow.add(integer);
+         }
       }
    }
 
@@ -307,19 +265,14 @@ public class ConflictManagerInternal {
     * @param conflicts
     * @throws OseeCoreException
     */
-   private static void loadAttributeConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IProgressMonitor monitor, int transactionId) throws OseeCoreException {
-      long time = 0;
-      if (DEBUG) {
-         System.out.println("Finding Attribute Version Conflicts");
-         System.out.println("    Running the Attribute Conflict Query");
-         time = System.currentTimeMillis();
-      }
+   private static void loadAttributeConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IProgressMonitor monitor, TransactionRecord transactionId) throws OseeCoreException {
       monitor.subTask("Finding the Attribute Conflicts");
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       AttributeConflictBuilder attributeConflictBuilder;
       try {
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ATTRIBUTES), sourceBranch.getId(),
-               destinationBranch.getId(), transactionId);
+               sourceBranch.getBaseTransaction().getId(), destinationBranch.getId(),
+               destinationBranch.getBaseTransaction().getId(), transactionId != null ? transactionId.getId() : 0);
 
          int attrId = 0;
 
@@ -348,16 +301,13 @@ public class ConflictManagerInternal {
       } finally {
          chStmt.close();
       }
-      if (DEBUG) {
-         System.out.println(String.format("         Query completed in %s ", Lib.getElapseString(time)));
-      }
       monitor.worked(30);
    }
 
    /**
     * Checks source branch hierarchy to see if the conflict gamma exists. If it does, its not a real conflict because
     * the source branch has already seen this change.
-    * 
+    *
     * @return Returns True if the AttributeConflict candidate is really a conflict.
     * @throws OseeCoreException
     */
@@ -384,36 +334,15 @@ public class ConflictManagerInternal {
     * @throws OseeDataStoreException
     */
    private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, Branch branch, int endTransactionNumber) throws OseeDataStoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
-      boolean isValidConflict;
-      try {
-         chStmt.runPreparedQuery(
-               "select 'x' from osee_tx_details t1, osee_txs t2 where t2.transaction_id = t1.transaction_id and t2.gamma_id = ? and t1.branch_id =? and t1.transaction_id <=?",
-               destinationGammaId, branch.getId(), endTransactionNumber);
-         isValidConflict = !chStmt.next();
-      } finally {
-         chStmt.close();
-      }
-      return isValidConflict;
-   }
-
-   private static void debugDump(Collection<Conflict> conflicts, long time) throws OseeCoreException {
-      int displayCount = 1;
-      System.out.println(String.format("Found %d conflicts in %s", conflicts.size(), Lib.getElapseString(time)));
-      for (Conflict conflict : conflicts) {
-         System.out.println(String.format(
-               "    %d. ArtId = %d, ChangeItem = %s, SourceGamma = %d, DestGamma = %d, Status = %s", displayCount++,
-               conflict.getArtId(), conflict.getChangeItem(), conflict.getSourceGamma(), conflict.getDestGamma(),
-               conflict.getStatus()));
-      }
+      String sql =
+            "select count(1) from osee_txs txs where txs.gamma_id = ? and txs.branch_id = ? and txs.transaction_id <= ?";
+      return ConnectionHandler.runPreparedQueryFetchInt(0, sql, destinationGammaId, branch.getId(),
+            endTransactionNumber) == 0;
    }
 
    private static void cleanUpConflictDB(Collection<Conflict> conflicts, int branchId, IProgressMonitor monitor) throws OseeCoreException {
-      int count = 0;
-      long time = System.currentTimeMillis();
       monitor.subTask("Cleaning up old conflict data");
       int queryId = ArtifactLoader.getNewQueryId();
-
       try {
          if (conflicts != null && conflicts.size() != 0 && branchId != 0) {
             Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
@@ -424,15 +353,10 @@ public class ConflictManagerInternal {
                      SQL3DataType.INTEGER});
             }
             ArtifactLoader.insertIntoArtifactJoin(insertParameters);
-            count = ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP, branchId, queryId);
+            ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP, branchId, queryId);
          }
       } finally {
          ArtifactLoader.clearQuery(queryId);
-      }
-
-      if (DEBUG) {
-         System.out.println(String.format("    Cleaned up %d conflicts that are no longer conflicting in %s ", count,
-               Lib.getElapseString(time)));
       }
       monitor.worked(10);
    }
@@ -475,26 +399,12 @@ public class ConflictManagerInternal {
       return transactionId;
    }
 
-   public static int getMergeBranchId(int sourceBranchId, int destBranchId) throws OseeCoreException {
-      int mergeBranchId = 0;
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
-      try {
-         chStmt.runPreparedQuery(GET_MERGE_DATA, sourceBranchId, destBranchId);
-         if (chStmt.next()) {
-            mergeBranchId = chStmt.getInt("merge_branch_id");
-         }
-      } finally {
-         chStmt.close();
-      }
-      return mergeBranchId;
-   }
-
    /**
     * The purpose of this function is find the transaction (Branch Create) that holds the last common values for two
     * branches that share a common history. If two branches share the same history than the point at which they diverged
     * should provide the reference for detecting conflicts based on the gamma at that point.
     */
-   private static int findCommonTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+   private static TransactionRecord findCommonTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       Collection<Branch> sourceBranches = sourceBranch.getAncestors();
       Collection<Branch> destBranches = destBranch.getAncestors();
       Branch commonBranch = null;
@@ -505,29 +415,37 @@ public class ConflictManagerInternal {
          }
       }
       if (commonBranch == null) {
-         throw new OseeCoreException(String.format("Can not find a common ancestor for Branch %s and Branch %s",
+         throw new OseeCoreException(String.format("Cannot find a common ancestor for Branch %s and Branch %s",
                sourceBranch.getShortName(), destBranch.getShortName()));
       }
-      int sourceTransaction = 0;
-      int destTransaction = 0;
+      TransactionRecord sourceTransaction = null;
+      TransactionRecord destTransaction = null;
       if (commonBranch.equals(destBranch)) {
-         destTransaction = Integer.MAX_VALUE;
+         destTransaction = TransactionManager.getHeadTransaction(commonBranch);
       } else {
          for (Branch branch : destBranches) {
             if (branch.getParentBranch().equals(commonBranch)) {
-               destTransaction = TransactionManager.getStartEndPoint(branch).getFirst().getId();
+               destTransaction = branch.getBaseTransaction();
                break;
             }
-
          }
       }
       for (Branch branch : sourceBranches) {
          if (branch.getParentBranch().equals(commonBranch)) {
-            sourceTransaction = TransactionManager.getStartEndPoint(branch).getFirst().getId();
+            sourceTransaction = branch.getBaseTransaction();
             break;
          }
       }
-      return sourceTransaction <= destTransaction ? sourceTransaction : destTransaction;
+
+      TransactionRecord toReturn = null;
+      if (sourceTransaction == null && destTransaction != null) {
+         toReturn = destTransaction;
+      } else if (sourceTransaction != null && destTransaction == null) {
+         toReturn = sourceTransaction;
+      } else {
+         toReturn = sourceTransaction.getId() <= destTransaction.getId() ? sourceTransaction : destTransaction;
+      }
+      return toReturn;
    }
 
 }

@@ -11,10 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.word;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -47,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 
 /**
  * Provides utility methods for parsing wordML.
- * 
+ *
  * @author Jeff C. Phillips
  * @author Paul K. Waldfogel
  */
@@ -55,12 +50,10 @@ public class WordUtil {
    public static final String BODY_START = "<w:body>";
    public static final String BODY_END = "</w:body>";
    private static final String[] NUMBER =
-      new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
+         new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
 
    private static final String SELECT_WORD_VALUES =
-         "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("content", "gamma_id") + " FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE art_id=? AND attr_type_id=? AND " + ATTRIBUTE_VERSION_TABLE.join(
-               TRANSACTIONS_TABLE, "gamma_id") + " AND " + TRANSACTIONS_TABLE.join(TRANSACTION_DETAIL_TABLE,
-               "transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? ORDER BY gamma_id DESC";
+         "SELECT attr.content, attr.gamma_id FROM osee_attribute attr, osee_txs txs WHERE attr.art_id=? AND attr.attr_type_id=? AND attr.gamma_id = txs.gamma_id AND txs.branch_id=? ORDER BY attr.gamma_id DESC";
    private static final Matcher binIdMatcher = Pattern.compile("wordml://(.+?)[.]").matcher("");
    private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
@@ -101,7 +94,7 @@ public class WordUtil {
    /**
     * Analyzes all successive versions of 'Word Formatted Content' for useful differences and removes versions that do
     * not provide and difference from the prior version.
-    * 
+    *
     * @throws IllegalArgumentException if branch is null
     * @return returns true if some addressing was removed, otherwise false
     * @throws OseeCoreException
@@ -174,7 +167,7 @@ public class WordUtil {
          chStmt.close();
       }
    }
-   
+
    public static String elementNameFor(String artifactName) {
       // Since artifact names are free text it is important to reformat the name
       // to ensure it is suitable as an element name
@@ -195,7 +188,6 @@ public class WordUtil {
 
       return elementName;
    }
-
 
    public static String textOnly(String str) {
       str = paragraphPattern.matcher(str).replaceAll(" ");
@@ -246,18 +238,19 @@ public class WordUtil {
 
    public final static String getGUIDFromFile(File file) throws IOException {
       String guid = null;
-      InputStream stream = new BufferedInputStream(new FileInputStream(file));
       byte[] myBytes = new byte[4096];
-      
-      try{
+
+      InputStream stream = null;
+      try {
+         stream = new BufferedInputStream(new FileInputStream(file));
          if (stream.read(myBytes) == -1) {
             throw new IOException("Buffer underrun");
          }
-      }finally{
+      } finally {
          Lib.close(stream);
       }
-      
-      String leadingPartOfFile = new String(myBytes);
+
+      String leadingPartOfFile = new String(myBytes, "UTF-8");
       String[] splitsBeforeAndAfter =
             leadingPartOfFile.split(Artifact.BEFORE_GUID_STRING + "|" + Artifact.AFTER_GUID_STRING);
       if (splitsBeforeAndAfter.length == 3) {

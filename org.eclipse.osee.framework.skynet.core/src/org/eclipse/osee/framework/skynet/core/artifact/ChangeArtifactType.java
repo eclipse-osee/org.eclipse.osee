@@ -19,8 +19,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -30,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
  * Changes the descriptor type of an artifact to the provided descriptor.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class ChangeArtifactType {
@@ -40,7 +42,7 @@ public class ChangeArtifactType {
 
    /**
     * Changes the descriptor of the artifacts to the provided artifact descriptor
-    * 
+    *
     * @param artifacts
     * @param artifactType
     */
@@ -54,7 +56,7 @@ public class ChangeArtifactType {
          processRelations(artifact, artifactType);
 
          if (doesUserAcceptArtifactChange(artifact, artifactType)) {
-            changeArtifactType(artifact, artifactType);
+            changeArtifactTypeThroughHistory(artifact, artifactType);
          }
       }
 
@@ -80,8 +82,8 @@ public class ChangeArtifactType {
 
    private static void getConflictString(StringBuffer results, Artifact artifact, ArtifactType artifactType) {
       results.append("There has been a conflict in changing artifact " + artifact.getGuid() + " - \"" + artifact.getName() + "\"" +
-      //
-      " to \"" + artifactType.getName() + "\" type. \n" + "The following data will need to be purged ");
+            //
+            " to \"" + artifactType.getName() + "\" type. \n" + "The following data will need to be purged ");
       for (RelationLink relationLink : relationsToDelete) {
          results.append("([Relation][" + relationLink + "])");
       }
@@ -94,7 +96,7 @@ public class ChangeArtifactType {
    /**
     * Splits the attributes of the current artifact into two groups. The attributes that are compatible for the new type
     * and the attributes that will need to be purged.
-    * 
+    *
     * @param artifact
     * @param descriptor
     */
@@ -111,7 +113,7 @@ public class ChangeArtifactType {
    /**
     * Splits the relationLinks of the current artifact into Two groups. The links that are compatible for the new type
     * and the links that will need to be purged.
-    * 
+    *
     * @param artifact
     * @param artifactType
     * @throws OseeCoreException
@@ -151,21 +153,28 @@ public class ChangeArtifactType {
 
    /**
     * Sets the artifact descriptor.
-    * 
+    *
     * @param artifact
-    * @param artifactType
+    * @param newArtifactType
     * @throws OseeCoreException
     */
-   private static void changeArtifactType(Artifact artifact, ArtifactType artifactType) throws OseeCoreException {
+   private static void changeArtifactTypeThroughHistory(Artifact artifact, ArtifactType newArtifactType) throws OseeCoreException {
       for (Attribute<?> attribute : attributesToPurge) {
          attribute.purge();
       }
-
       for (RelationLink relation : relationsToDelete) {
          relation.delete(true);
       }
 
-      artifact.changeArtifactType(artifactType);
+      ArtifactType originalType = artifact.getArtifactType();
+      artifact.setArtifactType(newArtifactType);
+      try {
+         ConnectionHandler.runPreparedUpdate("UPDATE osee_arts t1 SET t1.art_type_id = ? WHERE t1.art_id = ?",
+               newArtifactType.getId(), artifact.getArtId());
+      } catch (OseeDataStoreException ex) {
+         artifact.setArtifactType(originalType);
+      } finally {
+         artifact.clearEditState();
+      }
    }
-
 }

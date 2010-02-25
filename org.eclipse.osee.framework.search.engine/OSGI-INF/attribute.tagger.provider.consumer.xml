@@ -5,7 +5,7 @@
 		<provide interface="org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager"/>
 	</service>
 	<reference name="attribute.tagger.provider"
-		interface="org.eclipse.osee.framework.search.engine.IAttributeTaggerProvider"
+		interface="org.eclipse.osee.framework.search.engine.IAttributeTaggerProvider"	
 		bind="addAttributeTaggerProvider"
 		unbind="removeAttributeTaggerProvider"
 		cardinality="0..n"

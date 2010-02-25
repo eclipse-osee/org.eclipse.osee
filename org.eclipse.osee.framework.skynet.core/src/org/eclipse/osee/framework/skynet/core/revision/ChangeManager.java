@@ -97,7 +97,7 @@ public class ChangeManager {
       for (Artifact artifact : artifacts) {
          Branch branch = artifact.getBranch();
          artifactMap.put(artifact.getArtId(), branch, artifact);
-         int transactionNumber = TransactionManager.getLastTransaction(branch).getId();
+         int transactionNumber = TransactionManager.getHeadTransaction(branch).getId();
          insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getId(), transactionNumber});
 
          // for each combination of artifact and its branch hierarchy

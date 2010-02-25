@@ -22,11 +22,12 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -54,16 +55,16 @@ import org.xml.sax.helpers.XMLReaderFactory;
 final class HttpArtifactQuery {
    private final String queryString;
    private final boolean matchWordOrder;
-   private final String[] attributeTypes;
+   private final IAttributeType[] attributeTypes;
    private final boolean includeDeleted;
    private final IOseeBranch branch;
    private final boolean isCaseSensitive;
 
-   protected HttpArtifactQuery(IOseeBranch branch, String queryString, boolean matchWordOrder, boolean includeDeleted, boolean isCaseSensitive, String... attributeTypes) {
+   protected HttpArtifactQuery(IOseeBranch branch, String queryString, boolean matchWordOrder, boolean includeDeleted, boolean isCaseSensitive, IAttributeType... attributeTypes) {
       this.branch = branch;
       this.matchWordOrder = matchWordOrder;
       this.includeDeleted = includeDeleted;
-      this.attributeTypes = attributeTypes != null ? attributeTypes : new String[0];
+      this.attributeTypes = attributeTypes;
       this.queryString = queryString;
       this.isCaseSensitive = isCaseSensitive;
    }
@@ -82,7 +83,13 @@ final class HttpArtifactQuery {
       propertyStore.put("query", queryString);
       propertyStore.put("include deleted", includeDeleted);
       propertyStore.put("match word order", matchWordOrder);
-      propertyStore.put("attributeType", attributeTypes);
+
+      String[] attributeTypeGuids = new String[attributeTypes.length];
+      int index = 0;
+      for (IAttributeType attributeType: attributeTypes) {
+         attributeTypeGuids[index++] = attributeType.getGuid();
+      }
+      propertyStore.put("attributeType", attributeTypeGuids);
       propertyStore.put("case sensitive", isCaseSensitive);
 
       if (matchWordOrder) {
@@ -113,7 +120,7 @@ final class HttpArtifactQuery {
                }
             }
          } catch (Exception ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
       if (toReturn == null) {
@@ -165,7 +172,7 @@ final class HttpArtifactQuery {
                }
             }
          } catch (Exception ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
       return toReturn;
@@ -188,13 +195,13 @@ final class HttpArtifactQuery {
                   inputStream.toString(), httpRequestResult.getCode()));
          }
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       } finally {
          if (inputStream != null) {
             try {
                inputStream.close();
             } catch (Exception ex) {
-               throw new OseeWrappedException(ex);
+               OseeExceptions.wrapAndThrow(ex);
             }
          }
       }

@@ -12,7 +12,7 @@ import javax.jms.Message;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.messaging.internal.JAXBUtil;
 
 /**
@@ -32,7 +32,7 @@ class ActiveMqUtil {
             try {
                messageBody = JAXBUtil.unmarshal(text, clazz);
             } catch (UnsupportedEncodingException ex) {
-               throw new OseeWrappedException(ex);
+               OseeExceptions.wrapAndThrow(ex);
             }
          } else {
             messageBody = text;
@@ -64,7 +64,7 @@ class ActiveMqUtil {
          try {
             return JAXBUtil.marshal(body);
          } catch (UnsupportedEncodingException ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
       return body;

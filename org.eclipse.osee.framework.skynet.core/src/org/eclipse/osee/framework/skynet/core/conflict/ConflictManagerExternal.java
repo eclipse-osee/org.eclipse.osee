@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Donald G. Dunne
@@ -36,13 +35,13 @@ public class ConflictManagerExternal {
       if (originalConflicts == null) {
          originalConflicts =
                ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destinationBranch,
-                     TransactionManager.getStartEndPoint(sourceBranch).getFirst(), new NullProgressMonitor());
+                     sourceBranch.getBaseTransaction(), new NullProgressMonitor());
       }
       return originalConflicts;
    }
 
    public boolean originalConflictsExist() throws OseeCoreException {
-      return getOriginalConflicts().size() > 0;
+      return !getOriginalConflicts().isEmpty();
    }
 
    public List<Conflict> getRemainingConflicts() throws OseeCoreException {
@@ -58,7 +57,7 @@ public class ConflictManagerExternal {
    }
 
    public boolean remainingConflictsExist() throws OseeCoreException {
-      return getRemainingConflicts().size() > 0;
+      return !getRemainingConflicts().isEmpty();
    }
 
    public Branch getDestinationBranch() {

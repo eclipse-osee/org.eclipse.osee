@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -62,7 +64,7 @@ public class SkynetTransaction extends DbTransaction {
    private static final String UPDATE_TXS_NOT_CURRENT =
          "UPDATE osee_txs txs1 SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
    private static final String GET_EXISTING_ATTRIBUTE_IDS =
-         "SELECT att1.attr_id FROM osee_attribute att1, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE att1.attr_type_id = ? AND att1.art_id = ? AND att1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id <> ?";
+         "SELECT att1.attr_id FROM osee_attribute att1, osee_arts art1, osee_txs txs1 WHERE att1.attr_type_id = ? AND att1.art_id = ? AND att1.art_id = art1.art_id AND art1.gamma_id = txs1.gamma_id AND txs1.branch_id <> ?";
 
    private TransactionRecord transactionId;
 
@@ -71,6 +73,9 @@ public class SkynetTransaction extends DbTransaction {
 
    private final HashCollection<String, Object[]> dataItemInserts = new HashCollection<String, Object[]>();
    private final Map<Integer, String> dataInsertOrder = new HashMap<Integer, String>();
+
+   // Used to avoid garbage collection of artifacts until the transaction has been committed;
+   private final Set<Artifact> artifactReferences = new HashSet<Artifact>();
 
    private final Branch branch;
    private boolean madeChanges = false;
@@ -96,6 +101,7 @@ public class SkynetTransaction extends DbTransaction {
       dataInsertOrder.clear();
       transactionDataItems.clear();
       dataItemInserts.clear();
+      artifactReferences.clear();
       transactionId = null;
    }
 
@@ -175,7 +181,7 @@ public class SkynetTransaction extends DbTransaction {
 
       List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
       for (BaseTransactionData transactionData : transactionDataItems.values()) {
-         // Collect inserts for attribute, relation, artifact, and artifact version tables 
+         // Collect inserts for attribute, relation, artifact, and artifact version tables
          transactionData.addInsertToBatch(this);
 
          // Collect stale tx currents for batch update
@@ -222,24 +228,28 @@ public class SkynetTransaction extends DbTransaction {
       return transactionId;
    }
 
-   public void addArtifact(Artifact artifact) throws OseeCoreException {
+   public void addArtifactAndAttributes(Artifact artifact) throws OseeCoreException {
       checkBranch(artifact);
 
       if (artifact.isDeleted() && !artifact.isInDb()) {
          return;
       }
-
       madeChanges = true;
-      BaseTransactionData txItem = transactionDataItems.get(ArtifactTransactionData.class, artifact.getArtId());
-      if (txItem == null) {
-         txItem = new ArtifactTransactionData(artifact);
-         transactionDataItems.put(ArtifactTransactionData.class, artifact.getArtId(), txItem);
-      } else {
-         updateTxItem(txItem, artifact.getModType());
+
+      if (!artifact.isInDb() || artifact.hasDirtyArtifactType() || artifact.getModType().isDeleted()) {
+         BaseTransactionData txItem = transactionDataItems.get(ArtifactTransactionData.class, artifact.getArtId());
+         if (txItem == null) {
+            artifactReferences.add(artifact);
+            txItem = new ArtifactTransactionData(artifact);
+            transactionDataItems.put(ArtifactTransactionData.class, artifact.getArtId(), txItem);
+         } else {
+            updateTxItem(txItem, artifact.getModType());
+         }
       }
 
       for (Attribute<?> attribute : artifact.internalGetAttributes()) {
          if (attribute.isDirty()) {
+            artifactReferences.add(artifact);
             addAttribute(artifact, attribute);
          }
       }
@@ -266,7 +276,7 @@ public class SkynetTransaction extends DbTransaction {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       AttributeType attributeType = attribute.getAttributeType();
       int attrId = -1;
-      // reuse an existing attribute id when there should only be a max of one and it has already been created on another branch 
+      // reuse an existing attribute id when there should only be a max of one and it has already been created on another branch
       if (attributeType.getMaxOccurrences() == 1) {
          try {
             chStmt.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, attributeType.getId(), artifact.getArtId(),

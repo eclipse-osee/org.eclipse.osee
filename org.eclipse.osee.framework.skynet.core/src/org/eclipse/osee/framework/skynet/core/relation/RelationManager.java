@@ -59,12 +59,12 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  */
 public class RelationManager {
    // Indexed by ArtifactKey so that map does not hold strong reference to artifact which allows it to be garbage collected
-   // the branch is accounted for because artifactkey includes the branch id
+   // the branch is accounted for because artifact key includes the branch id
    private static final CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>> relationsByType =
          new CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>>(1024, true);
 
    private static final String GET_DELETED_ARTIFACT =
-         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) (SELECT DISTINCT ?, sysdate, %s_art_id, det.branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND %s_art_id = ? AND tx_current in (2, 3))";
+         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) (SELECT DISTINCT ?, sysdate, %s_art_id, det.branch_id, ? FROM osee_txs txs, osee_relation_link rel WHERE txs.branch_id = ? AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND %s_art_id = ? AND txs.tx_current in (" + ModificationType.MODIFIED.getValue() + "," + ModificationType.DELETED.getValue() + "))";
 
    private static RelationSorterProvider relationSorterProvider = new RelationSorterProvider();
    private static RelationOrderFactory relationOrderFactory = new RelationOrderFactory();

@@ -36,7 +36,7 @@ public abstract class BaseTransactionData {
       this.itemId = itemId;
    }
 
-   public boolean useExistingBackingData() {
+   protected boolean useExistingBackingData() {
       switch (modificationType) {
          case ARTIFACT_DELETED:
          case DELETED:
@@ -117,7 +117,7 @@ public abstract class BaseTransactionData {
 
    /**
     * Should not be called by application. This should only be called once after the transaction has been committed.
-    * 
+    *
     * @param events
     */
    protected abstract void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events) throws OseeCoreException;

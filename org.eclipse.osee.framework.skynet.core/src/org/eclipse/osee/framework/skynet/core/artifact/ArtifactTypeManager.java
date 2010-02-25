@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 /**
  * Contains methods specific to artifact types. All artifact methods will eventually be moved from the
  * ConfigurationPersistenceManager to here.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ArtifactTypeManager {
@@ -140,7 +140,7 @@ public class ArtifactTypeManager {
 
    /**
     * Get Artifact Types by type names.
-    * 
+    *
     * @return Returns the types with a particular name
     * @param artifactTypeNames names to get
     * @throws OseeDataStoreException
@@ -168,7 +168,7 @@ public class ArtifactTypeManager {
 
    /**
     * Get a new instance of type artifactTypeName
-    * 
+    *
     * @param artifactTypeName
     * @param branch
     * @throws OseeCoreException
@@ -183,7 +183,7 @@ public class ArtifactTypeManager {
 
    /**
     * Get a new instance of type artifactTypeName and set it's name.
-    * 
+    *
     * @param artifactTypeName
     * @param branch
     * @param name
@@ -203,7 +203,7 @@ public class ArtifactTypeManager {
    /**
     * Get a new instance of the type of artifact. This is just a convenience method that calls makeNewArtifact on the
     * known factory with this descriptor for the descriptor parameter, and the supplied branch.
-    * 
+    *
     * @param branch branch on which artifact will be created
     * @return Return artifact reference
     * @throws OseeCoreException
@@ -215,7 +215,7 @@ public class ArtifactTypeManager {
 
    private static final String DELETE_VALID_ATTRIBUTE =
          "delete from osee_artifact_type_attributes where art_type_id = ?";
-   private static final String COUNT_ARTIFACT_OCCURRENCE = "select count(1) FROM osee_artifact where art_type_id = ?";
+   private static final String COUNT_ARTIFACT_OCCURRENCE = "select count(1) from (select DISTINCT(art_id) FROM osee_arts where art_type_id = ?) t1";
    private static final String DELETE_ARIFACT_TYPE = "delete from osee_artifact_type where art_type_id = ?";
 
    public static void purgeArtifactType(final ArtifactType artifactType) throws OseeCoreException {
@@ -241,7 +241,7 @@ public class ArtifactTypeManager {
    /**
     * Given a set of artifact types, they will be converted to the new artifact type and the old artifact types will be
     * purged
-    * 
+    *
     * @param purgeArtifactTypes types to be converted and purged
     * @param newArtifactType new type to convert any existing artifacts of the old type
     * @throws OseeCoreException
@@ -273,7 +273,7 @@ public class ArtifactTypeManager {
    /**
     * Run code that will be run during purge with convert and report on what relations, attributes will be deleted as
     * part of the conversion.
-    * 
+    *
     * @param purgeArtifactTypes
     * @param newArtifactType
     * @throws OseeCoreException
@@ -304,7 +304,7 @@ public class ArtifactTypeManager {
     * Get a new instance of the type of artifact described by this descriptor. This is just a convenience method that
     * calls makeNewArtifact on the known factory with this descriptor for the descriptor parameter, and the supplied
     * branch.
-    * 
+    *
     * @return Return artifact reference
     * @throws OseeCoreException
     * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType)
@@ -318,7 +318,7 @@ public class ArtifactTypeManager {
     * Get a new instance of the type of artifact described by this descriptor. This is just a convenience method that
     * calls makeNewArtifact on the known factory with this descriptor for the descriptor parameter, and the supplied
     * branch.
-    * 
+    *
     * @param branch branch on which artifact will be created
     * @return Return artifact reference
     * @throws OseeCoreException

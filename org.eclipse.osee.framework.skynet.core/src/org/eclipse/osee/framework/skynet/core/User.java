@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -157,14 +157,14 @@ public class User extends Artifact {
          try {
             userSettings.save(stringWriter);
          } catch (Exception ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
          setSoleAttributeFromString("User Settings", stringWriter.toString());
          persist();
       }
    }
 
-   private void ensureUserSettingsAreLoaded() throws OseeWrappedException {
+   private void ensureUserSettingsAreLoaded() throws OseeCoreException {
       if (userSettings == null) {
          PropertyStore store = new PropertyStore(getGuid());
          try {
@@ -173,7 +173,7 @@ public class User extends Artifact {
                store.load(new StringReader(settings));
             }
          } catch (Exception ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
          userSettings = store;
       }

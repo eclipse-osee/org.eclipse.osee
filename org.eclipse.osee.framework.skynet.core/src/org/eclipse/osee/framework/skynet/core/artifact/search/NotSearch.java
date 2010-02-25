@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ARTIFACT_TABLE;
 import java.util.List;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -30,7 +29,7 @@ public class NotSearch implements ISearchPrimitive {
    }
 
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
-      return "NOT EXISTS(SELECT 'x' FROM (" + ArtifactPersistenceManager.getSelectArtIdSql(search, dataList, branch) + ") arts" + " WHERE " + ARTIFACT_TABLE.column("art_id") + "= arts." + search.getArtIdColName() + ")";
+      return "NOT EXISTS(SELECT 'x' FROM (" + ArtifactPersistenceManager.getSelectArtIdSql(search, dataList, branch) + ") arts" + " WHERE osee_arts.art_id = arts." + search.getArtIdColName() + ")";
    }
 
    public String getArtIdColName() {
@@ -38,7 +37,7 @@ public class NotSearch implements ISearchPrimitive {
    }
 
    public String getTableSql(List<Object> dataList, Branch branch) {
-      return ARTIFACT_TABLE.toString();
+      return "osee_arts";
    }
 
    public String getStorageString() {

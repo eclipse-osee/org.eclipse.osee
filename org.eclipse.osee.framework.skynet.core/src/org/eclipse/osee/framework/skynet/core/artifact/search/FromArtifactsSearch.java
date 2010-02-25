@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ARTIFACT_TABLE;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -23,18 +22,17 @@ import org.w3c.dom.Element;
  * @author Robert A. Fisher
  */
 public class FromArtifactsSearch implements ISearchPrimitive {
-   private static final String tables = ARTIFACT_TABLE.toString();
    private static final String FROM_ARTIFACT_ELEMENT = "FromArtifact";
 
-   private List<ISearchPrimitive> criteria;
-   private boolean all;
+   private final List<ISearchPrimitive> criteria;
+   private final boolean all;
 
    public String getArtIdColName() {
       return "art_id";
    }
 
    /**
-    * 
+    *
     */
    public FromArtifactsSearch(List<ISearchPrimitive> criteria, boolean all) {
       this.criteria = criteria;
@@ -53,16 +51,18 @@ public class FromArtifactsSearch implements ISearchPrimitive {
    }
 
    public String getTableSql(List<Object> dataList, Branch branch) {
-      return tables;
+      return "osee_arts";
    }
 
+   @Override
    public String toString() {
       StringBuilder sb = new StringBuilder();
 
       sb.append("(");
 
-      for (ISearchPrimitive primitive : criteria)
+      for (ISearchPrimitive primitive : criteria) {
          sb.append(primitive);
+      }
 
       sb.append(")");
 

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.EQUAL;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ARTIFACT_TABLE;
 import java.util.List;
 import org.eclipse.osee.framework.core.model.Branch;
 
@@ -19,8 +18,8 @@ import org.eclipse.osee.framework.core.model.Branch;
  * @author Robert A. Fisher
  */
 public class ArtifactHridSearch implements ISearchPrimitive {
-   private String humanReadableId;
-   private DeprecatedOperator operator;
+   private final String humanReadableId;
+   private final DeprecatedOperator operator;
 
    /**
     * @param humanReadableId The human readable id to search for
@@ -43,14 +42,14 @@ public class ArtifactHridSearch implements ISearchPrimitive {
    }
 
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
-      String sql = ARTIFACT_TABLE.column("human_readable_id") + operator + "?";
+      String sql = "osee_arts.human_readable_id" + operator + "?";
       dataList.add(humanReadableId);
 
       return sql;
    }
 
    public String getTableSql(List<Object> dataList, Branch branch) {
-      return ARTIFACT_TABLE.toString();
+      return "osee_arts";
    }
 
    @Override

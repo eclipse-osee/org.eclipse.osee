@@ -11,10 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.IS;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ATTRIBUTE_TYPE_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.List;
 import org.eclipse.osee.framework.core.model.Branch;
 
@@ -22,14 +18,10 @@ import org.eclipse.osee.framework.core.model.Branch;
  * @author Robert A. Fisher
  */
 public class AttributeValueSearch implements ISearchPrimitive {
-   private String attributeName;
+   private final String attributeName;
    private String attributeValue;
    private DeprecatedOperator operator;
-   private static final LocalAliasTable ATTRIBUTE_ALIAS_1 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "attr_1");
-   private static final LocalAliasTable ATTRIBUTE_ALIAS_2 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "attr_2");
-   private static final LocalAliasTable ATTRIBUTE_TYPE_ALIAS_1 =
-         new LocalAliasTable(ATTRIBUTE_TYPE_TABLE, "attr_type_1");
-   private static final String tables = ATTRIBUTE_ALIAS_1 + "," + ATTRIBUTE_TYPE_ALIAS_1 + "," + TRANSACTIONS_TABLE;
+   private static final String tables = "osee_attribute attr_1, osee_attribute_type attr_type_1, osee_txs txs";
    private final static String TOKEN = ";";
 
    public AttributeValueSearch(String attributeName) {
@@ -38,11 +30,15 @@ public class AttributeValueSearch implements ISearchPrimitive {
 
    public AttributeValueSearch(String attributeName, String attributeValue, DeprecatedOperator operator) {
 
-      if (attributeValue == null && operator != null) throw new IllegalArgumentException(
-            "An attributeValue must be supplied if an operator is supplied");
-      if (attributeValue != null && operator == null) throw new IllegalArgumentException(
-            "An operator must be supplied if an attributeValue is supplied");
-      if (attributeName == null) throw new IllegalArgumentException("attributeName can not be null");
+      if (attributeValue == null && operator != null) {
+         throw new IllegalArgumentException("An attributeValue must be supplied if an operator is supplied");
+      }
+      if (attributeValue != null && operator == null) {
+         throw new IllegalArgumentException("An operator must be supplied if an attributeValue is supplied");
+      }
+      if (attributeName == null) {
+         throw new IllegalArgumentException("attributeName can not be null");
+      }
 
       this.attributeName = attributeName;
 
@@ -60,28 +56,30 @@ public class AttributeValueSearch implements ISearchPrimitive {
    }
 
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
-      String sql;
+      StringBuilder sql = new StringBuilder();
 
-      if (operator == DeprecatedOperator.LIKE || operator == DeprecatedOperator.CONTAINS)
-         sql = ATTRIBUTE_TYPE_ALIAS_1.column("name") + " LIKE ?";
-      else
-         sql = ATTRIBUTE_TYPE_ALIAS_1.column("name") + "=?";
+      if (operator == DeprecatedOperator.LIKE || operator == DeprecatedOperator.CONTAINS) {
+         sql.append("attr_type_1.name LIKE ?");
+      } else {
+         sql.append("attr_type_1.name = ?");
+      }
       dataList.add(attributeName);
 
-      sql +=
-            " AND " + ATTRIBUTE_TYPE_ALIAS_1.column("attr_type_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_type_id") + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT max(osee_txs.transaction_id) FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_2.column("attr_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
+      sql.append(" AND attr_type_1.attr_type_id = attr_1.attr_type_id AND attr_1.gamma_id = txs.gamma_id AND txs.transaction_id = (SELECT max(osee_txs.transaction_id) FROM osee_attribute attr_2, osee_txs txs WHERE attr_2.attr_id = attr_1.attr_id AND attr_2.gamma_id = txs.gamma_id AND txs.branch_id = ?)");
 
       dataList.add(branch.getId());
 
       if (attributeValue != null) {
-         sql += " AND " + ATTRIBUTE_ALIAS_1.column("value") + operator + " ?";
-         if (operator == DeprecatedOperator.CONTAINS)
+         sql.append(" AND attr_1.value ");
+         sql.append(operator);
+         sql.append(" ?");
+         if (operator == DeprecatedOperator.CONTAINS) {
             dataList.add("%" + attributeValue + "%");
-         else
+         } else {
             dataList.add(attributeValue);
+         }
       }
-
-      return sql;
+      return sql.toString();
    }
 
    @Override
@@ -100,8 +98,9 @@ public class AttributeValueSearch implements ISearchPrimitive {
 
    public static AttributeValueSearch getPrimitive(String storageString) {
       String[] values = storageString.split(TOKEN);
-      if (values.length != 3) throw new IllegalStateException(
-            "Value for " + AttributeValueSearch.class.getSimpleName() + " not parsable");
+      if (values.length != 3) {
+         throw new IllegalStateException("Value for " + AttributeValueSearch.class.getSimpleName() + " not parsable");
+      }
 
       return new AttributeValueSearch(values[0], values[1], DeprecatedOperator.valueOf(values[2]));
    }

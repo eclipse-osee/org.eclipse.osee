@@ -14,7 +14,7 @@ import java.io.InputStream;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
@@ -53,20 +53,22 @@ public class WordAttribute extends StringAttribute {
 
    @Override
    public String getDisplayableString() throws OseeCoreException {
+      String toReturn = null;
       InputStream inputStream = null;
       try {
          inputStream = new XmlTextInputStream(getValue());
-         return Lib.inputStreamToString(inputStream);
+         toReturn = Lib.inputStreamToString(inputStream);
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       } finally {
          Lib.close(inputStream);
       }
+      return toReturn;
    }
 
    /**
     * Mainly used for testing purposes
-    * 
+    *
     * @return the noPopUps
     */
    public static boolean isNoPopUps() {
@@ -75,7 +77,7 @@ public class WordAttribute extends StringAttribute {
 
    /**
     * Mainly used for testing purposes
-    * 
+    *
     * @param noPopUps the noPopUps to set
     */
    public static void setNoPopUps(boolean noPopUps) {

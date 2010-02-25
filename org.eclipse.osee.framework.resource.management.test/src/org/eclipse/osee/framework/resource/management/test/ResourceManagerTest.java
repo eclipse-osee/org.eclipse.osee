@@ -21,7 +21,7 @@ import org.junit.Test;
 
 /**
  * Resource Manager Test {@link ResourceManager}
- * 
+ *
  * @author Andrew M. Finkbeiner
  */
 public class ResourceManagerTest {
@@ -197,13 +197,13 @@ public class ResourceManagerTest {
    //      Assert.assertFalse(rm.exists(actual));
    //   }
 
-   private void checkListener(MockResourceListener listener, boolean acquire, boolean save, boolean delete) {
-      Assert.assertEquals(acquire, listener.isPostAcquire());
-      Assert.assertEquals(acquire, listener.isPreAcquire());
-      Assert.assertEquals(save, listener.isPreSave());
-      Assert.assertEquals(save, listener.isPostSave());
-      Assert.assertEquals(delete, listener.isPreDelete());
-      Assert.assertEquals(delete, listener.isPostDelete());
-   }
+   //   private void checkListener(MockResourceListener listener, boolean acquire, boolean save, boolean delete) {
+   //      Assert.assertEquals(acquire, listener.isPostAcquire());
+   //      Assert.assertEquals(acquire, listener.isPreAcquire());
+   //      Assert.assertEquals(save, listener.isPreSave());
+   //      Assert.assertEquals(save, listener.isPostSave());
+   //      Assert.assertEquals(delete, listener.isPreDelete());
+   //      Assert.assertEquals(delete, listener.isPostDelete());
+   //   }
 
 }

@@ -10,27 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -41,21 +33,28 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Theron Virgin
  */
 public class UpdateMergeBranch extends DbTransaction {
+
+   private static final String TX_CURRENT_SETTINGS =
+         "CASE" + //
+         " WHEN txs1.mod_type = " + ModificationType.DELETED.getValue() + " THEN " + TxChange.DELETED.getValue() + //
+         " WHEN txs1.mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " THEN " + TxChange.ARTIFACT_DELETED.getValue() + //
+         " ELSE " + TxChange.CURRENT.getValue() + //
+         " END";
+
    private static final String UPDATE_ARTIFACTS =
-         "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT  ?, txs.gamma_id, txs.mod_type, CASE WHEN txs.mod_type = 3 THEN " + TxChange.DELETED.getValue() + " WHEN txs.mod_type = 5 THEN " + TxChange.ARTIFACT_DELETED.getValue() + " ELSE " + TxChange.CURRENT.getValue() + " END, txs.branch_id FROM osee_attribute attr, osee_txs txs, osee_tx_details det WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.tx_current != 0 AND txs.gamma_id = attr.gamma_id AND attr.art_id = ? AND not exists (SELECT 'x' FROM osee_txs txs1, osee_attribute attr1 WHERE txs1.transaction_id = ? AND txs1.gamma_id = attr1.gamma_id AND attr1.attr_id = attr.attr_id)";
+         "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, txs1.gamma_id, txs1.mod_type, " + TX_CURRENT_SETTINGS + ", txs1.branch_id FROM osee_attribute attr1, osee_txs txs1 WHERE attr1.art_id = ? AND txs1.gamma_id = attr1.gamma_id AND txs1.branch_id = ? AND txs1.tx_current <> ? AND NOT EXISTS (SELECT 'x' FROM osee_txs txs2, osee_attribute attr2 WHERE txs2.transaction_id = ? AND txs2.gamma_id = attr2.gamma_id AND attr2.attr_id = attr1.attr_id)";
 
    private static final String PURGE_BASELINE_ATTRIBUTE_TRANS =
-         "DELETE from " + TRANSACTIONS_TABLE + " T2 WHERE EXISTS (SELECT 'x' from " + TRANSACTION_DETAIL_TABLE + " T1, " + ATTRIBUTE_VERSION_TABLE + " T3 WHERE T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.tx_type = " + TransactionDetailsType.Baselined.getId() + " and T1.branch_id = ? and T3.art_id = ?)";
+         "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_attribute attr WHERE txs.gamma_id = attr.gamma_id AND txs.transaction_id = ? AND txs.branch_id = ? AND attr.art_id = ?)";
    private static final String PURGE_BASELINE_RELATION_TRANS =
-         "DELETE from " + TRANSACTIONS_TABLE + " T2 WHERE EXISTS (SELECT 'x' from " + TRANSACTION_DETAIL_TABLE + " T1, " + RELATION_LINK_VERSION_TABLE + " T3 WHERE T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.tx_type = " + TransactionDetailsType.Baselined.getId() + " and T1.branch_id = ? and (T3.a_art_id = ? or T3.b_art_id = ?))";
+         "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id AND txs.transaction_id = ? AND txs.branch_id = ? AND (rel.a_art_id = ? or rel.b_art_id = ?))";
    private static final String PURGE_BASELINE_ARTIFACT_TRANS =
-         "DELETE from " + TRANSACTIONS_TABLE + " T2 WHERE EXISTS (SELECT 'x' from " + TRANSACTION_DETAIL_TABLE + " T1, " + ARTIFACT_VERSION_TABLE + " T3 WHERE T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.tx_type = " + TransactionDetailsType.Baselined.getId() + " and T1.branch_id = ? and T3.art_id = ?)";
+         "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_arts art WHERE txs.gamma_id = art.gamma_id AND txs.transaction_id = ? AND txs.branch_id = ? AND art.art_id = ?)";
 
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
@@ -102,7 +101,7 @@ public class UpdateMergeBranch extends DbTransaction {
       }
       if (!allMergeBranchArtifactsCopy.isEmpty()) {
          for (Integer artifact : allMergeBranchArtifactsCopy) {
-            purgeArtifactFromBranch(connection, mergeBranch.getId(), artifact.intValue());
+            purgeArtifactFromBranch(connection, mergeBranch, artifact.intValue());
             count++;
          }
       }
@@ -120,7 +119,7 @@ public class UpdateMergeBranch extends DbTransaction {
       if (!allMergeBranchArtifacts.isEmpty()) {
          for (Integer artifact : allMergeBranchArtifacts) {
             count++;
-            purgeArtifactFromBranch(connection, mergeBranch.getId(), artifact.intValue());
+            purgeArtifactFromBranch(connection, mergeBranch, artifact.intValue());
          }
       }
       if (DEBUG) {
@@ -131,11 +130,11 @@ public class UpdateMergeBranch extends DbTransaction {
       }
       int numberAttrUpdated = 0;
       //Copy over any missing attributes
-      int baselineTransaction = TransactionManager.getStartEndPoint(mergeBranch).getFirst().getId();
+      int baselineTransaction = mergeBranch.getBaseTransaction().getId();
       for (Artifact artifact : goodMergeBranchArtifacts) {
          numberAttrUpdated +=
-               ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACTS, baselineTransaction, sourceBranch.getId(),
-                     artifact.getArtId(), baselineTransaction);
+               ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACTS, baselineTransaction, artifact.getArtId(),
+                     sourceBranch.getId(), TxChange.NOT_CURRENT.getValue(), baselineTransaction);
       }
       if (DEBUG) {
          System.out.println(String.format("          Adding %d Attributes to Existing Artifacts took %s",
@@ -161,14 +160,12 @@ public class UpdateMergeBranch extends DbTransaction {
    private final static String INSERT_ATTRIBUTE_GAMMAS =
          "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, atr1.gamma_id, txs1.mod_type, ?, ? FROM osee_attribute atr1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
    private final static String INSERT_ARTIFACT_GAMMAS =
-         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, arv1.gamma_id, txs1.mod_type, ?, ? FROM osee_artifact_version arv1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
+         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, arv1.gamma_id, txs1.mod_type, ?, ? FROM osee_arts arv1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
 
    private void addArtifactsToBranch(OseeConnection connection, Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIds) throws OseeCoreException {
       if (artIds == null || artIds.isEmpty()) {
          throw new IllegalArgumentException("Artifact IDs can not be null or empty");
       }
-
-      TransactionRecord startTransactionId = TransactionManager.getStartEndPoint(mergeBranch).getFirst();
 
       List<Object[]> datas = new LinkedList<Object[]>();
       int queryId = ArtifactLoader.getNewQueryId();
@@ -179,7 +176,7 @@ public class UpdateMergeBranch extends DbTransaction {
       }
       try {
          ArtifactLoader.insertIntoArtifactJoin(datas);
-         Integer startTransactionNumber = startTransactionId.getId();
+         Integer startTransactionNumber = mergeBranch.getBaseTransaction().getId();
          insertGammas(connection, INSERT_ATTRIBUTE_GAMMAS, startTransactionNumber, queryId, sourceBranch, mergeBranch);
          insertGammas(connection, INSERT_ARTIFACT_GAMMAS, startTransactionNumber, queryId, sourceBranch, mergeBranch);
       } catch (OseeCoreException ex) {
@@ -192,7 +189,7 @@ public class UpdateMergeBranch extends DbTransaction {
 
    private static void insertGammas(OseeConnection connection, String sql, int baselineTransactionNumber, int queryId, Branch sourceBranch, Branch mergeBranch) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(connection, sql, baselineTransactionNumber, TxChange.CURRENT.getValue(),
-                                          mergeBranch.getId(), sourceBranch.getId(), queryId);
+            mergeBranch.getId(), sourceBranch.getId(), queryId);
    }
 
    private static Collection<Integer> getAllMergeArtifacts(Branch branch) throws OseeCoreException {
@@ -201,8 +198,7 @@ public class UpdateMergeBranch extends DbTransaction {
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_ARTIFACTS_FOR_BRANCH),
-               branch.getId());
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_ARTIFACTS_FOR_BRANCH), branch.getId());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("art_id"));
          }
@@ -212,8 +208,7 @@ public class UpdateMergeBranch extends DbTransaction {
             time = System.currentTimeMillis();
          }
 
-         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_ATTRIBUTES_FOR_BRANCH),
-               branch.getId());
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_ATTRIBUTES_FOR_BRANCH), branch.getId());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("art_id"));
          }
@@ -224,8 +219,7 @@ public class UpdateMergeBranch extends DbTransaction {
             time = System.currentTimeMillis();
          }
 
-         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_RELATIONS_FOR_BRANCH),
-               branch.getId());
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_RELATIONS_FOR_BRANCH), branch.getId());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("a_art_id"));
             artSet.add(chStmt.getInt("b_art_id"));
@@ -250,16 +244,19 @@ public class UpdateMergeBranch extends DbTransaction {
     * Removes an artifact, it's attributes and any relations that have become invalid from the removal of this artifact
     * from the database. It also removes all history associated with this artifact (i.e. all transactions and gamma ids
     * will also be removed from the database only for the branch it is on).
-    * 
+    *
     * @param artifact
     */
-   private static void purgeArtifactFromBranch(OseeConnection connection, int branchId, int artId) throws OseeCoreException {
-      ArtifactPersistenceManager.revertArtifact(connection, branchId, artId);
+   private static void purgeArtifactFromBranch(OseeConnection connection, Branch branch, int artId) throws OseeCoreException {
+      int baseTxId = branch.getBaseTransaction().getId();
+      int branchId = branch.getId();
+
+      ArtifactPersistenceManager.revertArtifact(connection, branch, artId);
 
       //Remove from Baseline
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ATTRIBUTE_TRANS, branchId, artId);
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_RELATION_TRANS, branchId, artId, artId);
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ARTIFACT_TRANS, branchId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ATTRIBUTE_TRANS, baseTxId, branchId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_RELATION_TRANS, baseTxId, branchId, artId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ARTIFACT_TRANS, baseTxId, branchId, artId);
    }
 
 }

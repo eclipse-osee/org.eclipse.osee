@@ -14,7 +14,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.exception.InvalidTaggerException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProvider;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.MatchLocation;
@@ -27,7 +30,7 @@ import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
  */
 public class AttributeTaggerProviderManager implements IAttributeTaggerProviderManager {
 
-   private Map<String, IAttributeTaggerProvider> attributeTaggerProviders;
+   private final Map<String, IAttributeTaggerProvider> attributeTaggerProviders;
 
    public AttributeTaggerProviderManager() {
       this.attributeTaggerProviders = Collections.synchronizedMap(new HashMap<String, IAttributeTaggerProvider>());
@@ -47,22 +50,25 @@ public class AttributeTaggerProviderManager implements IAttributeTaggerProviderM
       }
    }
 
-   private IAttributeTaggerProvider getProvider(String taggerId) throws InvalidTaggerException {
-      IAttributeTaggerProvider toReturn = this.attributeTaggerProviders.get(taggerId);
+   private IAttributeTaggerProvider getProvider(int attrTypeId) throws OseeCoreException {
+      AttributeTypeCache typeCache = Activator.getInstance().getOseeCachingService().getAttributeTypeCache();
+      AttributeType attributeType = typeCache.getById(attrTypeId);
+      IAttributeTaggerProvider toReturn = this.attributeTaggerProviders.get(attributeType.getTaggerId());
       if (toReturn == null) {
          throw new InvalidTaggerException();
       }
       return toReturn;
    }
 
-   public void tagIt(AttributeData attributeData, ITagCollector collector) throws Exception {
-      IAttributeTaggerProvider provider = getProvider(attributeData.getTaggerId());
+   @Override
+   public void tagIt(AttributeData attributeData, ITagCollector collector) throws OseeCoreException {
+      IAttributeTaggerProvider provider = getProvider(attributeData.getAttrTypeId());
       provider.tagIt(attributeData, collector);
    }
 
    @Override
-   public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws Exception {
-      IAttributeTaggerProvider provider = getProvider(attributeData.getTaggerId());
+   public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws OseeCoreException {
+      IAttributeTaggerProvider provider = getProvider(attributeData.getAttrTypeId());
       return provider.find(attributeData, toSearch, options);
    }
 

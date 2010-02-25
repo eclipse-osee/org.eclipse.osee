@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.EQUAL;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -21,11 +20,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
  * @author Robert A. Fisher
  */
 public class InRelationSearch implements ISearchPrimitive {
-   private static final LocalAliasTable LINK_ALIAS_1 = new LocalAliasTable("osee_relation_link", "rel_1");
-   private static final LocalAliasTable LINK_ALIAS_2 = new LocalAliasTable("osee_relation_link", "rel_2");
-   private static final LocalAliasTable LINK_TYPE_ALIAS_1 =
-         new LocalAliasTable("OSEE_RELATION_LINK_TYPE", "rel_type_1");
-   private static final String relationTables = LINK_TYPE_ALIAS_1 + "," + LINK_ALIAS_1 + ", osee_txs ";
+   private static final String relationTables =
+         "osee_relation_link_type rel_type_1,osee_relation_link rel_1, osee_txs txs1";
    private final static String TOKEN = ";";
    private final String[] typeNames;
    private final boolean sideA;
@@ -43,7 +39,7 @@ public class InRelationSearch implements ISearchPrimitive {
     * Search for an artifact on at least one of several different types of relations. All of the
     * <code>RelationSide</code>'s must be for the same side, that is all sideB or all sideA. This restriction is in
     * place to optimize SQL performance.
-    * 
+    *
     * @param firstSide
     * @param sides
     * @throws IllegalArgumentException if the sides are a mixture of sideA and sideB relation sides.
@@ -56,7 +52,7 @@ public class InRelationSearch implements ISearchPrimitive {
     * Search for an artifact on at least one of several different types of relations. All of the
     * <code>RelationSide</code>'s must be for the same side, that is all sideB or all sideA. This restriction is in
     * place to optimize SQL performance.
-    * 
+    *
     * @param otherArtifacts
     * @param firstSide
     * @param sides
@@ -106,7 +102,7 @@ public class InRelationSearch implements ISearchPrimitive {
 
       boolean first = true;
 
-      sql.append(LINK_TYPE_ALIAS_1.column("rel_link_type_id") + EQUAL + LINK_ALIAS_1.column("rel_link_type_id"));
+      sql.append("rel_type_1.rel_link_type_id = rel_1.rel_link_type_id");
 
       sql.append(" AND ");
 
@@ -120,7 +116,7 @@ public class InRelationSearch implements ISearchPrimitive {
             first = false;
          }
 
-         sql.append(LINK_TYPE_ALIAS_1.column("type_name") + "=?");
+         sql.append("rel_type_1.type_name = ?");
          dataList.add(typeName);
       }
       if (typeNames.length > 1) {
@@ -128,11 +124,11 @@ public class InRelationSearch implements ISearchPrimitive {
       }
 
       if (otherArtifactsCriteria != null) {
-         sql.append(" AND " + LINK_ALIAS_1.column((!sideA ? "a_art_id" : "b_art_id")) + " IN (" + ArtifactPersistenceManager.getSelectArtIdSql(
-               otherArtifactsCriteria, dataList, branch) + ")");
+         sql.append(" AND ");
+         sql.append(!sideA ? "rel_1.a_art_id" : "rel_1.b_art_id");
+         sql.append(" IN (" + ArtifactPersistenceManager.getSelectArtIdSql(otherArtifactsCriteria, dataList, branch) + ")");
       }
-
-      sql.append(" AND " + LINK_ALIAS_1.column("gamma_id") + "=" + SkynetDatabase.TRANSACTIONS_TABLE.column("gamma_id") + " AND " + SkynetDatabase.TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT max(osee_tx_details.transaction_id) FROM " + LINK_ALIAS_2 + "," + SkynetDatabase.TRANSACTIONS_TABLE + "," + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_2.column("rel_link_id") + "=" + LINK_ALIAS_1.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + "=" + SkynetDatabase.TRANSACTIONS_TABLE.column("gamma_id") + " AND " + SkynetDatabase.TRANSACTIONS_TABLE.column("transaction_id") + "=" + SkynetDatabase.TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + SkynetDatabase.TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)" + " AND " + SkynetDatabase.TRANSACTIONS_TABLE.column("mod_type") + "<>?");
+      sql.append(" AND rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = (SELECT max(txs1.transaction_id) FROM osee_relation_link rel2, osee_txs txs1 WHERE rel2.rel_link_id = rel1.rel_link_id AND rel2.gamma_id = txs1.gamma_id AND txs1.branch_id = ? AND txs1.mod_type <>?");
 
       dataList.add(branch.getId());
       dataList.add(ModificationType.DELETED.getValue());
@@ -147,7 +143,6 @@ public class InRelationSearch implements ISearchPrimitive {
    @Override
    public String toString() {
       return "In Relation: " + typeNames + " from";
-      //"side " + ((sideA)?"A":"B");
    }
 
    public String getStorageString() {

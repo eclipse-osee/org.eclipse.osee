@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.skynet.core.importing.operations;
 import java.io.File;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
@@ -79,7 +79,7 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
       } catch (OseeCoreException ex) {
          throw ex;
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
       // pass through all the collected items
       collector.addAllRoughArtifacts(tempCollector.getRoughArtifacts());

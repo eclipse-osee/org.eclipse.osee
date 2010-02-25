@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.search.engine.internal;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
@@ -28,14 +29,14 @@ import org.eclipse.osee.framework.search.engine.data.AttributeSearch;
  */
 public class SearchEngine implements ISearchEngine {
 
-   private SearchStatistics statistics;
+   private final SearchStatistics statistics;
 
    public SearchEngine() {
       this.statistics = new SearchStatistics();
    }
 
    @Override
-   public SearchResult search(String searchString, int branchId, SearchOptions options, String... attributeTypes) throws Exception {
+   public SearchResult search(String searchString, int branchId, SearchOptions options, AttributeType... attributeTypes) throws Exception {
       SearchResult results = new SearchResult();
 
       long startTime = System.currentTimeMillis();

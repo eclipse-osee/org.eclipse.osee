@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -24,14 +25,16 @@ public class ConflictStatusManager {
 
    private static final String MERGE_UPDATE_STATUS =
          "UPDATE osee_conflict SET status = ? WHERE source_gamma_id = ? AND dest_gamma_id = ? AND merge_branch_id = ?";
+   private static final String MERGE_INSERT_STATUS =
+      "INSERT INTO osee_conflict ( conflict_id, merge_branch_id, source_gamma_id, dest_gamma_id, status, conflict_type) VALUES ( ?, ?, ?, ?, ?, ?)";
+
    private static final String MERGE_ATTRIBUTE_STATUS =
-         "SELECT source_gamma_id, dest_gamma_id, status  FROM osee_conflict WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
+         "SELECT source_gamma_id, dest_gamma_id, status FROM osee_conflict WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
    private static final String MERGE_UPDATE_GAMMAS =
          "UPDATE osee_conflict SET source_gamma_id = ?, dest_gamma_id = ?, status = ? WHERE merge_branch_id = ? AND conflict_id = ? AND conflict_type = ?";
    private static final String MERGE_BRANCH_GAMMAS =
          "UPDATE osee_txs SET gamma_id = ? where (transaction_id, gamma_id) = (SELECT tx.transaction_id, tx.gamma_id FROM osee_txs tx, osee_attribute atr WHERE tx.transaction_id = ? AND atr.gamma_id = tx.gamma_id AND atr.attr_id = ? )";
-   private static final String MERGE_INSERT_STATUS =
-         "INSERT INTO osee_conflict ( conflict_id, merge_branch_id, source_gamma_id, dest_gamma_id, status, conflict_type) VALUES ( ?, ?, ?, ?, ?, ?)";
+
 
    public static void setStatus(ConflictStatus status, int sourceGamma, int destGamma, int mergeBranchId) throws OseeDataStoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
@@ -44,7 +47,7 @@ public class ConflictStatusManager {
       }
    }
 
-   public static ConflictStatus computeStatus(int sourceGamma, int destGamma, int branchID, int objectID, int conflictType, ConflictStatus passedStatus, int transactionId) throws OseeDataStoreException {
+   public static ConflictStatus computeStatus(int sourceGamma, int destGamma, int branchID, int objectID, int conflictType, ConflictStatus passedStatus, int transactionId) throws OseeCoreException {
       //Check for a value in the table, if there is not one in there then
       //add it with an unedited setting and return unedited
       //If gammas are out of date, update the gammas and down grade markedMerged to Edited
@@ -56,7 +59,7 @@ public class ConflictStatusManager {
          if (chStmt.next()) {
             //There was an entry so lets check it and update it.
             int intStatus = chStmt.getInt("status");
-            if (((chStmt.getInt("source_gamma_id") != sourceGamma) || (chStmt.getInt("dest_gamma_id") != destGamma)) && intStatus != ConflictStatus.COMMITTED.getValue()) {
+            if ((chStmt.getInt("source_gamma_id") != sourceGamma || chStmt.getInt("dest_gamma_id") != destGamma) && intStatus != ConflictStatus.COMMITTED.getValue()) {
                if (intStatus == ConflictStatus.RESOLVED.getValue() || intStatus == ConflictStatus.PREVIOUS_MERGE_APPLIED_SUCCESS.getValue()) {
                   intStatus = ConflictStatus.OUT_OF_DATE_RESOLVED.getValue();
                }
@@ -72,7 +75,7 @@ public class ConflictStatusManager {
             if (intStatus == ConflictStatus.NOT_RESOLVABLE.getValue() || intStatus == ConflictStatus.INFORMATIONAL.getValue() || passedStatus == ConflictStatus.NOT_RESOLVABLE || passedStatus == ConflictStatus.INFORMATIONAL) {
                intStatus = passedStatus.getValue();
             }
-            return ConflictStatus.getStatus(intStatus);
+            return ConflictStatus.valueOf(intStatus);
          }
          // add the entry to the table and set as UNTOUCHED
       } finally {

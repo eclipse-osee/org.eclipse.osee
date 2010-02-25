@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.xml.sax.Attributes;
@@ -61,9 +61,9 @@ public class RelationOrderParser {
             xmlReader.setContentHandler(new RelationOrderSaxHandlerLite(data));
             xmlReader.parse(new InputSource(new StringReader(value)));
          } catch (SAXException ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          } catch (IOException ex) {
-            throw new OseeWrappedException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
    }

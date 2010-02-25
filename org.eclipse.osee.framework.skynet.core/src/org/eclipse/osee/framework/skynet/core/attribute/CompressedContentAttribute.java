@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 public final class CompressedContentAttribute extends BinaryAttribute<InputStream> {
@@ -41,7 +41,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
             response = getAttributeDataProvider().setValue(ByteBuffer.wrap(data));
          }
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
       if (response) {
          markAsChanged(ModificationType.MODIFIED);

@@ -54,7 +54,7 @@ public final class RevisionChangeLoader {
       ArrayList<Change> changes = new ArrayList<Change>();
       Branch branch = artifact.getBranch();
       ArrayList<TransactionRecord> transactionIds = new ArrayList<TransactionRecord>();
-      recurseBranches(branch, artifact, transactionIds, TransactionManager.getLastTransaction(branch));
+      recurseBranches(branch, artifact, transactionIds, TransactionManager.getHeadTransaction(branch));
 
       for (TransactionRecord transactionId : transactionIds) {
          changes.addAll(getChanges(null, transactionId, monitor, artifact));
@@ -76,7 +76,7 @@ public final class RevisionChangeLoader {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(
-               "SELECT /*+ ordered */ txs.transaction_id from osee_artifact_version arv, osee_txs txs where arv.art_id = ? and arv.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <=?",
+               "SELECT /*+ ordered */ txs.transaction_id from osee_arts arv, osee_txs txs where arv.art_id = ? and arv.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <=?",
                artifact.getArtId(), branch.getId(), transactionId.getId());
 
          while (chStmt.next()) {
@@ -120,18 +120,18 @@ public final class RevisionChangeLoader {
       monitor.beginTask("Find Changes", 100);
 
       ArtifactChangeAcquirer artifactChangeAcquirer =
-            new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
-                  newAndDeletedArtifactIds);
+         new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
+               newAndDeletedArtifactIds);
       changeBuilders = artifactChangeAcquirer.acquireChanges();
 
       AttributeChangeAcquirer attributeChangeAcquirer =
-            new AttributeChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
-                  newAndDeletedArtifactIds);
+         new AttributeChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
+               newAndDeletedArtifactIds);
       changeBuilders = attributeChangeAcquirer.acquireChanges();
 
       RelationChangeAcquirer relationChangeAcquirer =
-            new RelationChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
-                  newAndDeletedArtifactIds);
+         new RelationChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
+               newAndDeletedArtifactIds);
       changeBuilders = relationChangeAcquirer.acquireChanges();
 
       monitor.subTask("Loading Artifacts from the Database");
@@ -147,10 +147,10 @@ public final class RevisionChangeLoader {
                   historical ? transactionId.getId() : SQL3DataType.INTEGER});
          }
          bulkLoadedArtifacts =
-               ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, true);
+            ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, true);
       }
 
-      //We build the changes after the artifact loader has been run so we can take advantage of bulk loading. 
+      //We build the changes after the artifact loader has been run so we can take advantage of bulk loading.
       for (ChangeBuilder builder : changeBuilders) {
          changes.add(builder.build(branch));
       }

@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -75,7 +76,7 @@ public class ArtifactQueryBuilder {
 
    /**
     * search for artifacts with the given ids
-    * 
+    *
     * @param artifactIds list of artifact ids
     * @param branch
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
@@ -176,8 +177,7 @@ public class ArtifactQueryBuilder {
       }
 
       nextAliases.put("osee_txs", new NextAlias("txs"));
-      nextAliases.put("osee_artifact", new NextAlias("art"));
-      nextAliases.put("osee_artifact_version", new NextAlias("arv"));
+      nextAliases.put("osee_arts", new NextAlias("art"));
       nextAliases.put("osee_attribute", new NextAlias("att"));
       nextAliases.put("osee_relation_link", new NextAlias("rel"));
       nextAliases.put("osee_join_char_id", new NextAlias("jch"));
@@ -195,6 +195,9 @@ public class ArtifactQueryBuilder {
    }
 
    private String getArtifactSelectSql() throws OseeCoreException {
+      //      sql.delete(0, sql.length());
+      //      firstTable = true;
+      //      queryParameters.clear();
       if (count) {
          sql.append("SELECT%s count(%s.art_id) FROM ");
       } else {
@@ -207,19 +210,17 @@ public class ArtifactQueryBuilder {
          }
       }
 
-      String artAlias, artvAlias, txsAlias;
+      String artAlias, txsAlias;
       String jguidAlias = "";
       if (tableOrderForward) {
-         if (guids != null && guids.size() > 0) {
+         if (guids != null && !guids.isEmpty()) {
             jguidAlias = appendAliasedTable("osee_join_char_id");
          }
-         artAlias = appendAliasedTable("osee_artifact");
-         artvAlias = appendAliasedTable("osee_artifact_version");
+         artAlias = appendAliasedTable("osee_arts");
          txsAlias = appendAliasedTable("osee_txs");
       } else {
          txsAlias = appendAliasedTable("osee_txs");
-         artvAlias = appendAliasedTable("osee_artifact_version");
-         artAlias = appendAliasedTable("osee_artifact");
+         artAlias = appendAliasedTable("osee_arts");
          if (guids != null && guids.size() > 0) {
             jguidAlias = appendAliasedTable("osee_join_char_id");
          }
@@ -229,13 +230,13 @@ public class ArtifactQueryBuilder {
       sql.append(" WHERE ");
 
       if (artifactId != 0) {
-         sql.append(artvAlias);
+         sql.append(artAlias);
          sql.append(".art_id=? AND ");
          addParameter(artifactId);
       }
 
       if (artifactIds != null) {
-         sql.append(artvAlias);
+         sql.append(artAlias);
          sql.append(".art_id IN (" + Collections.toString(",", artifactIds) + ") AND ");
       }
       if (artifactTypes != null) {
@@ -303,10 +304,6 @@ public class ArtifactQueryBuilder {
       }
 
       sql.append(artAlias);
-      sql.append(".art_id = ");
-      sql.append(artvAlias);
-      sql.append(".art_id AND ");
-      sql.append(artvAlias);
       sql.append(".gamma_id = ");
       sql.append(txsAlias);
       sql.append(".gamma_id AND ");
@@ -337,12 +334,24 @@ public class ArtifactQueryBuilder {
       List<String> paramList = new ArrayList<String>();
       paramList.add(ClientSessionManager.getSql(OseeSql.QUERY_BUILDER));
       if (count) {
-         paramList.add(artvAlias);
+         paramList.add(artAlias);
       } else {
-         paramList.add(artvAlias);
+         paramList.add(artAlias);
          paramList.add(txsAlias);
       }
-      return String.format(sql.toString(), paramList.toArray());
+
+      String query = null;
+      try {
+         query = String.format(sql.toString(), paramList.toArray());
+      } catch (Exception ex) {
+         StringBuilder builder = new StringBuilder();
+         builder.append("Error formatting SQL: [");
+         builder.append(sql.toString());
+         builder.append("] params:");
+         builder.append(paramList);
+         throw new OseeWrappedException(builder.toString(), ex);
+      }
+      return query;
    }
 
    private void addToGuidJoin() throws OseeDataStoreException {
@@ -503,7 +512,7 @@ public class ArtifactQueryBuilder {
       }
       Collection<Artifact> artifacts = getArtifacts(1, null);
 
-      if (artifacts.size() == 0) {
+      if (artifacts.isEmpty()) {
          if (queryType.equals(QueryType.CHECK)) {
             return null;
          }

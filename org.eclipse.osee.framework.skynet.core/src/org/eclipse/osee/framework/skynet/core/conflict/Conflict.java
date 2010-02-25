@@ -71,9 +71,7 @@ public abstract class Conflict implements IAdaptable {
          if (commitTransactionId == null) {
             sourceArtifact = ArtifactQuery.getArtifactFromId(artId, sourceBranch, true);
          } else {
-            sourceArtifact =
-                  ArtifactQuery.getHistoricalArtifactFromId(artId,
-                        TransactionManager.getStartEndPoint(mergeBranch).getFirst(), true);
+            sourceArtifact = ArtifactQuery.getHistoricalArtifactFromId(artId, mergeBranch.getBaseTransaction(), true);
          }
       }
       return sourceArtifact;
@@ -156,8 +154,7 @@ public abstract class Conflict implements IAdaptable {
       }
       status =
             ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getId(), objectID,
-                  getConflictType().getValue(), passedStatus,
-                  TransactionManager.getStartEndPoint(mergeBranch).getFirst().getId());
+                  getConflictType().getValue(), passedStatus, mergeBranch.getBaseTransaction().getId());
       return status;
    }
 

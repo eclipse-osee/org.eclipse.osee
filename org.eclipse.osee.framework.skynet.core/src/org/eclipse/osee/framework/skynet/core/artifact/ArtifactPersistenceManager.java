@@ -17,13 +17,12 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -42,24 +41,26 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 public class ArtifactPersistenceManager {
 
    private static final String GET_GAMMAS_ARTIFACT_REVERT =
-         "SELECT txs1.gamma_id, txd1.tx_type, txs1.transaction_id  FROM osee_tx_details txd1, osee_txs  txs1, osee_attribute atr1 where txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = atr1.gamma_id and txd1.branch_id = ? and atr1.art_id = ? UNION ALL SELECT txs2.gamma_id, txd2.tx_type, txs2.transaction_id FROM osee_tx_details txd2, osee_txs txs2, osee_relation_link rel2 where txd2.transaction_id = txs2.transaction_id and txs2.gamma_id = rel2.gamma_id and txd2.branch_id = ? and (rel2.a_art_id = ? or rel2.b_art_id = ?) UNION ALL SELECT txs3.gamma_id, txd3.tx_type, txs3.transaction_id FROM osee_tx_details txd3, osee_txs txs3, osee_artifact_version art3 where txd3.transaction_id = txs3.transaction_id and txs3.gamma_id = art3.gamma_id and txd3.branch_id = ? and art3.art_id = ?";
+         "SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, osee_attribute attr1 WHERE txs1.gamma_id = attr1.gamma_id and txs1.branch_id = ? and attr1.art_id = ? " + //
+         "UNION ALL SELECT txs2.gamma_id, txs2.transaction_id FROM osee_txs txs2, osee_relation_link rel2 WHERE txs2.gamma_id = rel2.gamma_id AND txs2.branch_id = ? AND (rel2.a_art_id = ? or rel2.b_art_id = ?) " + //
+         "UNION ALL SELECT txs3.gamma_id, txs3.transaction_id FROM osee_txs txs3, osee_arts art3 WHERE txs3.gamma_id = art3.gamma_id AND txs3.branch_id = ? AND art3.art_id = ?";
 
    private static final String GET_GAMMAS_RELATION_REVERT =
-         "SELECT txs2.gamma_id, txd2.tx_type, txs2.transaction_id FROM osee_tx_details txd2, osee_txs txs2, osee_relation_link rel2 where txd2.transaction_id = txs2.transaction_id and txs2.gamma_id = rel2.gamma_id and txd2.branch_id = ? and rel2.rel_link_id = ?";
+         "SELECT txs.gamma_id, txs.transaction_id FROM osee_txs txs, osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id AND txs.branch_id = ? AND rel.rel_link_id = ?";
 
    private static final String GET_GAMMAS_ATTRIBUTE_REVERT =
-         "SELECT txs2.gamma_id, txd2.tx_type, txs2.transaction_id FROM osee_tx_details txd2, osee_txs txs2, osee_attribute atr2 where txd2.transaction_id = txs2.transaction_id and txs2.gamma_id = atr2.gamma_id and txd2.branch_id = ? and atr2.attr_id = ?";
+         "SELECT txs.gamma_id, txs.transaction_id FROM osee_txs txs, osee_attribute attr WHERE txs.gamma_id = attr.gamma_id AND txs.branch_id = ? AND attr.attr_id = ?";
 
    private static final String ARTIFACT_SELECT =
-         "SELECT osee_artifact.art_id, txd1.branch_id FROM osee_artifact, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE " + "osee_artifact.art_id=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
+         "SELECT art1.art_id, txs1.branch_id FROM osee_arts art1, osee_txs txs1 WHERE art1.gamma_id = txs1.gamma_id AND txs1.tx_current = " + TxChange.CURRENT.getValue() + " AND txs1.branch_id = ? AND ";
 
-   private static final String ARTIFACT_ID_SELECT = "SELECT osee_artifact.art_id FROM osee_artifact WHERE ";
+   private static final String ARTIFACT_ID_SELECT = "SELECT art1.art_id FROM osee_arts art1 WHERE ";
 
    private static final String ARTIFACT_NEW_ON_BRANCH =
-         "select txd.tx_type from osee_artifact_version arv, osee_txs txs, osee_tx_details txd WHERE arv.art_id = ? and arv.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id = txd.transaction_id and txd.tx_type = 1";
+         "SELECT count(1) FROM osee_arts art, osee_txs txs WHERE art.art_id = ? and art.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id = ?";
 
    private static final String RELATION_NEW_ON_BRANCH =
-         "select txd.tx_type from osee_relation_link rel, osee_txs txs, osee_tx_details txd WHERE rel.a_art_id = ? and rel.b_art_id = ? and rel.rel_link_type_id = ? and rel.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id = txd.transaction_id and txd.tx_type = 1";
+         "SELECT count(1) FROM osee_relation_link rel, osee_txs txs WHERE rel.a_art_id = ? and rel.b_art_id = ? and rel.rel_link_type_id = ? and rel.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id = ?";
 
    public static CharSequence getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, Branch branch) {
       return getSelectArtIdSql(searchCriteria, dataList, null, branch);
@@ -101,7 +102,7 @@ public class ArtifactPersistenceManager {
 
          while (iter.hasNext()) {
             primitive = iter.next();
-            sql.append("osee_artifact.art_id" + " in (");
+            sql.append("art1.art_id in (");
             sql.append(getSelectArtIdSql(primitive, dataList, branch));
 
             if (iter.hasNext()) {
@@ -113,7 +114,7 @@ public class ArtifactPersistenceManager {
          ISearchPrimitive primitive = null;
          Iterator<ISearchPrimitive> iter = searchCriteria.iterator();
 
-         sql.append("osee_artifact.art_id IN(SELECT art_id FROM osee_artifact, (");
+         sql.append("art1.art_id IN(SELECT art_id FROM osee_arts art1, (");
 
          while (iter.hasNext()) {
             primitive = iter.next();
@@ -158,17 +159,17 @@ public class ArtifactPersistenceManager {
       for (Artifact artifact : artifacts) {
          deleteTrace(artifact, transaction, true);
       }
-   }
+      }
 
    private static void performDeleteChecks(Artifact... artifacts) throws OseeCoreException {
-      // Confirm artifacts are fit to delete
-      for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-         IStatus result = check.isDeleteable(Arrays.asList(artifacts));
-         if (!result.isOK()) {
-            throw new OseeStateException(result.getMessage());
+         // Confirm artifacts are fit to delete
+         for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
+            IStatus result = check.isDeleteable(Arrays.asList(artifacts));
+            if (!result.isOK()) {
+               throw new OseeStateException(result.getMessage());
+            }
          }
       }
-   }
 
    private static Collection<Integer> bulkLoadArtifacts(Artifact... artifacts) {
       Collection<Integer> artIds = new LinkedList<Integer>();
@@ -216,7 +217,7 @@ public class ArtifactPersistenceManager {
       TransactionRecord transId =
             TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
       long totalTime = System.currentTimeMillis();
-      // Get attribute Gammas
+      //Get attribute Gammas
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       RevertAction revertAction = null;
       try {
@@ -234,60 +235,55 @@ public class ArtifactPersistenceManager {
     * yet
     */
    public static void revertRelationLink(OseeConnection connection, RelationLink link) throws OseeCoreException {
+     
       // Only reverts relation links that don't span multiple branches. Need
       // to revisit if additional functionality is needed.
       if (!link.getArtifactA().getBranch().equals(link.getArtifactB().getBranch())) {
-         throw new OseeArgumentException(String.format("Can not revert Relation %d. Relation spans multiple branches",
+         throw new OseeArgumentException(String.format("Cannot revert Relation %d. Relation spans multiple branches",
                link.getRelationId()));
       }
-      revertRelationLink(connection, link.getArtifactA().getBranch().getId(), link.getRelationId(),
-            link.getArtifactA().getArtId(), link.getArtifactB().getArtId());
-   }
-
-   private static void revertRelationLink(OseeConnection connection, int branchId, int relLinkId, int aArtId, int bArtId) throws BranchDoesNotExist, OseeCoreException {
-      long time = System.currentTimeMillis();
-      long totalTime = time;
+      long totalTime = System.currentTimeMillis();
+      Branch branch = link.getArtifactA().getBranch();
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
-
-      TransactionRecord transId =
-            TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
-
       try {
-         chStmt.runPreparedQuery(GET_GAMMAS_RELATION_REVERT, branchId, relLinkId);
-         new RevertAction(connection, chStmt, transId).revertObject(totalTime, relLinkId, "Relation Link");
+         chStmt.runPreparedQuery(GET_GAMMAS_RELATION_REVERT, branch.getId(), link.getRelationId());
+         TransactionRecord transId = TransactionManager.createNextTransactionId(branch, UserManager.getUser(), "");
+         RevertAction revertAction = new RevertAction(connection, chStmt, transId);
+         revertAction.revertObject(totalTime, link.getRelationId(), "Relation Link");
       } finally {
          chStmt.close();
       }
    }
 
    public static void revertArtifact(OseeConnection connection, Artifact artifact) throws OseeCoreException {
-      if (artifact == null) {
-         return;
-      }
-      revertArtifact(connection, artifact.getBranch().getId(), artifact.getArtId());
+      Conditions.checkNotNull(artifact, "Artifact to revert");
+      revertArtifact(connection, artifact.getBranch(), artifact.getArtId());
    }
 
-   public static void revertArtifact(OseeConnection connection, int branchId, int artId) throws OseeCoreException {
-      TransactionRecord transId =
-            TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
+   public static void revertArtifact(OseeConnection connection, Branch branch, int artId) throws OseeCoreException {
       long totalTime = System.currentTimeMillis();
-      // Get attribute Gammas
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
+         int branchId = branch.getId();
          chStmt.runPreparedQuery(GET_GAMMAS_ARTIFACT_REVERT, branchId, artId, branchId, artId, artId, branchId, artId);
-         new RevertAction(connection, chStmt, transId).revertObject(totalTime, artId, "Artifact");
+         TransactionRecord transId = TransactionManager.createNextTransactionId(branch, UserManager.getUser(), "");
+         RevertAction revertAction = new RevertAction(connection, chStmt, transId);
+         revertAction.revertObject(totalTime, artId, "Artifact");
       } finally {
          chStmt.close();
       }
    }
 
-   public static boolean isArtifactNewOnBranch(Artifact artifact) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedQueryFetchInt(-1, ARTIFACT_NEW_ON_BRANCH, artifact.getBranch().getId(),
-            artifact.getArtId()) == -1;
+   public static boolean isArtifactNewOnBranch(Artifact artifact) throws OseeCoreException {
+      Branch branch = artifact.getBranch();
+      return ConnectionHandler.runPreparedQueryFetchInt(0, ARTIFACT_NEW_ON_BRANCH, artifact.getArtId(), branch.getId(),
+            branch.getBaseTransaction().getId()) == 0;
    }
 
-   public static boolean isRelationNewOnBranch(RelationLink relation) throws OseeDataStoreException {
+   public static boolean isRelationNewOnBranch(RelationLink relation) throws OseeCoreException {
+      Branch branch = relation.getABranch();
       return ConnectionHandler.runPreparedQueryFetchInt(-1, RELATION_NEW_ON_BRANCH, relation.getAArtifactId(),
-            relation.getBArtifactId(), relation.getRelationType().getId(), relation.getABranch().getId()) == -1;
+            relation.getBArtifactId(), relation.getRelationType().getId(), branch.getId(),
+            branch.getBaseTransaction().getId()) == 0;
    }
 }

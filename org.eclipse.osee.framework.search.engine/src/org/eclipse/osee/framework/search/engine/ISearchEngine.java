@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine;
 
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.search.engine.internal.SearchStatistics;
 
 /**
@@ -20,7 +21,7 @@ public interface ISearchEngine {
    /**
     * Searches tagged items for matches meeting criteria specified. If branchId is less than 0, search will include all
     * branches in the system.
-    * 
+    *
     * @param searchString
     * @param branchId
     * @param options
@@ -28,11 +29,11 @@ public interface ISearchEngine {
     * @return search result
     * @throws Exception
     */
-   public SearchResult search(String searchString, int branchId, SearchOptions options, String... attributeTypes) throws Exception;
+   public SearchResult search(String searchString, int branchId, SearchOptions options, AttributeType... attributeTypes) throws Exception;
 
    /**
     * Get statistics
-    * 
+    *
     * @return search statistics
     */
    SearchStatistics getStatistics();

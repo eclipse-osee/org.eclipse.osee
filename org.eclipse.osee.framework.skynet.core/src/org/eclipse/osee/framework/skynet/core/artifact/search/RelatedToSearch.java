@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -21,9 +18,7 @@ import org.eclipse.osee.framework.core.model.Branch;
  * @author Robert A. Fisher
  */
 public class RelatedToSearch implements ISearchPrimitive {
-   private static final LocalAliasTable LINK_ALIAS_1 = new LocalAliasTable(RELATION_LINK_VERSION_TABLE, "rel_1");
-   private static final LocalAliasTable LINK_ALIAS_2 = new LocalAliasTable(RELATION_LINK_VERSION_TABLE, "rel_2");
-   private static final String TABLES = LINK_ALIAS_1 + "," + TRANSACTIONS_TABLE;
+   private static final String TABLES = "osee_relation_link rel_1,osee_txs txs";
    private static final String TOKEN = ";";
    private final int artId;
    private final boolean sideA;
@@ -43,8 +38,9 @@ public class RelatedToSearch implements ISearchPrimitive {
    }
 
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
+      String sideName = "rel_1." + getArtIdColName();
       String sql =
-            LINK_ALIAS_1.column((sideA ? "b" : "a") + "_art_id") + "=?" + " AND " + LINK_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT max(osee_tx_details.transaction_id) FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_2.column("rel_link_id") + "=" + LINK_ALIAS_1.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)" + " AND " + TRANSACTIONS_TABLE.column("mod_type") + "<>?";
+            sideName + " = ? AND rel_1.gamma_id = txs.gamma_id AND txs.transaction_id = (SELECT max(txs.transaction_id) FROM osee_relation_link rel_2, osee_txs txs WHERE rel_2.rel_link_id = rel_1.rel_link_id AND rel_2.gamma_id = txs.gamma_id AND txs.branch_id = ?) AND txs.mod_type <>?";
 
       dataList.add(artId);
       dataList.add(branch.getId());
@@ -57,14 +53,16 @@ public class RelatedToSearch implements ISearchPrimitive {
       return TABLES;
    }
 
+   @Override
    public String toString() {
       return "Related to art_id: " + artId + " on side: " + (sideA ? "A" : "B");
    }
 
    public static RelatedToSearch getPrimitive(String storageString) {
       String[] values = storageString.split(TOKEN);
-      if (values.length != 2) throw new IllegalStateException(
-            "Value for " + RelatedToSearch.class.getSimpleName() + " not parsable");
+      if (values.length != 2) {
+         throw new IllegalStateException("Value for " + RelatedToSearch.class.getSimpleName() + " not parsable");
+      }
 
       return new RelatedToSearch(Integer.parseInt(values[0]), Boolean.parseBoolean(values[1]));
    }

@@ -11,6 +11,9 @@
 package org.eclipse.osee.framework.search.engine.internal;
 
 import java.net.URL;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
@@ -18,13 +21,16 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class Activator implements BundleActivator {
+public class Activator implements BundleActivator, IOseeCachingServiceProvider {
 
    private static Activator instance;
 
    private ServiceTracker attributeTaggerProviderTracker;
    private ServiceTracker resourceManagementTracker;
    private ServiceTracker resourceLocatorManagerTracker;
+
+   private ServiceTracker cacheTracker;
+
    private BundleContext context;
 
    public void start(BundleContext context) throws Exception {
@@ -40,6 +46,9 @@ public class Activator implements BundleActivator {
       attributeTaggerProviderTracker =
             new ServiceTracker(context, IAttributeTaggerProviderManager.class.getName(), null);
       attributeTaggerProviderTracker.open();
+
+      cacheTracker = new ServiceTracker(context, IOseeCachingService.class.getName(), null);
+      cacheTracker.open();
    }
 
    public void stop(BundleContext context) throws Exception {
@@ -52,23 +61,35 @@ public class Activator implements BundleActivator {
       resourceLocatorManagerTracker.close();
       resourceLocatorManagerTracker = null;
 
+      cacheTracker.close();
+      cacheTracker = null;
+
       instance = null;
       context = null;
    }
 
+   public static Activator getInstance() {
+      return instance;
+   }
+
    public static IResourceManager getResourceManager() {
-      return (IResourceManager) instance.resourceManagementTracker.getService();
+      return (IResourceManager) getInstance().resourceManagementTracker.getService();
    }
 
    public static IResourceLocatorManager getResourceLocatorManager() {
-      return (IResourceLocatorManager) instance.resourceLocatorManagerTracker.getService();
+      return (IResourceLocatorManager) getInstance().resourceLocatorManagerTracker.getService();
    }
 
    public static IAttributeTaggerProviderManager getTaggerManager() {
-      return (IAttributeTaggerProviderManager) instance.attributeTaggerProviderTracker.getService();
+      return (IAttributeTaggerProviderManager) getInstance().attributeTaggerProviderTracker.getService();
    }
 
    public static URL getResource(String path) {
-      return instance.context.getBundle().getResource(path);
+      return getInstance().context.getBundle().getResource(path);
+   }
+
+   @Override
+   public IOseeCachingService getOseeCachingService() throws OseeCoreException {
+      return (IOseeCachingService) cacheTracker.getService();
    }
 }

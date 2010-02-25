@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.search.engine.tagger;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.search.engine.MatchLocation;
 import org.eclipse.osee.framework.search.engine.SearchOptions;
@@ -26,20 +28,18 @@ import org.eclipse.osee.framework.search.engine.utility.WordOrderMatcher;
  */
 public class DefaultAttributeTaggerProvider extends BaseAttributeTaggerProvider {
 
-   public void tagIt(AttributeData attributeData, ITagCollector tagCollector) throws Exception {
+   public void tagIt(AttributeData attributeData, ITagCollector tagCollector) throws OseeCoreException {
       TagProcessor.collectFromString(getValue(attributeData), tagCollector);
    }
 
-   public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws Exception {
+   public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws OseeCoreException {
       if (Strings.isValid(toSearch)) {
          InputStream inputStream = null;
          try {
             inputStream = getValueAsStream(attributeData);
             return WordOrderMatcher.findInStream(inputStream, toSearch, options);
          } finally {
-            if (inputStream != null) {
-               inputStream.close();
-            }
+            Lib.close(inputStream);
          }
       }
       return Collections.emptyList();

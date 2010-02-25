@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.search.engine.tagger;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.framework.search.engine.MatchLocation;
@@ -28,30 +30,26 @@ import org.eclipse.osee.framework.search.engine.utility.WordOrderMatcher;
 public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
 
    @Override
-   public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws Exception {
+   public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws OseeCoreException {
       if (Strings.isValid(toSearch)) {
          InputStream inputStream = null;
          try {
             inputStream = new XmlTextInputStream(getValueAsStream(attributeData));
             return WordOrderMatcher.findInStream(inputStream, toSearch, options);
          } finally {
-            if (inputStream != null) {
-               inputStream.close();
-            }
+            Lib.close(inputStream);
          }
       }
       return Collections.emptyList();
    }
 
-   public void tagIt(AttributeData attributeData, ITagCollector collector) throws Exception {
+   public void tagIt(AttributeData attributeData, ITagCollector collector) throws OseeCoreException {
       InputStream inputStream = null;
       try {
          inputStream = getValueAsStream(attributeData);
          TagProcessor.collectFromInputStream(new XmlTextInputStream(inputStream), collector);
       } finally {
-         if (inputStream != null) {
-            inputStream.close();
-         }
+         Lib.close(inputStream);
       }
    }
 }

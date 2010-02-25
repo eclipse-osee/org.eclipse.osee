@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.search.engine;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 
@@ -21,21 +22,21 @@ public interface IAttributeTaggerProvider {
 
    /**
     * Creates tags for attribute content
-    * 
+    *
     * @param attributeData attribute to content to tag
     * @param collector object collecting tags
     * @throws Exception
     */
-   public void tagIt(AttributeData attributeData, ITagCollector collector) throws Exception;
+   public void tagIt(AttributeData attributeData, ITagCollector collector) throws OseeCoreException;
 
    /**
     * Searches attribute content for value match
-    * 
+    *
     * @param attributeData attribute to search in
     * @param value to search in attribute content
     * @param options
     * @return match location
     */
-   public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws Exception;
+   public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws OseeCoreException;
 
 }

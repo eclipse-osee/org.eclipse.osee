@@ -24,20 +24,20 @@ public class AttributeData implements IAttributeLocator {
    private final int branchId;
    private final String value;
    private final String uri;
-   private final String taggerId;
+   private final int attrTypeId;
 
-   protected AttributeData(int artId, long gammaId, int branchId, String value, String uri, String taggerId) {
+   protected AttributeData(int artId, long gammaId, int branchId, String value, String uri, int attrTypeId) {
       super();
       this.artId = artId;
       this.gammaId = gammaId;
       this.branchId = branchId;
       this.value = Strings.isValid(value) ? value : EMPTY_STRING;
       this.uri = Strings.isValid(uri) ? uri : EMPTY_STRING;
-      this.taggerId = Strings.isValid(taggerId) ? taggerId : EMPTY_STRING;
+      this.attrTypeId = attrTypeId;
    }
 
-   protected AttributeData(long gammaId, String value, String uri, String taggerId) {
-      this(-1, gammaId, -1, value, uri, taggerId);
+   protected AttributeData(long gammaId, String value, String uri, int attrTypeId) {
+      this(-1, gammaId, -1, value, uri, attrTypeId);
    }
 
    public int getArtId() {
@@ -52,8 +52,8 @@ public class AttributeData implements IAttributeLocator {
       return gammaId;
    }
 
-   public String getTaggerId() {
-      return taggerId;
+   public int getAttrTypeId() {
+      return attrTypeId;
    }
 
    public String getStringValue() {
@@ -82,8 +82,8 @@ public class AttributeData implements IAttributeLocator {
 
    @Override
    public String toString() {
-      return String.format("artId:[%s] branchId:[%d] gammaId:[%s] uri:[%s] taggerId:[%s]", getArtId(), getId(),
-            getGammaId(), getUri(), getTaggerId());
+      return String.format("artId:[%s] branchId:[%d] gammaId:[%s] uri:[%s] attrTypeId:[%s]", getArtId(), getId(),
+            getGammaId(), getUri(), getAttrTypeId());
    }
 
    @Override

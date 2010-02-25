@@ -83,7 +83,7 @@ public class AttributeTypeManager {
     * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist
     */
-   private static AttributeType getTypeByGuid(String guid) throws OseeCoreException {
+   public static AttributeType getTypeByGuid(String guid) throws OseeCoreException {
       if (!GUID.isValid(guid)) {
          throw new OseeArgumentException(String.format("[%s] is not a valid guid", guid));
       }
@@ -113,7 +113,7 @@ public class AttributeTypeManager {
 
    /**
     * Returns the attribute type with the given type id or throws an IllegalArgumentException if it does not exist.
-    * 
+    *
     * @param attrTypeId
     * @throws OseeCoreException
     */

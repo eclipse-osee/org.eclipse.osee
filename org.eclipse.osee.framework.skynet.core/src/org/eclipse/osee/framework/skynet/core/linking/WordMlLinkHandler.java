@@ -32,30 +32,30 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * This class converts between OSEE hyperlink markers into wordML style links. <br/>
  * <br/>
  * <b>Example:</b>
- * 
+ *
  * <pre>
  * LinkType linkType = LinkType.OSEE_SERVER_LINK;
- * 
+ *
  * Artifact source = ... // Artifact that contains original
  * String original = ... //Doc containing osee link markers
- * 
+ *
  * // Substitue OSEE link markers with wordML style hyperlinks requesting content to the OSEE application server
  * String linkedDoc = WordMlLinkHandler.link(linkType, source, original);
- * 
+ *
  * // Substitue wordML style hyperlinks with OSEE link markers
  * String original = WordMlLinkHandler.unLink(linkType, source, linkedDoc);
  * </pre>
- * 
+ *
  * <b>Link types handled</b> <br/>
  * <br/>
  * <ol>
  * <li><b>OSEE link:</b> This is a branch neutral marker placed in the wordML document.
- * 
+ *
  * <pre>
  *    OSEE_LINK([artifact_guid])
  * </pre>
  * <li><b>Legacy style links:</b>
- * 
+ *
  * <pre>
  * &lt;w:hlink w:dest=&quot;http://[server_address]:[server_port]/Define?guid=&quot;[artifact_guid]&quot;&gt;
  *    &lt;w:r&gt;
@@ -66,10 +66,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  *    &lt;/w:r&gt;
  * &lt;/w:hlink&gt;
  * </pre>
- * 
+ *
  * </li>
  * </ol>
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class WordMlLinkHandler {
@@ -87,7 +87,7 @@ public class WordMlLinkHandler {
     * Remove WordML hyperlinks and replace with OSEE_LINK marker. It is assumed that an unlink call will be made after a
     * link call. Therefore we expect the input to have links that are recognized by this handler as identified by the
     * sourceLinkType.
-    * 
+    *
     * @param sourceLinkType
     * @param source artifact that produced the string content
     * @param content input
@@ -104,7 +104,7 @@ public class WordMlLinkHandler {
 
    /**
     * Replace OSEE_LINK marker or Legacy hyper-links with WordML hyperlinks.
-    * 
+    *
     * @param destLinkType type of link to produce
     * @param source artifact that produced the string content
     * @param content input
@@ -139,12 +139,12 @@ public class WordMlLinkHandler {
 
    /**
     * Find WordML links locations in content grouped by GUID
-    * 
+    *
     * @param content
     * @return locations where WordMlLinks were found grouped by GUID
     * @throws OseeWrappedException
     */
-   public static HashCollection<String, MatchRange> parseOseeWordMLLinks(String content) throws OseeWrappedException {
+   public static HashCollection<String, MatchRange> parseOseeWordMLLinks(String content) throws OseeCoreException {
       HashCollection<String, MatchRange> matchMap = new HashCollection<String, MatchRange>();
 
       OseeLinkParser linkParser = new OseeLinkParser();

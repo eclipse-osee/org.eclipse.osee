@@ -14,8 +14,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.search.engine.MatchLocation;
 import org.eclipse.osee.framework.search.engine.SearchOptions;
 import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
@@ -28,7 +32,7 @@ public class WordOrderMatcher {
    private WordOrderMatcher() {
    }
 
-   public static List<MatchLocation> findInStream(InputStream inputStream, String toSearch, SearchOptions options) throws IOException {
+   public static List<MatchLocation> findInStream(InputStream inputStream, String toSearch, SearchOptions options) throws OseeCoreException {
       List<MatchLocation> matchLocations = new ArrayList<MatchLocation>();
       Reader reader = null;
       try {
@@ -91,10 +95,12 @@ public class WordOrderMatcher {
                }
             }
          }
+      } catch (UnsupportedEncodingException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      } catch (IOException ex) {
+         OseeExceptions.wrapAndThrow(ex);
       } finally {
-         if (reader != null) {
-            reader.close();
-         }
+         Lib.close(reader);
       }
       return matchLocations;
    }

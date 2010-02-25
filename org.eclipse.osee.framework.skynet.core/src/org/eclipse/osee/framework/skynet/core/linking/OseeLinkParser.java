@@ -15,7 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -43,7 +44,7 @@ public final class OseeLinkParser {
       }
    }
 
-   public int getId() throws OseeWrappedException {
+   public int getId() throws OseeCoreException {
       int branchId = -1;
       if (parameterMap != null) {
          String branchIdStr = parameterMap.get("branchId");
@@ -51,14 +52,14 @@ public final class OseeLinkParser {
             try {
                branchId = Integer.parseInt(branchIdStr);
             } catch (Exception ex) {
-               throw new OseeWrappedException(ex);
+               OseeExceptions.wrapAndThrow(ex);
             }
          }
       }
       return branchId;
    }
 
-   public String getGuid() throws OseeWrappedException {
+   public String getGuid() throws OseeCoreException {
       String guidToReturn = null;
       if (parameterMap != null) {
          String guid = parameterMap.get("guid");
@@ -70,7 +71,7 @@ public final class OseeLinkParser {
                      guidToReturn = guid;
                   }
                } catch (Exception ex) {
-                  throw new OseeWrappedException(ex);
+                  OseeExceptions.wrapAndThrow(ex);
                }
             } else {
                guidToReturn = guid;
@@ -83,7 +84,7 @@ public final class OseeLinkParser {
    /**
     * Process new style requests are of the following format:
     * http://127.0.0.1:<port>/<ProcessType>?key1=value1&key2=value2...&key3=value3
-    * 
+    *
     * @param link
     */
    private void parseNewStyleRequests(String link) {
@@ -102,7 +103,7 @@ public final class OseeLinkParser {
    /**
     * Process old format: http://127.0.0.1:<port>/get/guid/<guid>/<ats,Define> old format should be removed once all
     * legacy references are change to new format
-    * 
+    *
     * @param entry
     * @return
     */
