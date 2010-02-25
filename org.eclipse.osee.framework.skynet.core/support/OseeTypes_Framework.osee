@@ -520,6 +520,7 @@ artifactType "System Requirement" extends "Requirement" , "MS Word Template" {
    attribute "Legacy Id"
    attribute "Req Type"
    attribute "Verification Level"
+   attribute "Effectivity"
 }
 
 attributeType "Req Type" extends EnumeratedAttribute {
@@ -552,6 +553,7 @@ artifactType "Subsystem Requirement" extends "Requirement" , "MS Word Template" 
    attribute "Legacy Id"
    attribute "Verification Level"
    attribute "Verification Event"
+   attribute "Effectivity"
 }
 
 artifactType "Interface Requirement" extends "Requirement" , "MS Word Template" {
@@ -663,6 +665,20 @@ attributeType "Legacy Id" extends StringAttribute {
    min 0
    max 1
    description "SLATE unique identifier (caution: not guaranteed to be immutable)"
+}
+
+attributeType "Effectivity" extends  EnumeratedAttribute {
+	guid "B1fqGH5hxBMylPX9VEQA"
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	enumType "enum.effectivity"
+	defaultValue "Unspecified"
+}
+
+oseeEnumType "enum.effectivity" {
+	guid "B1gfpUSVrEvaDvqLeqQA"
+	entry "Unspecified" entryGuid "B1hxfljxnTDYqcYhlDAA"
 }
 
 attributeType "System Security Requirement" extends BooleanAttribute {
