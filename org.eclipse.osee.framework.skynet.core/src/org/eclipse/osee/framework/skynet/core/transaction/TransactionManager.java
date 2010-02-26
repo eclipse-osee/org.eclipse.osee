@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -82,6 +83,7 @@ public final class TransactionManager {
       return transactions;
    }
 
+   @SuppressWarnings("unchecked")
    public static void setTransactionComment(TransactionRecord transaction, String comment) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(UPDATE_TRANSACTION_COMMENTS, comment, transaction.getId());
    }
@@ -164,8 +166,13 @@ public final class TransactionManager {
       return getTransactionId(transactionNumber);
    }
 
-   @SuppressWarnings("unchecked")
-   public static synchronized TransactionRecord createNextTransactionId(Branch branch, User userToBlame, String comment) throws OseeCoreException {
+   public static synchronized TransactionRecord createNextTransactionId(OseeConnection connection, Branch branch, User userToBlame, String comment) throws OseeCoreException {
+      TransactionRecord transactionId = internalCreateTransactionRecord(branch, userToBlame, comment);
+      internalPersist(connection, transactionId);
+      return transactionId;
+   }
+
+   public static synchronized TransactionRecord internalCreateTransactionRecord(Branch branch, User userToBlame, String comment) throws OseeCoreException {
       Integer transactionNumber = SequenceManager.getNextTransactionId();
       if (comment == null) {
          comment = "";
@@ -173,15 +180,19 @@ public final class TransactionManager {
       int authorArtId = userToBlame.getArtId();
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
-      ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_DETAIL, transactionNumber, comment, transactionTime,
-            authorArtId, branch.getId(), txType.getId());
-
       TransactionRecordFactory factory = Activator.getInstance().getOseeFactoryService().getTransactionFactory();
       TransactionRecord transactionId =
             factory.createOrUpdate(getTransactionCache(), transactionNumber, branch.getId(), comment, transactionTime,
                   authorArtId, -1, txType);
       transactionId.setBranchCache(Activator.getInstance().getOseeCacheService().getBranchCache());
       return transactionId;
+   }
+
+   @SuppressWarnings("unchecked")
+   public static synchronized void internalPersist(OseeConnection connection, TransactionRecord transactionRecord) throws OseeCoreException {
+      ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_DETAIL, transactionRecord.getId(),
+            transactionRecord.getComment(), transactionRecord.getTimeStamp(), transactionRecord.getAuthor(),
+            transactionRecord.getBranchId(), transactionRecord.getTxType().getId());
    }
 
    /**

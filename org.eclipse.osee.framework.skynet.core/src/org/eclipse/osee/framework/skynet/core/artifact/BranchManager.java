@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -86,7 +87,9 @@ public class BranchManager {
    }
 
    public static Branch getCommonBranch() throws OseeCoreException {
-      return getCache().getCommonBranch();
+      Branch branch = getCache().getCommonBranch();
+      Conditions.checkNotNull(branch, "Common Branch");
+      return branch;
    }
 
    /**

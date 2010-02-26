@@ -218,12 +218,12 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    public int getTransactionNumber() throws OseeCoreException {
-      return internalGetTransactionId().getId();
+      return internalGetTransactionRecord().getId();
    }
 
-   TransactionRecord internalGetTransactionId() throws OseeCoreException {
+   TransactionRecord internalGetTransactionRecord() throws OseeCoreException {
       if (transactionId == null) {
-         transactionId = TransactionManager.createNextTransactionId(branch, UserManager.getUser(), comment);
+         transactionId = TransactionManager.internalCreateTransactionRecord(branch, UserManager.getUser(), comment);
       }
       return transactionId;
    }
@@ -356,6 +356,7 @@ public class SkynetTransaction extends DbTransaction {
 
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
+      TransactionManager.internalPersist(connection, internalGetTransactionRecord());
       executeTransactionDataItems(connection);
       if (branch.getBranchState() == BranchState.CREATED) {
          branch.setBranchState(BranchState.MODIFIED);
@@ -380,7 +381,7 @@ public class SkynetTransaction extends DbTransaction {
 
       // Update all transaction items before collecting events
       for (BaseTransactionData transactionData : transactionDataItems.values()) {
-         transactionData.internalUpdate(internalGetTransactionId());
+         transactionData.internalUpdate(internalGetTransactionRecord());
       }
 
       // Collect events before clearing any dirty flags

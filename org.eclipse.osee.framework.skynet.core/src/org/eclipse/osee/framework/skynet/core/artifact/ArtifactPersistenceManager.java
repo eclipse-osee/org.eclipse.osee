@@ -215,7 +215,7 @@ public class ArtifactPersistenceManager {
 
    public static void revertAttribute(OseeConnection connection, int branchId, int artId, int attributeId) throws OseeCoreException {
       TransactionRecord transId =
-            TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
+            TransactionManager.createNextTransactionId(connection, BranchManager.getBranch(branchId), UserManager.getUser(), "");
       long totalTime = System.currentTimeMillis();
       //Get attribute Gammas
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
@@ -235,7 +235,7 @@ public class ArtifactPersistenceManager {
     * yet
     */
    public static void revertRelationLink(OseeConnection connection, RelationLink link) throws OseeCoreException {
-     
+
       // Only reverts relation links that don't span multiple branches. Need
       // to revisit if additional functionality is needed.
       if (!link.getArtifactA().getBranch().equals(link.getArtifactB().getBranch())) {
@@ -247,7 +247,7 @@ public class ArtifactPersistenceManager {
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          chStmt.runPreparedQuery(GET_GAMMAS_RELATION_REVERT, branch.getId(), link.getRelationId());
-         TransactionRecord transId = TransactionManager.createNextTransactionId(branch, UserManager.getUser(), "");
+         TransactionRecord transId = TransactionManager.createNextTransactionId(connection, branch, UserManager.getUser(), "");
          RevertAction revertAction = new RevertAction(connection, chStmt, transId);
          revertAction.revertObject(totalTime, link.getRelationId(), "Relation Link");
       } finally {
@@ -266,7 +266,7 @@ public class ArtifactPersistenceManager {
       try {
          int branchId = branch.getId();
          chStmt.runPreparedQuery(GET_GAMMAS_ARTIFACT_REVERT, branchId, artId, branchId, artId, artId, branchId, artId);
-         TransactionRecord transId = TransactionManager.createNextTransactionId(branch, UserManager.getUser(), "");
+         TransactionRecord transId = TransactionManager.createNextTransactionId(connection, branch, UserManager.getUser(), "");
          RevertAction revertAction = new RevertAction(connection, chStmt, transId);
          revertAction.revertObject(totalTime, artId, "Artifact");
       } finally {
