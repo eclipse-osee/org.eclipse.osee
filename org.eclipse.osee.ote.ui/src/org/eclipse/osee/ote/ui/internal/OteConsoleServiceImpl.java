@@ -20,21 +20,14 @@ import org.eclipse.osee.ote.ui.IOteConsoleService;
  */
 public class OteConsoleServiceImpl implements IOteConsoleService {
 
-   private OseeConsole console;
+   private final OseeConsole console = new OseeConsole("OTE Console");
 
    public OteConsoleServiceImpl() {
-      this.console = null;
+
    }
 
-   private synchronized void ensureCreated() {
-      if (console == null) {
-         console = new OseeConsole("OTE Console");
-         console.popup();
-      }
-   }
 
    private OseeConsole getConsole() {
-      ensureCreated();
       return console;
    }
 
