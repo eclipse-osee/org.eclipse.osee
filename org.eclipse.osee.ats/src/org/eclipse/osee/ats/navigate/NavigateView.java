@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -58,6 +59,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
@@ -106,7 +108,6 @@ public class NavigateView extends ViewPart implements IActionable {
 
       AtsPlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       createToolBar();
-      getViewSite().getActionBars().updateActionBars();
 
       // add search text box      
       createSearchInputPart(xNavComp);
@@ -239,10 +240,13 @@ public class NavigateView extends ViewPart implements IActionable {
       toolbarManager.add(new OpenChangeReportByIdAction());
       toolbarManager.add(new OpenWorldByIdAction());
       toolbarManager.add(new OpenWorkflowByIdAction());
-      toolbarManager.add(new NewGoal());
-      toolbarManager.add(new NewAction());
-
       OseeUiActions.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Navigator");
+      getViewSite().getActionBars().updateActionBars();
+
+      IActionBars bars = getViewSite().getActionBars();
+      IMenuManager mm = bars.getMenuManager();
+      mm.add(new NewAction());
+      mm.add(new NewGoal());
    }
 
    /**
