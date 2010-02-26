@@ -43,7 +43,10 @@ class RemoteLookupServiceTracker extends ServiceTracker {
 
 	@Override
 	public void close() {
-		oteJmsServiceConnector.stop();
+		if (oteJmsServiceConnector != null) {
+			oteJmsServiceConnector.stop();
+			oteJmsServiceConnector = null;
+		}
 		super.close();
 	}
 
