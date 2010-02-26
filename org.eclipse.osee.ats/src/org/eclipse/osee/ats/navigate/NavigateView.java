@@ -11,6 +11,11 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IRegistryEventListener;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -131,6 +136,32 @@ public class NavigateView extends ViewPart implements IActionable {
       label.setLayoutData(gridData);
 
       AtsBulkLoad.run(false);
+      addExtensionPointListenerBecauseOfWorkspaceLoading();
+   }
+
+   private void addExtensionPointListenerBecauseOfWorkspaceLoading() {
+      IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+      extensionRegistry.addListener(new IRegistryEventListener() {
+         @Override
+         public void added(IExtension[] extensions) {
+            xNavComp.refresh();
+         }
+
+         @Override
+         public void added(IExtensionPoint[] extensionPoints) {
+            xNavComp.refresh();
+         }
+
+         @Override
+         public void removed(IExtension[] extensions) {
+            xNavComp.refresh();
+         }
+
+         @Override
+         public void removed(IExtensionPoint[] extensionPoints) {
+            xNavComp.refresh();
+         }
+      }, "org.eclipse.osee.framework.ui.skynet.BlamOperation");
    }
 
    public void createSearchInputPart(Composite parent) {
