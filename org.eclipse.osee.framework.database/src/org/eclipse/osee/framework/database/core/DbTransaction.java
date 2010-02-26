@@ -19,14 +19,14 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * This abstract class provides a uniform way of executing database transactions. It handles exceptions ensuring that
  * transactions are processed in the correct order and roll-backs are performed whenever errors are detected.
- * 
+ *
  * @author Roberto E. Escobar
  */
 public abstract class DbTransaction {
 
    /**
     * Gets the name of this transaction. This is provided mainly for logging purposes.
-    * 
+    *
     * @return String transaction class Name
     */
    protected String getTxName() {
@@ -36,7 +36,7 @@ public abstract class DbTransaction {
    /**
     * This template method calls {@link #handleTxWork} which is provided by child classes. This method handles
     * roll-backs and exception handling to prevent transactions from being left in an incorrect state.
-    * 
+    *
     * @throws Exception
     */
    public void execute() throws OseeCoreException {
@@ -57,27 +57,34 @@ public abstract class DbTransaction {
          connection.commit();
          OseeLog.log(Activator.class, Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
       } catch (Exception ex) {
-         connection.rollback();
-         connection.destroy();
-         handleTxException(ex);
          if (ex instanceof OseeCoreException) {
             saveException = (OseeCoreException) ex;
          } else {
             saveException = new OseeWrappedException(ex);
          }
+         try {
+            connection.rollback();
+            connection.destroy();
+         } finally {
+            handleTxException(ex);
+         }
       } finally {
          try {
-            if (!connection.isClosed()) {
-               connection.setAutoCommit(initialAutoCommit);
-               connection.close();
+            try {
+               if (!connection.isClosed()) {
+                  connection.setAutoCommit(initialAutoCommit);
+                  connection.close();
+               }
+            } finally {
+               handleTxFinally();
             }
-            handleTxFinally();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             if (saveException == null) {
                saveException = ex;
             }
          }
+
          if (saveException != null) {
             throw saveException;
          }
@@ -86,7 +93,7 @@ public abstract class DbTransaction {
 
    /**
     * Provides the transaction's work implementation.
-    * 
+    *
     * @param connection
     * @throws OseeCoreException
     */
@@ -96,7 +103,7 @@ public abstract class DbTransaction {
     * When an exception is detected during transaction processing, the exception is caught and passed to this method.
     * This convenience method is provided so child classes have access to the exception. <br/>
     * <b>Override to handle transaction exception</b>
-    * 
+    *
     * @param ex
     * @throws Exception
     */
@@ -107,7 +114,7 @@ public abstract class DbTransaction {
     * This convenience method is provided in case child classes have a portion of code that needs to execute always at
     * the end of the transaction, regardless of exceptions. <br/>
     * <b>Override to add additional code to finally block</b>
-    * 
+    *
     * @throws Exception
     */
    protected void handleTxFinally() throws OseeCoreException {
