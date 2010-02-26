@@ -238,9 +238,20 @@ public class CoverageUtil {
       return String.format("%d%% %d/%d", percent, complete, total);
    }
 
-   public static boolean isAllCoverageItems(Collection<ICoverage> coverages) {
+   public static boolean isAllCoverageItems(Collection<? extends ICoverage> coverages) throws OseeCoreException {
+      boolean coverageItemFound = false;
+      boolean nonCoverageItemFound = false;
       for (ICoverage coverage : coverages) {
-         if (!(coverage instanceof CoverageItem)) {
+         if (coverage instanceof CoverageItem) {
+            coverageItemFound = true;
+            if (nonCoverageItemFound) {
+               throw new OseeStateException("Coverages can only be all CoverageItem or all !CoverageItem");
+            }
+         } else {
+            nonCoverageItemFound = true;
+            if (coverageItemFound) {
+               throw new OseeStateException("Coverages can only be all CoverageItem or all !CoverageItem");
+            }
             return false;
          }
       }

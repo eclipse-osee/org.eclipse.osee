@@ -45,7 +45,25 @@ public class MergeImportManager {
       if (!validateChildren(rd, mergeItems)) return rd;
 
       for (IMergeItem mergeItem : mergeItems) {
-         if (mergeItem.getMergeType() == MergeType.Add) {
+         if (mergeItem.getMergeType() == MergeType.Coverage_Item_Changes) {
+            if (mergeItem instanceof MergeItemGroup) {
+               MergeItemGroup group = (MergeItemGroup) mergeItem;
+               for (IMergeItem childMergeItem : group.getMergeItems()) {
+                  if (childMergeItem instanceof MergeItem && ((MergeItem) childMergeItem).getMergeType() == MergeType.Add) {
+                     addCoverageItem(childMergeItem, rd);
+                  } else if (childMergeItem instanceof MergeItem && ((MergeItem) childMergeItem).getMergeType() == MergeType.Coverage_Item_Renamed) {
+                     renameCoverageItem(childMergeItem, rd);
+                  } else if (childMergeItem instanceof MergeItem && ((MergeItem) childMergeItem).getMergeType() == MergeType.Coverage_Item_Moved) {
+                     updateOrder(mergeItem, childMergeItem, rd);
+                  } else {
+                     rd.logError(String.format("Coverage_Item_Changes Group: Unsupported merge type [%s]",
+                           childMergeItem.getMergeType()));
+                  }
+               }
+            } else {
+               rd.logError(String.format("Coverage_Item_Changes: Unsupported mergeItem [%s]", mergeItem));
+            }
+         } else if (mergeItem.getMergeType() == MergeType.Add) {
             if (mergeItem instanceof MergeItem) {
                CoverageUnit coverageUnit = (CoverageUnit) ((MergeItem) mergeItem).getImportItem();
                importCoverageUnitItem(rd, coverageUnit);
@@ -53,23 +71,8 @@ public class MergeImportManager {
                for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits(true)) {
                   importCoverageUnitItem(rd, childCoverageUnit);
                }
-            } else if (mergeItem instanceof MergeItemGroup) {
-               MergeItemGroup group = (MergeItemGroup) mergeItem;
-               for (IMergeItem childMergeItem : group.getMergeItems()) {
-                  if (childMergeItem instanceof MergeItem && ((MergeItem) childMergeItem).getImportItem() instanceof CoverageItem) {
-                     CoverageItem coverageItem = (CoverageItem) ((MergeItem) childMergeItem).getImportItem();
-                     MatchItem parentMatchItem = mergeManager.getPackageCoverageItem(coverageItem.getParent());
-                     ICoverage parentPackageItem = parentMatchItem == null ? null : parentMatchItem.getPackageItem();
-                     CoverageUnit parentPackageCoverageUnit = (CoverageUnit) parentPackageItem;
-                     coverageItem.copy(parentPackageCoverageUnit);
-                  } else {
-                     rd.logError(String.format("Unsupported type [%s] for merge type [%s] merge item [%s]",
-                           childMergeItem.getClass().getSimpleName(), MergeType.Add.toString(), mergeItem));
-                  }
-               }
             } else {
-               rd.logError(String.format("Unsupported type [%s] for merge type [%s] merge item [%s]",
-                     mergeItem.getClass().getSimpleName(), MergeType.Add.toString(), mergeItem));
+               rd.logError(String.format("Add: Unsupported mergeItem [%s]", mergeItem));
             }
          } else if (mergeItem.getMergeType() == MergeType.Add_With_Moves) {
             if (mergeItem instanceof MergeItemGroup) {
@@ -87,50 +90,12 @@ public class MergeImportManager {
                   else if (childMergeItem.getMergeType() == MergeType.Moved_Due_To_Add && childMergeItem instanceof MergeItem) {
                      updateOrder(mergeItem, childMergeItem, rd);
                   } else {
-                     rd.logError(String.format("[%s] doesn't support merge item [%s] (2)",
-                           mergeItem.getClass().getSimpleName(), childMergeItem.getMergeType(), mergeItem));
+                     rd.logError(String.format("Add_With_Moves Group: Unsupported merge type [%s]",
+                           childMergeItem.getMergeType()));
                   }
                }
             } else {
-               rd.logError(String.format("Unsupported Add_With_Moves type [%s] for merge type [%s] merge item [%s]",
-                     mergeItem.getClass().getSimpleName(), MergeType.Add_With_Moves.toString(), mergeItem));
-            }
-         } else if (mergeItem.getMergeType() == MergeType.Rename_Coverage_Item) {
-            if (mergeItem instanceof MergeItemGroup) {
-               MergeItemGroup group = (MergeItemGroup) mergeItem;
-               for (IMergeItem childMergeItem : group.getMergeItems()) {
-                  if (childMergeItem.getMergeType() == MergeType.Rename_Coverage_Item && childMergeItem instanceof MergeItem) {
-                     CoverageItem importItem = (CoverageItem) ((MergeItem) childMergeItem).getImportItem();
-                     CoverageItem packageItem = (CoverageItem) ((MergeItem) childMergeItem).getPackageItem();
-                     packageItem.setName(importItem.getName());
-                     if (Strings.isValid(packageItem.getRationale())) {
-                        packageItem.setRationale("");
-                     }
-                     packageItem.setCoverageMethod(importItem.getCoverageMethod());
-
-                     // Since items names changed, update parent coverage unit's file contents
-                     if (packageItem.getParent() != null && packageItem.getParent() instanceof CoverageUnit) {
-                        CoverageUnit parentPackageCoverage = (CoverageUnit) packageItem.getParent();
-                        CoverageUnit parentImportCoverage = (CoverageUnit) importItem.getParent();
-                        if (!parentPackageCoverage.getFileContents().equals(parentImportCoverage.getFileContents())) {
-                           parentPackageCoverage.setFileContents(parentImportCoverage.getFileContents());
-                        }
-                     }
-                     if (packageItem.getParent().getParent() != null && packageItem.getParent().getParent() instanceof CoverageUnit) {
-                        CoverageUnit parentPackageCoverage = (CoverageUnit) packageItem.getParent().getParent();
-                        CoverageUnit parentImportCoverage = (CoverageUnit) importItem.getParent().getParent();
-                        if (!parentPackageCoverage.getFileContents().equals(parentImportCoverage.getFileContents())) {
-                           parentPackageCoverage.setFileContents(parentImportCoverage.getFileContents());
-                        }
-                     }
-                  } else {
-                     rd.logError(String.format("[%s] doesn't support merge item [%s] (2)",
-                           mergeItem.getClass().getSimpleName(), childMergeItem.getMergeType(), mergeItem));
-                  }
-               }
-            } else {
-               rd.logError(String.format("Unsupported Add_With_Moves type [%s] for merge type [%s] merge item [%s]",
-                     mergeItem.getClass().getSimpleName(), MergeType.Add_With_Moves.toString(), mergeItem));
+               rd.logError(String.format("Add_With_Moves: Unsupported mergeItem [%s]", mergeItem));
             }
          } else if (mergeItem.getMergeType() == MergeType.Delete_And_Reorder) {
             if (mergeItem instanceof MergeItemGroup) {
@@ -149,18 +114,15 @@ public class MergeImportManager {
                   else if (childMergeItem.getMergeType() == MergeType.Moved_Due_To_Delete && childMergeItem instanceof MergeItem) {
                      updateOrder(mergeItem, childMergeItem, rd);
                   } else {
-                     rd.logError(String.format("[%s] doesn't support merge item [%s] (2)",
-                           mergeItem.getClass().getSimpleName(), childMergeItem.getMergeType(), mergeItem));
+                     rd.logError(String.format("Delete_And_Reorder Group: Unsupported merge type [%s]",
+                           childMergeItem.getMergeType()));
                   }
                }
             } else {
-               rd.logError(String.format(
-                     "Unsupported Delete_And_Reorder type [%s] for merge type [%s] merge item [%s]",
-                     mergeItem.getClass().getSimpleName(), MergeType.Add_With_Moves.toString(), mergeItem));
+               rd.logError(String.format("Delete_And_Reorder: Unsupported mergeItem [%s]", mergeItem));
             }
          } else {
-            rd.logError(String.format("Unsupported merge type [%s] for merge item [%s]", mergeItem.getMergeType(),
-                  mergeItem));
+            rd.logError(String.format("Unsupported merge type [%s]", mergeItem.getMergeType()));
          }
       }
 
@@ -178,6 +140,46 @@ public class MergeImportManager {
          }
       }
       return rd;
+   }
+
+   private void addCoverageItem(IMergeItem mergeItem, XResultData rd) throws OseeCoreException {
+      CoverageItem coverageItem = (CoverageItem) ((MergeItem) mergeItem).getImportItem();
+      MatchItem parentMatchItem = mergeManager.getPackageCoverageItem(coverageItem.getParent());
+      ICoverage parentPackageItem = parentMatchItem == null ? null : parentMatchItem.getPackageItem();
+      CoverageUnit parentPackageCoverageUnit = (CoverageUnit) parentPackageItem;
+      coverageItem.copy(parentPackageCoverageUnit);
+   }
+
+   private void renameCoverageItem(IMergeItem mergeItem, XResultData rd) throws OseeCoreException {
+      if (mergeItem.getMergeType() == MergeType.Coverage_Item_Renamed && mergeItem instanceof MergeItem) {
+         CoverageItem importItem = (CoverageItem) ((MergeItem) mergeItem).getImportItem();
+         CoverageItem packageItem = (CoverageItem) ((MergeItem) mergeItem).getPackageItem();
+         packageItem.setName(importItem.getName());
+         if (Strings.isValid(packageItem.getRationale())) {
+            packageItem.setRationale("");
+         }
+         packageItem.setCoverageMethod(importItem.getCoverageMethod());
+
+         // Since items names changed, update parent coverage unit's file contents
+         if (packageItem.getParent() != null && packageItem.getParent() instanceof CoverageUnit) {
+            CoverageUnit parentPackageCoverage = (CoverageUnit) packageItem.getParent();
+            CoverageUnit parentImportCoverage = (CoverageUnit) importItem.getParent();
+            if (!parentPackageCoverage.getFileContents().equals(parentImportCoverage.getFileContents())) {
+               parentPackageCoverage.setFileContents(parentImportCoverage.getFileContents());
+            }
+         }
+         if (packageItem.getParent().getParent() != null && packageItem.getParent().getParent() instanceof CoverageUnit) {
+            CoverageUnit parentPackageCoverage = (CoverageUnit) packageItem.getParent().getParent();
+            CoverageUnit parentImportCoverage = (CoverageUnit) importItem.getParent().getParent();
+            if (!parentPackageCoverage.getFileContents().equals(parentImportCoverage.getFileContents())) {
+               parentPackageCoverage.setFileContents(parentImportCoverage.getFileContents());
+            }
+         }
+      } else {
+         rd.logError(String.format("[%s] doesn't support merge item [%s] (2)", mergeItem.getClass().getSimpleName(),
+               mergeItem.getMergeType(), mergeItem));
+      }
+
    }
 
    private void updateOrder(IMergeItem mergeItem, IMergeItem childMergeItem, XResultData rd) throws OseeCoreException {

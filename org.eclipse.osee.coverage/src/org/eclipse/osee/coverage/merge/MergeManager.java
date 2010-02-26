@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackage;
@@ -128,22 +129,25 @@ public class MergeManager {
             }
          }
 
+         // Case: All children all CoverageItems
+         // Action: process them separately
+         if (CoverageUtil.isAllCoverageItems(importItemChildren)) {
+            handleChildrenCoverageItems(mergeItems, packageItemChildren, importItemChildren, importItemToMatchItem,
+                  resultData);
+         }
+
          // Case: All match and package # children == import # children
          // Action: continue and check children's children
-         if (isAllMatchCase(sameNumberChildren, importItemToMatchItem)) {
+         else if (isAllMatchCase(sameNumberChildren, importItemToMatchItem)) {
             handleAllMatchCase(mergeItems, importItemChildren, resultData);
          }
-         // Case: Same number children coverage items and either matches or just name is different, name change; 
-         // Action: Remove all package stored data cause it's invalid now
-         else if (isSameNumberOfChildrenButNamesAreDifferent(sameNumberChildren, importItemToMatchItem)) {
-            handleSameNumberOfChildrenButNamesAreDifferent(mergeItems, importCoverage, packageItemChildren,
-                  importItemToMatchItem, resultData);
-         }
+
          // Case: All same except package item has more; possible deletion, attempt to handle
          // Action: Attempt to determine deleted package item
          else if (isPackageItemDeleted(morePackageChildrenThanImportChildren)) {
             handlePackageItemDeleted(mergeItems, importCoverage, packageItemChildren, importItemChildren, resultData);
          }
+
          // Case: Import children all full match except Import has more that don't match, items added and moved
          // Action: Process as Add / Move
          else if (isImportItemsAddedOrMoved(moreImportChildrenThanPackageChildren, importItemToMatchItem)) {
@@ -185,6 +189,118 @@ public class MergeManager {
       return;
    }
 
+   private List<ICoverage> getUnMatchedImportCoverageItems(Map<ICoverage, MatchItem> importItemToMatchItem) throws OseeCoreException {
+      List<ICoverage> unMatchedCoverageItems = new ArrayList<ICoverage>();
+      for (Entry<ICoverage, MatchItem> coverageToMatchItem : importItemToMatchItem.entrySet()) {
+         MatchItem childMatchItem = coverageToMatchItem.getValue();
+         ICoverage childICoverage = coverageToMatchItem.getKey();
+         if (!childMatchItem.isMatch()) {
+            unMatchedCoverageItems.add(childICoverage);
+         }
+      }
+      return unMatchedCoverageItems;
+   }
+
+   private List<ICoverage> getMatchedPackageCoverageItems(Map<ICoverage, MatchItem> importItemToMatchItem) throws OseeCoreException {
+      List<ICoverage> matchedPackageCoverageItems = new ArrayList<ICoverage>();
+      for (Entry<ICoverage, MatchItem> coverageToMatchItem : importItemToMatchItem.entrySet()) {
+         MatchItem childMatchItem = coverageToMatchItem.getValue();
+         if (childMatchItem.isMatch()) {
+            matchedPackageCoverageItems.add(childMatchItem.getPackageItem());
+         }
+      }
+      return matchedPackageCoverageItems;
+   }
+
+   private void handleChildrenCoverageItems(List<IMergeItem> mergeItems, Collection<? extends ICoverage> packageItemChildren, Collection<? extends ICoverage> importItemChildren, Map<ICoverage, MatchItem> importItemToMatchItem, XResultData resultData) throws OseeCoreException {
+      List<IMergeItem> groupMergeItems = new ArrayList<IMergeItem>();
+      boolean unMergeableExists = false;
+      // Get all Import CoverageItems that do not match package CoverageItems
+      List<ICoverage> unMatchedImportCoverageItems = getUnMatchedImportCoverageItems(importItemToMatchItem);
+      // List package coverageItems that have been processed; list should be empty at end
+      List<ICoverage> packageItemsProcessed = getMatchedPackageCoverageItems(importItemToMatchItem);
+
+      for (ICoverage childICoverage : new CopyOnWriteArrayList<ICoverage>(unMatchedImportCoverageItems)) {
+         MatchItem childMatchItem = importItemToMatchItem.get(childICoverage);
+         if (childMatchItem.isMatch()) {
+            throw new OseeStateException("unMatchedCoverageItems shouldn't contain matched items");
+         }
+
+         // Check for rename
+         ICoverage packageMatch = isCoverageItemRenamed(packageItemChildren, childICoverage);
+         if (packageMatch != null) {
+            groupMergeItems.add(new MergeItem(MergeType.Coverage_Item_Renamed, packageMatch, childICoverage, false));
+            packageItemsProcessed.add(packageMatch);
+            unMatchedImportCoverageItems.remove(childICoverage);
+         }
+
+         // Check for an add
+         else if (isCoverageItemAdded(packageItemChildren, childICoverage)) {
+            groupMergeItems.add(new MergeItem(MergeType.Add, null, childICoverage, false));
+            unMatchedImportCoverageItems.remove(childICoverage);
+         }
+
+      }
+
+      // Check for moves in any items left unhandled by above renames and adds
+      for (ICoverage childICoverage : new CopyOnWriteArrayList<ICoverage>(unMatchedImportCoverageItems)) {
+         for (ICoverage packageItemChild : packageItemChildren) {
+            // name equals package item not yet processed
+            if (!packageItemsProcessed.contains(packageItemChild) && packageItemChild.getName().equals(
+                  childICoverage.getName())) {
+               groupMergeItems.add(new MergeItem(MergeType.Coverage_Item_Moved, packageItemChild, childICoverage, false));
+               packageItemsProcessed.add(packageItemChild);
+               unMatchedImportCoverageItems.add(childICoverage);
+            }
+         }
+      }
+
+      // Check for deletions
+      for (ICoverage packageItemChild : packageItemChildren) {
+         if (!packageItemsProcessed.contains(packageItemChild)) {
+            groupMergeItems.add(new MergeItem(MergeType.Delete, packageItemChild, null, false));
+            packageItemsProcessed.add(packageItemChild);
+         }
+      }
+
+      // Error on any remaining import CoverageItems
+      for (ICoverage coverage : unMatchedImportCoverageItems) {
+         groupMergeItems.add(new MergeItem(MergeType.Error__UnMergable, null, coverage, false));
+      }
+      // Error on any unhandled package CoverageItems
+      for (ICoverage packageItemChild : packageItemChildren) {
+         if (!packageItemsProcessed.contains(packageItemChild)) {
+            groupMergeItems.add(new MergeItem(MergeType.Error__UnMergable, packageItemChild, null, false));
+         }
+      }
+
+      if (groupMergeItems.size() > 0) {
+         mergeItems.add(new MergeItemGroup(MergeType.Coverage_Item_Changes, groupMergeItems, !unMergeableExists));
+      }
+
+   }
+
+   private boolean isCoverageItemAdded(Collection<? extends ICoverage> packageItemChildren, ICoverage importItemChild) {
+      // Only valid for coverage items
+      if (!(importItemChild instanceof CoverageItem)) return false;
+      // Make sure there is no package item with same order number
+      for (ICoverage packageItemChild : packageItemChildren) {
+         if (packageItemChild.getOrderNumber().equals(importItemChild.getOrderNumber())) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   private ICoverage isCoverageItemRenamed(Collection<? extends ICoverage> packageItemChildren, ICoverage importItemChild) {
+      // Only valid for coverage items
+      if (!(importItemChild instanceof CoverageItem)) return null;
+      // Make sure there is a package item with same order number
+      ICoverage packageItemChild =
+            CoverageUtil.getCoverageItemMatchingOrder(packageItemChildren, (CoverageItem) importItemChild);
+      return packageItemChild;
+   }
+
    private void handleSomeAddedSomeMoved(List<IMergeItem> mergeItems, Map<ICoverage, ICoverage> nameOnlyImportToPackageCoverage, Collection<? extends ICoverage> packageItemChildren, Collection<? extends ICoverage> importItemChildren, Map<ICoverage, MatchItem> importItemToMatchItem, XResultData resultData) throws OseeCoreException {
       List<IMergeItem> groupMergeItems = new ArrayList<IMergeItem>();
       List<ICoverage> processChildrenItems = new ArrayList<ICoverage>();
@@ -201,10 +317,6 @@ public class MergeManager {
                   false));
             processedImportCoverages.add(childMatchItem.getImportItem());
             processChildrenItems.add(childCoverage);
-         } else if (isChildCoverageItemAndNeedsUpdate(packageItemChildren, childCoverage)) {
-            CoverageItem packageCoverageItem =
-                  CoverageUtil.getCoverageItemMatchingOrder(packageItemChildren, (CoverageItem) childCoverage);
-            groupMergeItems.add(new MergeItem(MergeType.Rename_Coverage_Item, packageCoverageItem, childCoverage, false));
          }
          // This child is new, mark as added; no need to process children cause their new
          else {
@@ -342,7 +454,8 @@ public class MergeManager {
             for (ICoverage packageChild : packageItemChildren) {
                if (packageChild.getOrderNumber().equals(importChild.getOrderNumber())) {
                   if (packageChild instanceof CoverageItem) {
-                     groupMergeItems.add(new MergeItem(MergeType.Rename_Coverage_Item, packageChild, importChild, false));
+                     groupMergeItems.add(new MergeItem(MergeType.Coverage_Item_Renamed, packageChild, importChild,
+                           false));
                      found = true;
                   }
                }
@@ -354,18 +467,8 @@ public class MergeManager {
          }
       }
       if (!errorFound && groupMergeItems.size() > 0) {
-         mergeItems.add(new MergeItemGroup(MergeType.Rename_Coverage_Item, groupMergeItems, true));
+         mergeItems.add(new MergeItemGroup(MergeType.Coverage_Item_Renamed, groupMergeItems, true));
       }
-   }
-
-   /**
-    * Same number children coverage items and either matches or just name is different, name change
-    */
-   private boolean isSameNumberOfChildrenButNamesAreDifferent(boolean sameNumberChildren, Map<ICoverage, MatchItem> importItemToMatchItem) {
-      return sameNumberChildren && CoverageUtil.isAllCoverageItems(importItemToMatchItem.keySet()) && MatchItem.isAllMatchType(
-            Arrays.asList(MatchType.Match__Name_And_Order_Num, MatchType.No_Match__Name_Or_Order_Num),
-            importItemToMatchItem.values()) && !MatchItem.isAllMatchType(
-            Arrays.asList(MatchType.Match__Name_And_Order_Num), importItemToMatchItem.values());
    }
 
    /**

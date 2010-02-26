@@ -586,7 +586,8 @@ public class CoveragePackageImportTest {
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
       Assert.assertEquals(1, mergeManager.getMergeItems().size());
       Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
-      Assert.assertTrue(((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeType() == MergeType.Add);
+      Assert.assertTrue(((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeType() == MergeType.Coverage_Item_Changes);
+      Assert.assertEquals(2, ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems().size());
 
       MergeImportManager importManager = new MergeImportManager(mergeManager);
       XResultData resultData = importManager.importItems(new ISaveable() {
@@ -826,7 +827,7 @@ public class CoveragePackageImportTest {
       Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
       int numRename = 0;
       for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems()) {
-         if (mergeItem.getMergeType() == MergeType.Rename_Coverage_Item)
+         if (mergeItem.getMergeType() == MergeType.Coverage_Item_Renamed)
             numRename++;
          else
             throw new OseeStateException(String.format("Unexpected merge type [%s] for Delete_And_Reorder group",
