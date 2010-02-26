@@ -35,7 +35,7 @@
 	<target name="postBuild" />
 
 	<target name="extraPackaging">
-		<propertyregex property="targetSiteFile" value="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-TARGET-" casesensitive="false" override="true" />
+		<propertyregex property="targetSiteFile" input="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-TARGET-" casesensitive="false" override="true" />
 		<property name="tempAppServerFolder" value="${buildDirectory}/${buildLabel}/${targetSiteFile}_tmp" />
 
 		<mkdir dir="${tempAppServerFolder}" />
