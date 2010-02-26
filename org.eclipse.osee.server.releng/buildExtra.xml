@@ -35,13 +35,16 @@
 	<target name="postBuild" />
 
 	<target name="extraPackaging">
-		<propertyregex property="updateSiteFile" input="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-Update-" casesensitive="false" override="true" />
-		<property name="tempAppServerFolder" value="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp" />
+		<propertyregex property="targetSiteFile" value="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-TARGET-" casesensitive="false" override="true" />
+		<property name="tempAppServerFolder" value="${buildDirectory}/${buildLabel}/${targetSiteFile}_tmp" />
 
 		<mkdir dir="${tempAppServerFolder}" />
 
-		<unzip src="${buildDirectory}/${buildLabel}/${updateSiteFile}" dest="${tempAppServerFolder}">
-			<patternset includes="plugins/*" excludes="features/*,*.jar,*.xml,*source_*.jar" />
+		<unzip src="${buildDirectory}/${buildLabel}/${targetSiteFile}" dest="${tempAppServerFolder}">
+			<patternset>
+				<excludesfile name="features/*"/>
+				<excludesfile name="plugins/*source_*.jar" />
+			</patternset>
 		</unzip>
 
 		<mkdir dir="${tempAppServerFolder}/configuration" />
@@ -53,7 +56,7 @@
 		<pathconvert property="launcherBundlePath" setonempty="false">
 			<path>
 				<fileset dir="${pluginsFolder}">
-					<include name="org.eclipse.osgi_*.jar" />
+					<include name="org.eclipse.equinox.launcher_*.jar" />
 				</fileset>
 			</path>
 		</pathconvert>
@@ -62,7 +65,7 @@
 		<ant antfile="${relengBuilderDir}/scripts/createServerLaunch.xml" target="generateAll" inheritall="true" />
 		<copy file="${relengBuilderDir}/scripts/server.pl" todir="${tempAppServerFolder}" />
 
-		<propertyregex property="serverRuntimeFile" input="${updateSiteFile}" defaultvalue="server-runtime.zip" regexp="-Update-" replace="-osgi-runtime-" casesensitive="false" override="true" />
+		<propertyregex property="serverRuntimeFile" input="${targetSiteFile}" defaultvalue="server-runtime.zip" regexp="-TARGET-" replace="-osgi-runtime-" casesensitive="false" override="true" />
 
 		<zip destfile="${buildDirectory}/${buildLabel}/${serverRuntimeFile}">
 			<fileset dir="${tempAppServerFolder}" />
