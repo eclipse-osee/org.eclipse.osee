@@ -105,10 +105,8 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
          }
          OseeExceptions.wrapAndThrow(ex);
       } finally {
-         if (connection != null && connection.isClosed() != true) {
-            txsToDeleteQuery.delete(connection);
-            ArtifactLoader.clearQuery(connection, artifactJoinId);
-         }
+         txsToDeleteQuery.delete();
+         ArtifactLoader.clearQuery(artifactJoinId);
       }
       OseeEventManager.kickTransactionsDeletedEvent(this, txIdsToDelete);
    }
