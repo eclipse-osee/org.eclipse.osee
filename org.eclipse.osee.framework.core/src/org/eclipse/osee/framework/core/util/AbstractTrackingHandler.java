@@ -26,6 +26,8 @@ public abstract class AbstractTrackingHandler {
       return clazz.cast(objectMap.get(clazz));
    }
 
+   public abstract Class<?>[] getDependencies();
+
    public abstract void onActivate(BundleContext context, Map<Class<?>, Object> services);
 
    public abstract void onDeActivate();

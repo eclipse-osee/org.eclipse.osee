@@ -24,22 +24,20 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public final class ServiceDependencyTracker {
 
-   private final Class<?>[] dependencies;
    private final BundleContext context;
    private final AbstractTrackingHandler handler;
    private final Map<Class<?>, Object> services;
    private final List<ServiceTracker> trackers;
 
-   @SuppressWarnings("unchecked")
-   public ServiceDependencyTracker(BundleContext context, AbstractTrackingHandler handler, Class... serviceClasses) {
+   public ServiceDependencyTracker(BundleContext context, AbstractTrackingHandler handler) {
       this.services = new ConcurrentHashMap<Class<?>, Object>();
       this.trackers = new ArrayList<ServiceTracker>();
-      this.dependencies = serviceClasses;
       this.context = context;
       this.handler = handler;
    }
 
    public void open() {
+      Class<?>[] dependencies = handler.getDependencies();
       if (dependencies != null) {
          for (Class<?> clazz : dependencies) {
             services.put(clazz, null);
