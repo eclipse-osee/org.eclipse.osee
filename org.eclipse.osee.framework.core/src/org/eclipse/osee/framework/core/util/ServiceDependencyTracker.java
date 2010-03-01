@@ -23,6 +23,7 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author Roberto E. Escobar
  */
 public final class ServiceDependencyTracker {
+   private static final Object NULL_SERVICE = new Object();
 
    private final BundleContext context;
    private final AbstractTrackingHandler handler;
@@ -40,7 +41,7 @@ public final class ServiceDependencyTracker {
       Class<?>[] dependencies = handler.getDependencies();
       if (dependencies != null) {
          for (Class<?> clazz : dependencies) {
-            services.put(clazz, null);
+            services.put(clazz, NULL_SERVICE);
             ServiceTracker internalTracker = new InternalServiceTracker(getBundleContext(), clazz);
             internalTracker.open(true);
             trackers.add(internalTracker);
@@ -60,19 +61,29 @@ public final class ServiceDependencyTracker {
    }
 
    private void onAdd(Class<?> classKey, Object service) {
-      services.put(classKey, service);
+      Object previous = services.put(classKey, service);
+      if (isValidService(previous) && previous != service) {
+         throw new IllegalStateException(String.format("Attempting to overwrite existing service reference: [%s]",
+               previous.getClass().getName()));
+      }
       if (areServicesReady()) {
          handler.onActivate(getBundleContext(), services);
       }
    }
 
+   private boolean isValidService(Object service) {
+      return !NULL_SERVICE.equals(service);
+   }
+
    private boolean areServicesReady() {
+      boolean result = true;
       for (Object service : services.values()) {
-         if (service == null) {
-            return false;
+         if (!isValidService(service)) {
+            result = false;
+            break;
          }
       }
-      return true;
+      return result;
    }
 
    private void onRemove(Class<?> classKey) {
