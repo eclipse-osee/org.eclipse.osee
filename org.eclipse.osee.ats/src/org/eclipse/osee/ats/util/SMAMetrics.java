@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -65,12 +66,19 @@ public class SMAMetrics {
       this.versionArtifact = versionArtifact;
       this.estimatedReleaseDate = estimatedReleaseDate;
       if (artifacts.size() == 0) return;
+      Set<Artifact> resolvedArts = new HashSet<Artifact>(artifacts);
       for (Artifact art : artifacts) {
+         if (art instanceof GoalArtifact) {
+            resolvedArts.addAll(((GoalArtifact) art).getMembers());
+         }
+      }
+
+      for (Artifact art : resolvedArts) {
          if (art instanceof ActionArtifact) {
             actionArts.add((ActionArtifact) art);
          }
       }
-      for (Artifact art : artifacts) {
+      for (Artifact art : resolvedArts) {
          if (art instanceof TeamWorkFlowArtifact) {
             teamArts.add((TeamWorkFlowArtifact) art);
          } else if (art instanceof TaskArtifact) {

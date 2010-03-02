@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -71,7 +72,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
 
    private final WorldEditor worldEditor;
    private WorldComposite worldComposite;
-   private Action filterCompletedAction, filterMyAssigneeAction, selectionMetricsAction, toAction, toReview,
+   private Action filterCompletedAction, filterMyAssigneeAction, selectionMetricsAction, toAction, toGoal, toReview,
          toWorkFlow, toTask;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private WorldAssigneeFilter worldAssigneeFilter = null;
@@ -209,6 +210,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          addActionToMenu(fMenu, filterMyAssigneeAction);
          new MenuItem(fMenu, SWT.SEPARATOR);
          addActionToMenu(fMenu, toAction);
+         addActionToMenu(fMenu, toGoal);
          addActionToMenu(fMenu, toWorkFlow);
          addActionToMenu(fMenu, toTask);
          addActionToMenu(fMenu, toReview);
@@ -386,6 +388,16 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       toAction.setToolTipText("Re-display as Actions");
       toAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ACTION));
 
+      toGoal = new Action("Re-display as Goals", Action.AS_PUSH_BUTTON) {
+
+         @Override
+         public void run() {
+            redisplayAsGoals();
+         }
+      };
+      toGoal.setToolTipText("Re-display as Goals");
+      toGoal.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ACTION));
+
       toWorkFlow = new Action("Re-display as WorkFlows", Action.AS_PUSH_BUTTON) {
 
          @Override
@@ -439,6 +451,29 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                   @Override
                   public void run() {
                      worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
+                  }
+               });
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job, true);
+   }
+
+   public void redisplayAsGoals() {
+      final ArrayList<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
+      Job job = new Job("Re-display as Goals") {
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               final Set<Artifact> goals = new HashSet<Artifact>();
+               GoalArtifact.getGoals(artifacts, goals, true);
+               Displays.ensureInDisplayThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), goals);
                   }
                });
             } catch (OseeCoreException ex) {

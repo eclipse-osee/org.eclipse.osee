@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -93,6 +95,22 @@ public class GoalArtifact extends StateMachineArtifact {
    @Override
    public String getHyperTargetVersion() {
       return null;
+   }
+
+   public static void getGoals(Artifact artifact, Set<Artifact> goals, boolean recurse) throws OseeCoreException {
+      getGoals(Arrays.asList(artifact), goals, recurse);
+   }
+
+   public static void getGoals(Collection<Artifact> artifacts, Set<Artifact> goals, boolean recurse) throws OseeCoreException {
+      for (Artifact art : artifacts) {
+         if (art instanceof GoalArtifact) {
+            goals.add(art);
+         }
+         goals.addAll(art.getRelatedArtifacts(AtsRelationTypes.Goal_Goal, GoalArtifact.class));
+         if (recurse && art instanceof StateMachineArtifact && ((StateMachineArtifact) art).getParentSMA() != null) {
+            getGoals(((StateMachineArtifact) art).getParentSMA(), goals, recurse);
+         }
+      }
    }
 
    public static GoalArtifact createGoal(String title) throws OseeCoreException {

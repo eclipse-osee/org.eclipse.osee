@@ -167,8 +167,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       atsBody.setLayout(new GridLayout(1, false));
 
       createHeaderSection();
-      createPageSections();
       createGoalSection();
+      createPageSections();
       createHistorySection();
       createRelationsSection();
       createOperationsSection();
@@ -518,8 +518,10 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
 
       try {
-         FormsUtil.createLabelText(toolkit, topLineComp, "Action Id: ",
-               sma.getParentActionArtifact() == null ? "??" : sma.getParentActionArtifact().getHumanReadableId());
+         if (!(sma instanceof GoalArtifact)) {
+            FormsUtil.createLabelText(toolkit, topLineComp, "Action Id: ",
+                  sma.getParentActionArtifact() == null ? "??" : sma.getParentActionArtifact().getHumanReadableId());
+         }
          if (sma.getParentSMA() != null) {
             FormsUtil.createLabelText(toolkit, topLineComp, "Parent Workflow Id: ",
                   sma.getParentSMA() == null ? "??" : sma.getParentSMA().getHumanReadableId());
