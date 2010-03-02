@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.database.core.SequenceManager;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 
 /**
  * @author Ryan D. Brooks
@@ -54,7 +54,7 @@ public abstract class ArtifactFactory {
       }
       Artifact artifact = getArtifactInstance(guid, humandReadableId, BranchManager.getBranch(branch), artifactType);
 
-      artifact.setArtId(SequenceManager.getNextArtifactId());
+      artifact.setArtId(ConnectionHandler.getSequence().getNextArtifactId());
       if (earlyArtifactInitialization != null) {
          earlyArtifactInitialization.run(artifact);
       }
@@ -92,7 +92,7 @@ public abstract class ArtifactFactory {
     * call to the persistence manager to acquire the <code>Artifact</code> or else an infinite loop will occur since
     * this method is used by the persistence manager when it needs a new instance of the class to work with and can not
     * come up with it on its own.
-    * 
+    *
     * @param branch branch on which this instance of this artifact will be associated
     */
    protected abstract Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException;

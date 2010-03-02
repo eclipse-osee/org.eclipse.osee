@@ -14,8 +14,8 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
@@ -68,7 +68,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
       if (useExistingBackingData()) {
          return artifact.getGammaId();
       }
-      return SequenceManager.getNextGammaId();
+      return ConnectionHandler.getSequence().getNextGammaId();
    }
 
    @Override

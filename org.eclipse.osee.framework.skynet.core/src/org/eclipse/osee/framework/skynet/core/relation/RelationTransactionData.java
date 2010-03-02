@@ -15,8 +15,8 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
@@ -73,7 +73,7 @@ public class RelationTransactionData extends BaseTransactionData {
       if (useExistingBackingData()) {
          newGammaId = relation.getGammaId();
       } else {
-         newGammaId = SequenceManager.getNextGammaId();
+         newGammaId = ConnectionHandler.getSequence().getNextGammaId();
       }
       return newGammaId;
    }

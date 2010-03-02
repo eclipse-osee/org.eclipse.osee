@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -290,7 +289,7 @@ public class SkynetTransaction extends DbTransaction {
          }
       }
       if (attrId < 1) {
-         attrId = SequenceManager.getNextAttributeId();
+         attrId = ConnectionHandler.getSequence().getNextAttributeId();
       }
       return attrId;
    }
@@ -329,7 +328,7 @@ public class SkynetTransaction extends DbTransaction {
             bArtifact.persist(this);
          }
 
-         link.internalSetRelationId(SequenceManager.getNextRelationId());
+         link.internalSetRelationId(ConnectionHandler.getSequence().getNextRelationId());
          modificationType = ModificationType.NEW;
       }
 

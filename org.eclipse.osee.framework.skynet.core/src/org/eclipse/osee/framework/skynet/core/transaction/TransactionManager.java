@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -173,7 +172,7 @@ public final class TransactionManager {
    }
 
    public static synchronized TransactionRecord internalCreateTransactionRecord(Branch branch, User userToBlame, String comment) throws OseeCoreException {
-      Integer transactionNumber = SequenceManager.getNextTransactionId();
+      Integer transactionNumber = ConnectionHandler.getSequence().getNextTransactionId();
       if (comment == null) {
          comment = "";
       }

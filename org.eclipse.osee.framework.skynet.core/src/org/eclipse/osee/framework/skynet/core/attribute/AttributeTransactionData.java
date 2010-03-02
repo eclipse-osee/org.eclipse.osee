@@ -15,8 +15,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -91,7 +91,7 @@ public class AttributeTransactionData extends BaseTransactionData {
       if (useExistingBackingData()) {
          newGammaId = attribute.getGammaId();
       } else {
-         newGammaId = SequenceManager.getNextGammaId();
+         newGammaId = ConnectionHandler.getSequence().getNextGammaId();
       }
       return newGammaId;
    }
