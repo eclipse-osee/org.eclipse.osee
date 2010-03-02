@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.coverage.test.import1.nav;
+package org.eclipse.osee.coverage.test.import8.nav;
 
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -31,12 +31,11 @@ public class NavigationButton2 extends Button {
    public String getText() {
       try {
          if (getStyle() == 4) { // 1, 1, TestUnit2
-            return "Navigate Here"; // 1, 2, TestUnit2
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex); // 1, 3, n
+         OseeLog.log(Activator.class, Level.SEVERE, ex); // 1, 2, n
       }
-      return "Navigate"; // 1, 4, n
+      return "Navigate"; // 1, 3, n
    }
 
    @Override

@@ -70,8 +70,7 @@ public class CoverageTestUtil {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       artifacts.addAll(getCoveragePackageArtifacts());
       artifacts.addAll(getCoverageUnitArtifacts());
-      System.err.println("Add back in");
-      //      artifacts.addAll(getCoverageRecordArtifacts());
+      artifacts.addAll(getCoverageRecordArtifacts());
       return artifacts;
    }
 

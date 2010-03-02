@@ -14,8 +14,6 @@ import org.eclipse.osee.coverage.test.util.CpSelectAndImportItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
 /**
- * Imports deselectAdded to middle of epu.PowerUnit1
- * 
  * @author Donald G. Dunne
  */
 public class CoveragePackage1Import5 extends CpSelectAndImportItem {

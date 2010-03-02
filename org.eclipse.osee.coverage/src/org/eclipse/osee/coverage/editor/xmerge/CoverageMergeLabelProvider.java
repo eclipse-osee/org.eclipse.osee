@@ -103,7 +103,7 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
       if (coverage instanceof MergeItemGroup) {
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) {
             ICoverage cov = ((MergeItemGroup) coverage).getParent();
-            return super.getColumnText(cov, xCol, columnIndex);
+            return cov.getName();
          }
       }
 

@@ -16,12 +16,16 @@ public enum MergeType {
    Add_With_Moves,
    // This will result in deleting this child and re-ordering
    Delete,
+   // This will result in adding this and all children with all attributes
+   CI_Add,
+   // This will result in deleting this child and re-ordering
+   CI_Delete,
    // This will result in changing name of package to match import, clearing rationale and setting coverage method 
-   Coverage_Item_Renamed,
+   CI_Renamed,
    // This will result in changing name of package to match import, clearing rationale and setting coverage method 
-   Coverage_Item_Moved,
+   CI_Moved,
    // Group option containing Add, Rename of coverage items
-   Coverage_Item_Changes,
+   CI_Changes,
    // Group option that contains deletions and re-order items
    Delete_And_Reorder,
    // Just update package item's order with import item's order

@@ -11,6 +11,7 @@ import java.util.Set;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -20,9 +21,11 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 public class MergeItemGroup extends MergeItemBase {
 
    private final Collection<IMergeItem> mergeItems;
+   private final ICoverage parentCoverage;
 
-   public MergeItemGroup(MergeType mergeType, Collection<IMergeItem> mergeItems, boolean isCheckable) {
+   public MergeItemGroup(MergeType mergeType, ICoverage parentCoverage, Collection<IMergeItem> mergeItems, boolean isCheckable) {
       super(mergeType, isCheckable);
+      this.parentCoverage = parentCoverage;
       this.mergeItems = mergeItems;
    }
 
@@ -84,12 +87,12 @@ public class MergeItemGroup extends MergeItemBase {
 
    @Override
    public String getName() {
-      return getMergeType().toString() + " - " + CoverageUtil.getFullPath(mergeItems.iterator().next());
+      return getMergeType().toString() + " - " + CoverageUtil.getFullPath(parentCoverage) + "[" + parentCoverage.getName() + "]";
    }
 
    @Override
    public String getNamespace() {
-      return mergeItems.iterator().next().getNamespace();
+      return parentCoverage.getNamespace();
    }
 
    @Override
@@ -104,12 +107,19 @@ public class MergeItemGroup extends MergeItemBase {
 
    @Override
    public ICoverage getParent() {
-      return mergeItems.iterator().next();
+      return parentCoverage;
    }
 
    @Override
    public String getFileContents() throws OseeCoreException {
-      return mergeItems.iterator().next().getFileContents();
+      String str = parentCoverage.getFileContents();
+      if (Strings.isValid(str)) {
+         return str;
+      }
+      if (parentCoverage.getParent() != null) {
+         return parentCoverage.getParent().getFileContents();
+      }
+      return "";
    }
 
    @Override
@@ -124,7 +134,7 @@ public class MergeItemGroup extends MergeItemBase {
 
    @Override
    public Result isEditable() {
-      return mergeItems.iterator().next().isEditable();
+      return parentCoverage.isEditable();
    }
 
    @Override

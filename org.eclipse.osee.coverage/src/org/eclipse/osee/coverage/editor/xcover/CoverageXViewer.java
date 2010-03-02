@@ -278,6 +278,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    public void setSelectedCoverageEditorItem(ICoverage item) {
       xCoverageViewer.getXViewer().setSelection(new StructuredSelection(item));
       xCoverageViewer.getXViewer().reveal(new StructuredSelection(item));
+      xCoverageViewer.getXViewer().getTree().setFocus();
    }
 
    @Override

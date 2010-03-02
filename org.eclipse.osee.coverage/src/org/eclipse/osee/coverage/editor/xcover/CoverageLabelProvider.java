@@ -143,13 +143,8 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
             return coverageUnit.getOrderNumber();
          }
       }
-      if (coverage instanceof CoverageItem || coverage instanceof MergeItem && ((MergeItem) coverage).getImportItem() instanceof CoverageItem) {
-         CoverageItem coverageItem = null;
-         if (coverage instanceof CoverageItem) {
-            coverageItem = (CoverageItem) coverage;
-         } else {
-            coverageItem = (CoverageItem) ((MergeItem) coverage).getImportItem();
-         }
+      if (coverage instanceof CoverageItem) {
+         CoverageItem coverageItem = (CoverageItem) coverage;
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) {
             return coverageItem.getParent() == null ? "" : coverageItem.getParent().getName();
          }
@@ -161,6 +156,44 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
          }
          if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) {
             return coverageItem.getCoverageMethod().getName();
+         }
+      }
+      if (coverage instanceof MergeItem && (((MergeItem) coverage).getImportItem() instanceof CoverageItem || ((MergeItem) coverage).getPackageItem() instanceof CoverageItem)) {
+         MergeItem mergeItem = (MergeItem) coverage;
+         System.out.println("MergeType " + mergeItem.getMergeType());
+         ICoverage importItem = mergeItem.getImportItem();
+         ICoverage packageItem = mergeItem.getPackageItem();
+         if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) {
+            if (importItem != null && importItem.getParent() != null)
+               return importItem.getParent().getName();
+            else if (packageItem != null && packageItem.getParent() != null) {
+               return packageItem.getParent().getName();
+            }
+            return "";
+         }
+         if (xCol.equals(CoverageXViewerFactory.Method_Number)) {
+            if (importItem != null && importItem.getParent() != null)
+               return importItem.getParent().getOrderNumber();
+            else if (packageItem != null && packageItem.getParent() != null) {
+               return packageItem.getParent().getOrderNumber();
+            }
+            return "";
+         }
+         if (xCol.equals(CoverageXViewerFactory.Execution_Number)) {
+            if (importItem != null)
+               return importItem.getOrderNumber();
+            else if (packageItem != null) {
+               return packageItem.getOrderNumber();
+            }
+            return "";
+         }
+         if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) {
+            if (importItem != null)
+               return ((CoverageItem) importItem).getCoverageMethod().getName();
+            else if (packageItem != null) {
+               return ((CoverageItem) packageItem).getCoverageMethod().getName();
+            }
+            return "";
          }
       }
       return "";

@@ -29,6 +29,7 @@ import org.eclipse.osee.coverage.test.import4.CoverageImport4TestBlam;
 import org.eclipse.osee.coverage.test.import5.CoverageImport5TestBlam;
 import org.eclipse.osee.coverage.test.import6.CoverageImport6TestBlam;
 import org.eclipse.osee.coverage.test.import7.CoverageImport7TestBlam;
+import org.eclipse.osee.coverage.test.import8.CoverageImport8TestBlam;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -206,6 +208,7 @@ public class CoveragePackageImportTest {
          // Test Load of Coverage Package
          Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
+         OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch()).addChild(artifact);
          artifact.persist();
 
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
@@ -586,7 +589,7 @@ public class CoveragePackageImportTest {
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
       Assert.assertEquals(1, mergeManager.getMergeItems().size());
       Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
-      Assert.assertTrue(((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeType() == MergeType.Coverage_Item_Changes);
+      Assert.assertTrue(((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeType() == MergeType.CI_Changes);
       Assert.assertEquals(2, ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems().size());
 
       MergeImportManager importManager = new MergeImportManager(mergeManager);
@@ -671,16 +674,16 @@ public class CoveragePackageImportTest {
       }
 
       // Get and store off coverage unit to delete so can confirm deletion occurred
-      CoverageUnit powerUnit1CoverageUnit =
+      CoverageUnit powerUnit2CoverageUnit =
             (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit2.java");
-      Assert.assertNotNull(powerUnit1CoverageUnit);
+      Assert.assertNotNull(powerUnit2CoverageUnit);
       CoverageUnit clearCoverageUnitForDeletion = null;
-      for (CoverageUnit childCoverageUnit : powerUnit1CoverageUnit.getCoverageUnits()) {
+      for (CoverageUnit childCoverageUnit : powerUnit2CoverageUnit.getCoverageUnits()) {
          if (childCoverageUnit.getName().equals("clear")) {
             clearCoverageUnitForDeletion = childCoverageUnit;
          }
       }
-      Assert.assertNotNull(clearCoverageUnitForDeletion);
+      Assert.assertNotNull("clear CoverageUnit should exist", clearCoverageUnitForDeletion);
 
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
@@ -725,6 +728,19 @@ public class CoveragePackageImportTest {
       }, mergeManager.getMergeItems());
       Assert.assertEquals(0, resultData.getNumErrors());
 
+      // Make sure clear is not there anymore
+      powerUnit2CoverageUnit =
+            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit2.java");
+      Assert.assertNotNull(powerUnit2CoverageUnit);
+      boolean found = false;
+      for (CoverageUnit childCoverageUnit : powerUnit2CoverageUnit.getCoverageUnits()) {
+         if (childCoverageUnit.getName().equals("clear")) {
+            found = true;
+            break;
+         }
+      }
+      Assert.assertFalse("clear CoverageUnit should have been deleted", found);
+
       // CoveragePackage should now have imported results
       Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered().size());
       Assert.assertEquals(135, coveragePackage.getCoverageItems().size());
@@ -761,6 +777,19 @@ public class CoveragePackageImportTest {
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(68, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
       Assert.assertEquals(67, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+
+      // Make sure clear is not there anymore
+      powerUnit2CoverageUnit =
+            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit2.java");
+      Assert.assertNotNull(powerUnit2CoverageUnit);
+      found = false;
+      for (CoverageUnit childCoverageUnit : powerUnit2CoverageUnit.getCoverageUnits()) {
+         if (childCoverageUnit.getName().equals("clear")) {
+            found = true;
+            break;
+         }
+      }
+      Assert.assertFalse("clear CoverageUnit should have been deleted", found);
 
       // Ensure that the artifact was deleted and not just relation deletion
       try {
@@ -827,7 +856,7 @@ public class CoveragePackageImportTest {
       Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
       int numRename = 0;
       for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems()) {
-         if (mergeItem.getMergeType() == MergeType.Coverage_Item_Renamed)
+         if (mergeItem.getMergeType() == MergeType.CI_Renamed)
             numRename++;
          else
             throw new OseeStateException(String.format("Unexpected merge type [%s] for Delete_And_Reorder group",
@@ -919,6 +948,148 @@ public class CoveragePackageImportTest {
       Assert.assertEquals("File Contents should be same pre and post save", postLoadFileContents, postFileContents);
       Assert.assertTrue("deselectAdded should exist in loaded file contents",
             postLoadFileContents.contains("clear it now"));
+
+   }
+
+   @Test
+   // Re-import; Deletes NavigationButton2.getText.line2
+   public void testImport8() throws Exception {
+      CoverageImport8TestBlam coverageImport8TestBlam = new CoverageImport8TestBlam();
+      coverageImport = coverageImport8TestBlam.run(null);
+      Assert.assertNotNull(coverageImport);
+
+      if (testWithDb) {
+         // Test Load of Coverage Package
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         CoverageTestUtil.registerAsTestArtifact(artifact);
+         artifact.persist();
+         OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
+         Assert.assertNotNull(packageStore.getArtifact(false));
+         coveragePackage = packageStore.getCoveragePackage();
+      }
+
+      // Get and store off coverage unit to delete so can confirm deletion occurred
+      CoverageUnit navigateButton2 =
+            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "NavigationButton2.java");
+      Assert.assertNotNull(navigateButton2);
+      CoverageUnit getTextCoverageUnit = null;
+      for (CoverageUnit childCoverageUnit : navigateButton2.getCoverageUnits()) {
+         if (childCoverageUnit.getName().equals("getText")) {
+            getTextCoverageUnit = childCoverageUnit;
+         }
+      }
+
+      Assert.assertNotNull(getTextCoverageUnit);
+      boolean foundIt = false;
+      for (CoverageItem childCoverageUnit : getTextCoverageUnit.getCoverageItems()) {
+         if (childCoverageUnit.getName().contains("Navigate Here")) {
+            foundIt = true;
+         }
+      }
+      Assert.assertTrue("Should have found coverage item with \"Navigate Here\" string.", foundIt);
+
+      String preFileContents = navigateButton2.getFileContents();
+      Assert.assertTrue("\"Navigate Here\" should exist in file contents", preFileContents.contains("Navigate Here"));
+
+      // Test MergeManager
+      Assert.assertNotNull(coveragePackage);
+      MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
+      Assert.assertEquals(1, mergeManager.getMergeItems().size());
+      Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
+      int numRename = 0, numDeleted = 0;
+      for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems()) {
+         if (mergeItem.getMergeType() == MergeType.CI_Renamed)
+            numRename++;
+         else if (mergeItem.getMergeType() == MergeType.CI_Delete)
+            numDeleted++;
+         else
+            throw new OseeStateException(String.format("Unexpected merge type [%s] for CI_Changes group",
+                  mergeItem.getMergeType()));
+      }
+      Assert.assertEquals(2, numRename);
+      Assert.assertEquals(1, numDeleted);
+
+      MergeImportManager importManager = new MergeImportManager(mergeManager);
+      XResultData resultData = importManager.importItems(new ISaveable() {
+
+         @Override
+         public Result isEditable() {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result save() throws OseeCoreException {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+            return Result.TrueResult;
+         }
+
+      }, mergeManager.getMergeItems());
+      Assert.assertEquals(0, resultData.getNumErrors());
+
+      // CoveragePackage should now have imported results
+      Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered().size());
+      Assert.assertEquals(134, coveragePackage.getCoverageItems().size());
+      Assert.assertEquals(50, coveragePackage.getCoveragePercent());
+      Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
+      Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
+      Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
+      Assert.assertEquals(66, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+
+      CoveragePackage loadedCp = null;
+      if (testWithDb) {
+         // Test Persist of CoveragePackage
+         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage);
+         SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Coverage Package Save");
+         store.save(transaction);
+         transaction.execute();
+
+         // Test Load of Coverage Package
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         CoverageTestUtil.registerAsTestArtifact(artifact);
+         artifact.persist();
+
+         OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
+         Assert.assertNotNull(packageStore.getArtifact(false));
+         loadedCp = packageStore.getCoveragePackage();
+      } else {
+         loadedCp = coveragePackage;
+      }
+
+      // Confirm that fileContents were updated
+      navigateButton2 =
+            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "NavigationButton2.java");
+      Assert.assertNotNull(navigateButton2);
+      String postFileContents = navigateButton2.getFileContents();
+      Assert.assertTrue("File Contents should been updated and thus not equal",
+            !postFileContents.equals(preFileContents));
+      Assert.assertFalse("\"Navigate Here\" should NOT exist in file contents",
+            postFileContents.contains("Navigate Here"));
+
+      Assert.assertEquals(68, loadedCp.getCoverageItemsCovered().size());
+      Assert.assertEquals(134, loadedCp.getCoverageItems().size());
+      Assert.assertEquals(50, loadedCp.getCoveragePercent());
+      Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
+      Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
+      Assert.assertEquals(68, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
+      Assert.assertEquals(66, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+
+      // Ensure that file contents were updated
+      navigateButton2 =
+            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "NavigationButton2.java");
+      Assert.assertNotNull(navigateButton2);
+      String postLoadFileContents = navigateButton2.getFileContents();
+      Assert.assertEquals("File Contents should be same pre and post save", postLoadFileContents, postFileContents);
+      Assert.assertFalse("\"Navigate Here\" should NOT exist in loaded file contents",
+            postLoadFileContents.contains("Navigate Here"));
 
    }
 }

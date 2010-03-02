@@ -8,18 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.coverage.test.import6;
+package org.eclipse.osee.coverage.test.import8;
 
 import org.eclipse.osee.coverage.test.util.CpSelectAndImportItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
 /**
+ * Deletes NavigationButton2.getText.line2
+ * 
  * @author Donald G. Dunne
  */
-public class CoveragePackage1Import6 extends CpSelectAndImportItem {
+public class CoveragePackage1Import8 extends CpSelectAndImportItem {
 
-   public CoveragePackage1Import6(XNavigateItem parent) {
-      super(parent, "Open CP 1 - Import 6 - Delete PowerUnit2.clear", CoverageImport6TestBlam.NAME);
+   public CoveragePackage1Import8(XNavigateItem parent) {
+      super(parent, "Open CP 1 - Import 8 - Deletes NavigationButton2.getText.line2", CoverageImport8TestBlam.NAME);
    }
 
 }

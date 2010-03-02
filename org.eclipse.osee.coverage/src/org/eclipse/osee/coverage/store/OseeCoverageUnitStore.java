@@ -147,7 +147,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
          new OseeCoverageUnitStore(childCoverageUnit).save(transaction);
       }
-      // Delete removed coverage items
+      // Delete removed coverage units and folders
       for (Artifact childArt : artifact.getChildren()) {
          if (childArt.isOfType(CoverageArtifactTypes.CoverageUnit) || childArt.isOfType(CoverageArtifactTypes.CoverageFolder)) {
             boolean found = false;

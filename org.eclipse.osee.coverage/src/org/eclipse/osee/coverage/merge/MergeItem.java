@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -81,7 +82,7 @@ public class MergeItem extends MergeItemBase {
       if (importItem != null)
          return importItem.getName();
       else
-         return packageItem.getName();
+         return String.format("Package [%s]", packageItem.getName());
    }
 
    @Override
@@ -93,7 +94,7 @@ public class MergeItem extends MergeItemBase {
    @Override
    public String getNotes() {
       if (importItem != null) return importItem.getNotes();
-      return packageItem.getNotes();
+      return String.format("Package [%s]", packageItem.getNotes());
    }
 
    @Override
@@ -146,7 +147,12 @@ public class MergeItem extends MergeItemBase {
 
    @Override
    public String getOrderNumber() {
-      return importItem.getOrderNumber();
+      if (Strings.isValid(importItem.getOrderNumber())) {
+         return importItem.getOrderNumber();
+      } else if (Strings.isValid(packageItem.getOrderNumber())) {
+         return packageItem.getOrderNumber();
+      }
+      return "";
    }
 
 }
