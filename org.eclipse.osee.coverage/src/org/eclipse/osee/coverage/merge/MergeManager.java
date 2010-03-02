@@ -104,7 +104,7 @@ public class MergeManager {
             }
          }
 
-         if (true) {
+         if (debug) {
             if (importCoverage.getGuid().equals("AAte3i2bH3L1MvsFMqAA")) {
                System.out.println("here");
             }

@@ -20,6 +20,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -34,9 +35,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -57,7 +60,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEditor extends FormEditor implements IActionable, IFrameworkTransactionEventListener {
+public class CoverageEditor extends FormEditor implements IActionable, IFrameworkTransactionEventListener, IArtifactsPurgedEventListener {
    public static final String EDITOR_ID = "org.eclipse.osee.coverage.editor.CoverageEditor";
    private Integer startPage = null;
    private CoverageEditorImportTab coverageEditorImportTab = null;
@@ -312,7 +315,23 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      System.out.println("check and close editor");
+      Integer branchId = transData.getId();
+      if (branchId == null) return;
+      if (getCoverageEditorInput().getCoveragePackageArtifact() == null) return;
+      if (branchId != getCoverageEditorInput().getCoveragePackageArtifact().getBranch().getId()) return;
+      Artifact packageArt = getCoverageEditorInput().getCoveragePackageArtifact();
+      if (transData.isDeleted(packageArt)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               closeEditor();
+            }
+         });
+         return;
+      }
+      for (ICoverage coverage : getCoverageEditorInput().getCoveragePackageBase().getChildren(true)) {
+         // TODO finish this
+      }
    }
 
    public CoverageEditorImportTab getCoverageEditorImportTab() {
@@ -321,5 +340,23 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
 
    public CoverageEditorOverviewTab getCoverageEditorOverviewTab() {
       return coverageEditorOverviewTab;
+   }
+
+   @Override
+   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+      if (getCoverageEditorInput().getCoveragePackageArtifact() == null) return;
+      try {
+         if (loadedArtifacts.getLoadedArtifacts().contains(getCoverageEditorInput().getCoveragePackageArtifact())) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  closeEditor();
+               }
+            });
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+
    }
 }
