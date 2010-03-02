@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -166,7 +167,9 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
                   } else if (headerRow[i].equalsIgnoreCase("Human Readable Id")) {
                      roughArtifact.setHumandReadableId(row[i]);
                   } else {
-                     roughArtifact.addAttribute(headerRow[i], row[i]);
+                     if (Strings.isValid(row[i])) {
+                        roughArtifact.addAttribute(headerRow[i], row[i]);
+                     }
                   }
                }
             }
