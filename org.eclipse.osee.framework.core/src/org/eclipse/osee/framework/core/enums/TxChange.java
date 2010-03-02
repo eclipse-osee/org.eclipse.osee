@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.core.enums;
 
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+
 /**
  * @author Ryan D. Brooks
  */
@@ -35,13 +37,13 @@ public enum TxChange {
       return this != TxChange.NOT_CURRENT;
    }
 
-   public static TxChange getChangeType(int value) {
+   public static TxChange getChangeType(int value) throws OseeArgumentException {
       for (TxChange change : values()) {
          if (change.getValue() == value) {
             return change;
          }
       }
-      return null;
+      throw new OseeArgumentException(value + " does not correspond to any defined ModificationType enumerations");
    }
 
    public static TxChange getCurrent(ModificationType type) {
