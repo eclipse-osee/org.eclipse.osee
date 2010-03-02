@@ -78,7 +78,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
          monitor.worked(unitOfWork);
       }
 
-      if (deleteUnmatchedArtifacts) {
+      if (deleteUnmatchedArtifacts && !unmatchedArtifacts.isEmpty()) {
          System.out.println("Will delete:");
          for (Artifact toDelete : unmatchedArtifacts) {
             System.out.println("\t" + toDelete.getName());
