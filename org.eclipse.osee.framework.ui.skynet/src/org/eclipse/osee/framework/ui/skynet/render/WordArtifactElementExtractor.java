@@ -14,7 +14,9 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkParser;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -41,8 +43,8 @@ public class WordArtifactElementExtractor {
       return oleDataElement;
    }
 
-   public Collection<Element> extract(boolean isSingleEdit) throws DOMException, ParserConfigurationException, SAXException, IOException, OseeCoreException{
-      final Collection<Element> artifacts = new LinkedList<Element>();
+   public Collection<Element> extractElements(boolean isSingleEdit) throws DOMException, ParserConfigurationException, SAXException, IOException, OseeCoreException{
+      final Collection<Element> artifactElements = new LinkedList<Element>();
       final String elementNameForWordAttribute = WordUtil.elementNameFor("hlink");
       Collection<Element> sectList = new LinkedList<Element>();
       Element rootElement = document.getDocumentElement();
@@ -65,7 +67,7 @@ public class WordArtifactElementExtractor {
                
                newArtifactElement = document.createElement("WordAttribute.WORD_TEMPLATE_CONTENT");
                populateNewArtifactElementFromHlink(newArtifactElement,element);
-               artifacts.add(newArtifactElement);
+               artifactElements.add(newArtifactElement);
             }else if(parseState == ParseState.LOOKING_FOR_END){
                parseState = ParseState.LOOKING_FOR_START;
                artifactTagParentNode = null;
@@ -81,7 +83,7 @@ public class WordArtifactElementExtractor {
             }
          }
          if (element.getNodeName().endsWith("body") && isSingleEdit) {
-            artifacts.add(element);
+            artifactElements.add(element);
             body = element;
          } else if (oleDataElement == null && element.getNodeName().endsWith("docOleData")) {
             oleDataElement = element;
@@ -92,11 +94,11 @@ public class WordArtifactElementExtractor {
       //attribute tags and if they are not there removes all the paragraphs following the one that contains the 
       //fldChar
       if (containsEditTag) {
-         artifacts.remove(body);
+         artifactElements.remove(body);
       } else if (!sectList.isEmpty()) {
          handleMultiSectTags(sectList);
       }
-      return artifacts;
+      return artifactElements;
    }
    
    private void handleMultiSectTags(Collection<Element> sectList) throws OseeCoreException {
