@@ -33,10 +33,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public class ExchangeIntegrity {
+   private final OseeServices services;
    private final IOseeDbExportDataProvider exportDataProvider;
    private String checkExchange;
 
-   public ExchangeIntegrity(IOseeDbExportDataProvider exportDataProvider) {
+   public ExchangeIntegrity(OseeServices services, IOseeDbExportDataProvider exportDataProvider) {
+      this.services = services;
       this.exportDataProvider = exportDataProvider;
    }
 
@@ -56,7 +58,7 @@ public class ExchangeIntegrity {
 
          final List<IndexCollector> checkList = ExchangeDb.createCheckList();
          for (final IExportItem importFile : filesToCheck) {
-            exportDataProvider.saxParse(importFile, new CheckSaxHandler(exportDataProvider, checkList,
+            exportDataProvider.saxParse(importFile, new CheckSaxHandler(services, exportDataProvider, checkList,
                   importFile.getFileName()));
          }
          checkExchange = exportDataProvider.getExportedDataRoot() + ".verify.xml";
@@ -112,8 +114,8 @@ public class ExchangeIntegrity {
       private final List<IndexCollector> checkList;
       private final String fileBeingProcessed;
 
-      protected CheckSaxHandler(IOseeDbExportDataProvider exportDataProvider, List<IndexCollector> checkList, String fileBeingProcessed) throws OseeCoreException {
-         super(exportDataProvider, true, 0);
+      protected CheckSaxHandler(OseeServices services, IOseeDbExportDataProvider exportDataProvider, List<IndexCollector> checkList, String fileBeingProcessed) throws OseeCoreException {
+         super(services, exportDataProvider, true, 0);
          this.checkList = checkList;
          this.fileBeingProcessed = Lib.removeExtension(fileBeingProcessed);
          System.out.println(String.format("Verifying: [%s]", fileBeingProcessed));

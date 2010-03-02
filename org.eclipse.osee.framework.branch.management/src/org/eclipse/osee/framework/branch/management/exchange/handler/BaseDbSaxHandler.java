@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.exchange.TranslationManager;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -31,13 +31,15 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
    private MetaData metadata;
    private TranslationManager translator;
    private Options options;
+   private final IOseeDatabaseService service;
 
-   protected BaseDbSaxHandler(boolean isCacheAll, int cacheLimit) {
+   protected BaseDbSaxHandler(IOseeDatabaseService service, boolean isCacheAll, int cacheLimit) {
       super();
       if (cacheLimit < 0) {
          throw new IllegalArgumentException(String.format("Cache limit cannot be less than zero - cacheLimit=[%d]",
                cacheLimit));
       }
+      this.service = service;
       this.options = new Options();
       this.translator = null;
       this.metadata = null;
@@ -91,13 +93,17 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
 
    protected void store(OseeConnection connection) throws OseeDataStoreException {
       if (this.data.isEmpty() != true) {
-         ConnectionHandler.runBatchUpdate(connection, getMetaData().getQuery(), this.data);
+         getDatabaseService().runBatchUpdate(connection, getMetaData().getQuery(), this.data);
          this.data.clear();
       }
    }
 
    public void clearDataTable() throws OseeDataStoreException {
-      ConnectionHandler.runPreparedUpdate(connection, String.format("DELETE FROM %s", getMetaData().getTableName()));
+      getDatabaseService().runPreparedUpdate(connection, String.format("DELETE FROM %s", getMetaData().getTableName()));
+   }
+
+   protected IOseeDatabaseService getDatabaseService() {
+      return service;
    }
 
    public void reset() {

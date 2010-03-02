@@ -21,12 +21,12 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeProvider;
-import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -52,10 +52,10 @@ public class ExchangeUtil {
       return writer;
    }
 
-   public static Pair<Boolean, File> getTempExchangeFile(IResourceLocator locator) throws Exception {
+   public static Pair<Boolean, File> getTempExchangeFile(IResourceLocator locator, IResourceManager resourceManager) throws Exception {
       File importSource = null;
       boolean wasZipExtractionRequired = false;
-      IResource resource = Activator.getInstance().getResourceManager().acquire(locator, new Options());
+      IResource resource = resourceManager.acquire(locator, new Options());
       File source = new File(resource.getLocation());
       if (source.isFile()) {
          wasZipExtractionRequired = true;

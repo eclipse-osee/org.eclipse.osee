@@ -44,12 +44,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.SequenceManager;
-import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
@@ -73,6 +70,7 @@ public final class ImportController {
    private static final String QUERY_SAVE_POINTS_FROM_IMPORT_MAP =
          "SELECT save_point_name from osee_import_save_point oisp, osee_import_source ois WHERE ois.import_id = oisp.import_id AND oisp.status = 1 AND ois.db_source_guid = ? AND ois.source_export_date = ?";
 
+   private final OseeServices oseeServices;
    private final IOseeDbExportDataProvider exportDataProvider;
    private final Options options;
    private final int[] branchesToImport;
@@ -84,7 +82,8 @@ public final class ImportController {
    private MetaDataSaxHandler metadataHandler;
    private String currentSavePoint;
 
-   ImportController(IOseeDbExportDataProvider exportDataProvider, Options options, int... branchesToImport) {
+   ImportController(OseeServices oseeServices, IOseeDbExportDataProvider exportDataProvider, Options options, int... branchesToImport) {
+      this.oseeServices = oseeServices;
       this.exportDataProvider = exportDataProvider;
       this.options = options;
       this.branchesToImport = branchesToImport;
@@ -95,7 +94,7 @@ public final class ImportController {
    }
 
    private void checkPreconditions() throws OseeCoreException {
-      if (SupportedDatabase.isDatabaseType(ConnectionHandler.getMetaData(), SupportedDatabase.oracle)) {
+      if (oseeServices.getDatabaseService().isProduction()) {
          throw new OseeStateException("DO NOT IMPORT ON PRODUCTION");
       }
    }
@@ -110,12 +109,12 @@ public final class ImportController {
       exportDataProvider.saxParse(ExportItem.EXPORT_MANIFEST, manifestHandler);
 
       currentSavePoint = "setup";
-      translator = new TranslationManager();
+      translator = new TranslationManager(oseeServices.getDatabaseService());
       translator.configure(options);
 
       // Process database meta data
       currentSavePoint = manifestHandler.getMetadataFile();
-      metadataHandler = new MetaDataSaxHandler();
+      metadataHandler = new MetaDataSaxHandler(oseeServices.getDatabaseService());
       exportDataProvider.saxParse(ExportItem.EXPORT_DB_SCHEMA, metadataHandler);
       metadataHandler.checkAndLoadTargetDbMetadata();
 
@@ -171,7 +170,8 @@ public final class ImportController {
 
    private void applyTransforms() throws Exception {
       IOseeDbExportTransformer[] transforms =
-            new IOseeDbExportTransformer[] {new V0_8_3Transformer(), new V0_9_0Transformer()};
+            new IOseeDbExportTransformer[] {new V0_8_3Transformer(),
+                  new V0_9_0Transformer(oseeServices.getCachingService())};
 
       ManifestVersionRule versionRule = new ManifestVersionRule();
       versionRule.setReplaceVersion(false);
@@ -276,7 +276,8 @@ public final class ImportController {
    }
 
    private void processImportFiles(Collection<IExportItem> importItems) throws Exception {
-      final RelationalSaxHandler handler = RelationalSaxHandler.createWithLimitedCache(exportDataProvider, 50000);
+      final RelationalSaxHandler handler =
+            RelationalSaxHandler.createWithLimitedCache(oseeServices, exportDataProvider, 50000);
       handler.setSelectedBranchIds(branchesToImport);
 
       for (final IExportItem item : importItems) {
@@ -301,7 +302,7 @@ public final class ImportController {
    }
 
    private void loadImportTrace(String sourceDatabaseId, Date sourceExportDate) throws OseeDataStoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = oseeServices.getDatabaseService().getStatement();
       try {
          currentSavePoint = "load.save.points";
          chStmt.runPreparedQuery(QUERY_SAVE_POINTS_FROM_IMPORT_MAP, sourceDatabaseId, new Timestamp(
@@ -353,7 +354,7 @@ public final class ImportController {
        */
       public ImportBranchesTx() throws OseeCoreException {
          super();
-         branchHandler = BranchDataSaxHandler.createWithCacheAll();
+         branchHandler = BranchDataSaxHandler.createWithCacheAll(oseeServices.getDatabaseService());
          branchesStored = new int[0];
       }
 
@@ -400,14 +401,13 @@ public final class ImportController {
       @Override
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          if (manifestHandler != null && translator != null) {
-            int importIdIndex = SequenceManager.getNextImportId();
+            int importIdIndex = oseeServices.getDatabaseService().getSequence().getNextImportId();
             String sourceDatabaseId = manifestHandler.getSourceDatabaseId();
             Timestamp importDate = new Timestamp(new Date().getTime());
             Timestamp exportDate = new Timestamp(manifestHandler.getSourceExportDate().getTime());
-            ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_IMPORT_SOURCES, importIdIndex,
+            oseeServices.getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_IMPORT_SOURCES, importIdIndex,
                   sourceDatabaseId, exportDate, importDate);
 
-            ConnectionHandler.deferConstraintChecking(connection);
             translator.store(connection, importIdIndex);
 
             List<Object[]> data = new ArrayList<Object[]>();
@@ -428,7 +428,7 @@ public final class ImportController {
                }
                data.add(new Object[] {importIdIndex, savePoint.getName(), status, comment});
             }
-            ConnectionHandler.runBatchUpdate(connection, INSERT_INTO_IMPORT_SAVE_POINT, data);
+            oseeServices.getDatabaseService().runBatchUpdate(connection, INSERT_INTO_IMPORT_SAVE_POINT, data);
          } else {
             throw new OseeStateException("Import didn't make it past initialization");
          }

@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.io.File;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeUtil;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.xml.sax.ContentHandler;
 
 /**
@@ -24,10 +22,9 @@ public class StandardOseeDbExportDataProvider implements IOseeDbExportDataProvid
    private final File exportDataRootPath;
    private final boolean wasZipExtractionRequired;
 
-   public StandardOseeDbExportDataProvider(IResourceLocator exportDataLocator) throws Exception {
-      Pair<Boolean, File> result = ExchangeUtil.getTempExchangeFile(exportDataLocator);
-      this.wasZipExtractionRequired = result.getFirst();
-      this.exportDataRootPath = result.getSecond();
+   public StandardOseeDbExportDataProvider(File exportDataRootPath, boolean wasZipExtractionRequired) {
+      this.wasZipExtractionRequired = wasZipExtractionRequired;
+      this.exportDataRootPath = exportDataRootPath;
 
    }
 

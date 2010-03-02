@@ -29,8 +29,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
-import org.eclipse.osee.framework.core.services.IOseeModelingService;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -53,13 +51,13 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
    private ExportImportJoinQuery joinQuery;
    private ExecutorService executorService;
    private final List<String> errorList;
-   private final IOseeModelingService modelingService;
+   private final OseeServices oseeServices;
 
-   ExportController(IOseeModelingService modelingService, String exportName, Options options, int... branchIds) throws Exception {
+   ExportController(OseeServices oseeServices, String exportName, Options options, int... branchIds) throws Exception {
       if (branchIds == null || branchIds.length <= 0) {
          throw new Exception("No branch selected for export.");
       }
-      this.modelingService = modelingService;
+      this.oseeServices = oseeServices;
       this.exportName = exportName;
       this.options = options;
       this.branchIds = branchIds;
@@ -106,7 +104,8 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
       }
       joinQuery.store(connection);
 
-      long maxTx = ConnectionHandler.runPreparedQueryFetchLong(connection, -1, ExchangeDb.GET_MAX_TX);
+      long maxTx =
+            oseeServices.getDatabaseService().runPreparedQueryFetchObject(connection, -1L, ExchangeDb.GET_MAX_TX);
       long userMaxTx = ExchangeDb.getMaxTransaction(options);
       if (userMaxTx == Long.MIN_VALUE || userMaxTx > maxTx) {
          options.put(ExportOptions.MAX_TXS.name(), Long.toString(maxTx));
@@ -131,7 +130,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       long startTime = System.currentTimeMillis();
-      List<AbstractExportItem> taskList = ExchangeDb.createTaskList();
+      List<AbstractExportItem> taskList = ExchangeDb.createTaskList(oseeServices);
       try {
          File tempFolder = createTempFolder();
          setUp(connection, taskList, tempFolder);
@@ -173,8 +172,8 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
          @Override
          public void run() {
             try {
-               modelingService.exportOseeTypes(new NullProgressMonitor(), new FileOutputStream(new File(exportFolder,
-                     "OseeModel.osee")));
+               oseeServices.getModelingService().exportOseeTypes(new NullProgressMonitor(),
+                     new FileOutputStream(new File(exportFolder, "OseeModel.osee")));
             } catch (Exception ex) {
                onException("model export", ex);
             }

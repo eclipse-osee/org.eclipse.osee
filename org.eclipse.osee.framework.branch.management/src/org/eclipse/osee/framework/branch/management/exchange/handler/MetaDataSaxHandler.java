@@ -20,9 +20,11 @@ import java.util.Map;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.xml.sax.Attributes;
@@ -35,9 +37,11 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
 
    private final Map<String, MetaData> importMetadataMap;
    private final Map<String, MetaData> targetMetadataMap;
+   private final IOseeDatabaseService service;
    private MetaData currentMetadata;
 
-   public MetaDataSaxHandler() {
+   public MetaDataSaxHandler(IOseeDatabaseService service) {
+      this.service = service;
       this.importMetadataMap = new HashMap<String, MetaData>();
       this.targetMetadataMap = new HashMap<String, MetaData>();
    }
@@ -101,9 +105,14 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
 
    private Map<String, MetaData> getTargetDbMetadata() throws SQLException, OseeDataStoreException {
       Map<String, MetaData> targetDbMetadata = new HashMap<String, MetaData>();
-      DatabaseMetaData dbMetaData = ConnectionHandler.getMetaData();
-      for (String sourceTables : importMetadataMap.keySet()) {
-         processMetaData(targetDbMetadata, dbMetaData, sourceTables);
+      OseeConnection connection = service.getConnection();
+      try {
+         DatabaseMetaData dbMetaData = connection.getMetaData();
+         for (String sourceTables : importMetadataMap.keySet()) {
+            processMetaData(targetDbMetadata, dbMetaData, sourceTables);
+         }
+      } finally {
+         Lib.close(connection);
       }
       return targetDbMetadata;
    }

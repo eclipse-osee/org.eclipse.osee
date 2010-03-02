@@ -17,10 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.SequenceManager;
 
 /**
  * @author Roberto E. Escobar
@@ -36,8 +35,10 @@ public class IdTranslator {
    private final Map<Long, Long> originalToMapped;
    private final List<Long> newIds;
    private final Set<String> aliases;
+   private final IOseeDatabaseService service;
 
-   IdTranslator(String sequenceName, String... aliases) {
+   IdTranslator(IOseeDatabaseService service, String sequenceName, String... aliases) {
+      this.service = service;
       this.sequenceName = sequenceName;
       this.originalToMapped = new HashMap<Long, Long>();
       this.newIds = new ArrayList<Long>();
@@ -89,7 +90,7 @@ public class IdTranslator {
       } else {
          newVersion = this.originalToMapped.get(original);
          if (newVersion == null) {
-            newVersion = SequenceManager.getNextSequence(getSequence());
+            newVersion = service.getSequence().getNextSequence(getSequence());
             addToCache(original, newVersion);
          }
       }
@@ -116,7 +117,7 @@ public class IdTranslator {
    }
 
    public void load(String sourceDatabaseId) throws OseeDataStoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = service.getStatement();
       try {
          originalToMapped.clear();
          chStmt.runPreparedQuery(SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId, getSequence());
@@ -139,7 +140,7 @@ public class IdTranslator {
             Long mapped = originalToMapped.get(original);
             data.add(new Object[] {sequenceId, original, mapped});
          }
-         ConnectionHandler.runBatchUpdate(connection, INSERT_INTO_IMPORT_INDEX_MAP, data);
+         service.runBatchUpdate(connection, INSERT_INTO_IMPORT_INDEX_MAP, data);
       }
    }
 }

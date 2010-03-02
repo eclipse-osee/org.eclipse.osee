@@ -16,9 +16,8 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.resource.management.Options;
 
 public class TranslationManager {
@@ -27,12 +26,14 @@ public class TranslationManager {
 
    private final List<IdTranslator> translators;
    private final Map<String, IdTranslator> translatorMap;
+   private final IOseeDatabaseService service;
 
    private boolean useOriginalIds;
 
-   public TranslationManager() {
+   public TranslationManager(IOseeDatabaseService service) {
+      this.service = service;
       this.useOriginalIds = true;
-      this.translators = ExchangeDb.createTranslators();
+      this.translators = ExchangeDb.createTranslators(service);
       this.translatorMap = new HashMap<String, IdTranslator>();
       for (IdTranslator translator : translators) {
          for (String alias : translator.getAliases()) {
@@ -65,12 +66,12 @@ public class TranslationManager {
       List<Object[]> data = new ArrayList<Object[]>();
       for (IdTranslator translatedIdMap : translators) {
          if (translatedIdMap.hasItemsToStore()) {
-            int importSeqId = SequenceManager.getNextImportMappedIndexId();
+            int importSeqId = service.getSequence().getNextImportMappedIndexId();
             data.add(new Object[] {importIdIndex, importSeqId, translatedIdMap.getSequence()});
             translatedIdMap.store(connection, importSeqId);
          }
       }
-      ConnectionHandler.runBatchUpdate(connection, INSERT_INTO_IMPORT_MAP, data);
+      service.runBatchUpdate(connection, INSERT_INTO_IMPORT_MAP, data);
    }
 
    public boolean isTranslatable(String name) {

@@ -14,7 +14,6 @@ import java.util.HashMap;
 import javax.xml.stream.XMLStreamException;
 import org.eclipse.osee.framework.branch.management.exchange.ImportController;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
-import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -26,15 +25,21 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
  */
 public class V0_9_0Transformer implements IOseeDbExportTransformer {
 
+   private final IOseeCachingService cachingService;
+
+   public V0_9_0Transformer(IOseeCachingService cachingService) {
+      super();
+      this.cachingService = cachingService;
+   }
+
    @Override
    public String applyTransform(ImportController importController) throws Exception {
-      IOseeCachingService service = Activator.getInstance().getOseeCachingService();
       try {
-         replaceDataTypeIdsWithGuids(importController, service.getArtifactTypeCache(), ExportItem.OSEE_ARTIFACT_DATA,
-               "art_type_id", "name");
-         replaceDataTypeIdsWithGuids(importController, service.getAttributeTypeCache(), ExportItem.OSEE_ATTRIBUTE_DATA,
-               "attr_type_id", "name");
-         replaceDataTypeIdsWithGuids(importController, service.getRelationTypeCache(),
+         replaceDataTypeIdsWithGuids(importController, cachingService.getArtifactTypeCache(),
+               ExportItem.OSEE_ARTIFACT_DATA, "art_type_id", "name");
+         replaceDataTypeIdsWithGuids(importController, cachingService.getAttributeTypeCache(),
+               ExportItem.OSEE_ATTRIBUTE_DATA, "attr_type_id", "name");
+         replaceDataTypeIdsWithGuids(importController, cachingService.getRelationTypeCache(),
                ExportItem.OSEE_RELATION_LINK_DATA, "rel_link_type_id", "type_name");
 
          V0_9_0TxDetailsHandler txdHandler = new V0_9_0TxDetailsHandler();

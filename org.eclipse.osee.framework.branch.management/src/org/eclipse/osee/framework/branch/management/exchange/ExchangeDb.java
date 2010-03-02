@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.branch.management.exchange.export.ManifestExpo
 import org.eclipse.osee.framework.branch.management.exchange.export.MetadataExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -118,20 +119,20 @@ public class ExchangeDb {
    private static final String BRANCH_ACL_QUERY =
          "SELECT oba1.* FROM osee_branch_acl oba1, osee_join_export_import jex1 WHERE oba1.branch_id = jex1.id1 AND jex1.query_id=? ORDER BY oba1.branch_id";
 
-   static List<AbstractExportItem> createTaskList() {
+   static List<AbstractExportItem> createTaskList(OseeServices services) {
       List<AbstractExportItem> items = new ArrayList<AbstractExportItem>();
       items.add(new ManifestExportItem(items));
       items.add(new MetadataExportItem(items));
-      items.add(new RelationalExportItem(ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItem.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItem.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItem.OSEE_RELATION_LINK_DATA, RELATION_LINK_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItem.OSEE_MERGE_DATA, MERGE_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItem.OSEE_CONFLICT_DATA, CONFLICT_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItem.OSEE_BRANCH_ACL_DATA, BRANCH_ACL_QUERY));
-      items.add(new RelationalExportItem(ExportItem.OSEE_ARTIFACT_ACL_DATA, ARTIFACT_ACL_QUERY));
+      items.add(new RelationalExportItem(services, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY));
+      items.add(new RelationalExportItem(services, ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY));
+      items.add(new RelationalExportItem(services, ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY));
+      items.add(new RelationalExportItem(services, ExportItem.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY));
+      items.add(new RelationalExportItem(services, ExportItem.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY));
+      items.add(new RelationalExportItem(services, ExportItem.OSEE_RELATION_LINK_DATA, RELATION_LINK_TABLE_QUERY));
+      items.add(new RelationalExportItem(services, ExportItem.OSEE_MERGE_DATA, MERGE_TABLE_QUERY));
+      items.add(new RelationalExportItem(services, ExportItem.OSEE_CONFLICT_DATA, CONFLICT_TABLE_QUERY));
+      items.add(new RelationalExportItem(services, ExportItem.OSEE_BRANCH_ACL_DATA, BRANCH_ACL_QUERY));
+      items.add(new RelationalExportItem(services, ExportItem.OSEE_ARTIFACT_ACL_DATA, ARTIFACT_ACL_QUERY));
 
       return items;
    }
@@ -149,14 +150,14 @@ public class ExchangeDb {
       return items;
    }
 
-   static List<IdTranslator> createTranslators() {
+   static List<IdTranslator> createTranslators(IOseeDatabaseService service) {
       List<IdTranslator> translators = new ArrayList<IdTranslator>();
-      translators.add(new IdTranslator(IOseeSequence.GAMMA_ID_SEQ, GAMMA_ID_ALIASES));
-      translators.add(new IdTranslator(IOseeSequence.TRANSACTION_ID_SEQ, TRANSACTION_ID_ALIASES));
-      translators.add(new IdTranslator(IOseeSequence.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));
-      translators.add(new IdTranslator(IOseeSequence.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
-      translators.add(new IdTranslator(IOseeSequence.ATTR_ID_SEQ, ATTRIBUTE_ID));
-      translators.add(new IdTranslator(IOseeSequence.REL_LINK_ID_SEQ, RELATION_ID));
+      translators.add(new IdTranslator(service, IOseeSequence.GAMMA_ID_SEQ, GAMMA_ID_ALIASES));
+      translators.add(new IdTranslator(service, IOseeSequence.TRANSACTION_ID_SEQ, TRANSACTION_ID_ALIASES));
+      translators.add(new IdTranslator(service, IOseeSequence.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));
+      translators.add(new IdTranslator(service, IOseeSequence.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
+      translators.add(new IdTranslator(service, IOseeSequence.ATTR_ID_SEQ, ATTRIBUTE_ID));
+      translators.add(new IdTranslator(service, IOseeSequence.REL_LINK_ID_SEQ, RELATION_ID));
       return translators;
    }
 

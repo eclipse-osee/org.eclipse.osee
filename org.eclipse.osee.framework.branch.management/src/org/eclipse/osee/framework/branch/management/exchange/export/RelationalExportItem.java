@@ -18,9 +18,8 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
+import org.eclipse.osee.framework.branch.management.exchange.OseeServices;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
-import org.eclipse.osee.framework.branch.management.internal.Activator;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -40,9 +39,11 @@ public class RelationalExportItem extends AbstractDbExportItem {
    private final StringBuffer oseeCommentBuffer;
    private final StringBuffer branchNameBuffer;
    private final StringBuffer rationaleBuffer;
+   private final OseeServices services;
 
-   public RelationalExportItem(ExportItem id, String query) {
+   public RelationalExportItem(OseeServices services, ExportItem id, String query) {
       super(id);
+      this.services = services;
       this.query = query;
       this.binaryContentBuffer = new StringBuffer();
       this.stringContentBuffer = new StringBuffer();
@@ -57,9 +58,8 @@ public class RelationalExportItem extends AbstractDbExportItem {
          tempFolder.mkdirs();
       }
 
-      IResourceLocator locator =
-            Activator.getInstance().getResourceLocatorManager().getResourceLocator(uriTarget);
-      IResource resource = Activator.getInstance().getResourceManager().acquire(locator, new Options());
+      IResourceLocator locator = services.getResourceLocatorManager().getResourceLocator(uriTarget);
+      IResource resource = services.getResourceManager().acquire(locator, new Options());
 
       File target = new File(tempFolder, locator.getRawPath());
       if (target.getParentFile() != null) {
@@ -93,7 +93,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
 
    @Override
    protected void doWork(Appendable appendable) throws Exception {
-      IOseeStatement chStmt = ConnectionHandler.getStatement(getConnection());
+      IOseeStatement chStmt = services.getDatabaseService().getStatement(getConnection());
       try {
          Pair<String, Object[]> sqlData = ExchangeDb.getQueryWithOptions(this.query, getJoinQueryId(), getOptions());
          chStmt.runPreparedQuery(sqlData.getFirst(), sqlData.getSecond());

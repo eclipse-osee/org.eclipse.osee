@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange;
 
+import java.io.File;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
+import org.eclipse.osee.framework.branch.management.exchange.handler.IOseeDbExportDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.handler.StandardOseeDbExportDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeLocatorProvider;
-import org.eclipse.osee.framework.branch.management.internal.Activator;
-import org.eclipse.osee.framework.core.services.IOseeModelingServiceProvider;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -24,19 +25,18 @@ import org.eclipse.osee.framework.resource.management.Options;
  */
 public class BranchExchange implements IBranchExchange {
 
-   private final IOseeModelingServiceProvider modelingServiceProvider;
+   private final OseeServices oseeServices;
 
-   public BranchExchange(IOseeModelingServiceProvider modelingServiceProvider) {
-      this.modelingServiceProvider = modelingServiceProvider;
+   public BranchExchange(OseeServices oseeServices) {
+      this.oseeServices = oseeServices;
    }
 
    @Override
    public IResourceLocator exportBranch(String exportName, Options options, int... branchIds) throws Exception {
-      ExportController controller =
-            new ExportController(modelingServiceProvider.getOseeModelingService(), exportName, options, branchIds);
+      ExportController controller = new ExportController(oseeServices, exportName, options, branchIds);
       controller.execute();
-      return Activator.getInstance().getResourceLocatorManager().generateResourceLocator(
-            ExchangeLocatorProvider.PROTOCOL, "", controller.getExchangeFileName());
+      return oseeServices.getResourceLocatorManager().generateResourceLocator(ExchangeLocatorProvider.PROTOCOL, "",
+            controller.getExchangeFileName());
    }
 
    @Override
@@ -50,9 +50,8 @@ public class BranchExchange implements IBranchExchange {
 
    @Override
    public void importBranch(IResourceLocator exportDataLocator, Options options, int... branchIds) throws Exception {
-
-      ImportController importController =
-            new ImportController(new StandardOseeDbExportDataProvider(exportDataLocator), options, branchIds);
+      IOseeDbExportDataProvider exportDataProvider = createExportDataProvider(exportDataLocator);
+      ImportController importController = new ImportController(oseeServices, exportDataProvider, options, branchIds);
       importController.execute();
    }
 
@@ -67,10 +66,16 @@ public class BranchExchange implements IBranchExchange {
 
    @Override
    public IResourceLocator checkIntegrity(IResourceLocator fileToCheck) throws Exception {
-      ExchangeIntegrity exchangeIntegrityCheck =
-            new ExchangeIntegrity(new StandardOseeDbExportDataProvider(fileToCheck));
+      IOseeDbExportDataProvider exportDataProvider = createExportDataProvider(fileToCheck);
+      ExchangeIntegrity exchangeIntegrityCheck = new ExchangeIntegrity(oseeServices, exportDataProvider);
       exchangeIntegrityCheck.execute();
-      return Activator.getInstance().getResourceLocatorManager().generateResourceLocator(
-            ExchangeLocatorProvider.PROTOCOL, "", exchangeIntegrityCheck.getExchangeCheckFileName());
+      return oseeServices.getResourceLocatorManager().generateResourceLocator(ExchangeLocatorProvider.PROTOCOL, "",
+            exchangeIntegrityCheck.getExchangeCheckFileName());
+   }
+
+   private IOseeDbExportDataProvider createExportDataProvider(IResourceLocator exportDataLocator) throws Exception {
+      Pair<Boolean, File> result =
+            ExchangeUtil.getTempExchangeFile(exportDataLocator, oseeServices.getResourceManager());
+      return new StandardOseeDbExportDataProvider(result.getSecond(), result.getFirst());
    }
 }
