@@ -22,7 +22,7 @@ public abstract class AbstractTrackingHandler {
    protected AbstractTrackingHandler() {
    }
 
-   public <T> T getService(Class<T> clazz, Map<Class<?>, Object> objectMap) {
+   protected <T> T getService(Class<T> clazz, Map<Class<?>, Object> objectMap) {
       return clazz.cast(objectMap.get(clazz));
    }
 

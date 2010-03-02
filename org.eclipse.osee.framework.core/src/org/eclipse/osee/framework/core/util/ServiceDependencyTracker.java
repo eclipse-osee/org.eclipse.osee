@@ -42,9 +42,10 @@ public final class ServiceDependencyTracker {
       if (dependencies != null) {
          for (Class<?> clazz : dependencies) {
             services.put(clazz, NULL_SERVICE);
-            ServiceTracker internalTracker = new InternalServiceTracker(getBundleContext(), clazz);
-            internalTracker.open(true);
-            trackers.add(internalTracker);
+            trackers.add(new InternalServiceTracker(this, getBundleContext(), clazz));
+         }
+         for (ServiceTracker tracker : trackers) {
+            tracker.open(true);
          }
       }
    }
@@ -60,7 +61,7 @@ public final class ServiceDependencyTracker {
       return context;
    }
 
-   private void onAdd(Class<?> classKey, Object service) {
+   private void onAddingService(Class<?> classKey, Object service) {
       Object previous = services.put(classKey, service);
       if (isValidService(previous) && previous != service) {
          throw new IllegalStateException(String.format("Attempting to overwrite existing service reference: [%s]",
@@ -72,43 +73,43 @@ public final class ServiceDependencyTracker {
    }
 
    private boolean isValidService(Object service) {
-      return !NULL_SERVICE.equals(service);
+      return service != null && !NULL_SERVICE.equals(service);
    }
 
    private boolean areServicesReady() {
-      boolean result = true;
       for (Object service : services.values()) {
          if (!isValidService(service)) {
-            result = false;
-            break;
+            return false;
          }
       }
-      return result;
+      return true;
    }
 
-   private void onRemove(Class<?> classKey) {
+   private void onRemovingService(Class<?> classKey) {
       handler.onDeActivate();
       services.remove(classKey);
    }
 
-   private final class InternalServiceTracker extends ServiceTracker {
+   private final static class InternalServiceTracker extends ServiceTracker {
+      private final ServiceDependencyTracker parentTracker;
       private final Class<?> serviceClass;
 
-      public InternalServiceTracker(BundleContext context, Class<?> serviceClass) {
+      public InternalServiceTracker(ServiceDependencyTracker parentTracker, BundleContext context, Class<?> serviceClass) {
          super(context, serviceClass.getName(), null);
+         this.parentTracker = parentTracker;
          this.serviceClass = serviceClass;
       }
 
       @Override
       public Object addingService(ServiceReference reference) {
          Object object = super.addingService(reference);
-         onAdd(serviceClass, object);
+         parentTracker.onAddingService(serviceClass, object);
          return object;
       }
 
       @Override
       public void removedService(ServiceReference reference, Object service) {
-         onRemove(serviceClass);
+         parentTracker.onRemovingService(serviceClass);
          super.removedService(reference, service);
       }
    }
