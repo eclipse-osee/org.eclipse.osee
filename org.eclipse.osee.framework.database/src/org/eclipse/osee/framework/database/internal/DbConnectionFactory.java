@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.database.internal;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
 
 /**
@@ -23,37 +22,13 @@ import org.eclipse.osee.framework.database.core.IConnectionFactory;
 public class DbConnectionFactory implements IDbConnectionFactory {
 
    private final List<IConnectionFactory> connectionProviders;
-   private final Object myWait;
 
    public DbConnectionFactory() {
       connectionProviders = new CopyOnWriteArrayList<IConnectionFactory>();
-      myWait = new Object();
    }
 
    @Override
    public IConnectionFactory get(String driver) throws OseeCoreException {
-      IConnectionFactory selectedDriver = getInternal(driver);
-      if (selectedDriver == null) {
-         long endTime = System.currentTimeMillis() + 1000 * 20;
-         long timeLeft = 1000 * 20;
-         while (timeLeft > 0 && selectedDriver == null) {
-            synchronized (myWait) {
-               try {
-                  myWait.wait(timeLeft);
-               } catch (InterruptedException ex) {
-               }
-               selectedDriver = getInternal(driver);
-            }
-            timeLeft = endTime - System.currentTimeMillis();
-         }
-      }
-      if (selectedDriver == null) {
-         throw new OseeStateException(String.format("Unable to find matching driver provider for [%s].", driver));
-      }
-      return selectedDriver;
-   }
-
-   private IConnectionFactory getInternal(String driver) {
       for (IConnectionFactory connection : connectionProviders) {
          if (connection.getDriver().equals(driver)) {
             return connection;
@@ -65,9 +40,6 @@ public class DbConnectionFactory implements IDbConnectionFactory {
    @Override
    public void bind(IConnectionFactory connection) {
       connectionProviders.add(connection);
-      synchronized (myWait) {
-         myWait.notifyAll();
-      }
    }
 
    @Override

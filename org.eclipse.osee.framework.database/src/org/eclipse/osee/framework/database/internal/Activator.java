@@ -10,113 +10,58 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.internal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.IApplicationDatabaseManager;
-import org.eclipse.osee.framework.database.IOseeConnectionProvider;
+import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
-import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
-import org.eclipse.osee.framework.database.internal.core.OseeDatabaseServiceImpl;
-import org.eclipse.osee.framework.database.internal.core.OseeSequenceImpl;
+import org.eclipse.osee.framework.database.internal.trackers.OseeDatabaseServiceRegistrationHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Roberto E. Escobar
  */
-public class Activator implements BundleActivator, IOseeDatabaseServiceProvider, IOseeConnectionProvider {
+public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.database";
-   private static final long TIMEOUT = 20000;
 
    private static Activator instance = null;
 
-   private final Map<OseeServiceTrackerId, ServiceTracker> mappedTrackers;
-   private final List<ServiceRegistration> services;
+   private ServiceDependencyTracker databaseServiceTracker;
+   private ServiceTracker dbTracker;
+   private ServiceTracker infoTracker;
 
    public Activator() {
-      this.mappedTrackers = new HashMap<OseeServiceTrackerId, ServiceTracker>();
-      this.services = new ArrayList<ServiceRegistration>();
    }
 
    public void start(BundleContext context) throws Exception {
       instance = this;
 
-      createService(context, IOseeDatabaseService.class, new OseeDatabaseServiceImpl(new OseeSequenceImpl(this), this));
+      databaseServiceTracker = new ServiceDependencyTracker(context, new OseeDatabaseServiceRegistrationHandler());
+      databaseServiceTracker.open();
 
-      createServiceTracker(context, IDbConnectionFactory.class, OseeServiceTrackerId.CONNECTION_PROVIDER);
-      createServiceTracker(context, IDbConnectionInformation.class, OseeServiceTrackerId.CONNECTION_INFOS);
-      createServiceTracker(context, IApplicationDatabaseManager.class, OseeServiceTrackerId.APPLICATION_MANAGER);
-      createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
+      dbTracker = new ServiceTracker(context, IOseeDatabaseService.class.getName(), null);
+      dbTracker.open();
+
+      infoTracker = new ServiceTracker(context, IDbConnectionInformation.class.getName(), null);
+      infoTracker.open();
+   }
+
+   public IDbConnectionInformation getConnectionInfos() {
+      return (IDbConnectionInformation) infoTracker.getService();
+   }
+
+   public IOseeDatabaseService getOseeDatabaseService() {
+      return (IOseeDatabaseService) dbTracker.getService();
    }
 
    public void stop(BundleContext context) throws Exception {
-      for (ServiceRegistration service : services) {
-         service.unregister();
-      }
-
-      for (ServiceTracker tracker : mappedTrackers.values()) {
-         tracker.close();
-      }
-      services.clear();
-      mappedTrackers.clear();
+      databaseServiceTracker.close();
+      dbTracker.close();
+      infoTracker.close();
       instance = null;
-   }
-
-   private void createService(BundleContext context, Class<?> serviceInterface, Object serviceImplementation) {
-      services.add(context.registerService(serviceInterface.getName(), serviceImplementation, null));
-   }
-
-   private void createServiceTracker(BundleContext context, Class<?> clazz, OseeServiceTrackerId trackerId) {
-      ServiceTracker tracker = new ServiceTracker(context, clazz.getName(), null);
-      tracker.open();
-      mappedTrackers.put(trackerId, tracker);
    }
 
    public static Activator getInstance() {
       return instance;
-   }
-
-   public IDbConnectionFactory getConnectionFactory() throws OseeDataStoreException {
-      return getTracker(OseeServiceTrackerId.CONNECTION_PROVIDER, IDbConnectionFactory.class, TIMEOUT);
-   }
-
-   public IDbConnectionInformation getConnectionInfos() throws OseeDataStoreException {
-      return getTracker(OseeServiceTrackerId.CONNECTION_INFOS, IDbConnectionInformation.class, TIMEOUT);
-   }
-
-   @Override
-   public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
-      return getTracker(OseeServiceTrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class, TIMEOUT);
-   }
-
-   public IDatabaseInfoProvider getApplicationDatabaseProvider() throws OseeDataStoreException {
-      return getApplicationDatabaseManager().getProvider();
-   }
-
-   private IApplicationDatabaseManager getApplicationDatabaseManager() throws OseeDataStoreException {
-      return getTracker(OseeServiceTrackerId.APPLICATION_MANAGER, IApplicationDatabaseManager.class, TIMEOUT);
-   }
-
-   private <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz, Long timeout) throws OseeDataStoreException {
-      ServiceTracker tracker = mappedTrackers.get(trackerId);
-      Object service;
-      if (timeout != null) {
-         try {
-            service = tracker.waitForService(timeout);
-         } catch (InterruptedException ex) {
-            throw new OseeDataStoreException(ex);
-         }
-      } else {
-         service = tracker.getService();
-      }
-      return clazz.cast(service);
    }
 
 }

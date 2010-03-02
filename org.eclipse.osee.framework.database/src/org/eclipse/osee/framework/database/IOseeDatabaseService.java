@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.database;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
  */
 public interface IOseeDatabaseService {
 
-   IOseeSequence getSequence();
+   IOseeSequence getSequence() throws OseeDataStoreException;
 
    IOseeStatement getStatement() throws OseeDataStoreException;
 
@@ -48,4 +49,5 @@ public interface IOseeDatabaseService {
 
    <T, O extends Object> T runPreparedQueryFetchObject(OseeConnection connection, T defaultValue, String query, O... data) throws OseeDataStoreException;
 
+   boolean isProduction() throws OseeCoreException;
 }

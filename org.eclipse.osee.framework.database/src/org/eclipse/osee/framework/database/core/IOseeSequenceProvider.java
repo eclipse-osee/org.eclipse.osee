@@ -8,19 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database;
+package org.eclipse.osee.framework.database.core;
 
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
-import org.eclipse.osee.framework.database.internal.IDbConnectionFactory;
 
 /**
  * @author Roberto E. Escobar
- * @author Jeff C. Phillips
  */
-public interface IOseeConnectionProvider {
+public interface IOseeSequenceProvider {
 
-   public IDatabaseInfoProvider getApplicationDatabaseProvider() throws OseeDataStoreException;
-
-   public IDbConnectionFactory getConnectionFactory() throws OseeDataStoreException;
+   public IOseeSequence getOseeSequence() throws OseeDataStoreException;
 }

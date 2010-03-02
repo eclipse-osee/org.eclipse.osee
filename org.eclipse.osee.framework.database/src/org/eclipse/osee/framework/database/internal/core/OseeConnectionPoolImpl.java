@@ -17,10 +17,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.IOseeConnectionProvider;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.internal.Activator;
+import org.eclipse.osee.framework.database.internal.IDbConnectionFactory;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 public class OseeConnectionPoolImpl {
@@ -28,18 +28,18 @@ public class OseeConnectionPoolImpl {
    private final List<OseeConnectionImpl> connections = new CopyOnWriteArrayList<OseeConnectionImpl>();
    private final String dbUrl;
    private final Properties properties;
-   private final IOseeConnectionProvider connectionProvider;
+   private final IDbConnectionFactory connectionFactory;
    private final String driver;
 
-   public OseeConnectionPoolImpl(IOseeConnectionProvider connectionProvider, String driver, String dbUrl, Properties properties) {
-      this.connectionProvider = connectionProvider;
+   public OseeConnectionPoolImpl(IDbConnectionFactory connectionFactory, String driver, String dbUrl, Properties properties) {
+      this.connectionFactory = connectionFactory;
       this.driver = driver;
       this.dbUrl = dbUrl;
       this.properties = properties;
    }
 
    private IConnectionFactory createConnection(String driver) throws OseeCoreException {
-      return connectionProvider.getConnectionFactory().get(driver);
+      return connectionFactory.get(driver);
    }
 
    public synchronized boolean hasOpenConnection() {
@@ -74,8 +74,7 @@ public class OseeConnectionPoolImpl {
       try {
          OseeConnectionImpl connection = getOseeConnection();
          connections.add(connection);
-         OseeLog.log(Activator.class, Level.INFO, String.format("DbConnection: [%s] - [%d]", dbUrl,
-               connections.size()));
+         OseeLog.log(Activator.class, Level.INFO, String.format("DbConnection: [%s] - [%d]", dbUrl, connections.size()));
          return connection;
       } catch (Throwable th) {
          throw new OseeDataStoreException("Unable to get a database connection: ", th);

@@ -16,12 +16,13 @@ import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.database.IOseeConnectionProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.internal.Activator;
+import org.eclipse.osee.framework.database.internal.IDbConnectionFactory;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -33,15 +34,17 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
          new HashMap<String, OseeConnectionPoolImpl>();
 
    private final IOseeSequence oseeSequence;
-   private final IOseeConnectionProvider connectionProvider;
+   private final IDbConnectionFactory dbConnectionFactory;
+   private final IDatabaseInfoProvider dbInfoProvider;
 
-   public OseeDatabaseServiceImpl(IOseeSequence sequenceManager, IOseeConnectionProvider connectionProvider) {
-      this.oseeSequence = sequenceManager;
-      this.connectionProvider = connectionProvider;
+   public OseeDatabaseServiceImpl(IDatabaseInfoProvider dbInfoProvider, IDbConnectionFactory dbConnectionFactory) {
+      this.oseeSequence = new OseeSequenceImpl(this);
+      this.dbInfoProvider = dbInfoProvider;
+      this.dbConnectionFactory = dbConnectionFactory;
    }
 
    private IDatabaseInfo getDatabaseInfoProvider() throws OseeDataStoreException {
-      return connectionProvider.getApplicationDatabaseProvider().getDatabaseInfo();
+      return dbInfoProvider.getDatabaseInfo();
    }
 
    private OseeConnectionPoolImpl getDefaultConnectionPool() throws OseeDataStoreException {
@@ -49,7 +52,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    }
 
    @Override
-   public IOseeSequence getSequence() {
+   public IOseeSequence getSequence() throws OseeDataStoreException {
       return oseeSequence;
    }
 
@@ -65,7 +68,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
       OseeConnectionPoolImpl pool = dbInfoToPools.get(databaseInfo.getId());
       if (pool == null) {
          pool =
-               new OseeConnectionPoolImpl(connectionProvider, databaseInfo.getDriver(),
+               new OseeConnectionPoolImpl(dbConnectionFactory, databaseInfo.getDriver(),
                      databaseInfo.getConnectionUrl(), databaseInfo.getConnectionProperties());
          dbInfoToPools.put(databaseInfo.getId(), pool);
          timer.schedule(new StaleConnectionCloser(pool), 900000, 900000);
@@ -216,5 +219,10 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
       } finally {
          chStmt.close();
       }
+   }
+
+   @Override
+   public boolean isProduction() throws OseeCoreException {
+      return getDatabaseInfoProvider().isProduction();
    }
 }
