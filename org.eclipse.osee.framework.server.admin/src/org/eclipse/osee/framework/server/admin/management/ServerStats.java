@@ -17,12 +17,12 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
+import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**
@@ -36,7 +36,7 @@ class ServerStats extends BaseServerCommand {
 
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
-      IApplicationServerManager manager = CoreServerActivator.getApplicationServerManager();
+      IApplicationServerManager manager = Activator.getInstance().getApplicationServerManager();
 
       StringBuffer buffer = new StringBuffer();
       buffer.append("\n----------------------------------------------\n");

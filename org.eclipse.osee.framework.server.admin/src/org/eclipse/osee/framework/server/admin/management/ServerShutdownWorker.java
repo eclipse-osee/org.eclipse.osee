@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.server.admin.management;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
+import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.osgi.framework.Bundle;
 
@@ -36,7 +36,7 @@ class ServerShutdownWorker extends BaseServerCommand {
 
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
-      IApplicationServerManager manager = CoreServerActivator.getApplicationServerManager();
+      IApplicationServerManager manager = Activator.getInstance().getApplicationServerManager();
 
       Bundle equinoxHttpBundle = Platform.getBundle("org.eclipse.equinox.http.jetty");
       equinoxHttpBundle.stop();

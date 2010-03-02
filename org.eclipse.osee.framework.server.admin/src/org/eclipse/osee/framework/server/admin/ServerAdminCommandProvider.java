@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.server.admin;
 
 import java.util.Arrays;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.server.admin.management.AdminCommands;

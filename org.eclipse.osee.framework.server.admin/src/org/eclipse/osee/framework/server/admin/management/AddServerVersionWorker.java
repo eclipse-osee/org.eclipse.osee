@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.server.admin.management;
 
 import java.util.Arrays;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
+import org.eclipse.osee.framework.server.admin.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -27,10 +27,10 @@ public class AddServerVersionWorker extends BaseServerCommand {
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       String versionToAdd = getCommandInterpreter().nextArgument();
-      CoreServerActivator.getApplicationServerManager().addSupportedVersion(versionToAdd);
+      Activator.getInstance().getApplicationServerManager().addSupportedVersion(versionToAdd);
       StringBuffer buffer = new StringBuffer();
       buffer.append("Osee Application Server: ");
-      buffer.append(Arrays.deepToString(CoreServerActivator.getApplicationServerManager().getSupportedVersions()));
+      buffer.append(Arrays.deepToString(Activator.getInstance().getApplicationServerManager().getSupportedVersions()));
       buffer.append("\n");
       println(buffer.toString());
    }

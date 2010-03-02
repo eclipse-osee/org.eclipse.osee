@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.server.admin.management;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
+import org.eclipse.osee.framework.server.admin.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -26,6 +26,6 @@ public class ServerRequestsWorker extends BaseServerCommand {
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       String value = getCommandInterpreter().nextArgument();
-      CoreServerActivator.getApplicationServerManager().setServletRequestsAllowed(new Boolean(value));
+      Activator.getInstance().getApplicationServerManager().setServletRequestsAllowed(new Boolean(value));
    }
 }

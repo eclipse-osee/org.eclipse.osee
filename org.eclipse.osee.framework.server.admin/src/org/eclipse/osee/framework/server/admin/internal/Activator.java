@@ -15,6 +15,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
@@ -46,6 +47,8 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider 
       createServiceTracker(context, IBranchExchange.class, OseeServiceTrackerId.BRANCH_EXCHANGE);
       createServiceTracker(context, IOseeCachingService.class, OseeServiceTrackerId.OSEE_CACHING_SERVICE);
       createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
+      createServiceTracker(context, IApplicationServerManager.class, OseeServiceTrackerId.APPLICATION_MANAGER);
+
    }
 
    public void stop(BundleContext context) throws Exception {
@@ -90,6 +93,10 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider 
 
    public IOseeCachingService getOseeCachingService() {
       return getTracker(OseeServiceTrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
+   }
+
+   public IApplicationServerManager getApplicationServerManager() {
+      return getTracker(OseeServiceTrackerId.APPLICATION_MANAGER, IApplicationServerManager.class);
    }
 
    private <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz) {
