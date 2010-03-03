@@ -88,7 +88,7 @@ public class OteNavigateView extends ViewPart implements IActionable {
          public void removed(IExtensionPoint[] extensionPoints) {
             refresh();
          }
-      }, "org.eclipse.osee.ote.ui.OteNavigateItem");
+      }, "org.eclipse.osee.framework.ui.plugin.XNavigateItem");
    }
 
    protected void createActions() {
