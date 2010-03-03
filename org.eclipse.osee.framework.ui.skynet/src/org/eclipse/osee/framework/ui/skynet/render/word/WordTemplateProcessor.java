@@ -70,8 +70,6 @@ public class WordTemplateProcessor {
    private static final String EXTENSION_PROCESSOR = "Extension_Processor";
    private static final String KEY = "Key";
 
-   private static final Pattern namePattern =
-         Pattern.compile("<((\\w+:)?(Name))>(.*?)</\\1>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern outlineTypePattern =
          Pattern.compile("<((\\w+:)?(OutlineType))>(.*?)</\\1>",
                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
@@ -123,7 +121,7 @@ public class WordTemplateProcessor {
    /**
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts Only used by Publish SRS
-    *
+    * 
     * @throws IOException
     */
    public void publishWithExtensionTemplates(VariableMap variableMap, Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
@@ -141,7 +139,7 @@ public class WordTemplateProcessor {
    /**
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts. Only used by Publish SRS
-    *
+    * 
     * @param variableMap = will be filled with artifacts when specified in the template
     * @param artifacts = null if the template defines the artifacts to be used in the publishing
     * @param template
@@ -351,7 +349,7 @@ public class WordTemplateProcessor {
    }
 
    private void processObjectArtifact(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
-      if (!artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT.getName()) && !artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT.getName())) {
+      if (!artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT) && !artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT)) {
          //If the artifact has not been processed
          if (!processedArtifacts.contains(artifact)) {
             if (outlining) {
