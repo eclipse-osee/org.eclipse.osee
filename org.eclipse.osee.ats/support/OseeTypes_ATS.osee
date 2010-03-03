@@ -127,7 +127,7 @@ artifactType "Task" extends "ats.State Machine" {
    attribute "ats.Uses Resolution Options"
 }
 
-artifactType "Team Workflow" extends "Goal" {
+artifactType "Team Workflow" extends "ats.State Machine" {
    guid "AAMFDhSiF2OD+wiUqugA"
    attribute "ats.Actionable Item"
    attribute "ats.Branch Metrics"
