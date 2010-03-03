@@ -14,18 +14,28 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -33,12 +43,25 @@ import org.junit.Before;
 public class RelationOrderingTest {
 
    private static final String ARTIFACT_TYPE = "Folder";
+   private static final String STATIC_ID_TO_DELETE = "testOrderPersist";
 
    private Branch branch;
    private Artifact parent;
    private Artifact child1;
    private Artifact child2;
    private Artifact child3;
+
+   @BeforeClass
+   @AfterClass
+   public static void setupTeardown() throws Exception {
+      Set<Artifact> artsToDel =
+            StaticIdManager.getArtifactsFromArtifactQuery(CoreArtifactTypes.Folder, STATIC_ID_TO_DELETE,
+                  BranchManager.getCommonBranch());
+      if (artsToDel.size() > 0) {
+         new PurgeArtifacts(artsToDel).execute();
+         Thread.sleep(5000);
+      }
+   }
 
    @Before
    public void setupArtifacts() throws Exception {
@@ -57,6 +80,7 @@ public class RelationOrderingTest {
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child2);
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child3);
+
    }
 
    @After
@@ -76,8 +100,7 @@ public class RelationOrderingTest {
 
       checkUserDefined();
 
-      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child,
-            RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
       Attribute<Object> attribute = parent.getSoleAttribute(CoreAttributeTypes.RELATION_ORDER.getName());
       assertTrue("Setting the attribute back to the default type did not cause an attribute to be deleted",
             (attribute == null || attribute.isDeleted()));
@@ -99,8 +122,7 @@ public class RelationOrderingTest {
 
       parent.setRelationOrder(CoreRelationTypes.Users_Artifact, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
 
-      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child,
-            RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
 
       attribute = parent.getSoleAttribute(CoreAttributeTypes.RELATION_ORDER.getName());
       assertTrue("The attribute was deleted even though there was a still a non default sort order on the artifact.",
@@ -109,8 +131,7 @@ public class RelationOrderingTest {
    }
 
    private void checkAsc() throws OseeCoreException {
-      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child,
-            RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
       List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child);
       Assert.assertEquals(3, children.size());
       Assert.assertEquals(children.get(0).getName(), "a_child");
@@ -157,6 +178,54 @@ public class RelationOrderingTest {
       Assert.assertEquals(2, children.size());
       Assert.assertEquals(children.get(0).getName(), "b_child");
       Assert.assertEquals(children.get(1).getName(), "a_child");
+   }
+
+   /**
+    * This tests the case where a parent artifact already exists and is persisted in the database with ordered children.
+    * Then a new artifact is created and added with a persist() call on the artifact. This persists the new artifact and
+    * the new relation, but does not persist the relation order attribute stored on the parent.<br>
+    * <br>
+    * TODO Fix the persist logic to persist the other side artifact if dirty. Currently, it only persists the other side
+    * if not in db yet. Once this is done, this test should pass
+    */
+   @Test
+   public void testOrderPersist() throws OseeCoreException {
+      String guid = GUID.create();
+      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Test");
+      Artifact mainFolder =
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
+                  "Main Folder - " + guid);
+      mainFolder.persist(transaction);
+      StaticIdManager.setSingletonAttributeValue(mainFolder, STATIC_ID_TO_DELETE);
+      OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch()).addChild(mainFolder);
+      List<Artifact> children = new ArrayList<Artifact>();
+      for (int x = 0; x < 3; x++) {
+         Artifact childArt =
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
+                     "New Child " + x + " - " + guid);
+         children.add(childArt);
+         StaticIdManager.setSingletonAttributeValue(childArt, STATIC_ID_TO_DELETE);
+         mainFolder.addChild(childArt);
+         childArt.persist(transaction);
+      }
+      mainFolder.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, children);
+      transaction.execute();
+
+      Artifact newArtifact =
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
+                  "New Artifact " + guid);
+      mainFolder.addChild(newArtifact);
+      StaticIdManager.setSingletonAttributeValue(newArtifact, STATIC_ID_TO_DELETE);
+      newArtifact.persist();
+
+      for (Artifact child : children) {
+         Assert.assertFalse(child.isDirty());
+      }
+      Assert.assertFalse(newArtifact.isDirty());
+
+      Assert.assertFalse(
+            "Artifact should not be dirty.  NOTE: This test should fail until fixes made to persist.  See test javadoc",
+            mainFolder.isDirty());
    }
 
    private Artifact createArtifact(String type, Branch branch) throws OseeCoreException {
