@@ -120,7 +120,7 @@ public class UpdateBranchOperation extends AbstractOperation {
       originalBranch.setBranchState(BranchState.REBASELINED);
 
       BranchManager.persist(originalBranch, newWorkingBranch);
-      BranchManager.deleteBranch(originalBranch);
+      BranchManager.deleteBranch(originalBranch).join();
       monitor.worked(calculateWork(workPercentage));
    }
 }
