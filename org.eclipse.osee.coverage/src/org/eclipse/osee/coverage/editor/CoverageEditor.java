@@ -315,10 +315,16 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      Integer branchId = transData.getId();
-      if (branchId == null) return;
-      if (getCoverageEditorInput().getCoveragePackageArtifact() == null) return;
-      if (branchId != getCoverageEditorInput().getCoveragePackageArtifact().getBranch().getId()) return;
+      Integer branchId = transData.getBranchId();
+      if (branchId == null) {
+         return;
+      }
+      if (getCoverageEditorInput().getCoveragePackageArtifact() == null) {
+         return;
+      }
+      if (branchId != getCoverageEditorInput().getCoveragePackageArtifact().getBranch().getId()) {
+         return;
+      }
       Artifact packageArt = getCoverageEditorInput().getCoveragePackageArtifact();
       if (transData.isDeleted(packageArt)) {
          Displays.ensureInDisplayThread(new Runnable() {
@@ -344,7 +350,9 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
 
    @Override
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
-      if (getCoverageEditorInput().getCoveragePackageArtifact() == null) return;
+      if (getCoverageEditorInput().getCoveragePackageArtifact() == null) {
+         return;
+      }
       try {
          if (loadedArtifacts.getLoadedArtifacts().contains(getCoverageEditorInput().getCoveragePackageArtifact())) {
             Displays.ensureInDisplayThread(new Runnable() {
