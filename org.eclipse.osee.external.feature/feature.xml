@@ -17,6 +17,12 @@
       %license
    </license>
 
+   <requires>
+      <import feature="org.eclipse.team.svn" version="0.7.8" match="greaterOrEqual"/>
+      <import feature="org.polarion.eclipse.team.svn.connector" version="2.2.1" match="greaterOrEqual"/>
+      <import feature="org.polarion.eclipse.team.svn.connector.svnkit16" version="2.2.1" match="greaterOrEqual"/>
+   </requires>
+
    <plugin
          id="javax.servlet"
          download-size="0"
@@ -96,27 +102,6 @@
 
    <plugin
          id="org.apache.commons.codec"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.team.svn"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.team.svn.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.team.svn.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
