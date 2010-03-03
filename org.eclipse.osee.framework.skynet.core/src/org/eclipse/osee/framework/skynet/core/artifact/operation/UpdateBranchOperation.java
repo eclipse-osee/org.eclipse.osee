@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -63,8 +64,10 @@ public class UpdateBranchOperation extends AbstractOperation {
    private Branch createTempBranch(Branch originalBranch) throws OseeCoreException {
       Branch parentBranch = originalBranch.getParentBranch();
       String branchUpdateName = getUpdatedName(originalBranch.getName());
-      return BranchManager.createWorkingBranch(parentBranch, branchUpdateName,
-            UserManager.getUser(SystemUser.OseeSystem));
+      Branch newWorkingBranch =
+            BranchManager.createWorkingBranch(parentBranch, branchUpdateName,
+                  UserManager.getUser(SystemUser.OseeSystem));
+      return newWorkingBranch;
    }
 
    private void performUpdate(IProgressMonitor monitor, Branch originalBranch) throws Exception {
@@ -73,21 +76,16 @@ public class UpdateBranchOperation extends AbstractOperation {
       try {
          monitor.setTaskName("Creating temporary branch");
          newWorkingBranch = createTempBranch(originalBranch);
-         monitor.worked(calculateWork(0.40));
-
          originalBranch.setBranchState(BranchState.REBASELINE_IN_PROGRESS);
          BranchManager.persist(originalBranch);
+         monitor.worked(calculateWork(0.40));
 
-         monitor.setTaskName("Checking for Conflicts");
-         ConflictManagerExternal conflictManager = new ConflictManagerExternal(newWorkingBranch, originalBranch);
-         IOperation operation;
-         if (!conflictManager.remainingConflictsExist()) {
-            operation = new FinishUpdateBranchOperation(pluginId, conflictManager, true, false);
+         boolean hasChanges = BranchManager.hasChanges(originalBranch);
+         if (hasChanges) {
+            commitOldWorkingIntoNewWorkingBranch(monitor, originalBranch, newWorkingBranch, 0.40);
          } else {
-            operation = resolver;
-            resolver.setConflictManager(conflictManager);
+            deleteOldAndSetNewAsWorking(monitor, originalBranch, newWorkingBranch, 0.40);
          }
-         doSubWork(operation, monitor, 0.40);
          wasSuccessful = true;
       } finally {
          if (newWorkingBranch != null && !wasSuccessful) {
@@ -95,5 +93,34 @@ public class UpdateBranchOperation extends AbstractOperation {
          }
          monitor.worked(calculateWork(0.20));
       }
+   }
+
+   private void commitOldWorkingIntoNewWorkingBranch(IProgressMonitor monitor, Branch originalBranch, Branch newWorkingBranch, double workPercentage) throws Exception {
+      monitor.setTaskName("Checking for Conflicts");
+      ConflictManagerExternal conflictManager = new ConflictManagerExternal(newWorkingBranch, originalBranch);
+      IOperation operation;
+      if (!conflictManager.remainingConflictsExist()) {
+         operation = new FinishUpdateBranchOperation(pluginId, conflictManager, true, false);
+      } else {
+         operation = resolver;
+         resolver.setConflictManager(conflictManager);
+      }
+      doSubWork(operation, monitor, workPercentage);
+   }
+
+   private void deleteOldAndSetNewAsWorking(IProgressMonitor monitor, Branch originalBranch, Branch newWorkingBranch, double workPercentage) throws Exception {
+      String originalBranchName = originalBranch.getName();
+      IBasicArtifact<?> originalAssociatedArtifact = originalBranch.getAssociatedArtifact();
+
+      originalBranch.setName(getUpdatedName(originalBranchName));
+      monitor.worked(calculateWork(0.20));
+
+      newWorkingBranch.setName(originalBranchName);
+      newWorkingBranch.setAssociatedArtifact(originalAssociatedArtifact);
+      originalBranch.setBranchState(BranchState.REBASELINED);
+
+      BranchManager.persist(originalBranch, newWorkingBranch);
+      BranchManager.deleteBranch(originalBranch);
+      monitor.worked(calculateWork(workPercentage));
    }
 }

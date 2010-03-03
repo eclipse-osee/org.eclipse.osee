@@ -1,8 +1,13 @@
-/*
- * Created on Jun 15, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.cases;
 
 import static org.junit.Assert.assertEquals;
@@ -10,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
+import junit.framework.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -139,6 +145,44 @@ public class BranchStateTest {
             Thread.sleep(5000);
             BranchManager.purgeBranch(workingBranch);
          }
+      }
+   }
+
+   @org.junit.Test
+   public void testRebaselineBranchNoChanges() throws Exception {
+      String originalBranchName = "UpdateBranch No Changes Test";
+      Branch workingBranch = null;
+      try {
+         User user = UserManager.getUser(SystemUser.OseeSystem);
+         workingBranch = BranchManager.createWorkingBranch(DemoSawBuilds.SAW_Bld_1, originalBranchName, user);
+
+         // Update the branch
+         ConflictResolverOperation resolverOperation =
+               new ConflictResolverOperation("Test 1 Resolver", BranchStateTest.class.getCanonicalName()) {
+
+                  @Override
+                  protected void doWork(IProgressMonitor monitor) throws Exception {
+                     assertFalse("This code should not be executed since there shouldn't be any conflicts.",
+                           wasExecuted());
+                  }
+               };
+
+         Job job = BranchManager.updateBranch(workingBranch, resolverOperation);
+         job.join();
+
+         Assert.assertEquals(BranchState.DELETED, workingBranch.getBranchState());
+         Assert.assertEquals(user.getArtId(), workingBranch.getAssociatedArtifact().getArtId());
+
+         Collection<Branch> branches = BranchManager.getBranchesByName(originalBranchName);
+         assertEquals("Check only 1 original branch", 1, branches.size());
+
+         Branch newWorkingBranch = branches.iterator().next();
+         assertTrue(workingBranch.getId() != newWorkingBranch.getId());
+         assertEquals(originalBranchName, newWorkingBranch.getName());
+         assertTrue("New Working branch was not editable", newWorkingBranch.isEditable());
+         assertFalse("New Working branch was editable", workingBranch.isEditable());
+      } finally {
+         cleanup(originalBranchName, workingBranch, null);
       }
    }
 
@@ -319,7 +363,7 @@ public class BranchStateTest {
          for (Branch branch : BranchManager.getBranchesByName(originalBranchName)) {
             purgeBranchAndChildren(branch);
          }
-         if (toDelete != null) {
+         if (toDelete != null && toDelete.length > 0) {
             new PurgeArtifacts(Arrays.asList(toDelete)).execute();
          }
       } catch (Exception ex) {
