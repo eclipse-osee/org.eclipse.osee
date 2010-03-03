@@ -77,12 +77,10 @@ public class OseeBranchService implements IOseeBranchService {
       Branch destinationBranch = branchCache.getById(branchCommitData.getDestinationBranchId());
       Branch mergeBranch = branchCache.findMergeBranch(sourceBranch, destinationBranch);
 
-      TransactionVersion txVersion = TransactionVersion.HEAD;
-      TransactionRecord sourceTx =
-            sourceBranch != null ? transactionCache.getTransaction(sourceBranch, txVersion) : null;
-      TransactionRecord destinationTx =
-            destinationBranch != null ? transactionCache.getTransaction(destinationBranch, txVersion) : null;
-      TransactionRecord mergeTx = mergeBranch != null ? transactionCache.getTransaction(mergeBranch, txVersion) : null;
+      TransactionRecord sourceTx = transactionCache.getTransaction(sourceBranch, TransactionVersion.HEAD);
+      TransactionRecord destinationTx = transactionCache.getTransaction(destinationBranch, TransactionVersion.HEAD);
+      TransactionRecord mergeTx =
+            mergeBranch != null ? transactionCache.getTransaction(mergeBranch, TransactionVersion.HEAD) : null;
 
       List<ChangeItem> changes = new ArrayList<ChangeItem>();
 

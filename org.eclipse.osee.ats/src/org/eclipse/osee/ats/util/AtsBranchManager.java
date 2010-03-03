@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -78,7 +79,7 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * BranchManager contains methods necessary for ATS objects to interact with creation, view and commit of branches.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class AtsBranchManager {
@@ -117,7 +118,7 @@ public class AtsBranchManager {
 
    /**
     * Return true if merge branch exists in DB (whether archived or not)
-    *
+    * 
     * @param destinationBranch
     * @return true
     * @throws OseeCoreException
@@ -297,7 +298,7 @@ public class AtsBranchManager {
 
    /**
     * Either return a single commit transaction or user must choose from a list of valid commit transactions
-    *
+    * 
     * @param title
     * @param showMergeManager
     * @return TransactionRecord
@@ -458,7 +459,7 @@ public class AtsBranchManager {
    /**
     * Return working branch associated with SMA; This data is cached across all workflows with the cache being updated
     * by local and remote events.
-    *
+    * 
     * @return Branch
     */
    public Branch getWorkingBranch() throws OseeCoreException {
@@ -469,7 +470,7 @@ public class AtsBranchManager {
     * Return working branch associated with SMA, even if it's been archived; This data is cached across all workflows
     * with the cache being updated by local and remote events. Filters out rebaseline branches (which are working
     * branches also).
-    *
+    * 
     * @param includeDeleted
     * @return Branch
     */
@@ -494,7 +495,7 @@ public class AtsBranchManager {
 
    /**
     * Returns true if there is a working branch that is not archived
-    *
+    * 
     * @return result
     * @throws OseeCoreException
     */
@@ -505,7 +506,7 @@ public class AtsBranchManager {
    /**
     * Returns true if there was ever a commit of a working branch regardless of whether the working branch is archived
     * or not.
-    *
+    * 
     * @return result
     * @throws OseeCoreException
     */
@@ -584,7 +585,7 @@ public class AtsBranchManager {
 
    /**
     * Return true if all commit destination branches are configured and have been committed to
-    *
+    * 
     * @return true
     * @throws OseeCoreException
     */
@@ -610,7 +611,7 @@ public class AtsBranchManager {
 
    /**
     * Perform error checks and popup confirmation dialogs associated with creating a working branch.
-    *
+    * 
     * @param pageId if specified, WorkPage gets callback to provide confirmation that branch can be created
     * @param popup if true, errors are popped up to user; otherwise sent silently in Results
     * @return Result return of status
@@ -845,16 +846,7 @@ public class AtsBranchManager {
          throw new OseeCoreException("Branch is currently being committed.");
       }
       Job job = new AtsCommitJob(commitPopup, overrideStateValidation, destinationBranch, archiveWorkingBranch);
-      job.setUser(true);
-      job.setPriority(Job.LONG);
-      job.schedule();
-      if (forcePend) {
-         try {
-            job.join();
-         } catch (InterruptedException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-         }
-      }
+      Operations.scheduleJob(job, true, Job.LONG, null, forcePend);
    }
 
    /**
@@ -869,7 +861,7 @@ public class AtsBranchManager {
 
    /**
     * Return ChangeData represented by commit to commitConfigArt or earliest commit if commitConfigArt == null
-    *
+    * 
     * @param commitConfigArt that configures commit or null
     */
    public ChangeData getChangeData(ICommitConfigArtifact commitConfigArt) throws OseeCoreException {
