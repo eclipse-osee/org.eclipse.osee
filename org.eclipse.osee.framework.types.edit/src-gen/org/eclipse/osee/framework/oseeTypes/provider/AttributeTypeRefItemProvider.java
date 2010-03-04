@@ -9,12 +9,9 @@ package org.eclipse.osee.framework.oseeTypes.provider;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -24,15 +21,14 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
-
 import org.eclipse.emf.edit.provider.ViewerNotification;
-import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
+import org.eclipse.osee.framework.oseeTypes.XAttributeTypeRef;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef} object.
- * <!-- begin-user-doc -->
- * <!-- end-user-doc -->
+ * This is the item provider adapter for a {@link org.eclipse.osee.framework.oseeTypes.XAttributeTypeRef} object. <!--
+ * begin-user-doc --> <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class AttributeTypeRefItemProvider
@@ -83,7 +79,7 @@ public class AttributeTypeRefItemProvider
              getResourceLocator(),
              getString("_UI_AttributeTypeRef_validAttributeType_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_AttributeTypeRef_validAttributeType_feature", "_UI_AttributeTypeRef_type"),
-             OseeTypesPackage.Literals.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE,
+ OseeTypesPackage.Literals.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE,
              true,
              false,
              true,
@@ -105,7 +101,7 @@ public class AttributeTypeRefItemProvider
              getResourceLocator(),
              getString("_UI_AttributeTypeRef_branchGuid_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_AttributeTypeRef_branchGuid_feature", "_UI_AttributeTypeRef_type"),
-             OseeTypesPackage.Literals.ATTRIBUTE_TYPE_REF__BRANCH_GUID,
+            OseeTypesPackage.Literals.XATTRIBUTE_TYPE_REF__BRANCH_GUID,
              true,
              false,
              false,
@@ -133,7 +129,7 @@ public class AttributeTypeRefItemProvider
     */
    @Override
    public String getText(Object object) {
-      String label = ((AttributeTypeRef)object).getBranchGuid();
+      String label = ((XAttributeTypeRef) object).getBranchGuid();
       return label == null || label.length() == 0 ?
          getString("_UI_AttributeTypeRef_type") :
          getString("_UI_AttributeTypeRef_type") + " " + label;
@@ -150,8 +146,8 @@ public class AttributeTypeRefItemProvider
    public void notifyChanged(Notification notification) {
       updateChildren(notification);
 
-      switch (notification.getFeatureID(AttributeTypeRef.class)) {
-         case OseeTypesPackage.ATTRIBUTE_TYPE_REF__BRANCH_GUID:
+      switch (notification.getFeatureID(XAttributeTypeRef.class)) {
+         case OseeTypesPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
       }

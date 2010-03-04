@@ -63,58 +63,58 @@ public interface OseeTypesFactory extends EFactory
   OseeType createOseeType();
 
   /**
-   * Returns a new object of class '<em>Artifact Type</em>'.
+   * Returns a new object of class '<em>XArtifact Type</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Artifact Type</em>'.
+   * @return a new object of class '<em>XArtifact Type</em>'.
    * @generated
    */
-  ArtifactType createArtifactType();
+  XArtifactType createXArtifactType();
 
   /**
-   * Returns a new object of class '<em>Attribute Type Ref</em>'.
+   * Returns a new object of class '<em>XAttribute Type Ref</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Attribute Type Ref</em>'.
+   * @return a new object of class '<em>XAttribute Type Ref</em>'.
    * @generated
    */
-  AttributeTypeRef createAttributeTypeRef();
+  XAttributeTypeRef createXAttributeTypeRef();
 
   /**
-   * Returns a new object of class '<em>Attribute Type</em>'.
+   * Returns a new object of class '<em>XAttribute Type</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Attribute Type</em>'.
+   * @return a new object of class '<em>XAttribute Type</em>'.
    * @generated
    */
-  AttributeType createAttributeType();
+  XAttributeType createXAttributeType();
 
   /**
-   * Returns a new object of class '<em>Osee Enum Type</em>'.
+   * Returns a new object of class '<em>XOsee Enum Type</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Osee Enum Type</em>'.
+   * @return a new object of class '<em>XOsee Enum Type</em>'.
    * @generated
    */
-  OseeEnumType createOseeEnumType();
+  XOseeEnumType createXOseeEnumType();
 
   /**
-   * Returns a new object of class '<em>Osee Enum Entry</em>'.
+   * Returns a new object of class '<em>XOsee Enum Entry</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Osee Enum Entry</em>'.
+   * @return a new object of class '<em>XOsee Enum Entry</em>'.
    * @generated
    */
-  OseeEnumEntry createOseeEnumEntry();
+  XOseeEnumEntry createXOseeEnumEntry();
 
   /**
-   * Returns a new object of class '<em>Osee Enum Override</em>'.
+   * Returns a new object of class '<em>XOsee Enum Override</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Osee Enum Override</em>'.
+   * @return a new object of class '<em>XOsee Enum Override</em>'.
    * @generated
    */
-  OseeEnumOverride createOseeEnumOverride();
+  XOseeEnumOverride createXOseeEnumOverride();
 
   /**
    * Returns a new object of class '<em>Override Option</em>'.
@@ -144,13 +144,13 @@ public interface OseeTypesFactory extends EFactory
   RemoveEnum createRemoveEnum();
 
   /**
-   * Returns a new object of class '<em>Relation Type</em>'.
+   * Returns a new object of class '<em>XRelation Type</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Relation Type</em>'.
+   * @return a new object of class '<em>XRelation Type</em>'.
    * @generated
    */
-  RelationType createRelationType();
+  XRelationType createXRelationType();
 
   /**
    * Returns the package supported by this factory.

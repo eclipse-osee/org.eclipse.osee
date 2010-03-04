@@ -99,34 +99,34 @@ public class OseeTypesAdapterFactory extends AdapterFactoryImpl
         return createOseeTypeAdapter();
       }
       @Override
-      public Adapter caseArtifactType(ArtifactType object)
+      public Adapter caseXArtifactType(XArtifactType object)
       {
-        return createArtifactTypeAdapter();
+        return createXArtifactTypeAdapter();
       }
       @Override
-      public Adapter caseAttributeTypeRef(AttributeTypeRef object)
+      public Adapter caseXAttributeTypeRef(XAttributeTypeRef object)
       {
-        return createAttributeTypeRefAdapter();
+        return createXAttributeTypeRefAdapter();
       }
       @Override
-      public Adapter caseAttributeType(AttributeType object)
+      public Adapter caseXAttributeType(XAttributeType object)
       {
-        return createAttributeTypeAdapter();
+        return createXAttributeTypeAdapter();
       }
       @Override
-      public Adapter caseOseeEnumType(OseeEnumType object)
+      public Adapter caseXOseeEnumType(XOseeEnumType object)
       {
-        return createOseeEnumTypeAdapter();
+        return createXOseeEnumTypeAdapter();
       }
       @Override
-      public Adapter caseOseeEnumEntry(OseeEnumEntry object)
+      public Adapter caseXOseeEnumEntry(XOseeEnumEntry object)
       {
-        return createOseeEnumEntryAdapter();
+        return createXOseeEnumEntryAdapter();
       }
       @Override
-      public Adapter caseOseeEnumOverride(OseeEnumOverride object)
+      public Adapter caseXOseeEnumOverride(XOseeEnumOverride object)
       {
-        return createOseeEnumOverrideAdapter();
+        return createXOseeEnumOverrideAdapter();
       }
       @Override
       public Adapter caseOverrideOption(OverrideOption object)
@@ -144,9 +144,9 @@ public class OseeTypesAdapterFactory extends AdapterFactoryImpl
         return createRemoveEnumAdapter();
       }
       @Override
-      public Adapter caseRelationType(RelationType object)
+      public Adapter caseXRelationType(XRelationType object)
       {
-        return createRelationTypeAdapter();
+        return createXRelationTypeAdapter();
       }
       @Override
       public Adapter defaultCase(EObject object)
@@ -231,91 +231,91 @@ public class OseeTypesAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType <em>Artifact Type</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.XArtifactType <em>XArtifact Type</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.osee.framework.oseeTypes.ArtifactType
+   * @see org.eclipse.osee.framework.oseeTypes.XArtifactType
    * @generated
    */
-  public Adapter createArtifactTypeAdapter()
+  public Adapter createXArtifactTypeAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef <em>Attribute Type Ref</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.XAttributeTypeRef <em>XAttribute Type Ref</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.osee.framework.oseeTypes.AttributeTypeRef
+   * @see org.eclipse.osee.framework.oseeTypes.XAttributeTypeRef
    * @generated
    */
-  public Adapter createAttributeTypeRefAdapter()
+  public Adapter createXAttributeTypeRefAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.AttributeType <em>Attribute Type</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.XAttributeType <em>XAttribute Type</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.osee.framework.oseeTypes.AttributeType
+   * @see org.eclipse.osee.framework.oseeTypes.XAttributeType
    * @generated
    */
-  public Adapter createAttributeTypeAdapter()
+  public Adapter createXAttributeTypeAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumType <em>Osee Enum Type</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.XOseeEnumType <em>XOsee Enum Type</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeEnumType
+   * @see org.eclipse.osee.framework.oseeTypes.XOseeEnumType
    * @generated
    */
-  public Adapter createOseeEnumTypeAdapter()
+  public Adapter createXOseeEnumTypeAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry <em>Osee Enum Entry</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry <em>XOsee Enum Entry</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeEnumEntry
+   * @see org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry
    * @generated
    */
-  public Adapter createOseeEnumEntryAdapter()
+  public Adapter createXOseeEnumEntryAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumOverride <em>Osee Enum Override</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.XOseeEnumOverride <em>XOsee Enum Override</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeEnumOverride
+   * @see org.eclipse.osee.framework.oseeTypes.XOseeEnumOverride
    * @generated
    */
-  public Adapter createOseeEnumOverrideAdapter()
+  public Adapter createXOseeEnumOverrideAdapter()
   {
     return null;
   }
@@ -366,16 +366,16 @@ public class OseeTypesAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.RelationType <em>Relation Type</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.XRelationType <em>XRelation Type</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.osee.framework.oseeTypes.RelationType
+   * @see org.eclipse.osee.framework.oseeTypes.XRelationType
    * @generated
    */
-  public Adapter createRelationTypeAdapter()
+  public Adapter createXRelationTypeAdapter()
   {
     return null;
   }

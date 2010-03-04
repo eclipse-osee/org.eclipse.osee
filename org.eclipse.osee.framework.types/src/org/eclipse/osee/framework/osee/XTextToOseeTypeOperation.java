@@ -22,24 +22,29 @@ import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.OseeEnumEntry;
+import org.eclipse.osee.framework.core.model.OseeEnumType;
+import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.internal.InternalTypesActivator;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.oseeTypes.AddEnum;
-import org.eclipse.osee.framework.oseeTypes.ArtifactType;
-import org.eclipse.osee.framework.oseeTypes.AttributeType;
-import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
-import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
-import org.eclipse.osee.framework.oseeTypes.OseeEnumOverride;
-import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 import org.eclipse.osee.framework.oseeTypes.OverrideOption;
-import org.eclipse.osee.framework.oseeTypes.RelationType;
 import org.eclipse.osee.framework.oseeTypes.RemoveEnum;
+import org.eclipse.osee.framework.oseeTypes.XArtifactType;
+import org.eclipse.osee.framework.oseeTypes.XAttributeType;
+import org.eclipse.osee.framework.oseeTypes.XAttributeTypeRef;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumOverride;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumType;
+import org.eclipse.osee.framework.oseeTypes.XRelationType;
 
 /**
  * @author Ryan D. Brooks
@@ -59,18 +64,6 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       this.model = model;
    }
 
-   private OseeTypeCache getCache() {
-      return typeCache;
-   }
-
-   private BranchCache getBranchCache() {
-      return branchCache;
-   }
-
-   private IOseeModelFactoryService getFactory() throws OseeCoreException {
-      return provider;
-   }
-
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       double workAmount = 1.0;
@@ -84,171 +77,167 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       if (count > 0) {
          double workPercentage = workAmount / count;
 
-         for (ArtifactType type : model.getArtifactTypes()) {
-            handleArtifactType(type);
+         for (XArtifactType xArtifactType : model.getArtifactTypes()) {
+            handleXArtifactType(xArtifactType);
             monitor.worked(calculateWork(workPercentage));
          }
 
-         for (OseeEnumOverride enumOverride : model.getEnumOverrides()) {
-            handleEnumOverride(enumOverride);
+         for (XOseeEnumOverride xEnumOverride : model.getEnumOverrides()) {
+            handleXEnumOverride(xEnumOverride);
             monitor.worked(calculateWork(workPercentage));
          }
 
-         for (OseeEnumType enumType : model.getEnumTypes()) {
-            handleOseeEnumType(enumType);
+         for (XOseeEnumType xEnumType : model.getEnumTypes()) {
+            handleXEnumType(xEnumType);
             monitor.worked(calculateWork(workPercentage));
          }
 
-         for (AttributeType type : model.getAttributeTypes()) {
-            handleAttributeType(type);
+         for (XAttributeType xAttributeType : model.getAttributeTypes()) {
+            handleXAttributeType(xAttributeType);
             monitor.worked(calculateWork(workPercentage));
          }
 
-         for (ArtifactType type : model.getArtifactTypes()) {
-            handleArtifactTypeCrossRef(type);
+         for (XArtifactType xArtifactType : model.getArtifactTypes()) {
+            handleXArtifactTypeCrossRef(xArtifactType);
             monitor.worked(calculateWork(workPercentage));
          }
 
-         for (RelationType type : model.getRelationTypes()) {
-            handleRelationType(type);
+         for (XRelationType xRelationType : model.getRelationTypes()) {
+            handleXRelationType(xRelationType);
             monitor.worked(calculateWork(workPercentage));
          }
       }
    }
 
-   private void handleArtifactTypeCrossRef(ArtifactType artifactType) throws OseeCoreException {
-      Set<org.eclipse.osee.framework.core.model.ArtifactType> superTypes =
-            new HashSet<org.eclipse.osee.framework.core.model.ArtifactType>();
+   private void handleXArtifactTypeCrossRef(XArtifactType xArtifactType) throws OseeCoreException {
+      Set<ArtifactType> oseeSuperTypes = new HashSet<ArtifactType>();
 
-      org.eclipse.osee.framework.core.model.ArtifactType targetArtifactType =
-            getCache().getArtifactTypeCache().getByGuid(artifactType.getTypeGuid());
+      ArtifactType targetArtifactType = typeCache.getArtifactTypeCache().getByGuid(xArtifactType.getTypeGuid());
 
-      for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
-         superTypes.add(getCache().getArtifactTypeCache().getUniqueByName(removeQuotes(superType.getName())));
+      for (XArtifactType xSuperType : xArtifactType.getSuperArtifactTypes()) {
+         String superTypeName = removeQuotes(xSuperType.getName());
+         ArtifactType oseeSuperType = typeCache.getArtifactTypeCache().getUniqueByName(superTypeName);
+         oseeSuperTypes.add(oseeSuperType);
       }
-      if (!superTypes.isEmpty()) {
-         targetArtifactType.setSuperType(superTypes);
+      if (!oseeSuperTypes.isEmpty()) {
+         targetArtifactType.setSuperTypes(oseeSuperTypes);
       }
 
-      BranchCache branchCache = getBranchCache();
       Branch systemRoot = branchCache.getSystemRootBranch();
-      HashCollection<Branch, org.eclipse.osee.framework.core.model.AttributeType> items =
-            new HashCollection<Branch, org.eclipse.osee.framework.core.model.AttributeType>(false, HashSet.class);
-      for (AttributeTypeRef attributeTypeRef : artifactType.getValidAttributeTypes()) {
-         AttributeType attributeType = attributeTypeRef.getValidAttributeType();
+      HashCollection<Branch, AttributeType> items = new HashCollection<Branch, AttributeType>(false, HashSet.class);
+      for (XAttributeTypeRef xAttributeTypeRef : xArtifactType.getValidAttributeTypes()) {
+         XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
          //         handleAttributeType(attributeType);
+         String branchGuid = xAttributeTypeRef.getBranchGuid();
          Branch branch;
-         String branchGuid = attributeTypeRef.getBranchGuid();
          if (branchGuid == null) {
             branch = systemRoot;
          } else {
             branch = branchCache.getByGuid(branchGuid);
          }
-         org.eclipse.osee.framework.core.model.AttributeType type =
-               getCache().getAttributeTypeCache().getByGuid(attributeType.getTypeGuid());
-         if (type != null) {
-            items.put(branch, type);
+         AttributeType oseeAttributeType = typeCache.getAttributeTypeCache().getByGuid(xAttributeType.getTypeGuid());
+         if (oseeAttributeType != null) {
+            items.put(branch, oseeAttributeType);
          } else {
-            System.out.println("Type was null for: " + artifactType.getName());
+            System.out.println("Type was null for: " + xArtifactType.getName());
          }
       }
 
       for (Branch branch : items.keySet()) {
-         List<org.eclipse.osee.framework.core.model.AttributeType> attributeTypes = items.getValues();
-         if (attributeTypes != null) {
-            targetArtifactType.setAttributeTypes(attributeTypes, branch);
+         List<AttributeType> oseeAttributeTypes = items.getValues();
+         if (oseeAttributeTypes != null) {
+            targetArtifactType.setAttributeTypes(oseeAttributeTypes, branch);
          } else {
-            System.out.println("Types were null for: " + artifactType.getName());
+            System.out.println("Types were null for: " + xArtifactType.getName());
          }
       }
    }
 
    private String removeQuotes(String nameReference) {
-      return nameReference != null ? nameReference.substring(1, nameReference.length() - 1) : nameReference; // strip off enclosing quotes
+      return nameReference != null ? nameReference.substring(1, nameReference.length() - 1) : nameReference;
    }
 
-   private void handleArtifactType(ArtifactType artifactType) throws OseeCoreException {
-      String artifactTypeName = removeQuotes(artifactType.getName());
+   private void handleXArtifactType(XArtifactType xArtifactType) throws OseeCoreException {
+      String artifactTypeName = removeQuotes(xArtifactType.getName());
 
-      org.eclipse.osee.framework.core.model.ArtifactType type =
-            getFactory().getArtifactTypeFactory().createOrUpdate(getCache().getArtifactTypeCache(),
-                  artifactType.getTypeGuid(), artifactType.isAbstract(), artifactTypeName);
-      artifactType.setTypeGuid(type.getGuid());
+      ArtifactType oseeArtifactType =
+            provider.getArtifactTypeFactory().createOrUpdate(typeCache.getArtifactTypeCache(),
+                  xArtifactType.getTypeGuid(), xArtifactType.isAbstract(), artifactTypeName);
+      xArtifactType.setTypeGuid(oseeArtifactType.getGuid());
    }
 
-   private void handleOseeEnumType(OseeEnumType modelEnumType) throws OseeCoreException {
-      String enumTypeName = removeQuotes(modelEnumType.getName());
+   private void handleXEnumType(XOseeEnumType xModelEnumType) throws OseeCoreException {
+      String enumTypeName = removeQuotes(xModelEnumType.getName());
 
-      org.eclipse.osee.framework.core.model.OseeEnumType oseeEnumType =
-            getFactory().getOseeEnumTypeFactory().createOrUpdate(getCache().getEnumTypeCache(),
-                  modelEnumType.getTypeGuid(), enumTypeName);
+      OseeEnumType oseeEnumType =
+            provider.getOseeEnumTypeFactory().createOrUpdate(typeCache.getEnumTypeCache(),
+                  xModelEnumType.getTypeGuid(), enumTypeName);
 
       int lastOrdinal = 0;
-      List<org.eclipse.osee.framework.core.model.OseeEnumEntry> modelEntries =
-            new ArrayList<org.eclipse.osee.framework.core.model.OseeEnumEntry>();
-      for (OseeEnumEntry enumEntry : modelEnumType.getEnumEntries()) {
-         String entryName = removeQuotes(enumEntry.getName());
-         String ordinal = enumEntry.getOrdinal();
+      List<OseeEnumEntry> oseeEnumEntries = new ArrayList<OseeEnumEntry>();
+      for (XOseeEnumEntry xEnumEntry : xModelEnumType.getEnumEntries()) {
+         String entryName = removeQuotes(xEnumEntry.getName());
+         String ordinal = xEnumEntry.getOrdinal();
          if (Strings.isValid(ordinal)) {
             lastOrdinal = Integer.parseInt(ordinal);
          }
 
-         String entryGuid = enumEntry.getEntryGuid();
-         modelEntries.add(getFactory().getOseeEnumTypeFactory().createEnumEntry(entryGuid, entryName, lastOrdinal));
+         String entryGuid = xEnumEntry.getEntryGuid();
+         oseeEnumEntries.add(provider.getOseeEnumTypeFactory().createEnumEntry(entryGuid, entryName, lastOrdinal));
          lastOrdinal++;
       }
-      oseeEnumType.setEntries(modelEntries);
+      oseeEnumType.setEntries(oseeEnumEntries);
    }
 
-   private void handleEnumOverride(OseeEnumOverride enumOverride) throws OseeCoreException {
-      OseeEnumType oseeEnumType = enumOverride.getOverridenEnumType();
-      if (!enumOverride.isInheritAll()) {
-         oseeEnumType.getEnumEntries().clear();
+   private void handleXEnumOverride(XOseeEnumOverride xEnumOverride) throws OseeCoreException {
+      XOseeEnumType xEnumType = xEnumOverride.getOverridenEnumType();
+      if (!xEnumOverride.isInheritAll()) {
+         xEnumType.getEnumEntries().clear();
       }
       OseeTypesFactory factory = OseeTypesFactory.eINSTANCE;
-      for (OverrideOption overrideOption : enumOverride.getOverrideOptions()) {
-         if (overrideOption instanceof AddEnum) {
-            String entryName = ((AddEnum) overrideOption).getEnumEntry();
-            String entryGuid = ((AddEnum) overrideOption).getEntryGuid();
-            OseeEnumEntry enumEntry = factory.createOseeEnumEntry();
-            enumEntry.setName(entryName);
-            enumEntry.setEntryGuid(entryGuid);
-            oseeEnumType.getEnumEntries().add(enumEntry);
-         } else if (overrideOption instanceof RemoveEnum) {
-            OseeEnumEntry enumEntry = ((RemoveEnum) overrideOption).getEnumEntry();
-            oseeEnumType.getEnumEntries().remove(enumEntry);
+      for (OverrideOption xOverrideOption : xEnumOverride.getOverrideOptions()) {
+         if (xOverrideOption instanceof AddEnum) {
+            String entryName = ((AddEnum) xOverrideOption).getEnumEntry();
+            String entryGuid = ((AddEnum) xOverrideOption).getEntryGuid();
+            XOseeEnumEntry xEnumEntry = factory.createXOseeEnumEntry();
+            xEnumEntry.setName(entryName);
+            xEnumEntry.setEntryGuid(entryGuid);
+            xEnumType.getEnumEntries().add(xEnumEntry);
+         } else if (xOverrideOption instanceof RemoveEnum) {
+            XOseeEnumEntry enumEntry = ((RemoveEnum) xOverrideOption).getEnumEntry();
+            xEnumType.getEnumEntries().remove(enumEntry);
          } else {
             throw new OseeStateException("Unsupported Override Operation");
          }
       }
    }
 
-   private void handleAttributeType(AttributeType attributeType) throws OseeCoreException {
+   private void handleXAttributeType(XAttributeType xAttributeType) throws OseeCoreException {
       int max = Integer.MAX_VALUE;
-      if (!attributeType.getMax().equals("unlimited")) {
-         max = Integer.parseInt(attributeType.getMax());
+      if (!xAttributeType.getMax().equals("unlimited")) {
+         max = Integer.parseInt(xAttributeType.getMax());
       }
-      org.eclipse.osee.framework.core.model.OseeEnumType oseeEnumType = null;
-      OseeEnumType enumType = attributeType.getEnumType();
-      if (enumType != null) {
-         oseeEnumType = getCache().getEnumTypeCache().getByGuid(enumType.getTypeGuid());
+      XOseeEnumType xEnumType = xAttributeType.getEnumType();
+      OseeEnumType oseeEnumType = null;
+      if (xEnumType != null) {
+         oseeEnumType = typeCache.getEnumTypeCache().getByGuid(xEnumType.getTypeGuid());
       }
 
-      AttributeTypeCache cache = getCache().getAttributeTypeCache();
-      org.eclipse.osee.framework.core.model.AttributeType type =
-            getFactory().getAttributeTypeFactory().createOrUpdate(cache, attributeType.getTypeGuid(), //
-                  removeQuotes(attributeType.getName()), //
-                  getQualifiedTypeName(attributeType.getBaseAttributeType()), //
-                  getQualifiedTypeName(attributeType.getDataProvider()), //
-                  attributeType.getFileExtension(), //
-                  attributeType.getDefaultValue(), //
+      AttributeTypeCache cache = typeCache.getAttributeTypeCache();
+      AttributeType oseeAttributeType =
+            provider.getAttributeTypeFactory().createOrUpdate(cache, xAttributeType.getTypeGuid(), //
+                  removeQuotes(xAttributeType.getName()), //
+                  getQualifiedTypeName(xAttributeType.getBaseAttributeType()), //
+                  getQualifiedTypeName(xAttributeType.getDataProvider()), //
+                  xAttributeType.getFileExtension(), //
+                  xAttributeType.getDefaultValue(), //
                   oseeEnumType, //
-                  Integer.parseInt(attributeType.getMin()), //
+                  Integer.parseInt(xAttributeType.getMin()), //
                   max, //
-                  attributeType.getDescription(), //
-                  attributeType.getTaggerId()//
+                  xAttributeType.getDescription(), //
+                  xAttributeType.getTaggerId()//
             );
-      attributeType.setTypeGuid(type.getGuid());
+      xAttributeType.setTypeGuid(oseeAttributeType.getGuid());
    }
 
    private String getQualifiedTypeName(String id) {
@@ -259,27 +248,26 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       return value;
    }
 
-   private void handleRelationType(RelationType relationType) throws OseeCoreException {
+   private void handleXRelationType(XRelationType xRelationType) throws OseeCoreException {
       RelationTypeMultiplicity multiplicity =
-            RelationTypeMultiplicity.getFromString(relationType.getMultiplicity().name());
+            RelationTypeMultiplicity.getFromString(xRelationType.getMultiplicity().name());
 
-      org.eclipse.osee.framework.core.model.RelationType type =
-            getFactory().getRelationTypeFactory().createOrUpdate(
-                  getCache().getRelationTypeCache(),
-                  relationType.getTypeGuid(),
-                  removeQuotes(relationType.getName()), //
-                  relationType.getSideAName(), //
-                  relationType.getSideBName(), //
-                  getCache().getArtifactTypeCache().getUniqueByName(
-                        removeQuotes(relationType.getSideAArtifactType().getName())), //
-                  getCache().getArtifactTypeCache().getUniqueByName(
-                        removeQuotes(relationType.getSideBArtifactType().getName())), //
+      RelationType oseeRelationType =
+            provider.getRelationTypeFactory().createOrUpdate(
+                  typeCache.getRelationTypeCache(),
+                  xRelationType.getTypeGuid(),
+                  removeQuotes(xRelationType.getName()), //
+                  xRelationType.getSideAName(), //
+                  xRelationType.getSideBName(), //
+                  typeCache.getArtifactTypeCache().getUniqueByName(
+                        removeQuotes(xRelationType.getSideAArtifactType().getName())), //
+                  typeCache.getArtifactTypeCache().getUniqueByName(
+                        removeQuotes(xRelationType.getSideBArtifactType().getName())), //
                   multiplicity, //
-                  convertOrderTypeNameToGuid(relationType.getDefaultOrderType())//
+                  convertOrderTypeNameToGuid(xRelationType.getDefaultOrderType())//
             );
 
-      relationType.setTypeGuid(//
-      type.getGuid());
+      xRelationType.setTypeGuid(oseeRelationType.getGuid());
    }
 
    private String convertOrderTypeNameToGuid(String orderTypeName) throws OseeArgumentException {

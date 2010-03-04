@@ -4,7 +4,7 @@ generate oseeTypes "http://www.eclipse.org/osee/framework/OseeTypes"
 
 OseeTypeModel :
 	(imports+=Import)*
-	(artifactTypes += ArtifactType | relationTypes += RelationType | attributeTypes += AttributeType | enumTypes += OseeEnumType | enumOverrides += OseeEnumOverride)*;
+	(artifactTypes += XArtifactType | relationTypes += XRelationType | attributeTypes += XAttributeType | enumTypes += XOseeEnumType | enumOverrides += XOseeEnumOverride)*;
 
 Import :
 	'import' importURI=STRING;
@@ -15,28 +15,28 @@ NAME_REFERENCE: STRING;
 QUALIFIED_NAME : ID ('.' ID)*;
 
 OseeElement:
-	OseeEnumOverride | OseeType;
+	XOseeEnumOverride | OseeType;
 
 OseeType:
-	ArtifactType | RelationType | AttributeType | OseeEnumType;
+	XArtifactType | XRelationType | XAttributeType | XOseeEnumType;
 
-ArtifactType:
-	(abstract?='abstract')? 'artifactType' name=NAME_REFERENCE ('extends' superArtifactTypes+=[ArtifactType|NAME_REFERENCE] (',' superArtifactTypes+=[ArtifactType|NAME_REFERENCE])*)? '{'
+XArtifactType:
+	(abstract?='abstract')? 'artifactType' name=NAME_REFERENCE ('extends' superArtifactTypes+=[XArtifactType|NAME_REFERENCE] (',' superArtifactTypes+=[XArtifactType|NAME_REFERENCE])*)? '{'
 		'guid' typeGuid = STRING
-	    (validAttributeTypes+=AttributeTypeRef)*
+	    (validAttributeTypes+=XAttributeTypeRef)*
 	'}';
 
-AttributeTypeRef:
-	'attribute' validAttributeType=[AttributeType|NAME_REFERENCE] ('branchGuid' branchGuid=STRING)?;
+XAttributeTypeRef:
+	'attribute' validAttributeType=[XAttributeType|NAME_REFERENCE] ('branchGuid' branchGuid=STRING)?;
 
-AttributeType:
-		'attributeType' name=NAME_REFERENCE ('extends' baseAttributeType=AttributeBaseType) ('overrides' override=[AttributeType|NAME_REFERENCE])? '{'
+XAttributeType:
+		'attributeType' name=NAME_REFERENCE ('extends' baseAttributeType=AttributeBaseType) ('overrides' override=[XAttributeType|NAME_REFERENCE])? '{'
 		'guid' typeGuid = STRING
 		'dataProvider' dataProvider = ('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | QUALIFIED_NAME)
 		'min' min=WHOLE_NUM_STR
 		'max' max=(WHOLE_NUM_STR | 'unlimited')
 		('taggerId' taggerId = ('DefaultAttributeTaggerProvider' | QUALIFIED_NAME))?
-		('enumType' enumType = [OseeEnumType|NAME_REFERENCE])?
+		('enumType' enumType = [XOseeEnumType|NAME_REFERENCE])?
 		('description' description = STRING)?
 		('defaultValue' defaultValue = STRING)?
 		('fileExtension' fileExtension = STRING)?
@@ -45,17 +45,17 @@ AttributeType:
 AttributeBaseType:
 	'BooleanAttribute' | 'CompressedContentAttribute' | 'DateAttribute' | 'EnumeratedAttribute' | 'FloatingPointAttribute' | 'IntegerAttribute' | 'JavaObjectAttribute' | 'StringAttribute' | 'WordAttribute' | QUALIFIED_NAME;
 
-OseeEnumType:
+XOseeEnumType:
 	'oseeEnumType' name=NAME_REFERENCE '{'
 		'guid' typeGuid = STRING
-		(enumEntries+=OseeEnumEntry)*
+		(enumEntries+=XOseeEnumEntry)*
 	'}';
 
-OseeEnumEntry:
+XOseeEnumEntry:
 	'entry' name=NAME_REFERENCE (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid = STRING)?;
 
-OseeEnumOverride:
-	'overrides enum' overridenEnumType = [OseeEnumType|NAME_REFERENCE] '{'
+XOseeEnumOverride:
+	'overrides enum' overridenEnumType = [XOseeEnumType|NAME_REFERENCE] '{'
 		(inheritAll ?= 'inheritAll')?
 		(overrideOptions += OverrideOption)*
 	'}';
@@ -67,15 +67,15 @@ AddEnum:
 	'add' enumEntry = NAME_REFERENCE (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid = STRING)?;
 
 RemoveEnum:
-	'remove' enumEntry = [OseeEnumEntry|NAME_REFERENCE];
+	'remove' enumEntry = [XOseeEnumEntry|NAME_REFERENCE];
 
-RelationType:
+XRelationType:
 	'relationType' name=NAME_REFERENCE '{'
 		'guid' typeGuid = STRING
 		'sideAName' sideAName=STRING
-		'sideAArtifactType' sideAArtifactType=[ArtifactType|NAME_REFERENCE]
+		'sideAArtifactType' sideAArtifactType=[XArtifactType|NAME_REFERENCE]
 		'sideBName' sideBName=STRING
-		'sideBArtifactType' sideBArtifactType=[ArtifactType|NAME_REFERENCE]
+		'sideBArtifactType' sideBArtifactType=[XArtifactType|NAME_REFERENCE]
 		'defaultOrderType' defaultOrderType=RelationOrderType
 		'multiplicity' multiplicity=RelationMultiplicityEnum
 	'}';

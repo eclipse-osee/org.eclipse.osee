@@ -7,9 +7,8 @@
 package org.eclipse.osee.framework.oseeTypes.tests;
 
 import junit.textui.TestRunner;
-
-import org.eclipse.osee.framework.oseeTypes.OseeEnumOverride;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumOverride;
 
 /**
  * <!-- begin-user-doc -->
@@ -45,8 +44,8 @@ public class OseeEnumOverrideTest extends OseeElementTest {
     * @generated
     */
    @Override
-   protected OseeEnumOverride getFixture() {
-      return (OseeEnumOverride)fixture;
+   protected XOseeEnumOverride getFixture() {
+      return (XOseeEnumOverride) fixture;
    }
 
    /**
@@ -57,7 +56,7 @@ public class OseeEnumOverrideTest extends OseeElementTest {
     */
    @Override
    protected void setUp() throws Exception {
-      setFixture(OseeTypesFactory.eINSTANCE.createOseeEnumOverride());
+      setFixture(OseeTypesFactory.eINSTANCE.createXOseeEnumOverride());
    }
 
    /**

@@ -7,9 +7,8 @@
 package org.eclipse.osee.framework.oseeTypes.tests;
 
 import junit.textui.TestRunner;
-
-import org.eclipse.osee.framework.oseeTypes.ArtifactType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
+import org.eclipse.osee.framework.oseeTypes.XArtifactType;
 
 /**
  * <!-- begin-user-doc -->
@@ -45,8 +44,8 @@ public class ArtifactTypeTest extends OseeTypeTest {
     * @generated
     */
    @Override
-   protected ArtifactType getFixture() {
-      return (ArtifactType)fixture;
+   protected XArtifactType getFixture() {
+      return (XArtifactType) fixture;
    }
 
    /**
@@ -57,7 +56,7 @@ public class ArtifactTypeTest extends OseeTypeTest {
     */
    @Override
    protected void setUp() throws Exception {
-      setFixture(OseeTypesFactory.eINSTANCE.createArtifactType());
+      setFixture(OseeTypesFactory.eINSTANCE.createXArtifactType());
    }
 
    /**

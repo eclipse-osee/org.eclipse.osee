@@ -10,23 +10,23 @@ import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Artifact Type</b></em>'.
+ * A representation of the model object '<em><b>XArtifact Type</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#isAbstract <em>Abstract</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperArtifactTypes <em>Super Artifact Types</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getValidAttributeTypes <em>Valid Attribute Types</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XArtifactType#isAbstract <em>Abstract</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XArtifactType#getSuperArtifactTypes <em>Super Artifact Types</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XArtifactType#getValidAttributeTypes <em>Valid Attribute Types</em>}</li>
  * </ul>
  * </p>
  *
- * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType()
+ * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXArtifactType()
  * @model
  * @generated
  */
-public interface ArtifactType extends OseeType
+public interface XArtifactType extends OseeType
 {
   /**
    * Returns the value of the '<em><b>Abstract</b></em>' attribute.
@@ -38,14 +38,14 @@ public interface ArtifactType extends OseeType
    * <!-- end-user-doc -->
    * @return the value of the '<em>Abstract</em>' attribute.
    * @see #setAbstract(boolean)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType_Abstract()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXArtifactType_Abstract()
    * @model
    * @generated
    */
   boolean isAbstract();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#isAbstract <em>Abstract</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.XArtifactType#isAbstract <em>Abstract</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Abstract</em>' attribute.
@@ -56,7 +56,7 @@ public interface ArtifactType extends OseeType
 
   /**
    * Returns the value of the '<em><b>Super Artifact Types</b></em>' reference list.
-   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.ArtifactType}.
+   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.XArtifactType}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Super Artifact Types</em>' reference list isn't clear,
@@ -64,15 +64,15 @@ public interface ArtifactType extends OseeType
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Super Artifact Types</em>' reference list.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType_SuperArtifactTypes()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXArtifactType_SuperArtifactTypes()
    * @model
    * @generated
    */
-  EList<ArtifactType> getSuperArtifactTypes();
+  EList<XArtifactType> getSuperArtifactTypes();
 
   /**
    * Returns the value of the '<em><b>Valid Attribute Types</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef}.
+   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.XAttributeTypeRef}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Valid Attribute Types</em>' containment reference list isn't clear,
@@ -80,10 +80,10 @@ public interface ArtifactType extends OseeType
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Valid Attribute Types</em>' containment reference list.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType_ValidAttributeTypes()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXArtifactType_ValidAttributeTypes()
    * @model containment="true"
    * @generated
    */
-  EList<AttributeTypeRef> getValidAttributeTypes();
+  EList<XAttributeTypeRef> getValidAttributeTypes();
 
-} // ArtifactType
+} // XArtifactType

@@ -10,23 +10,23 @@ import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Osee Enum Entry</b></em>'.
+ * A representation of the model object '<em><b>XOsee Enum Entry</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry#getOrdinal <em>Ordinal</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry#getEntryGuid <em>Entry Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry#getOrdinal <em>Ordinal</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry#getEntryGuid <em>Entry Guid</em>}</li>
  * </ul>
  * </p>
  *
- * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeEnumEntry()
+ * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXOseeEnumEntry()
  * @model
  * @generated
  */
-public interface OseeEnumEntry extends EObject
+public interface XOseeEnumEntry extends EObject
 {
   /**
    * Returns the value of the '<em><b>Name</b></em>' attribute.
@@ -38,14 +38,14 @@ public interface OseeEnumEntry extends EObject
    * <!-- end-user-doc -->
    * @return the value of the '<em>Name</em>' attribute.
    * @see #setName(String)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeEnumEntry_Name()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXOseeEnumEntry_Name()
    * @model
    * @generated
    */
   String getName();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry#getName <em>Name</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry#getName <em>Name</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Name</em>' attribute.
@@ -64,14 +64,14 @@ public interface OseeEnumEntry extends EObject
    * <!-- end-user-doc -->
    * @return the value of the '<em>Ordinal</em>' attribute.
    * @see #setOrdinal(String)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeEnumEntry_Ordinal()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXOseeEnumEntry_Ordinal()
    * @model
    * @generated
    */
   String getOrdinal();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry#getOrdinal <em>Ordinal</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry#getOrdinal <em>Ordinal</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Ordinal</em>' attribute.
@@ -90,14 +90,14 @@ public interface OseeEnumEntry extends EObject
    * <!-- end-user-doc -->
    * @return the value of the '<em>Entry Guid</em>' attribute.
    * @see #setEntryGuid(String)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeEnumEntry_EntryGuid()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXOseeEnumEntry_EntryGuid()
    * @model
    * @generated
    */
   String getEntryGuid();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry#getEntryGuid <em>Entry Guid</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry#getEntryGuid <em>Entry Guid</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Entry Guid</em>' attribute.
@@ -106,4 +106,4 @@ public interface OseeEnumEntry extends EObject
    */
   void setEntryGuid(String value);
 
-} // OseeEnumEntry
+} // XOseeEnumEntry

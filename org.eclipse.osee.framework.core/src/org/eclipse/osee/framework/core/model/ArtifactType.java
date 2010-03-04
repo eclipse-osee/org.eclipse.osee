@@ -59,7 +59,7 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
       return getFieldValueLogException(defaultValue, ARTIFACT_INHERITANCE_FIELD_KEY);
    }
 
-   public void setSuperType(Set<ArtifactType> superType) throws OseeCoreException {
+   public void setSuperTypes(Set<ArtifactType> superType) throws OseeCoreException {
       Set<ArtifactType> originals = new HashSet<ArtifactType>(superTypes);
       setField(ARTIFACT_INHERITANCE_FIELD_KEY, superType);
       for (ArtifactType supers : superType) {

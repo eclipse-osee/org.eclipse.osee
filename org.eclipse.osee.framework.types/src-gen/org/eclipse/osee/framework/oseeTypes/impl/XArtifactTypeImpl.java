@@ -22,26 +22,26 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import org.eclipse.osee.framework.oseeTypes.ArtifactType;
-import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
+import org.eclipse.osee.framework.oseeTypes.XArtifactType;
+import org.eclipse.osee.framework.oseeTypes.XAttributeTypeRef;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Artifact Type</b></em>'.
+ * An implementation of the model object '<em><b>XArtifact Type</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl#isAbstract <em>Abstract</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl#getSuperArtifactTypes <em>Super Artifact Types</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl#getValidAttributeTypes <em>Valid Attribute Types</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XArtifactTypeImpl#isAbstract <em>Abstract</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XArtifactTypeImpl#getSuperArtifactTypes <em>Super Artifact Types</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XArtifactTypeImpl#getValidAttributeTypes <em>Valid Attribute Types</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
+public class XArtifactTypeImpl extends OseeTypeImpl implements XArtifactType
 {
   /**
    * The default value of the '{@link #isAbstract() <em>Abstract</em>}' attribute.
@@ -71,7 +71,7 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
    * @generated
    * @ordered
    */
-  protected EList<ArtifactType> superArtifactTypes;
+  protected EList<XArtifactType> superArtifactTypes;
 
   /**
    * The cached value of the '{@link #getValidAttributeTypes() <em>Valid Attribute Types</em>}' containment reference list.
@@ -81,14 +81,14 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
    * @generated
    * @ordered
    */
-  protected EList<AttributeTypeRef> validAttributeTypes;
+  protected EList<XAttributeTypeRef> validAttributeTypes;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected ArtifactTypeImpl()
+  protected XArtifactTypeImpl()
   {
     super();
   }
@@ -101,7 +101,7 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
   @Override
   protected EClass eStaticClass()
   {
-    return OseeTypesPackage.Literals.ARTIFACT_TYPE;
+    return OseeTypesPackage.Literals.XARTIFACT_TYPE;
   }
 
   /**
@@ -124,7 +124,7 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
     boolean oldAbstract = abstract_;
     abstract_ = newAbstract;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ARTIFACT_TYPE__ABSTRACT, oldAbstract, abstract_));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XARTIFACT_TYPE__ABSTRACT, oldAbstract, abstract_));
   }
 
   /**
@@ -132,11 +132,11 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<ArtifactType> getSuperArtifactTypes()
+  public EList<XArtifactType> getSuperArtifactTypes()
   {
     if (superArtifactTypes == null)
     {
-      superArtifactTypes = new EObjectResolvingEList<ArtifactType>(ArtifactType.class, this, OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPES);
+      superArtifactTypes = new EObjectResolvingEList<XArtifactType>(XArtifactType.class, this, OseeTypesPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES);
     }
     return superArtifactTypes;
   }
@@ -146,11 +146,11 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<AttributeTypeRef> getValidAttributeTypes()
+  public EList<XAttributeTypeRef> getValidAttributeTypes()
   {
     if (validAttributeTypes == null)
     {
-      validAttributeTypes = new EObjectContainmentEList<AttributeTypeRef>(AttributeTypeRef.class, this, OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES);
+      validAttributeTypes = new EObjectContainmentEList<XAttributeTypeRef>(XAttributeTypeRef.class, this, OseeTypesPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES);
     }
     return validAttributeTypes;
   }
@@ -165,7 +165,7 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+      case OseeTypesPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
         return ((InternalEList<?>)getValidAttributeTypes()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -181,11 +181,11 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ARTIFACT_TYPE__ABSTRACT:
+      case OseeTypesPackage.XARTIFACT_TYPE__ABSTRACT:
         return isAbstract();
-      case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
+      case OseeTypesPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
         return getSuperArtifactTypes();
-      case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+      case OseeTypesPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
         return getValidAttributeTypes();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -202,16 +202,16 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ARTIFACT_TYPE__ABSTRACT:
+      case OseeTypesPackage.XARTIFACT_TYPE__ABSTRACT:
         setAbstract((Boolean)newValue);
         return;
-      case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
+      case OseeTypesPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
         getSuperArtifactTypes().clear();
-        getSuperArtifactTypes().addAll((Collection<? extends ArtifactType>)newValue);
+        getSuperArtifactTypes().addAll((Collection<? extends XArtifactType>)newValue);
         return;
-      case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+      case OseeTypesPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
         getValidAttributeTypes().clear();
-        getValidAttributeTypes().addAll((Collection<? extends AttributeTypeRef>)newValue);
+        getValidAttributeTypes().addAll((Collection<? extends XAttributeTypeRef>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -227,13 +227,13 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ARTIFACT_TYPE__ABSTRACT:
+      case OseeTypesPackage.XARTIFACT_TYPE__ABSTRACT:
         setAbstract(ABSTRACT_EDEFAULT);
         return;
-      case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
+      case OseeTypesPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
         getSuperArtifactTypes().clear();
         return;
-      case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+      case OseeTypesPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
         getValidAttributeTypes().clear();
         return;
     }
@@ -250,11 +250,11 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ARTIFACT_TYPE__ABSTRACT:
+      case OseeTypesPackage.XARTIFACT_TYPE__ABSTRACT:
         return abstract_ != ABSTRACT_EDEFAULT;
-      case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
+      case OseeTypesPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
         return superArtifactTypes != null && !superArtifactTypes.isEmpty();
-      case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+      case OseeTypesPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
         return validAttributeTypes != null && !validAttributeTypes.isEmpty();
     }
     return super.eIsSet(featureID);
@@ -277,4 +277,4 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
     return result.toString();
   }
 
-} //ArtifactTypeImpl
+} //XArtifactTypeImpl

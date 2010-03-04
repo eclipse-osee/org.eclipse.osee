@@ -13,25 +13,25 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Osee Enum Entry</b></em>'.
+ * An implementation of the model object '<em><b>XOsee Enum Entry</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumEntryImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumEntryImpl#getOrdinal <em>Ordinal</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumEntryImpl#getEntryGuid <em>Entry Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XOseeEnumEntryImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XOseeEnumEntryImpl#getOrdinal <em>Ordinal</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XOseeEnumEntryImpl#getEntryGuid <em>Entry Guid</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class OseeEnumEntryImpl extends MinimalEObjectImpl.Container implements OseeEnumEntry
+public class XOseeEnumEntryImpl extends MinimalEObjectImpl.Container implements XOseeEnumEntry
 {
   /**
    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -98,7 +98,7 @@ public class OseeEnumEntryImpl extends MinimalEObjectImpl.Container implements O
    * <!-- end-user-doc -->
    * @generated
    */
-  protected OseeEnumEntryImpl()
+  protected XOseeEnumEntryImpl()
   {
     super();
   }
@@ -111,7 +111,7 @@ public class OseeEnumEntryImpl extends MinimalEObjectImpl.Container implements O
   @Override
   protected EClass eStaticClass()
   {
-    return OseeTypesPackage.Literals.OSEE_ENUM_ENTRY;
+    return OseeTypesPackage.Literals.XOSEE_ENUM_ENTRY;
   }
 
   /**
@@ -134,7 +134,7 @@ public class OseeEnumEntryImpl extends MinimalEObjectImpl.Container implements O
     String oldName = name;
     name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_ENUM_ENTRY__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XOSEE_ENUM_ENTRY__NAME, oldName, name));
   }
 
   /**
@@ -157,7 +157,7 @@ public class OseeEnumEntryImpl extends MinimalEObjectImpl.Container implements O
     String oldOrdinal = ordinal;
     ordinal = newOrdinal;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_ENUM_ENTRY__ORDINAL, oldOrdinal, ordinal));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XOSEE_ENUM_ENTRY__ORDINAL, oldOrdinal, ordinal));
   }
 
   /**
@@ -180,7 +180,7 @@ public class OseeEnumEntryImpl extends MinimalEObjectImpl.Container implements O
     String oldEntryGuid = entryGuid;
     entryGuid = newEntryGuid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_ENUM_ENTRY__ENTRY_GUID, oldEntryGuid, entryGuid));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XOSEE_ENUM_ENTRY__ENTRY_GUID, oldEntryGuid, entryGuid));
   }
 
   /**
@@ -193,11 +193,11 @@ public class OseeEnumEntryImpl extends MinimalEObjectImpl.Container implements O
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_ENTRY__NAME:
+      case OseeTypesPackage.XOSEE_ENUM_ENTRY__NAME:
         return getName();
-      case OseeTypesPackage.OSEE_ENUM_ENTRY__ORDINAL:
+      case OseeTypesPackage.XOSEE_ENUM_ENTRY__ORDINAL:
         return getOrdinal();
-      case OseeTypesPackage.OSEE_ENUM_ENTRY__ENTRY_GUID:
+      case OseeTypesPackage.XOSEE_ENUM_ENTRY__ENTRY_GUID:
         return getEntryGuid();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -213,13 +213,13 @@ public class OseeEnumEntryImpl extends MinimalEObjectImpl.Container implements O
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_ENTRY__NAME:
+      case OseeTypesPackage.XOSEE_ENUM_ENTRY__NAME:
         setName((String)newValue);
         return;
-      case OseeTypesPackage.OSEE_ENUM_ENTRY__ORDINAL:
+      case OseeTypesPackage.XOSEE_ENUM_ENTRY__ORDINAL:
         setOrdinal((String)newValue);
         return;
-      case OseeTypesPackage.OSEE_ENUM_ENTRY__ENTRY_GUID:
+      case OseeTypesPackage.XOSEE_ENUM_ENTRY__ENTRY_GUID:
         setEntryGuid((String)newValue);
         return;
     }
@@ -236,13 +236,13 @@ public class OseeEnumEntryImpl extends MinimalEObjectImpl.Container implements O
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_ENTRY__NAME:
+      case OseeTypesPackage.XOSEE_ENUM_ENTRY__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case OseeTypesPackage.OSEE_ENUM_ENTRY__ORDINAL:
+      case OseeTypesPackage.XOSEE_ENUM_ENTRY__ORDINAL:
         setOrdinal(ORDINAL_EDEFAULT);
         return;
-      case OseeTypesPackage.OSEE_ENUM_ENTRY__ENTRY_GUID:
+      case OseeTypesPackage.XOSEE_ENUM_ENTRY__ENTRY_GUID:
         setEntryGuid(ENTRY_GUID_EDEFAULT);
         return;
     }
@@ -259,11 +259,11 @@ public class OseeEnumEntryImpl extends MinimalEObjectImpl.Container implements O
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_ENTRY__NAME:
+      case OseeTypesPackage.XOSEE_ENUM_ENTRY__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case OseeTypesPackage.OSEE_ENUM_ENTRY__ORDINAL:
+      case OseeTypesPackage.XOSEE_ENUM_ENTRY__ORDINAL:
         return ORDINAL_EDEFAULT == null ? ordinal != null : !ORDINAL_EDEFAULT.equals(ordinal);
-      case OseeTypesPackage.OSEE_ENUM_ENTRY__ENTRY_GUID:
+      case OseeTypesPackage.XOSEE_ENUM_ENTRY__ENTRY_GUID:
         return ENTRY_GUID_EDEFAULT == null ? entryGuid != null : !ENTRY_GUID_EDEFAULT.equals(entryGuid);
     }
     return super.eIsSet(featureID);
@@ -290,4 +290,4 @@ public class OseeEnumEntryImpl extends MinimalEObjectImpl.Container implements O
     return result.toString();
   }
 
-} //OseeEnumEntryImpl
+} //XOseeEnumEntryImpl

@@ -51,7 +51,7 @@ public interface OseeTypeModel extends EObject
 
   /**
    * Returns the value of the '<em><b>Artifact Types</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.ArtifactType}.
+   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.XArtifactType}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Artifact Types</em>' containment reference list isn't clear,
@@ -63,11 +63,11 @@ public interface OseeTypeModel extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<ArtifactType> getArtifactTypes();
+  EList<XArtifactType> getArtifactTypes();
 
   /**
    * Returns the value of the '<em><b>Relation Types</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.RelationType}.
+   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.XRelationType}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Relation Types</em>' containment reference list isn't clear,
@@ -79,11 +79,11 @@ public interface OseeTypeModel extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<RelationType> getRelationTypes();
+  EList<XRelationType> getRelationTypes();
 
   /**
    * Returns the value of the '<em><b>Attribute Types</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.AttributeType}.
+   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.XAttributeType}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Attribute Types</em>' containment reference list isn't clear,
@@ -95,11 +95,11 @@ public interface OseeTypeModel extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<AttributeType> getAttributeTypes();
+  EList<XAttributeType> getAttributeTypes();
 
   /**
    * Returns the value of the '<em><b>Enum Types</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.OseeEnumType}.
+   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.XOseeEnumType}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Enum Types</em>' containment reference list isn't clear,
@@ -111,11 +111,11 @@ public interface OseeTypeModel extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<OseeEnumType> getEnumTypes();
+  EList<XOseeEnumType> getEnumTypes();
 
   /**
    * Returns the value of the '<em><b>Enum Overrides</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.OseeEnumOverride}.
+   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.XOseeEnumOverride}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Enum Overrides</em>' containment reference list isn't clear,
@@ -127,6 +127,6 @@ public interface OseeTypeModel extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<OseeEnumOverride> getEnumOverrides();
+  EList<XOseeEnumOverride> getEnumOverrides();
 
 } // OseeTypeModel

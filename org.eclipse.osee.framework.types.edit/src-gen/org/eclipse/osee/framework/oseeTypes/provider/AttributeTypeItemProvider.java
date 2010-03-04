@@ -9,10 +9,8 @@ package org.eclipse.osee.framework.oseeTypes.provider;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -22,14 +20,13 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-
-import org.eclipse.osee.framework.oseeTypes.AttributeType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
+import org.eclipse.osee.framework.oseeTypes.XAttributeType;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.osee.framework.oseeTypes.AttributeType} object.
- * <!-- begin-user-doc -->
- * <!-- end-user-doc -->
+ * This is the item provider adapter for a {@link org.eclipse.osee.framework.oseeTypes.XAttributeType} object. <!--
+ * begin-user-doc --> <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class AttributeTypeItemProvider
@@ -61,7 +58,7 @@ public class AttributeTypeItemProvider
       if (itemPropertyDescriptors == null) {
          super.getPropertyDescriptors(object);
 
-         addBaseAttributeTypePropertyDescriptor(object);
+         addBaseXAttributeTypePropertyDescriptor(object);
          addOverridePropertyDescriptor(object);
          addDataProviderPropertyDescriptor(object);
          addMinPropertyDescriptor(object);
@@ -81,14 +78,14 @@ public class AttributeTypeItemProvider
     * <!-- end-user-doc -->
     * @generated
     */
-   protected void addBaseAttributeTypePropertyDescriptor(Object object) {
+   protected void addBaseXAttributeTypePropertyDescriptor(Object object) {
       itemPropertyDescriptors.add
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_AttributeType_baseAttributeType_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_AttributeType_baseAttributeType_feature", "_UI_AttributeType_type"),
-             OseeTypesPackage.Literals.ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE,
+            getString("_UI_XAttributeType_baseXAttributeType_feature"), getString("_UI_PropertyDescriptor_description",
+                  "_UI_XAttributeType_baseXAttributeType_feature", "_UI_XAttributeType_type"),
+            OseeTypesPackage.Literals.XATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE,
              true,
              false,
              false,
@@ -108,9 +105,9 @@ public class AttributeTypeItemProvider
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_AttributeType_override_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_AttributeType_override_feature", "_UI_AttributeType_type"),
-             OseeTypesPackage.Literals.ATTRIBUTE_TYPE__OVERRIDE,
+            getString("_UI_XAttributeType_override_feature"), getString("_UI_PropertyDescriptor_description",
+                  "_UI_XAttributeType_override_feature", "_UI_XAttributeType_type"),
+            OseeTypesPackage.Literals.XATTRIBUTE_TYPE__OVERRIDE,
              true,
              false,
              true,
@@ -130,9 +127,9 @@ public class AttributeTypeItemProvider
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_AttributeType_dataProvider_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_AttributeType_dataProvider_feature", "_UI_AttributeType_type"),
-             OseeTypesPackage.Literals.ATTRIBUTE_TYPE__DATA_PROVIDER,
+            getString("_UI_XAttributeType_dataProvider_feature"), getString("_UI_PropertyDescriptor_description",
+                  "_UI_XAttributeType_dataProvider_feature", "_UI_XAttributeType_type"),
+            OseeTypesPackage.Literals.XATTRIBUTE_TYPE__DATA_PROVIDER,
              true,
              false,
              false,
@@ -152,9 +149,9 @@ public class AttributeTypeItemProvider
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_AttributeType_min_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_AttributeType_min_feature", "_UI_AttributeType_type"),
-             OseeTypesPackage.Literals.ATTRIBUTE_TYPE__MIN,
+            getString("_UI_XAttributeType_min_feature"), getString("_UI_PropertyDescriptor_description",
+                  "_UI_XAttributeType_min_feature", "_UI_XAttributeType_type"),
+            OseeTypesPackage.Literals.XATTRIBUTE_TYPE__MIN,
              true,
              false,
              false,
@@ -174,9 +171,9 @@ public class AttributeTypeItemProvider
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_AttributeType_max_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_AttributeType_max_feature", "_UI_AttributeType_type"),
-             OseeTypesPackage.Literals.ATTRIBUTE_TYPE__MAX,
+            getString("_UI_XAttributeType_max_feature"), getString("_UI_PropertyDescriptor_description",
+                  "_UI_XAttributeType_max_feature", "_UI_XAttributeType_type"),
+            OseeTypesPackage.Literals.XATTRIBUTE_TYPE__MAX,
              true,
              false,
              false,
@@ -196,9 +193,9 @@ public class AttributeTypeItemProvider
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_AttributeType_taggerId_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_AttributeType_taggerId_feature", "_UI_AttributeType_type"),
-             OseeTypesPackage.Literals.ATTRIBUTE_TYPE__TAGGER_ID,
+            getString("_UI_XAttributeType_taggerId_feature"), getString("_UI_PropertyDescriptor_description",
+                  "_UI_XAttributeType_taggerId_feature", "_UI_XAttributeType_type"),
+            OseeTypesPackage.Literals.XATTRIBUTE_TYPE__TAGGER_ID,
              true,
              false,
              false,
@@ -218,9 +215,9 @@ public class AttributeTypeItemProvider
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_AttributeType_enumType_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_AttributeType_enumType_feature", "_UI_AttributeType_type"),
-             OseeTypesPackage.Literals.ATTRIBUTE_TYPE__ENUM_TYPE,
+            getString("_UI_XAttributeType_enumType_feature"), getString("_UI_PropertyDescriptor_description",
+                  "_UI_XAttributeType_enumType_feature", "_UI_XAttributeType_type"),
+            OseeTypesPackage.Literals.XATTRIBUTE_TYPE__ENUM_TYPE,
              true,
              false,
              true,
@@ -240,9 +237,9 @@ public class AttributeTypeItemProvider
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_AttributeType_description_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_AttributeType_description_feature", "_UI_AttributeType_type"),
-             OseeTypesPackage.Literals.ATTRIBUTE_TYPE__DESCRIPTION,
+            getString("_UI_XAttributeType_description_feature"), getString("_UI_PropertyDescriptor_description",
+                  "_UI_XAttributeType_description_feature", "_UI_XAttributeType_type"),
+            OseeTypesPackage.Literals.XATTRIBUTE_TYPE__DESCRIPTION,
              true,
              false,
              false,
@@ -262,9 +259,9 @@ public class AttributeTypeItemProvider
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_AttributeType_defaultValue_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_AttributeType_defaultValue_feature", "_UI_AttributeType_type"),
-             OseeTypesPackage.Literals.ATTRIBUTE_TYPE__DEFAULT_VALUE,
+            getString("_UI_XAttributeType_defaultValue_feature"), getString("_UI_PropertyDescriptor_description",
+                  "_UI_XAttributeType_defaultValue_feature", "_UI_XAttributeType_type"),
+            OseeTypesPackage.Literals.XATTRIBUTE_TYPE__DEFAULT_VALUE,
              true,
              false,
              false,
@@ -284,9 +281,9 @@ public class AttributeTypeItemProvider
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_AttributeType_fileExtension_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_AttributeType_fileExtension_feature", "_UI_AttributeType_type"),
-             OseeTypesPackage.Literals.ATTRIBUTE_TYPE__FILE_EXTENSION,
+            getString("_UI_XAttributeType_fileExtension_feature"), getString("_UI_PropertyDescriptor_description",
+                  "_UI_XAttributeType_fileExtension_feature", "_UI_XAttributeType_type"),
+            OseeTypesPackage.Literals.XATTRIBUTE_TYPE__FILE_EXTENSION,
              true,
              false,
              false,
@@ -296,14 +293,13 @@ public class AttributeTypeItemProvider
    }
 
    /**
-    * This returns AttributeType.gif.
-    * <!-- begin-user-doc -->
-    * <!-- end-user-doc -->
+    * This returns XAttributeType.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+    * 
     * @generated
     */
    @Override
    public Object getImage(Object object) {
-      return overlayImage(object, getResourceLocator().getImage("full/obj16/AttributeType"));
+      return overlayImage(object, getResourceLocator().getImage("full/obj16/XAttributeType"));
    }
 
    /**
@@ -314,10 +310,9 @@ public class AttributeTypeItemProvider
     */
    @Override
    public String getText(Object object) {
-      String label = ((AttributeType)object).getName();
+      String label = ((XAttributeType) object).getName();
       return label == null || label.length() == 0 ?
-         getString("_UI_AttributeType_type") :
-         getString("_UI_AttributeType_type") + " " + label;
+ getString("_UI_XAttributeType_type") : getString("_UI_XAttributeType_type") + " " + label;
    }
 
    /**
@@ -331,15 +326,15 @@ public class AttributeTypeItemProvider
    public void notifyChanged(Notification notification) {
       updateChildren(notification);
 
-      switch (notification.getFeatureID(AttributeType.class)) {
-         case OseeTypesPackage.ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE:
-         case OseeTypesPackage.ATTRIBUTE_TYPE__DATA_PROVIDER:
-         case OseeTypesPackage.ATTRIBUTE_TYPE__MIN:
-         case OseeTypesPackage.ATTRIBUTE_TYPE__MAX:
-         case OseeTypesPackage.ATTRIBUTE_TYPE__TAGGER_ID:
-         case OseeTypesPackage.ATTRIBUTE_TYPE__DESCRIPTION:
-         case OseeTypesPackage.ATTRIBUTE_TYPE__DEFAULT_VALUE:
-         case OseeTypesPackage.ATTRIBUTE_TYPE__FILE_EXTENSION:
+      switch (notification.getFeatureID(XAttributeType.class)) {
+         case OseeTypesPackage.XATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE:
+         case OseeTypesPackage.XATTRIBUTE_TYPE__DATA_PROVIDER:
+         case OseeTypesPackage.XATTRIBUTE_TYPE__MIN:
+         case OseeTypesPackage.XATTRIBUTE_TYPE__MAX:
+         case OseeTypesPackage.XATTRIBUTE_TYPE__TAGGER_ID:
+         case OseeTypesPackage.XATTRIBUTE_TYPE__DESCRIPTION:
+         case OseeTypesPackage.XATTRIBUTE_TYPE__DEFAULT_VALUE:
+         case OseeTypesPackage.XATTRIBUTE_TYPE__FILE_EXTENSION:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
       }

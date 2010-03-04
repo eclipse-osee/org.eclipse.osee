@@ -21,27 +21,27 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import org.eclipse.osee.framework.oseeTypes.OseeEnumOverride;
-import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
 import org.eclipse.osee.framework.oseeTypes.OverrideOption;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumOverride;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumType;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Osee Enum Override</b></em>'.
+ * An implementation of the model object '<em><b>XOsee Enum Override</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumOverrideImpl#getOverridenEnumType <em>Overriden Enum Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumOverrideImpl#isInheritAll <em>Inherit All</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumOverrideImpl#getOverrideOptions <em>Override Options</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XOseeEnumOverrideImpl#getOverridenEnumType <em>Overriden Enum Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XOseeEnumOverrideImpl#isInheritAll <em>Inherit All</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XOseeEnumOverrideImpl#getOverrideOptions <em>Override Options</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOverride
+public class XOseeEnumOverrideImpl extends OseeElementImpl implements XOseeEnumOverride
 {
   /**
    * The cached value of the '{@link #getOverridenEnumType() <em>Overriden Enum Type</em>}' reference.
@@ -51,7 +51,7 @@ public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOve
    * @generated
    * @ordered
    */
-  protected OseeEnumType overridenEnumType;
+  protected XOseeEnumType overridenEnumType;
 
   /**
    * The default value of the '{@link #isInheritAll() <em>Inherit All</em>}' attribute.
@@ -88,7 +88,7 @@ public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOve
    * <!-- end-user-doc -->
    * @generated
    */
-  protected OseeEnumOverrideImpl()
+  protected XOseeEnumOverrideImpl()
   {
     super();
   }
@@ -101,7 +101,7 @@ public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOve
   @Override
   protected EClass eStaticClass()
   {
-    return OseeTypesPackage.Literals.OSEE_ENUM_OVERRIDE;
+    return OseeTypesPackage.Literals.XOSEE_ENUM_OVERRIDE;
   }
 
   /**
@@ -109,16 +109,16 @@ public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOve
    * <!-- end-user-doc -->
    * @generated
    */
-  public OseeEnumType getOverridenEnumType()
+  public XOseeEnumType getOverridenEnumType()
   {
     if (overridenEnumType != null && overridenEnumType.eIsProxy())
     {
       InternalEObject oldOverridenEnumType = (InternalEObject)overridenEnumType;
-      overridenEnumType = (OseeEnumType)eResolveProxy(oldOverridenEnumType);
+      overridenEnumType = (XOseeEnumType)eResolveProxy(oldOverridenEnumType);
       if (overridenEnumType != oldOverridenEnumType)
       {
         if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.OSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE, oldOverridenEnumType, overridenEnumType));
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE, oldOverridenEnumType, overridenEnumType));
       }
     }
     return overridenEnumType;
@@ -129,7 +129,7 @@ public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOve
    * <!-- end-user-doc -->
    * @generated
    */
-  public OseeEnumType basicGetOverridenEnumType()
+  public XOseeEnumType basicGetOverridenEnumType()
   {
     return overridenEnumType;
   }
@@ -139,12 +139,12 @@ public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOve
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setOverridenEnumType(OseeEnumType newOverridenEnumType)
+  public void setOverridenEnumType(XOseeEnumType newOverridenEnumType)
   {
-    OseeEnumType oldOverridenEnumType = overridenEnumType;
+    XOseeEnumType oldOverridenEnumType = overridenEnumType;
     overridenEnumType = newOverridenEnumType;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE, oldOverridenEnumType, overridenEnumType));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE, oldOverridenEnumType, overridenEnumType));
   }
 
   /**
@@ -167,7 +167,7 @@ public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOve
     boolean oldInheritAll = inheritAll;
     inheritAll = newInheritAll;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_ENUM_OVERRIDE__INHERIT_ALL, oldInheritAll, inheritAll));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL, oldInheritAll, inheritAll));
   }
 
   /**
@@ -179,7 +179,7 @@ public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOve
   {
     if (overrideOptions == null)
     {
-      overrideOptions = new EObjectContainmentEList<OverrideOption>(OverrideOption.class, this, OseeTypesPackage.OSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS);
+      overrideOptions = new EObjectContainmentEList<OverrideOption>(OverrideOption.class, this, OseeTypesPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS);
     }
     return overrideOptions;
   }
@@ -194,7 +194,7 @@ public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOve
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
+      case OseeTypesPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
         return ((InternalEList<?>)getOverrideOptions()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -210,12 +210,12 @@ public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOve
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
+      case OseeTypesPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
         if (resolve) return getOverridenEnumType();
         return basicGetOverridenEnumType();
-      case OseeTypesPackage.OSEE_ENUM_OVERRIDE__INHERIT_ALL:
+      case OseeTypesPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL:
         return isInheritAll();
-      case OseeTypesPackage.OSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
+      case OseeTypesPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
         return getOverrideOptions();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -232,13 +232,13 @@ public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOve
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
-        setOverridenEnumType((OseeEnumType)newValue);
+      case OseeTypesPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
+        setOverridenEnumType((XOseeEnumType)newValue);
         return;
-      case OseeTypesPackage.OSEE_ENUM_OVERRIDE__INHERIT_ALL:
+      case OseeTypesPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL:
         setInheritAll((Boolean)newValue);
         return;
-      case OseeTypesPackage.OSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
+      case OseeTypesPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
         getOverrideOptions().clear();
         getOverrideOptions().addAll((Collection<? extends OverrideOption>)newValue);
         return;
@@ -256,13 +256,13 @@ public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOve
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
-        setOverridenEnumType((OseeEnumType)null);
+      case OseeTypesPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
+        setOverridenEnumType((XOseeEnumType)null);
         return;
-      case OseeTypesPackage.OSEE_ENUM_OVERRIDE__INHERIT_ALL:
+      case OseeTypesPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL:
         setInheritAll(INHERIT_ALL_EDEFAULT);
         return;
-      case OseeTypesPackage.OSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
+      case OseeTypesPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
         getOverrideOptions().clear();
         return;
     }
@@ -279,11 +279,11 @@ public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOve
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
+      case OseeTypesPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
         return overridenEnumType != null;
-      case OseeTypesPackage.OSEE_ENUM_OVERRIDE__INHERIT_ALL:
+      case OseeTypesPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL:
         return inheritAll != INHERIT_ALL_EDEFAULT;
-      case OseeTypesPackage.OSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
+      case OseeTypesPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
         return overrideOptions != null && !overrideOptions.isEmpty();
     }
     return super.eIsSet(featureID);
@@ -306,4 +306,4 @@ public class OseeEnumOverrideImpl extends OseeElementImpl implements OseeEnumOve
     return result.toString();
   }
 
-} //OseeEnumOverrideImpl
+} //XOseeEnumOverrideImpl

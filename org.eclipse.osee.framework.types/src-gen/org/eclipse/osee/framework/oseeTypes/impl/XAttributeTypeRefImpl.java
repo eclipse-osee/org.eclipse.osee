@@ -14,25 +14,25 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import org.eclipse.osee.framework.oseeTypes.AttributeType;
-import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
+import org.eclipse.osee.framework.oseeTypes.XAttributeType;
+import org.eclipse.osee.framework.oseeTypes.XAttributeTypeRef;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Attribute Type Ref</b></em>'.
+ * An implementation of the model object '<em><b>XAttribute Type Ref</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeRefImpl#getValidAttributeType <em>Valid Attribute Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeRefImpl#getBranchGuid <em>Branch Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeTypeRefImpl#getValidAttributeType <em>Valid Attribute Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeTypeRefImpl#getBranchGuid <em>Branch Guid</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implements AttributeTypeRef
+public class XAttributeTypeRefImpl extends MinimalEObjectImpl.Container implements XAttributeTypeRef
 {
   /**
    * The cached value of the '{@link #getValidAttributeType() <em>Valid Attribute Type</em>}' reference.
@@ -42,7 +42,7 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
    * @generated
    * @ordered
    */
-  protected AttributeType validAttributeType;
+  protected XAttributeType validAttributeType;
 
   /**
    * The default value of the '{@link #getBranchGuid() <em>Branch Guid</em>}' attribute.
@@ -69,7 +69,7 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
    * <!-- end-user-doc -->
    * @generated
    */
-  protected AttributeTypeRefImpl()
+  protected XAttributeTypeRefImpl()
   {
     super();
   }
@@ -82,7 +82,7 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
   @Override
   protected EClass eStaticClass()
   {
-    return OseeTypesPackage.Literals.ATTRIBUTE_TYPE_REF;
+    return OseeTypesPackage.Literals.XATTRIBUTE_TYPE_REF;
   }
 
   /**
@@ -90,16 +90,16 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
    * <!-- end-user-doc -->
    * @generated
    */
-  public AttributeType getValidAttributeType()
+  public XAttributeType getValidAttributeType()
   {
     if (validAttributeType != null && validAttributeType.eIsProxy())
     {
       InternalEObject oldValidAttributeType = (InternalEObject)validAttributeType;
-      validAttributeType = (AttributeType)eResolveProxy(oldValidAttributeType);
+      validAttributeType = (XAttributeType)eResolveProxy(oldValidAttributeType);
       if (validAttributeType != oldValidAttributeType)
       {
         if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE, oldValidAttributeType, validAttributeType));
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE, oldValidAttributeType, validAttributeType));
       }
     }
     return validAttributeType;
@@ -110,7 +110,7 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
    * <!-- end-user-doc -->
    * @generated
    */
-  public AttributeType basicGetValidAttributeType()
+  public XAttributeType basicGetValidAttributeType()
   {
     return validAttributeType;
   }
@@ -120,12 +120,12 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setValidAttributeType(AttributeType newValidAttributeType)
+  public void setValidAttributeType(XAttributeType newValidAttributeType)
   {
-    AttributeType oldValidAttributeType = validAttributeType;
+    XAttributeType oldValidAttributeType = validAttributeType;
     validAttributeType = newValidAttributeType;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE, oldValidAttributeType, validAttributeType));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE, oldValidAttributeType, validAttributeType));
   }
 
   /**
@@ -148,7 +148,7 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
     String oldBranchGuid = branchGuid;
     branchGuid = newBranchGuid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE_REF__BRANCH_GUID, oldBranchGuid, branchGuid));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID, oldBranchGuid, branchGuid));
   }
 
   /**
@@ -161,10 +161,10 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
         if (resolve) return getValidAttributeType();
         return basicGetValidAttributeType();
-      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__BRANCH_GUID:
+      case OseeTypesPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
         return getBranchGuid();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -180,10 +180,10 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
-        setValidAttributeType((AttributeType)newValue);
+      case OseeTypesPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
+        setValidAttributeType((XAttributeType)newValue);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__BRANCH_GUID:
+      case OseeTypesPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
         setBranchGuid((String)newValue);
         return;
     }
@@ -200,10 +200,10 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
-        setValidAttributeType((AttributeType)null);
+      case OseeTypesPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
+        setValidAttributeType((XAttributeType)null);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__BRANCH_GUID:
+      case OseeTypesPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
         setBranchGuid(BRANCH_GUID_EDEFAULT);
         return;
     }
@@ -220,9 +220,9 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
         return validAttributeType != null;
-      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__BRANCH_GUID:
+      case OseeTypesPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
         return BRANCH_GUID_EDEFAULT == null ? branchGuid != null : !BRANCH_GUID_EDEFAULT.equals(branchGuid);
     }
     return super.eIsSet(featureID);
@@ -245,4 +245,4 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
     return result.toString();
   }
 
-} //AttributeTypeRefImpl
+} //XAttributeTypeRefImpl

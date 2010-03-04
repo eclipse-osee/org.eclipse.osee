@@ -34,12 +34,12 @@ public interface RemoveEnum extends OverrideOption
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Enum Entry</em>' reference.
-   * @see #setEnumEntry(OseeEnumEntry)
+   * @see #setEnumEntry(XOseeEnumEntry)
    * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getRemoveEnum_EnumEntry()
    * @model
    * @generated
    */
-  OseeEnumEntry getEnumEntry();
+  XOseeEnumEntry getEnumEntry();
 
   /**
    * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.RemoveEnum#getEnumEntry <em>Enum Entry</em>}' reference.
@@ -49,6 +49,6 @@ public interface RemoveEnum extends OverrideOption
    * @see #getEnumEntry()
    * @generated
    */
-  void setEnumEntry(OseeEnumEntry value);
+  void setEnumEntry(XOseeEnumEntry value);
 
 } // RemoveEnum

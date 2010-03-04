@@ -7,11 +7,9 @@
 package org.eclipse.osee.framework.oseeTypes.tests;
 
 import junit.framework.TestCase;
-
 import junit.textui.TestRunner;
-
-import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry;
 
 /**
  * <!-- begin-user-doc -->
@@ -27,7 +25,7 @@ public class OseeEnumEntryTest extends TestCase {
     * <!-- end-user-doc -->
     * @generated
     */
-   protected OseeEnumEntry fixture = null;
+   protected XOseeEnumEntry fixture = null;
 
    /**
     * <!-- begin-user-doc -->
@@ -54,7 +52,7 @@ public class OseeEnumEntryTest extends TestCase {
     * <!-- end-user-doc -->
     * @generated
     */
-   protected void setFixture(OseeEnumEntry fixture) {
+   protected void setFixture(XOseeEnumEntry fixture) {
       this.fixture = fixture;
    }
 
@@ -64,7 +62,7 @@ public class OseeEnumEntryTest extends TestCase {
     * <!-- end-user-doc -->
     * @generated
     */
-   protected OseeEnumEntry getFixture() {
+   protected XOseeEnumEntry getFixture() {
       return fixture;
    }
 
@@ -76,7 +74,7 @@ public class OseeEnumEntryTest extends TestCase {
     */
    @Override
    protected void setUp() throws Exception {
-      setFixture(OseeTypesFactory.eINSTANCE.createOseeEnumEntry());
+      setFixture(OseeTypesFactory.eINSTANCE.createXOseeEnumEntry());
    }
 
    /**

@@ -9,26 +9,26 @@ package org.eclipse.osee.framework.oseeTypes;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Relation Type</b></em>'.
+ * A representation of the model object '<em><b>XRelation Type</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideAName <em>Side AName</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideAArtifactType <em>Side AArtifact Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideBName <em>Side BName</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideBArtifactType <em>Side BArtifact Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.RelationType#getDefaultOrderType <em>Default Order Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.RelationType#getMultiplicity <em>Multiplicity</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XRelationType#getSideAName <em>Side AName</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XRelationType#getSideAArtifactType <em>Side AArtifact Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XRelationType#getSideBName <em>Side BName</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XRelationType#getSideBArtifactType <em>Side BArtifact Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XRelationType#getDefaultOrderType <em>Default Order Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XRelationType#getMultiplicity <em>Multiplicity</em>}</li>
  * </ul>
  * </p>
  *
- * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getRelationType()
+ * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXRelationType()
  * @model
  * @generated
  */
-public interface RelationType extends OseeType
+public interface XRelationType extends OseeType
 {
   /**
    * Returns the value of the '<em><b>Side AName</b></em>' attribute.
@@ -40,14 +40,14 @@ public interface RelationType extends OseeType
    * <!-- end-user-doc -->
    * @return the value of the '<em>Side AName</em>' attribute.
    * @see #setSideAName(String)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getRelationType_SideAName()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXRelationType_SideAName()
    * @model
    * @generated
    */
   String getSideAName();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideAName <em>Side AName</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.XRelationType#getSideAName <em>Side AName</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Side AName</em>' attribute.
@@ -65,22 +65,22 @@ public interface RelationType extends OseeType
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Side AArtifact Type</em>' reference.
-   * @see #setSideAArtifactType(ArtifactType)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getRelationType_SideAArtifactType()
+   * @see #setSideAArtifactType(XArtifactType)
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXRelationType_SideAArtifactType()
    * @model
    * @generated
    */
-  ArtifactType getSideAArtifactType();
+  XArtifactType getSideAArtifactType();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideAArtifactType <em>Side AArtifact Type</em>}' reference.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.XRelationType#getSideAArtifactType <em>Side AArtifact Type</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Side AArtifact Type</em>' reference.
    * @see #getSideAArtifactType()
    * @generated
    */
-  void setSideAArtifactType(ArtifactType value);
+  void setSideAArtifactType(XArtifactType value);
 
   /**
    * Returns the value of the '<em><b>Side BName</b></em>' attribute.
@@ -92,14 +92,14 @@ public interface RelationType extends OseeType
    * <!-- end-user-doc -->
    * @return the value of the '<em>Side BName</em>' attribute.
    * @see #setSideBName(String)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getRelationType_SideBName()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXRelationType_SideBName()
    * @model
    * @generated
    */
   String getSideBName();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideBName <em>Side BName</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.XRelationType#getSideBName <em>Side BName</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Side BName</em>' attribute.
@@ -117,22 +117,22 @@ public interface RelationType extends OseeType
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Side BArtifact Type</em>' reference.
-   * @see #setSideBArtifactType(ArtifactType)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getRelationType_SideBArtifactType()
+   * @see #setSideBArtifactType(XArtifactType)
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXRelationType_SideBArtifactType()
    * @model
    * @generated
    */
-  ArtifactType getSideBArtifactType();
+  XArtifactType getSideBArtifactType();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideBArtifactType <em>Side BArtifact Type</em>}' reference.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.XRelationType#getSideBArtifactType <em>Side BArtifact Type</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Side BArtifact Type</em>' reference.
    * @see #getSideBArtifactType()
    * @generated
    */
-  void setSideBArtifactType(ArtifactType value);
+  void setSideBArtifactType(XArtifactType value);
 
   /**
    * Returns the value of the '<em><b>Default Order Type</b></em>' attribute.
@@ -144,14 +144,14 @@ public interface RelationType extends OseeType
    * <!-- end-user-doc -->
    * @return the value of the '<em>Default Order Type</em>' attribute.
    * @see #setDefaultOrderType(String)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getRelationType_DefaultOrderType()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXRelationType_DefaultOrderType()
    * @model
    * @generated
    */
   String getDefaultOrderType();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getDefaultOrderType <em>Default Order Type</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.XRelationType#getDefaultOrderType <em>Default Order Type</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Default Order Type</em>' attribute.
@@ -172,14 +172,14 @@ public interface RelationType extends OseeType
    * @return the value of the '<em>Multiplicity</em>' attribute.
    * @see org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum
    * @see #setMultiplicity(RelationMultiplicityEnum)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getRelationType_Multiplicity()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXRelationType_Multiplicity()
    * @model
    * @generated
    */
   RelationMultiplicityEnum getMultiplicity();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getMultiplicity <em>Multiplicity</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.XRelationType#getMultiplicity <em>Multiplicity</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Multiplicity</em>' attribute.
@@ -189,4 +189,4 @@ public interface RelationType extends OseeType
    */
   void setMultiplicity(RelationMultiplicityEnum value);
 
-} // RelationType
+} // XRelationType

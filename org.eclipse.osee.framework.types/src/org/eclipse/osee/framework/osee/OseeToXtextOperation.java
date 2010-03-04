@@ -27,10 +27,15 @@ import org.eclipse.osee.framework.core.model.OseeEnumType;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.internal.InternalTypesActivator;
-import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 import org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum;
+import org.eclipse.osee.framework.oseeTypes.XArtifactType;
+import org.eclipse.osee.framework.oseeTypes.XAttributeType;
+import org.eclipse.osee.framework.oseeTypes.XAttributeTypeRef;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumType;
+import org.eclipse.osee.framework.oseeTypes.XRelationType;
 
 /**
  * @author Roberto E. Escobar
@@ -86,7 +91,7 @@ public class OseeToXtextOperation extends AbstractOperation {
       Collection<OseeEnumType> enumTypes = cache.getEnumTypeCache().getAll();
       for (OseeEnumType enumType : enumTypes) {
          checkForCancelledStatus(monitor);
-         org.eclipse.osee.framework.oseeTypes.OseeEnumType modelType = getFactory().createOseeEnumType();
+         XOseeEnumType modelType = getFactory().createXOseeEnumType();
 
          OseeTypeModel model = getModelByNamespace(getNamespace(enumType.getName()));
          model.getEnumTypes().add(modelType);
@@ -96,7 +101,7 @@ public class OseeToXtextOperation extends AbstractOperation {
 
          for (OseeEnumEntry entry : enumType.values()) {
             checkForCancelledStatus(monitor);
-            org.eclipse.osee.framework.oseeTypes.OseeEnumEntry entryModelType = getFactory().createOseeEnumEntry();
+            XOseeEnumEntry entryModelType = getFactory().createXOseeEnumEntry();
             modelType.getEnumEntries().add(entryModelType);
 
             entryModelType.setName(asQuoted(entry.getName()));
@@ -111,7 +116,7 @@ public class OseeToXtextOperation extends AbstractOperation {
       Collection<AttributeType> attributeTypes = cache.getAttributeTypeCache().getAll();
       for (AttributeType attributeType : attributeTypes) {
          checkForCancelledStatus(monitor);
-         org.eclipse.osee.framework.oseeTypes.AttributeType modelType = getFactory().createAttributeType();
+         XAttributeType modelType = getFactory().createXAttributeType();
 
          OseeTypeModel model = getModelByNamespace(getNamespace(attributeType.getName()));
          model.getAttributeTypes().add(modelType);
@@ -129,16 +134,16 @@ public class OseeToXtextOperation extends AbstractOperation {
 
          OseeEnumType oseeEnumType = attributeType.getOseeEnumType();
          if (oseeEnumType != null) {
-            org.eclipse.osee.framework.oseeTypes.OseeEnumType enumType = toModelEnumType(model, oseeEnumType);
+            XOseeEnumType enumType = toModelEnumType(model, oseeEnumType);
             modelType.setEnumType(enumType);
          }
       }
       monitor.worked(calculateWork(workPercentage));
    }
 
-   private org.eclipse.osee.framework.oseeTypes.OseeEnumType toModelEnumType(OseeTypeModel model, OseeEnumType oseeEnumType) {
+   private XOseeEnumType toModelEnumType(OseeTypeModel model, OseeEnumType oseeEnumType) {
       String guid = oseeEnumType.getGuid();
-      for (org.eclipse.osee.framework.oseeTypes.OseeEnumType type : model.getEnumTypes()) {
+      for (XOseeEnumType type : model.getEnumTypes()) {
          if (guid.equals(type.getTypeGuid())) {
             return type;
          }
@@ -151,7 +156,7 @@ public class OseeToXtextOperation extends AbstractOperation {
       Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAll();
       for (ArtifactType artifactType : artifactTypes) {
          checkForCancelledStatus(monitor);
-         org.eclipse.osee.framework.oseeTypes.ArtifactType modelType = getFactory().createArtifactType();
+         XArtifactType modelType = getFactory().createXArtifactType();
 
          OseeTypeModel model = getModelByNamespace(getNamespace(artifactType.getName()));
          model.getArtifactTypes().add(modelType);
@@ -170,10 +175,10 @@ public class OseeToXtextOperation extends AbstractOperation {
          checkForCancelledStatus(monitor);
          OseeTypeModel model = getModelByNamespace(getNamespace(artifactType.getName()));
 
-         org.eclipse.osee.framework.oseeTypes.ArtifactType childType = getArtifactType(model, artifactType.getGuid());
+         XArtifactType childType = getArtifactType(model, artifactType.getGuid());
 
          for (ArtifactType oseeSuperType : artifactType.getSuperArtifactTypes()) {
-            org.eclipse.osee.framework.oseeTypes.ArtifactType superModelType =
+            XArtifactType superModelType =
                   getArtifactType(model, oseeSuperType.getGuid());
             childType.getSuperArtifactTypes().add(superModelType);
          }
@@ -188,21 +193,21 @@ public class OseeToXtextOperation extends AbstractOperation {
          checkForCancelledStatus(monitor);
 
          OseeTypeModel model = getModelByNamespace(getNamespace(artifactType.getName()));
-         org.eclipse.osee.framework.oseeTypes.ArtifactType modelArtifactType =
+         XArtifactType modelArtifactType =
                getArtifactType(model, artifactType.getGuid());
 
          Map<Branch, Collection<AttributeType>> types = artifactType.getLocalAttributeTypes();
          if (types != null) {
-            List<AttributeTypeRef> references = new ArrayList<AttributeTypeRef>();
+            List<XAttributeTypeRef> references = new ArrayList<XAttributeTypeRef>();
             for (Entry<Branch, Collection<AttributeType>> entry : types.entrySet()) {
                Branch branch = entry.getKey();
                Collection<AttributeType> attributeTypes = entry.getValue();
                if (attributeTypes != null) {
                   for (AttributeType attributeType : attributeTypes) {
 
-                     AttributeTypeRef ref = getFactory().createAttributeTypeRef();
+                     XAttributeTypeRef ref = getFactory().createXAttributeTypeRef();
 
-                     org.eclipse.osee.framework.oseeTypes.AttributeType modelType =
+                     XAttributeType modelType =
                            getAttributeType(model, attributeType.getGuid());
                      if (modelType != null) {
                         ref.setValidAttributeType(modelType);
@@ -225,7 +230,7 @@ public class OseeToXtextOperation extends AbstractOperation {
       Collection<RelationType> relationTypes = cache.getRelationTypeCache().getAll();
       for (RelationType relationType : relationTypes) {
          checkForCancelledStatus(monitor);
-         org.eclipse.osee.framework.oseeTypes.RelationType modelType = getFactory().createRelationType();
+         XRelationType modelType = getFactory().createXRelationType();
 
          OseeTypeModel model = getModelByNamespace(getNamespace(relationType.getName()));
          model.getRelationTypes().add(modelType);
@@ -245,8 +250,8 @@ public class OseeToXtextOperation extends AbstractOperation {
       monitor.worked(calculateWork(workPercentage));
    }
 
-   private org.eclipse.osee.framework.oseeTypes.ArtifactType getArtifactType(OseeTypeModel model, String guid) throws OseeArgumentException {
-      for (org.eclipse.osee.framework.oseeTypes.ArtifactType artifactType : model.getArtifactTypes()) {
+   private XArtifactType getArtifactType(OseeTypeModel model, String guid) throws OseeArgumentException {
+      for (XArtifactType artifactType : model.getArtifactTypes()) {
          if (guid.equals(artifactType.getTypeGuid())) {
             return artifactType;
          }
@@ -254,8 +259,8 @@ public class OseeToXtextOperation extends AbstractOperation {
       return null;
    }
 
-   private org.eclipse.osee.framework.oseeTypes.AttributeType getAttributeType(OseeTypeModel model, String guid) throws OseeArgumentException {
-      for (org.eclipse.osee.framework.oseeTypes.AttributeType attributeType : model.getAttributeTypes()) {
+   private XAttributeType getAttributeType(OseeTypeModel model, String guid) throws OseeArgumentException {
+      for (XAttributeType attributeType : model.getAttributeTypes()) {
          if (guid.equals(attributeType.getTypeGuid())) {
             return attributeType;
          }

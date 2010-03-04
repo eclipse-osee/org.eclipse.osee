@@ -18,24 +18,24 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
-import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumType;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Osee Enum Type</b></em>'.
+ * An implementation of the model object '<em><b>XOsee Enum Type</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumTypeImpl#getEnumEntries <em>Enum Entries</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XOseeEnumTypeImpl#getEnumEntries <em>Enum Entries</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
+public class XOseeEnumTypeImpl extends OseeTypeImpl implements XOseeEnumType
 {
   /**
    * The cached value of the '{@link #getEnumEntries() <em>Enum Entries</em>}' containment reference list.
@@ -45,14 +45,14 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
    * @generated
    * @ordered
    */
-  protected EList<OseeEnumEntry> enumEntries;
+  protected EList<XOseeEnumEntry> enumEntries;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected OseeEnumTypeImpl()
+  protected XOseeEnumTypeImpl()
   {
     super();
   }
@@ -65,7 +65,7 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   @Override
   protected EClass eStaticClass()
   {
-    return OseeTypesPackage.Literals.OSEE_ENUM_TYPE;
+    return OseeTypesPackage.Literals.XOSEE_ENUM_TYPE;
   }
 
   /**
@@ -73,11 +73,11 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<OseeEnumEntry> getEnumEntries()
+  public EList<XOseeEnumEntry> getEnumEntries()
   {
     if (enumEntries == null)
     {
-      enumEntries = new EObjectContainmentEList<OseeEnumEntry>(OseeEnumEntry.class, this, OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES);
+      enumEntries = new EObjectContainmentEList<XOseeEnumEntry>(XOseeEnumEntry.class, this, OseeTypesPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES);
     }
     return enumEntries;
   }
@@ -92,7 +92,7 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
+      case OseeTypesPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
         return ((InternalEList<?>)getEnumEntries()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -108,7 +108,7 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
+      case OseeTypesPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
         return getEnumEntries();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -125,9 +125,9 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
+      case OseeTypesPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
         getEnumEntries().clear();
-        getEnumEntries().addAll((Collection<? extends OseeEnumEntry>)newValue);
+        getEnumEntries().addAll((Collection<? extends XOseeEnumEntry>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -143,7 +143,7 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
+      case OseeTypesPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
         getEnumEntries().clear();
         return;
     }
@@ -160,10 +160,10 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
+      case OseeTypesPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
         return enumEntries != null && !enumEntries.isEmpty();
     }
     return super.eIsSet(featureID);
   }
 
-} //OseeEnumTypeImpl
+} //XOseeEnumTypeImpl

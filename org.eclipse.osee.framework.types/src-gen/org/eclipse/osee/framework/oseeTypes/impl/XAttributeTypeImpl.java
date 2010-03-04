@@ -13,33 +13,33 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.osee.framework.oseeTypes.AttributeType;
-import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
+import org.eclipse.osee.framework.oseeTypes.XAttributeType;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumType;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Attribute Type</b></em>'.
+ * An implementation of the model object '<em><b>XAttribute Type</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getBaseAttributeType <em>Base Attribute Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getOverride <em>Override</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getDataProvider <em>Data Provider</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getMin <em>Min</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getMax <em>Max</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getTaggerId <em>Tagger Id</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getEnumType <em>Enum Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getDescription <em>Description</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getDefaultValue <em>Default Value</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getFileExtension <em>File Extension</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeTypeImpl#getBaseAttributeType <em>Base Attribute Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeTypeImpl#getOverride <em>Override</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeTypeImpl#getDataProvider <em>Data Provider</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeTypeImpl#getMin <em>Min</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeTypeImpl#getMax <em>Max</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeTypeImpl#getTaggerId <em>Tagger Id</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeTypeImpl#getEnumType <em>Enum Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeTypeImpl#getDescription <em>Description</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeTypeImpl#getDefaultValue <em>Default Value</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XAttributeTypeImpl#getFileExtension <em>File Extension</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
+public class XAttributeTypeImpl extends OseeTypeImpl implements XAttributeType
 {
   /**
    * The default value of the '{@link #getBaseAttributeType() <em>Base Attribute Type</em>}' attribute.
@@ -69,7 +69,7 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
    * @generated
    * @ordered
    */
-  protected AttributeType override;
+  protected XAttributeType override;
 
   /**
    * The default value of the '{@link #getDataProvider() <em>Data Provider</em>}' attribute.
@@ -159,7 +159,7 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
    * @generated
    * @ordered
    */
-  protected OseeEnumType enumType;
+  protected XOseeEnumType enumType;
 
   /**
    * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
@@ -226,7 +226,7 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
    * <!-- end-user-doc -->
    * @generated
    */
-  protected AttributeTypeImpl()
+  protected XAttributeTypeImpl()
   {
     super();
   }
@@ -239,7 +239,7 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
   @Override
   protected EClass eStaticClass()
   {
-    return OseeTypesPackage.Literals.ATTRIBUTE_TYPE;
+    return OseeTypesPackage.Literals.XATTRIBUTE_TYPE;
   }
 
   /**
@@ -262,7 +262,7 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
     String oldBaseAttributeType = baseAttributeType;
     baseAttributeType = newBaseAttributeType;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE, oldBaseAttributeType, baseAttributeType));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE, oldBaseAttributeType, baseAttributeType));
   }
 
   /**
@@ -270,16 +270,16 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
    * <!-- end-user-doc -->
    * @generated
    */
-  public AttributeType getOverride()
+  public XAttributeType getOverride()
   {
     if (override != null && override.eIsProxy())
     {
       InternalEObject oldOverride = (InternalEObject)override;
-      override = (AttributeType)eResolveProxy(oldOverride);
+      override = (XAttributeType)eResolveProxy(oldOverride);
       if (override != oldOverride)
       {
         if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.ATTRIBUTE_TYPE__OVERRIDE, oldOverride, override));
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.XATTRIBUTE_TYPE__OVERRIDE, oldOverride, override));
       }
     }
     return override;
@@ -290,7 +290,7 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
    * <!-- end-user-doc -->
    * @generated
    */
-  public AttributeType basicGetOverride()
+  public XAttributeType basicGetOverride()
   {
     return override;
   }
@@ -300,12 +300,12 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setOverride(AttributeType newOverride)
+  public void setOverride(XAttributeType newOverride)
   {
-    AttributeType oldOverride = override;
+    XAttributeType oldOverride = override;
     override = newOverride;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE__OVERRIDE, oldOverride, override));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XATTRIBUTE_TYPE__OVERRIDE, oldOverride, override));
   }
 
   /**
@@ -328,7 +328,7 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
     String oldDataProvider = dataProvider;
     dataProvider = newDataProvider;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE__DATA_PROVIDER, oldDataProvider, dataProvider));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XATTRIBUTE_TYPE__DATA_PROVIDER, oldDataProvider, dataProvider));
   }
 
   /**
@@ -351,7 +351,7 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
     String oldMin = min;
     min = newMin;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE__MIN, oldMin, min));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XATTRIBUTE_TYPE__MIN, oldMin, min));
   }
 
   /**
@@ -374,7 +374,7 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
     String oldMax = max;
     max = newMax;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE__MAX, oldMax, max));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XATTRIBUTE_TYPE__MAX, oldMax, max));
   }
 
   /**
@@ -397,7 +397,7 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
     String oldTaggerId = taggerId;
     taggerId = newTaggerId;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE__TAGGER_ID, oldTaggerId, taggerId));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XATTRIBUTE_TYPE__TAGGER_ID, oldTaggerId, taggerId));
   }
 
   /**
@@ -405,16 +405,16 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
    * <!-- end-user-doc -->
    * @generated
    */
-  public OseeEnumType getEnumType()
+  public XOseeEnumType getEnumType()
   {
     if (enumType != null && enumType.eIsProxy())
     {
       InternalEObject oldEnumType = (InternalEObject)enumType;
-      enumType = (OseeEnumType)eResolveProxy(oldEnumType);
+      enumType = (XOseeEnumType)eResolveProxy(oldEnumType);
       if (enumType != oldEnumType)
       {
         if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.ATTRIBUTE_TYPE__ENUM_TYPE, oldEnumType, enumType));
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.XATTRIBUTE_TYPE__ENUM_TYPE, oldEnumType, enumType));
       }
     }
     return enumType;
@@ -425,7 +425,7 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
    * <!-- end-user-doc -->
    * @generated
    */
-  public OseeEnumType basicGetEnumType()
+  public XOseeEnumType basicGetEnumType()
   {
     return enumType;
   }
@@ -435,12 +435,12 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setEnumType(OseeEnumType newEnumType)
+  public void setEnumType(XOseeEnumType newEnumType)
   {
-    OseeEnumType oldEnumType = enumType;
+    XOseeEnumType oldEnumType = enumType;
     enumType = newEnumType;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE__ENUM_TYPE, oldEnumType, enumType));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XATTRIBUTE_TYPE__ENUM_TYPE, oldEnumType, enumType));
   }
 
   /**
@@ -463,7 +463,7 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
     String oldDescription = description;
     description = newDescription;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE__DESCRIPTION, oldDescription, description));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XATTRIBUTE_TYPE__DESCRIPTION, oldDescription, description));
   }
 
   /**
@@ -486,7 +486,7 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
     String oldDefaultValue = defaultValue;
     defaultValue = newDefaultValue;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE__DEFAULT_VALUE, oldDefaultValue, defaultValue));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XATTRIBUTE_TYPE__DEFAULT_VALUE, oldDefaultValue, defaultValue));
   }
 
   /**
@@ -509,7 +509,7 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
     String oldFileExtension = fileExtension;
     fileExtension = newFileExtension;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE__FILE_EXTENSION, oldFileExtension, fileExtension));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XATTRIBUTE_TYPE__FILE_EXTENSION, oldFileExtension, fileExtension));
   }
 
   /**
@@ -522,27 +522,27 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE:
         return getBaseAttributeType();
-      case OseeTypesPackage.ATTRIBUTE_TYPE__OVERRIDE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__OVERRIDE:
         if (resolve) return getOverride();
         return basicGetOverride();
-      case OseeTypesPackage.ATTRIBUTE_TYPE__DATA_PROVIDER:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__DATA_PROVIDER:
         return getDataProvider();
-      case OseeTypesPackage.ATTRIBUTE_TYPE__MIN:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__MIN:
         return getMin();
-      case OseeTypesPackage.ATTRIBUTE_TYPE__MAX:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__MAX:
         return getMax();
-      case OseeTypesPackage.ATTRIBUTE_TYPE__TAGGER_ID:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__TAGGER_ID:
         return getTaggerId();
-      case OseeTypesPackage.ATTRIBUTE_TYPE__ENUM_TYPE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__ENUM_TYPE:
         if (resolve) return getEnumType();
         return basicGetEnumType();
-      case OseeTypesPackage.ATTRIBUTE_TYPE__DESCRIPTION:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__DESCRIPTION:
         return getDescription();
-      case OseeTypesPackage.ATTRIBUTE_TYPE__DEFAULT_VALUE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__DEFAULT_VALUE:
         return getDefaultValue();
-      case OseeTypesPackage.ATTRIBUTE_TYPE__FILE_EXTENSION:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__FILE_EXTENSION:
         return getFileExtension();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -558,34 +558,34 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE:
         setBaseAttributeType((String)newValue);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__OVERRIDE:
-        setOverride((AttributeType)newValue);
+      case OseeTypesPackage.XATTRIBUTE_TYPE__OVERRIDE:
+        setOverride((XAttributeType)newValue);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__DATA_PROVIDER:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__DATA_PROVIDER:
         setDataProvider((String)newValue);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__MIN:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__MIN:
         setMin((String)newValue);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__MAX:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__MAX:
         setMax((String)newValue);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__TAGGER_ID:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__TAGGER_ID:
         setTaggerId((String)newValue);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__ENUM_TYPE:
-        setEnumType((OseeEnumType)newValue);
+      case OseeTypesPackage.XATTRIBUTE_TYPE__ENUM_TYPE:
+        setEnumType((XOseeEnumType)newValue);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__DESCRIPTION:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__DESCRIPTION:
         setDescription((String)newValue);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__DEFAULT_VALUE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__DEFAULT_VALUE:
         setDefaultValue((String)newValue);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__FILE_EXTENSION:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__FILE_EXTENSION:
         setFileExtension((String)newValue);
         return;
     }
@@ -602,34 +602,34 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE:
         setBaseAttributeType(BASE_ATTRIBUTE_TYPE_EDEFAULT);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__OVERRIDE:
-        setOverride((AttributeType)null);
+      case OseeTypesPackage.XATTRIBUTE_TYPE__OVERRIDE:
+        setOverride((XAttributeType)null);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__DATA_PROVIDER:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__DATA_PROVIDER:
         setDataProvider(DATA_PROVIDER_EDEFAULT);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__MIN:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__MIN:
         setMin(MIN_EDEFAULT);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__MAX:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__MAX:
         setMax(MAX_EDEFAULT);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__TAGGER_ID:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__TAGGER_ID:
         setTaggerId(TAGGER_ID_EDEFAULT);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__ENUM_TYPE:
-        setEnumType((OseeEnumType)null);
+      case OseeTypesPackage.XATTRIBUTE_TYPE__ENUM_TYPE:
+        setEnumType((XOseeEnumType)null);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__DESCRIPTION:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__DESCRIPTION:
         setDescription(DESCRIPTION_EDEFAULT);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__DEFAULT_VALUE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__DEFAULT_VALUE:
         setDefaultValue(DEFAULT_VALUE_EDEFAULT);
         return;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__FILE_EXTENSION:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__FILE_EXTENSION:
         setFileExtension(FILE_EXTENSION_EDEFAULT);
         return;
     }
@@ -646,25 +646,25 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE:
         return BASE_ATTRIBUTE_TYPE_EDEFAULT == null ? baseAttributeType != null : !BASE_ATTRIBUTE_TYPE_EDEFAULT.equals(baseAttributeType);
-      case OseeTypesPackage.ATTRIBUTE_TYPE__OVERRIDE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__OVERRIDE:
         return override != null;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__DATA_PROVIDER:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__DATA_PROVIDER:
         return DATA_PROVIDER_EDEFAULT == null ? dataProvider != null : !DATA_PROVIDER_EDEFAULT.equals(dataProvider);
-      case OseeTypesPackage.ATTRIBUTE_TYPE__MIN:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__MIN:
         return MIN_EDEFAULT == null ? min != null : !MIN_EDEFAULT.equals(min);
-      case OseeTypesPackage.ATTRIBUTE_TYPE__MAX:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__MAX:
         return MAX_EDEFAULT == null ? max != null : !MAX_EDEFAULT.equals(max);
-      case OseeTypesPackage.ATTRIBUTE_TYPE__TAGGER_ID:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__TAGGER_ID:
         return TAGGER_ID_EDEFAULT == null ? taggerId != null : !TAGGER_ID_EDEFAULT.equals(taggerId);
-      case OseeTypesPackage.ATTRIBUTE_TYPE__ENUM_TYPE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__ENUM_TYPE:
         return enumType != null;
-      case OseeTypesPackage.ATTRIBUTE_TYPE__DESCRIPTION:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__DESCRIPTION:
         return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
-      case OseeTypesPackage.ATTRIBUTE_TYPE__DEFAULT_VALUE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__DEFAULT_VALUE:
         return DEFAULT_VALUE_EDEFAULT == null ? defaultValue != null : !DEFAULT_VALUE_EDEFAULT.equals(defaultValue);
-      case OseeTypesPackage.ATTRIBUTE_TYPE__FILE_EXTENSION:
+      case OseeTypesPackage.XATTRIBUTE_TYPE__FILE_EXTENSION:
         return FILE_EXTENSION_EDEFAULT == null ? fileExtension != null : !FILE_EXTENSION_EDEFAULT.equals(fileExtension);
     }
     return super.eIsSet(featureID);
@@ -701,4 +701,4 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
     return result.toString();
   }
 
-} //AttributeTypeImpl
+} //XAttributeTypeImpl

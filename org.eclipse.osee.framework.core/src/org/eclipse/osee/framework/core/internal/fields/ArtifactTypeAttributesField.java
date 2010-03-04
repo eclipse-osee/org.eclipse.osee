@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -42,6 +41,7 @@ public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<Bra
    public void put(Branch branch , Collection<AttributeType> attributes){
       validityMap.put(branch, attributes);
    }
+
    @Override
    public void set(Map<Branch, Collection<AttributeType>> attributeTypeMap) throws OseeCoreException {
       Conditions.checkNotNull(attributeTypeMap, "attribute type map input");

@@ -8,11 +8,9 @@ package org.eclipse.osee.framework.oseeTypes.provider;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.edit.provider.ChangeNotifier;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
@@ -24,7 +22,6 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.INotifyChangedListener;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-
 import org.eclipse.osee.framework.oseeTypes.util.OseeTypesAdapterFactory;
 
 /**
@@ -182,7 +179,7 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
     * @generated
     */
    @Override
-   public Adapter createArtifactTypeAdapter() {
+   public Adapter createXArtifactTypeAdapter() {
       if (artifactTypeItemProvider == null) {
          artifactTypeItemProvider = new ArtifactTypeItemProvider(this);
       }
@@ -205,7 +202,7 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
     * @generated
     */
    @Override
-   public Adapter createAttributeTypeRefAdapter() {
+   public Adapter createXAttributeTypeRefAdapter() {
       if (attributeTypeRefItemProvider == null) {
          attributeTypeRefItemProvider = new AttributeTypeRefItemProvider(this);
       }
@@ -228,7 +225,7 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
     * @generated
     */
    @Override
-   public Adapter createAttributeTypeAdapter() {
+   public Adapter createXAttributeTypeAdapter() {
       if (attributeTypeItemProvider == null) {
          attributeTypeItemProvider = new AttributeTypeItemProvider(this);
       }
@@ -251,7 +248,7 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
     * @generated
     */
    @Override
-   public Adapter createOseeEnumTypeAdapter() {
+   public Adapter createXOseeEnumTypeAdapter() {
       if (oseeEnumTypeItemProvider == null) {
          oseeEnumTypeItemProvider = new OseeEnumTypeItemProvider(this);
       }
@@ -274,7 +271,7 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
     * @generated
     */
    @Override
-   public Adapter createOseeEnumEntryAdapter() {
+   public Adapter createXOseeEnumEntryAdapter() {
       if (oseeEnumEntryItemProvider == null) {
          oseeEnumEntryItemProvider = new OseeEnumEntryItemProvider(this);
       }
@@ -297,7 +294,7 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
     * @generated
     */
    @Override
-   public Adapter createOseeEnumOverrideAdapter() {
+   public Adapter createXOseeEnumOverrideAdapter() {
       if (oseeEnumOverrideItemProvider == null) {
          oseeEnumOverrideItemProvider = new OseeEnumOverrideItemProvider(this);
       }
@@ -389,7 +386,7 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
     * @generated
     */
    @Override
-   public Adapter createRelationTypeAdapter() {
+   public Adapter createXRelationTypeAdapter() {
       if (relationTypeItemProvider == null) {
          relationTypeItemProvider = new RelationTypeItemProvider(this);
       }
@@ -447,7 +444,7 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
    public Object adapt(Object object, Object type) {
       if (isFactoryForType(type)) {
          Object adapter = super.adapt(object, type);
-         if (!(type instanceof Class<?>) || (((Class<?>)type).isInstance(adapter))) {
+         if (!(type instanceof Class<?>) || ((Class<?>)type).isInstance(adapter)) {
             return adapter;
          }
       }
@@ -496,20 +493,48 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
     * @generated
     */
    public void dispose() {
-      if (oseeTypeModelItemProvider != null) oseeTypeModelItemProvider.dispose();
-      if (importItemProvider != null) importItemProvider.dispose();
-      if (oseeElementItemProvider != null) oseeElementItemProvider.dispose();
-      if (oseeTypeItemProvider != null) oseeTypeItemProvider.dispose();
-      if (artifactTypeItemProvider != null) artifactTypeItemProvider.dispose();
-      if (attributeTypeRefItemProvider != null) attributeTypeRefItemProvider.dispose();
-      if (attributeTypeItemProvider != null) attributeTypeItemProvider.dispose();
-      if (oseeEnumTypeItemProvider != null) oseeEnumTypeItemProvider.dispose();
-      if (oseeEnumEntryItemProvider != null) oseeEnumEntryItemProvider.dispose();
-      if (oseeEnumOverrideItemProvider != null) oseeEnumOverrideItemProvider.dispose();
-      if (overrideOptionItemProvider != null) overrideOptionItemProvider.dispose();
-      if (addEnumItemProvider != null) addEnumItemProvider.dispose();
-      if (removeEnumItemProvider != null) removeEnumItemProvider.dispose();
-      if (relationTypeItemProvider != null) relationTypeItemProvider.dispose();
+      if (oseeTypeModelItemProvider != null) {
+         oseeTypeModelItemProvider.dispose();
+      }
+      if (importItemProvider != null) {
+         importItemProvider.dispose();
+      }
+      if (oseeElementItemProvider != null) {
+         oseeElementItemProvider.dispose();
+      }
+      if (oseeTypeItemProvider != null) {
+         oseeTypeItemProvider.dispose();
+      }
+      if (artifactTypeItemProvider != null) {
+         artifactTypeItemProvider.dispose();
+      }
+      if (attributeTypeRefItemProvider != null) {
+         attributeTypeRefItemProvider.dispose();
+      }
+      if (attributeTypeItemProvider != null) {
+         attributeTypeItemProvider.dispose();
+      }
+      if (oseeEnumTypeItemProvider != null) {
+         oseeEnumTypeItemProvider.dispose();
+      }
+      if (oseeEnumEntryItemProvider != null) {
+         oseeEnumEntryItemProvider.dispose();
+      }
+      if (oseeEnumOverrideItemProvider != null) {
+         oseeEnumOverrideItemProvider.dispose();
+      }
+      if (overrideOptionItemProvider != null) {
+         overrideOptionItemProvider.dispose();
+      }
+      if (addEnumItemProvider != null) {
+         addEnumItemProvider.dispose();
+      }
+      if (removeEnumItemProvider != null) {
+         removeEnumItemProvider.dispose();
+      }
+      if (relationTypeItemProvider != null) {
+         relationTypeItemProvider.dispose();
+      }
    }
 
 }

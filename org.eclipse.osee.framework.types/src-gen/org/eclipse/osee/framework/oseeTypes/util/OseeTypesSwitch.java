@@ -125,52 +125,52 @@ public class OseeTypesSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case OseeTypesPackage.ARTIFACT_TYPE:
+      case OseeTypesPackage.XARTIFACT_TYPE:
       {
-        ArtifactType artifactType = (ArtifactType)theEObject;
-        T result = caseArtifactType(artifactType);
-        if (result == null) result = caseOseeType(artifactType);
-        if (result == null) result = caseOseeElement(artifactType);
+        XArtifactType xArtifactType = (XArtifactType)theEObject;
+        T result = caseXArtifactType(xArtifactType);
+        if (result == null) result = caseOseeType(xArtifactType);
+        if (result == null) result = caseOseeElement(xArtifactType);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case OseeTypesPackage.ATTRIBUTE_TYPE_REF:
+      case OseeTypesPackage.XATTRIBUTE_TYPE_REF:
       {
-        AttributeTypeRef attributeTypeRef = (AttributeTypeRef)theEObject;
-        T result = caseAttributeTypeRef(attributeTypeRef);
+        XAttributeTypeRef xAttributeTypeRef = (XAttributeTypeRef)theEObject;
+        T result = caseXAttributeTypeRef(xAttributeTypeRef);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case OseeTypesPackage.ATTRIBUTE_TYPE:
+      case OseeTypesPackage.XATTRIBUTE_TYPE:
       {
-        AttributeType attributeType = (AttributeType)theEObject;
-        T result = caseAttributeType(attributeType);
-        if (result == null) result = caseOseeType(attributeType);
-        if (result == null) result = caseOseeElement(attributeType);
+        XAttributeType xAttributeType = (XAttributeType)theEObject;
+        T result = caseXAttributeType(xAttributeType);
+        if (result == null) result = caseOseeType(xAttributeType);
+        if (result == null) result = caseOseeElement(xAttributeType);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case OseeTypesPackage.OSEE_ENUM_TYPE:
+      case OseeTypesPackage.XOSEE_ENUM_TYPE:
       {
-        OseeEnumType oseeEnumType = (OseeEnumType)theEObject;
-        T result = caseOseeEnumType(oseeEnumType);
-        if (result == null) result = caseOseeType(oseeEnumType);
-        if (result == null) result = caseOseeElement(oseeEnumType);
+        XOseeEnumType xOseeEnumType = (XOseeEnumType)theEObject;
+        T result = caseXOseeEnumType(xOseeEnumType);
+        if (result == null) result = caseOseeType(xOseeEnumType);
+        if (result == null) result = caseOseeElement(xOseeEnumType);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case OseeTypesPackage.OSEE_ENUM_ENTRY:
+      case OseeTypesPackage.XOSEE_ENUM_ENTRY:
       {
-        OseeEnumEntry oseeEnumEntry = (OseeEnumEntry)theEObject;
-        T result = caseOseeEnumEntry(oseeEnumEntry);
+        XOseeEnumEntry xOseeEnumEntry = (XOseeEnumEntry)theEObject;
+        T result = caseXOseeEnumEntry(xOseeEnumEntry);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case OseeTypesPackage.OSEE_ENUM_OVERRIDE:
+      case OseeTypesPackage.XOSEE_ENUM_OVERRIDE:
       {
-        OseeEnumOverride oseeEnumOverride = (OseeEnumOverride)theEObject;
-        T result = caseOseeEnumOverride(oseeEnumOverride);
-        if (result == null) result = caseOseeElement(oseeEnumOverride);
+        XOseeEnumOverride xOseeEnumOverride = (XOseeEnumOverride)theEObject;
+        T result = caseXOseeEnumOverride(xOseeEnumOverride);
+        if (result == null) result = caseOseeElement(xOseeEnumOverride);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -197,12 +197,12 @@ public class OseeTypesSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case OseeTypesPackage.RELATION_TYPE:
+      case OseeTypesPackage.XRELATION_TYPE:
       {
-        RelationType relationType = (RelationType)theEObject;
-        T result = caseRelationType(relationType);
-        if (result == null) result = caseOseeType(relationType);
-        if (result == null) result = caseOseeElement(relationType);
+        XRelationType xRelationType = (XRelationType)theEObject;
+        T result = caseXRelationType(xRelationType);
+        if (result == null) result = caseOseeType(xRelationType);
+        if (result == null) result = caseOseeElement(xRelationType);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -275,97 +275,97 @@ public class OseeTypesSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Artifact Type</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>XArtifact Type</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Artifact Type</em>'.
+   * @return the result of interpreting the object as an instance of '<em>XArtifact Type</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseArtifactType(ArtifactType object)
+  public T caseXArtifactType(XArtifactType object)
   {
     return null;
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Attribute Type Ref</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>XAttribute Type Ref</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Attribute Type Ref</em>'.
+   * @return the result of interpreting the object as an instance of '<em>XAttribute Type Ref</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseAttributeTypeRef(AttributeTypeRef object)
+  public T caseXAttributeTypeRef(XAttributeTypeRef object)
   {
     return null;
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Attribute Type</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>XAttribute Type</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Attribute Type</em>'.
+   * @return the result of interpreting the object as an instance of '<em>XAttribute Type</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseAttributeType(AttributeType object)
+  public T caseXAttributeType(XAttributeType object)
   {
     return null;
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Osee Enum Type</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>XOsee Enum Type</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Osee Enum Type</em>'.
+   * @return the result of interpreting the object as an instance of '<em>XOsee Enum Type</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseOseeEnumType(OseeEnumType object)
+  public T caseXOseeEnumType(XOseeEnumType object)
   {
     return null;
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Osee Enum Entry</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>XOsee Enum Entry</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Osee Enum Entry</em>'.
+   * @return the result of interpreting the object as an instance of '<em>XOsee Enum Entry</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseOseeEnumEntry(OseeEnumEntry object)
+  public T caseXOseeEnumEntry(XOseeEnumEntry object)
   {
     return null;
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Osee Enum Override</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>XOsee Enum Override</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Osee Enum Override</em>'.
+   * @return the result of interpreting the object as an instance of '<em>XOsee Enum Override</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseOseeEnumOverride(OseeEnumOverride object)
+  public T caseXOseeEnumOverride(XOseeEnumOverride object)
   {
     return null;
   }
@@ -419,17 +419,17 @@ public class OseeTypesSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Relation Type</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>XRelation Type</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Relation Type</em>'.
+   * @return the result of interpreting the object as an instance of '<em>XRelation Type</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseRelationType(RelationType object)
+  public T caseXRelationType(XRelationType object)
   {
     return null;
   }

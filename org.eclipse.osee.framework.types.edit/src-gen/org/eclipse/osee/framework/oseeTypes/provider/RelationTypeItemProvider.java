@@ -9,10 +9,8 @@ package org.eclipse.osee.framework.oseeTypes.provider;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -22,9 +20,8 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
-import org.eclipse.osee.framework.oseeTypes.RelationType;
+import org.eclipse.osee.framework.oseeTypes.XRelationType;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.osee.framework.oseeTypes.RelationType} object.
@@ -84,7 +81,7 @@ public class RelationTypeItemProvider
              getResourceLocator(),
              getString("_UI_RelationType_sideAName_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_RelationType_sideAName_feature", "_UI_RelationType_type"),
-             OseeTypesPackage.Literals.RELATION_TYPE__SIDE_ANAME,
+            OseeTypesPackage.Literals.XRELATION_TYPE__SIDE_ANAME,
              true,
              false,
              false,
@@ -106,7 +103,7 @@ public class RelationTypeItemProvider
              getResourceLocator(),
              getString("_UI_RelationType_sideAArtifactType_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_RelationType_sideAArtifactType_feature", "_UI_RelationType_type"),
-             OseeTypesPackage.Literals.RELATION_TYPE__SIDE_AARTIFACT_TYPE,
+            OseeTypesPackage.Literals.XRELATION_TYPE__SIDE_AARTIFACT_TYPE,
              true,
              false,
              true,
@@ -128,7 +125,7 @@ public class RelationTypeItemProvider
              getResourceLocator(),
              getString("_UI_RelationType_sideBName_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_RelationType_sideBName_feature", "_UI_RelationType_type"),
-             OseeTypesPackage.Literals.RELATION_TYPE__SIDE_BNAME,
+            OseeTypesPackage.Literals.XRELATION_TYPE__SIDE_BNAME,
              true,
              false,
              false,
@@ -150,7 +147,7 @@ public class RelationTypeItemProvider
              getResourceLocator(),
              getString("_UI_RelationType_sideBArtifactType_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_RelationType_sideBArtifactType_feature", "_UI_RelationType_type"),
-             OseeTypesPackage.Literals.RELATION_TYPE__SIDE_BARTIFACT_TYPE,
+            OseeTypesPackage.Literals.XRELATION_TYPE__SIDE_BARTIFACT_TYPE,
              true,
              false,
              true,
@@ -172,7 +169,7 @@ public class RelationTypeItemProvider
              getResourceLocator(),
              getString("_UI_RelationType_defaultOrderType_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_RelationType_defaultOrderType_feature", "_UI_RelationType_type"),
-             OseeTypesPackage.Literals.RELATION_TYPE__DEFAULT_ORDER_TYPE,
+            OseeTypesPackage.Literals.XRELATION_TYPE__DEFAULT_ORDER_TYPE,
              true,
              false,
              false,
@@ -194,7 +191,7 @@ public class RelationTypeItemProvider
              getResourceLocator(),
              getString("_UI_RelationType_multiplicity_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_RelationType_multiplicity_feature", "_UI_RelationType_type"),
-             OseeTypesPackage.Literals.RELATION_TYPE__MULTIPLICITY,
+            OseeTypesPackage.Literals.XRELATION_TYPE__MULTIPLICITY,
              true,
              false,
              false,
@@ -222,7 +219,7 @@ public class RelationTypeItemProvider
     */
    @Override
    public String getText(Object object) {
-      String label = ((RelationType)object).getName();
+      String label = ((XRelationType) object).getName();
       return label == null || label.length() == 0 ?
          getString("_UI_RelationType_type") :
          getString("_UI_RelationType_type") + " " + label;
@@ -239,11 +236,11 @@ public class RelationTypeItemProvider
    public void notifyChanged(Notification notification) {
       updateChildren(notification);
 
-      switch (notification.getFeatureID(RelationType.class)) {
-         case OseeTypesPackage.RELATION_TYPE__SIDE_ANAME:
-         case OseeTypesPackage.RELATION_TYPE__SIDE_BNAME:
-         case OseeTypesPackage.RELATION_TYPE__DEFAULT_ORDER_TYPE:
-         case OseeTypesPackage.RELATION_TYPE__MULTIPLICITY:
+      switch (notification.getFeatureID(XRelationType.class)) {
+         case OseeTypesPackage.XRELATION_TYPE__SIDE_ANAME:
+         case OseeTypesPackage.XRELATION_TYPE__SIDE_BNAME:
+         case OseeTypesPackage.XRELATION_TYPE__DEFAULT_ORDER_TYPE:
+         case OseeTypesPackage.XRELATION_TYPE__MULTIPLICITY:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
       }

@@ -20,14 +20,14 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import org.eclipse.osee.framework.oseeTypes.ArtifactType;
-import org.eclipse.osee.framework.oseeTypes.AttributeType;
 import org.eclipse.osee.framework.oseeTypes.Import;
-import org.eclipse.osee.framework.oseeTypes.OseeEnumOverride;
-import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
-import org.eclipse.osee.framework.oseeTypes.RelationType;
+import org.eclipse.osee.framework.oseeTypes.XArtifactType;
+import org.eclipse.osee.framework.oseeTypes.XAttributeType;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumOverride;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumType;
+import org.eclipse.osee.framework.oseeTypes.XRelationType;
 
 /**
  * <!-- begin-user-doc -->
@@ -67,7 +67,7 @@ public class OseeTypeModelImpl extends MinimalEObjectImpl.Container implements O
    * @generated
    * @ordered
    */
-  protected EList<ArtifactType> artifactTypes;
+  protected EList<XArtifactType> artifactTypes;
 
   /**
    * The cached value of the '{@link #getRelationTypes() <em>Relation Types</em>}' containment reference list.
@@ -77,7 +77,7 @@ public class OseeTypeModelImpl extends MinimalEObjectImpl.Container implements O
    * @generated
    * @ordered
    */
-  protected EList<RelationType> relationTypes;
+  protected EList<XRelationType> relationTypes;
 
   /**
    * The cached value of the '{@link #getAttributeTypes() <em>Attribute Types</em>}' containment reference list.
@@ -87,7 +87,7 @@ public class OseeTypeModelImpl extends MinimalEObjectImpl.Container implements O
    * @generated
    * @ordered
    */
-  protected EList<AttributeType> attributeTypes;
+  protected EList<XAttributeType> attributeTypes;
 
   /**
    * The cached value of the '{@link #getEnumTypes() <em>Enum Types</em>}' containment reference list.
@@ -97,7 +97,7 @@ public class OseeTypeModelImpl extends MinimalEObjectImpl.Container implements O
    * @generated
    * @ordered
    */
-  protected EList<OseeEnumType> enumTypes;
+  protected EList<XOseeEnumType> enumTypes;
 
   /**
    * The cached value of the '{@link #getEnumOverrides() <em>Enum Overrides</em>}' containment reference list.
@@ -107,7 +107,7 @@ public class OseeTypeModelImpl extends MinimalEObjectImpl.Container implements O
    * @generated
    * @ordered
    */
-  protected EList<OseeEnumOverride> enumOverrides;
+  protected EList<XOseeEnumOverride> enumOverrides;
 
   /**
    * <!-- begin-user-doc -->
@@ -149,11 +149,11 @@ public class OseeTypeModelImpl extends MinimalEObjectImpl.Container implements O
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<ArtifactType> getArtifactTypes()
+  public EList<XArtifactType> getArtifactTypes()
   {
     if (artifactTypes == null)
     {
-      artifactTypes = new EObjectContainmentEList<ArtifactType>(ArtifactType.class, this, OseeTypesPackage.OSEE_TYPE_MODEL__ARTIFACT_TYPES);
+      artifactTypes = new EObjectContainmentEList<XArtifactType>(XArtifactType.class, this, OseeTypesPackage.OSEE_TYPE_MODEL__ARTIFACT_TYPES);
     }
     return artifactTypes;
   }
@@ -163,11 +163,11 @@ public class OseeTypeModelImpl extends MinimalEObjectImpl.Container implements O
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<RelationType> getRelationTypes()
+  public EList<XRelationType> getRelationTypes()
   {
     if (relationTypes == null)
     {
-      relationTypes = new EObjectContainmentEList<RelationType>(RelationType.class, this, OseeTypesPackage.OSEE_TYPE_MODEL__RELATION_TYPES);
+      relationTypes = new EObjectContainmentEList<XRelationType>(XRelationType.class, this, OseeTypesPackage.OSEE_TYPE_MODEL__RELATION_TYPES);
     }
     return relationTypes;
   }
@@ -177,11 +177,11 @@ public class OseeTypeModelImpl extends MinimalEObjectImpl.Container implements O
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<AttributeType> getAttributeTypes()
+  public EList<XAttributeType> getAttributeTypes()
   {
     if (attributeTypes == null)
     {
-      attributeTypes = new EObjectContainmentEList<AttributeType>(AttributeType.class, this, OseeTypesPackage.OSEE_TYPE_MODEL__ATTRIBUTE_TYPES);
+      attributeTypes = new EObjectContainmentEList<XAttributeType>(XAttributeType.class, this, OseeTypesPackage.OSEE_TYPE_MODEL__ATTRIBUTE_TYPES);
     }
     return attributeTypes;
   }
@@ -191,11 +191,11 @@ public class OseeTypeModelImpl extends MinimalEObjectImpl.Container implements O
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<OseeEnumType> getEnumTypes()
+  public EList<XOseeEnumType> getEnumTypes()
   {
     if (enumTypes == null)
     {
-      enumTypes = new EObjectContainmentEList<OseeEnumType>(OseeEnumType.class, this, OseeTypesPackage.OSEE_TYPE_MODEL__ENUM_TYPES);
+      enumTypes = new EObjectContainmentEList<XOseeEnumType>(XOseeEnumType.class, this, OseeTypesPackage.OSEE_TYPE_MODEL__ENUM_TYPES);
     }
     return enumTypes;
   }
@@ -205,11 +205,11 @@ public class OseeTypeModelImpl extends MinimalEObjectImpl.Container implements O
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<OseeEnumOverride> getEnumOverrides()
+  public EList<XOseeEnumOverride> getEnumOverrides()
   {
     if (enumOverrides == null)
     {
-      enumOverrides = new EObjectContainmentEList<OseeEnumOverride>(OseeEnumOverride.class, this, OseeTypesPackage.OSEE_TYPE_MODEL__ENUM_OVERRIDES);
+      enumOverrides = new EObjectContainmentEList<XOseeEnumOverride>(XOseeEnumOverride.class, this, OseeTypesPackage.OSEE_TYPE_MODEL__ENUM_OVERRIDES);
     }
     return enumOverrides;
   }
@@ -283,23 +283,23 @@ public class OseeTypeModelImpl extends MinimalEObjectImpl.Container implements O
         return;
       case OseeTypesPackage.OSEE_TYPE_MODEL__ARTIFACT_TYPES:
         getArtifactTypes().clear();
-        getArtifactTypes().addAll((Collection<? extends ArtifactType>)newValue);
+        getArtifactTypes().addAll((Collection<? extends XArtifactType>)newValue);
         return;
       case OseeTypesPackage.OSEE_TYPE_MODEL__RELATION_TYPES:
         getRelationTypes().clear();
-        getRelationTypes().addAll((Collection<? extends RelationType>)newValue);
+        getRelationTypes().addAll((Collection<? extends XRelationType>)newValue);
         return;
       case OseeTypesPackage.OSEE_TYPE_MODEL__ATTRIBUTE_TYPES:
         getAttributeTypes().clear();
-        getAttributeTypes().addAll((Collection<? extends AttributeType>)newValue);
+        getAttributeTypes().addAll((Collection<? extends XAttributeType>)newValue);
         return;
       case OseeTypesPackage.OSEE_TYPE_MODEL__ENUM_TYPES:
         getEnumTypes().clear();
-        getEnumTypes().addAll((Collection<? extends OseeEnumType>)newValue);
+        getEnumTypes().addAll((Collection<? extends XOseeEnumType>)newValue);
         return;
       case OseeTypesPackage.OSEE_TYPE_MODEL__ENUM_OVERRIDES:
         getEnumOverrides().clear();
-        getEnumOverrides().addAll((Collection<? extends OseeEnumOverride>)newValue);
+        getEnumOverrides().addAll((Collection<? extends XOseeEnumOverride>)newValue);
         return;
     }
     super.eSet(featureID, newValue);

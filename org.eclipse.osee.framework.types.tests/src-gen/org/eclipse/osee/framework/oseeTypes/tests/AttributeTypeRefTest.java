@@ -7,11 +7,9 @@
 package org.eclipse.osee.framework.oseeTypes.tests;
 
 import junit.framework.TestCase;
-
 import junit.textui.TestRunner;
-
-import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
+import org.eclipse.osee.framework.oseeTypes.XAttributeTypeRef;
 
 /**
  * <!-- begin-user-doc -->
@@ -27,7 +25,7 @@ public class AttributeTypeRefTest extends TestCase {
     * <!-- end-user-doc -->
     * @generated
     */
-   protected AttributeTypeRef fixture = null;
+   protected XAttributeTypeRef fixture = null;
 
    /**
     * <!-- begin-user-doc -->
@@ -54,7 +52,7 @@ public class AttributeTypeRefTest extends TestCase {
     * <!-- end-user-doc -->
     * @generated
     */
-   protected void setFixture(AttributeTypeRef fixture) {
+   protected void setFixture(XAttributeTypeRef fixture) {
       this.fixture = fixture;
    }
 
@@ -64,7 +62,7 @@ public class AttributeTypeRefTest extends TestCase {
     * <!-- end-user-doc -->
     * @generated
     */
-   protected AttributeTypeRef getFixture() {
+   protected XAttributeTypeRef getFixture() {
       return fixture;
    }
 
@@ -76,7 +74,7 @@ public class AttributeTypeRefTest extends TestCase {
     */
    @Override
    protected void setUp() throws Exception {
-      setFixture(OseeTypesFactory.eINSTANCE.createAttributeTypeRef());
+      setFixture(OseeTypesFactory.eINSTANCE.createXAttributeTypeRef());
    }
 
    /**

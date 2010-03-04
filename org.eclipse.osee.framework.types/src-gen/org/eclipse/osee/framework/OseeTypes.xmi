@@ -89,9 +89,9 @@
         <groups xsi:type="xtext:RuleCall" rule="/0/@rules.11"/>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="ArtifactType">
+    <rules xsi:type="xtext:ParserRule" name="XArtifactType">
       <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//ArtifactType"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XArtifactType"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Assignment" cardinality="?" feature="abstract" operator="?=">
@@ -106,7 +106,7 @@
           <tokens xsi:type="xtext:Assignment" feature="superArtifactTypes" operator="+=">
             <terminal xsi:type="xtext:CrossReference">
               <type metamodel="/0/@metamodelDeclarations.0">
-                <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//ArtifactType"/>
+                <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XArtifactType"/>
               </type>
               <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
             </terminal>
@@ -116,7 +116,7 @@
             <tokens xsi:type="xtext:Assignment" feature="superArtifactTypes" operator="+=">
               <terminal xsi:type="xtext:CrossReference">
                 <type metamodel="/0/@metamodelDeclarations.0">
-                  <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//ArtifactType"/>
+                  <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XArtifactType"/>
                 </type>
                 <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
               </terminal>
@@ -134,16 +134,16 @@
         <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="AttributeTypeRef">
+    <rules xsi:type="xtext:ParserRule" name="XAttributeTypeRef">
       <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//AttributeTypeRef"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XAttributeTypeRef"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="attribute"/>
         <tokens xsi:type="xtext:Assignment" feature="validAttributeType" operator="=">
           <terminal xsi:type="xtext:CrossReference">
             <type metamodel="/0/@metamodelDeclarations.0">
-              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//AttributeType"/>
+              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XAttributeType"/>
             </type>
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
           </terminal>
@@ -156,9 +156,9 @@
         </tokens>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="AttributeType">
+    <rules xsi:type="xtext:ParserRule" name="XAttributeType">
       <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//AttributeType"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XAttributeType"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="attributeType"/>
@@ -176,7 +176,7 @@
           <tokens xsi:type="xtext:Assignment" feature="override" operator="=">
             <terminal xsi:type="xtext:CrossReference">
               <type metamodel="/0/@metamodelDeclarations.0">
-                <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//AttributeType"/>
+                <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XAttributeType"/>
               </type>
               <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
             </terminal>
@@ -220,7 +220,7 @@
           <tokens xsi:type="xtext:Assignment" feature="enumType" operator="=">
             <terminal xsi:type="xtext:CrossReference">
               <type metamodel="/0/@metamodelDeclarations.0">
-                <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//OseeEnumType"/>
+                <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XOseeEnumType"/>
               </type>
               <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
             </terminal>
@@ -264,9 +264,9 @@
         <groups xsi:type="xtext:RuleCall" rule="/0/@rules.4"/>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="OseeEnumType">
+    <rules xsi:type="xtext:ParserRule" name="XOseeEnumType">
       <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//OseeEnumType"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XOseeEnumType"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="oseeEnumType"/>
@@ -284,9 +284,9 @@
         <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="OseeEnumEntry">
+    <rules xsi:type="xtext:ParserRule" name="XOseeEnumEntry">
       <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//OseeEnumEntry"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XOseeEnumEntry"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="entry"/>
@@ -304,16 +304,16 @@
         </tokens>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="OseeEnumOverride">
+    <rules xsi:type="xtext:ParserRule" name="XOseeEnumOverride">
       <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//OseeEnumOverride"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XOseeEnumOverride"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="overrides enum"/>
         <tokens xsi:type="xtext:Assignment" feature="overridenEnumType" operator="=">
           <terminal xsi:type="xtext:CrossReference">
             <type metamodel="/0/@metamodelDeclarations.0">
-              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//OseeEnumType"/>
+              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XOseeEnumType"/>
             </type>
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
           </terminal>
@@ -366,16 +366,16 @@
         <tokens xsi:type="xtext:Assignment" feature="enumEntry" operator="=">
           <terminal xsi:type="xtext:CrossReference">
             <type metamodel="/0/@metamodelDeclarations.0">
-              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//OseeEnumEntry"/>
+              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XOseeEnumEntry"/>
             </type>
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
           </terminal>
         </tokens>
       </alternatives>
     </rules>
-    <rules xsi:type="xtext:ParserRule" name="RelationType">
+    <rules xsi:type="xtext:ParserRule" name="XRelationType">
       <type metamodel="/0/@metamodelDeclarations.0">
-        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//RelationType"/>
+        <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XRelationType"/>
       </type>
       <alternatives xsi:type="xtext:Group">
         <tokens xsi:type="xtext:Keyword" value="relationType"/>
@@ -395,7 +395,7 @@
         <tokens xsi:type="xtext:Assignment" feature="sideAArtifactType" operator="=">
           <terminal xsi:type="xtext:CrossReference">
             <type metamodel="/0/@metamodelDeclarations.0">
-              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//ArtifactType"/>
+              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XArtifactType"/>
             </type>
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
           </terminal>
@@ -408,7 +408,7 @@
         <tokens xsi:type="xtext:Assignment" feature="sideBArtifactType" operator="=">
           <terminal xsi:type="xtext:CrossReference">
             <type metamodel="/0/@metamodelDeclarations.0">
-              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//ArtifactType"/>
+              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//XArtifactType"/>
             </type>
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
           </terminal>

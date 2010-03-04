@@ -7,9 +7,8 @@
 package org.eclipse.osee.framework.oseeTypes.tests;
 
 import junit.textui.TestRunner;
-
-import org.eclipse.osee.framework.oseeTypes.AttributeType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
+import org.eclipse.osee.framework.oseeTypes.XAttributeType;
 
 /**
  * <!-- begin-user-doc -->
@@ -45,8 +44,8 @@ public class AttributeTypeTest extends OseeTypeTest {
     * @generated
     */
    @Override
-   protected AttributeType getFixture() {
-      return (AttributeType)fixture;
+   protected XAttributeType getFixture() {
+      return (XAttributeType) fixture;
    }
 
    /**
@@ -57,7 +56,7 @@ public class AttributeTypeTest extends OseeTypeTest {
     */
    @Override
    protected void setUp() throws Exception {
-      setFixture(OseeTypesFactory.eINSTANCE.createAttributeType());
+      setFixture(OseeTypesFactory.eINSTANCE.createXAttributeType());
    }
 
    /**

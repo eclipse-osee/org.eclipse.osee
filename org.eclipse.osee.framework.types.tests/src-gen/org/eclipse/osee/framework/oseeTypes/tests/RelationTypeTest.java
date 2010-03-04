@@ -7,9 +7,8 @@
 package org.eclipse.osee.framework.oseeTypes.tests;
 
 import junit.textui.TestRunner;
-
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
-import org.eclipse.osee.framework.oseeTypes.RelationType;
+import org.eclipse.osee.framework.oseeTypes.XRelationType;
 
 /**
  * <!-- begin-user-doc -->
@@ -45,8 +44,8 @@ public class RelationTypeTest extends OseeTypeTest {
     * @generated
     */
    @Override
-   protected RelationType getFixture() {
-      return (RelationType)fixture;
+   protected XRelationType getFixture() {
+      return (XRelationType) fixture;
    }
 
    /**
@@ -57,7 +56,7 @@ public class RelationTypeTest extends OseeTypeTest {
     */
    @Override
    protected void setUp() throws Exception {
-      setFixture(OseeTypesFactory.eINSTANCE.createRelationType());
+      setFixture(OseeTypesFactory.eINSTANCE.createXRelationType());
    }
 
    /**

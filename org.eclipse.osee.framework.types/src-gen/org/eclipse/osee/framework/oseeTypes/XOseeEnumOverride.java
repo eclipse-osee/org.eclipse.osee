@@ -10,23 +10,23 @@ import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Osee Enum Override</b></em>'.
+ * A representation of the model object '<em><b>XOsee Enum Override</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeEnumOverride#getOverridenEnumType <em>Overriden Enum Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeEnumOverride#isInheritAll <em>Inherit All</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeEnumOverride#getOverrideOptions <em>Override Options</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XOseeEnumOverride#getOverridenEnumType <em>Overriden Enum Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XOseeEnumOverride#isInheritAll <em>Inherit All</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.XOseeEnumOverride#getOverrideOptions <em>Override Options</em>}</li>
  * </ul>
  * </p>
  *
- * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeEnumOverride()
+ * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXOseeEnumOverride()
  * @model
  * @generated
  */
-public interface OseeEnumOverride extends OseeElement
+public interface XOseeEnumOverride extends OseeElement
 {
   /**
    * Returns the value of the '<em><b>Overriden Enum Type</b></em>' reference.
@@ -37,22 +37,22 @@ public interface OseeEnumOverride extends OseeElement
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Overriden Enum Type</em>' reference.
-   * @see #setOverridenEnumType(OseeEnumType)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeEnumOverride_OverridenEnumType()
+   * @see #setOverridenEnumType(XOseeEnumType)
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXOseeEnumOverride_OverridenEnumType()
    * @model
    * @generated
    */
-  OseeEnumType getOverridenEnumType();
+  XOseeEnumType getOverridenEnumType();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumOverride#getOverridenEnumType <em>Overriden Enum Type</em>}' reference.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.XOseeEnumOverride#getOverridenEnumType <em>Overriden Enum Type</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Overriden Enum Type</em>' reference.
    * @see #getOverridenEnumType()
    * @generated
    */
-  void setOverridenEnumType(OseeEnumType value);
+  void setOverridenEnumType(XOseeEnumType value);
 
   /**
    * Returns the value of the '<em><b>Inherit All</b></em>' attribute.
@@ -64,14 +64,14 @@ public interface OseeEnumOverride extends OseeElement
    * <!-- end-user-doc -->
    * @return the value of the '<em>Inherit All</em>' attribute.
    * @see #setInheritAll(boolean)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeEnumOverride_InheritAll()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXOseeEnumOverride_InheritAll()
    * @model
    * @generated
    */
   boolean isInheritAll();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumOverride#isInheritAll <em>Inherit All</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.XOseeEnumOverride#isInheritAll <em>Inherit All</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Inherit All</em>' attribute.
@@ -90,10 +90,10 @@ public interface OseeEnumOverride extends OseeElement
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Override Options</em>' containment reference list.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeEnumOverride_OverrideOptions()
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getXOseeEnumOverride_OverrideOptions()
    * @model containment="true"
    * @generated
    */
   EList<OverrideOption> getOverrideOptions();
 
-} // OseeEnumOverride
+} // XOseeEnumOverride

@@ -13,30 +13,30 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.osee.framework.oseeTypes.ArtifactType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
 import org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum;
-import org.eclipse.osee.framework.oseeTypes.RelationType;
+import org.eclipse.osee.framework.oseeTypes.XArtifactType;
+import org.eclipse.osee.framework.oseeTypes.XRelationType;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Relation Type</b></em>'.
+ * An implementation of the model object '<em><b>XRelation Type</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getSideAName <em>Side AName</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getSideAArtifactType <em>Side AArtifact Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getSideBName <em>Side BName</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getSideBArtifactType <em>Side BArtifact Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getDefaultOrderType <em>Default Order Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getMultiplicity <em>Multiplicity</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XRelationTypeImpl#getSideAName <em>Side AName</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XRelationTypeImpl#getSideAArtifactType <em>Side AArtifact Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XRelationTypeImpl#getSideBName <em>Side BName</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XRelationTypeImpl#getSideBArtifactType <em>Side BArtifact Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XRelationTypeImpl#getDefaultOrderType <em>Default Order Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.XRelationTypeImpl#getMultiplicity <em>Multiplicity</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class RelationTypeImpl extends OseeTypeImpl implements RelationType
+public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType
 {
   /**
    * The default value of the '{@link #getSideAName() <em>Side AName</em>}' attribute.
@@ -66,7 +66,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
    * @generated
    * @ordered
    */
-  protected ArtifactType sideAArtifactType;
+  protected XArtifactType sideAArtifactType;
 
   /**
    * The default value of the '{@link #getSideBName() <em>Side BName</em>}' attribute.
@@ -96,7 +96,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
    * @generated
    * @ordered
    */
-  protected ArtifactType sideBArtifactType;
+  protected XArtifactType sideBArtifactType;
 
   /**
    * The default value of the '{@link #getDefaultOrderType() <em>Default Order Type</em>}' attribute.
@@ -143,7 +143,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
    * <!-- end-user-doc -->
    * @generated
    */
-  protected RelationTypeImpl()
+  protected XRelationTypeImpl()
   {
     super();
   }
@@ -156,7 +156,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
   @Override
   protected EClass eStaticClass()
   {
-    return OseeTypesPackage.Literals.RELATION_TYPE;
+    return OseeTypesPackage.Literals.XRELATION_TYPE;
   }
 
   /**
@@ -179,7 +179,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
     String oldSideAName = sideAName;
     sideAName = newSideAName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE__SIDE_ANAME, oldSideAName, sideAName));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XRELATION_TYPE__SIDE_ANAME, oldSideAName, sideAName));
   }
 
   /**
@@ -187,16 +187,16 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
    * <!-- end-user-doc -->
    * @generated
    */
-  public ArtifactType getSideAArtifactType()
+  public XArtifactType getSideAArtifactType()
   {
     if (sideAArtifactType != null && sideAArtifactType.eIsProxy())
     {
       InternalEObject oldSideAArtifactType = (InternalEObject)sideAArtifactType;
-      sideAArtifactType = (ArtifactType)eResolveProxy(oldSideAArtifactType);
+      sideAArtifactType = (XArtifactType)eResolveProxy(oldSideAArtifactType);
       if (sideAArtifactType != oldSideAArtifactType)
       {
         if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.RELATION_TYPE__SIDE_AARTIFACT_TYPE, oldSideAArtifactType, sideAArtifactType));
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.XRELATION_TYPE__SIDE_AARTIFACT_TYPE, oldSideAArtifactType, sideAArtifactType));
       }
     }
     return sideAArtifactType;
@@ -207,7 +207,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
    * <!-- end-user-doc -->
    * @generated
    */
-  public ArtifactType basicGetSideAArtifactType()
+  public XArtifactType basicGetSideAArtifactType()
   {
     return sideAArtifactType;
   }
@@ -217,12 +217,12 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSideAArtifactType(ArtifactType newSideAArtifactType)
+  public void setSideAArtifactType(XArtifactType newSideAArtifactType)
   {
-    ArtifactType oldSideAArtifactType = sideAArtifactType;
+    XArtifactType oldSideAArtifactType = sideAArtifactType;
     sideAArtifactType = newSideAArtifactType;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE__SIDE_AARTIFACT_TYPE, oldSideAArtifactType, sideAArtifactType));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XRELATION_TYPE__SIDE_AARTIFACT_TYPE, oldSideAArtifactType, sideAArtifactType));
   }
 
   /**
@@ -245,7 +245,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
     String oldSideBName = sideBName;
     sideBName = newSideBName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE__SIDE_BNAME, oldSideBName, sideBName));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XRELATION_TYPE__SIDE_BNAME, oldSideBName, sideBName));
   }
 
   /**
@@ -253,16 +253,16 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
    * <!-- end-user-doc -->
    * @generated
    */
-  public ArtifactType getSideBArtifactType()
+  public XArtifactType getSideBArtifactType()
   {
     if (sideBArtifactType != null && sideBArtifactType.eIsProxy())
     {
       InternalEObject oldSideBArtifactType = (InternalEObject)sideBArtifactType;
-      sideBArtifactType = (ArtifactType)eResolveProxy(oldSideBArtifactType);
+      sideBArtifactType = (XArtifactType)eResolveProxy(oldSideBArtifactType);
       if (sideBArtifactType != oldSideBArtifactType)
       {
         if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.RELATION_TYPE__SIDE_BARTIFACT_TYPE, oldSideBArtifactType, sideBArtifactType));
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.XRELATION_TYPE__SIDE_BARTIFACT_TYPE, oldSideBArtifactType, sideBArtifactType));
       }
     }
     return sideBArtifactType;
@@ -273,7 +273,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
    * <!-- end-user-doc -->
    * @generated
    */
-  public ArtifactType basicGetSideBArtifactType()
+  public XArtifactType basicGetSideBArtifactType()
   {
     return sideBArtifactType;
   }
@@ -283,12 +283,12 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSideBArtifactType(ArtifactType newSideBArtifactType)
+  public void setSideBArtifactType(XArtifactType newSideBArtifactType)
   {
-    ArtifactType oldSideBArtifactType = sideBArtifactType;
+    XArtifactType oldSideBArtifactType = sideBArtifactType;
     sideBArtifactType = newSideBArtifactType;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE__SIDE_BARTIFACT_TYPE, oldSideBArtifactType, sideBArtifactType));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XRELATION_TYPE__SIDE_BARTIFACT_TYPE, oldSideBArtifactType, sideBArtifactType));
   }
 
   /**
@@ -311,7 +311,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
     String oldDefaultOrderType = defaultOrderType;
     defaultOrderType = newDefaultOrderType;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE__DEFAULT_ORDER_TYPE, oldDefaultOrderType, defaultOrderType));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XRELATION_TYPE__DEFAULT_ORDER_TYPE, oldDefaultOrderType, defaultOrderType));
   }
 
   /**
@@ -334,7 +334,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
     RelationMultiplicityEnum oldMultiplicity = multiplicity;
     multiplicity = newMultiplicity == null ? MULTIPLICITY_EDEFAULT : newMultiplicity;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE__MULTIPLICITY, oldMultiplicity, multiplicity));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.XRELATION_TYPE__MULTIPLICITY, oldMultiplicity, multiplicity));
   }
 
   /**
@@ -347,19 +347,19 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE__SIDE_ANAME:
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_ANAME:
         return getSideAName();
-      case OseeTypesPackage.RELATION_TYPE__SIDE_AARTIFACT_TYPE:
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_AARTIFACT_TYPE:
         if (resolve) return getSideAArtifactType();
         return basicGetSideAArtifactType();
-      case OseeTypesPackage.RELATION_TYPE__SIDE_BNAME:
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_BNAME:
         return getSideBName();
-      case OseeTypesPackage.RELATION_TYPE__SIDE_BARTIFACT_TYPE:
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_BARTIFACT_TYPE:
         if (resolve) return getSideBArtifactType();
         return basicGetSideBArtifactType();
-      case OseeTypesPackage.RELATION_TYPE__DEFAULT_ORDER_TYPE:
+      case OseeTypesPackage.XRELATION_TYPE__DEFAULT_ORDER_TYPE:
         return getDefaultOrderType();
-      case OseeTypesPackage.RELATION_TYPE__MULTIPLICITY:
+      case OseeTypesPackage.XRELATION_TYPE__MULTIPLICITY:
         return getMultiplicity();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -375,22 +375,22 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE__SIDE_ANAME:
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_ANAME:
         setSideAName((String)newValue);
         return;
-      case OseeTypesPackage.RELATION_TYPE__SIDE_AARTIFACT_TYPE:
-        setSideAArtifactType((ArtifactType)newValue);
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_AARTIFACT_TYPE:
+        setSideAArtifactType((XArtifactType)newValue);
         return;
-      case OseeTypesPackage.RELATION_TYPE__SIDE_BNAME:
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_BNAME:
         setSideBName((String)newValue);
         return;
-      case OseeTypesPackage.RELATION_TYPE__SIDE_BARTIFACT_TYPE:
-        setSideBArtifactType((ArtifactType)newValue);
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_BARTIFACT_TYPE:
+        setSideBArtifactType((XArtifactType)newValue);
         return;
-      case OseeTypesPackage.RELATION_TYPE__DEFAULT_ORDER_TYPE:
+      case OseeTypesPackage.XRELATION_TYPE__DEFAULT_ORDER_TYPE:
         setDefaultOrderType((String)newValue);
         return;
-      case OseeTypesPackage.RELATION_TYPE__MULTIPLICITY:
+      case OseeTypesPackage.XRELATION_TYPE__MULTIPLICITY:
         setMultiplicity((RelationMultiplicityEnum)newValue);
         return;
     }
@@ -407,22 +407,22 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE__SIDE_ANAME:
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_ANAME:
         setSideAName(SIDE_ANAME_EDEFAULT);
         return;
-      case OseeTypesPackage.RELATION_TYPE__SIDE_AARTIFACT_TYPE:
-        setSideAArtifactType((ArtifactType)null);
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_AARTIFACT_TYPE:
+        setSideAArtifactType((XArtifactType)null);
         return;
-      case OseeTypesPackage.RELATION_TYPE__SIDE_BNAME:
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_BNAME:
         setSideBName(SIDE_BNAME_EDEFAULT);
         return;
-      case OseeTypesPackage.RELATION_TYPE__SIDE_BARTIFACT_TYPE:
-        setSideBArtifactType((ArtifactType)null);
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_BARTIFACT_TYPE:
+        setSideBArtifactType((XArtifactType)null);
         return;
-      case OseeTypesPackage.RELATION_TYPE__DEFAULT_ORDER_TYPE:
+      case OseeTypesPackage.XRELATION_TYPE__DEFAULT_ORDER_TYPE:
         setDefaultOrderType(DEFAULT_ORDER_TYPE_EDEFAULT);
         return;
-      case OseeTypesPackage.RELATION_TYPE__MULTIPLICITY:
+      case OseeTypesPackage.XRELATION_TYPE__MULTIPLICITY:
         setMultiplicity(MULTIPLICITY_EDEFAULT);
         return;
     }
@@ -439,17 +439,17 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE__SIDE_ANAME:
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_ANAME:
         return SIDE_ANAME_EDEFAULT == null ? sideAName != null : !SIDE_ANAME_EDEFAULT.equals(sideAName);
-      case OseeTypesPackage.RELATION_TYPE__SIDE_AARTIFACT_TYPE:
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_AARTIFACT_TYPE:
         return sideAArtifactType != null;
-      case OseeTypesPackage.RELATION_TYPE__SIDE_BNAME:
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_BNAME:
         return SIDE_BNAME_EDEFAULT == null ? sideBName != null : !SIDE_BNAME_EDEFAULT.equals(sideBName);
-      case OseeTypesPackage.RELATION_TYPE__SIDE_BARTIFACT_TYPE:
+      case OseeTypesPackage.XRELATION_TYPE__SIDE_BARTIFACT_TYPE:
         return sideBArtifactType != null;
-      case OseeTypesPackage.RELATION_TYPE__DEFAULT_ORDER_TYPE:
+      case OseeTypesPackage.XRELATION_TYPE__DEFAULT_ORDER_TYPE:
         return DEFAULT_ORDER_TYPE_EDEFAULT == null ? defaultOrderType != null : !DEFAULT_ORDER_TYPE_EDEFAULT.equals(defaultOrderType);
-      case OseeTypesPackage.RELATION_TYPE__MULTIPLICITY:
+      case OseeTypesPackage.XRELATION_TYPE__MULTIPLICITY:
         return multiplicity != MULTIPLICITY_EDEFAULT;
     }
     return super.eIsSet(featureID);
@@ -478,4 +478,4 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
     return result.toString();
   }
 
-} //RelationTypeImpl
+} //XRelationTypeImpl

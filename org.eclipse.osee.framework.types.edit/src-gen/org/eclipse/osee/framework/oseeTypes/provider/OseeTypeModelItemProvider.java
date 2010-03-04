@@ -9,14 +9,10 @@ package org.eclipse.osee.framework.oseeTypes.provider;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
-
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -25,7 +21,6 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
@@ -169,27 +164,27 @@ public class OseeTypeModelItemProvider
       newChildDescriptors.add
          (createChildParameter
             (OseeTypesPackage.Literals.OSEE_TYPE_MODEL__ARTIFACT_TYPES,
-             OseeTypesFactory.eINSTANCE.createArtifactType()));
+            OseeTypesFactory.eINSTANCE.createXArtifactType()));
 
       newChildDescriptors.add
          (createChildParameter
             (OseeTypesPackage.Literals.OSEE_TYPE_MODEL__RELATION_TYPES,
-             OseeTypesFactory.eINSTANCE.createRelationType()));
+            OseeTypesFactory.eINSTANCE.createXRelationType()));
 
       newChildDescriptors.add
          (createChildParameter
             (OseeTypesPackage.Literals.OSEE_TYPE_MODEL__ATTRIBUTE_TYPES,
-             OseeTypesFactory.eINSTANCE.createAttributeType()));
+            OseeTypesFactory.eINSTANCE.createXAttributeType()));
 
       newChildDescriptors.add
          (createChildParameter
             (OseeTypesPackage.Literals.OSEE_TYPE_MODEL__ENUM_TYPES,
-             OseeTypesFactory.eINSTANCE.createOseeEnumType()));
+            OseeTypesFactory.eINSTANCE.createXOseeEnumType()));
 
       newChildDescriptors.add
          (createChildParameter
             (OseeTypesPackage.Literals.OSEE_TYPE_MODEL__ENUM_OVERRIDES,
-             OseeTypesFactory.eINSTANCE.createOseeEnumOverride()));
+            OseeTypesFactory.eINSTANCE.createXOseeEnumOverride()));
    }
 
    /**

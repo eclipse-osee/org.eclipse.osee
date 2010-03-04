@@ -142,7 +142,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
          for (ArtifactType artifactType : baseToSuperTypes.keySet()) {
             Set<ArtifactType> superTypes = (Set<ArtifactType>) baseToSuperTypes.getValues(artifactType);
             if (superTypes != null) {
-               artifactType.setSuperType(superTypes);
+               artifactType.setSuperTypes(superTypes);
             }
          }
       } finally {

@@ -7,15 +7,15 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="imports" upperBound="-1"
         eType="#//Import" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="artifactTypes" upperBound="-1"
-        eType="#//ArtifactType" containment="true"/>
+        eType="#//XArtifactType" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="relationTypes" upperBound="-1"
-        eType="#//RelationType" containment="true"/>
+        eType="#//XRelationType" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="attributeTypes" upperBound="-1"
-        eType="#//AttributeType" containment="true"/>
+        eType="#//XAttributeType" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="enumTypes" upperBound="-1"
-        eType="#//OseeEnumType" containment="true"/>
+        eType="#//XOseeEnumType" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="enumOverrides" upperBound="-1"
-        eType="#//OseeEnumOverride" containment="true"/>
+        eType="#//XOseeEnumOverride" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Import">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importURI" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -25,40 +25,40 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeGuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ArtifactType" eSuperTypes="#//OseeType">
+  <eClassifiers xsi:type="ecore:EClass" name="XArtifactType" eSuperTypes="#//OseeType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="abstract" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="superArtifactTypes" unique="false"
-        upperBound="-1" eType="#//ArtifactType"/>
+        upperBound="-1" eType="#//XArtifactType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="validAttributeTypes" upperBound="-1"
-        eType="#//AttributeTypeRef" containment="true"/>
+        eType="#//XAttributeTypeRef" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AttributeTypeRef">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="validAttributeType" eType="#//AttributeType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="XAttributeTypeRef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="validAttributeType" eType="#//XAttributeType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="branchGuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AttributeType" eSuperTypes="#//OseeType">
+  <eClassifiers xsi:type="ecore:EClass" name="XAttributeType" eSuperTypes="#//OseeType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="baseAttributeType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="override" eType="#//AttributeType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="override" eType="#//XAttributeType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataProvider" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="min" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="max" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="taggerId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="enumType" eType="#//OseeEnumType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="enumType" eType="#//XOseeEnumType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileExtension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OseeEnumType" eSuperTypes="#//OseeType">
+  <eClassifiers xsi:type="ecore:EClass" name="XOseeEnumType" eSuperTypes="#//OseeType">
     <eStructuralFeatures xsi:type="ecore:EReference" name="enumEntries" upperBound="-1"
-        eType="#//OseeEnumEntry" containment="true"/>
+        eType="#//XOseeEnumEntry" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OseeEnumEntry">
+  <eClassifiers xsi:type="ecore:EClass" name="XOseeEnumEntry">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="ordinal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="entryGuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OseeEnumOverride" eSuperTypes="#//OseeElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="overridenEnumType" eType="#//OseeEnumType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="XOseeEnumOverride" eSuperTypes="#//OseeElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="overridenEnumType" eType="#//XOseeEnumType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="inheritAll" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="overrideOptions" upperBound="-1"
         eType="#//OverrideOption" containment="true"/>
@@ -70,13 +70,13 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="entryGuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RemoveEnum" eSuperTypes="#//OverrideOption">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="enumEntry" eType="#//OseeEnumEntry"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="enumEntry" eType="#//XOseeEnumEntry"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RelationType" eSuperTypes="#//OseeType">
+  <eClassifiers xsi:type="ecore:EClass" name="XRelationType" eSuperTypes="#//OseeType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sideAName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="sideAArtifactType" eType="#//ArtifactType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sideAArtifactType" eType="#//XArtifactType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sideBName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="sideBArtifactType" eType="#//ArtifactType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sideBArtifactType" eType="#//XArtifactType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultOrderType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiplicity" eType="#//RelationMultiplicityEnum"/>
   </eClassifiers>

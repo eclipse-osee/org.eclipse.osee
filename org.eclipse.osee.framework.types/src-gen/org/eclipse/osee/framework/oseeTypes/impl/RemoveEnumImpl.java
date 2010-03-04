@@ -13,9 +13,9 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
 import org.eclipse.osee.framework.oseeTypes.RemoveEnum;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry;
 
 /**
  * <!-- begin-user-doc -->
@@ -40,7 +40,7 @@ public class RemoveEnumImpl extends OverrideOptionImpl implements RemoveEnum
    * @generated
    * @ordered
    */
-  protected OseeEnumEntry enumEntry;
+  protected XOseeEnumEntry enumEntry;
 
   /**
    * <!-- begin-user-doc -->
@@ -68,12 +68,12 @@ public class RemoveEnumImpl extends OverrideOptionImpl implements RemoveEnum
    * <!-- end-user-doc -->
    * @generated
    */
-  public OseeEnumEntry getEnumEntry()
+  public XOseeEnumEntry getEnumEntry()
   {
     if (enumEntry != null && enumEntry.eIsProxy())
     {
       InternalEObject oldEnumEntry = (InternalEObject)enumEntry;
-      enumEntry = (OseeEnumEntry)eResolveProxy(oldEnumEntry);
+      enumEntry = (XOseeEnumEntry)eResolveProxy(oldEnumEntry);
       if (enumEntry != oldEnumEntry)
       {
         if (eNotificationRequired())
@@ -88,7 +88,7 @@ public class RemoveEnumImpl extends OverrideOptionImpl implements RemoveEnum
    * <!-- end-user-doc -->
    * @generated
    */
-  public OseeEnumEntry basicGetEnumEntry()
+  public XOseeEnumEntry basicGetEnumEntry()
   {
     return enumEntry;
   }
@@ -98,9 +98,9 @@ public class RemoveEnumImpl extends OverrideOptionImpl implements RemoveEnum
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setEnumEntry(OseeEnumEntry newEnumEntry)
+  public void setEnumEntry(XOseeEnumEntry newEnumEntry)
   {
-    OseeEnumEntry oldEnumEntry = enumEntry;
+    XOseeEnumEntry oldEnumEntry = enumEntry;
     enumEntry = newEnumEntry;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.REMOVE_ENUM__ENUM_ENTRY, oldEnumEntry, enumEntry));
@@ -134,7 +134,7 @@ public class RemoveEnumImpl extends OverrideOptionImpl implements RemoveEnum
     switch (featureID)
     {
       case OseeTypesPackage.REMOVE_ENUM__ENUM_ENTRY:
-        setEnumEntry((OseeEnumEntry)newValue);
+        setEnumEntry((XOseeEnumEntry)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -151,7 +151,7 @@ public class RemoveEnumImpl extends OverrideOptionImpl implements RemoveEnum
     switch (featureID)
     {
       case OseeTypesPackage.REMOVE_ENUM__ENUM_ENTRY:
-        setEnumEntry((OseeEnumEntry)null);
+        setEnumEntry((XOseeEnumEntry)null);
         return;
     }
     super.eUnset(featureID);

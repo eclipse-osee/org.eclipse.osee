@@ -80,7 +80,7 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Artif
                superTypes.add(superType);
             }
          }
-         baseType.setSuperType(superTypes);
+         baseType.setSuperTypes(superTypes);
       }
 
       CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>> attrs =

@@ -9,12 +9,9 @@ package org.eclipse.osee.framework.oseeTypes.provider;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -25,9 +22,8 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-
-import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry} object.
@@ -84,7 +80,7 @@ public class OseeEnumEntryItemProvider
              getResourceLocator(),
              getString("_UI_OseeEnumEntry_name_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_OseeEnumEntry_name_feature", "_UI_OseeEnumEntry_type"),
-             OseeTypesPackage.Literals.OSEE_ENUM_ENTRY__NAME,
+            OseeTypesPackage.Literals.XOSEE_ENUM_ENTRY__NAME,
              true,
              false,
              false,
@@ -106,7 +102,7 @@ public class OseeEnumEntryItemProvider
              getResourceLocator(),
              getString("_UI_OseeEnumEntry_ordinal_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_OseeEnumEntry_ordinal_feature", "_UI_OseeEnumEntry_type"),
-             OseeTypesPackage.Literals.OSEE_ENUM_ENTRY__ORDINAL,
+            OseeTypesPackage.Literals.XOSEE_ENUM_ENTRY__ORDINAL,
              true,
              false,
              false,
@@ -128,7 +124,7 @@ public class OseeEnumEntryItemProvider
              getResourceLocator(),
              getString("_UI_OseeEnumEntry_entryGuid_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_OseeEnumEntry_entryGuid_feature", "_UI_OseeEnumEntry_type"),
-             OseeTypesPackage.Literals.OSEE_ENUM_ENTRY__ENTRY_GUID,
+            OseeTypesPackage.Literals.XOSEE_ENUM_ENTRY__ENTRY_GUID,
              true,
              false,
              false,
@@ -156,7 +152,7 @@ public class OseeEnumEntryItemProvider
     */
    @Override
    public String getText(Object object) {
-      String label = ((OseeEnumEntry)object).getName();
+      String label = ((XOseeEnumEntry) object).getName();
       return label == null || label.length() == 0 ?
          getString("_UI_OseeEnumEntry_type") :
          getString("_UI_OseeEnumEntry_type") + " " + label;
@@ -173,10 +169,10 @@ public class OseeEnumEntryItemProvider
    public void notifyChanged(Notification notification) {
       updateChildren(notification);
 
-      switch (notification.getFeatureID(OseeEnumEntry.class)) {
-         case OseeTypesPackage.OSEE_ENUM_ENTRY__NAME:
-         case OseeTypesPackage.OSEE_ENUM_ENTRY__ORDINAL:
-         case OseeTypesPackage.OSEE_ENUM_ENTRY__ENTRY_GUID:
+      switch (notification.getFeatureID(XOseeEnumEntry.class)) {
+         case OseeTypesPackage.XOSEE_ENUM_ENTRY__NAME:
+         case OseeTypesPackage.XOSEE_ENUM_ENTRY__ORDINAL:
+         case OseeTypesPackage.XOSEE_ENUM_ENTRY__ENTRY_GUID:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
       }

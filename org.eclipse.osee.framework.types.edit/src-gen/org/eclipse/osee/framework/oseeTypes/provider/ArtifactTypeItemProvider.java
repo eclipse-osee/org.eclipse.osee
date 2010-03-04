@@ -9,12 +9,9 @@ package org.eclipse.osee.framework.oseeTypes.provider;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -24,10 +21,9 @@ import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-
-import org.eclipse.osee.framework.oseeTypes.ArtifactType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
+import org.eclipse.osee.framework.oseeTypes.XArtifactType;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.osee.framework.oseeTypes.ArtifactType} object.
@@ -83,7 +79,7 @@ public class ArtifactTypeItemProvider
              getResourceLocator(),
              getString("_UI_ArtifactType_abstract_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_ArtifactType_abstract_feature", "_UI_ArtifactType_type"),
-             OseeTypesPackage.Literals.ARTIFACT_TYPE__ABSTRACT,
+            OseeTypesPackage.Literals.XARTIFACT_TYPE__ABSTRACT,
              true,
              false,
              false,
@@ -105,7 +101,7 @@ public class ArtifactTypeItemProvider
              getResourceLocator(),
              getString("_UI_ArtifactType_superArtifactTypes_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_ArtifactType_superArtifactTypes_feature", "_UI_ArtifactType_type"),
-             OseeTypesPackage.Literals.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPES,
+            OseeTypesPackage.Literals.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES,
              true,
              false,
              true,
@@ -126,7 +122,7 @@ public class ArtifactTypeItemProvider
    public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
       if (childrenFeatures == null) {
          super.getChildrenFeatures(object);
-         childrenFeatures.add(OseeTypesPackage.Literals.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES);
+         childrenFeatures.add(OseeTypesPackage.Literals.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES);
       }
       return childrenFeatures;
    }
@@ -163,7 +159,7 @@ public class ArtifactTypeItemProvider
     */
    @Override
    public String getText(Object object) {
-      String label = ((ArtifactType)object).getName();
+      String label = ((XArtifactType) object).getName();
       return label == null || label.length() == 0 ?
          getString("_UI_ArtifactType_type") :
          getString("_UI_ArtifactType_type") + " " + label;
@@ -180,11 +176,11 @@ public class ArtifactTypeItemProvider
    public void notifyChanged(Notification notification) {
       updateChildren(notification);
 
-      switch (notification.getFeatureID(ArtifactType.class)) {
-         case OseeTypesPackage.ARTIFACT_TYPE__ABSTRACT:
+      switch (notification.getFeatureID(XArtifactType.class)) {
+         case OseeTypesPackage.XARTIFACT_TYPE__ABSTRACT:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
-         case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+         case OseeTypesPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
             return;
       }
@@ -204,8 +200,8 @@ public class ArtifactTypeItemProvider
 
       newChildDescriptors.add
          (createChildParameter
-            (OseeTypesPackage.Literals.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES,
-             OseeTypesFactory.eINSTANCE.createAttributeTypeRef()));
+(OseeTypesPackage.Literals.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES,
+            OseeTypesFactory.eINSTANCE.createXAttributeTypeRef()));
    }
 
 }

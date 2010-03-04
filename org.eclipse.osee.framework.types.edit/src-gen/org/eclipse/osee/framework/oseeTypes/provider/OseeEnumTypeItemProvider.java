@@ -9,13 +9,9 @@ package org.eclipse.osee.framework.oseeTypes.provider;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
-
-import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -23,10 +19,9 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-
-import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
+import org.eclipse.osee.framework.oseeTypes.XOseeEnumType;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.osee.framework.oseeTypes.OseeEnumType} object.
@@ -79,7 +74,7 @@ public class OseeEnumTypeItemProvider
    public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
       if (childrenFeatures == null) {
          super.getChildrenFeatures(object);
-         childrenFeatures.add(OseeTypesPackage.Literals.OSEE_ENUM_TYPE__ENUM_ENTRIES);
+         childrenFeatures.add(OseeTypesPackage.Literals.XOSEE_ENUM_TYPE__ENUM_ENTRIES);
       }
       return childrenFeatures;
    }
@@ -116,7 +111,7 @@ public class OseeEnumTypeItemProvider
     */
    @Override
    public String getText(Object object) {
-      String label = ((OseeEnumType)object).getName();
+      String label = ((XOseeEnumType) object).getName();
       return label == null || label.length() == 0 ?
          getString("_UI_OseeEnumType_type") :
          getString("_UI_OseeEnumType_type") + " " + label;
@@ -133,8 +128,8 @@ public class OseeEnumTypeItemProvider
    public void notifyChanged(Notification notification) {
       updateChildren(notification);
 
-      switch (notification.getFeatureID(OseeEnumType.class)) {
-         case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
+      switch (notification.getFeatureID(XOseeEnumType.class)) {
+         case OseeTypesPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
             return;
       }
@@ -154,8 +149,8 @@ public class OseeEnumTypeItemProvider
 
       newChildDescriptors.add
          (createChildParameter
-            (OseeTypesPackage.Literals.OSEE_ENUM_TYPE__ENUM_ENTRIES,
-             OseeTypesFactory.eINSTANCE.createOseeEnumEntry()));
+(OseeTypesPackage.Literals.XOSEE_ENUM_TYPE__ENUM_ENTRIES,
+            OseeTypesFactory.eINSTANCE.createXOseeEnumEntry()));
    }
 
 }

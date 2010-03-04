@@ -17,38 +17,38 @@ import org.eclipse.xtext.ui.core.editor.contentassist.ICompletionProposalAccepto
 public class OseeTypesProposalProvider extends AbstractOseeTypesProposalProvider {
 
    @Override
-   public void completeOseeEnumEntry_EntryGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeOseeEnumEntry_EntryGuid(model, assignment, context, acceptor);
+   public void completeXOseeEnumEntry_EntryGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXOseeEnumEntry_EntryGuid(model, assignment, context, acceptor);
       completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
    }
 
    @Override
-   public void completeArtifactType_TypeGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeArtifactType_TypeGuid(model, assignment, context, acceptor);
+   public void completeXArtifactType_TypeGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXArtifactType_TypeGuid(model, assignment, context, acceptor);
       completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
    }
 
    @Override
-   public void completeAttributeType_TypeGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeAttributeType_TypeGuid(model, assignment, context, acceptor);
+   public void completeXAttributeType_TypeGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXAttributeType_TypeGuid(model, assignment, context, acceptor);
       completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
    }
 
    @Override
-   public void completeAttributeTypeRef_BranchGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeAttributeTypeRef_BranchGuid(model, assignment, context, acceptor);
+   public void completeXAttributeTypeRef_BranchGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXAttributeTypeRef_BranchGuid(model, assignment, context, acceptor);
       completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
    }
 
    @Override
-   public void completeOseeEnumType_TypeGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeOseeEnumType_TypeGuid(model, assignment, context, acceptor);
+   public void completeXOseeEnumType_TypeGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXOseeEnumType_TypeGuid(model, assignment, context, acceptor);
       completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
    }
 
    @Override
-   public void completeRelationType_TypeGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeRelationType_TypeGuid(model, assignment, context, acceptor);
+   public void completeXRelationType_TypeGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXRelationType_TypeGuid(model, assignment, context, acceptor);
       completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
    }
 
