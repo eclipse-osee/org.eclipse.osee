@@ -118,6 +118,9 @@ public class Activator implements BundleActivator, RuntimeLibraryListener {
       Class<? extends RuntimeConfigurationInitilizer> clazz = env.getEnvironmentFactory().getRuntimeClass();
       if (clazz == null) {
          String className = env.getEnvironmentFactory().getRuntimeLibraryConfiguration();
+         if(System.getProperty("ote.runtime.config.class") != null){
+            className = System.getProperty("ote.runtime.config.class");
+         }
          try {
             clazz = (Class<? extends RuntimeConfigurationInitilizer>)classloader.loadClass(className).asSubclass(RuntimeConfigurationInitilizer.class);
          } catch (Exception ex) {
