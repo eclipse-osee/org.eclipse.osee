@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.core.framework.testrun;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -97,8 +98,11 @@ public class TestRunThread extends OseeTestThread {
             }
          }
       } finally {
-         rb.append(listenerProvider.notifyPostRun(dataProvider.createOnPostRun(propertyStore, test)));
-      }
+    	  rb.append(listenerProvider.notifyPostRun(dataProvider.createOnPostRun(propertyStore, test)));
+    	  if (getEnvironment().getScriptCtrl().isLocked()) {
+    		  getEnvironment().getScriptCtrl().unlock();
+    	  }
+     }
    }
 
    /**

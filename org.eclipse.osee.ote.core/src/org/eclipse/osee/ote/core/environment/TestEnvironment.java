@@ -35,6 +35,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.connection.service.LocalConnector;
@@ -637,7 +638,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
     * marks the script as ready as well as clears any objects that are associated with the environment.
     */
    public synchronized void onScriptSetup() {
-      factory.getScriptControl().setScriptReady(true);
 
       for (IScriptSetupEvent listeners : scriptSetupListeners) {
          listeners.scriptSetup();
