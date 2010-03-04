@@ -51,23 +51,26 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class CreateBranchOperation extends AbstractDbTxOperation {
 
    private static final String INSERT_TX_DETAILS =
-      "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) VALUES (?,?,?,?,?,?)";
+         "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) VALUES (?,?,?,?,?,?)";
 
    // descending order is used so that the most recent entry will be used if there are multiple rows with the same gamma (an error case)
    private static final String SELECT_ADDRESSING =
-      "SELECT gamma_id, mod_type FROM osee_txs txs WHERE txs.tx_current <> ? AND txs.branch_id = ? order by txs.transaction_id desc";
+         "SELECT gamma_id, mod_type FROM osee_txs txs WHERE txs.tx_current <> ? AND txs.branch_id = ? order by txs.transaction_id desc";
    private static final String INSERT_ADDRESSING =
-      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?,?,?,?,?)";
+         "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?,?,?,?,?)";
    private static final String USER_ID_QUERY =
-      "select oa.art_id from osee_attribute_type oat, osee_attribute oa, osee_txs txs where oat.name = 'User Id' and oat.attr_type_id = oa.attr_type_id and oa.gamma_id = txs.gamma_id and txs.tx_current = 1 and oa.value = ?";
+         "select oa.art_id from osee_attribute_type oat, osee_attribute oa, osee_txs txs where oat.name = 'User Id' and oat.attr_type_id = oa.attr_type_id and oa.gamma_id = txs.gamma_id and txs.tx_current = 1 and oa.value = ?";
 
    private static final String MERGE_BRANCH_INSERT =
-      "INSERT INTO osee_merge (source_branch_id, dest_branch_id, merge_branch_id, commit_transaction_id) VALUES(?,?,?,?)";
+         "INSERT INTO osee_merge (source_branch_id, dest_branch_id, merge_branch_id, commit_transaction_id) VALUES(?,?,?,?)";
 
    private final static String SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN =
-      "SELECT item.gamma_id, txs.mod_type FROM osee_attribute item, osee_txs txs, osee_join_artifact artjoin WHERE txs.branch_id = ? AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.art_id and artjoin.query_id = ? order by txs.transaction_id desc";
+         "SELECT item.gamma_id, txs.mod_type FROM osee_attribute item, osee_txs txs, osee_join_artifact artjoin WHERE txs.branch_id = ? AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.art_id and artjoin.query_id = ? order by txs.transaction_id desc";
    private final static String SELECT_ARTIFACT_ADDRESSING_FROM_JOIN =
-      "SELECT item.gamma_id, txs.mod_type FROM osee_arts item, osee_txs txs, osee_join_artifact artjoin WHERE txs.branch_id = ? AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.art_id and artjoin.query_id = ? order by txs.transaction_id desc";
+         "SELECT item.gamma_id, txs.mod_type FROM osee_arts item, osee_txs txs, osee_join_artifact artjoin WHERE txs.branch_id = ? AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.art_id and artjoin.query_id = ? order by txs.transaction_id desc";
+
+   private static final String TEST_MERGE_BRANCH_EXISTENCE =
+         "SELECT count(1) FROM osee_merge WHERE source_branch_id = ? AND dest_branch_id = ?";
 
    private boolean passedPreConditions;
    private boolean wasSuccessful;
@@ -95,7 +98,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       if (systemUserId == -1) {
          try {
             systemUserId =
-               getDatabaseService().runPreparedQueryFetchObject(-1, USER_ID_QUERY, SystemUser.OseeSystem.getUserID());
+                  getDatabaseService().runPreparedQueryFetchObject(-1, USER_ID_QUERY, SystemUser.OseeSystem.getUserID());
          } catch (OseeDataStoreException ex) {
             OseeLog.log(Activator.class, Level.WARNING, "Unable to retrieve the system user");
          }
@@ -103,15 +106,21 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       return systemUserId;
    }
 
-   public void checkPreconditions(IProgressMonitor monitor) throws OseeCoreException {
-      if (!request.getBranchType().isMergeBranch() && !request.getBranchType().isSystemRootBranch()) {
+   public void checkPreconditions(IProgressMonitor monitor, Branch parentBranch, Branch destinationBranch) throws OseeCoreException {
+      if (request.getBranchType().isMergeBranch()) {
+         if (getDatabaseService().runPreparedQueryFetchObject(0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch.getId(),
+               destinationBranch.getId()) > 0) {
+            throw new OseeStateException(String.format("Existing merge branch detected for [%s] and [%s]",
+                  parentBranch.getName(), destinationBranch.getName()));
+         }
+      } else if (!request.getBranchType().isSystemRootBranch()) {
          int associatedArtifactId = request.getAssociatedArtifactId();
          int systemUserId = getSystemUserId();
          if (associatedArtifactId > -1 && associatedArtifactId != systemUserId) {
             int count =
-               getDatabaseService().runPreparedQueryFetchObject(0,
-                     "select (1) from osee_branch where associated_art_id=? and branch_state <> ?",
-                     request.getAssociatedArtifactId(), BranchState.DELETED.getValue());
+                  getDatabaseService().runPreparedQueryFetchObject(0,
+                        "select (1) from osee_branch where associated_art_id=? and branch_state <> ?",
+                        request.getAssociatedArtifactId(), BranchState.DELETED.getValue());
             if (count > 0) {
                throw new OseeStateException(String.format("Existing branch creation detected for [%s]",
                      request.getBranchName()));
@@ -123,11 +132,14 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    @SuppressWarnings("unchecked")
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
+      BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
+      Branch parentBranch = branchCache.getById(request.getParentBranchId());
+      Branch destinationBranch = branchCache.getById(request.getDestinationBranchId());
+
       passedPreConditions = false;
-      checkPreconditions(monitor);
+      checkPreconditions(monitor, parentBranch, destinationBranch);
       passedPreConditions = true;
 
-      BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
       TransactionCache txCache = cachingService.getOseeCachingService().getTransactionCache();
 
       String guid = request.getBranchGuid();
@@ -135,10 +147,10 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
          guid = GUID.create();
       }
       branch =
-         factoryService.getOseeFactoryService().getBranchFactory().create(guid, request.getBranchName(),
-               request.getBranchType(), BranchState.CREATION_IN_PROGRESS, false);
+            factoryService.getOseeFactoryService().getBranchFactory().create(guid, request.getBranchName(),
+                  request.getBranchType(), BranchState.CREATION_IN_PROGRESS, false);
 
-      branch.setParentBranch(branchCache.getById(request.getParentBranchId()));
+      branch.setParentBranch(parentBranch);
       branch.setAssociatedArtifact(new DefaultBasicArtifact(request.getAssociatedArtifactId(), "", ""));
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
@@ -146,9 +158,9 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
 
       if (branch.getBranchType().isSystemRootBranch()) {
          TransactionRecord systemTx =
-            factoryService.getOseeFactoryService().getTransactionFactory().create(nextTransactionId, branch.getId(),
-                  request.getCreationComment(), timestamp, request.getAuthorId(), -1,
-                  TransactionDetailsType.Baselined);
+               factoryService.getOseeFactoryService().getTransactionFactory().create(nextTransactionId, branch.getId(),
+                     request.getCreationComment(), timestamp, request.getAuthorId(), -1,
+                     TransactionDetailsType.Baselined);
          systemTx.setBranchCache(branchCache);
          branch.setSourceTransaction(systemTx);
       } else {
@@ -156,8 +168,8 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       }
 
       if (branch.getBranchType().isMergeBranch()) {
-         ((MergeBranch) branch).setSourceBranch(branchCache.getById(request.getParentBranchId()));
-         ((MergeBranch) branch).setDestinationBranch(branchCache.getById(request.getDestinationBranchId()));
+         ((MergeBranch) branch).setSourceBranch(parentBranch);
+         ((MergeBranch) branch).setDestinationBranch(destinationBranch);
       }
 
       branchCache.cache(branch);
@@ -167,8 +179,8 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
             request.getCreationComment(), timestamp, request.getAuthorId(), TransactionDetailsType.Baselined.getId());
 
       TransactionRecord record =
-         factoryService.getOseeFactoryService().getTransactionFactory().create(nextTransactionId, branch.getId(),
-               request.getCreationComment(), timestamp, request.getAuthorId(), -1, TransactionDetailsType.Baselined);
+            factoryService.getOseeFactoryService().getTransactionFactory().create(nextTransactionId, branch.getId(),
+                  request.getCreationComment(), timestamp, request.getAuthorId(), -1, TransactionDetailsType.Baselined);
 
       record.setBranchCache(branchCache);
       if (branch.getBranchType().isSystemRootBranch()) {
