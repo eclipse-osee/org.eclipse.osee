@@ -92,7 +92,6 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
    attribute "ats.Category2"
    attribute "ats.Category3"
    attribute "ats.Points"
-   attribute "ats.Goal Order Vote"
    attribute "ats.Numeric1"
    attribute "ats.Numeric2"
    attribute "ats.Current State"
@@ -109,6 +108,18 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
 
 artifactType "Goal" extends "ats.State Machine" {
    guid "ABMgU119UjI_Q23Yu+gA"
+   attribute "ats.Change Type"
+   attribute "ats.Need By"
+   attribute "ats.Priority"
+   attribute "ats.Goal Order Vote"
+}
+
+artifactType "Team Workflow" extends "ats.State Machine" {
+   guid "AAMFDhSiF2OD+wiUqugA"
+   attribute "ats.Actionable Item"
+   attribute "ats.Branch Metrics"
+   attribute "ats.Baseline Branch Guid"
+   attribute "ats.Validation Required"
    attribute "ats.Weekly Benefit"
    attribute "ats.Change Type"
    attribute "ats.Legacy PCR Id"
@@ -125,14 +136,6 @@ artifactType "Task" extends "ats.State Machine" {
    guid "AAMFDhbTAAB6h+06fuAA"
    attribute "ats.Related To State"
    attribute "ats.Uses Resolution Options"
-}
-
-artifactType "Team Workflow" extends "ats.State Machine" {
-   guid "AAMFDhSiF2OD+wiUqugA"
-   attribute "ats.Actionable Item"
-   attribute "ats.Branch Metrics"
-   attribute "ats.Baseline Branch Guid"
-   attribute "ats.Validation Required"
 }
 
 attributeType "ats.Baseline Branch Guid" extends StringAttribute {
