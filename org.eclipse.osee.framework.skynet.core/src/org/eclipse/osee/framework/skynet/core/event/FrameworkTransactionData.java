@@ -11,14 +11,11 @@
 package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
@@ -77,16 +74,11 @@ public class FrameworkTransactionData {
    public int branchId = -1;
 
    public static enum ChangeType {
-      Changed,
-      Deleted,
-      Added,
-      All
+      Changed, Deleted, Added, All
    };
 
    /**
     * Return branchId of loaded artifacts or -1 if no loaded artifacts
-    * 
-    * @return branchId
     */
    public Integer getBranchId() {
       return branchId;
@@ -115,32 +107,9 @@ public class FrameworkTransactionData {
       }
    }
 
-   @Deprecated
-   public Collection<Integer> getArtifactIdsOfArtifactType(ArtifactType artifactType, ArtifactModType artifactModType) throws OseeCoreException {
-      // this method is broken and must be euthanized
-      Collection<ArtifactModType> artifactModTypes =
-            org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(artifactModType);
-      if (artifactType == null) {
-         return Collections.emptyList();
-      }
-      Set<Integer> artIds = new HashSet<Integer>();
-      for (ArtifactTransactionModifiedEvent modEvent : xModifiedEvents) {
-         if (modEvent instanceof ArtifactModifiedEvent) {
-            if (artifactModTypes.contains(artifactModType) && ((ArtifactModifiedEvent) modEvent).unloadedArtifact.getArtifactTypeId() == artifactType.getId()) {
-               artIds.add(((ArtifactModifiedEvent) modEvent).unloadedArtifact.getArtifactId());
-            }
-         }
-      }
-      return artIds;
-   }
-
    /**
     * Return artifacts related to this artifact from event service loadedRelations collection. This will bulk load all
     * opposite-side artifacts if they are not already loaded.
-    * 
-    * @param cacheRelations
-    * @return collection of related artifacts
-    * @throws OseeCoreException
     */
    public Collection<Artifact> getRelatedArtifacts(int artId, int relationTypeId, int branchId, Collection<LoadedRelation> loadedRelations) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
@@ -186,16 +155,10 @@ public class FrameworkTransactionData {
 
    }
 
-   /**
-    * @return true if any event was found
-    */
    public boolean isHasEvent(Artifact artifact) {
       return isHasEvent(artifact.getArtId());
    }
 
-   /**
-    * @return true if any event was found
-    */
    public boolean isHasEvent(int artId) {
       return isChanged(artId) || isDeleted(artId) || isRelChange(artId) || isRelDeleted(artId) || isRelAdded(artId);
    }
@@ -228,8 +191,6 @@ public class FrameworkTransactionData {
 
    /**
     * Relation rationale or order changed
-    * 
-    * @param artifact
     */
    public boolean isRelChange(Artifact artifact) {
       return isRelChange(artifact.getArtId());
@@ -237,8 +198,6 @@ public class FrameworkTransactionData {
 
    /**
     * Relation rationale or order changed
-    * 
-    * @param artifact
     */
    public boolean isRelChange(int artId) {
       for (Artifact art : cacheRelationChangedArtifacts) {
@@ -275,16 +234,10 @@ public class FrameworkTransactionData {
       return false;
    }
 
-   /**
-    * @return the xModifiedEvents
-    */
    public Collection<ArtifactTransactionModifiedEvent> getXModifiedEvents() {
       return xModifiedEvents;
    }
 
-   /**
-    * @param modifiedEvents the xModifiedEvents to set
-    */
    public void setXModifiedEvents(Collection<ArtifactTransactionModifiedEvent> modifiedEvents) {
       xModifiedEvents = modifiedEvents;
    }

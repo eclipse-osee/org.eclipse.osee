@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.group.GroupExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
+import org.eclipse.osee.framework.ui.skynet.skywalker.arttype.ArtifactTypeWalker;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.search.ui.NewSearchUI;
@@ -41,6 +42,7 @@ public class ATSPerspective implements IPerspectiveFactory {
       layout.addShowViewShortcut(BranchView.VIEW_ID);
       layout.addShowViewShortcut(GroupExplorer.VIEW_ID);
       layout.addShowViewShortcut(QuickSearchView.VIEW_ID);
+      layout.addShowViewShortcut(ArtifactTypeWalker.VIEW_ID);
       layout.addShowViewShortcut("osee.admin.AdminView");
       layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");
       layout.addShowViewShortcut("org.eclipse.ui.views.PropertySheet");

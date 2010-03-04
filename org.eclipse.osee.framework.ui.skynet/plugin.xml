@@ -157,6 +157,13 @@
         id="org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView"
         name="Merge View">
   </view>
+     <view
+         class="org.eclipse.osee.framework.ui.skynet.skywalker.arttype.ArtifactTypeWalker"
+         icon="images/gear.gif"
+         category="osee.jdk.core.category"
+         name="Artifact Type Walker"
+         id="org.eclipse.osee.framework.ui.skynet.skywalker.ArtifactTypeWalkerView">
+   </view>
   <view
         allowMultiple="true"
         category="osee.jdk.core.category"

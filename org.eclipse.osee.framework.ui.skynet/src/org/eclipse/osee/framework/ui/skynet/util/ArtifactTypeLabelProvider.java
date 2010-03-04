@@ -24,11 +24,17 @@ import org.eclipse.swt.graphics.Image;
 public class ArtifactTypeLabelProvider implements ILabelProvider {
 
    public Image getImage(Object arg0) {
-      return ArtifactImageManager.getImage(((ArtifactType) arg0));
+      if (arg0 instanceof ArtifactType) {
+         return ArtifactImageManager.getImage(((ArtifactType) arg0));
+      }
+      return null;
    }
 
    public String getText(Object arg0) {
-      return ((ArtifactType) arg0).getName();
+      if (arg0 instanceof ArtifactType) {
+         return ((ArtifactType) arg0).getName();
+      }
+      return "";
    }
 
    public void addListener(ILabelProviderListener arg0) {
