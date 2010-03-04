@@ -31,11 +31,8 @@ public class AtsGoalInWorkPageDefinition extends WorkPageDefinition {
       super(name, pageId, parentId);
       addWorkItem("ats.Title");
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
-      addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName());
+      addWorkItem(AtsWorkDefinitions.ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID);
       addWorkItem(ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName());
    }
 
 }

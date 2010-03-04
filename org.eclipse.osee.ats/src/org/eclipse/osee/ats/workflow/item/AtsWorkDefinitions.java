@@ -65,6 +65,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
    public static String ATS_TITLE_ID = "ats.Title";
    public static String ATS_DESCRIPTION_NOT_REQUIRED_ID =
          ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName() + ".notRequired";
+   public static String ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID = ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE + ".notRequired";
    public static enum RuleWorkItemId {
       atsRequireStateHourSpentPrompt("Work Page Option: Will popup a dialog to prompt user for time spent in this state."),
       atsAddDecisionValidateBlockingReview("Work Page Option: Will auto-create a blocking decision review for this state requesting validation for this workflow."),
@@ -162,6 +163,9 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
             XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, "XFloatDam",
             XOption.REQUIRED));
+      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(),
+            ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID, ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), "XFloatDam",
+            XOption.NOT_REQUIRED));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE, "XDateDam",
             XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE,
