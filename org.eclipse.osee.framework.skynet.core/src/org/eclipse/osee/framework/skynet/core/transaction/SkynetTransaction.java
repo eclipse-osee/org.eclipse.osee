@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -301,10 +300,10 @@ public class SkynetTransaction extends DbTransaction {
 
       ModificationType modificationType;
 
+      Artifact aArtifact = ArtifactCache.getActive(link.getAArtifactId(), link.getABranch());
+      Artifact bArtifact = ArtifactCache.getActive(link.getBArtifactId(), link.getBBranch());
       if (link.isInDb()) {
          if (link.isDeleted()) {
-            Artifact aArtifact = ArtifactCache.getActive(link.getAArtifactId(), link.getABranch());
-            Artifact bArtifact = ArtifactCache.getActive(link.getBArtifactId(), link.getBBranch());
 
             if (aArtifact != null && aArtifact.isDeleted() || bArtifact != null && bArtifact.isDeleted()) {
                modificationType = ModificationType.ARTIFACT_DELETED;
@@ -319,18 +318,15 @@ public class SkynetTransaction extends DbTransaction {
             return;
          }
 
-         Artifact aArtifact = link.getArtifact(RelationSide.SIDE_A);
-         if (!aArtifact.isInDb()) {
-            aArtifact.persist(this);
-         }
-         Artifact bArtifact = link.getArtifact(RelationSide.SIDE_B);
-         if (!bArtifact.isInDb()) {
-            bArtifact.persist(this);
-         }
-
          link.internalSetRelationId(ConnectionHandler.getSequence().getNextRelationId());
          modificationType = ModificationType.NEW;
       }
+      /**
+       * Always want to persist artifacts on other side of dirty relation. This is necessary for ordering attribute to
+       * be persisted and desired for other cases.
+       */
+      if (aArtifact != null) aArtifact.persist(this);
+      if (bArtifact != null) bArtifact.persist(this);
 
       BaseTransactionData txItem = transactionDataItems.get(RelationTransactionData.class, link.getRelationId());
       if (txItem == null) {
