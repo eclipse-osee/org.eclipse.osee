@@ -37,11 +37,17 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    private static IFolder workingFolder;
    private static IFolder diffFolder;
    private static IFolder previewFolder;
+   private static IFolder mergeEditFolder;
    private static boolean noPopups = false;
 
    @Override
    public void open(List<Artifact> artifacts) throws OseeCoreException {
       internalOpen(artifacts, PresentationType.SPECIALIZED_EDIT);
+   }
+   
+   @Override
+   public void openMergeEdit(List<Artifact> artifacts) throws OseeCoreException {
+      internalOpen(artifacts, PresentationType.MERGE_EDIT);
    }
 
    public IFolder getRenderFolder(Branch branch, PresentationType presentationType) throws OseeCoreException {
@@ -126,6 +132,12 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                previewFolder = OseeData.getFolder(".preview");
             }
             return previewFolder;
+            
+         case MERGE_EDIT:
+            if (mergeEditFolder == null || !mergeEditFolder.exists()) {
+               mergeEditFolder = OseeData.getFolder(".mergeEdit");
+            }
+            return mergeEditFolder;
 
          default:
             throw new OseeArgumentException("Unexpected presentation type");

@@ -315,7 +315,7 @@ public class MergeUtility {
                            Thread.sleep(500);
                         }
                         monitor.done();
-                        RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
+                        RendererManager.openMergeEditJob(attributeConflict.getArtifact());
 
                      } catch (Exception ex) {
                         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

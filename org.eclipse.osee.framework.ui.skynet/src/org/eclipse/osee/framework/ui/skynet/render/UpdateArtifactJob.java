@@ -50,6 +50,9 @@ import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
+import org.eclipse.osee.framework.ui.skynet.render.artifactElement.IElementExtractor;
+import org.eclipse.osee.framework.ui.skynet.render.artifactElement.MergeEditArtifactElementExtractor;
+import org.eclipse.osee.framework.ui.skynet.render.artifactElement.WordArtifactElementExtractor;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -86,31 +89,49 @@ public class UpdateArtifactJob extends UpdateJob {
    private void processUpdate() throws Exception {
       Branch branch = BranchManager.fromFileName(workingFile.getParentFile().getName());
       if (branch.isEditable()) {
-         processDocumentUpdates(branch);
+         Matcher singleEditMatcher = guidPattern.matcher(workingFile.getName());
+         Matcher multiEditMatcher = multiPattern.matcher(workingFile.getName());
+         Document document = extractJaxpDocument();
+         WordArtifactElementExtractor elementExtractor = new WordArtifactElementExtractor(document);
+         
+         if (singleEditMatcher.matches()) {
+            singleGuid = singleEditMatcher.group(1);
+            
+            if(isMergeEdit()){
+               processMergeEdit(new MergeEditArtifactElementExtractor(document), branch);
+            }else{
+               Artifact artifact = ArtifactQuery.getArtifactFromId(singleGuid, branch);
+               processSingleEdit(elementExtractor, artifact);
+            }
+         }else  if (multiEditMatcher.matches()) {
+            processMultiEdit(elementExtractor, branch);
+         }
       }
    }
-
-   private void processDocumentUpdates(Branch branch) throws OseeCoreException, ParserConfigurationException, SAXException, IOException {
-      Matcher singleEditMatcher = guidPattern.matcher(workingFile.getName());
-      Matcher multiEditMatcher = multiPattern.matcher(workingFile.getName());
-
-      if (singleEditMatcher.matches()) {
-         singleGuid = singleEditMatcher.group(1);
-         Artifact artifact = ArtifactQuery.getArtifactFromId(singleGuid, branch);
-         processSingleEdit(artifact);
+   
+   private boolean isMergeEdit(){
+      return workingFile.getAbsolutePath().contains("mergeEdit");
+   }
+   
+   private Document extractJaxpDocument() throws ParserConfigurationException, SAXException, IOException{
+      Document document;
+      InputStream inputStream = new BufferedInputStream(new FileInputStream(workingFile));
+      try {
+         document = Jaxp.readXmlDocument(inputStream);
       }
-      else if (multiEditMatcher.matches()) {
-         processMultiEdit(branch);
+      finally {
+         Lib.close(inputStream);
       }
-      else {
-         throw new OseeArgumentException("File name did not contain the artifact guid");
-      }
+      return document;
+   }
+   
+   private void processMergeEdit(IElementExtractor elementExtractor, Branch branch) throws OseeCoreException, DOMException, ParserConfigurationException, SAXException, IOException{
+      wordArtifactUpdate(elementExtractor, branch);
    }
 
-   private void processSingleEdit(Artifact artifact) throws OseeCoreException, ParserConfigurationException, SAXException, IOException {
+   private void processSingleEdit(IElementExtractor elementExtractor, Artifact artifact) throws OseeCoreException, ParserConfigurationException, SAXException, IOException {
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
-         boolean isSingleEdit = true;
-         wordArtifactUpdate(isSingleEdit, artifact.getBranch());
+         wordArtifactUpdate(elementExtractor, artifact.getBranch());
       }
       else {
          processNativeDocuments(artifact);
@@ -129,9 +150,8 @@ public class UpdateArtifactJob extends UpdateJob {
       }
    }
 
-   private void processMultiEdit(Branch branch) throws OseeCoreException, ParserConfigurationException, SAXException, IOException {
-      boolean isSingleEdit = false;
-      wordArtifactUpdate(isSingleEdit, branch);
+   private void processMultiEdit(IElementExtractor elementExtractor, Branch branch) throws OseeCoreException, ParserConfigurationException, SAXException, IOException {
+      wordArtifactUpdate(elementExtractor, branch);
    }
 
    private void logUpdateSkip(Artifact artifact) {
@@ -158,20 +178,10 @@ public class UpdateArtifactJob extends UpdateJob {
       }
    }
 
-   private void wordArtifactUpdate(boolean isSingle, Branch branch) throws OseeCoreException, DOMException, ParserConfigurationException, SAXException, IOException {
+   private void wordArtifactUpdate(IElementExtractor elementExtractor, Branch branch) throws OseeCoreException, DOMException, ParserConfigurationException, SAXException, IOException {
       List<String> deletedGuids = new LinkedList<String>();
-      InputStream inputStream = new BufferedInputStream(new FileInputStream(workingFile));
-      Document document;
-      try {
-         document = Jaxp.readXmlDocument(inputStream);
-      }
-      finally {
-         Lib.close(inputStream);
-      }
-
-      WordArtifactElementExtractor extractor = new WordArtifactElementExtractor(document);
-      Collection<Element> artElements = extractor.extractElements(isSingle);
-      oleDataElement = extractor.getOleDataElement();
+      Collection<Element> artElements = elementExtractor.extractElements();
+      oleDataElement = elementExtractor.getOleDataElement();
 
       try {
          boolean singleArtifact = artElements.size() == 1;
@@ -252,6 +262,7 @@ public class UpdateArtifactJob extends UpdateJob {
       if (singleGuid != null) {
          return singleGuid;
       }
+      
       NamedNodeMap attributes = artifactElement.getAttributes();
       for (int i = 0; i < attributes.getLength(); i++) {
          // MS Word has a nasty habit of changing the namespace say from

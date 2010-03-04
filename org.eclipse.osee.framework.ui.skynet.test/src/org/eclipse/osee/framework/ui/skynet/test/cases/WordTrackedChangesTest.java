@@ -81,7 +81,7 @@ public class WordTrackedChangesTest {
       artifacts = Arrays.asList(newArt);
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       makeChangesToArtifact(renderer, TEST_WORD_EDIT_FILE_NAME, artifacts);
-      Thread.sleep(5000);
+      Thread.sleep(10000);
       assertTrue("Did not detect Tracked Changes Succcessfully", WordAttribute.trackedChangesDetected());
       TestUtil.severeLoggingEnd(monitorLog);
    }

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -124,6 +125,11 @@ public class DefaultArtifactRenderer implements IRenderer {
       ArtifactEditor.editArtifacts(artifacts);
    }
 
+   @Override
+   public void openMergeEdit(List<Artifact> artifacts) throws OseeCoreException{
+      ArtifactEditor.editArtifacts(artifacts);      
+   }
+   
    @Override
    public int minimumRanking() throws OseeCoreException {
       return NO_MATCH;

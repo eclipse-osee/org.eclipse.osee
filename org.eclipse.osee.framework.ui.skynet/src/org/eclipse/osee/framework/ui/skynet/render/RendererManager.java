@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -143,7 +144,7 @@ public class RendererManager {
    }
 
    public static void renderAttribute(String attrType, PresentationType presentationType, Artifact artifact, VariableMap options, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
-      getBestRenderer(PresentationType.SPECIALIZED_EDIT, artifact, options).renderAttribute(attrType, artifact,
+      getBestRenderer(presentationType, artifact, options).renderAttribute(attrType, artifact,
             presentationType, producer, options, attributeElement);
    }
 
@@ -209,6 +210,29 @@ public class RendererManager {
       };
 
       Jobs.runInJob("Open ", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
+   }
+
+   public static void openMergeEditJob(final Artifact artifact) {
+      openMergeEditJob(artifact, null);
+   }
+   
+   public static void openMergeEditJob(final Artifact artifact, final VariableMap options) {
+      IExceptionableRunnable runnable = new IExceptionableRunnable() {
+         public IStatus run(IProgressMonitor monitor) throws Exception {
+            ArrayList<Artifact> artifactList = new ArrayList<Artifact>(1);
+            artifactList.add(artifact);
+            
+            HashCollection<IRenderer, Artifact> rendererArtifactMap =
+                  createRenderMap(PresentationType.MERGE_EDIT, artifactList, options);
+
+            for (IRenderer renderer : rendererArtifactMap.keySet()) {
+               renderer.openMergeEdit((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer));
+            }
+            return Status.OK_STATUS;
+         }
+      };
+
+      Jobs.runInJob("Merge Edit ", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
    }
 
    public static void previewInJob(final Artifact artifact) throws OseeCoreException {

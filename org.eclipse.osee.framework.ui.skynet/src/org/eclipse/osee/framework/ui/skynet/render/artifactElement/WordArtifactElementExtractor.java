@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.render;
+package org.eclipse.osee.framework.ui.skynet.render.artifactElement;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -30,27 +30,30 @@ import org.xml.sax.SAXException;
 /**
  * @author Jeff C. Phillips
  */
-public class WordArtifactElementExtractor {
+public class WordArtifactElementExtractor  implements IElementExtractor{
    private Element oleDataElement;
    private final Document document;
+   int numberOfStartTags;
+   int numberOfEndTags;
    
-   public WordArtifactElementExtractor(Document document) {
+   public WordArtifactElementExtractor(Document document){
       super();
       this.document = document;
+      this.numberOfEndTags = 0;
+      this.numberOfStartTags = 0;
    }
 
    public Element getOleDataElement() {
       return oleDataElement;
    }
 
-   public Collection<Element> extractElements(boolean isSingleEdit) throws DOMException, ParserConfigurationException, SAXException, IOException, OseeCoreException{
+   public Collection<Element> extractElements() throws DOMException, ParserConfigurationException, SAXException, IOException, OseeCoreException{
       final Collection<Element> artifactElements = new LinkedList<Element>();
       final String elementNameForWordAttribute = WordUtil.elementNameFor("hlink");
-      Collection<Element> sectList = new LinkedList<Element>();
       Element rootElement = document.getDocumentElement();
-      Element body = null;
-      boolean containsEditTag = false;
       oleDataElement = null;
+      numberOfStartTags = 0;
+      numberOfEndTags = 0;
 
       NodeList nodeList = rootElement.getElementsByTagName("*");
       Node artifactTagParentNode = null;
@@ -61,14 +64,14 @@ public class WordArtifactElementExtractor {
          Element element = (Element) nodeList.item(i);
          if (isArtifactEditTag(elementNameForWordAttribute, element)) {
             if(parseState == ParseState.LOOKING_FOR_START){
+               numberOfStartTags++;
                parseState = ParseState.LOOKING_FOR_END;
                artifactTagParentNode = element.getParentNode().getParentNode();  
-               containsEditTag = true;
-               
                newArtifactElement = document.createElement("WordAttribute.WORD_TEMPLATE_CONTENT");
                populateNewArtifactElementFromHlink(newArtifactElement,element);
                artifactElements.add(newArtifactElement);
             }else if(parseState == ParseState.LOOKING_FOR_END){
+               numberOfEndTags++;
                parseState = ParseState.LOOKING_FOR_START;
                artifactTagParentNode = null;
             }
@@ -76,65 +79,18 @@ public class WordArtifactElementExtractor {
                && !isArtifactEditTag(elementNameForWordAttribute, element.getFirstChild())){
             newArtifactElement.appendChild(element.cloneNode(true));
          }
-         if (element.getNodeName().endsWith("wx:sect")) {
-            //handle the case where there exists two wx:sext elements
-            if (element != null) {
-               sectList.add(element);
-            }
-         }
-         if (element.getNodeName().endsWith("body") && isSingleEdit) {
-            artifactElements.add(element);
-            body = element;
-         } else if (oleDataElement == null && element.getNodeName().endsWith("docOleData")) {
-            oleDataElement = element;
-         }
       }
-      //When creating a three way merge the tags are not added as they create conflicts.  Therefore
-      //we remove template information using the listnum fldChar tag.  The following code checks for the 
-      //attribute tags and if they are not there removes all the paragraphs following the one that contains the 
-      //fldChar
-      if (containsEditTag) {
-         artifactElements.remove(body);
-      } else if (!sectList.isEmpty()) {
-         handleMultiSectTags(sectList);
-      }
+      
+      validateEditTags();
       return artifactElements;
    }
    
-   private void handleMultiSectTags(Collection<Element> sectList) throws OseeCoreException {
-      boolean containTag = false;
-      // need to check all wx:sect for the listnum tag
-      for (Element sectElem : sectList) {
-         containTag |= cleanUpParagraph(sectElem);
-      }
-      if (!containTag) {
-         throw new OseeCoreException("This document does not contain the approporate tags to be correctly saved.");
+   private void validateEditTags() throws OseeCoreException{
+      if(numberOfStartTags == 0 || numberOfEndTags != numberOfStartTags){
+         throw new OseeCoreException("This document is missing start/end edit tags, therefore the document will not be saved. You can re-edit the artifact and the edit tags should reappear.");
       }
    }
    
-   //To handle the case of sub-sections
-   private boolean cleanUpParagraph(Node rootNode) throws OseeCoreException {
-      boolean worked = false;
-      boolean delete = false;
-      Node node = rootNode.getFirstChild();
-      while (node != null) {
-         Node nextNode = node.getNextSibling();
-         if (node.getNodeName().endsWith("sub-section")) {
-            worked = cleanUpParagraph(node);
-         } else {
-            String content = node.getTextContent();
-            if (content != null && content.contains("LISTNUM\"listreset\"")) {
-               delete = true;
-            }
-            if (delete) {
-               rootNode.removeChild(node);
-            }
-         }
-         node = nextNode;
-      }
-      return worked || delete;
-   }
-
    /**
     * @param newArtifactElement 
     * @param element
@@ -163,4 +119,5 @@ public class WordArtifactElementExtractor {
    private enum ParseState{
       LOOKING_FOR_START, LOOKING_FOR_END;
    }
+
 }
