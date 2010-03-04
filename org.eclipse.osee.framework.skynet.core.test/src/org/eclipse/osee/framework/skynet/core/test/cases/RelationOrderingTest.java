@@ -184,9 +184,6 @@ public class RelationOrderingTest {
     * This tests the case where a parent artifact already exists and is persisted in the database with ordered children.
     * Then a new artifact is created and added with a persist() call on the artifact. This persists the new artifact and
     * the new relation, but does not persist the relation order attribute stored on the parent.<br>
-    * <br>
-    * TODO Fix the persist logic to persist the other side artifact if dirty. Currently, it only persists the other side
-    * if not in db yet. Once this is done, this test should pass
     */
    @Test
    public void testOrderPersist() throws OseeCoreException {
@@ -223,9 +220,7 @@ public class RelationOrderingTest {
       }
       Assert.assertFalse(newArtifact.isDirty());
 
-      Assert.assertFalse(
-            "Artifact should not be dirty.  NOTE: This test should fail until fixes made to persist.  See test javadoc",
-            mainFolder.isDirty());
+      Assert.assertFalse("Artifact should not be dirty.", mainFolder.isDirty());
    }
 
    private Artifact createArtifact(String type, Branch branch) throws OseeCoreException {
