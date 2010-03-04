@@ -19,11 +19,11 @@ import org.eclipse.osee.framework.database.internal.Activator;
  */
 public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private static final String SELECT_ADDRESSES =
-         "select %s, txs.branch_id, txs.transaction_id, txs.gamma_id, txs.mod_type, txs.tx_current, txd.tx_type from %s t1, osee_txs txs, osee_tx_details txd where t1.gamma_id = txs.gamma_id and txd.transaction_id = txs.transaction_id and txs.branch_id = txd.branch_id order by txs.branch_id, %s, txs.transaction_id desc, txs.gamma_id desc";
+         "select %s, txs.branch_id, txs.transaction_id, txs.gamma_id, txs.mod_type, txs.tx_current, txd.tx_type from %s t1, osee_txs%s txs, osee_tx_details txd where t1.gamma_id = txs.gamma_id and txd.transaction_id = txs.transaction_id and txs.branch_id = txd.branch_id order by txs.branch_id, %s, txs.transaction_id desc, txs.gamma_id desc";
 
-   private static final String DELETE_ADDRESS = "delete from osee_txs where transaction_id = ? and gamma_id = ?";
+   private static final String DELETE_ADDRESS = "delete from osee_txs%s where transaction_id = ? and gamma_id = ?";
    private static final String UPDATE_ADDRESS =
-         "update osee_txs set tx_current = ? where transaction_id = ? and gamma_id = ?";
+         "update osee_txs%s set tx_current = ? where transaction_id = ? and gamma_id = ?";
 
    private final List<Address> addresses = new ArrayList<Address>();
    private final OperationReporter reporter;
@@ -33,20 +33,22 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private final String tableName;
    private final String columnName;
    private final boolean isFixOperationEnabled;
+   private final String txsTableName;
 
-   public InvalidTxCurrentsAndModTypes(String tableName, String columnName, OperationReporter reporter, boolean isFixOperationEnabled) {
-      super("InvalidTxCurrentsAndModTypes " + tableName, Activator.PLUGIN_ID);
+   public InvalidTxCurrentsAndModTypes(String tableName, String columnName, OperationReporter reporter, boolean isFixOperationEnabled, boolean archived) {
+      super("InvalidTxCurrentsAndModTypes " + tableName + " " + archived, Activator.PLUGIN_ID);
       this.tableName = tableName;
       this.columnName = columnName;
       this.isFixOperationEnabled = isFixOperationEnabled;
       this.reporter = reporter;
+      txsTableName = archived ? "_archived" : "";
    }
 
    private void fixIssues(IProgressMonitor monitor) throws OseeDataStoreException {
       if (isFixOperationEnabled) {
          checkForCancelledStatus(monitor);
-         ConnectionHandler.runBatchUpdate(DELETE_ADDRESS, purgeData);
-         ConnectionHandler.runBatchUpdate(UPDATE_ADDRESS, currentData);
+         ConnectionHandler.runBatchUpdate(String.format(DELETE_ADDRESS, txsTableName), purgeData);
+         ConnectionHandler.runBatchUpdate(String.format(UPDATE_ADDRESS, txsTableName), currentData);
       }
       monitor.worked(calculateWork(0.1));
    }
@@ -213,7 +215,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       checkForCancelledStatus(monitor);
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
-      String sql = String.format(SELECT_ADDRESSES, columnName, tableName, columnName);
+      String sql = String.format(SELECT_ADDRESSES, columnName, tableName, txsTableName, columnName);
       try {
          chStmt.runPreparedQuery(10000, sql);
          monitor.worked(calculateWork(0.40));

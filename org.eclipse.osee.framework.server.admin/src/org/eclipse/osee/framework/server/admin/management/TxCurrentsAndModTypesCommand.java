@@ -21,9 +21,11 @@ import org.eclipse.osgi.framework.console.CommandInterpreter;
  * @author Ryan D. Brooks
  */
 public class TxCurrentsAndModTypesCommand extends BaseServerCommand {
+   private final boolean archived;
 
    public TxCurrentsAndModTypesCommand(CommandInterpreter ci) {
       super("TxCurrents And Mod Types", ci);
+      archived = Boolean.parseBoolean(ci.nextArgument());
    }
 
    @Override
@@ -40,6 +42,6 @@ public class TxCurrentsAndModTypesCommand extends BaseServerCommand {
 
    private void checkAndFix(String tableName, String columnName, IProgressMonitor monitor) throws Exception {
       doSubWork(new InvalidTxCurrentsAndModTypes(tableName, columnName, new CommandInterpreterReporter(
-            getCommandInterpreter()), true), monitor, 0.3);
+            getCommandInterpreter()), true, archived), monitor, 0.3);
    }
 }

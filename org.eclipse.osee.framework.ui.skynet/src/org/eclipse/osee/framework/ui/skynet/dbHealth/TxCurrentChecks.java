@@ -33,7 +33,6 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
       checkAndFix("osee_relation_link", "rel_link_id", monitor);
    }
 
-
    private void checkAndFix(String tableName, String columnName, IProgressMonitor monitor) throws Exception {
       ResultsEditorTableTab resultsTab = new ResultsEditorTableTab(tableName + " currents");
       getResultsProvider().addResultsTab(resultsTab);
@@ -46,9 +45,9 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
       resultsTab.addColumn(new XViewerColumn("7", "TX Current", 80, SWT.LEFT, true, SortDataType.String, false, ""));
 
       doSubWork(new InvalidTxCurrentsAndModTypes(tableName, columnName, new ResultsReporter(resultsTab),
-            isFixOperationEnabled()), monitor, 0.3);
+            isFixOperationEnabled(), true), monitor, 0.3);
    }
-   
+
    private static class ResultsReporter implements OperationReporter {
       private final ResultsEditorTableTab resultsTab;
 
