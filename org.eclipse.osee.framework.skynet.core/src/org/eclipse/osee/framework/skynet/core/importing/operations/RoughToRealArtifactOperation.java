@@ -81,7 +81,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       if (deleteUnmatchedArtifacts && !unmatchedArtifacts.isEmpty()) {
          System.out.println("Will delete:");
          for (Artifact toDelete : unmatchedArtifacts) {
-            System.out.println("\t" + toDelete.getName());
+            System.out.println(String.format("\t%s (%s)", toDelete.getName(), toDelete.getGuid()));
             toDelete.deleteAndPersist(transaction);
          }
       }
@@ -115,6 +115,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
    private void removeOtherParent(Artifact child, Artifact parent) throws OseeCoreException {
       if (hasDifferentParent(child, parent)) {
          child.deleteRelations(Default_Hierarchical__Parent);
+         child.persist(transaction);
       }
    }
 

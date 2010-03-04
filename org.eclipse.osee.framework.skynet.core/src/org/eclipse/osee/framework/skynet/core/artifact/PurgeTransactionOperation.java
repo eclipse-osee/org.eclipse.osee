@@ -54,7 +54,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    private final static String DELETE_ATTRIBUTES = "DELETE FROM osee_attribute " + DELETE_POSTFIX;
    private final static String DELETE_RELATIONS = "DELETE FROM osee_relation_link " + DELETE_POSTFIX;
 
-   private final static String DELETE_TXS = "delete from osee_txs where transaction_id = ?;";
+   private final static String DELETE_TXS = "delete from osee_txs where transaction_id = ?";
 
    private final static String TRANSACATION_GAMMA_IN_USE =
          "SELECT txs1.transaction_id FROM osee_txs txs1, osee_txs txs2, osee_join_transaction jn where txs1.transaction_id = jn.transaction_id AND txs1.gamma_id = txs2.gamma_id and txs2.transaction_id != txs1.transaction_id AND jn.query_id = ?";
@@ -192,7 +192,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
 
    private void deleteTxCurrent(OseeConnection connection) throws OseeCoreException {
       for (int txId : txIdsToDelete) {
-         ConnectionHandler.runPreparedUpdate(connection, DELETE_TXS, Integer.valueOf(txId));
+         ConnectionHandler.runPreparedUpdate(connection, DELETE_TXS, txId);
       }
    }
 

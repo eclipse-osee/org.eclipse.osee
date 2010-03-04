@@ -108,7 +108,7 @@ public class PurgeTransactionTest {
    }
 
    private int getCurrentRows() throws OseeCoreException {
-      final String query = "select count(*) from osee_txs where transaction_id=? and tx_current=1;";
+      final String query = "select count(*) from osee_txs where transaction_id=? and tx_current=1";
       return ConnectionHandler.runPreparedQueryFetchInt(-1, query, createId);
    }
 }
