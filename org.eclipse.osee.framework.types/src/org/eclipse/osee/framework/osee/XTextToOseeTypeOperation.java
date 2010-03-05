@@ -11,8 +11,11 @@
 package org.eclipse.osee.framework.osee;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
@@ -112,12 +115,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    private void handleXArtifactTypeCrossRef(XArtifactType xArtifactType) throws OseeCoreException {
       ArtifactType targetArtifactType = typeCache.getArtifactTypeCache().getByGuid(xArtifactType.getTypeGuid());
       translateSuperTypes(targetArtifactType, xArtifactType);
-      HashCollection<Branch, AttributeType> validAttributesPerBranch = getOseeAttributes(xArtifactType);
-
-      for (Branch branch : validAttributesPerBranch.keySet()) {
-         List<AttributeType> oseeAttributeTypes = validAttributesPerBranch.getValues();
-         targetArtifactType.setAttributeTypes(oseeAttributeTypes, branch);
-      }
+      Map<Branch, Collection<AttributeType>> validAttributesPerBranch = getOseeAttributes(xArtifactType);
+      targetArtifactType.setAllAttributeTypes(validAttributesPerBranch);
    }
 
    private void translateSuperTypes(ArtifactType targetArtifactType, XArtifactType xArtifactType) throws OseeCoreException {
@@ -133,15 +132,17 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       }
    }
 
-   private HashCollection<Branch, AttributeType> getOseeAttributes(XArtifactType xArtifactType) throws OseeCoreException {
-      HashCollection<Branch, AttributeType> validAttributes =
-            new HashCollection<Branch, AttributeType>(false, HashSet.class);
+   private Map<Branch, Collection<AttributeType>> getOseeAttributes(XArtifactType xArtifactType) throws OseeCoreException {
+      Map<Branch, Collection<AttributeType>> validAttributes = new HashMap<Branch, Collection<AttributeType>>();
       for (XAttributeTypeRef xAttributeTypeRef : xArtifactType.getValidAttributeTypes()) {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
          Branch branch = getAttributeBranch(xAttributeTypeRef);
          AttributeType oseeAttributeType = typeCache.getAttributeTypeCache().getByGuid(xAttributeType.getTypeGuid());
          if (oseeAttributeType != null) {
-            validAttributes.put(branch, oseeAttributeType);
+            if (validAttributes.get(branch) == null) {
+               validAttributes.put(branch, new HashSet<AttributeType>());
+            }
+            validAttributes.get(branch).add(oseeAttributeType);
          } else {
             System.out.println(String.format("Type was null for \"%s\"", xArtifactType.getName()));
          }

@@ -99,6 +99,11 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
       IOseeField<?> field = getField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
       ((ArtifactTypeAttributesField) field).put(branch, attributeTypes);
    }
+   
+   public void setAllAttributeTypes(Map<Branch, Collection<AttributeType>> attributeTypes) throws OseeCoreException {
+      IOseeField<?> field = getField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
+      ((ArtifactTypeAttributesField) field).set(attributeTypes);
+   }
 
    public boolean isValidAttributeType(IAttributeType attributeType, Branch branch) throws OseeCoreException {
       return getAttributeTypes(branch).contains(attributeType);
