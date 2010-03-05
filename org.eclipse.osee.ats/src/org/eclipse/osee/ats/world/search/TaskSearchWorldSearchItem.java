@@ -334,9 +334,9 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       return teamCombo.getSelectedTeamDefintions();
    }
 
-   public void setSelectedTeamDefinitions(Collection<TeamDefinitionArtifact> selectedUsers) {
+   public void setSelectedTeamDefinitions(Collection<TeamDefinitionArtifact> selectedTeamDefs) {
       if (teamCombo != null) {
-         teamCombo.setSelectedTeamDefs(selectedUsers);
+         teamCombo.setSelectedTeamDefs(selectedTeamDefs);
          teamCombo.notifyXModifiedListeners();
       }
    }

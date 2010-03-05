@@ -344,9 +344,9 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       return teamCombo.getSelectedTeamDefintions();
    }
 
-   public void setSelectedTeamDefinitions(Set<TeamDefinitionArtifact> selectedUsers) {
+   public void setSelectedTeamDefinitions(Set<TeamDefinitionArtifact> selectedTeamDefs) {
       if (teamCombo != null) {
-         teamCombo.setSelectedTeamDefs(selectedUsers);
+         teamCombo.setSelectedTeamDefs(selectedTeamDefs);
          teamCombo.notifyXModifiedListeners();
       }
    }
