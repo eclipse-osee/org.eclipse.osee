@@ -151,7 +151,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
 
    private Branch getAttributeBranch(XAttributeTypeRef xAttributeTypeRef) throws OseeCoreException {
       String branchGuid = xAttributeTypeRef.getBranchGuid();
-      if (branchGuid == null) {
+      if (branchGuid == null || branchCache.getByGuid(branchGuid) == null) {
          return branchCache.getSystemRootBranch();
       } else {
          return branchCache.getByGuid(branchGuid);
