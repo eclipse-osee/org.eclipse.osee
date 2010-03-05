@@ -36,38 +36,35 @@ public class TeamWorkflowManager {
     * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated transition
     * for things such as developmental testing and demos.
     * 
-    * @param toState
     * @param user User to transition to OR null if should use user of current state
-    * @param popup
-    * @param transaction
-    * @return Result
-    * @throws Exception
     */
    public Result transitionTo(DefaultTeamState toState, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
-      Result result = setEndorseData(null, 100, .2);
-      if (result.isFalse()) {
-         if (popup) result.popup();
-         return result;
-      }
-      result =
-            teamArt.transition(DefaultTeamState.Analyze.name(),
-                  (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()),
-                  transaction, TransitionOption.None);
-      if (result.isFalse()) {
-         if (popup) result.popup();
-         return result;
+      if (teamArt.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Endorse.name())) {
+         Result result = setEndorseData(null, 100, .2);
+         if (result.isFalse()) {
+            if (popup) result.popup();
+            return result;
+         }
+         result =
+               teamArt.transition(DefaultTeamState.Analyze.name(),
+                     (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()), transaction,
+                     TransitionOption.None);
+         if (result.isFalse()) {
+            if (popup) result.popup();
+            return result;
+         }
       }
       if (toState == DefaultTeamState.Analyze) return Result.TrueResult;
 
-      result = setAnalyzeData(null, null, 1, 100, .2);
+      Result result = setAnalyzeData(null, null, 1, 100, .2);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
       }
       result =
             teamArt.transition(DefaultTeamState.Authorize.name(),
-                  (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()),
-                  transaction, TransitionOption.None);
+                  (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()), transaction,
+                  TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -82,8 +79,8 @@ public class TeamWorkflowManager {
 
       result =
             teamArt.transition(DefaultTeamState.Implement.name(),
-                  (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()),
-                  transaction, TransitionOption.None);
+                  (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()), transaction,
+                  TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -92,8 +89,8 @@ public class TeamWorkflowManager {
 
       result =
             teamArt.transition(DefaultTeamState.Completed.name(),
-                  (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()),
-                  transaction, TransitionOption.None);
+                  (user != null ? user : teamArt.getStateMgr().getAssignees().iterator().next()), transaction,
+                  TransitionOption.None);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
