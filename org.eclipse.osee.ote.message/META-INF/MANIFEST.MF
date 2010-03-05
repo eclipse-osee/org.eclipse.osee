@@ -25,7 +25,8 @@ Require-Bundle: org.eclipse.osee.ote.core,
  org.eclipse.osee.framework.logging,
  org.eclipse.help,
  org.eclipse.osee.ote.connection.service,
- org.eclipse.osgi
+ org.eclipse.osgi,
+ javax.xml
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.eclipse.osee.ote.message.internal.Activator
