@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.init.OseeTypesSetup;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.types.bridge.operations.ResolveImportsOperation;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -199,7 +198,7 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
          Collection<IOperation> ops = new ArrayList<IOperation>();
          ops.add(new ResolveImportsOperation(new ClassloaderClasspathUriResolver(), selectedFiles, dependencyData));
          ops.add(new CreateCombinedFile(dependencyData));
-         if (executeOperation(new CompositeOperation("Resolving imports", SkynetGuiPlugin.PLUGIN_ID, ops))) {
+         if (executeOperation(new CompositeOperation("Resolving imports", Activator.PLUGIN_ID, ops))) {
             messages.clear();
             messages.addAll(dependencyData);
             linksViewer.refresh();

@@ -3,8 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Osee Types Bridge
 Bundle-SymbolicName: org.eclipse.osee.framework.types.bridge;singleton:=true
 Bundle-Version: 0.9.2.qualifier
-Bundle-Activator: org.eclipse.osee.framework.types.bridge.internal.Activator
-Bundle-Vendor: Eclipse.org
+Fragment-Host: org.eclipse.osee.framework.ui.skynet
 Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.osee.framework.ui.plugin,
@@ -12,7 +11,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.xtext.ui.core,
  org.eclipse.osee.framework.plugin.core,
- org.eclipse.osee.framework.ui.skynet,
  org.eclipse.nebula.widgets.xviewer,
  org.eclipse.compare,
  org.eclipse.emf.compare.ui,
@@ -37,4 +35,4 @@ Import-Package: org.eclipse.osee.framework.core.cache,
  org.eclipse.osee.framework.jdk.core.util.xml,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.ui.swt
-Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Eclipse.org
