@@ -119,16 +119,12 @@ public class ConflictManagerInternal {
                destinationBranch == null ? "NULL" : destinationBranch.getId()));
       }
 
-      //      BranchState sourceBranchState = sourceBranch.getBranchState();
-      //      if (!sourceBranchState.isCreationInProgress() && !sourceBranchState.isCommitted() && !sourceBranchState.isRebaselined() && !sourceBranchState.isRebaselineInProgress()) {
-      //         sourceBranch.setBranchState(BranchState.COMMIT_IN_PROGRESS);
-      //         BranchManager.persist(sourceBranch);
-      //      }
-
       TransactionRecord commonTransaction = findCommonTransaction(sourceBranch, destinationBranch);
 
-      loadArtifactVersionConflictsNew(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
+      loadArtifactVersionConflicts(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ARTIFACTS_DEST), sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
             artIdSetDontShow, artIdSetDontAdd, monitor, commonTransaction);
+      loadArtifactVersionConflicts(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ARTIFACTS_SRC), sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
+                                      artIdSetDontShow, artIdSetDontAdd, monitor, commonTransaction);
       loadAttributeConflictsNew(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
             monitor, commonTransaction);
       for (Integer integer : artIdSetDontAdd) {
@@ -204,14 +200,14 @@ public class ConflictManagerInternal {
     * @throws OseeCoreException
     */
 
-   private static void loadArtifactVersionConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IProgressMonitor monitor, TransactionRecord transactionId) throws OseeCoreException {
+   private static void loadArtifactVersionConflicts(String sql, Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IProgressMonitor monitor, TransactionRecord transactionId) throws OseeCoreException {
       boolean hadEntries = false;
 
       monitor.subTask("Finding Artifact Version Conflicts");
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ARTIFACTS),
+         chStmt.runPreparedQuery(sql,
                sourceBranch.getId(),
                sourceBranch.getBaseTransaction().getId(),
                destinationBranch.getId(),
