@@ -92,7 +92,7 @@ public class ConflictManagerInternal {
 
    public static List<Conflict> getConflictsPerBranch(Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, IProgressMonitor monitor) throws OseeCoreException {
       @SuppressWarnings("unused")
-      // This is for bulk loading so we do not loose are references
+      // This is for bulk loading so we do not lose our references
       Collection<Artifact> bulkLoadedArtifacts;
       List<ConflictBuilder> conflictBuilders = new ArrayList<ConflictBuilder>();
       List<Conflict> conflicts = new ArrayList<Conflict>();
