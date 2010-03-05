@@ -235,7 +235,7 @@ public class CoverageUtil {
       if (!showZero && percent == 0) {
          return "0%";
       }
-      return String.format("%d%% %d/%d", percent, complete, total);
+      return String.format("%d%% - %d / %d", percent, complete, total);
    }
 
    public static boolean isAllCoverageItems(Collection<? extends ICoverage> coverages) throws OseeCoreException {

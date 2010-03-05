@@ -24,6 +24,7 @@ import org.eclipse.osee.coverage.ICoverageImporter;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
+import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.SimpleCoverageUnitFileContentsProvider;
 import org.eclipse.osee.coverage.vcast.VcpResultsFile.ResultsValue;
@@ -94,6 +95,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
 
       // Create file and subprogram Coverage Units and execution line Coverage Items
       Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();
+      Map<String, CoverageUnit> coverageNameToCoverageUnit = new HashMap<String, CoverageUnit>();
       Map<CoverageUnit, CoverageDataSubProgram> methodCoverageUnitToCoverageDataSubProgram =
             new HashMap<CoverageUnit, CoverageDataSubProgram>();
       List<VcpSourceFile> vcpSourceFiles = vCastVcp.sourceFiles;
@@ -168,12 +170,12 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                   }
                }
                fileNumToCoverageUnit.put(String.valueOf(coverageDataUnit.getIndex()), fileCoverageUnit);
+               coverageNameToCoverageUnit.put(fileCoverageUnit.getName(), fileCoverageUnit);
             }
          } catch (Exception ex) {
             coverageImport.getLog().logError(
                   String.format("Error processing coverage for [%s].  " + ex.getLocalizedMessage(), vcpSourceFile));
             continue;
-
          }
       }
 
@@ -255,6 +257,37 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                         methodCoverageUnit));
          }
       }
+
+      try {
+         coverageImport.getLog().log("\nPerforming Aggregate <-> Import Verification");
+         // Retrieve and process Aggregate file compared with import results
+         VCastAggregateReport report = new VCastAggregateReport(vectorCastCoverageImportProvider.getVCastDirectory());
+         for (AggregateCoverageUnitResult result : report.getResults()) {
+            //            System.out.println(result);
+            CoverageUnit coverageUnit = coverageNameToCoverageUnit.get(result.getName());
+            if (coverageUnit == null) {
+               coverageImport.getLog().logError(
+                     String.format("Aggregate Check: Can't locate Coverage Unit for Aggregate unit [%s]",
+                           result.getName()));
+            } else {
+               int importCuItems = coverageUnit.getCoverageItems(true).size();
+               int importCuCovered =
+                     coverageUnit.getCoverageItemsCovered(true, CoverageOptionManagerDefault.Test_Unit).size();
+               if (result.getNumLines() != importCuItems || result.getNumCovered() != importCuCovered) {
+                  coverageImport.getLog().logError(
+                        String.format(
+                              "Aggregate Check: Unit [%s] Import [%d] of [%d] doesn't match Aggregate [%d] of [%d]",
+                              result.getName(), importCuCovered, importCuItems, result.getNumCovered(),
+                              result.getNumLines()));
+               }
+            }
+         }
+         coverageImport.getLog().log("Completed Aggregate <-> Import Verification");
+
+      } catch (Exception ex) {
+         coverageImport.getLog().logError("\nError Processing Aggregate File: " + ex.getLocalizedMessage());
+      }
+
       return coverageImport;
    }
 
