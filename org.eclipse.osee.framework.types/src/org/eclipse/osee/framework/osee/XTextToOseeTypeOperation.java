@@ -68,32 +68,32 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       double workAmount = 1.0;
 
-      int count = model.getArtifactTypes().size();
-      count += model.getAttributeTypes().size();
-      count += model.getRelationTypes().size();
-      count += model.getEnumTypes().size();
-      count += model.getEnumOverrides().size();
+      int workTotal = model.getArtifactTypes().size();
+      workTotal += model.getAttributeTypes().size();
+      workTotal += model.getRelationTypes().size();
+      workTotal += model.getEnumTypes().size();
+      workTotal += model.getEnumOverrides().size();
 
-      if (count > 0) {
-         double workPercentage = workAmount / count;
+      if (workTotal > 0) {
+         double workPercentage = workAmount / workTotal;
 
          for (XArtifactType xArtifactType : model.getArtifactTypes()) {
-            handleXArtifactType(xArtifactType);
+            translateXArtifactType(xArtifactType);
             monitor.worked(calculateWork(workPercentage));
          }
 
          for (XOseeEnumOverride xEnumOverride : model.getEnumOverrides()) {
-            handleXEnumOverride(xEnumOverride);
+            translateXEnumOverride(xEnumOverride);
             monitor.worked(calculateWork(workPercentage));
          }
 
          for (XOseeEnumType xEnumType : model.getEnumTypes()) {
-            handleXEnumType(xEnumType);
+            translateXEnumType(xEnumType);
             monitor.worked(calculateWork(workPercentage));
          }
 
          for (XAttributeType xAttributeType : model.getAttributeTypes()) {
-            handleXAttributeType(xAttributeType);
+            translateXAttributeType(xAttributeType);
             monitor.worked(calculateWork(workPercentage));
          }
 
@@ -103,53 +103,58 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          }
 
          for (XRelationType xRelationType : model.getRelationTypes()) {
-            handleXRelationType(xRelationType);
+            translateXRelationType(xRelationType);
             monitor.worked(calculateWork(workPercentage));
          }
       }
    }
 
    private void handleXArtifactTypeCrossRef(XArtifactType xArtifactType) throws OseeCoreException {
-      Set<ArtifactType> oseeSuperTypes = new HashSet<ArtifactType>();
-
       ArtifactType targetArtifactType = typeCache.getArtifactTypeCache().getByGuid(xArtifactType.getTypeGuid());
+      translateSuperTypes(targetArtifactType, xArtifactType);
+      HashCollection<Branch, AttributeType> validAttributesPerBranch = getOseeAttributes(xArtifactType);
 
+      for (Branch branch : validAttributesPerBranch.keySet()) {
+         List<AttributeType> oseeAttributeTypes = validAttributesPerBranch.getValues();
+         targetArtifactType.setAttributeTypes(oseeAttributeTypes, branch);
+      }
+   }
+
+   private void translateSuperTypes(ArtifactType targetArtifactType, XArtifactType xArtifactType) throws OseeCoreException {
+      Set<ArtifactType> oseeSuperTypes = new HashSet<ArtifactType>();
       for (XArtifactType xSuperType : xArtifactType.getSuperArtifactTypes()) {
          String superTypeName = removeQuotes(xSuperType.getName());
          ArtifactType oseeSuperType = typeCache.getArtifactTypeCache().getUniqueByName(superTypeName);
          oseeSuperTypes.add(oseeSuperType);
       }
+
       if (!oseeSuperTypes.isEmpty()) {
          targetArtifactType.setSuperTypes(oseeSuperTypes);
       }
+   }
 
-      Branch systemRoot = branchCache.getSystemRootBranch();
-      HashCollection<Branch, AttributeType> items = new HashCollection<Branch, AttributeType>(false, HashSet.class);
+   private HashCollection<Branch, AttributeType> getOseeAttributes(XArtifactType xArtifactType) throws OseeCoreException {
+      HashCollection<Branch, AttributeType> validAttributes =
+            new HashCollection<Branch, AttributeType>(false, HashSet.class);
       for (XAttributeTypeRef xAttributeTypeRef : xArtifactType.getValidAttributeTypes()) {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
-         //         handleAttributeType(attributeType);
-         String branchGuid = xAttributeTypeRef.getBranchGuid();
-         Branch branch;
-         if (branchGuid == null) {
-            branch = systemRoot;
-         } else {
-            branch = branchCache.getByGuid(branchGuid);
-         }
+         Branch branch = getAttributeBranch(xAttributeTypeRef);
          AttributeType oseeAttributeType = typeCache.getAttributeTypeCache().getByGuid(xAttributeType.getTypeGuid());
          if (oseeAttributeType != null) {
-            items.put(branch, oseeAttributeType);
+            validAttributes.put(branch, oseeAttributeType);
          } else {
-            System.out.println("Type was null for: " + xArtifactType.getName());
+            System.out.println(String.format("Type was null for \"%s\"", xArtifactType.getName()));
          }
       }
+      return validAttributes;
+   }
 
-      for (Branch branch : items.keySet()) {
-         List<AttributeType> oseeAttributeTypes = items.getValues();
-         if (oseeAttributeTypes != null) {
-            targetArtifactType.setAttributeTypes(oseeAttributeTypes, branch);
-         } else {
-            System.out.println("Types were null for: " + xArtifactType.getName());
-         }
+   private Branch getAttributeBranch(XAttributeTypeRef xAttributeTypeRef) throws OseeCoreException {
+      String branchGuid = xAttributeTypeRef.getBranchGuid();
+      if (branchGuid == null) {
+         return branchCache.getSystemRootBranch();
+      } else {
+         return branchCache.getByGuid(branchGuid);
       }
    }
 
@@ -157,7 +162,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       return nameReference != null ? nameReference.substring(1, nameReference.length() - 1) : nameReference;
    }
 
-   private void handleXArtifactType(XArtifactType xArtifactType) throws OseeCoreException {
+   private void translateXArtifactType(XArtifactType xArtifactType) throws OseeCoreException {
       String artifactTypeName = removeQuotes(xArtifactType.getName());
 
       ArtifactType oseeArtifactType =
@@ -166,16 +171,16 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       xArtifactType.setTypeGuid(oseeArtifactType.getGuid());
    }
 
-   private void handleXEnumType(XOseeEnumType xModelEnumType) throws OseeCoreException {
-      String enumTypeName = removeQuotes(xModelEnumType.getName());
+   private void translateXEnumType(XOseeEnumType xEnumType) throws OseeCoreException {
+      String enumTypeName = removeQuotes(xEnumType.getName());
 
       OseeEnumType oseeEnumType =
-            provider.getOseeEnumTypeFactory().createOrUpdate(typeCache.getEnumTypeCache(),
-                  xModelEnumType.getTypeGuid(), enumTypeName);
+            provider.getOseeEnumTypeFactory().createOrUpdate(typeCache.getEnumTypeCache(), xEnumType.getTypeGuid(),
+                  enumTypeName);
 
       int lastOrdinal = 0;
       List<OseeEnumEntry> oseeEnumEntries = new ArrayList<OseeEnumEntry>();
-      for (XOseeEnumEntry xEnumEntry : xModelEnumType.getEnumEntries()) {
+      for (XOseeEnumEntry xEnumEntry : xEnumType.getEnumEntries()) {
          String entryName = removeQuotes(xEnumEntry.getName());
          String ordinal = xEnumEntry.getOrdinal();
          if (Strings.isValid(ordinal)) {
@@ -189,7 +194,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       oseeEnumType.setEntries(oseeEnumEntries);
    }
 
-   private void handleXEnumOverride(XOseeEnumOverride xEnumOverride) throws OseeCoreException {
+   private void translateXEnumOverride(XOseeEnumOverride xEnumOverride) throws OseeCoreException {
       XOseeEnumType xEnumType = xEnumOverride.getOverridenEnumType();
       if (!xEnumOverride.isInheritAll()) {
          xEnumType.getEnumEntries().clear();
@@ -212,7 +217,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       }
    }
 
-   private void handleXAttributeType(XAttributeType xAttributeType) throws OseeCoreException {
+   private void translateXAttributeType(XAttributeType xAttributeType) throws OseeCoreException {
+      int min = Integer.parseInt(xAttributeType.getMin());
       int max = Integer.MAX_VALUE;
       if (!xAttributeType.getMax().equals("unlimited")) {
          max = Integer.parseInt(xAttributeType.getMax());
@@ -224,19 +230,19 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       }
 
       AttributeTypeCache cache = typeCache.getAttributeTypeCache();
-      AttributeType oseeAttributeType =
-            provider.getAttributeTypeFactory().createOrUpdate(cache, xAttributeType.getTypeGuid(), //
-                  removeQuotes(xAttributeType.getName()), //
-                  getQualifiedTypeName(xAttributeType.getBaseAttributeType()), //
-                  getQualifiedTypeName(xAttributeType.getDataProvider()), //
-                  xAttributeType.getFileExtension(), //
-                  xAttributeType.getDefaultValue(), //
-                  oseeEnumType, //
-                  Integer.parseInt(xAttributeType.getMin()), //
-                  max, //
-                  xAttributeType.getDescription(), //
-                  xAttributeType.getTaggerId()//
-            );
+      AttributeType oseeAttributeType = provider.getAttributeTypeFactory().createOrUpdate(cache, //
+            xAttributeType.getTypeGuid(), //
+            removeQuotes(xAttributeType.getName()), //
+            getQualifiedTypeName(xAttributeType.getBaseAttributeType()), //
+            getQualifiedTypeName(xAttributeType.getDataProvider()), //
+            xAttributeType.getFileExtension(), //
+            xAttributeType.getDefaultValue(), //
+            oseeEnumType, //
+            min, //
+            max, //
+            xAttributeType.getDescription(), //
+            xAttributeType.getTaggerId()//
+      );
       xAttributeType.setTypeGuid(oseeAttributeType.getGuid());
    }
 
@@ -248,23 +254,26 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       return value;
    }
 
-   private void handleXRelationType(XRelationType xRelationType) throws OseeCoreException {
+   private void translateXRelationType(XRelationType xRelationType) throws OseeCoreException {
       RelationTypeMultiplicity multiplicity =
             RelationTypeMultiplicity.getFromString(xRelationType.getMultiplicity().name());
 
+      String sideATypeName = removeQuotes(xRelationType.getSideAArtifactType().getName());
+      String sideBTypeName = removeQuotes(xRelationType.getSideBArtifactType().getName());
+
+      ArtifactType sideAType = typeCache.getArtifactTypeCache().getUniqueByName(sideATypeName);
+      ArtifactType sideBType = typeCache.getArtifactTypeCache().getUniqueByName(sideBTypeName);
+
       RelationType oseeRelationType =
-            provider.getRelationTypeFactory().createOrUpdate(
-                  typeCache.getRelationTypeCache(),
-                  xRelationType.getTypeGuid(),
+            provider.getRelationTypeFactory().createOrUpdate(typeCache.getRelationTypeCache(), //
+                  xRelationType.getTypeGuid(), //
                   removeQuotes(xRelationType.getName()), //
                   xRelationType.getSideAName(), //
                   xRelationType.getSideBName(), //
-                  typeCache.getArtifactTypeCache().getUniqueByName(
-                        removeQuotes(xRelationType.getSideAArtifactType().getName())), //
-                  typeCache.getArtifactTypeCache().getUniqueByName(
-                        removeQuotes(xRelationType.getSideBArtifactType().getName())), //
+                  sideAType, //
+                  sideBType, //
                   multiplicity, //
-                  convertOrderTypeNameToGuid(xRelationType.getDefaultOrderType())//
+                  convertOrderTypeNameToGuid(xRelationType.getDefaultOrderType()) //
             );
 
       xRelationType.setTypeGuid(oseeRelationType.getGuid());
