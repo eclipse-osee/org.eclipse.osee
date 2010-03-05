@@ -68,8 +68,6 @@ public class WordAttribute extends StringAttribute {
 
    /**
     * Mainly used for testing purposes
-    *
-    * @return the noPopUps
     */
    public static boolean isNoPopUps() {
       return noPopUps;
