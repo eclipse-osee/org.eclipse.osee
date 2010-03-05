@@ -522,11 +522,12 @@ public final class Widgets {
       return grp;
    }
 
-   public static void setGridLayout(final Composite item, int numColumns, int columnSpacing) {
+   public static GridLayout setGridLayout(final Composite item, int numColumns, int columnSpacing) {
       final GridLayout layout = new GridLayout();
       layout.numColumns = numColumns;
       layout.horizontalSpacing = columnSpacing;
       item.setLayout(layout);
+      return layout;
    }
 
    public static void setRowLayout(final Composite item, final int style, final boolean wrap, final boolean pack) {
