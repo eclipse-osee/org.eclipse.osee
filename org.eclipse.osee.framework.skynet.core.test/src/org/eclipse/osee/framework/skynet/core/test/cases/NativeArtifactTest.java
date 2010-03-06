@@ -79,9 +79,7 @@ public class NativeArtifactTest {
          String content = Lib.inputStreamToString(inputStream);
          assertEquals("hello world", content);
       } finally {
-         if (inputStream != null) {
-            inputStream.close();
-         }
+         Lib.close(inputStream);
       }
    }
 

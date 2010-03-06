@@ -100,7 +100,7 @@ public class ConflictManagerInternal {
       Set<Integer> artIdSetDontShow = new HashSet<Integer>();
       Set<Integer> artIdSetDontAdd = new HashSet<Integer>();
 
-      //Check to see if the branch has already been committed than use the transaction version
+      //Check to see if the branch has already been committed, then use the transaction version
       int commitTransactionId = getCommitTransaction(sourceBranch, destinationBranch);
       if (commitTransactionId > 0) {
          try {
