@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.apache.xml.serialize.OutputFormat;
@@ -32,6 +34,7 @@ import org.eclipse.osee.ote.core.log.record.TestRecord;
 import org.eclipse.osee.ote.core.log.record.TraceRecord;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.ProcessingInstruction;
 
 /**
  * @author Ryan D. Brooks
@@ -40,6 +43,7 @@ import org.w3c.dom.Element;
  * @author Robert A. Fisher
  */
 public class ScriptLogHandler extends Handler {
+   private final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
    private final TestEnvironment testEnvironment;
    protected Element testCaseElement;
    protected Element parent;
@@ -65,7 +69,9 @@ public class ScriptLogHandler extends Handler {
       OseeLog.log(TestEnvironment.class, Level.FINE, outFile.getAbsolutePath());
 
       try {
-         document = Jaxp.newDocument();
+         factory.setNamespaceAware(true);
+         DocumentBuilder builder = factory.newDocumentBuilder();
+         document = builder.newDocument();
       } catch (ParserConfigurationException ex) {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
       }
@@ -76,8 +82,10 @@ public class ScriptLogHandler extends Handler {
       format.setIndenting(true);
       format.setIndent(3);
 
-      Jaxp.setXslProperty(document, getXSLTransformName());
-
+//      Jaxp.setXslProperty(document, getXSLTransformName());
+      
+      ProcessingInstruction processingInstruction = document.createProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"" + getXSLTransformName() + "\"");
+      document.appendChild(processingInstruction);
       records = new ArrayList<LogRecord>();
 
       this.testScriptElement = document.createElement("TestScript");
@@ -104,6 +112,8 @@ public class ScriptLogHandler extends Handler {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
       } catch (IOException ex) {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
+      } catch (Throwable th){
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, th);
       }
    }
 
