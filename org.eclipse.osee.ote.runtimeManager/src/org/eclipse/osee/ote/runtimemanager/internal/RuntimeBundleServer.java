@@ -34,7 +34,7 @@ public class RuntimeBundleServer {
    public RuntimeBundleServer(SafeWorkspaceTracker safeWorkspaceTracker) {
       try {
          InetAddress useHostAddress = CorePreferences.getDefaultInetAddress();
-         classServer = new ClassServer(0, InetAddress.getLocalHost()){
+         classServer = new ClassServer(0, useHostAddress){
             @Override
             protected void fileDownloaded(String fp, InetAddress addr) {
                System.out.println("RuntimeBundleServer: File " + fp + " downloaded to " + addr);
