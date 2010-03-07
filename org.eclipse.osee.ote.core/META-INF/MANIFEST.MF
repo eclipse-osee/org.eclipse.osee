@@ -35,8 +35,7 @@ Require-Bundle: org.eclipse.osee.framework.jdk.core,
  org.apache.commons.net,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.ote.connection.service,
- org.eclipse.help,
- javax.xml
+ org.eclipse.help
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.eclipse.osee.ote.core.internal.Activator
@@ -46,4 +45,6 @@ Import-Package: org.apache.xml.serialize,
  org.eclipse.osee.framework.messaging.id,
  org.xml.sax,
  org.xml.sax.helpers,
- org.xml.sax.ext
+ org.xml.sax.ext, 
+ javax.xml.parsers,
+ org.w3c.dom
