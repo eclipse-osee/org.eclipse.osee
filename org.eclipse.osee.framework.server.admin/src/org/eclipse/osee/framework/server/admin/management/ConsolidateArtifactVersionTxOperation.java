@@ -105,12 +105,12 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       updataConflicts("source_gamma_id");
       updataConflicts("dest_gamma_id");
 
-      setBaselineTransactions();
+      //setBaselineTransactions();
 
       populateArts();
 
-      determineAffectedAddressing(false);
-      determineAffectedAddressing(true);
+      determineAffectedAddressingAndFix(false);
+      //determineAffectedAddressingAndFix(true);
 
       gammaJoin.delete(connection);
    }
@@ -160,7 +160,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       }
    }
 
-   private void determineAffectedAddressing(boolean archived) throws OseeCoreException {
+   private void determineAffectedAddressingAndFix(boolean archived) throws OseeCoreException {
       try {
          reporter.report("query id: " + gammaJoin.getQueryId());
          chStmt.runPreparedQuery(10000, String.format(SELECT_ADDRESSING, archived ? "_archived" : ""),
