@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.service;
 
+import java.io.Serializable;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 
 /**
@@ -90,6 +92,10 @@ public class OteServiceProperties {
          System.out.printf("test service found:\n\tname: %s\n\tstation: %s\n\ttype: %s\n\tcomment: %s\n\t%s\n",
                getName(), getStation(), getType(), getComment(), getGroup());
       }
+   }
+   
+   public Serializable getProperty(String name) {
+	   return connector.getProperty(name, null);
    }
 
    public String getOwner() {
