@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -47,7 +46,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    public void print(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
-      throw new UnsupportedOperationException();
+      throw new OseeCoreException("The default renderer does not support the print operation");
    }
 
    public void print(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException {
@@ -58,12 +57,12 @@ public class DefaultArtifactRenderer implements IRenderer {
 
    @Override
    public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, PresentationType presentationType, boolean show) throws OseeCoreException {
-      throw new UnsupportedOperationException();
+      throw new OseeCoreException("The default renderer does not support the compare operation");
    }
 
    @Override
    public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException {
-      throw new UnsupportedOperationException();
+      throw new OseeCoreException("The default renderer does not support the compare operation");
    }
 
    @Override
@@ -126,10 +125,10 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public void openMergeEdit(List<Artifact> artifacts) throws OseeCoreException{
-      ArtifactEditor.editArtifacts(artifacts);      
+   public void openMergeEdit(List<Artifact> artifacts) throws OseeCoreException {
+      ArtifactEditor.editArtifacts(artifacts);
    }
-   
+
    @Override
    public int minimumRanking() throws OseeCoreException {
       return NO_MATCH;

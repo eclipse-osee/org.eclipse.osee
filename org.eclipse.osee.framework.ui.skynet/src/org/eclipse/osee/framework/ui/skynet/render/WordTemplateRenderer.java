@@ -369,14 +369,12 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (!artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT.getName()) && !artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT.getName()) && !artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT.getName())) {
-         if (presentationType == PresentationType.DIFF || presentationType == PresentationType.PREVIEW) {
-            return WORD_PUBLICATION;
-         }
-      }
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT.getName())) {
-         if (presentationType != PresentationType.GENERALIZED_EDIT) {
+      if (presentationType != PresentationType.GENERALIZED_EDIT) {
+         if (artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
             return PRESENTATION_SUBTYPE_MATCH;
+         }
+         if (!artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT) && !artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT)) {
+            return PRESENTATION_TYPE;
          }
       }
       return NO_MATCH;
@@ -415,9 +413,11 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {
             OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
-            wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(), "OSEE_EDIT_START"));
+            wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(),
+                  "OSEE_EDIT_START"));
             wordMl.addWordMl(value);
-            wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(), "OSEE_EDIT_END"));
+            wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(),
+                  "OSEE_EDIT_END"));
          } else {
             wordMl.addWordMl(value);
          }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -28,7 +27,6 @@ import org.eclipse.swt.graphics.Image;
  */
 public interface IRenderer {
 
-   public static final int WORD_PUBLICATION = 60;
    public static final int PRESENTATION_SUBTYPE_MATCH = 50;
    public static final int PRESENTATION_TYPE = 40;
    public static final int SUBTYPE_TYPE_MATCH = 30;
@@ -57,7 +55,7 @@ public interface IRenderer {
    public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException;
 
    public void openMergeEdit(List<Artifact> artifacts) throws OseeCoreException;
-   
+
    public void compareArtifacts(List<Artifact> baseArtifacts, List<Artifact> newerArtifact, IProgressMonitor monitor, Branch branch, PresentationType presentationType) throws OseeCoreException;
 
    public abstract int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException;

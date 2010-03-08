@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
@@ -61,12 +62,11 @@ public class SingleNativeDiffHandler extends CommandHandler {
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
 
-            changes =
-                  new ArrayList<Change>(Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
+            changes = new ArrayList<Change>(Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
 
             enabled =
-                  changes.size() == 1 && AccessControlManager.hasPermission(
-                        changes.get(0).getArtifact(), PermissionEnum.READ);
+                  changes.size() == 1 && AccessControlManager.hasPermission(changes.get(0).getArtifact(),
+                        PermissionEnum.READ);
          }
       } catch (Exception ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
@@ -80,17 +80,17 @@ public class SingleNativeDiffHandler extends CommandHandler {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       try {
          Artifact baseArtifact =
-               (change.getModificationType() == NEW || change.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactQuery.getHistoricalArtifactFromId(
+               change.getModificationType() == NEW || change.getModificationType() == ModificationType.INTRODUCED ? null : ArtifactQuery.getHistoricalArtifactFromId(
                      change.getArtifact().getArtId(), change.getFromTransactionId(), true);
          artifacts.addAll(checkForTrackedChangesOn(baseArtifact));
          Artifact newerArtifact =
-               (change.getModificationType().isDeleted()) ? null : (change.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
-                     change.getArtifact().getArtId(), change.getToTransactionId(), true) : change.getArtifact());
+               change.getModificationType().isDeleted() ? null : change.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
+                     change.getArtifact().getArtId(), change.getToTransactionId(), true) : change.getArtifact();
          artifacts.addAll(checkForTrackedChangesOn(newerArtifact));
          if (artifacts.isEmpty()) {
             VariableMap variableMap = new VariableMap();
             String fileName = baseArtifact != null ? baseArtifact.getSafeName() : newerArtifact.getSafeName();
-            variableMap.setValue("fileName", fileName + "_" + (new Date()).toString().replaceAll(":", ";") + ".xml");
+            variableMap.setValue("fileName", fileName + "_" + new Date().toString().replaceAll(":", ";") + ".xml");
 
             RendererManager.diff(baseArtifact, newerArtifact, true);
          } else {
@@ -100,7 +100,7 @@ public class SingleNativeDiffHandler extends CommandHandler {
          }
 
       } catch (OseeCoreException ex) {
-         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return null;
    }
