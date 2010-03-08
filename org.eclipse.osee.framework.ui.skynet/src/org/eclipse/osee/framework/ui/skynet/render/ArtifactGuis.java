@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -25,17 +26,16 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.ui.PlatformUI;
 
-public class ArtifactGuis {
-   public ArtifactGuis() {
-      super();
+public final class ArtifactGuis {
+   private ArtifactGuis() {
    }
 
    private static final String OTHER_EDIT_SQL =
-      "select distinct t2.branch_id from osee_arts t1, osee_txs t2, (select min(transaction_id) as min_tx_id, branch_id from osee_txs group by branch_id) t3, osee_branch t5 where t1.art_id = ? and t1.gamma_id = t2.gamma_id and t2.transaction_id <> t3.min_tx_id and t2.transaction_id = t2.transaction_id and t2.branch_id = t3.branch_id and t3.branch_id <> ? and t5.parent_branch_id = ? and t3.branch_id = t5.branch_id and t5.archived = 0";
+         "select br.branch_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and br.branch_id <> ? and br.parent_branch_id = ? and br.archived = ?";
 
    /**
-    * Returns all the other branches this artifact has been editted on, besides modifications to program branch.
-    *
+    * Returns non-archived sibling branches that this artifact's attributes have been edited on
+    * 
     * @param artifact
     * @throws OseeCoreException
     */
@@ -47,8 +47,9 @@ public class ArtifactGuis {
 
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
-            chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), artifact.getBranch().getId(),
-                  artifact.getBranch().getId());
+            Branch branch = artifact.getBranch();
+            chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), branch.getId(),
+                  branch.getParentBranch().getId(), BranchArchivedState.UNARCHIVED.getValue());
 
             while (chStmt.next()) {
                otherBranches.add(BranchManager.getBranch(chStmt.getInt("branch_id")));
@@ -132,8 +133,8 @@ public class ArtifactGuis {
       public void run() {
          synchronized (notifee) {
             yes =
-               MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
-                     question);
+                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
+                        question);
             done = true;
             notifee.notifyAll();
          }
