@@ -66,7 +66,7 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Artif
       ArtifactTypeFactory factory = getFactory();
       for (ArtifactTypeRow row : response.getArtTypeRows()) {
          ArtifactType cached =
-               factory.createOrUpdate(cache, row.getId(), row.getModType(), row.getGuid(), row.isAbstract(),
+               factory.createOrUpdate(cache, row.getId(), row.getStorageState(), row.getGuid(), row.isAbstract(),
                      row.getName());
          updatedItems.add(cached);
       }
