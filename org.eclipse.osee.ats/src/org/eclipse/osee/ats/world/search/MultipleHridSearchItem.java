@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.LegacyPCRActions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -114,7 +115,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
 
       if (resultAtsArts.size() == 0 && resultNonAtsArts.size() == 0) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
-               "Invalid HRID/Guid/Legacy PCR Id(s): " + Lib.getCommaString(ids));
+               "Invalid HRID/Guid/Legacy PCR Id(s): " + Collections.toString(ids, ", "));
       }
       if (resultNonAtsArts.size() > 0) {
          ArtifactEditor.editArtifacts(resultNonAtsArts);
