@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
-<plugin>
-   <extension
+<fragment>
+  <extension
          point="org.eclipse.ui.importWizards">
       <wizard
             category="org.eclipse.osee.define.import.category"
@@ -24,10 +24,4 @@
             name="Osee Types Export">
       </wizard>
    </extension>
-   <extension
-         point="org.eclipse.osee.framework.skynet.core.OseeTypesHandler">
-      <OseeTypesHandler
-            classname="org.eclipse.osee.framework.types.bridge.operations.XtextOseeTypesHandler">
-      </OseeTypesHandler>
-   </extension>
-</plugin>
+</fragment>
