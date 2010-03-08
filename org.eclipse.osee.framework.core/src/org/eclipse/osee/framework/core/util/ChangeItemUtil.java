@@ -42,6 +42,16 @@ public class ChangeItemUtil {
       }
       return toReturn;
    }
+   
+   public static void copy(ChangeVersion source, ChangeVersion dest) throws OseeCoreException{
+      Conditions.checkNotNull(source, "source");
+      Conditions.checkNotNull(dest, "Dest");
+      
+      dest.setGammaId(source.getGammaId());
+      dest.setModType(source.getModType());
+      dest.setTransactionNumber(source.getTransactionNumber());
+      dest.setValue(source.getValue());
+   }
 
    public static boolean isModType(ChangeVersion changeVersion, ModificationType matchModType) {
       return changeVersion != null && changeVersion.getModType() == matchModType;

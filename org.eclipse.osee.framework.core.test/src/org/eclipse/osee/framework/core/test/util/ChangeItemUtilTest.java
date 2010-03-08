@@ -8,6 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+
 package org.eclipse.osee.framework.core.test.util;
 
 import static org.junit.Assert.assertEquals;
@@ -245,8 +246,7 @@ public class ChangeItemUtilTest {
          Assert.assertEquals(modType, object1.getModType());
          Assert.assertEquals(modType == ModificationType.NEW, ChangeItemUtil.isNew(object1));
          Assert.assertEquals(modType == ModificationType.INTRODUCED, ChangeItemUtil.isIntroduced(object1));
-         Assert.assertEquals(modType == ModificationType.DELETED || modType == ModificationType.ARTIFACT_DELETED,
-               ChangeItemUtil.isDeleted(object1));
+         Assert.assertEquals(modType == ModificationType.DELETED || modType == ModificationType.ARTIFACT_DELETED, ChangeItemUtil.isDeleted(object1));
       }
 
       Assert.assertEquals(false, ChangeItemUtil.isNew(null));
@@ -274,8 +274,7 @@ public class ChangeItemUtilTest {
 
    @Test
    public void testGammasEqual() {
-      List<Triplet<ChangeVersion, ChangeVersion, Boolean>> cases =
-            new ArrayList<Triplet<ChangeVersion, ChangeVersion, Boolean>>();
+      List<Triplet<ChangeVersion, ChangeVersion, Boolean>> cases = new ArrayList<Triplet<ChangeVersion, ChangeVersion, Boolean>>();
 
       cases.add(createTriplet(3000L, ModificationType.MODIFIED, 3000L, ModificationType.NEW, true));
       cases.add(createTriplet(null, ModificationType.MODIFIED, 3000L, ModificationType.NEW, false));
@@ -303,7 +302,8 @@ public class ChangeItemUtilTest {
       try {
          ChangeItemUtil.getStartingVersion(null);
          Assert.fail("This line should not be executed");
-      } catch (OseeCoreException ex) {
+      }
+      catch (OseeCoreException ex) {
          Assert.assertTrue(ex instanceof OseeArgumentException);
       }
 
@@ -320,15 +320,44 @@ public class ChangeItemUtilTest {
          item = ChangeTestUtility.createItem(3, invalid, invalid, invalid, null, null);
          ChangeItemUtil.getStartingVersion(item);
          Assert.fail("This line should not be executed");
-      } catch (OseeCoreException ex) {
+      }
+      catch (OseeCoreException ex) {
          Assert.assertTrue(ex instanceof OseeStateException);
       }
    }
 
-   private Triplet<ChangeVersion, ChangeVersion, Boolean> createTriplet(Long long1, ModificationType mod1, Long long2, ModificationType mod2, boolean expected) {
+   @Test
+   public void testCopy() throws OseeCoreException {
+      ChangeVersion expected = new ChangeVersion(5679L, ModificationType.MERGED, 1234);
+
+      ChangeVersion actual = new ChangeVersion();
+      ChangeItemUtil.copy(expected, actual);
+
+      ChangeTestUtility.checkChange(expected, actual);
+
+      try {
+         ChangeItemUtil.copy(null, expected);
+         Assert.fail("Should not be executed");
+      }
+      catch (Exception ex) {
+         Assert.assertTrue(ex instanceof OseeArgumentException);
+      }
+
+      try {
+         ChangeItemUtil.copy(expected, null);
+         Assert.fail("Should not be executed");
+      }
+      catch (Exception ex) {
+         Assert.assertTrue(ex instanceof OseeArgumentException);
+      }
+
+   }
+
+   private Triplet<ChangeVersion, ChangeVersion, Boolean> createTriplet(Long long1, ModificationType mod1, Long long2, ModificationType mod2,
+         boolean expected) {
       return new Triplet<ChangeVersion, ChangeVersion, Boolean>(//
-            ChangeTestUtility.createChange(long1, mod1), //
-            ChangeTestUtility.createChange(long2, mod2), //
-            expected);
+                                                                ChangeTestUtility.createChange(long1, mod1), //
+                                                                ChangeTestUtility.createChange(long2, mod2), //
+                                                                expected);
    }
 }
