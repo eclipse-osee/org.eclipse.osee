@@ -17,10 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.coverage.ICoverageImporter;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
@@ -32,6 +34,7 @@ import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -273,18 +276,19 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                int importCuItems = coverageUnit.getCoverageItems(true).size();
                int importCuCovered =
                      coverageUnit.getCoverageItemsCovered(true, CoverageOptionManagerDefault.Test_Unit).size();
-               if (result.getNumLines() != importCuItems || result.getNumCovered() != importCuCovered) {
+               if ((result.getNumLines() == null || result.getNumLines() != importCuItems) || (result.getNumCovered() == null || result.getNumCovered() != importCuCovered)) {
                   coverageImport.getLog().logError(
                         String.format(
-                              "Aggregate Check: Unit [%s] Import [%d] of [%d] doesn't match Aggregate [%d] of [%d]",
+                              "Aggregate Check: Unit [%s] Import [%d] of [%d] doesn't match Aggregate [%d] of [%d] [%s]",
                               result.getName(), importCuCovered, importCuItems, result.getNumCovered(),
-                              result.getNumLines()));
+                              result.getNumLines(), Strings.isValid(result.getNotes()) ? " - " + result.getNotes() : ""));
                }
             }
          }
          coverageImport.getLog().log("Completed Aggregate <-> Import Verification");
 
       } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          coverageImport.getLog().logError("\nError Processing Aggregate File: " + ex.getLocalizedMessage());
       }
 

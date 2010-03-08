@@ -27,6 +27,7 @@ public class VCastAggregateReport {
    private final String vcastDirectory;
    Pattern coverageUnitPattern = Pattern.compile("Code&nbsp;Coverage&nbsp;for&nbsp;Unit:&nbsp;(.*?)<");
    Pattern resultsPattern = Pattern.compile("&nbsp;([0-9]+)&nbsp;of&nbsp;([0-9]+)&nbsp;Lines&nbsp;Covered&nbsp;");
+   String NO_COVERAGE_DATA_EXISTS = "No&nbsp;Coverage&nbsp;Data&nbsp;Exists";
 
    public VCastAggregateReport(String vcastDirectory) throws OseeCoreException {
       this.vcastDirectory = vcastDirectory;
@@ -46,27 +47,39 @@ public class VCastAggregateReport {
 
          AggregateCoverageUnitResult result = null;
          while ((line = bufferedReader.readLine()) != null) {
-            Matcher m = coverageUnitPattern.matcher(line);
-            if (m.find()) {
-               if (result != null) throw new OseeStateException("Last result not closed");
-               result = new AggregateCoverageUnitResult(m.group(1));
-               results.add(result);
-               //               System.out.println("Found name " + m.group(1));
-            }
-            m = resultsPattern.matcher(line);
-            if (m.find()) {
-               if (result == null) throw new OseeStateException("Result end before result begin");
-               result.setNumCovered(new Integer(m.group(1)));
-               result.setNumLines(new Integer(m.group(2)));
-               //               System.out.println("Found covered " + result.getNumCovered() + " of " + result.getNumLines());
-               result = null;
+            for (String subStr : line.split("<strong>")) {
+               Matcher m = coverageUnitPattern.matcher(subStr);
+               if (m.find()) {
+                  if (result != null) {
+                     throw new OseeStateException("Found coverage begin before last coverage end");
+                  }
+                  result = new AggregateCoverageUnitResult(m.group(1));
+                  results.add(result);
+                  //               System.out.println("Found name " + m.group(1));
+               }
+               m = resultsPattern.matcher(subStr);
+               if (m.find()) {
+                  if (result == null) {
+                     throw new OseeStateException("Found coverage end before begin");
+                  }
+                  result.setNumCovered(new Integer(m.group(1)));
+                  result.setNumLines(new Integer(m.group(2)));
+                  //               System.out.println("Found covered " + result.getNumCovered() + " of " + result.getNumLines());
+                  result = null;
+               }
+               if (subStr.contains(NO_COVERAGE_DATA_EXISTS)) {
+                  if (result == null) {
+                     throw new OseeStateException("Found \"No Coverage Data Exists\" before result begin");
+                  }
+                  result.setNotes("No Coverage Data Exists");
+                  result = null;
+               }
             }
          }
          bufferedReader.close();
       } catch (Exception ex) {
          throw new OseeWrappedException("Error parsing aggregate report", ex);
       }
-
       return results;
    }
 
