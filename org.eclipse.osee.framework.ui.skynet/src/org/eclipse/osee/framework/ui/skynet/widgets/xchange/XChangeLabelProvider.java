@@ -8,6 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.util.logging.Level;
@@ -48,23 +49,32 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          Change change = (Change) element;
          if (cCol.equals(ChangeXViewerFactory.Name)) {
             return change.getName();
-         } else if (cCol.equals(ChangeXViewerFactory.Change_Type)) {
+         }
+         else if (cCol.equals(ChangeXViewerFactory.Change_Type)) {
             return change.getModificationType().getDisplayName();
-         } else if (cCol.equals(ChangeXViewerFactory.Item_Kind)) {
+         }
+         else if (cCol.equals(ChangeXViewerFactory.Item_Kind)) {
             return change.getItemKind();
-         } else if (cCol.equals(ChangeXViewerFactory.Item_Type)) {
+         }
+         else if (cCol.equals(ChangeXViewerFactory.Item_Type)) {
             return change.getItemTypeName();
-         } else if (cCol.equals(ChangeXViewerFactory.Is_Value)) {
+         }
+         else if (cCol.equals(ChangeXViewerFactory.Is_Value)) {
             return change.getIsValue();
-         } else if (cCol.equals(ChangeXViewerFactory.Was_Value)) {
+         }
+         else if (cCol.equals(ChangeXViewerFactory.Was_Value)) {
             return change.getWasValue();
-         } else if (cCol.equals(ChangeXViewerFactory.Artifact_Type)) {
+         }
+         else if (cCol.equals(ChangeXViewerFactory.Artifact_Type)) {
             return change.getArtifact().getArtifactTypeName();
-         } else if (cCol.equals(ChangeXViewerFactory.Hrid)) {
+         }
+         else if (cCol.equals(ChangeXViewerFactory.Hrid)) {
             return change.getArtifact().getHumanReadableId();
-         } else if (cCol.equals(ChangeXViewerFactory.lastModDate)) {
+         }
+         else if (cCol.equals(ChangeXViewerFactory.lastModDate)) {
             return XDate.getDateStr(change.getArtifact().getLastModified(), XDate.MMDDYYHHMM);
-         } else if (cCol.equals(ChangeXViewerFactory.paraNumber)) {
+         }
+         else if (cCol.equals(ChangeXViewerFactory.paraNumber)) {
             String paragraphNum = "";
 
             if (change.getArtifact().isAttributeTypeValid(CoreAttributeTypes.PARAGRAPH_NUMBER)) {
@@ -72,7 +82,8 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
             }
             return paragraphNum;
          }
-      } catch (Exception ex) {
+      }
+      catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
       return "unhandled column";
@@ -110,16 +121,20 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
             try {
                if (change instanceof ErrorChange) {
                   return ImageManager.getImage(FrameworkImage.ERROR);
-               } else {
+               }
+               else {
                   return ArtifactImageManager.getChangeKindImage(change);
                }
-            } catch (OseeCoreException ex) {
+            }
+            catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
-         } else if (xCol.equals(ChangeXViewerFactory.Item_Type)) {
+         }
+         else if (xCol.equals(ChangeXViewerFactory.Item_Type)) {
             return ArtifactImageManager.getChangeTypeImage(change);
          }
-      } catch (Exception ex) {
+      }
+      catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return null;
