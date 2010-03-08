@@ -223,9 +223,12 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
                NewSearchUI.runQueryInBackground(new IdArtifactSearch(searchComposite.getQuery(), branch,
                      optionsComposite.isIncludeDeletedEnabled()));
             } else {
-               NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(), branch,
-                     optionsComposite.isIncludeDeletedEnabled(), optionsComposite.isMatchWordOrderEnabled(),
-                     optionsComposite.isMatchAllLocationsEnabled(), optionsComposite.isCaseSensitiveEnabled(),
+               NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(), //
+                     branch, //
+                     optionsComposite.isIncludeDeletedEnabled(), //
+                     optionsComposite.isMatchWordOrderEnabled(), //
+                     optionsComposite.isMatchAllLocationsEnabled(),//
+                     optionsComposite.isCaseSensitiveEnabled(),//
                      optionsComposite.getAttributeTypeFilter()));
             }
          } else {
