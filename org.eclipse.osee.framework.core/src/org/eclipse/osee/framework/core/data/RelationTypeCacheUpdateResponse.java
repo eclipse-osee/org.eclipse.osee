@@ -37,7 +37,7 @@ public class RelationTypeCacheUpdateResponse {
       private final int id;
       private final String name;
       private final String guid;
-      private final StorageState storageState;
+      private StorageState storageState;
 
       private final String sideAName;
       private final String sideBName;
@@ -82,6 +82,10 @@ public class RelationTypeCacheUpdateResponse {
 
       public StorageState getStorageState() {
          return storageState;
+      }
+
+      public void setStorageState(StorageState storageState) {
+         this.storageState = storageState;
       }
 
       public String getSideBName() {

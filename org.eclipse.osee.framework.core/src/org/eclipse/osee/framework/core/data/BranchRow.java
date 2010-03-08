@@ -13,7 +13,12 @@ public final class BranchRow {
    private final BranchType branchType;
    private final BranchState branchState;
    private final BranchArchivedState branchArchived;
-   private final StorageState storageState;
+   private StorageState storageState;
+
+   // TODO remove
+   public void setStorageState(StorageState storageState) {
+      this.storageState = storageState;
+   }
 
    public BranchRow(int branchId, String branchGuid, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, StorageState storageState) {
       super();

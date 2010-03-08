@@ -77,7 +77,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
       IOseeCachingService caching = Activator.getInstance().getOseeCache();
       try {
          IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
-         Pair<Object, ITranslatorId> pair = createResponse(new CacheUpdateRequest(cacheId), caching);
+         Pair<Object, ITranslatorId> pair = createResponse(true, new CacheUpdateRequest(cacheId), caching);
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");
          resp.setCharacterEncoding("UTF-8");
@@ -92,13 +92,17 @@ public class OseeCacheServlet extends OseeHttpServlet {
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
       try {
+         String sessionId = ModCompatible.getClientVersion(req.getParameter("sessionId"));
+         String clientVersion = ModCompatible.getClientVersion(sessionId);
+         boolean isCompatible = ModCompatible.is_0_9_2_Compatible(clientVersion);
+
          CacheOperation operation = CacheOperation.fromString(req.getParameter("function"));
          switch (operation) {
             case UPDATE:
-               sendUpdates(req, resp);
+               sendUpdates(isCompatible, req, resp);
                break;
             case STORE:
-               storeUpdates(req, resp);
+               storeUpdates(isCompatible, req, resp);
                break;
             default:
                throw new UnsupportedOperationException();
@@ -117,7 +121,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
       resp.getWriter().close();
    }
 
-   private void storeUpdates(HttpServletRequest req, HttpServletResponse resp) throws OseeCoreException {
+   private void storeUpdates(boolean isCompatible, HttpServletRequest req, HttpServletResponse resp) throws OseeCoreException {
       IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
       IOseeCachingService caching = Activator.getInstance().getOseeCache();
       TransactionCache txCache = caching.getTransactionCache();
@@ -164,7 +168,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
       }
    }
 
-   private void sendUpdates(HttpServletRequest req, HttpServletResponse resp) throws OseeCoreException {
+   private void sendUpdates(boolean isCompatible, HttpServletRequest req, HttpServletResponse resp) throws OseeCoreException {
       IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
       IOseeCachingService caching = Activator.getInstance().getOseeCache();
 
@@ -181,11 +185,13 @@ public class OseeCacheServlet extends OseeHttpServlet {
 
       OutputStream outputStream = null;
       try {
-         Pair<Object, ITranslatorId> pair = createResponse(updateRequest, caching);
+         Pair<Object, ITranslatorId> pair = createResponse(isCompatible, updateRequest, caching);
 
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");
          resp.setCharacterEncoding("UTF-8");
+
+         ModCompatible.makeSendCompatible(isCompatible, pair.getFirst());
 
          inputStream = service.convertToStream(pair.getFirst(), pair.getSecond());
          outputStream = resp.getOutputStream();
@@ -195,7 +201,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
       }
    }
 
-   private Pair<Object, ITranslatorId> createResponse(CacheUpdateRequest updateRequest, IOseeCachingService caching) throws OseeCoreException {
+   private Pair<Object, ITranslatorId> createResponse(boolean isCompatible, CacheUpdateRequest updateRequest, IOseeCachingService caching) throws OseeCoreException {
       IOseeModelFactoryService factoryService = Activator.getInstance().getOseeFactoryService();
       Conditions.checkNotNull(caching, "caching service");
       Object response = null;
@@ -243,4 +249,5 @@ public class OseeCacheServlet extends OseeHttpServlet {
       }
       return new Pair<Object, ITranslatorId>(response, transalatorId);
    }
+
 }

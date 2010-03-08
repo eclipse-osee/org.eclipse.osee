@@ -26,8 +26,8 @@ public class BranchCacheUpdateResponse extends AbstractBranchCacheMessage {
    }
 
    public static BranchCacheUpdateResponse fromCache(IOseeCache<Branch> cache, Collection<Branch> types) throws OseeCoreException {
-      BranchCacheUpdateResponse request = new BranchCacheUpdateResponse();
-      BranchCacheUpdateUtil.loadFromCache(request, types);
-      return request;
+      BranchCacheUpdateResponse response = new BranchCacheUpdateResponse();
+      BranchCacheUpdateUtil.loadFromCache(response, types);
+      return response;
    }
 }

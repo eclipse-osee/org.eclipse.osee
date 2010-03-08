@@ -17,10 +17,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Roberto E. Escobar
  */
 public enum StorageState {
-   LOADED(0),
-   CREATED(1),
-   MODIFIED(2),
-   PURGED(3);
+   LOADED(0), CREATED(1), MODIFIED(2), PURGED(3), //
+   DELETED(4); // TODO remove after release
 
    private final int value;
 

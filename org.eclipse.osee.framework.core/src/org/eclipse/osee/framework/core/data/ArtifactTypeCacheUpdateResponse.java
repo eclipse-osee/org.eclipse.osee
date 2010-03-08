@@ -55,7 +55,7 @@ public class ArtifactTypeCacheUpdateResponse {
       private final String name;
       private final String guid;
       private final boolean isAbstract;
-      private final StorageState storageState;
+      private StorageState storageState;
 
       protected ArtifactTypeRow(int id, String guid, String name, boolean isAbstract, StorageState storageState) {
          super();
@@ -82,13 +82,17 @@ public class ArtifactTypeCacheUpdateResponse {
          return isAbstract;
       }
 
-      public StorageState getModType() {
+      public StorageState getStorageState() {
          return storageState;
+      }
+
+      public void setStorageState(StorageState storageState) {
+         this.storageState = storageState;
       }
 
       public String[] toArray() {
          return new String[] {String.valueOf(getId()), getGuid(), getName(), String.valueOf(isAbstract()),
-               getModType().name()};
+               getStorageState().name()};
       }
 
       public static ArtifactTypeRow fromArray(String[] data) {
