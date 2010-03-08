@@ -198,7 +198,7 @@ public class ReviewManager {
    }
 
    public static Collection<ReviewSMArtifact> getReviewsFromCurrentState(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return getReviews(teamArt);
+      return getReviews(teamArt, teamArt.getStateMgr().getCurrentStateName());
    }
 
    public static Collection<ReviewSMArtifact> getReviews(TeamWorkFlowArtifact teamArt, String stateName) throws OseeCoreException {
