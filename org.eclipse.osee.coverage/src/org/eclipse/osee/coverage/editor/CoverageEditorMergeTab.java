@@ -164,10 +164,6 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
                new CheckBoxDialog("Import Items", String.format("Importing [%d] items.", mergeItems.size()),
                      "Save Import Record?");
          if (dialog.open() == 0) {
-            if (dialog.isChecked()) {
-               AWorkbench.popup("No Import Record Provider, Import Record can not be saved");
-               return;
-            }
             XResultData rd = new MergeImportManager(mergeManager).importItems(this, mergeItems);
             rd.report("Import");
             if (dialog.isChecked()) {
