@@ -76,7 +76,7 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
          }
          // allow for lower case hrids
          if (str.length() == 5) {
-            if (!ids.contains(str)) {
+            if (!ids.contains(str.toUpperCase())) {
                ids.add(str.toUpperCase());
             }
          }
