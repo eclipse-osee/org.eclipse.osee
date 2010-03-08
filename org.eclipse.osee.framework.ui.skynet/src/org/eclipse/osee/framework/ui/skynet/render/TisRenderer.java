@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
@@ -40,7 +41,7 @@ public class TisRenderer extends WordTemplateRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if ("Test Information Sheet".equals(artifact.getArtifactTypeName()) && presentationType == PresentationType.PREVIEW) {
+      if (artifact.isOfType(CoreArtifactTypes.TestInformationSheet) && presentationType == PresentationType.PREVIEW) {
          return SUBTYPE_TYPE_MATCH;
       }
       return NO_MATCH;

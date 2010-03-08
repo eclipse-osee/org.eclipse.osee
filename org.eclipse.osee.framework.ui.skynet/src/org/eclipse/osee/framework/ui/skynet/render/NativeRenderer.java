@@ -55,7 +55,7 @@ public class NativeRenderer extends FileRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT.getName())) {
+      if (artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT)) {
          switch (presentationType) {
             case SPECIALIZED_EDIT:
             case PREVIEW:

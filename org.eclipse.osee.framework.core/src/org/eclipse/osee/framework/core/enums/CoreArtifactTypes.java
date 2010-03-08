@@ -46,6 +46,8 @@ public class CoreArtifactTypes extends NamedIdentity implements IArtifactType {
          new CoreArtifactTypes("BtMwyalHkHkrRo7D0aAA", "Direct Software Requirement");
    public static final CoreArtifactTypes SubsystemRequirement =
          new CoreArtifactTypes("AAMFDiN9KiAkhuLqOhQA", "Subsystem Requirement");
+   public static final CoreArtifactTypes TestInformationSheet =
+         new CoreArtifactTypes("AAMFDjnM3wQxCjwatKAA", "Test Information Sheet");
    public static final CoreArtifactTypes TestPlanElement =
          new CoreArtifactTypes("ATi_kUpvPBiW2upYC_wA", "Test Plan Element");
    public static final CoreArtifactTypes TestProcedure =
