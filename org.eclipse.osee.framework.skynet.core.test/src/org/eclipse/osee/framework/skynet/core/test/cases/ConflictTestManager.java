@@ -13,10 +13,8 @@ package org.eclipse.osee.framework.skynet.core.test.cases;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
@@ -55,8 +53,8 @@ public class ConflictTestManager {
       MODIFY_AND_DELETE;
    };
 
-   private static final boolean DEBUG =
-         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
+   private static final boolean DEBUG = true;
+   //         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
 
    private static final String FOLDER = "System Requirements";
    private static final String SOURCE_BRANCH = "Conflict_Test_Source_Branch";
@@ -155,61 +153,6 @@ public class ConflictTestManager {
       }
    }
 
-   private static class ConflictDefinition {
-      protected Collection<AttributeValue> values = new HashSet<AttributeValue>();
-      protected Collection<AttributeValue> newAttributes = new HashSet<AttributeValue>();
-      protected String artifactType;
-      protected boolean sourceDelete;
-      protected boolean destDelete;
-      protected int rootArtifact;
-      protected int queryNumber;
-      protected int numConflicts = 0;
-      protected boolean sourceModified = false;
-      protected boolean destModified = false;
-
-      protected void setValues(String artifactType, boolean sourceDelete, boolean destDelete, int rootArtifact, int queryNumber) {
-         this.artifactType = artifactType;
-         this.sourceDelete = sourceDelete;
-         this.destDelete = destDelete;
-         this.rootArtifact = rootArtifact;
-         this.queryNumber = queryNumber;
-      }
-
-      protected boolean destinationDeleted(ConflictDefinition[] conflictDefs) {
-         if (rootArtifact == 0) {
-            return destDelete;
-         }
-         return destDelete || conflictDefs[rootArtifact].destinationDeleted(conflictDefs);
-      }
-
-      protected boolean sourceDeleted(ConflictDefinition[] conflictDefs) {
-         if (rootArtifact == 0) {
-            return sourceDelete;
-         }
-         return sourceDelete || conflictDefs[rootArtifact].sourceDeleted(conflictDefs);
-      }
-
-      protected int getNumberConflicts(ConflictDefinition[] conflictDefs) {
-         if (!destinationDeleted(conflictDefs) && !sourceDeleted(conflictDefs)) {
-            return numConflicts;
-         } else if (destinationDeleted(conflictDefs) && sourceModified || sourceDeleted(conflictDefs) && destModified) {
-            return 1;
-         } else {
-            return 0;
-         }
-      }
-
-      protected boolean artifactAdded(ConflictDefinition[] conflictDefs) {
-         if (!destinationDeleted(conflictDefs) && !sourceDeleted(conflictDefs)) {
-            return numConflicts > 0;
-         } else if (destinationDeleted(conflictDefs) && sourceModified || sourceDeleted(conflictDefs) && destModified) {
-            return true;
-         }
-         return false;
-      }
-
-   }
-
    public static void initializeConflictTest() throws Exception {
       cleanUpConflictTest();
       createConflictDefinitions();
@@ -290,6 +233,7 @@ public class ConflictTestManager {
             System.out.println(" ");
          }
       }
+      rootArtifact.persist();
       performModifications();
    }
 
@@ -359,6 +303,7 @@ public class ConflictTestManager {
       Artifact child =
             rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED, ArtifactTypeManager.getType(type), name);
       child.persist();
+      rootArtifact.persist();
       return child;
    }
 
