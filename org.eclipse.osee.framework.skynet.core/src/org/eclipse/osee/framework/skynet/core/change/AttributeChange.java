@@ -40,9 +40,11 @@ public final class AttributeChange extends Change {
    private AttributeType dynamicAttributeDescriptor;
    private final ModificationType artModType;
 
-   public AttributeChange(IOseeBranch branch, ArtifactType artType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      super(branch, artType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType, isHistorical,
-            artifact);
+   public AttributeChange(IOseeBranch branch, ArtifactType artType, int sourceGamma, int artId, TransactionRecord toTransactionId,
+         TransactionRecord fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId,
+         int attrTypeId, ModificationType artModType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist,
+         ArtifactDoesNotExist {
+      super(branch, artType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType, isHistorical, artifact);
       this.isValue = isValue;
       this.wasValue = wasValue;
       this.attrId = attrId;
@@ -56,18 +58,22 @@ public final class AttributeChange extends Change {
          AttributeChange change = (AttributeChange) obj;
          return super.equals(obj) &&
          //
-         change.getArtId() == attrTypeId &&
-         //
-         change.getArtModType() == artModType &&
-         //
-         change.getAttrId() == attrId;
+                change.getArtId() == attrTypeId &&
+                //
+                change.getArtModType() == artModType &&
+                //
+                change.getAttrId() == attrId;
       }
       return false;
    }
 
    @Override
    public int hashCode() {
-      return super.hashCode() + attrTypeId + artModType.hashCode() + attrId;
+      int hashCode = 7 * super.hashCode();
+      hashCode += 7 * attrTypeId;
+      hashCode += (artModType != null ? 7 * artModType.hashCode() : 0);
+      hashCode += 7 * attrId;
+      return hashCode;
    }
 
    public int getAttrId() {
@@ -132,19 +138,23 @@ public final class AttributeChange extends Change {
       try {
          if (adapter.isInstance(getArtifact())) {
             return getArtifact();
-         } else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
+         }
+         else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
             return getToTransactionId();
-         } else if (adapter.isInstance(this)) {
+         }
+         else if (adapter.isInstance(this)) {
             return this;
          }
          try {
             if (adapter.isInstance(getAttribute())) {
                return getAttribute();
             }
-         } catch (AttributeDoesNotExist ex) {
+         }
+         catch (AttributeDoesNotExist ex) {
             return null;
          }
-      } catch (OseeCoreException ex) {
+      }
+      catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
