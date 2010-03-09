@@ -65,7 +65,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
       }
       dataList.add(attributeName);
 
-      sql.append(" AND attr_type_1.attr_type_id = attr_1.attr_type_id AND attr_1.gamma_id = txs.gamma_id AND txs.transaction_id = (SELECT max(osee_txs.transaction_id) FROM osee_attribute attr_2, osee_txs txs WHERE attr_2.attr_id = attr_1.attr_id AND attr_2.gamma_id = txs.gamma_id AND txs.branch_id = ?)");
+      sql.append(" AND attr_type_1.attr_type_id = attr_1.attr_type_id AND attr_1.gamma_id = txs.gamma_id AND txs.tx_current = 1 and txs.branch_id = ?");
 
       dataList.add(branch.getId());
 
