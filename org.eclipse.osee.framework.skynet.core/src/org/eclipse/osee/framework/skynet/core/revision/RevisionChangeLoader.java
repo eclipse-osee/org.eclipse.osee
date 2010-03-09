@@ -47,6 +47,8 @@ public final class RevisionChangeLoader {
    }
 
    /**
+    * @param artifact 
+    * @param monitor 
     * @return Returns artifact, relation and attribute changes from a specific artifact
     * @throws OseeCoreException
     */
@@ -76,7 +78,7 @@ public final class RevisionChangeLoader {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(
-               "SELECT /*+ ordered */ txs.transaction_id from osee_arts arv, osee_txs txs where arv.art_id = ? and arv.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <=?",
+               "SELECT /*+ ordered */ txs.transaction_id from osee_attribute arv, osee_txs txs where arv.art_id = ? and arv.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <=?",
                artifact.getArtId(), branch.getId(), transactionId.getId());
 
          while (chStmt.next()) {
