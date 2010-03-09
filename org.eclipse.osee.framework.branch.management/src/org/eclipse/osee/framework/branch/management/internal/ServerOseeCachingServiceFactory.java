@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookupProvider;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.services.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
@@ -43,12 +44,14 @@ public class ServerOseeCachingServiceFactory implements IOseeCachingServiceFacto
    private final IOseeModelFactoryServiceProvider factoryProvider;
    private final IDataTranslationServiceProvider txProvider;
    private final IApplicationServerLookupProvider serverLookUpProvider;
+   private final IApplicationServerManager appManager;
 
-   public ServerOseeCachingServiceFactory(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider, IDataTranslationServiceProvider txProvider, IApplicationServerLookupProvider serverLookUpProvider) {
+   public ServerOseeCachingServiceFactory(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider, IDataTranslationServiceProvider txProvider, IApplicationServerLookupProvider serverLookUpProvider, IApplicationServerManager appManager) {
       this.databaseProvider = databaseProvider;
       this.factoryProvider = factoryProvider;
       this.txProvider = txProvider;
       this.serverLookUpProvider = serverLookUpProvider;
+      this.appManager = appManager;
    }
 
    public IOseeCachingService createCachingService() {
@@ -61,7 +64,7 @@ public class ServerOseeCachingServiceFactory implements IOseeCachingServiceFacto
       AttributeTypeCache attributeCache = new AttributeTypeCache(attrAccessor);
 
       TransactionCache txCache = new TransactionCache();
-      IBranchUpdateEvent branchEventSender = new BranchUpdateEventImpl(txProvider, serverLookUpProvider);
+      IBranchUpdateEvent branchEventSender = new BranchUpdateEventImpl(txProvider, appManager, serverLookUpProvider);
       BranchCache branchCache =
             new BranchCache(new DatabaseBranchAccessor(databaseProvider, factoryProvider, branchEventSender, txCache));
       txCache.setAccessor(new DatabaseTransactionRecordAccessor(databaseProvider, factoryProvider, branchCache));

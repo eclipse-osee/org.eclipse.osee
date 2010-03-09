@@ -6,8 +6,10 @@
 package org.eclipse.osee.framework.branch.management.cache;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,6 +27,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookupProvider;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.services.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.core.util.HttpMessage;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
@@ -39,15 +42,23 @@ public class BranchUpdateEventImpl implements IBranchUpdateEvent {
 
    private final IDataTranslationServiceProvider txProvider;
    private final IApplicationServerLookupProvider lookUpProvider;
+   private final IApplicationServerManager manager;
 
-   public BranchUpdateEventImpl(IDataTranslationServiceProvider translationService, IApplicationServerLookupProvider lookUpProvider) {
+   public BranchUpdateEventImpl(IDataTranslationServiceProvider translationService, IApplicationServerManager manager, IApplicationServerLookupProvider lookUpProvider) {
       super();
       this.txProvider = translationService;
       this.lookUpProvider = lookUpProvider;
+      this.manager = manager;
    }
 
    public void send(final Collection<Branch> branches) throws OseeCoreException {
-      Operations.executeAsJob(new ServerSyncOperation(branches), false);
+      List<Branch> branchToUpdate = new ArrayList<Branch>();
+      for (Branch branch : branches) {
+         if (!branch.isDirty()) {
+            branchToUpdate.add(branch);
+         }
+      }
+      Operations.executeAsJob(new ServerSyncOperation(branchToUpdate), false);
    }
 
    private final class ServerSyncOperation extends AbstractOperation {
@@ -96,7 +107,7 @@ public class BranchUpdateEventImpl implements IBranchUpdateEvent {
          parameters.put("function", CacheOperation.STORE.name());
 
          for (OseeServerInfo serverInfo : lookUpProvider.getApplicationServerLookupService().getAvailableServers()) {
-            if (serverInfo.isAcceptingRequests()) {
+            if (!manager.getId().equals(serverInfo.getServerId()) && serverInfo.isAcceptingRequests()) {
                try {
 
                   String urlString =

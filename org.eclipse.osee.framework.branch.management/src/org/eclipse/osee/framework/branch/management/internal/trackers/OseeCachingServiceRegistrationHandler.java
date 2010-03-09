@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookupProvider;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -35,7 +36,7 @@ public class OseeCachingServiceRegistrationHandler extends AbstractTrackingHandl
 
    private final static Class<?>[] SERVICE_DEPENDENCIES =
          new Class<?>[] {IOseeDatabaseService.class, IOseeModelFactoryService.class, IDataTranslationService.class,
-               IApplicationServerLookup.class};
+               IApplicationServerLookup.class, IApplicationServerManager.class};
 
    private ServiceRegistration factoryRegistration;
    private ServiceRegistration cachingServiceRegistration;
@@ -69,7 +70,7 @@ public class OseeCachingServiceRegistrationHandler extends AbstractTrackingHandl
       final IOseeModelFactoryService modelService = getService(IOseeModelFactoryService.class, services);
       final IDataTranslationService translationService = getService(IDataTranslationService.class, services);
       final IApplicationServerLookup lookupService = getService(IApplicationServerLookup.class, services);
-
+      final IApplicationServerManager appManager = getService(IApplicationServerManager.class, services);
       IOseeDatabaseServiceProvider dbProvider = new IOseeDatabaseServiceProvider() {
          @Override
          public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
@@ -100,6 +101,6 @@ public class OseeCachingServiceRegistrationHandler extends AbstractTrackingHandl
             return lookupService;
          }
       };
-      return new ServerOseeCachingServiceFactory(dbProvider, modelProvider, txProvider, lookupProvider);
+      return new ServerOseeCachingServiceFactory(dbProvider, modelProvider, txProvider, lookupProvider, appManager);
    }
 }

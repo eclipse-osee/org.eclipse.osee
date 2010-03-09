@@ -188,8 +188,6 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       }
       branch.setBaseTransaction(record);
       txCache.cache(record);
-      branchCache.storeItems(branch);
-
       populateBaseTransaction(monitor, 0.30, connection, branch, request.getPopulateBaseTxFromAddressingQueryId());
 
       addMergeBranchEntry(monitor, 0.20, connection, branch, request.getDestinationBranchId());
