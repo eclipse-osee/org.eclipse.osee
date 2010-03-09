@@ -42,7 +42,11 @@ public class SearchEngineServlet extends OseeHttpServlet {
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
          HttpSearchInfo searchInfo = HttpSearchInfo.loadFromPost(request);
-         executeSearch(searchInfo, response, false);
+
+         String clientVersion = ModCompatible.getClientVersion(request.getParameter("sessionId"));
+         boolean isCompatible = ModCompatible.is_0_9_2_Compatible(clientVersion);
+
+         executeSearch(isCompatible, searchInfo, response, false);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
@@ -52,15 +56,21 @@ public class SearchEngineServlet extends OseeHttpServlet {
       }
    }
 
-   private void executeSearch(HttpSearchInfo searchInfo, HttpServletResponse response, boolean wasFromGet) throws IOException {
+   private void executeSearch(boolean isCompatible, HttpSearchInfo searchInfo, HttpServletResponse response, boolean wasFromGet) throws IOException {
       try {
          ISearchEngine searchEngine = Activator.getInstance().getSearchEngine();
          AttributeTypeCache attributeTypeCache = Activator.getInstance().getOseeCache().getAttributeTypeCache();
+
          String[] attributeTypeGuids = searchInfo.getAttributeTypeGuids();
          AttributeType[] attributeTypes = new AttributeType[attributeTypeGuids.length];
+
          int index = 0;
-         for (String attributeTypeGuid : attributeTypeGuids) {
-            attributeTypes[index++] = attributeTypeCache.getByGuid(attributeTypeGuid);
+         for (String attributeTypeValue : attributeTypeGuids) {
+            if (!isCompatible) {
+               attributeTypes[index++] = attributeTypeCache.getBySoleName(attributeTypeValue);
+            } else {
+               attributeTypes[index++] = attributeTypeCache.getByGuid(attributeTypeValue);
+            }
          }
 
          SearchResult results =
@@ -106,7 +116,7 @@ public class SearchEngineServlet extends OseeHttpServlet {
 
    /**
     * <match artId="" branchId=""> <attr gammaId=""><location start="" end="" /></attr> </match>
-    *
+    * 
     * @throws Exception
     */
    private void sendAsXml(HttpServletResponse response, SearchResult results) throws Exception {
