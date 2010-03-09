@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.core.server.SessionData;
 import org.eclipse.osee.framework.core.server.SessionData.SessionState;
+import org.eclipse.osee.framework.core.server.internal.compatibility.OseeSql_0_9_1;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
 import org.eclipse.osee.framework.database.core.OseeSql;
@@ -159,11 +160,26 @@ public class SessionManager implements ISessionManager {
          sessionGrant.setCreationRequired(oseeUserInfo.isCreationRequired());
          sessionGrant.setOseeUserInfo(oseeUserInfo);
          sessionGrant.setDatabaseInfo(DatabaseInfoManager.getDefault());
-         sessionGrant.setSqlProperties(OseeSql.getSqlProperties(ConnectionHandler.getMetaData()));
+         if (is_0_9_2_Compatible(credential.getVersion())) {
+            sessionGrant.setSqlProperties(OseeSql.getSqlProperties(ConnectionHandler.getMetaData()));
+         } else {
+            sessionGrant.setSqlProperties(OseeSql_0_9_1.getSqlProperties(ConnectionHandler.getMetaData()));
+         }
          sessionGrant.setDataStorePath(OseeServerProperties.getOseeApplicationServerData());
          sessionGrant.setClientBuildDesination(typeIdentifier.getBuildDesignation(session.getVersion()));
       }
       return sessionGrant;
+   }
+
+   private static boolean is_0_9_2_Compatible(String clientVersion) {
+      boolean result = false;
+      if (Strings.isValid(clientVersion)) {
+         String toCheck = clientVersion.toLowerCase();
+         if (toCheck.startsWith("0.9.2") || toCheck.startsWith("development")) {
+            result = true;
+         }
+      }
+      return result;
    }
 
    @Override
