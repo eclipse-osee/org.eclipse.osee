@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -68,6 +69,10 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
+      if (!Strings.isValid(enteredIds)) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Must Enter Valid Id");
+         return EMPTY_SET;
+      }
       List<String> ids = new ArrayList<String>();
       for (String str : enteredIds.split(",")) {
          str = str.replaceAll("^\\s+", "");
@@ -84,6 +89,10 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
       }
 
       if (isCancelled()) return EMPTY_SET;
+      if (ids.size() == 0) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Must Enter Valid Id");
+         return EMPTY_SET;
+      }
 
       Set<Artifact> resultAtsArts = new HashSet<Artifact>();
       Set<Artifact> resultNonAtsArts = new HashSet<Artifact>();

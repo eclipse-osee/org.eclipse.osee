@@ -399,6 +399,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
    }
 
    public static void editArtifact(Artifact artifact) {
+      if (artifact == null) return;
       if (artifact.isDeleted()) {
          AWorkbench.popup("ERROR", "Artifact has been deleted");
          return;
@@ -411,10 +412,12 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
    }
 
    public static void editArtifact(final StateMachineArtifact sma) {
+      if (sma == null) return;
       editArtifact(sma, false);
    }
 
    public static void editArtifact(final StateMachineArtifact sma, boolean pend) {
+      if (sma == null) return;
       if (sma.isDeleted()) {
          AWorkbench.popup("ERROR", "Artifact has been deleted");
          return;
