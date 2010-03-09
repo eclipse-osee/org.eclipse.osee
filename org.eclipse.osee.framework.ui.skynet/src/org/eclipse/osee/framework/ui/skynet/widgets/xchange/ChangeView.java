@@ -302,11 +302,8 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       }
    }
 
-   /**
-    * @param showArchivedBranches
-    */
    protected void setShowDocumentOrder(boolean showDocOrder) {
-      xChangeWidget.setShowDocumentOrder(showDocOrder);
-
+      xChangeWidget.getXViewer().setShowDocumentOrderFilter(showDocOrder);
+      xChangeWidget.refresh();
    }
 }

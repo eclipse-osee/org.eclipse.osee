@@ -175,7 +175,6 @@ public class XChangeWidget extends XWidget implements IActionable {
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            contentProvider.refeshDocOrder();
             setInputData(branch, transactionId, true);
          }
       });
@@ -291,7 +290,6 @@ public class XChangeWidget extends XWidget implements IActionable {
 
    @Override
    public void refresh() {
-      contentProvider.refeshDocOrder();
       xChangeViewer.refresh();
       validate();
    }
@@ -444,22 +442,8 @@ public class XChangeWidget extends XWidget implements IActionable {
       return transactionId;
    }
 
-   /**
-    * @return the branch
-    */
    public Branch getBranch() {
       return branch;
-   }
-
-   /**
-    * @param showDocOrder
-    */
-   public void setShowDocumentOrder(boolean showDocOrder) {
-      if (contentProvider != null) {
-         contentProvider.setShowDocOrder(showDocOrder);
-         refresh();
-      }
-
    }
 
 }

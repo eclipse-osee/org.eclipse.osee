@@ -81,9 +81,9 @@ public class ChangeViewPresentationPreferences {
                   ((IEclipsePreferences) event.getNode()).removePreferenceChangeListener(this);
                } else {
                   String propertyName = event.getKey();
-                  
+
                   refreshCommands();
-                  
+
                   if (propertyName.equals(SHOW_DOC_ORDER)) {
                      setShowDocumentOrder(getViewPreference().getBoolean(SHOW_DOC_ORDER, false));
                   }
@@ -94,9 +94,10 @@ public class ChangeViewPresentationPreferences {
 
       return preferenceChangeListener;
    }
-   
-   private void refreshCommands(){
-      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(ToggleChangeViewDocOrderHandler.COMMAND_ID, null);
+
+   private void refreshCommands() {
+      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(
+            ToggleChangeViewDocOrderHandler.COMMAND_ID, null);
    }
 
    private void loadPreferences() {
@@ -104,12 +105,9 @@ public class ChangeViewPresentationPreferences {
    }
 
    private void setShowDocumentOrder(boolean showDocOrder) {
-      changeView.setShowDocumentOrder(showDocOrder);      
+      changeView.setShowDocumentOrder(showDocOrder);
    }
 
-   /**
-    * @param disposed the disposed to set
-    */
    public void setDisposed(boolean disposed) {
       this.disposed = disposed;
 

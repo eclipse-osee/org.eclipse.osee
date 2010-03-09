@@ -10,78 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
-import org.eclipse.osee.framework.skynet.core.change.Change;
 
 public class XChangeContentProvider implements ITreeContentProvider {
-   private final ChangeXViewer changeXViewer;
    private static Object[] EMPTY_ARRAY = new Object[0];
-   private Map<Artifact, ArtifactChange> artifactToChangeMap;
-   private ArrayList<ArtifactChange> docOrderedChnages;
-   private boolean showDocOrder;
 
    public XChangeContentProvider(ChangeXViewer commitXViewer) {
       super();
-      this.changeXViewer = commitXViewer;
-      this.showDocOrder = true;
-      this.artifactToChangeMap = new HashMap<Artifact, ArtifactChange>();
-      this.docOrderedChnages = new ArrayList<ArtifactChange>();
    }
 
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
-         if(showDocOrder){
-            try {
-               return getDocOrderedChanges((Collection<Change>) parentElement);
-            } catch (OseeCoreException ex) {
-               ex.printStackTrace();
-            }
-         }
          return ((Collection<?>) parentElement).toArray();
       }
       return EMPTY_ARRAY;
-   }
-
-   private Object[] getDocOrderedChanges(Collection<Change> changes) throws OseeCoreException {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
-
-      if (docOrderedChnages.size() < 1) {
-         for (Object object : changes) {
-            if (object instanceof ArtifactChange) {
-               ArtifactChange artifactChanged = (ArtifactChange)object;
-               Artifact artifact = artifactChanged.getArtifact();
-               if (artifact != null) {
-                  artifacts.add(artifact);
-                  artifactToChangeMap.put(artifact, artifactChanged);
-               }
-            }
-         }
-         
-         DefaultHierSorter sorter = new DefaultHierSorter();
-         
-         for(Artifact artifact : sorter.sort(artifacts)){
-            docOrderedChnages.add(artifactToChangeMap.get(artifact));
-         }
-      }
-
-      return docOrderedChnages.toArray();
-   }
-   
-   public void refeshDocOrder(){
-      if(docOrderedChnages.size() > 1){
-         docOrderedChnages.clear();
-      }
    }
 
    public Object getParent(Object element) {
@@ -89,7 +34,7 @@ public class XChangeContentProvider implements ITreeContentProvider {
    }
 
    public boolean hasChildren(Object element) {
-      if (element instanceof Collection) return true;
+      if (element instanceof Collection<?>) return true;
       return false;
    }
 
@@ -101,20 +46,6 @@ public class XChangeContentProvider implements ITreeContentProvider {
    }
 
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-   }
-
-   /**
-    * @param showDocOrder the showDocOrder to set
-    */
-   public void setShowDocOrder(boolean showDocOrder) {
-      this.showDocOrder = showDocOrder;
-   }
-   
-   /**
-    * @return the changeXViewer
-    */
-   public ChangeXViewer getChangeXViewer() {
-      return changeXViewer;
    }
 
 }

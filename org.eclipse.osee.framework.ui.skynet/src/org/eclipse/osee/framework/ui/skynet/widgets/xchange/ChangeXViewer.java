@@ -19,6 +19,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -40,10 +41,11 @@ import org.eclipse.swt.widgets.TreeItem;
  * @author Jeff C. Phillips
  */
 public class ChangeXViewer extends XViewer {
+
    private static final boolean CHANGE_DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Change"));
-
    private final XChangeWidget xChangeViewer;
+   private XChangeTextFilter xChangeTextFilter;
 
    public ChangeXViewer(Composite parent, int style, XChangeWidget xRoleViewer) {
       super(parent, style, new ChangeXViewerFactory());
@@ -160,6 +162,36 @@ public class ChangeXViewer extends XViewer {
     */
    public XChangeWidget getXChangeViewer() {
       return xChangeViewer;
+   }
+
+   @Override
+   public String getStatusString() {
+      if (isShowDocumentOrderFilter()) {
+         return "[Show Document Order]";
+      }
+      return "";
+   }
+
+   @Override
+   public XViewerTextFilter getXViewerTextFilter() {
+      if (xChangeTextFilter == null) {
+         xChangeTextFilter = new XChangeTextFilter(this);
+      }
+      return xChangeTextFilter;
+   }
+
+   public boolean isShowDocumentOrderFilter() {
+      if (xChangeTextFilter == null) {
+         xChangeTextFilter = new XChangeTextFilter(this);
+      }
+      return xChangeTextFilter.isShowDocumentOrderFilter();
+   }
+
+   public void setShowDocumentOrderFilter(boolean showDocumentOrderFilter) {
+      if (xChangeTextFilter == null) {
+         xChangeTextFilter = new XChangeTextFilter(this);
+      }
+      xChangeTextFilter.setShowDocumentOrderFilter(showDocumentOrderFilter);
    }
 
 }
