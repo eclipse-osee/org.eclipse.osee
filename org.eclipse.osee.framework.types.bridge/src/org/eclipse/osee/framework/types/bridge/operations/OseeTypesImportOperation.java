@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.osee.ModelUtil;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
-import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
@@ -54,7 +54,7 @@ public class OseeTypesImportOperation extends AbstractOperation {
    private final boolean createCompareReport;
 
    public OseeTypesImportOperation(URI model, boolean createTypeChangeReport, boolean createCompareReport, boolean isPersistAllowed) {
-      super("Import Osee Types Model", Activator.PLUGIN_ID);
+      super("Import Osee Types Model", SkynetGuiPlugin.PLUGIN_ID);
       this.model = model;
       this.isPersistAllowed = isPersistAllowed;
       this.createCompareReport = createCompareReport;
@@ -93,7 +93,7 @@ public class OseeTypesImportOperation extends AbstractOperation {
                   CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST, modelRequest, CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);
 
       if (response.wasPersisted()) {
-         IOseeCachingService cacheService = Activator.getDefault().getOseeCacheService();
+         IOseeCachingService cacheService = SkynetGuiPlugin.getInstance().getOseeCacheService();
 
          cacheService.getEnumTypeCache().reloadCache();
          cacheService.getAttributeTypeCache().reloadCache();
@@ -123,7 +123,7 @@ public class OseeTypesImportOperation extends AbstractOperation {
                page.openEditor(input, "org.eclipse.compare.CompareEditor", true);
                status = Status.OK_STATUS;
             } catch (Exception ex) {
-               status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening compare editor", ex);
+               status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error opening compare editor", ex);
             }
             return status;
          }

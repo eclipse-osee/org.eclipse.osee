@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Roberto E. Escobar
@@ -61,7 +61,7 @@ public class OseeTypesViewerFilter extends ViewerFilter {
                   }
                }, IResource.DEPTH_INFINITE, true);
             } catch (CoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
             return mutable.getValue();
          }

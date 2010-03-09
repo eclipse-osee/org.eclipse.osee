@@ -18,8 +18,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.types.bridge.internal.Activator;
 import org.eclipse.osee.framework.types.bridge.operations.OseeTypesImportOperation;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -31,7 +31,7 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
 
    public OseeTypesImportWizard() {
       super();
-      setDialogSettings(Activator.getDefault().getDialogSettings());
+      setDialogSettings(SkynetGuiPlugin.getInstance().getDialogSettings());
       setWindowTitle("OSEE Types Import Wizard");
       setNeedsProgressMonitor(true);
       setHelpAvailable(true);

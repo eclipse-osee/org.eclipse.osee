@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.types.bridge.wizards;
 
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.framework.types.bridge.TypesImage;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
@@ -31,7 +31,7 @@ public class LinkNodeLabelProvider extends LabelProvider {
          toReturn = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
       }
       if (element instanceof LinkMessage) {
-         toReturn = ImageManager.getImage(TypesImage.OSEE_TYPES_LINK);
+         toReturn = ImageManager.getImage(FrameworkImage.OSEE_TYPES_LINK);
       }
       if (node != null && !node.isResolved()) {
          toReturn = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);

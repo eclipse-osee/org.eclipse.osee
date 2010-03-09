@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Roberto E. Escobar
@@ -35,7 +35,7 @@ public class OseeTypesExportOperation extends AbstractOperation {
    private final File folder;
 
    public OseeTypesExportOperation(File folder) {
-      super("Export Osee Types Model", Activator.PLUGIN_ID);
+      super("Export Osee Types Model", SkynetGuiPlugin.PLUGIN_ID);
       this.folder = folder;
    }
 
@@ -45,7 +45,8 @@ public class OseeTypesExportOperation extends AbstractOperation {
       parameters.put("sessionId", ClientSessionManager.getSessionId());
 
       String url =
-            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.OSEE_MODEL_CONTEXT, parameters);
+            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.OSEE_MODEL_CONTEXT,
+                  parameters);
 
       OutputStream outputStream = null;
       try {

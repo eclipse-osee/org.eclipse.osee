@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.panels.AbstractItemSelectPanel;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
@@ -85,7 +85,7 @@ public class SelectOseeTypesPanel extends AbstractItemSelectPanel<List<IFile>> {
             }
          }
          if (!found) {
-            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "At least (1) must be selected");
+            status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "At least (1) must be selected");
          }
          return status;
       }

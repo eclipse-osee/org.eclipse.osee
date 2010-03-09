@@ -18,8 +18,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.types.bridge.internal.Activator;
 import org.eclipse.osee.framework.types.bridge.operations.OseeTypesExportOperation;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -43,7 +43,7 @@ public class OseeTypesExportWizard extends Wizard implements IImportWizard {
 
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new OseeTypesExportOperation(folder));
-      Operations.executeAsJob(new CompositeOperation("Export Osee Type Model", Activator.PLUGIN_ID, ops), true);
+      Operations.executeAsJob(new CompositeOperation("Export Osee Type Model", SkynetGuiPlugin.PLUGIN_ID, ops), true);
       return true;
    }
 

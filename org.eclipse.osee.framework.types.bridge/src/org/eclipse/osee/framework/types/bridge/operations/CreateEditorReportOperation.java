@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.TableData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
@@ -41,7 +41,7 @@ public class CreateEditorReportOperation extends AbstractOperation {
    private final String reportName;
 
    public CreateEditorReportOperation(String reportName, Collection<TableData> tableData) {
-      super("Generate Report", Activator.PLUGIN_ID);
+      super("Generate Report", SkynetGuiPlugin.PLUGIN_ID);
       this.tableData = tableData;
       this.reportName = reportName;
    }
@@ -74,7 +74,7 @@ public class CreateEditorReportOperation extends AbstractOperation {
                status = Status.OK_STATUS;
             } catch (Exception ex) {
                status =
-                     new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Error creating %s Report",
+                     new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, String.format("Error creating %s Report",
                            reportName), ex);
             }
             return status;
