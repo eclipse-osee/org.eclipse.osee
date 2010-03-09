@@ -91,19 +91,18 @@ public class UpdateArtifactJob extends UpdateJob {
       if (branch.isEditable()) {
          Matcher singleEditMatcher = guidPattern.matcher(workingFile.getName());
          Matcher multiEditMatcher = multiPattern.matcher(workingFile.getName());
-         Document document = extractJaxpDocument();
-         WordArtifactElementExtractor elementExtractor = new WordArtifactElementExtractor(document);
          
          if (singleEditMatcher.matches()) {
             singleGuid = singleEditMatcher.group(1);
             
             if(isMergeEdit()){
-               processMergeEdit(new MergeEditArtifactElementExtractor(document), branch);
+               processMergeEdit(new MergeEditArtifactElementExtractor(extractJaxpDocument()), branch);
             }else{
                Artifact artifact = ArtifactQuery.getArtifactFromId(singleGuid, branch);
-               processSingleEdit(elementExtractor, artifact);
+               processSingleEdit(artifact);
             }
          }else  if (multiEditMatcher.matches()) {
+            WordArtifactElementExtractor elementExtractor = new WordArtifactElementExtractor(extractJaxpDocument());
             processMultiEdit(elementExtractor, branch);
          }
       }
@@ -129,8 +128,9 @@ public class UpdateArtifactJob extends UpdateJob {
       wordArtifactUpdate(elementExtractor, branch);
    }
 
-   private void processSingleEdit(IElementExtractor elementExtractor, Artifact artifact) throws OseeCoreException, ParserConfigurationException, SAXException, IOException {
+   private void processSingleEdit(Artifact artifact) throws OseeCoreException, ParserConfigurationException, SAXException, IOException {
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
+         WordArtifactElementExtractor elementExtractor = new WordArtifactElementExtractor(extractJaxpDocument());
          wordArtifactUpdate(elementExtractor, artifact.getBranch());
       }
       else {
