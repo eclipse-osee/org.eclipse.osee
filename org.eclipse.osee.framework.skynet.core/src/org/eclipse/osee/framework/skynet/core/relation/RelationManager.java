@@ -190,7 +190,7 @@ public class RelationManager {
             relation.getBArtifactId() == newRelation.getBArtifactId() && //
             relation.getRelationType() == newRelation.getRelationType() && //
             relation != newRelation && relation.isDeleted() == newRelation.isDeleted()) {
-               OseeLog.log(Activator.class, Level.SEVERE, String.format(
+               OseeLog.log(Activator.class, Level.WARNING, String.format(
                      "Duplicate relation objects for same relation for RELATION 1 [%s] RELATION 2 [%s]", relation,
                      newRelation));
             }
