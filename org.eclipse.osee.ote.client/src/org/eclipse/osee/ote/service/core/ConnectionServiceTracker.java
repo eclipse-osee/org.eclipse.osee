@@ -1,6 +1,5 @@
 package org.eclipse.osee.ote.service.core;
 
-import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -10,12 +9,11 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.ote.service.IOteClientService;
 import org.eclipse.osee.ote.service.IOteRuntimeLibraryProvider;
 import org.eclipse.osee.ote.service.MessagingGatewayBindTracker;
+import org.eclipse.osee.ote.service.TestSessionException;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 public class ConnectionServiceTracker extends ServiceTracker{
 
@@ -53,6 +51,14 @@ public class ConnectionServiceTracker extends ServiceTracker{
 
 	private void shutdownClientService() {
 		if (testClientService != null) {
+			// we should fire off all disconnect listeners before we unregister the service
+			if (testClientService.isConnected()) {
+				try {
+					testClientService.disconnect();
+				} catch (TestSessionException ex) {
+					OseeLog.log(ConnectionServiceTracker.class, Level.SEVERE, "failed to disconnect", ex);
+				}
+			}
 			registration.unregister();
 			try {
 				testClientService.stop();
