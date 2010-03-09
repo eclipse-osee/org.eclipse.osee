@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -250,9 +252,9 @@ public class BranchStateTest {
       Artifact sameArtifact = null;
       try {
          baseArtifact =
-               ArtifactTypeManager.addArtifact("Software Requirement",
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement,
                      BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), "Test Object");
-         baseArtifact.setSoleAttributeFromString("Annotation", "This is the base annotation");
+         baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
          baseArtifact.persist();
 
          User user = UserManager.getUser(SystemUser.OseeSystem);
@@ -260,11 +262,12 @@ public class BranchStateTest {
 
          // Modify same artifact on working branch
          sameArtifact = ArtifactQuery.getArtifactFromId(baseArtifact.getGuid(), workingBranch);
-         sameArtifact.setSoleAttributeFromString("Annotation", "This is the working branch update annotation");
+         sameArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation,
+               "This is the working branch update annotation");
          sameArtifact.persist();
 
          // Make a change on the parent
-         baseArtifact.setSoleAttributeFromString("Annotation", "This is the updated annotation");
+         baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the updated annotation");
          baseArtifact.persist();
 
          ConflictResolverOperation resolverOperation =
@@ -272,12 +275,10 @@ public class BranchStateTest {
 
                   @Override
                   protected void doWork(IProgressMonitor monitor) throws Exception {
-                     assertTrue("This code should have been executed since there shouldn't be any conflicts.",
-                           wasExecuted());
+                     assertTrue("This code should have been executed since there should be conflicts.", wasExecuted());
                   }
                };
 
-         // Update the branch
          Job job = BranchManager.updateBranch(workingBranch, resolverOperation);
          job.join();
 
