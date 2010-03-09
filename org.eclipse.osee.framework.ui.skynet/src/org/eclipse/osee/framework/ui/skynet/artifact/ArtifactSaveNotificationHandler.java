@@ -68,10 +68,7 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
             if (dialog.getResult().length == 0) {
                return true;
             }
-            HashCollection<Branch, Artifact> branchMap = new HashCollection<Branch, Artifact>();
-            for (Artifact artifact : dirtyArts) {
-               branchMap.put(artifact.getBranch(), artifact);
-            }
+            HashCollection<Branch, Artifact> branchMap = Artifacts.getBranchArtifactMap(dirtyArts);
             for (Branch branch : branchMap.keySet()) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.INFO, String.format(
                      "Persisting [%d] unsaved artifacts for branch [%s]", branchMap.getValues().size(), branch));
@@ -79,7 +76,11 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
             }
             return true;
          } else {
-            MassArtifactEditor.editArtifacts("Unsaved Artifacts", dirtyArts);
+            HashCollection<Branch, Artifact> branchMap = Artifacts.getBranchArtifactMap(dirtyArts);
+            for (Branch branch : branchMap.keySet()) {
+               MassArtifactEditor.editArtifacts(String.format("Unsaved Artifacts for Branch [%s]", branch),
+                     branchMap.getValues(branch));
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

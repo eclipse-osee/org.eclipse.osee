@@ -66,9 +66,11 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateExtensionPointDat
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemOperation;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CompareTwoStringsAction;
+import org.eclipse.osee.framework.ui.skynet.artifact.MassEditDirtyArtifactOperation;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
@@ -105,7 +107,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
          items.add(new SearchNavigateItem(null, new MySubscribedSearchItem("My Subscribed", user)));
-            items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user, GoalSearchState.InWork)));
+         items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user, GoalSearchState.InWork)));
          items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new VisitedItems(null));
          items.add(new XNavigateItemAction(null, new NewAction(), AtsImage.NEW_ACTION));
@@ -185,6 +187,9 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new ImportActionsViaSpreadsheet(utilItems);
          new XNavigateItemAction(utilItems, new CompareTwoStringsAction(), FrameworkImage.EDIT);
          new GenerateGuid(utilItems);
+         new XNavigateItemOperation(utilItems, FrameworkImage.GEAR, MassEditDirtyArtifactOperation.NAME,
+               new MassEditDirtyArtifactOperation());
+
          items.add(utilItems);
 
          BlamContributionManager.addBlamOperationsToNavigator(items);

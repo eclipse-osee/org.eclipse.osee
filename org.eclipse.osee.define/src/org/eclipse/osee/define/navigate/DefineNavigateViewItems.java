@@ -25,10 +25,12 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemOperation;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CompareTwoStringsAction;
+import org.eclipse.osee.framework.ui.skynet.artifact.MassEditDirtyArtifactOperation;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 import org.osgi.framework.Bundle;
 
@@ -63,6 +65,8 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
 
       addExtensionPointItems(items);
       items.add(new XNavigateItemAction(null, new CompareTwoStringsAction(), FrameworkImage.EDIT));
+      items.add(new XNavigateItemOperation(null, FrameworkImage.GEAR, MassEditDirtyArtifactOperation.NAME,
+            new MassEditDirtyArtifactOperation()));
 
       return items;
    }

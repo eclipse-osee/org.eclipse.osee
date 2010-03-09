@@ -19,6 +19,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -183,4 +185,11 @@ public final class Artifacts {
       return sb.toString();
    }
 
+   public static HashCollection<Branch, Artifact> getBranchArtifactMap(Collection<Artifact> artifacts) throws OseeCoreException {
+      HashCollection<Branch, Artifact> branchMap = new HashCollection<Branch, Artifact>();
+      for (Artifact artifact : artifacts) {
+         branchMap.put(artifact.getBranch(), artifact);
+      }
+      return branchMap;
+   }
 }
