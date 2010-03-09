@@ -17,12 +17,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -77,16 +80,14 @@ public final class RevisionChangeLoader {
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(
-               "SELECT /*+ ordered */ txs.transaction_id from osee_attribute arv, osee_txs txs where arv.art_id = ? and arv.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <=?",
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_ATTR),
                artifact.getArtId(), branch.getId(), transactionId.getId());
 
          while (chStmt.next()) {
             transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
          }
 
-         chStmt.runPreparedQuery(
-               "SELECT /*+ ordered */ txs.transaction_id from osee_relation_link rel, osee_txs txs where (rel.a_art_id = ? or rel.b_art_id = ?) and rel.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <=?",
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_REL),
                artifact.getArtId(), artifact.getArtId(), branch.getId(), transactionId.getId());
 
          while (chStmt.next()) {
