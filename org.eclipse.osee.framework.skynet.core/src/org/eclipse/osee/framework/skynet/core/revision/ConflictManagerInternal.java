@@ -210,8 +210,7 @@ public class ConflictManagerInternal {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(sql, sourceBranch.getId(), sourceBranch.getBaseTransaction().getId(),
-               destinationBranch.getId(), destinationBranch.getBaseTransaction().getId(),
-               transactionId != null ? transactionId.getId() : 0);
+               destinationBranch.getId(), transactionId != null ? transactionId.getId() : 0);
 
          ArtifactConflictBuilder artifactConflictBuilder;
          int artId = 0;
