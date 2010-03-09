@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -91,7 +92,7 @@ public class WorkItemDefinitionFactory {
     * @param workItemDefinition
     * @param artifact
     */
-   public static void cacheWorkItemDefinitionArtifact(WriteType writeType, WorkItemDefinition workItemDefinition, Artifact artifact) {
+   public static void cacheWorkItemDefinitionArtifact(WriteType writeType, WorkItemDefinition workItemDefinition, Artifact artifact) throws OseeCoreException {
       addItemDefinition(writeType, workItemDefinition, artifact);
    }
 
@@ -116,18 +117,18 @@ public class WorkItemDefinitionFactory {
       }
    }
 
-   private static void addItemDefinition(WriteType writeType, WorkItemDefinition workItemDefinition) {
+   private static void addItemDefinition(WriteType writeType, WorkItemDefinition workItemDefinition) throws OseeCoreException {
       if (workItemDefinition.getId() == null) {
-         throw new IllegalArgumentException("Item Id can't be null");
+         throw new OseeArgumentException("Item Id can't be null");
       }
       if (writeType == WriteType.New && itemIdToDefinition.containsKey(workItemDefinition.getId())) {
-         throw new IllegalArgumentException(
+         throw new OseeArgumentException(
                "Item Id must be unique.  Already work item with id \"" + workItemDefinition.getId() + "\"");
       }
       itemIdToDefinition.put(workItemDefinition.getId(), workItemDefinition);
    }
 
-   private static void addItemDefinition(WriteType writeType, WorkItemDefinition workItemDefinition, Artifact artifact) {
+   private static void addItemDefinition(WriteType writeType, WorkItemDefinition workItemDefinition, Artifact artifact) throws OseeCoreException {
       addItemDefinition(writeType, workItemDefinition);
       itemIdToWidArtifact.put(workItemDefinition.id, artifact);
    }
