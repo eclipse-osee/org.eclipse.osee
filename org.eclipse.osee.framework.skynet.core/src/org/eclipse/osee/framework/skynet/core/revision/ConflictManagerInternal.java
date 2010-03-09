@@ -121,10 +121,12 @@ public class ConflictManagerInternal {
 
       TransactionRecord commonTransaction = findCommonTransaction(sourceBranch, destinationBranch);
 
-      loadArtifactVersionConflicts(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ARTIFACTS_DEST), sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
-            artIdSetDontShow, artIdSetDontAdd, monitor, commonTransaction);
-      loadArtifactVersionConflicts(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ARTIFACTS_SRC), sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
-                                      artIdSetDontShow, artIdSetDontAdd, monitor, commonTransaction);
+      loadArtifactVersionConflicts(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ARTIFACTS_DEST), sourceBranch,
+            destinationBranch, baselineTransaction, conflictBuilders, artIdSet, artIdSetDontShow, artIdSetDontAdd,
+            monitor, commonTransaction);
+      loadArtifactVersionConflicts(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ARTIFACTS_SRC), sourceBranch,
+            destinationBranch, baselineTransaction, conflictBuilders, artIdSet, artIdSetDontShow, artIdSetDontAdd,
+            monitor, commonTransaction);
       loadAttributeConflictsNew(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
             monitor, commonTransaction);
       for (Integer integer : artIdSetDontAdd) {
@@ -207,11 +209,8 @@ public class ConflictManagerInternal {
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(sql,
-               sourceBranch.getId(),
-               sourceBranch.getBaseTransaction().getId(),
-               destinationBranch.getId(),
-               destinationBranch.getBaseTransaction().getId(),
+         chStmt.runPreparedQuery(sql, sourceBranch.getId(), sourceBranch.getBaseTransaction().getId(),
+               destinationBranch.getId(), destinationBranch.getBaseTransaction().getId(),
                transactionId != null ? transactionId.getId() : 0);
 
          ArtifactConflictBuilder artifactConflictBuilder;
@@ -268,7 +267,7 @@ public class ConflictManagerInternal {
       try {
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ATTRIBUTES), sourceBranch.getId(),
                sourceBranch.getBaseTransaction().getId(), destinationBranch.getId(),
-               destinationBranch.getBaseTransaction().getId(), transactionId != null ? transactionId.getId() : 0);
+               transactionId != null ? transactionId.getId() : 0);
 
          int attrId = 0;
 
@@ -303,7 +302,7 @@ public class ConflictManagerInternal {
    /**
     * Checks source branch hierarchy to see if the conflict gamma exists. If it does, its not a real conflict because
     * the source branch has already seen this change.
-    *
+    * 
     * @return Returns True if the AttributeConflict candidate is really a conflict.
     * @throws OseeCoreException
     */
