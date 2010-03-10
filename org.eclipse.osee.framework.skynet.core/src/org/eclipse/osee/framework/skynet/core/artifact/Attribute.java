@@ -317,7 +317,7 @@ public abstract class Attribute<T> {
    /**
     * @return Returns the attrId.
     */
-   public int getAttrId() {
+   public int getId() {
       return attrId;
    }
 
@@ -343,7 +343,7 @@ public abstract class Attribute<T> {
       } catch (NullPointerException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Unexpected null modification type for artifact attribute [%d] gamma [%d] on artifact [%s]",
-               getAttrId(), getGammaId(), getArtifact().getSafeName()), ex);
+               getId(), getGammaId(), getArtifact().getSafeName()), ex);
       }
       return false;
    }

@@ -84,7 +84,7 @@ public class RelationLink {
          System.out.println("RelationLink.getOrCreate relationId == " + RELATION_ID_UNDER_TEST);
       }
 
-      if (relation == null || relation.modificationType != modificationType || relation.getRelationId() != relationId) {
+      if (relation == null || relation.modificationType != modificationType || relation.getId() != relationId) {
          relation =
                new RelationLink(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
                      rationale, modificationType);
@@ -339,7 +339,7 @@ public class RelationLink {
       this.relationId = relationId;
    }
 
-   public int getRelationId() {
+   public int getId() {
       return relationId;
    }
 
@@ -348,7 +348,7 @@ public class RelationLink {
    }
 
    public boolean isInDb() {
-      return getRelationId() > 0;
+      return getId() > 0;
    }
 
    /**

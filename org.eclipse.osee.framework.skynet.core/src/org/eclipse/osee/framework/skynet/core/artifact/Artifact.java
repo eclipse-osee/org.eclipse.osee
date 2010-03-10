@@ -292,7 +292,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    }
 
    /**
-    * @return Returns the artId.
+    * @return Returns the art_id.
     */
    public int getArtId() {
       return artId;
@@ -364,7 +364,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
 
    public Attribute<?> getAttributeById(int attrId, boolean includeDeleted) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes(includeDeleted)) {
-         if (attribute.getAttrId() == attrId) {
+         if (attribute.getId() == attrId) {
             return attribute;
          }
       }
@@ -1535,7 +1535,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
          // and be valid for the destination branch as well
          if (sourceAttribute.isInDb() && reflectedArtifact.isAttributeTypeValid(sourceAttribute.getAttributeType())) {
             reflectedArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(),
-                  sourceAttribute.getAttrId(), sourceAttribute.getGammaId(), ModificationType.INTRODUCED, true,
+                  sourceAttribute.getId(), sourceAttribute.getGammaId(), ModificationType.INTRODUCED, true,
                   sourceAttribute.getAttributeDataProvider().getData());
          }
       }
@@ -1554,7 +1554,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    private void updateAttributesFromBranch(IOseeBranch updateSourceBranch) throws OseeCoreException {
       Artifact updateSourceArtifact = ArtifactQuery.getArtifactFromId(this.getArtId(), updateSourceBranch);
       for (Attribute updateSourceAttr : updateSourceArtifact.getAttributes()) {
-         Attribute thisAttr = getAttributeById(updateSourceAttr.getAttrId(), true);
+         Attribute thisAttr = getAttributeById(updateSourceAttr.getId(), true);
          if (isCopyAllowed(updateSourceAttr)) {
             if (thisAttr != null && thisAttr.getGammaId() != updateSourceAttr.getGammaId()) {
                thisAttr.setValue(updateSourceAttr.getValue());
@@ -1592,7 +1592,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
          if (attribute.isDirty()) {
             dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getId(),
                   attribute.getAttributeDataProvider().getData(), attribute.getModificationType(),
-                  attribute.getAttrId(), attribute.getGammaId()));
+                  attribute.getId(), attribute.getGammaId()));
          }
       }
       return dirtyAttributes;

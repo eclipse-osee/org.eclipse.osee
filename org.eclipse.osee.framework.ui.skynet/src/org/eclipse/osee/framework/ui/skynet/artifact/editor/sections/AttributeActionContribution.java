@@ -108,7 +108,7 @@ public class AttributeActionContribution implements IActionContributor {
                   } else if (!isAdd && isDefault) {
                      Attribute<String> attr = artifact.getSoleAttribute(attributeTypeName);
                      attr.internalInitialize(attr.getAttributeType(), artifact, ModificationType.MODIFIED,
-                           attr.getAttrId(), attr.getGammaId(), true, true);
+                           attr.getId(), attr.getGammaId(), true, true);
                   } else {
                      artifact.deleteAttributes(attributeTypeName);
                   }

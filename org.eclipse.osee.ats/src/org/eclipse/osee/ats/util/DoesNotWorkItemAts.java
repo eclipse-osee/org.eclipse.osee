@@ -375,16 +375,16 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       String str = relLinks.size() + " duplicate relations found for [" + artifact.getHumanReadableId() + "] ";
       for (RelationLink relLink : relLinks) {
          if (firstId == null) {
-            firstId = relLink.getRelationId();
+            firstId = relLink.getId();
             firstName = relLink.getArtifactB().getName();
-         } else if (relLink.getRelationId() != firstId && relLink.getArtifactB().getName().equals(firstName)) {
+         } else if (relLink.getId() != firstId && relLink.getArtifactB().getName().equals(firstName)) {
             str += " Deleteable";
             if (fix) {
                relLink.delete(false);
                artifact.persist(transaction);
             }
          }
-         str += "[" + relLink.getArtifactB().getName() + "(" + relLink.getRelationId() + ")]";
+         str += "[" + relLink.getArtifactB().getName() + "(" + relLink.getId() + ")]";
       }
       System.out.println(str);
       if (fix) {

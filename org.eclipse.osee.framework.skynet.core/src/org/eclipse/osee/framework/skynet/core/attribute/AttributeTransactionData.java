@@ -39,7 +39,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    private final DAOToSQL daoToSql;
 
    public AttributeTransactionData(Attribute<?> attribute) throws OseeDataStoreException {
-      super(attribute.getAttrId(), attribute.getModificationType());
+      super(attribute.getId(), attribute.getModificationType());
       this.attribute = attribute;
       this.daoToSql = new DAOToSQL();
    }

@@ -89,7 +89,7 @@ public class AttributeConflict extends Conflict {
       }
       Collection<Attribute<Object>> localAttributes = getArtifact().getAttributes(getAttributeType().getName());
       for (Attribute<Object> localAttribute : localAttributes) {
-         if (localAttribute.getAttrId() == attrId) {
+         if (localAttribute.getId() == attrId) {
             attribute = localAttribute;
          }
       }
@@ -107,7 +107,7 @@ public class AttributeConflict extends Conflict {
          localAttributes = getSourceArtifact().getAttributes();
       }
       for (Attribute<?> localAttribute : localAttributes) {
-         if (localAttribute.getAttrId() == attrId) {
+         if (localAttribute.getId() == attrId) {
             sourceAttribute = localAttribute;
          }
       }
@@ -124,7 +124,7 @@ public class AttributeConflict extends Conflict {
       }
       Collection<Attribute<Object>> localAttributes = getDestArtifact().getAttributes(getAttributeType().getName());
       for (Attribute<Object> localAttribute : localAttributes) {
-         if (localAttribute.getAttrId() == attrId) {
+         if (localAttribute.getId() == attrId) {
             destAttribute = localAttribute;
          }
       }
@@ -139,7 +139,7 @@ public class AttributeConflict extends Conflict {
       Attribute<?> attribute = null;
       Collection<Attribute<Object>> localAttributes = artifact.getAttributes(getAttributeType().getName());
       for (Attribute<Object> localAttribute : localAttributes) {
-         if (localAttribute.getAttrId() == attrId) {
+         if (localAttribute.getId() == attrId) {
             attribute = localAttribute;
          }
       }

@@ -122,7 +122,7 @@ public final class AttributeChange extends Change {
 
    public Attribute<?> getAttribute() throws OseeCoreException {
       for (Attribute<?> attribute : getArtifact().getAllAttributesIncludingHardDeleted()) {
-         if (attribute.getAttrId() == attrId) {
+         if (attribute.getId() == attrId) {
             return attribute;
          }
       }

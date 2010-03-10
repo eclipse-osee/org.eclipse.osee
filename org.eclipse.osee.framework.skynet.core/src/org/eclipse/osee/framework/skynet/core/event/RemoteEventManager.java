@@ -527,7 +527,7 @@ public class RemoteEventManager {
                                  dirtyAttributeName.add(attribute.getNameValueDescription());
                                  OseeLog.log(Activator.class, Level.INFO, String.format(
                                        "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
-                                       attribute.getAttrId(), attribute.toString()));
+                                       attribute.getId(), attribute.toString()));
                               }
                               try {
                                  ModificationType modificationType = skynetAttributeChange.getModificationType();
@@ -547,7 +547,7 @@ public class RemoteEventManager {
                               } catch (OseeCoreException ex) {
                                  OseeLog.log(Activator.class, Level.INFO, String.format(
                                        "Exception updating %s's attribute %d [/n%s/n].", artifact.getSafeName(),
-                                       attribute.getAttrId(), attribute.toString()), ex);
+                                       attribute.getId(), attribute.toString()), ex);
                               }
                            }
                            // Otherwise, attribute needs creation

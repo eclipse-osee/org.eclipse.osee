@@ -131,13 +131,13 @@ public class RelationManager {
    public static RelationLink getLoadedRelationById(int relLinkId, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
       RelationLink relation = null;
       for (RelationLink link : getRelationsAll(aArtifactId, aBranch.getId(), true)) {
-         if (link.getRelationId() == relLinkId) {
+         if (link.getId() == relLinkId) {
             relation = link;
             break;
          }
       }
       for (RelationLink link : getRelationsAll(bArtifactId, bBranch.getId(), true)) {
-         if (link.getRelationId() == relLinkId) {
+         if (link.getId() == relLinkId) {
             relation = link;
             break;
          }
@@ -171,7 +171,7 @@ public class RelationManager {
     * Store the newly instantiated relation from the perspective of relationSide in its appropriate order
     */
    public static void manageRelation(RelationLink newRelation, RelationSide relationSide) {
-      if (RelationLink.isRelationUnderTest() && newRelation.getRelationId() == RelationLink.RELATION_ID_UNDER_TEST) {
+      if (RelationLink.isRelationUnderTest() && newRelation.getId() == RelationLink.RELATION_ID_UNDER_TEST) {
          System.out.println("RelationManager.manageRelation relationId == " + RelationLink.RELATION_ID_UNDER_TEST + " for side " + relationSide);
       }
       Artifact artifact =
@@ -704,7 +704,7 @@ public class RelationManager {
          List<Object[]> batchArgs = new ArrayList<Object[]>(links.size());
          String PURGE_RELATION = "delete from osee_relation_link WHERE rel_link_id = ?";
          for (RelationLink link : links) {
-            batchArgs.add(new Object[] {link.getRelationId()});
+            batchArgs.add(new Object[] {link.getId()});
             link.markAsPurged();
          }
          ConnectionHandler.runBatchUpdate(PURGE_RELATION, batchArgs);

@@ -612,7 +612,7 @@ public class InternalEventManager {
       Artifact right = link.getArtifactIfLoaded(RelationSide.SIDE_B);
       SkynetRelationLinkEventBase ret = null;
       ret =
-            new SkynetRelationLinkEventBase(link.getGammaId(), link.getBranch().getId(), link.getRelationId(),
+            new SkynetRelationLinkEventBase(link.getGammaId(), link.getBranch().getId(), link.getId(),
                   link.getAArtifactId(), (left != null ? left.getArtTypeId() : -1), link.getBArtifactId(),
                   (right != null ? right.getArtTypeId() : -1), link.getRelationType().getId(),
                   sender.getNetworkSender());

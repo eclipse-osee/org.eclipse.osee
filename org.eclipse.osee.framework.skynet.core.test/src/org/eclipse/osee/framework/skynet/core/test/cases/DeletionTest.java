@@ -213,16 +213,16 @@ public class DeletionTest {
                } else {
                   try {
                      chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE, artifact.getBranch().getId(),
-                           deletionTransaction, attribute.getAttrId());
+                           deletionTransaction, attribute.getId());
                      if (chStmt.next()) {
                         if (deletionTransaction == chStmt.getInt("transaction_id")) {
-                           fail("Attribute " + attribute.getAttrId() + " tx_current set on  " + chStmt.getInt("transaction_id") + " when it should be < " + deletionTransaction + " on branch " + artifact.getBranch().getId());
+                           fail("Attribute " + attribute.getId() + " tx_current set on  " + chStmt.getInt("transaction_id") + " when it should be < " + deletionTransaction + " on branch " + artifact.getBranch().getId());
                         }
                         if (chStmt.next()) {
-                           fail("Attribute " + attribute.getAttrId() + " has multiple tx_current set on " + artifact.getBranch().getId());
+                           fail("Attribute " + attribute.getId() + " has multiple tx_current set on " + artifact.getBranch().getId());
                         }
                      } else {
-                        fail("Attribute " + attribute.getAttrId() + " has no tx_current set on " + artifact.getBranch().getId());
+                        fail("Attribute " + attribute.getId() + " has no tx_current set on " + artifact.getBranch().getId());
                      }
                   } finally {
                      chStmt.close();
@@ -235,16 +235,16 @@ public class DeletionTest {
                } else {
                   try {
                      chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_RELATION, artifact.getBranch().getId(),
-                           deletionTransaction, relation.getRelationId());
+                           deletionTransaction, relation.getId());
                      if (chStmt.next()) {
                         if (deletionTransaction == chStmt.getInt("transaction_id")) {
-                           fail("Relation " + relation.getRelationId() + " tx_current set on  " + chStmt.getInt("transaction_id") + " when it should be < " + deletionTransaction + " on branch " + artifact.getBranch().getId());
+                           fail("Relation " + relation.getId() + " tx_current set on  " + chStmt.getInt("transaction_id") + " when it should be < " + deletionTransaction + " on branch " + artifact.getBranch().getId());
                         }
                         if (chStmt.next()) {
-                           fail("Relation " + relation.getRelationId() + " has multiple tx_current set on " + artifact.getBranch().getId());
+                           fail("Relation " + relation.getId() + " has multiple tx_current set on " + artifact.getBranch().getId());
                         }
                      } else {
-                        fail("Relation " + relation.getRelationId() + " has no tx_current set on " + artifact.getBranch().getId());
+                        fail("Relation " + relation.getId() + " has no tx_current set on " + artifact.getBranch().getId());
                      }
                   } finally {
                      chStmt.close();
@@ -281,8 +281,8 @@ public class DeletionTest {
                artifactForDeletionCheck.persist();
                //check for internal deletions and then check the database
 
-               assertTrue("Attribute " + attribute.getAttrId() + " should be deleted but isn't", attribute.isDeleted());
-               assertTrue("Relation " + relation.getRelationId() + " should be deleted but isn't", relation.isDeleted());
+               assertTrue("Attribute " + attribute.getId() + " should be deleted but isn't", attribute.isDeleted());
+               assertTrue("Relation " + relation.getId() + " should be deleted but isn't", relation.isDeleted());
 
                checkAttribute(artifactForDeletionCheck, attribute, TxChange.DELETED.getValue());
                checkRelation(artifactForDeletionCheck, relation, TxChange.DELETED.getValue());
@@ -309,22 +309,22 @@ public class DeletionTest {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE, artifact.getBranch().getId(),
-               artifact.getTransactionNumber(), attribute.getAttrId());
+               artifact.getTransactionNumber(), attribute.getId());
          if (chStmt.next()) {
-            fail("Attribute " + attribute.getAttrId() + " old Transaction < : " + artifact.getTransactionNumber() + "  is set to " + chStmt.getInt("tx_current") + " , should be 0 on branch " + artifact.getBranch().getId());
+            fail("Attribute " + attribute.getId() + " old Transaction < : " + artifact.getTransactionNumber() + "  is set to " + chStmt.getInt("tx_current") + " , should be 0 on branch " + artifact.getBranch().getId());
          }
       } finally {
          chStmt.close();
       }
       try {
          chStmt.runPreparedQuery(CHECK_FOR_DELETED_TX_CURRENT_ATTRIBUTE, artifact.getBranch().getId(), value,
-               attribute.getAttrId());
+               attribute.getId());
          if (chStmt.next()) {
             assertTrue(
-                  "Attribute " + attribute.getAttrId() + " Transaction: " + artifact.getTransactionNumber() + " should be 3 on branch " + artifact.getBranch().getId(),
+                  "Attribute " + attribute.getId() + " Transaction: " + artifact.getTransactionNumber() + " should be 3 on branch " + artifact.getBranch().getId(),
                   chStmt.getInt("transaction_id") == artifact.getTransactionNumber());
          } else {
-            fail("Attribute " + attribute.getAttrId() + " was not given a tx_current value of 3 when it was deleted on branch " + artifact.getBranch().getId());
+            fail("Attribute " + attribute.getId() + " was not given a tx_current value of 3 when it was deleted on branch " + artifact.getBranch().getId());
          }
       } finally {
          chStmt.close();
@@ -338,25 +338,25 @@ public class DeletionTest {
             relation.isDeleted());
       try {
          chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_RELATION, artifact.getBranch().getId(),
-               artifact.getTransactionNumber(), relation.getRelationId());
+               artifact.getTransactionNumber(), relation.getId());
          if (chStmt.next()) {
-            fail("Relation " + relation.getRelationId() + " old Transaction < : " + artifact.getTransactionNumber() + "  is set to " + chStmt.getInt("tx_current") + " , should be 0 on branch " + artifact.getBranch().getId());
+            fail("Relation " + relation.getId() + " old Transaction < : " + artifact.getTransactionNumber() + "  is set to " + chStmt.getInt("tx_current") + " , should be 0 on branch " + artifact.getBranch().getId());
          }
       } finally {
          chStmt.close();
       }
       try {
          chStmt.runPreparedQuery(CHECK_FOR_DELETED_TX_CURRENT_RELATION, artifact.getBranch().getId(), value,
-               relation.getRelationId());
+               relation.getId());
          if (chStmt.next()) {
             assertTrue(
-                  "Relation " + relation.getRelationId() + " Transaction: " + artifact.getTransactionNumber() + " should be " + value + " on branch " + artifact.getBranch().getId(),
+                  "Relation " + relation.getId() + " Transaction: " + artifact.getTransactionNumber() + " should be " + value + " on branch " + artifact.getBranch().getId(),
                   chStmt.getInt("transaction_id") >= artifact.getTransactionNumber());
             if (chStmt.next()) {
-               fail("Relation " + relation.getRelationId() + " has multiple tx_current values of " + value + " when it was deleted on branch " + artifact.getBranch().getId() + " on transaction " + artifact.getTransactionNumber());
+               fail("Relation " + relation.getId() + " has multiple tx_current values of " + value + " when it was deleted on branch " + artifact.getBranch().getId() + " on transaction " + artifact.getTransactionNumber());
             }
          } else {
-            fail("Relation " + relation.getRelationId() + " was not given a tx_current value of " + value + " when it was deleted on branch " + artifact.getBranch().getId() + " on transaction " + artifact.getTransactionNumber());
+            fail("Relation " + relation.getId() + " was not given a tx_current value of " + value + " when it was deleted on branch " + artifact.getBranch().getId() + " on transaction " + artifact.getTransactionNumber());
          }
       } finally {
          chStmt.close();
@@ -385,7 +385,7 @@ public class DeletionTest {
       try {
          System.out.println("  Attribute Dump");
          chStmt.runPreparedQuery(GET_ATTRIBUTE_DEBUG, attribute.getArtifact().getBranch().getId(),
-               attribute.getAttrId());
+               attribute.getId());
          while (chStmt.next()) {
             System.out.println(String.format(
                   "        Attribute Id = %d  Art_id = %d Branch Id = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",
@@ -403,7 +403,7 @@ public class DeletionTest {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          System.out.println("  Relation Dump");
-         chStmt.runPreparedQuery(GET_RELATION_DEBUG, artifact.getBranch().getId(), relation.getRelationId());
+         chStmt.runPreparedQuery(GET_RELATION_DEBUG, artifact.getBranch().getId(), relation.getId());
          while (chStmt.next()) {
             System.out.println(String.format(
                   "        Relation Id = %d  a_art_id = %d b_art_id = %d Branch Id = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",

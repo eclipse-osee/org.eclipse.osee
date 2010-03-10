@@ -210,7 +210,7 @@ public class ArtifactPersistenceManager {
          return;
       }
       revertAttribute(connection, attribute.getArtifact().getBranch().getId(), attribute.getArtifact().getArtId(),
-            attribute.getAttrId());
+            attribute.getId());
    }
 
    public static void revertAttribute(OseeConnection connection, int branchId, int artId, int attributeId) throws OseeCoreException {
@@ -240,16 +240,16 @@ public class ArtifactPersistenceManager {
       // to revisit if additional functionality is needed.
       if (!link.getArtifactA().getBranch().equals(link.getArtifactB().getBranch())) {
          throw new OseeArgumentException(String.format("Cannot revert Relation %d. Relation spans multiple branches",
-               link.getRelationId()));
+               link.getId()));
       }
       long totalTime = System.currentTimeMillis();
       Branch branch = link.getArtifactA().getBranch();
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(GET_GAMMAS_RELATION_REVERT, branch.getId(), link.getRelationId());
+         chStmt.runPreparedQuery(GET_GAMMAS_RELATION_REVERT, branch.getId(), link.getId());
          TransactionRecord transId = TransactionManager.createNextTransactionId(connection, branch, UserManager.getUser(), "");
          RevertAction revertAction = new RevertAction(connection, chStmt, transId);
-         revertAction.revertObject(totalTime, link.getRelationId(), "Relation Link");
+         revertAction.revertObject(totalTime, link.getId(), "Relation Link");
       } finally {
          chStmt.close();
       }

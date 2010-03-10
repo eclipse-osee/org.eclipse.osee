@@ -127,7 +127,7 @@ public class SkynetTransaction extends DbTransaction {
       if (!link.getBranch().equals(branch)) {
          String msg =
                String.format("The relation link [%s] is on branch [%s] but this transaction is for branch [%s]",
-                     link.getRelationId(), link.getBranch(), branch);
+                     link.getId(), link.getBranch(), branch);
          throw new OseeStateException(msg);
       }
    }
@@ -144,7 +144,7 @@ public class SkynetTransaction extends DbTransaction {
    private void ensureBranchIsEditable(RelationLink link) throws OseeStateException {
       if (!link.getBranch().isEditable()) {
          String msg =
-               String.format("The relation link [%s] is on a non-editable branch [%s]", link.getRelationId(),
+               String.format("The relation link [%s] is on a non-editable branch [%s]", link.getId(),
                      link.getBranch());
          throw new OseeStateException(msg);
       }
@@ -257,14 +257,14 @@ public class SkynetTransaction extends DbTransaction {
       if (attribute.isDeleted() && !attribute.isInDb()) {
          return;
       }
-      if (attribute.getAttrId() == 0) {
+      if (attribute.getId() == 0) {
          attribute.internalSetAttributeId(getNewAttributeId(artifact, attribute));
       }
 
-      BaseTransactionData txItem = transactionDataItems.get(AttributeTransactionData.class, attribute.getAttrId());
+      BaseTransactionData txItem = transactionDataItems.get(AttributeTransactionData.class, attribute.getId());
       if (txItem == null) {
          txItem = new AttributeTransactionData(attribute);
-         transactionDataItems.put(AttributeTransactionData.class, attribute.getAttrId(), txItem);
+         transactionDataItems.put(AttributeTransactionData.class, attribute.getId(), txItem);
       } else {
          updateTxItem(txItem, attribute.getModificationType());
       }
@@ -328,10 +328,10 @@ public class SkynetTransaction extends DbTransaction {
       if (aArtifact != null) aArtifact.persist(this);
       if (bArtifact != null) bArtifact.persist(this);
 
-      BaseTransactionData txItem = transactionDataItems.get(RelationTransactionData.class, link.getRelationId());
+      BaseTransactionData txItem = transactionDataItems.get(RelationTransactionData.class, link.getId());
       if (txItem == null) {
          txItem = new RelationTransactionData(link, modificationType);
-         transactionDataItems.put(RelationTransactionData.class, link.getRelationId(), txItem);
+         transactionDataItems.put(RelationTransactionData.class, link.getId(), txItem);
       } else {
          updateTxItem(txItem, modificationType);
       }

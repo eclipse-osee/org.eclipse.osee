@@ -34,7 +34,7 @@ public class RelationTransactionData extends BaseTransactionData {
    private final RelationLink relation;
 
    public RelationTransactionData(RelationLink relation, ModificationType modificationType) throws OseeDataStoreException {
-      super(relation.getRelationId(), modificationType);
+      super(relation.getId(), modificationType);
       this.relation = relation;
    }
 
@@ -47,7 +47,7 @@ public class RelationTransactionData extends BaseTransactionData {
    protected void addInsertToBatch(SkynetTransaction transaction) throws OseeCoreException {
       super.addInsertToBatch(transaction);
       if (!useExistingBackingData()) {
-         internalAddInsertToBatch(transaction, 4, INSERT_INTO_RELATION_TABLE, relation.getRelationId(),
+         internalAddInsertToBatch(transaction, 4, INSERT_INTO_RELATION_TABLE, relation.getId(),
                relation.getRelationType().getId(), relation.getAArtifactId(), relation.getBArtifactId(),
                relation.getRationale(), getGammaId());
       }
