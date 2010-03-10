@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
@@ -99,6 +100,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
    private static int COLUMN_ORDER = 1;
 
    private MenuItem openMenuItem;
+   private MenuItem wordPreviewItem;
    //   private MenuItem openWithMenuItem;
    private MenuItem editMenuItem;
    private MenuItem viewRelationTreeItem;
@@ -229,6 +231,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       popupMenu.addMenuListener(needSelectedArtifactListener);
 
       createOpenMenuItem(popupMenu);
+      createWordPreviewMenuItem(popupMenu);
       //      createOpenWithMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createEditMenuItem(popupMenu);
@@ -418,11 +421,40 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
    }
 
    private void openViewer(IStructuredSelection selection) {
-      Object object = selection.getFirstElement();
+      for (Object object : selection.toArray()) {
+         if (object instanceof WrapperForRelationLink) {
+            WrapperForRelationLink link = (WrapperForRelationLink) object;
+            ArtifactEditor.editArtifact(link.getOther());
+         }
+      }
+   }
 
-      if (object instanceof WrapperForRelationLink) {
-         WrapperForRelationLink link = (WrapperForRelationLink) object;
-         ArtifactEditor.editArtifact(link.getOther());
+   private void createWordPreviewMenuItem(Menu parentMenu) {
+      wordPreviewItem = new MenuItem(parentMenu, SWT.PUSH);
+      wordPreviewItem.setText("Word Preview");
+      needSelectedArtifactListener.addArtifactEnabled(wordPreviewItem);
+      wordPreviewItem.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            openWordViewer((IStructuredSelection) treeViewer.getSelection());
+         }
+      });
+   }
+
+   private void openWordViewer(IStructuredSelection selection) {
+      List<Artifact> artifacts = new ArrayList<Artifact>();
+
+      for (Object object : selection.toArray()) {
+         if (object instanceof WrapperForRelationLink) {
+            WrapperForRelationLink link = (WrapperForRelationLink) object;
+            artifacts.add(link.getOther());
+         }
+      }
+
+      WordTemplateRenderer r = new WordTemplateRenderer();
+      try {
+         r.preview(artifacts);
+      } catch (OseeCoreException ex) {
       }
    }
 
