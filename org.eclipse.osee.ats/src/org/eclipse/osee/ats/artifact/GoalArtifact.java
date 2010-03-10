@@ -186,6 +186,8 @@ public class GoalArtifact extends StateMachineArtifact {
          goal = (GoalArtifact) goals.iterator().next();
       } else if (goals.size() > 1) {
          ArtifactListDialog dialog = new ArtifactListDialog(Display.getCurrent().getActiveShell(), goals);
+         dialog.setTitle("Select Goal");
+         dialog.setMessage("Artifact has multiple Goals\n\nSelect Goal to change order");
          if (dialog.open() == 0) {
             goal = (GoalArtifact) dialog.getSelection();
          } else {
