@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
-<fragment>
+<?eclipse version="3.0"?>
+<plugin>
   <extension
          point="org.eclipse.ui.importWizards">
       <wizard
@@ -30,4 +30,4 @@
             classname="org.eclipse.osee.framework.types.bridge.operations.XtextOseeTypesHandler">
       </OseeTypesHandler>
    </extension>
-</fragment>
+</plugin>
