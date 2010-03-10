@@ -121,7 +121,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".numeric2", ATSAttributes.NUMERIC2_ATTRIBUTE, 40, SWT.LEFT,
                false, SortDataType.Float, true);
    public static final XViewerColumn Goal_Order =
-         new XViewerColumn(COLUMN_NAMESPACE + ".goalOrder", "Goal Order", 40, SWT.LEFT, false, SortDataType.Float,
+         new XViewerColumn(COLUMN_NAMESPACE + ".goalOrder", "Goal Order", 40, SWT.LEFT, false, SortDataType.Integer,
                true, "Order of item within displayed goal.  Editing this field changes order.");
    public static final XViewerColumn Goal_Order_Vote_Col =
          new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".goalOrderVote", ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE,
