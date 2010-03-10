@@ -40,12 +40,15 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
@@ -384,6 +387,13 @@ public class SkynetTransaction extends DbTransaction {
          transactionData.internalAddToEvents(xModifiedEvents);
       }
 
+      for (Artifact artifact : artifactReferences) {
+         if (artifact.hasDirtyAttributes()) {
+            xModifiedEvents.add(new ArtifactModifiedEvent(new Sender(this.getClass().getName()),
+                  ArtifactModType.Changed, artifact, artifact.getTransactionNumber(),
+                  artifact.getDirtySkynetAttributeChanges()));
+         }
+      }
       // Clear all dirty flags
       for (BaseTransactionData transactionData : transactionDataItems.values()) {
          transactionData.internalClearDirtyState();
