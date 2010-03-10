@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
@@ -79,7 +78,7 @@ public class WholeDocumentRenderer extends WordRenderer {
          if (artifact == null) {
             stream = Streams.convertStringToInputStream(WordWholeDocumentAttribute.getEmptyDocumentContent(), "UTF-8");
          } else {
-            String content = artifact.getOrInitializeSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT);
+            String content = artifact.getOrInitializeSoleAttributeValue(CoreAttributeTypes.WHOLE_WORD_CONTENT);
             if (presentationType == PresentationType.DIFF && WordAnnotationHandler.containsWordAnnotations(content)) {
                throw new OseeStateException(
                      "Trying to diff the " + artifact.getName() + " artifact on the " + artifact.getBranch().getShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.");
@@ -110,7 +109,7 @@ public class WholeDocumentRenderer extends WordRenderer {
       if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
 
          if (baseVersion != null) {
-            Attribute<?> baseAttribute = baseVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT);
+            Attribute<?> baseAttribute = baseVersion.getSoleAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT);
             if (baseAttribute != null) {
                String value = baseAttribute.getValue().toString();
                if (WordAnnotationHandler.containsWordAnnotations(value)) {
@@ -121,7 +120,7 @@ public class WholeDocumentRenderer extends WordRenderer {
          }
 
          if (newerVersion != null) {
-            Attribute<?> newerAttribute = newerVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT);
+            Attribute<?> newerAttribute = newerVersion.getSoleAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT);
             if (newerAttribute != null) {
                String value = newerAttribute.getValue().toString();
                if (WordAnnotationHandler.containsWordAnnotations(value)) {
@@ -135,8 +134,8 @@ public class WholeDocumentRenderer extends WordRenderer {
       if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
          originalValue =
                WordImageChecker.checkForImageDiffs(
-                     baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT) : null,
-                     newerVersion != null ? newerVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT) : null);
+                     baseVersion != null ? baseVersion.getSoleAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT) : null,
+                     newerVersion != null ? newerVersion.getSoleAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT) : null);
       }
       if (baseVersion != null) {
          if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
@@ -158,10 +157,10 @@ public class WholeDocumentRenderer extends WordRenderer {
          newerFile = renderForDiff(monitor, branch);
       }
       WordImageChecker.restoreOriginalValue(
-            baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT) : null,
+            baseVersion != null ? baseVersion.getSoleAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT) : null,
             oldAnnotationValue != null ? oldAnnotationValue : originalValue);
       WordImageChecker.restoreOriginalValue(
-            newerVersion != null ? newerVersion.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT) : null,
+            newerVersion != null ? newerVersion.getSoleAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT) : null,
             newAnnotationValue);
       return compare(baseVersion, newerVersion, baseFile, newerFile, presentationType, show);
    }

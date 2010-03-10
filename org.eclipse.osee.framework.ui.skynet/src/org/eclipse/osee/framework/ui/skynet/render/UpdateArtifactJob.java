@@ -23,9 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -44,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -68,7 +65,8 @@ public class UpdateArtifactJob extends UpdateJob {
    private static final Pattern multiPattern = Pattern.compile(".*[^()]*");
    private Element oleDataElement;
    private String singleGuid = null;
-   private static final boolean DEBUG = "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Renderer"));
+   private static final boolean DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Renderer"));
 
    public UpdateArtifactJob() {
       super("Update Artifact");
@@ -78,10 +76,8 @@ public class UpdateArtifactJob extends UpdateJob {
    protected IStatus run(IProgressMonitor monitor) {
       try {
          processUpdate();
-      }
-      catch (Exception ex) {
-         return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK,
-                           ex.getLocalizedMessage(), ex);
+      } catch (Exception ex) {
+         return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
       }
       return Status.OK_STATUS;
    }
@@ -91,40 +87,39 @@ public class UpdateArtifactJob extends UpdateJob {
       if (branch.isEditable()) {
          Matcher singleEditMatcher = guidPattern.matcher(workingFile.getName());
          Matcher multiEditMatcher = multiPattern.matcher(workingFile.getName());
-         
+
          if (singleEditMatcher.matches()) {
             singleGuid = singleEditMatcher.group(1);
-            
-            if(isMergeEdit()){
+
+            if (isMergeEdit()) {
                processMergeEdit(new MergeEditArtifactElementExtractor(extractJaxpDocument()), branch);
-            }else{
+            } else {
                Artifact artifact = ArtifactQuery.getArtifactFromId(singleGuid, branch);
                processSingleEdit(artifact);
             }
-         }else  if (multiEditMatcher.matches()) {
+         } else if (multiEditMatcher.matches()) {
             WordArtifactElementExtractor elementExtractor = new WordArtifactElementExtractor(extractJaxpDocument());
             processMultiEdit(elementExtractor, branch);
          }
       }
    }
-   
-   private boolean isMergeEdit(){
+
+   private boolean isMergeEdit() {
       return workingFile.getAbsolutePath().contains("mergeEdit");
    }
-   
-   private Document extractJaxpDocument() throws ParserConfigurationException, SAXException, IOException{
+
+   private Document extractJaxpDocument() throws ParserConfigurationException, SAXException, IOException {
       Document document;
       InputStream inputStream = new BufferedInputStream(new FileInputStream(workingFile));
       try {
          document = Jaxp.readXmlDocument(inputStream);
-      }
-      finally {
+      } finally {
          Lib.close(inputStream);
       }
       return document;
    }
-   
-   private void processMergeEdit(IElementExtractor elementExtractor, Branch branch) throws OseeCoreException, DOMException, ParserConfigurationException, SAXException, IOException{
+
+   private void processMergeEdit(IElementExtractor elementExtractor, Branch branch) throws OseeCoreException, DOMException, ParserConfigurationException, SAXException, IOException {
       wordArtifactUpdate(elementExtractor, branch);
    }
 
@@ -132,8 +127,7 @@ public class UpdateArtifactJob extends UpdateJob {
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
          WordArtifactElementExtractor elementExtractor = new WordArtifactElementExtractor(extractJaxpDocument());
          wordArtifactUpdate(elementExtractor, artifact.getBranch());
-      }
-      else {
+      } else {
          processNativeDocuments(artifact);
       }
    }
@@ -141,11 +135,9 @@ public class UpdateArtifactJob extends UpdateJob {
    private void processNativeDocuments(Artifact artifact) throws OseeCoreException, FileNotFoundException {
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT)) {
          updateNativeArtifact(artifact, CoreAttributeTypes.WHOLE_WORD_CONTENT);
-      }
-      else if (artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT)) {
+      } else if (artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT)) {
          updateNativeArtifact(artifact, CoreAttributeTypes.NATIVE_CONTENT);
-      }
-      else {
+      } else {
          throw new OseeArgumentException("Artifact must be of type WordArtifact or NativeArtifact.");
       }
    }
@@ -155,10 +147,8 @@ public class UpdateArtifactJob extends UpdateJob {
    }
 
    private void logUpdateSkip(Artifact artifact) {
-      OseeLog.log(
-                  SkynetGuiPlugin.class,
-                  Level.INFO,
-                  String.format("Skipping update - artifact [%s] is read-only", artifact.toString()));
+      OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format("Skipping update - artifact [%s] is read-only",
+            artifact.toString()));
    }
 
    private void updateNativeArtifact(Artifact artifact, CoreAttributeTypes attributeType) throws OseeCoreException, FileNotFoundException {
@@ -168,12 +158,10 @@ public class UpdateArtifactJob extends UpdateJob {
             stream = new BufferedInputStream(new FileInputStream(workingFile));
             artifact.setSoleAttributeFromStream(attributeType, stream);
             artifact.persist();
-         }
-         finally {
+         } finally {
             Lib.close(stream);
          }
-      }
-      else {
+      } else {
          logUpdateSkip(artifact);
       }
    }
@@ -192,41 +180,34 @@ public class UpdateArtifactJob extends UpdateJob {
 
             if (artifact == null) {
                deletedGuids.add(guid);
-            }
-            else {
+            } else {
                if (artifact.isReadOnly()) {
                   logUpdateSkip(artifact);
                   continue;
                }
-               containsOleData = !artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals(
-                                                                                                         "");
+               containsOleData = !artifact.getSoleAttributeValue(CoreAttributeTypes.WORD_OLE_DATA, "").equals("");
 
                if (oleDataElement == null && containsOleData) {
-                  artifact.setSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "");
-               }
-               else if (oleDataElement != null && singleArtifact) {
-                  artifact.setSoleAttributeFromStream(
-                                                      WordAttribute.OLE_DATA_NAME,
-                                                      new ByteArrayInputStream(
-                                                                               WordTemplateRenderer.getFormattedContent(oleDataElement)));
+                  artifact.setSoleAttributeValue(CoreAttributeTypes.WORD_OLE_DATA, "");
+               } else if (oleDataElement != null && singleArtifact) {
+                  artifact.setSoleAttributeFromStream(CoreAttributeTypes.WORD_OLE_DATA, new ByteArrayInputStream(
+                        WordTemplateRenderer.getFormattedContent(oleDataElement)));
                }
                String content = null;
                try {
-                  content = Lib.inputStreamToString(new ByteArrayInputStream(
-                                                                             WordTemplateRenderer.getFormattedContent(artElement)));
-               }
-               catch (IOException ex) {
+                  content =
+                        Lib.inputStreamToString(new ByteArrayInputStream(
+                              WordTemplateRenderer.getFormattedContent(artElement)));
+               } catch (IOException ex) {
                   OseeExceptions.wrapAndThrow(ex);
                }
                // Only update if editing a single artifact or if in
                // multi-edit mode only update if the artifact has at least one textual change (if
                // the MUTI_EDIT_SAVE_ALL_CHANGES preference is not set).
-               boolean multiSave = UserManager.getUser().getBooleanSetting(
-                                                                           MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES)
-                                   || !WordUtil.textOnly(
-                                                         artifact.getSoleAttributeValue(
-                                                                                        WordAttribute.WORD_TEMPLATE_CONTENT).toString()).equals(
-                                                                                                                                                WordUtil.textOnly(content));
+               boolean multiSave =
+                     UserManager.getUser().getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES) || !WordUtil.textOnly(
+                           artifact.getSoleAttributeValue(CoreAttributeTypes.WORD_TEMPLATE_CONTENT).toString()).equals(
+                           WordUtil.textOnly(content));
 
                if (singleArtifact || multiSave) {
                   // TODO
@@ -244,16 +225,15 @@ public class UpdateArtifactJob extends UpdateJob {
                   }
                   LinkType linkType = LinkType.OSEE_SERVER_LINK;
                   content = WordMlLinkHandler.unlink(linkType, artifact, content);
-                  artifact.setSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT, content);
+                  artifact.setSoleAttributeValue(CoreAttributeTypes.WORD_TEMPLATE_CONTENT, content);
                }
                artifact.persist();
             }
          }
-      }
-      finally {
+      } finally {
          if (!deletedGuids.isEmpty()) {
-            throw new OseeStateException("The following deleted artifacts could not be saved: "
-                                         + Collections.toString(",", deletedGuids));
+            throw new OseeStateException("The following deleted artifacts could not be saved: " + Collections.toString(
+                  ",", deletedGuids));
          }
       }
    }
@@ -262,7 +242,7 @@ public class UpdateArtifactJob extends UpdateJob {
       if (singleGuid != null) {
          return singleGuid;
       }
-      
+
       NamedNodeMap attributes = artifactElement.getAttributes();
       for (int i = 0; i < attributes.getLength(); i++) {
          // MS Word has a nasty habit of changing the namespace say from
@@ -272,7 +252,6 @@ public class UpdateArtifactJob extends UpdateJob {
             return attributes.item(i).getNodeValue();
          }
       }
-      throw new OseeArgumentException("didn't find the guid attribure in element: "
-                                      + artifactElement);
+      throw new OseeArgumentException("didn't find the guid attribure in element: " + artifactElement);
    }
 }

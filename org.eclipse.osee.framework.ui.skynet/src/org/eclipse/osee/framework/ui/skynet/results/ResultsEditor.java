@@ -190,7 +190,13 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
          public void run() {
             IWorkbenchPage page = AWorkbench.getActivePage();
             try {
-               page.openEditor(new ResultsEditorInput(provider), EDITOR_ID);
+               ResultsEditorInput input = new ResultsEditorInput(provider);
+//               try {
+//                  Thread.sleep(5000);
+//               } catch (InterruptedException ex) {
+//                  ex.printStackTrace();
+//               }
+               page.openEditor(input, EDITOR_ID);
             } catch (PartInitException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -226,7 +232,7 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
          @Override
          public void run() {
             for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
-               AWorkbench.getActivePage().closeEditor((editor.getEditor(false)), false);
+               AWorkbench.getActivePage().closeEditor(editor.getEditor(false), false);
             }
          }
       });

@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URI;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
@@ -33,7 +33,7 @@ public class WholeWordDocumentExtractor extends AbstractArtifactExtractor {
       RoughArtifact roughArtifact =
             new RoughArtifact(RoughArtifactKind.PRIMARY, Lib.removeExtension(new File(source).getName()));
       collector.addRoughArtifact(roughArtifact);
-      roughArtifact.addURIAttribute(WordAttribute.WHOLE_WORD_CONTENT, source);
+      roughArtifact.addURIAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT, source);
    }
 
    public FileFilter getFileFilter() {

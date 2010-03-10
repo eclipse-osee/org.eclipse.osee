@@ -51,7 +51,7 @@ public final class UserManager {
 
    /**
     * Returns the currently authenticated user
-    *
+    * 
     * @return User
     * @throws OseeCoreException
     */
@@ -72,7 +72,7 @@ public final class UserManager {
          if (user.isActive()) {
             activeUsers.add(user);
          }
-   }
+      }
       return activeUsers;
    }
 
@@ -99,7 +99,7 @@ public final class UserManager {
 
    /**
     * Return sorted list of active User.getName() in database
-    *
+    * 
     * @return String[]
     */
    public static String[] getUserNames() throws OseeCoreException {
@@ -150,7 +150,7 @@ public final class UserManager {
 
    /**
     * This is not the preferred way to get a user. Most likely getUserByUserId() or getUserByArtId() should be used
-    *
+    * 
     * @param name
     * @return the first user found with the given name
     * @throws OseeCoreException
@@ -209,7 +209,7 @@ public final class UserManager {
                if (user.getUserId().equals(ClientSessionManager.getSession().getId())) {
                   throw ex;
                } else {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+                  OseeLog.log(Activator.class, Level.WARNING, ex);
                }
             }
          }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,7 +40,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.swt.program.Program;
@@ -196,7 +196,7 @@ public class ImportTraceabilityJob extends Job {
                   // for local data and procedures search requirement text for traceMark
                   // example local data [{SUBSCRIBER}.ID] and example procedure {CURSOR_ACKNOWLEDGE}.NORMAL
                   String textContent =
-                        WordUtil.textOnly(reqArtifact.getSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT, "")).toUpperCase();
+                        WordUtil.textOnly(reqArtifact.getSoleAttributeValue(WORD_TEMPLATE_CONTENT, "")).toUpperCase();
                   if (textContent.contains(traceExtractor.getCanonicalRequirementName(structuredRequirement.getSecond()))) {
                      foundStr = "req body match";
                   } else {

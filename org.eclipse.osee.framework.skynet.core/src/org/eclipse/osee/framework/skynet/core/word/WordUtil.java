@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.word;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 
 /**
  * Provides utility methods for parsing wordML.
@@ -50,13 +49,13 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 public class WordUtil {
    public static final String BODY_START = "<w:body>";
    public static final String BODY_END = "</w:body>";
-   private static final String[] NUMBER = new String[] {"Zero", "One", "Two", "Three", "Four",
-                                                        "Five", "Six", "Seven", "Eight", "Nine"};
+   private static final String[] NUMBER =
+         new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
 
-   private static final String SELECT_WORD_VALUES = "SELECT attr.content, attr.gamma_id FROM osee_attribute attr, osee_txs txs WHERE attr.art_id=? AND attr.attr_type_id=? AND attr.gamma_id = txs.gamma_id AND txs.branch_id=? ORDER BY attr.gamma_id DESC";
+   private static final String SELECT_WORD_VALUES =
+         "SELECT attr.content, attr.gamma_id FROM osee_attribute attr, osee_txs txs WHERE attr.art_id=? AND attr.attr_type_id=? AND attr.gamma_id = txs.gamma_id AND txs.branch_id=? ORDER BY attr.gamma_id DESC";
    private static final Matcher binIdMatcher = Pattern.compile("wordml://(.+?)[.]").matcher("");
-   private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL
-                                                                     | Pattern.MULTILINE);
+   private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
 
    public WordUtil() {
@@ -106,12 +105,11 @@ public class WordUtil {
          throw new IllegalArgumentException("branch can not be null");
       }
 
-      AttributeType attributeDescriptor = AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT);
+      AttributeType attributeDescriptor = AttributeTypeManager.getType(WORD_TEMPLATE_CONTENT);
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(SELECT_WORD_VALUES, artId, attributeDescriptor.getId(),
-                                 branch.getId());
+         chStmt.runPreparedQuery(SELECT_WORD_VALUES, artId, attributeDescriptor.getId(), branch.getId());
 
          List<Pair<String, Integer>> values = new LinkedList<Pair<String, Integer>>();
          while (chStmt.next()) {
@@ -120,13 +118,11 @@ public class WordUtil {
                InputStream stream = chStmt.getBinaryStream("content");
                if (stream == null) {
                   content = "";
-               }
-               else {
+               } else {
                   content = new String(Streams.getByteArray(stream), "UTF-8");
                }
                values.add(new Pair<String, Integer>(content, chStmt.getInt("gamma_id")));
-            }
-            catch (UnsupportedEncodingException ex) {
+            } catch (UnsupportedEncodingException ex) {
                // should never ever ever occur
                throw new IllegalStateException("Must support UTF-8 format");
             }
@@ -160,17 +156,14 @@ public class WordUtil {
             // Collections.toString(repeatGammas, "(", ",", ")"));
 
             for (Integer gamma : repeatGammas) {
-               ConnectionHandler.runPreparedUpdate("INSERT INTO " + table
-                                                   + " (gamma_id) values (?)", gamma);
+               ConnectionHandler.runPreparedUpdate("INSERT INTO " + table + " (gamma_id) values (?)", gamma);
             }
 
             return true;
-         }
-         else {
+         } else {
             return false;
          }
-      }
-      finally {
+      } finally {
          chStmt.close();
       }
    }
@@ -205,21 +198,19 @@ public class WordUtil {
    public static boolean isHeadingStyle(String paragraphStyle) {
       if (paragraphStyle == null) {
          return false;
-      }
-      else {
+      } else {
          String style = paragraphStyle.toLowerCase();
          // TODO get this list of styles from the Extension Point
-         return style.startsWith("heading") || style.startsWith("toc")
-                || style.startsWith("outline");
+         return style.startsWith("heading") || style.startsWith("toc") || style.startsWith("outline");
       }
    }
 
    public final static String removeWordMarkupSmartTags(String wordMarkup) {
       if (wordMarkup != null) {
          String[] splitsOnSmartTagStart = wordMarkup.split("<[/]{0,1}st\\d{1,22}");// example smart
-                                                                                   // (cough, cough)
-                                                                                   // tags
-                                                                                   // <st1:place>|</st1:place>
+         // (cough, cough)
+         // tags
+         // <st1:place>|</st1:place>
          if (splitsOnSmartTagStart.length > 1) {
             StringBuilder myStringBuilder = new StringBuilder(splitsOnSmartTagStart[0]);
             for (int i = 1; i < splitsOnSmartTagStart.length; i++) {
@@ -243,14 +234,13 @@ public class WordUtil {
          if (stream.read(myBytes) == -1) {
             throw new IOException("Buffer underrun");
          }
-      }
-      finally {
+      } finally {
          Lib.close(stream);
       }
 
       String leadingPartOfFile = new String(myBytes, "UTF-8");
-      String[] splitsBeforeAndAfter = leadingPartOfFile.split(Artifact.BEFORE_GUID_STRING + "|"
-                                                              + Artifact.AFTER_GUID_STRING);
+      String[] splitsBeforeAndAfter =
+            leadingPartOfFile.split(Artifact.BEFORE_GUID_STRING + "|" + Artifact.AFTER_GUID_STRING);
       if (splitsBeforeAndAfter.length == 3) {
          guid = splitsBeforeAndAfter[1];
       }
@@ -260,22 +250,18 @@ public class WordUtil {
    public final static String removeGUIDFromTemplate(String template) {
       String newTemplate = "";
 
-      String[] splitsBeforeAndAfter = template.split(Artifact.BEFORE_GUID_STRING + "|"
-                                                     + Artifact.AFTER_GUID_STRING);
+      String[] splitsBeforeAndAfter = template.split(Artifact.BEFORE_GUID_STRING + "|" + Artifact.AFTER_GUID_STRING);
 
       if (splitsBeforeAndAfter.length == 3) {
          newTemplate = splitsBeforeAndAfter[0] + " " + splitsBeforeAndAfter[2];
-      }
-      else {
+      } else {
          newTemplate = template;
       }
       return newTemplate;
    }
 
-   private static final Matcher spellCheck = Pattern.compile(
-                                                             "<w:proofErr w:type=\"spell(End|Start)\"/>",
-                                                             Pattern.DOTALL | Pattern.MULTILINE).matcher(
-                                                                                                         "");
+   private static final Matcher spellCheck =
+         Pattern.compile("<w:proofErr w:type=\"spell(End|Start)\"/>", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
    public final static String stripSpellCheck(String content) {
       spellCheck.reset(content);

@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
@@ -39,7 +39,7 @@ import org.junit.Test;
 
 /**
  * Tests the Change Manager.
- *
+ * 
  * @author Jeff C. Phillips
  */
 public class ChangeManagerTest {
@@ -79,16 +79,16 @@ public class ChangeManagerTest {
       modArtifact = ArtifactQuery.getArtifactFromId(modArtifact.getArtId(), branch);
 
       assertTrue("Check artifact new", checkArtifactModType(newArtifact, ModificationType.NEW));
-      newArtifact.setSoleAttributeFromString(WordAttribute.WORD_TEMPLATE_CONTENT, "new content");
+      newArtifact.setSoleAttributeFromString(CoreAttributeTypes.WORD_TEMPLATE_CONTENT, "new content");
       assertTrue("Check artifact is still new", checkArtifactModType(newArtifact, ModificationType.NEW));
-      modArtifact.setSoleAttributeFromString(WordAttribute.WORD_TEMPLATE_CONTENT, "changed content");
+      modArtifact.setSoleAttributeFromString(CoreAttributeTypes.WORD_TEMPLATE_CONTENT, "changed content");
       modArtifact.persist();
       assertTrue("Check artifact has changed", checkArtifactModType(modArtifact, ModificationType.NEW));
    }
 
    @Ignore
    @Test
-   public void testArtifactTypeChange(){
+   public void testArtifactTypeChange() {
       // TODO Add artifact type change
    }
 

@@ -14,13 +14,13 @@ package org.eclipse.osee.framework.ui.skynet.render.word.template;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
 /**
@@ -61,7 +61,7 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
          //            }
          //    
          String valueList;
-         if (attributeType.getName().equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
+         if (attributeType.getName().equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
             wordMl.addWordMl((String) attribute.getValue());
          } else {
             valueList = Collections.toString(", ", artifact.getAttributes(templateAttribute.getName()));

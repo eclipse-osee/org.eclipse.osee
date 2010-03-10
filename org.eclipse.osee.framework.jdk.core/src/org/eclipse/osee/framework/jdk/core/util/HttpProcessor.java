@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.URL;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -155,7 +156,7 @@ public class HttpProcessor {
          result.setEncoding(method.getResponseCharSet());
          if (statusCode != HttpStatus.SC_ACCEPTED) {
             String exceptionString = Lib.inputStreamToString(httpInputStream);
-            throw new Exception(exceptionString);
+            throw new HttpException(exceptionString);
          } else {
             Lib.inputStreamToOutputStream(httpInputStream, outputStream);
          }

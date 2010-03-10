@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 
 public class SimpleTemplateProviderTask implements IDbInitializationTask {
 
@@ -56,7 +56,7 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
 
             if (url != null) {
                templateArtifact.setSoleAttributeValue("Name", name);
-               templateArtifact.setSoleAttributeFromStream(WordAttribute.WHOLE_WORD_CONTENT, url.openStream());
+               templateArtifact.setSoleAttributeFromStream(CoreAttributeTypes.WHOLE_WORD_CONTENT, url.openStream());
                for (IConfigurationElement matchCriteriaEl : el.getChildren()) {
                   String match = matchCriteriaEl.getAttribute("match");
                   templateArtifact.addAttribute("Template Match Criteria", match);

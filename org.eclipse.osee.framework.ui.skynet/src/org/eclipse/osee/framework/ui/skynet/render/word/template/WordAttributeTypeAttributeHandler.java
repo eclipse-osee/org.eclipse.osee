@@ -12,11 +12,11 @@
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
 /**
@@ -42,8 +42,8 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
 
    @Override
    public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws OseeCoreException {
-      boolean goodAttributeType = attribute.getName().equals(WordAttribute.WORD_TEMPLATE_CONTENT);
-      boolean goodArtifact = artifact.isAttributeTypeValid(WordAttribute.WORD_TEMPLATE_CONTENT);
+      boolean goodAttributeType = attribute.getName().equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT);
+      boolean goodArtifact = artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT);
       return goodAttributeType && goodArtifact;
    }
 }

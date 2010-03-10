@@ -19,6 +19,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -109,7 +109,7 @@ public class SingleNativeDiffHandler extends CommandHandler {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
          if (artifact != null) {
-            String value = artifact.getSoleAttributeValueAsString(WordAttribute.WORD_TEMPLATE_CONTENT, "");
+            String value = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.WORD_TEMPLATE_CONTENT, "");
             // check for track changes
             if (WordAnnotationHandler.containsWordAnnotations(value)) {
                // capture those artifacts that have tracked changes on 

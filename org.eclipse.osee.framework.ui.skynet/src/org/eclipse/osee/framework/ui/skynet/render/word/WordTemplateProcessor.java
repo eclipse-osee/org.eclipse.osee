@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
@@ -125,10 +124,10 @@ public class WordTemplateProcessor {
     * @throws IOException
     */
    public void publishWithExtensionTemplates(VariableMap variableMap, Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
-      String masterTemplate = masterTemplateArtifact.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT, "");
+      String masterTemplate = masterTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WHOLE_WORD_CONTENT, "");
       slaveTemplate =
             slaveTemplateArtifact != null ? slaveTemplateArtifact.getSoleAttributeValue(
-                  WordAttribute.WHOLE_WORD_CONTENT, "") : "";
+                  CoreAttributeTypes.WHOLE_WORD_CONTENT, "") : "";
 
       IFolder folder = FileSystemRenderer.ensureRenderFolderExists(PresentationType.PREVIEW);
       String fileName = String.format("%s_%s.xml", masterTemplateArtifact.getSafeName(), Lib.getDateTimeString());
@@ -428,7 +427,7 @@ public class WordTemplateProcessor {
       attributeTypeName = AttributeTypeManager.getType(attributeTypeName).getName();
 
       //create wordTemplateContent for new guys
-      if (attributeTypeName.equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
+      if (attributeTypeName.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
          artifact.getOrInitializeSoleAttributeValue(attributeTypeName);
       }
 
@@ -518,8 +517,8 @@ public class WordTemplateProcessor {
       String contentName = null;
 
       for (AttributeType attributeType : attributeTypes) {
-         if (attributeType.getName().equals(WordAttribute.WHOLE_WORD_CONTENT) || attributeType.getName().equals(
-               WordAttribute.WORD_TEMPLATE_CONTENT)) {
+         if (attributeType.getName().equals(CoreAttributeTypes.WHOLE_WORD_CONTENT) || attributeType.getName().equals(
+               CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
             contentName = attributeType.getName();
          } else {
             orderedNames.add(attributeType.getName());

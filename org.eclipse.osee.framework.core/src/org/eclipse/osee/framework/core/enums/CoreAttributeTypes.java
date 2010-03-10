@@ -36,6 +36,8 @@ public class CoreAttributeTypes extends NamedIdentity implements IAttributeType 
          new CoreAttributeTypes("AAMFEchZmAzZo2tHjVAA", "Whole Word Content");
    public static final CoreAttributeTypes WORD_TEMPLATE_CONTENT =
          new CoreAttributeTypes("AAMFEcfcGS2V3SqQN2wA", "Word Template Content");
+   public static final CoreAttributeTypes WORD_OLE_DATA =
+         new CoreAttributeTypes("AAMFEcP2rmoCzqmzJxQA", "Word Ole Data");
    public static final CoreAttributeTypes RELATION_ORDER =
          new CoreAttributeTypes("ABM5kHa9cFsTbI_ooyQA", "Relation Order");
    public static final CoreAttributeTypes SUBSYSTEM = new CoreAttributeTypes("AAMFERJ1GweNukuSd8QA", "Subsystem");

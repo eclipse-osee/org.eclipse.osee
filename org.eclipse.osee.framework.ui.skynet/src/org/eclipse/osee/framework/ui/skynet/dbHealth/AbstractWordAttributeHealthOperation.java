@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WHOLE_WORD_CONTENT;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -26,6 +28,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -43,7 +46,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 
 /**
  * @author Roberto E. Escobar
@@ -115,12 +117,11 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         String[] attributeTypeNames =
-               new String[] {WordAttribute.WORD_TEMPLATE_CONTENT, WordAttribute.WHOLE_WORD_CONTENT};
+         IAttributeType[] attributeTypeNames = new IAttributeType[] {WORD_TEMPLATE_CONTENT, WHOLE_WORD_CONTENT};
 
          monitor.setTaskName("Load Attribute Data");
          List<AttrData> attrDatas = new ArrayList<AttrData>();
-         for (String attributeTypeName : attributeTypeNames) {
+         for (IAttributeType attributeTypeName : attributeTypeNames) {
             AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
             attrDatas.addAll(loadAttributeData(monitor, attributeType));
          }
@@ -226,7 +227,8 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
          }
 
          String urlString =
-               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT, parameterMap);
+               HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.RESOURCE_CONTEXT,
+                     parameterMap);
          HttpProcessor.put(new URL(urlString), new ByteArrayInputStream(toUpload), resource.result.getContentType(),
                resource.result.getEncoding());
       }

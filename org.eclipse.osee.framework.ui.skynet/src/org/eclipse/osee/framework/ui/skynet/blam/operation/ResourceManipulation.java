@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -46,7 +47,6 @@ import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -283,7 +283,7 @@ public class ResourceManipulation extends AbstractBlam {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_ATTRS_TEST,
-               AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT).getId());
+               AttributeTypeManager.getType(CoreAttributeTypes.WORD_TEMPLATE_CONTENT).getId());
          while (chStmt.next()) {
             attrData.add(new AttrData(chStmt.getString("gamma_Id"), chStmt.getString("human_readable_id"),
                   chStmt.getString("uri")));

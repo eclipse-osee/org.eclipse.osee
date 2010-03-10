@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
@@ -172,9 +171,9 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                         originalValue =
                               WordImageChecker.checkForImageDiffs(
                                     baseArtifacts.get(i) != null ? baseArtifacts.get(i).getSoleAttribute(
-                                          WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+                                          CoreAttributeTypes.WORD_TEMPLATE_CONTENT) : null,
                                     newerArtifact.get(i) != null ? newerArtifact.get(i).getSoleAttribute(
-                                          WordAttribute.WORD_TEMPLATE_CONTENT) : null);
+                                          CoreAttributeTypes.WORD_TEMPLATE_CONTENT) : null);
                      }
                      IFile baseFile =
                            renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF), branch,
@@ -186,11 +185,11 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                                  PresentationType.DIFF);
                      WordImageChecker.restoreOriginalValue(
                            baseArtifacts.get(i) != null ? baseArtifacts.get(i).getSoleAttribute(
-                                 WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+                                 CoreAttributeTypes.WORD_TEMPLATE_CONTENT) : null,
                            oldAnnotationValue != null ? oldAnnotationValue : originalValue);
                      WordImageChecker.restoreOriginalValue(
                            newerArtifact.get(i) != null ? newerArtifact.get(i).getSoleAttribute(
-                                 WordAttribute.WORD_TEMPLATE_CONTENT) : null, newAnnotationValue);
+                                 CoreAttributeTypes.WORD_TEMPLATE_CONTENT) : null, newAnnotationValue);
                      baseFileStr = changeReportFolder.getLocation().toOSString();
                      localFileName = baseFileStr + "/" + GUID.create() + ".xml";
                      fileNames.add(localFileName);
@@ -250,8 +249,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
             originalValue =
                   WordImageChecker.checkForImageDiffs(
-                        baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
-                        newerVersion != null ? newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null);
+                        baseVersion != null ? baseVersion.getSoleAttribute(CoreAttributeTypes.WORD_TEMPLATE_CONTENT) : null,
+                        newerVersion != null ? newerVersion.getSoleAttribute(CoreAttributeTypes.WORD_TEMPLATE_CONTENT) : null);
          }
          if (baseVersion != null) {
             if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
@@ -273,10 +272,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             newerFile = renderForDiff(monitor, branch);
          }
          WordImageChecker.restoreOriginalValue(
-               baseVersion != null ? baseVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+               baseVersion != null ? baseVersion.getSoleAttribute(CoreAttributeTypes.WORD_TEMPLATE_CONTENT) : null,
                oldAnnotationValue != null ? oldAnnotationValue : originalValue);
          WordImageChecker.restoreOriginalValue(
-               newerVersion != null ? newerVersion.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT) : null,
+               newerVersion != null ? newerVersion.getSoleAttribute(CoreAttributeTypes.WORD_TEMPLATE_CONTENT) : null,
                newAnnotationValue);
          return compare(baseVersion, newerVersion, baseFile, newerFile, presentationType, show);
       } else {
@@ -394,7 +393,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       String value = "";
       WordMLProducer wordMl = (WordMLProducer) producer;
 
-      if (attributeTypeName.equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
+      if (attributeTypeName.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
          Attribute<?> wordTempConAttr = artifact.getSoleAttribute(attributeTypeName);
          String data = (String) wordTempConAttr.getValue();
 
@@ -443,7 +442,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() > 1) {
             // currently we can't support the editing of multiple artifacts with OLE data
             for (Artifact artifact : artifacts) {
-               if (!artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("")) {
+               if (!artifact.getSoleAttributeValue(CoreAttributeTypes.WORD_OLE_DATA, "").equals("")) {
                   notMultiEditableArtifacts.add(artifact);
                }
             }
@@ -451,11 +450,11 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                   "Do not support editing of multiple artifacts with OLE data");
             artifacts.removeAll(notMultiEditableArtifacts);
          } else { // support OLE data when appropriate
-            if (!firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("")) {
+            if (!firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WORD_OLE_DATA, "").equals("")) {
                template = template.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
                template =
                      template.replaceAll(STYLES_END, STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(
-                           WordAttribute.OLE_DATA_NAME, "") + OLE_END);
+                           CoreAttributeTypes.WORD_OLE_DATA, "") + OLE_END);
             }
          }
       }
@@ -466,7 +465,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       return TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION)).getSoleAttributeValue(
-            WordAttribute.WHOLE_WORD_CONTENT);
+            CoreAttributeTypes.WHOLE_WORD_CONTENT);
    }
 
    private Set<Artifact> checkForTrackedChangesOn(Artifact artifact) throws OseeCoreException {
@@ -474,7 +473,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
       if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
          if (artifact != null) {
-            Attribute<?> attribute = artifact.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+            Attribute<?> attribute = artifact.getSoleAttribute(CoreAttributeTypes.WORD_TEMPLATE_CONTENT);
             if (attribute != null) {
                String value = attribute.getValue().toString();
                // check for track changes

@@ -81,6 +81,10 @@ public class RoughArtifact {
       uriAttributes.put(name, file);
    }
 
+   public void addURIAttribute(IAttributeType attributeType, URI file) {
+      addURIAttribute(attributeType.getName(), file);
+   }
+
    public void addAttribute(String name, String value) {
       if (isMultipleEnum(name, value)) {
          attributes.addMultiple(name, StringUtils.split(value, ','));
