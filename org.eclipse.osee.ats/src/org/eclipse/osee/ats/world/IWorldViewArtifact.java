@@ -47,6 +47,8 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewGoalOrderVote() throws OseeCoreException;
 
+   public String getWorldViewGoalOrder() throws OseeCoreException;
+
    public String getWorldViewCategory() throws OseeCoreException;
 
    public String getWorldViewCategory2() throws OseeCoreException;

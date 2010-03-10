@@ -1201,4 +1201,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return results;
    }
 
+   public String getWorldViewGoalOrder() throws OseeCoreException {
+      return GoalArtifact.getGoalOrder(this);
+   }
+
 }

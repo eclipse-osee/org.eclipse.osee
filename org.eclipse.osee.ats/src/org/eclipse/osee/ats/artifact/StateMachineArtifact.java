@@ -1715,4 +1715,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return this instanceof TaskArtifact;
    }
 
+   public String getWorldViewGoalOrder() throws OseeCoreException {
+      return GoalArtifact.getGoalOrder(this);
+   }
+
 }

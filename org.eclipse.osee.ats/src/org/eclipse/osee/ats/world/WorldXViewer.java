@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.actions.OpenInMassEditorAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -986,6 +987,10 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             modified = PromptChangeUtil.promptChangeType(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Priority_Col)) {
             modified = PromptChangeUtil.promptChangePriority(sma, persist);
+         } else if (xCol.equals(WorldXViewerFactory.Goal_Order)) {
+            GoalArtifact.promptChangeGoalOrder((Artifact) treeItem.getData());
+            update(useArt, null);
+            return false;
          }
          if (modified) {
             update(useArt, null);

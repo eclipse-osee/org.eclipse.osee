@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Display;
 public class CreateGoalTestArtifacts extends XNavigateItemAction {
 
    public CreateGoalTestArtifacts(XNavigateItem parent) {
-      super(parent, "Create Goal Artifacts", AtsImage.GOAL);
+      super(parent, "Create Test Goal Artifacts", AtsImage.GOAL);
    }
 
    @Override

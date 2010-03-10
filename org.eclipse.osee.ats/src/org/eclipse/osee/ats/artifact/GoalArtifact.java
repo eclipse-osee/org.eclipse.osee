@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -29,6 +32,10 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactListDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -101,6 +108,12 @@ public class GoalArtifact extends StateMachineArtifact {
       getGoals(Arrays.asList(artifact), goals, recurse);
    }
 
+   public static Collection<Artifact> getGoals(Artifact artifact, boolean recurse) throws OseeCoreException {
+      Set<Artifact> goals = new HashSet<Artifact>();
+      getGoals(artifact, goals, recurse);
+      return goals;
+   }
+
    public static void getGoals(Collection<Artifact> artifacts, Set<Artifact> goals, boolean recurse) throws OseeCoreException {
       for (Artifact art : artifacts) {
          if (art instanceof GoalArtifact) {
@@ -110,6 +123,32 @@ public class GoalArtifact extends StateMachineArtifact {
          if (recurse && art instanceof StateMachineArtifact && ((StateMachineArtifact) art).getParentSMA() != null) {
             getGoals(((StateMachineArtifact) art).getParentSMA(), goals, recurse);
          }
+      }
+   }
+
+   public static boolean isHasGoal(Artifact artifact) throws OseeCoreException {
+      return artifact.getRelatedArtifactsCount(AtsRelationTypes.Goal_Goal) > 0;
+   }
+
+   public static String getGoalOrder(Artifact artifact) throws OseeCoreException {
+      if (artifact instanceof GoalArtifact) {
+         return "";
+      }
+      if (!isHasGoal(artifact)) return "";
+      Collection<Artifact> goals = GoalArtifact.getGoals(artifact, false);
+      if (goals.size() > 1) {
+         return "duplicate parents";
+      }
+      Artifact goal = goals.iterator().next();
+      return getGoalOrder((GoalArtifact) goal, artifact);
+   }
+
+   public static String getGoalOrder(GoalArtifact goalArtifact, Artifact member) throws OseeCoreException {
+      List<Artifact> members = goalArtifact.getMembers();
+      try {
+         return String.valueOf(members.indexOf(member) + 1);
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -136,4 +175,40 @@ public class GoalArtifact extends StateMachineArtifact {
       }
    }
 
+   public static boolean promptChangeGoalOrder(Artifact artifact) throws OseeCoreException {
+      if (!isHasGoal(artifact)) {
+         AWorkbench.popup(String.format("No Goal set for artifact [%s]", artifact));
+         return false;
+      }
+      Collection<Artifact> goals = getGoals(artifact, false);
+      GoalArtifact goal = null;
+      if (goals.size() == 1) {
+         goal = (GoalArtifact) goals.iterator().next();
+      } else if (goals.size() > 1) {
+         ArtifactListDialog dialog = new ArtifactListDialog(Display.getCurrent().getActiveShell(), goals);
+         if (dialog.open() == 0) {
+            goal = (GoalArtifact) dialog.getSelection();
+         } else {
+            return false;
+         }
+      }
+
+      List<Artifact> members = goal.getMembers();
+      String currIndexStr = getGoalOrder(goal, artifact);
+      EntryDialog ed =
+            new EntryDialog("Change Goal Order", String.format(
+                  "Current Order = %s\n\nEnter New Order Number from 1..%d", currIndexStr, members.size()));
+      ed.setNumberFormat(NumberFormat.getIntegerInstance());
+
+      int result = ed.open();
+      if (result == EntryDialog.OK) {
+         String newIndexStr = ed.getEntry();
+         Integer newIndex = new Integer(newIndexStr) - 1;
+         Artifact insertTarget = members.get(newIndex);
+         goal.setRelationOrder(AtsRelationTypes.Goal_Member, insertTarget, false, artifact);
+         goal.persist();
+         return true;
+      }
+      return false;
+   }
 }

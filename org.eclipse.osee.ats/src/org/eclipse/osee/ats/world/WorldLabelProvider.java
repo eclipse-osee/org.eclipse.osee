@@ -249,6 +249,9 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Goal_Order_Vote_Col)) {
             return wva.getWorldViewGoalOrderVote();
          }
+         if (xCol.equals(WorldXViewerFactory.Goal_Order)) {
+            return wva.getWorldViewGoalOrder();
+         }
          if (xCol.equals(WorldXViewerFactory.Category_Col)) {
             return wva.getWorldViewCategory();
          }
