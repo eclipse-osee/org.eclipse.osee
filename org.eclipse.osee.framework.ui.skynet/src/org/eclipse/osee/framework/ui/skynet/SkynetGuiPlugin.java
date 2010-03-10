@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
@@ -83,6 +84,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       OseeEventManager.addListener(this);
 
       if (PlatformUI.isWorkbenchRunning()) {
+
          OseeLog.registerLoggerListener(new DialogPopupLoggerListener());
 
          IWorkbench workbench = PlatformUI.getWorkbench();
@@ -104,6 +106,11 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
          });
 
          PlatformUI.getWorkbench().addWorkbenchListener(new ArtifactSaveNotificationHandler());
+      }
+      try {
+         Platform.getBundle("org.eclipse.osee.framework.types.bridge").start();
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
