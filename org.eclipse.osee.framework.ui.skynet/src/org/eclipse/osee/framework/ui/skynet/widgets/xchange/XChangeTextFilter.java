@@ -43,13 +43,15 @@ public class XChangeTextFilter extends XViewerTextFilter {
          try {
             computeDocOrderedChanges((Collection<Change>) parentElement);
             if (docOrderedChanges != null) {
-               return docOrderedChanges.contains(element);
+               if (!docOrderedChanges.contains(element)) {
+                  return false;
+               }
             }
          } catch (OseeCoreException ex) {
             ex.printStackTrace();
          }
       }
-      return true;
+      return super.select(viewer, parentElement, element);
    }
 
    private void computeDocOrderedChanges(Collection<Change> changes) throws OseeCoreException {
