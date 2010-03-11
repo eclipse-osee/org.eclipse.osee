@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -21,6 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MergeChangesInArtifactException;
@@ -70,7 +70,7 @@ public class AttributeConflict extends Conflict {
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
       this.status = ConflictStatus.EDITED;
-      this.isWordAttribute = getAttributeType().getName().equals(WORD_TEMPLATE_CONTENT);
+      this.isWordAttribute = getAttributeType().equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT);
       computeEqualsValues();
    }
 
@@ -79,7 +79,7 @@ public class AttributeConflict extends Conflict {
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
       this.status = ConflictStatus.EDITED;
-      this.isWordAttribute = getAttributeType().getName().equals(WORD_TEMPLATE_CONTENT);
+      this.isWordAttribute = getAttributeType().equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT);
       computeEqualsValues();
    }
 

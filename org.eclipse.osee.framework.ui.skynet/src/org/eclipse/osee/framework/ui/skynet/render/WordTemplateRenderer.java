@@ -393,7 +393,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       String value = "";
       WordMLProducer wordMl = (WordMLProducer) producer;
 
-      if (attributeTypeName.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
+      if (attributeTypeName.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT.getName())) {
          Attribute<?> wordTempConAttr = artifact.getSoleAttribute(attributeTypeName);
          String data = (String) wordTempConAttr.getValue();
 

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.word;
 
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -63,9 +63,9 @@ public class WordUtil {
    }
 
    /**
-    * @return Returns the content with the bin data ID being reassigned. Note: The bin data Id needs
-    *         to be reassigned to allow multi edits of artifacts with images. Else if 2 images have
-    *         the same ID the first image will be printed duplicate times.
+    * @return Returns the content with the bin data ID being reassigned. Note: The bin data Id needs to be reassigned to
+    *         allow multi edits of artifacts with images. Else if 2 images have the same ID the first image will be
+    *         printed duplicate times.
     */
    public static String reassignBinDataID(String content) {
       ChangeSet changeSet = new ChangeSet(content);
@@ -92,8 +92,8 @@ public class WordUtil {
    }
 
    /**
-    * Analyzes all successive versions of 'Word Formatted Content' for useful differences and
-    * removes versions that do not provide and difference from the prior version.
+    * Analyzes all successive versions of 'Word Formatted Content' for useful differences and removes versions that do
+    * not provide and difference from the prior version.
     * 
     * @throws IllegalArgumentException if branch is null
     * @return returns true if some addressing was removed, otherwise false
@@ -105,7 +105,7 @@ public class WordUtil {
          throw new IllegalArgumentException("branch can not be null");
       }
 
-      AttributeType attributeDescriptor = AttributeTypeManager.getType(WORD_TEMPLATE_CONTENT);
+      AttributeType attributeDescriptor = AttributeTypeManager.getType(CoreAttributeTypes.WORD_TEMPLATE_CONTENT);
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {

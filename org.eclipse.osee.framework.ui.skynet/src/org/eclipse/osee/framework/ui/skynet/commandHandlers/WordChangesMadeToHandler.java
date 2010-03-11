@@ -88,7 +88,7 @@ public class WordChangesMadeToHandler extends AbstractHandler {
             boolean readPermission = AccessControlManager.hasPermission(changedArtifact, PermissionEnum.READ);
 
             boolean wordArtifactSelected =
-                  changedArtifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT.getName()) || changedArtifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT.getName());
+                  changedArtifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT) || changedArtifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT);
 
             isEnabled = readPermission && wordArtifactSelected;
          } catch (Exception ex) {

@@ -427,7 +427,7 @@ public class WordTemplateProcessor {
       attributeTypeName = AttributeTypeManager.getType(attributeTypeName).getName();
 
       //create wordTemplateContent for new guys
-      if (attributeTypeName.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
+      if (attributeTypeName.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT.getName())) {
          artifact.getOrInitializeSoleAttributeValue(attributeTypeName);
       }
 
@@ -447,7 +447,7 @@ public class WordTemplateProcessor {
                variableMap != null ? Boolean.TRUE.equals(variableMap.getBoolean("inPublishMode")) : false;
          if (variableMap != null && isInPublishMode) {
             // Do not publish relation order during publishing
-            if (CoreAttributeTypes.RELATION_ORDER.equals(attributeType.getName())) {
+            if (CoreAttributeTypes.RELATION_ORDER.equals(attributeType)) {
                return;
             }
          }
@@ -517,8 +517,7 @@ public class WordTemplateProcessor {
       String contentName = null;
 
       for (AttributeType attributeType : attributeTypes) {
-         if (attributeType.getName().equals(CoreAttributeTypes.WHOLE_WORD_CONTENT) || attributeType.getName().equals(
-               CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
+         if (attributeType.equals(CoreAttributeTypes.WHOLE_WORD_CONTENT) || attributeType.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
             contentName = attributeType.getName();
          } else {
             orderedNames.add(attributeType.getName());

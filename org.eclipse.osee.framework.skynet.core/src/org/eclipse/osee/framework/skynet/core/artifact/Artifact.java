@@ -53,6 +53,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
@@ -1319,28 +1320,18 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
 
    public void setRelationOrder(IRelationEnumeration relationEnumeration, Artifact targetArtifact, boolean insertAfterTarget, Artifact itemToAdd) throws OseeCoreException {
       List<Artifact> currentOrder = getRelatedArtifacts(relationEnumeration, Artifact.class);
-      boolean found = false;
-      int index = 0;
-      for (int i = 0; i < currentOrder.size(); i++) {
-         if (currentOrder.get(i).equals(targetArtifact)) {
-            index = i;
-            found = true;
-            break;
-         }
-      }
-      currentOrder.remove(itemToAdd);
-      if (found) {
-         if (insertAfterTarget) {
-            index++;
-         }
-         if (index > currentOrder.size()) {
+      // target artifact doesn't exist
+      if (!currentOrder.contains(targetArtifact)) {
+         // add to end of list if not already in list
+         if (!currentOrder.contains(itemToAdd)) {
             currentOrder.add(itemToAdd);
-         } else {
-            currentOrder.add(index, itemToAdd);
          }
-      } else {
-         currentOrder.add(itemToAdd);
       }
+      boolean result = Collections.moveItem(currentOrder, itemToAdd, targetArtifact, insertAfterTarget);
+      if (!result) {
+         throw new OseeStateException("Could not set Relation Order");
+      }
+
       RelationManager.setRelationOrder(this, RelationTypeManager.getType(relationEnumeration),
             relationEnumeration.getSide(), RelationOrderBaseTypes.USER_DEFINED, currentOrder);
    }
@@ -1505,7 +1496,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    }
 
    private boolean isCopyAllowed(Attribute<?> attribute) {
-      return attribute != null && !attribute.isOfType(CoreAttributeTypes.RELATION_ORDER.getName());
+      return attribute != null && !attribute.isOfType(CoreAttributeTypes.RELATION_ORDER);
    }
 
    /**
@@ -1534,8 +1525,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
          // In order to reflect attributes they must exist in the data store
          // and be valid for the destination branch as well
          if (sourceAttribute.isInDb() && reflectedArtifact.isAttributeTypeValid(sourceAttribute.getAttributeType())) {
-            reflectedArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(),
-                  sourceAttribute.getId(), sourceAttribute.getGammaId(), ModificationType.INTRODUCED, true,
+            reflectedArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(), sourceAttribute.getId(),
+                  sourceAttribute.getGammaId(), ModificationType.INTRODUCED, true,
                   sourceAttribute.getAttributeDataProvider().getData());
          }
       }
@@ -1591,8 +1582,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
             dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getId(),
-                  attribute.getAttributeDataProvider().getData(), attribute.getModificationType(),
-                  attribute.getId(), attribute.getGammaId()));
+                  attribute.getAttributeDataProvider().getData(), attribute.getModificationType(), attribute.getId(),
+                  attribute.getGammaId()));
          }
       }
       return dirtyAttributes;

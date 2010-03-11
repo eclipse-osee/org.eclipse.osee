@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -92,7 +91,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
    private void setContent() {
       if (roughArtifact != null) {
-         roughArtifact.addAttribute(WORD_TEMPLATE_CONTENT, wordFormattedContent.toString());
+         roughArtifact.addAttribute(CoreAttributeTypes.WORD_TEMPLATE_CONTENT, wordFormattedContent.toString());
          wordFormattedContent.setLength(0);
       }
    }

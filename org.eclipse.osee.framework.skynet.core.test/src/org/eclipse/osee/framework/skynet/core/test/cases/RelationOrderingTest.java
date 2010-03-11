@@ -101,7 +101,7 @@ public class RelationOrderingTest {
       checkUserDefined();
 
       parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
-      Attribute<Object> attribute = parent.getSoleAttribute(CoreAttributeTypes.RELATION_ORDER.getName());
+      Attribute<Object> attribute = parent.getSoleAttribute(CoreAttributeTypes.RELATION_ORDER);
       assertTrue("Setting the attribute back to the default type did not cause an attribute to be deleted",
             (attribute == null || attribute.isDeleted()));
 
@@ -124,7 +124,7 @@ public class RelationOrderingTest {
 
       parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
 
-      attribute = parent.getSoleAttribute(CoreAttributeTypes.RELATION_ORDER.getName());
+      attribute = parent.getSoleAttribute(CoreAttributeTypes.RELATION_ORDER);
       assertTrue("The attribute was deleted even though there was a still a non default sort order on the artifact.",
             (attribute != null));
 
@@ -170,7 +170,7 @@ public class RelationOrderingTest {
 
       parent.deleteRelation(CoreRelationTypes.Default_Hierarchical__Child, child3);
 
-      String orderString = parent.getSoleAttributeValue(CoreAttributeTypes.RELATION_ORDER.getName());
+      String orderString = parent.getSoleAttributeValue(CoreAttributeTypes.RELATION_ORDER);
 
       assertFalse(orderString.contains(artifactGuid));
 
