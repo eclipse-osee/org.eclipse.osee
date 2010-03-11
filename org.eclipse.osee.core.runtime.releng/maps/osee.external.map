@@ -20,6 +20,3 @@ plugin@org.apache.oro,2.0.8=GET,http://download.eclipse.org/tools/orbit/download
 plugin@org.apache.xerces,2.9.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.xerces_2.9.0.v200909240008.jar
 plugin@org.apache.xml.resolver,1.2.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.xml.resolver_1.2.0.v200902170519.jar
 plugin@org.apache.xml.serializer,2.7.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.xml.serializer_2.7.1.v200902170519.jar
-
-!plugin@org.eclipse.nebula.widgets.xviewer=HEAD,:pserver:anonymous@proxy.eclipse.org:/cvsroot/technology,,org.eclipse.swt.nebula/org.eclipse.nebula.widgets.xviewer
-plugin@org.eclipse.nebula.widgets.xviewer=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,_Retired/org.eclipse.nebula.widgets.xviewer
