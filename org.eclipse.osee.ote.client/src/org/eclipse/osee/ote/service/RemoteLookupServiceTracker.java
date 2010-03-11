@@ -52,7 +52,9 @@ class RemoteLookupServiceTracker extends ServiceTracker {
 
 	@Override
 	public void removedService(ServiceReference reference, Object service) {
-		oteJmsServiceConnector.stop();
+		if (oteJmsServiceConnector != null) {
+			oteJmsServiceConnector.stop();
+		}
 		super.removedService(reference, service);
 	}
 
