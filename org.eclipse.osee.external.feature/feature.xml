@@ -43,19 +43,19 @@
 
    <includes
          id="org.eclipse.team.svn"
-         version="0.7.8"
+         version="0.0.0"
          name="Team SVN (Subversive)"
          search-location="both"/>
 
    <includes
          id="org.polarion.eclipse.team.svn.connector"
-         version="2.2.1"
+         version="0.0.0"
          name="Team SVN (Subversive) Connectors"
          search-location="both"/>
 
    <includes
          id="org.polarion.eclipse.team.svn.connector.svnkit16"
-         version="2.2.1"
+         version="0.0.0"
          name="Team SVN (Subversive) SVN Kit Connector"
          search-location="both"/>
 
