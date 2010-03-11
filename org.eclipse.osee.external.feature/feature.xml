@@ -17,11 +17,47 @@
       %license
    </license>
 
-   <requires>
-      <import feature="org.eclipse.team.svn" version="0.7.8" match="greaterOrEqual"/>
-      <import feature="org.polarion.eclipse.team.svn.connector" version="2.2.1" match="greaterOrEqual"/>
-      <import feature="org.polarion.eclipse.team.svn.connector.svnkit16" version="2.2.1" match="greaterOrEqual"/>
-   </requires>
+   <includes
+         id="org.eclipse.nebula.widgets.xviewer.feature"
+         version="0.0.0"
+         name="Nebula XViewer"
+         search-location="both"/>
+
+   <includes
+         id="org.eclipse.nebula.widgets.calendarcombo.feature"
+         version="0.0.0"
+         name="Nebula Calendar Combo"
+         search-location="both"/>
+
+   <includes
+         id="org.eclipse.nebula.widgets.cdatetime.feature"
+         version="0.0.0"
+         name="Nebula CDateTime"
+         search-location="both"/>
+
+   <includes
+         id="org.eclipse.nebula.widgets.cwt.feature"
+         version="0.0.0"
+         name="Nebula CWT"
+         search-location="both"/>
+
+   <includes
+         id="org.eclipse.team.svn"
+         version="0.7.8"
+         name="Team SVN (Subversive)"
+         search-location="both"/>
+
+   <includes
+         id="org.polarion.eclipse.team.svn.connector"
+         version="2.2.1"
+         name="Team SVN (Subversive) Connectors"
+         search-location="both"/>
+
+   <includes
+         id="org.polarion.eclipse.team.svn.connector.svnkit16"
+         version="2.2.1"
+         name="Team SVN (Subversive) SVN Kit Connector"
+         search-location="both"/>
 
    <plugin
          id="javax.servlet"
@@ -122,20 +158,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.nebula.cwt"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.nebula.widgets.cdatetime"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="jms.activemq.launch"
          download-size="0"
          install-size="0"
@@ -147,13 +169,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.nebula.widgets.calendarcombo"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="javax.xml"
@@ -191,13 +206,6 @@
 
    <plugin
          id="com.jcraft.jsch"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.nebula.widgets.xviewer"
          download-size="0"
          install-size="0"
          version="0.0.0"
