@@ -64,7 +64,7 @@ public class RelationManager {
          new CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>>(1024, true);
 
    private static final String GET_DELETED_ARTIFACT =
-         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) (SELECT DISTINCT ?, sysdate, %s_art_id, det.branch_id, ? FROM osee_txs txs, osee_relation_link rel WHERE txs.branch_id = ? AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND %s_art_id = ? AND txs.tx_current in (" + ModificationType.MODIFIED.getValue() + "," + ModificationType.DELETED.getValue() + "))";
+         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) (SELECT DISTINCT ?, sysdate, %s_art_id, txs.branch_id, ? FROM osee_txs txs, osee_relation_link rel WHERE txs.branch_id = ? AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND %s_art_id = ? AND txs.tx_current in (" + ModificationType.MODIFIED.getValue() + "," + ModificationType.DELETED.getValue() + "))";
 
    private static RelationSorterProvider relationSorterProvider = new RelationSorterProvider();
    private static RelationOrderFactory relationOrderFactory = new RelationOrderFactory();
@@ -597,7 +597,7 @@ public class RelationManager {
    /**
     * Check whether artifactCount number of additional artifacts of type artifactType can be related to the artifact on
     * side relationSide for relations of type relationType
-    *
+    * 
     * @param relationType
     * @param relationSide
     * @param artifact
@@ -671,7 +671,7 @@ public class RelationManager {
    /**
     * This method should only be called for unordered Relation Types. It does not handle reordering relation types that
     * maintain order.
-    *
+    * 
     * @param artifact
     * @param relationType
     * @param relationSide
@@ -694,7 +694,7 @@ public class RelationManager {
 
    /**
     * Remove all relations stored in the list awaiting to be deleted.
-    *
+    * 
     * @throws OseeDataStoreException
     */
    public static void purgeRelationsFor(Artifact artifact) throws OseeDataStoreException {

@@ -16,12 +16,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Donald G. Dunne
@@ -43,12 +46,10 @@ public class XChangeTextFilter extends XViewerTextFilter {
          try {
             computeDocOrderedChanges((Collection<Change>) parentElement);
             if (docOrderedChanges != null) {
-               if (!docOrderedChanges.contains(element)) {
-                  return false;
-               }
+               return docOrderedChanges.contains(element);
             }
          } catch (OseeCoreException ex) {
-            ex.printStackTrace();
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
       return super.select(viewer, parentElement, element);
