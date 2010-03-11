@@ -112,6 +112,13 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
       action.persist(transaction);
       msaGoal.addMember(action);
       msaGoal.persist(transaction);
+
+      for (String name : Arrays.asList("A", "B", "C", "D", "E")) {
+         TaskArtifact taskArt = teamArt.createNewTask("Task " + name);
+         defineGoal.addMember(taskArt);
+         taskArt.persist(transaction);
+      }
+
       defineGoal.persist(transaction);
 
       transaction.execute();

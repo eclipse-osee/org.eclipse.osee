@@ -318,4 +318,23 @@ public class Collections {
       return ret;
    }
 
+   public static <A extends Object> boolean moveItem(List<A> currentOrder, A itemToAdd, A targetItem, boolean insertAfter) {
+      int newIndex = currentOrder.indexOf(targetItem);
+      if (newIndex < 0 || newIndex > currentOrder.size() - 1) return false;
+      int oldIndex = currentOrder.indexOf(itemToAdd);
+      if (oldIndex < 0 || oldIndex > currentOrder.size() - 1) return false;
+
+      currentOrder.remove(itemToAdd);
+      if (insertAfter) {
+         newIndex = (newIndex > oldIndex ? newIndex : newIndex + 1);
+      } else {
+         newIndex = (newIndex > oldIndex ? newIndex - 1 : newIndex);
+      }
+      if (newIndex > currentOrder.size()) {
+         currentOrder.add(itemToAdd);
+      } else {
+         currentOrder.add(newIndex, itemToAdd);
+      }
+      return true;
+   }
 }

@@ -207,6 +207,10 @@ public class GoalArtifact extends StateMachineArtifact {
       if (result == EntryDialog.OK) {
          String newIndexStr = ed.getEntry();
          Integer newIndex = new Integer(newIndexStr) - 1;
+         if (newIndex == 0 || newIndex > members.size()) {
+            AWorkbench.popup(String.format("New Order Number [%s] out of range 1..%d", newIndexStr, members.size()));
+            return false;
+         }
          Artifact insertTarget = members.get(newIndex);
          goal.setRelationOrder(AtsRelationTypes.Goal_Member, insertTarget, false, artifact);
          goal.persist();
