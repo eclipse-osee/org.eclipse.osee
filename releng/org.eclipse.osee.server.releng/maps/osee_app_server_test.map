@@ -13,4 +13,4 @@ fragment@org.eclipse.osee.framework.search.engine.test=SVN,trunk,https://dev.ecl
 fragment@org.eclipse.osee.framework.manager.servlet.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.manager.servlet.test
 fragment@org.eclipse.osee.framework.types.tests=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.types.tests 
 
-plugin@org.eclipse.osee.framework.server.tests=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.framework.server.tests
+plugin@org.eclipse.osee.framework.server.tests=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.server.tests
