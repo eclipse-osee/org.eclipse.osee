@@ -11,9 +11,13 @@
 package org.eclipse.osee.ats.health;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+
 import org.eclipse.osee.ats.health.change.DataChangeReportComparer;
 import org.eclipse.osee.ats.health.change.ValidateChangeReportParser;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * Compares two change reports to see if the match.
@@ -25,6 +29,8 @@ public class ChangeReportComparer {
    /**
     * Compares two change report strings by parsing them and comparing each artifact change, attribute change and
     * relation change.
+    * @param currentData 
+    * @param storedData 
     * 
     * @return Returns true if the change reports matches else false.
     * @throws OseeArgumentException
@@ -37,7 +43,8 @@ public class ChangeReportComparer {
 
       if (currentList.size() != storedList.size() || currentList.get(0).size() != storedList.get(0).size() || currentList.get(
             1).size() != storedList.get(1).size() || currentList.get(2).size() != storedList.get(2).size()) {
-         throw new OseeArgumentException("The change reports must have the same number of items");
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "The change reports must have the same number of items");
+         return false;
       }
       for (int i = 0; i < currentList.size(); i++) {
          for (int j = 0; j < currentList.get(i).size(); j++) {
