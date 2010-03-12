@@ -46,8 +46,12 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
    private ExportClassLoader exportClassLoader;
    private Object service;
    private List<IServicePropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<IServicePropertyChangeListener>();
+   private String uniqueServerId;
 
-   public JmsToJiniBridgeConnector(ExportClassLoader exportClassLoader, Object service) {
+  
+
+   public JmsToJiniBridgeConnector(ExportClassLoader exportClassLoader, Object service, String id) {
+      this.uniqueServerId = id;
       this.exportClassLoader = exportClassLoader;
       this.service = service;
       if (service instanceof IHostTestEnvironment) {
@@ -176,4 +180,8 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
       return null;
    }
 
+   public String getUniqueServerId() {
+      return uniqueServerId;
+   }
+   
 }

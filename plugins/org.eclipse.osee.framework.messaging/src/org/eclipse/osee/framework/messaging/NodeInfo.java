@@ -5,13 +5,14 @@
  */
 package org.eclipse.osee.framework.messaging;
 
+import java.io.Serializable;
 import java.net.URI;
 
 
 /**
  * @author b1122182
  */
-public class NodeInfo {
+public class NodeInfo implements Serializable {
 
 	private final URI uri;
 	private final String name;

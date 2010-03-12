@@ -8,6 +8,8 @@ package org.eclipse.osee.ote.service;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -16,6 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.MessageService;
+import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
@@ -34,6 +37,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatusCallback {
 
 	private ConcurrentHashMap<String, JmsToJiniBridgeConnector> connectors;
+	private ConcurrentHashMap<String, ServiceHealth> serviceHealthMap;
 	private RemoteServiceLookup remoteServiceLookup;
 	private MessageService messageService;
 	private IConnectionService connectionService;
@@ -93,6 +97,7 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
 	}
 
    private void updateServiceProperties(ServiceHealth serviceHealth) {
+      serviceHealthMap.put(serviceHealth.getServiceUniqueId(), serviceHealth);
       JmsToJiniBridgeConnector item = connectors.get(serviceHealth.getServiceUniqueId());
       if(item != null){
          for(ServiceDescriptionPair pair:serviceHealth.getServiceDescription()){
@@ -101,8 +106,7 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
       }
    }
 
-   private void requestJmsJiniBridgeConnector(
-			ServiceHealth serviceHealth) {
+   private void requestJmsJiniBridgeConnector(ServiceHealth serviceHealth) {
 		try {
 //			ConnectionNode connectionNode = messageService.get(new NodeInfo(serviceHealth.getServiceUniqueId(), new URI(serviceHealth.getBrokerURI())));
 		   ConnectionNode connectionNode = messageService.getDefault();
@@ -149,7 +153,9 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
 				String id = msg.toString();
 				Object obj = ois.readObject();
 				IHostTestEnvironment hostEnv = (IHostTestEnvironment)obj;
-				JmsToJiniBridgeConnector connector = new JmsToJiniBridgeConnector(exportClassLoader, hostEnv);
+				JmsToJiniBridgeConnector connector = new JmsToJiniBridgeConnector(exportClassLoader, hostEnv, id);
+				connector.setProperty("OTEEmbeddedBroker", getNodeInfo(id));
+//				connector.setProperty(key, value);
 //				connectors.put(key, connector)
 //				connectors.put(ser, value);
 //				String id = (String)headers.get("OseeServiceUniqueId");
@@ -161,8 +167,18 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
 			   OseeLog.log(Activator.class, Level.SEVERE, ex);
 			} catch (ClassNotFoundException ex) {
 			   OseeLog.log(Activator.class, Level.SEVERE, ex);
-			}
+			} catch (URISyntaxException ex) {
+			   OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
 		}
+	}
+	
+	private NodeInfo getNodeInfo(String id) throws URISyntaxException{
+	   ServiceHealth serviceHealth = this.serviceHealthMap.get(id);
+	   if(serviceHealth != null){
+	      return new NodeInfo("OTEEmbeddedBroker", new URI(serviceHealth.getBrokerURI()));
+	   }
+	   return null;
 	}
 	
 	
