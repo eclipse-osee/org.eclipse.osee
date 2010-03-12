@@ -1,6 +1,6 @@
 feature@org.eclipse.osee.server.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.server.feature
 
-feature@org.eclipse.osee.framework.server.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.server.feature
+feature@org.eclipse.osee.framework.server.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.framework.server.feature
 plugin@org.eclipse.osee.demo.db.connection=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.demo.db.connection
 plugin@org.eclipse.osee.framework.branch.management=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.branch.management
 plugin@org.eclipse.osee.framework.core=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.core
