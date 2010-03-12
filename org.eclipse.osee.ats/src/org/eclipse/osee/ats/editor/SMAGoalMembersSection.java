@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
+import org.eclipse.osee.ats.goal.GoalXViewerFactory;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.world.IWorldEditor;
@@ -72,8 +73,9 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
       addDropToAddLabel(toolkit, sectionBody);
       addDropToRemoveLabel(toolkit, sectionBody);
 
-      worldComposite = new WorldComposite(this, sectionBody, SWT.BORDER);
+      worldComposite = new WorldComposite(this, new GoalXViewerFactory(), sectionBody, SWT.BORDER);
       try {
+         CustomizeData customizeData = worldComposite.getCustomizeDataCopy();
          worldComposite.load("Members", editor.getSma().getRelatedArtifacts(AtsRelationTypes.Goal_Member),
                (CustomizeData) null, TableLoadOption.None);
       } catch (OseeCoreException ex) {

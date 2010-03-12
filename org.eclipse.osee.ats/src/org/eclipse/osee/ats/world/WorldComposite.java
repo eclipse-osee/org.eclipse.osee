@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorAction.IOpenNewAtsWorldEditorHandler;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction.IOpenNewAtsWorldEditorSelectedHandler;
@@ -59,6 +60,10 @@ public class WorldComposite extends ScrolledComposite implements IOpenNewAtsWorl
    private final Composite mainComp;
 
    public WorldComposite(IWorldEditor worldEditor, Composite parent, int style) {
+      this(worldEditor, null, parent, style);
+   }
+
+   public WorldComposite(IWorldEditor worldEditor, IXViewerFactory xViewerFactory, Composite parent, int style) {
       super(parent, style);
       this.iWorldEditor = worldEditor;
 
@@ -74,7 +79,9 @@ public class WorldComposite extends ScrolledComposite implements IOpenNewAtsWorl
          return;
       }
 
-      worldXViewer = new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+      worldXViewer =
+            new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
+                  xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory());
       worldXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));

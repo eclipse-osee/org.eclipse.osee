@@ -102,10 +102,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
    public static final String UN_SUBSCRIBE = "Un-Subscribe for Notifications";
    public final WorldXViewer thisXViewer = this;
 
-   public WorldXViewer(Composite parent, int style) {
-      this(parent, style, new WorldXViewerFactory());
-   }
-
    public WorldXViewer(Composite parent, int style, IXViewerFactory xViewerFactory) {
       super(parent, style, xViewerFactory);
    }
