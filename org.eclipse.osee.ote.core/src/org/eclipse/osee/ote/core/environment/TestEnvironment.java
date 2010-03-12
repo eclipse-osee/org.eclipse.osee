@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.rmi.Remote;
@@ -35,7 +37,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.connection.service.LocalConnector;
@@ -46,6 +47,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.framework.messaging.MessagingGateway;
+import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.IUserSession;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
@@ -112,9 +114,15 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    private final LinkedBlockingQueue<Future> listOfThreadsToWaitOnInInit = new LinkedBlockingQueue<Future>();
 
    private volatile boolean isShutdown = false;
+   private NodeInfo oteNodeInfo;
    
    protected TestEnvironment(IEnvironmentFactory factory) {
       GCHelper.getGCHelper().addRefWatch(this);
+      try {
+         oteNodeInfo = new NodeInfo("OTEEmbeddedBroker",new URI("vm://localhost?broker.persistent=false"));
+      } catch (URISyntaxException ex) {
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
+      }
       execInitializationTasks = Executors.newCachedThreadPool();
       this.factory = factory;
       this.testStation = factory.getTestStation();
@@ -501,7 +509,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       if (associatedObjectListeners != null) {
          associatedObjectListeners.clear();
       }
-      GCHelper.getGCHelper().printLiveReferences();
    }
 
    public void setExecutionUnitManagement(IExecutionUnitManagement executionUnitManagement) {
@@ -711,5 +718,13 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    @Deprecated
    public void abortTestScript(Throwable t) {
       getRunManager().abort(t, false);
+   }
+   
+   public void setOteNodeInfo(NodeInfo info){
+      oteNodeInfo = info;
+   }
+   
+   public NodeInfo getOteNodeInfo(NodeInfo info){
+      return oteNodeInfo;
    }
 }
