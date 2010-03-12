@@ -1,16 +1,16 @@
-feature@org.eclipse.osee.core.runtime.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.core.runtime.feature
+feature@org.eclipse.osee.core.runtime.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.core.runtime.feature
 
-feature@org.eclipse.osee.core.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.core.feature
-plugin@org.eclipse.osee.framework.core=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.core
-plugin@org.eclipse.osee.framework.jdk.core=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.jdk.core
-plugin@org.eclipse.osee.framework.jini=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.jini
-plugin@org.eclipse.osee.framework.logging=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.logging
-plugin@org.eclipse.osee.framework.messaging=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.messaging
-plugin@org.eclipse.osee.framework.plugin.core=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.plugin.core
+feature@org.eclipse.osee.core.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.core.feature
+plugin@org.eclipse.osee.framework.core=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.core
+plugin@org.eclipse.osee.framework.jdk.core=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.jdk.core
+plugin@org.eclipse.osee.framework.jini=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.jini
+plugin@org.eclipse.osee.framework.logging=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.logging
+plugin@org.eclipse.osee.framework.messaging=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.messaging
+plugin@org.eclipse.osee.framework.plugin.core=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.plugin.core
 
-feature@org.eclipse.osee.core.ui.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.core.ui.feature
-plugin@org.eclipse.osee.framework.svn=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.svn
-plugin@org.eclipse.osee.framework.ui.jdk=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.ui.jdk
-plugin@org.eclipse.osee.framework.ui.plugin=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.ui.plugin
-plugin@org.eclipse.osee.framework.ui.service.control=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.ui.service.control
-plugin@org.eclipse.osee.framework.ui.swt=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.ui.swt
+feature@org.eclipse.osee.core.ui.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.core.ui.feature
+plugin@org.eclipse.osee.framework.svn=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.svn
+plugin@org.eclipse.osee.framework.ui.jdk=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.ui.jdk
+plugin@org.eclipse.osee.framework.ui.plugin=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.ui.plugin
+plugin@org.eclipse.osee.framework.ui.service.control=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.ui.service.control
+plugin@org.eclipse.osee.framework.ui.swt=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.ui.swt

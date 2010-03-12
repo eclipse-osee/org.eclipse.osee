@@ -1,8 +1,8 @@
 plugin@org.eclipse.test=v20080313,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,
 fragment@org.eclipse.ant.optional.junit=v20070202,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,
 
-feature@org.eclipse.osee.core.runtime.feature.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.core.runtime.feature.test
+feature@org.eclipse.osee.core.runtime.feature.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.core.runtime.feature.test
 
-feature@org.eclipse.osee.core.feature.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.core.feature.test
-fragment@org.eclipse.osee.framework.core.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.core.test
-fragment@org.eclipse.osee.framework.jdk.core.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.jdk.core.test
+feature@org.eclipse.osee.core.feature.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.core.feature.test
+fragment@org.eclipse.osee.framework.core.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.core.test
+fragment@org.eclipse.osee.framework.jdk.core.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.jdk.core.test

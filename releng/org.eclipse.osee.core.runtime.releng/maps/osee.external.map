@@ -1,14 +1,14 @@
-feature@org.eclipse.osee.external.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.external.feature
+feature@org.eclipse.osee.external.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.external.feature
 
-plugin@net.jini=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,net.jini
+plugin@net.jini=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/net.jini
 plugin@com.lowagie.text,1.5.4=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/com.lowagie.text_1.5.4.v200908052355.jar
 plugin@javax.activation,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/javax.activation_1.1.0.v200905021805.jar
 plugin@javax.mail.glassfish,1.4.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/javax.mail.glassfish_1.4.1.v200808130215.jar
 plugin@javax.servlet,2.5.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/javax.servlet_2.5.0.v200806031605.jar
 plugin@javax.xml,1.3.4=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/javax.xml_1.3.4.v200902170245.jar
 
-plugin@jms.activemq.launch=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,jms.activemq.launch
-plugin@jms.libraries=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,jms.libraries
+plugin@jms.activemq.launch=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/jms.activemq.launch
+plugin@jms.libraries=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/jms.libraries
 
 plugin@org.apache.commons.codec,1.3.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.commons.codec_1.3.0.v20080530-1600.jar
 plugin@org.apache.commons.httpclient,3.0.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.commons.httpclient_3.1.0.v20080605-1935.jar
