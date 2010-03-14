@@ -100,7 +100,8 @@ public class ConflictManagerInternal {
       Set<Integer> artIdSetDontShow = new HashSet<Integer>();
       Set<Integer> artIdSetDontAdd = new HashSet<Integer>();
 
-      //Check to see if the branch has already been committed, then use the transaction version
+      // Check to see if the branch has already been committed, then use the
+      // transaction version
       int commitTransactionId = getCommitTransaction(sourceBranch, destinationBranch);
       if (commitTransactionId > 0) {
          try {
@@ -108,16 +109,14 @@ public class ConflictManagerInternal {
          } catch (TransactionDoesNotExist ex) {
          }
       }
-      if (sourceBranch != null && destinationBranch != null) {
-         monitor.beginTask(String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getId(),
-               destinationBranch.getId()), 100);
-         monitor.subTask("Finding Database stored conflicts");
-      }
       if (sourceBranch == null || destinationBranch == null) {
          throw new OseeArgumentException(String.format("Source Branch = %s Destination Branch = %s",
                sourceBranch == null ? "NULL" : sourceBranch.getId(),
                destinationBranch == null ? "NULL" : destinationBranch.getId()));
       }
+      monitor.beginTask(String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getId(),
+            destinationBranch.getId()), 100);
+      monitor.subTask("Finding Database stored conflicts");
 
       TransactionRecord commonTransaction = findCommonTransaction(sourceBranch, destinationBranch);
 
@@ -148,7 +147,8 @@ public class ConflictManagerInternal {
       bulkLoadedArtifacts = preloadConflictArtifacts(sourceBranch, destinationBranch, mergeBranch, artIdSet, monitor);
 
       System.currentTimeMillis();
-      //Don't create the conflicts for attributes on an artifact that is deleted etc.
+      // Don't create the conflicts for attributes on an artifact that is
+      // deleted etc.
       for (ConflictBuilder conflictBuilder : conflictBuilders) {
          Conflict conflict = getConflict(conflictBuilder, mergeBranch, artIdSetDontShow);
          if (conflict != null) {
@@ -307,7 +307,8 @@ public class ConflictManagerInternal {
     */
    private static boolean isAttributeConflictValid(int destinationGammaId, Branch sourceBranch) throws OseeCoreException {
       boolean isValidConflict = true;
-      //We just need the largest value at first so the complete source branch will be searched
+      // We just need the largest value at first so the complete source branch
+      // will be searched
       int parentTransactionNumber = Integer.MAX_VALUE;
 
       for (Branch branch : sourceBranch.getAncestors()) {
