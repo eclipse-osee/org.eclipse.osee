@@ -57,8 +57,11 @@ public class WordTrackedChangesTest {
       FileRenderer.setWorkbenchSavePopUpDisabled(true);
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       Artifact newArt = ArtifactTypeManager.addArtifact(SOFTWARE_REQUIREMENT, branch, getClass().getSimpleName());
-      newArt.persist();
-      newArt.setSoleAttributeFromString(WORD_TEMPLATE_CONTENT, getFileContent(TEST_WORD_EDIT_FILE_NAME));
+      try {
+         newArt.setSoleAttributeFromString(WORD_TEMPLATE_CONTENT, getFileContent(TEST_WORD_EDIT_FILE_NAME));
+      } finally {
+         newArt.persist();
+      }
    }
 
    @org.junit.Test(expected = OseeTrackedChangesException.class)
@@ -69,8 +72,11 @@ public class WordTrackedChangesTest {
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       Artifact newArt = ArtifactTypeManager.addArtifact("Test Procedure WML", branch, getClass().getSimpleName());
       String unlinkedContent = WordMlLinkHandler.unlink(linkType, newArt, content);
-      newArt.setSoleAttributeFromString(WHOLE_WORD_CONTENT, unlinkedContent);
-      newArt.persist();
+      try {
+         newArt.setSoleAttributeFromString(WHOLE_WORD_CONTENT, unlinkedContent);
+      } finally {
+         newArt.persist();
+      }
    }
 
    private String getFileContent(String fileName) throws IOException {
