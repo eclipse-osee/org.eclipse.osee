@@ -115,25 +115,23 @@
 	relengBaseBuilderDir = ${relengBaseBuilderDir}
 	writableBuildRoot = ${writableBuildRoot}
 	buildDir = ${buildDir}
+   fetchTag = ${fetchTag}
 	</echo>
 	</target>
-
-
-
 
 
 	<target name="run" depends="init,build,createSnapshot,cleanUp">
 	</target>
 
 	<target name="build">
-		<!--<echo message="Workspace: ${WORKSPACE}" />
+		<echo message="Workspace: ${WORKSPACE}" />
 		<echo message="Writable Build Root: ${writableBuildRoot}" />
 		<echo message="Java Home: ${JAVA_HOME}" />
 		<echo message="Java 6.0 Home: ${JAVA60_HOME}" />
 		<echo message="Qualifier: ${forceContextQualifier}" />
 		<echo message="Fetch Tag: ${fetchTag}" />
 
-		<propertyset id="proxy.properties">
+		<!--<propertyset id="proxy.properties">
 			<propertyref prefix="java.net.useSystemProxies" />
 			<propertyref prefix="http." />
 			<propertyref prefix="https." />
