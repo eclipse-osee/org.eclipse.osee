@@ -1,72 +1,121 @@
 <project default="run" name="org.eclipse.osee.server.releng/build.xml - Run a OSEE build using the Athena CBI">
 
-	<target name="init">
-		<property environment="env" />
+	<target name="run-init">
+		<!-- set properties from hudson parameters, useful with ant build -->
+		<condition property="isInHudson" value="true">
+			<or>
+				<contains string="${user.dir}" substring="hudson" />
+				<contains string="${user.name}" substring="hudson" />
+				<contains string="${user.home}" substring="hudson" />
+			</or>
+		</condition>
 
-		<!-- load properties and set timestamp for the build -->
-		<loadproperties srcFile="build.properties" />
-		<tstamp>
-			<format property="buildTimestamp" pattern="yyyyMMddHHmm" />
-		</tstamp>
+		<!-- Hudson default path if WORKSPACE not set -->
+		<dirname property="user.dir.parent" file="${user.dir}" />
+		<condition property="WORKSPACE" value="${user.dir.parent}">
+			<and>
+				<istrue value="${isInHudson}" />
+				<not>
+					<isset property="WORKSPACE" />
+				</not>
+			</and>
+		</condition>
 
-		<property name="SNAPSHOT" value="false" />
-		<property name="forceContextQualifier" value="v${buildTimestamp}" />
-		<property name="fetchTag" value="HEAD" />
+		<!-- Local default path if WORKSPACE not set -->
+		<condition property="WORKSPACE" value="${java.io.tmpdir}">
+			<and>
+				<isfalse value="${isInHudson}" />
+				<not>
+					<isset property="WORKSPACE" />
+				</not>
+			</and>
+		</condition>
+
+		<condition property="version" value="${VERSION}">
+			<isset property="VERSION" />
+		</condition>
+		<condition property="buildType" value="${BUILDTYPE}">
+			<isset property="BUILDTYPE" />
+		</condition>
+		<condition property="projectid" value="${PROJECTID}">
+			<isset property="PROJECTID" />
+		</condition>
+		<condition property="fetchTag" value="${FETCHTAG}">
+			<isset property="FETCHTAG" />
+		</condition>
+		<condition property="buildAlias" value="${BUILDALIAS}">
+			<isset property="BUILDALIAS" />
+		</condition>
+
+		<property file="build.properties" />
+
+		<condition property="buildType" value="N">
+			<not>
+				<isset property="buildType" />
+			</not>
+		</condition>
 
 		<!-- calculate workspaceDir as parent of this folder, the project's .releng folder (relengBuilderDir) -->
 		<property name="relengBuilderDir" value="${basedir}" />
 		<dirname file="${relengBuilderDir}" property="workspaceDir" />
 
-		<!-- 
-					can build in /tmp, eg., in /tmp/build, or in workspace, eg.,
-					${WORKSPACE}/build
-				-->
-		<property name="writableBuildRoot" value="/tmp/build" />
+		<!-- can build in /tmp, eg., in /tmp/build, or in workspace, eg.,	${WORKSPACE}/build -->
+		<property name="writableBuildRoot" value="${WORKSPACE}/build" />
 
 		<!-- 
 					can be simple path, eg., 
 					${writableBuildRoot}/${buildType}${buildTimestamp} or longer, eg.,
 					${writableBuildRoot}/${topprojectName}/${projectName}/downloads/drops/${version}/${buildType}${buildTimestamp} or
 					${writableBuildRoot}/${topprojectName}/${projectName}/${subprojectName}/downloads/drops/${version}/${buildType}${buildTimestamp}
-				
-			<property name="buildDir" value="${writableBuildRoot}/${buildType}${buildTimestamp}" />
-		-->
-		<property name="buildDir" value="${writableBuildRoot}/athena" />
+				-->
+		<condition property="buildDir" value="${writableBuildRoot}/${buildType}${buildTimestamp}-${zipPrefix}">
+			<and>
+				<isfalse value="${isInHudson}" />
+				<isset property="zipPrefix" />
+				<not>
+					<isset property="buildDir" />
+				</not>
+			</and>
+		</condition>
+		<condition property="buildDir" value="${writableBuildRoot}/${buildType}${buildTimestamp}">
+			<not>
+				<isset property="buildDir" />
+			</not>
+		</condition>
 
-		<delete dir="${buildDir}" failonerror="false" />
+		<condition property="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng">
+			<not>
+				<isset property="relengCommonBuilderDir" />
+			</not>
+		</condition>
+
+		<echo>JAVA_HOME = ${JAVA_HOME}
+	WORKSPACE = ${WORKSPACE}
+	isInHudson = ${isInHudson}
+	relengCommonBuilderDir = ${relengCommonBuilderDir}
+	relengBaseBuilderDir = ${relengBaseBuilderDir}
+	writableBuildRoot = ${writableBuildRoot}
+	buildDir = ${buildDir}
+	</echo>
+		<antcall target="cleanupWorkspace" />
 	</target>
 
-	<target name="run" depends="init,build,createSnapshot,cleanUp">
+
+
+
+
+	<target name="run" depends="run-init,build,createSnapshot,cleanUp">
 	</target>
 
 	<target name="build">
-		<echo message="Workspace: ${WORKSPACE}" />
+		<!--<echo message="Workspace: ${WORKSPACE}" />
 		<echo message="Writable Build Root: ${writableBuildRoot}" />
 		<echo message="Java Home: ${JAVA_HOME}" />
 		<echo message="Java 6.0 Home: ${JAVA60_HOME}" />
-
-		<echo message="Snapshot: ${SNAPSHOT}" />
 		<echo message="Qualifier: ${forceContextQualifier}" />
 		<echo message="Fetch Tag: ${fetchTag}" />
 
-		<!--<echo message="Proxy Host: ${http.proxyHost}" />
-		<echo message="Proxy Port: ${http.proxyPort}" />-->
-
-		<fail message="Specify the build workspace path 'WORKSPACE'">
-			<condition>
-				<not>
-					<isset property="WORKSPACE" />
-				</not>
-			</condition>
-		</fail>
-
-		<mkdir dir="${writableBuildRoot}" />
-
-		<!-- invoke a new Eclipse process and launch the build from the common.releng folder -->
-		<property name="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng" />
-
-
-		<!--<propertyset id="proxy.properties">
+		<propertyset id="proxy.properties">
 			<propertyref prefix="java.net.useSystemProxies" />
 			<propertyref prefix="http." />
 			<propertyref prefix="https." />
@@ -75,7 +124,10 @@
 		</propertyset>-->
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
 		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />
+	</target>
 
+	<target name="cleanupWorkspace" if="isInHudson" description="this will do some extreme cleaning of the workspace to purge leftover build dir from previous build. Handy if in Hudson; bad if on local">
+		<delete failonerror="false" dir="${writableBuildRoot}/" defaultexcludes="false" includeemptydirs="true" excludes="3rdPartyJars, downloads, org.eclipse.dash.common.releng, org.eclipse.releng.basebuilder" />
 	</target>
 
 	<target name="cleanUp">
@@ -93,7 +145,7 @@
 		</delete>
 	</target>
 
-	<target name="createSnapshot" depends="init">
+	<target name="createSnapshot">
 		<echo>Custom post build step CreateSnapshot</echo>
 		<property environment="env" />
 
