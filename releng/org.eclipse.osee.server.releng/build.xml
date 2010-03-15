@@ -116,7 +116,6 @@
 	writableBuildRoot = ${writableBuildRoot}
 	buildDir = ${buildDir}
 	</echo>
-		<antcall target="cleanupWorkspace" />
 	</target>
 
 
@@ -143,10 +142,6 @@
 		</propertyset>-->
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
 		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />
-	</target>
-
-	<target name="cleanupWorkspace" if="isInHudson" description="this will do some extreme cleaning of the workspace to purge leftover build dir from previous build. Handy if in Hudson; bad if on local">
-		<delete failonerror="false" dir="${writableBuildRoot}/" defaultexcludes="false" includeemptydirs="true" excludes="3rdPartyJars, downloads, org.eclipse.dash.common.releng, org.eclipse.releng.basebuilder" />
 	</target>
 
 	<target name="cleanUp">
