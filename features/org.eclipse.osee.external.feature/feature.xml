@@ -17,7 +17,6 @@
       %license
    </license>
 
-
    <requires>
       <import feature="org.eclipse.team.svn" version="0.7.8.I20091023-1300" match="greaterOrEqual"/>
       <import feature="org.polarion.eclipse.team.svn.connector" version="2.2.1.I20091009-1900" match="greaterOrEqual"/>
