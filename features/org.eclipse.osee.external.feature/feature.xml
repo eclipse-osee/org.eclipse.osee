@@ -17,47 +17,16 @@
       %license
    </license>
 
-   <includes
-         id="org.eclipse.nebula.widgets.xviewer.feature"
-         version="0.0.0"
-         name="Nebula XViewer"
-         search-location="both"/>
 
-   <includes
-         id="org.eclipse.nebula.widgets.calendarcombo.feature"
-         version="0.0.0"
-         name="Nebula Calendar Combo"
-         search-location="both"/>
-
-   <includes
-         id="org.eclipse.nebula.widgets.cdatetime.feature"
-         version="0.0.0"
-         name="Nebula CDateTime"
-         search-location="both"/>
-
-   <includes
-         id="org.eclipse.nebula.cwt.feature"
-         version="0.0.0"
-         name="Nebula CWT"
-         search-location="both"/>
-
-   <includes
-         id="org.eclipse.team.svn"
-         version="0.0.0"
-         name="Team SVN (Subversive)"
-         search-location="both"/>
-
-   <includes
-         id="org.polarion.eclipse.team.svn.connector"
-         version="0.0.0"
-         name="Team SVN (Subversive) Connectors"
-         search-location="both"/>
-
-   <includes
-         id="org.polarion.eclipse.team.svn.connector.svnkit16"
-         version="0.0.0"
-         name="Team SVN (Subversive) SVN Kit Connector"
-         search-location="both"/>
+   <requires>
+      <import feature="org.eclipse.team.svn" version="0.7.8.I20091023-1300" match="greaterOrEqual"/>
+      <import feature="org.polarion.eclipse.team.svn.connector" version="2.2.1.I20091009-1900" match="greaterOrEqual"/>
+      <import feature="org.polarion.eclipse.team.svn.connector.svnkit16" version="2.2.1.I20091009-1900" match="greaterOrEqual"/>
+      <import feature="org.eclipse.nebula.cwt.feature" version="0.0.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.nebula.widgets.calendarcombo.feature" version="0.0.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.nebula.widgets.cdatetime.feature" version="0.0.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.nebula.widgets.xviewer.feature" version="0.0.0" match="greaterOrEqual"/>
+   </requires>
 
    <plugin
          id="javax.servlet"
