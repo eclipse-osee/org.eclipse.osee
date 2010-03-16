@@ -11,6 +11,7 @@
 	<target name="getDependencies" />
 
 	<target name="preFetch">
+		<antcall target="getAdditionalMaps" />
 		<if>
 			<equals arg1="fetchTag" arg2="HEAD" />
 			<then>
@@ -19,10 +20,21 @@
 			<else>
 				<echo message="Building from ${fetchTag}" />
 				<antcall target="updateMapFiles" />
-
 			</else>
 		</if>
+	</target>
 
+
+	<target name="getAdditionalMaps" if="mapLocation">
+		<for param="additionalMapFile" delimiter="," list="${mapLocation}">
+			<sequential>
+				<propertyregex property="resourceName" override="true" input="@{additionalMapFile}" regexp="[^/}]+$" select="\0" casesensitive="false" />
+				<get dest="${buildDirectory}/maps/${resourceName}" src="@{additionalMapFile}" />
+				<concat destfile="${buildDirectory}/directory.txt" append="true" fixlastline="yes">
+					<fileset file="${buildDirectory}/maps/${resourceName}" />
+				</concat>
+			</sequential>
+		</for>
 	</target>
 
 	<target name="updateMapFiles">
