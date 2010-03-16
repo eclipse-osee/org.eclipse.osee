@@ -60,6 +60,7 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
 		this.exportClassLoader = exportClassLoader;
 		myOteServiceRequestHandler = new OteServiceRequestHandler();
 		connectors = new ConcurrentHashMap<String, JmsToJiniBridgeConnector>();
+		serviceHealthMap = new ConcurrentHashMap<String, ServiceHealth>();
 	}
 
 	public void start() {
@@ -89,6 +90,7 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
 
 	@Override
 	public void onServiceUpdate(ServiceHealth serviceHealth) {
+	   serviceHealthMap.put(serviceHealth.getServiceUniqueId(), serviceHealth);
 		if(isNewService(serviceHealth)){
 			requestJmsJiniBridgeConnector(serviceHealth);
 		} else {
@@ -97,7 +99,6 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
 	}
 
    private void updateServiceProperties(ServiceHealth serviceHealth) {
-      serviceHealthMap.put(serviceHealth.getServiceUniqueId(), serviceHealth);
       JmsToJiniBridgeConnector item = connectors.get(serviceHealth.getServiceUniqueId());
       if(item != null){
          for(ServiceDescriptionPair pair:serviceHealth.getServiceDescription()){

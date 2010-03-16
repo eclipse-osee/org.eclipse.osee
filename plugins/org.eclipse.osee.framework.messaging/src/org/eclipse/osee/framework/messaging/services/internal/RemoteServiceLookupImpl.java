@@ -33,7 +33,7 @@ public class RemoteServiceLookupImpl implements RemoteServiceLookup {
 	private CompositeKeyHashMap<String, String, List<ServiceNotification>> callbacks;
 	private HealthServiceListener healthServiceListener;
 
-	public RemoteServiceLookupImpl(ConnectionNode node, ScheduledExecutorService executor) {
+   public RemoteServiceLookupImpl(ConnectionNode node, ScheduledExecutorService executor) {
 		this.connectionNode = node;
 		map = new CompositeKeyHashMap<String, String, Map<String, ServiceHealthPlusTimeout>>(25, true);
 		callbacks = new CompositeKeyHashMap<String, String, List<ServiceNotification>>(

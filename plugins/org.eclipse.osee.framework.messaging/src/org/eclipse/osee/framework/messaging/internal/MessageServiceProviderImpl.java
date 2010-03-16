@@ -26,7 +26,7 @@ public class MessageServiceProviderImpl implements MessageServiceProvider {
    }
 
    public void start() throws Exception {
-      Thread.currentThread().setContextClassLoader(contextClassLoader);
+//      Thread.currentThread().setContextClassLoader(contextClassLoader);
       executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
       messageService = new MessageServiceImpl(new ConnectionNodeFactoryImpl("1.0", Integer.toString(hashCode()), executor));
    }

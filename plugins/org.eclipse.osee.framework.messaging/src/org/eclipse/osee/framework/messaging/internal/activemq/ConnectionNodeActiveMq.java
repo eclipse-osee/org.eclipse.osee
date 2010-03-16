@@ -82,7 +82,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          replyProducer = session.createProducer(null);
          connection.start();
          started = true;
-      } catch (JMSException ex) {
+      } catch (Throwable ex) {
          throw new OseeWrappedException(ex);
       }
    }
@@ -181,6 +181,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
                consumer.setMessageListener(null);
                consumer.close();
                messageConsumerCache.remove(topic);
+               regularListeners.remove(messageId.getGuid());
             } catch (JMSException ex) {
                statusCallback.fail(ex);
             }
