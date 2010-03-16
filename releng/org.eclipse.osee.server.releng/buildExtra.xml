@@ -35,7 +35,7 @@
 		</pathconvert>
 
 		<var name="${file.content}" />
-		<for param="map.file" delimiter="," list="${map.files}">
+		<for param="map.file" delimiter=";" list="${map.files}">
 			<sequential>
 				<propertyregex property="resourceName" override="true" input="@{map.file}" regexp="[^/}]+$" select="\0" casesensitive="false" />
 				<loadfile property="${file.content}" srcfile="@{map.file}" />
