@@ -69,9 +69,20 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMAEditorRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
       registerAtsWorldRelation(AtsRelationTypes.TeamWorkflowToReview_Review);
       branchMgr = new AtsBranchManager(this);
+   }
+
+   @Override
+   public void getSmaArtifactsOneLevel(StateMachineArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
+      try {
+         if (getTargetedForVersion() != null) {
+            artifacts.add(getTargetedForVersion());
+         }
+         artifacts.addAll(ReviewManager.getReviews(this));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
    }
 
    @Override

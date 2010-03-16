@@ -81,7 +81,6 @@ import org.eclipse.swt.graphics.Image;
  */
 public abstract class StateMachineArtifact extends ATSArtifact implements IGroupExplorerProvider, IWorldViewArtifact, ISubscribableArtifact, IFavoriteableArtifact {
 
-   private final Set<IRelationEnumeration> smaEditorRelations = new HashSet<IRelationEnumeration>();
    private final Set<IRelationEnumeration> atsWorldRelations = new HashSet<IRelationEnumeration>();
    private Collection<User> preSaveStateAssignees;
    private User preSaveOriginator;
@@ -364,18 +363,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    /**
-    * Registers relation as part of the SMAEditor isDirty/save tree
-    * 
-    * @param side
-    */
-   public void registerSMAEditorRelation(AtsRelationTypes side) {
-      smaEditorRelations.add(side);
-   }
-
-   /**
     * Registers relation as part of the parent/child hierarchy in ATS World
-    * 
-    * @param side
     */
    public void registerAtsWorldRelation(AtsRelationTypes side) {
       atsWorldRelations.add(side);
@@ -388,9 +376,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return FrameworkArtifactImageProvider.getUserImage(getStateMgr().getAssignees());
    }
 
-   /**
-    * @return WorkFlowDefinition
-    */
    public WorkFlowDefinition getWorkFlowDefinition() throws OseeCoreException {
       if (workFlowDefinition == null) {
          try {
@@ -811,11 +796,19 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * @return true if any object in SMA tree is dirty
     */
    public Result isSMAEditorDirty() {
-      String resultText = isRelationsAndArtifactsDirty(smaEditorRelations);
-      if (resultText == null) {
-         return Result.FalseResult;
+      try {
+         Set<Artifact> artifacts = new HashSet<Artifact>();
+         getSmaArtifactsOneLevel(this, artifacts);
+         for (Artifact artifact : artifacts) {
+            if (artifact.isDirty()) {
+               return new Result(true, String.format("Artifact [%s][%s] is dirty", artifact.getHumanReadableId(),
+                     artifact));
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't save artifact " + getHumanReadableId(), ex);
       }
-      return new Result(true, resultText);
+      return Result.FalseResult;
    }
 
    public void saveSMA(SkynetTransaction transaction) {
@@ -842,13 +835,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
    }
 
-   public static void getSmaArtifactsOneLevel(StateMachineArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
+   public void getSmaArtifactsOneLevel(StateMachineArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
       artifacts.add(smaArtifact);
-      for (IRelationEnumeration side : smaArtifact.getSmaEditorRelations()) {
-         for (Artifact artifact : smaArtifact.getRelatedArtifacts(side)) {
-            artifacts.add(artifact);
-         }
-      }
    }
 
    @Override
@@ -1249,13 +1237,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    @Override
    public int getWorldViewPercentCompleteTotal() throws OseeCoreException {
       return getPercentCompleteSMATotal();
-   }
-
-   /**
-    * @return the smaRelations
-    */
-   public Set<IRelationEnumeration> getSmaEditorRelations() {
-      return smaEditorRelations;
    }
 
    public Set<IRelationEnumeration> getAtsWorldRelations() {

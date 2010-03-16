@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.artifact;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +47,32 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
 
    public TaskableStateMachineArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMAEditorRelation(AtsRelationTypes.SmaToTask_Task);
       registerAtsWorldRelation(AtsRelationTypes.SmaToTask_Task);
+   }
+
+   @Override
+   public Set<User> getPrivilegedUsers() throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public void getSmaArtifactsOneLevel(StateMachineArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
+      artifacts.addAll(getTaskArtifacts());
+   }
+
+   @Override
+   public Date getWorldViewReleaseDate() throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public String getHyperTargetVersion() {
+      return null;
+   }
+
+   @Override
+   public String getWorldViewParentID() throws OseeCoreException {
+      return null;
    }
 
    @Override
