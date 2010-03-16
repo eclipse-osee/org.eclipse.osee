@@ -1,0 +1,59 @@
+<project name="Contribute Extra Build Steps" default="noDefault">
+
+	<!-- Dummy Default -->
+	<target name="noDefault">
+		<echo message="You must specify a target when invoking this file" />
+	</target>
+
+	<!-- ////////////////////////////////////////////////////////////////////// -->
+	<!-- OSEE BASE EXTRA 											            -->
+	<!-- ////////////////////////////////////////////////////////////////////// -->
+	<target name="getDependencies" />
+
+	<target name="preFetch">
+		<if>
+			<equals arg1="fetchTag" arg2="HEAD" />
+			<then>
+				<echo message="Building from HEAD" />
+			</then>
+			<else>
+				<echo message="Building from ${fetchTag}" />
+				<antcall target="updateMapFiles" />
+
+			</else>
+		</if>
+
+	</target>
+
+	<target name="updateMapFiles">
+		<pathconvert property="map.files" setonempty="false" pathsep=";">
+			<path>
+				<fileset dir="${buildDirectory}/maps">
+					<include name="*.map" />
+				</fileset>
+			</path>
+		</pathconvert>
+
+		<var name="${file.content}" />
+		<for param="map.file" delimiter="," list="${map.files}">
+			<sequential>
+				<propertyregex property="resourceName" override="true" input="@{map.file}" regexp="[^/}]+$" select="\0" casesensitive="false" />
+				<loadfile property="${file.content}" srcfile="@{map.file}" />
+				<propertyregex property="${mod.file.content}" input="${file.content}" defaultvalue="${file.content}" regexp="trunk" replace="fetchTag" casesensitive="false" override="true" />
+				<echo append="false" file="@{map.file}" message="${mod.file.content}" />
+			</sequential>
+		</for>
+	</target>
+
+	<target name="postFetch" />
+	<target name="preGenerate" />
+	<target name="postGenerate" />
+	<target name="preAssemble" />
+	<target name="postAssemble" />
+	<target name="prePackage" />
+	<target name="postPackage" />
+	<target name="preProcess" />
+	<target name="postProcess" />
+	<target name="postBuild" />
+	<target name="extraPackaging" />
+</project>
