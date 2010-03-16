@@ -46,7 +46,7 @@ public class CommitIntoHandler extends CommitHandler {
       Branch sourceBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       try {
-         List<Branch> branches = BranchManager.getNormalBranches();
+         List<Branch> branches = BranchManager.getNormalBranchesSorted();
          branches.remove(sourceBranch);
          BranchSelectionDialog branchSelection =
                new BranchSelectionDialog(

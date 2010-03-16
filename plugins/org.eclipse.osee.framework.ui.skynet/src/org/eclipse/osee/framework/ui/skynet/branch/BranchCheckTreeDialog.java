@@ -55,7 +55,7 @@ public class BranchCheckTreeDialog extends MinMaxOSEECheckedFilteredTreeDialog {
    protected Control createDialogArea(Composite container) {
       Control comp = super.createDialogArea(container);
       try {
-         getTreeViewer().getViewer().setInput(BranchManager.getNormalBranches());
+         getTreeViewer().getViewer().setInput(BranchManager.getNormalBranchesSorted());
          if (getInitialBranches() != null) getTreeViewer().setInitalChecked(getInitialBranches());
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

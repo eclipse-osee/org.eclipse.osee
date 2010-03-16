@@ -108,8 +108,11 @@ public class BranchManager {
     * @throws OseeCoreException
     */
    public static List<Branch> getNormalBranches() throws OseeCoreException {
-      List<Branch> branches =
-            getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL, BranchType.WORKING, BranchType.BASELINE);
+      return getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL, BranchType.WORKING, BranchType.BASELINE);
+   }
+
+   public static List<Branch> getNormalBranchesSorted() throws OseeCoreException {
+      List<Branch> branches = getNormalBranches();
       Collections.sort(branches);
       return branches;
    }
