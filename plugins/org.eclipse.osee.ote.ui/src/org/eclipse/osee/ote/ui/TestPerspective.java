@@ -12,7 +12,6 @@
 package org.eclipse.osee.ote.ui;
 
 import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.osee.framework.ui.service.control.view.ServiceManagerView;
 import org.eclipse.osee.ote.ui.navigate.OteNavigateView;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
@@ -32,7 +31,7 @@ public class TestPerspective implements IPerspectiveFactory {
    public void defineActions(IPageLayout layout) {
 
       // Add "show views".
-      layout.addShowViewShortcut(ServiceManagerView.VIEW_ID);
+      layout.addShowViewShortcut("org.eclipse.osee.framework.ui.service.control.view.ServiceManagerView");
       layout.addShowViewShortcut(OteNavigateView.VIEW_ID);
       //      layout.addShowViewShortcut(EgiView.VIEW_ID);
       //      layout.addShowViewShortcut(EufdView.VIEW_ID);

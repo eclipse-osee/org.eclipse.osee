@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test Core Gui Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.ui;singleton:=true
-Bundle-Version: 0.9.3.qualifier
+Bundle-Version: 0.9.2.qualifier
 Bundle-Activator: org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin
 Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
@@ -32,10 +32,8 @@ Import-Package: org.eclipse.core.resources,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.ui.plugin.util,
  org.eclipse.osee.framework.ui.plugin.xnavigate,
- org.eclipse.osee.framework.ui.service.control.view,
  org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.ote.client.msg,
- org.eclipse.osee.ote.client.msg.core,
  org.eclipse.osee.ote.core.environment.interfaces,
  org.eclipse.osee.ote.runtimemanager,
  org.eclipse.osee.ote.service,
@@ -43,4 +41,4 @@ Import-Package: org.eclipse.core.resources,
  org.eclipse.swt.widgets,
  org.osgi.framework,
  org.osgi.util.tracker
-Require-Bundle: org.eclipse.ui;bundle-version="3.5.1"
+Require-Bundle: org.eclipse.ui
