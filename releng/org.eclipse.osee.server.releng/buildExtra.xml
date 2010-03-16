@@ -48,14 +48,22 @@
 
 		<for param="map.file" delimiter=";" list="${map.files}">
 			<sequential>
-				<propertyregex property="resourceName" override="true" input="@{map.file}" regexp="[^/}]+$" select="\0" casesensitive="false" />
-				<var name="file.content" />
-				<loadfile property="file.content" srcfile="@{map.file}" />
-				<propertyregex property="mod.file.content" input="${file.content}" defaultvalue="${file.content}" regexp="trunk" replace="${fetchTag}" casesensitive="false" override="true" />
-				<echo append="false" file="@{map.file}" message="${mod.file.content}" />
+				<!--<propertyregex property="resourceName" override="true" input="@{map.file}" regexp="[^/}]+$" select="\0" casesensitive="false" />-->
+				<updateMapFile srcfile="@{map.file}" destfile="@{map.file}" tag="${fetchTag}" />
 			</sequential>
 		</for>
 	</target>
+
+	<macrodef name="updateMapFile">
+		<attribute name="destfile" />
+		<attribute name="srcfile" />
+		<attribute name="tag" />
+		<sequential>
+			<loadfile property="data" srcfile="@{srcfile}" />
+			<propertyregex property="new.content" input="${data}" defaultvalue="${data}" regexp="trunk" replace="@{tag}" casesensitive="false" override="true" />
+			<echo append="false" file="@{destfile}" message="${new.content}" />
+		</sequential>
+	</macrodef>
 
 	<target name="postFetch" />
 	<target name="preGenerate" />
