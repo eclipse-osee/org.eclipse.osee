@@ -88,6 +88,10 @@ public class BranchManager {
 
    private static Branch commonBranch = null;
 
+   /**
+    * Since BranchManager is static and not a service yet, cache common branch cause it currently takes too long to get
+    * service every single time this method is called.
+    */
    public synchronized static Branch getCommonBranch() throws OseeCoreException {
       if (commonBranch == null) {
          Branch branch = getCache().getCommonBranch();

@@ -133,23 +133,31 @@ public class WorkItemDefinitionFactory {
       itemIdToWidArtifact.put(workItemDefinition.id, artifact);
    }
 
+   public static void updateDefinitions(Collection<Artifact> arts) throws OseeCoreException {
+      loadDefinitionsInternal(WriteType.Update, arts);
+   }
+
    public static void loadDefinitions(Collection<Artifact> arts) throws OseeCoreException {
+      loadDefinitionsInternal(WriteType.New, arts);
+   }
+
+   private static void loadDefinitionsInternal(WriteType writeType, Collection<Artifact> arts) throws OseeCoreException {
       for (Artifact art : arts) {
          if (art.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
-            addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
+            addItemDefinition(writeType, new WorkRuleDefinition(art), art);
          }
          if (art.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
-            addItemDefinition(WriteType.New, new WorkWidgetDefinition(art), art);
+            addItemDefinition(writeType, new WorkWidgetDefinition(art), art);
          }
          if (art.isOfType(WorkPageDefinition.ARTIFACT_NAME)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
-            addItemDefinition(WriteType.New, new WorkPageDefinition(art), art);
+            addItemDefinition(writeType, new WorkPageDefinition(art), art);
          }
          if (art.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
-            addItemDefinition(WriteType.New, new WorkFlowDefinition(art), art);
+            addItemDefinition(writeType, new WorkFlowDefinition(art), art);
          }
       }
    }

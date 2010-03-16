@@ -445,13 +445,12 @@ public class AtsBranchConfigurationTest {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Setup new workflow page to have create/commit branch widgets");
       String implementPageId = namespace + ".Implement";
       Artifact implementPageDef = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(implementPageId);
-      WorkItemDefinitionFactory.deCache(implementPageDef);
       implementPageDef.addRelation(CoreRelationTypes.WorkItem__Child,
             WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName()));
       implementPageDef.addRelation(CoreRelationTypes.WorkItem__Child,
             WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName()));
       implementPageDef.persist();
-      WorkItemDefinitionFactory.loadDefinitions(Collections.singleton(implementPageDef));
+      WorkItemDefinitionFactory.updateDefinitions(Collections.singleton(implementPageDef));
    }
 
    @After
