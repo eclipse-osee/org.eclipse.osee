@@ -25,5 +25,4 @@ Require-Bundle: org.eclipse.osee.framework.jdk.core,
  org.eclipse.osee.framework.plugin.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.apache.commons.lang;version="2.4.0",
- org.eclipse.osee.framework.logging
+Import-Package: org.eclipse.osee.framework.logging

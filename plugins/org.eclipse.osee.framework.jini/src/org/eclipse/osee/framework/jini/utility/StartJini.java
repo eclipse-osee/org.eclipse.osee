@@ -22,15 +22,17 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import net.jini.core.entry.Entry;
 import net.jini.lookup.entry.Comment;
 import net.jini.lookup.entry.ServiceInfo;
-import org.apache.commons.lang.StringUtils;
+
 import org.eclipse.osee.framework.jdk.core.util.CmdLineArgs;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -68,7 +70,7 @@ public class StartJini extends JiniService {
          String[] groups = JiniLookupGroupConfig.getOseeJiniServiceGroups();
          String allowedGroups = "";
          if (groups != null) {
-            allowedGroups = StringUtils.join(groups, ",");
+            allowedGroups = Arrays.toString(groups);
          } else {
             OseeLog.log(
                   StartJini.class,
