@@ -58,9 +58,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    private Button showChangeReport;
    private Button purgeBranchButton;
    public static enum BranchStatus {
-      Not_Started,
-      Changes_InProgress,
-      Changes_NotPermitted
+      Not_Started, Changes_InProgress, Changes_NotPermitted
    }
    public final static String WIDGET_ID = ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName();
 
@@ -230,6 +228,11 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    @Override
    public void refresh() {
+      // don't do anything here cause to expensive to check for branch conditions during every refresh
+   }
+
+   // only refresh on branch event; this may bust some tests
+   public void refreshOnBranchEvent() {
       if (teamArt == null || teamArt.getBranchMgr() == null || labelWidget == null || labelWidget.isDisposed()) {
          return;
       }
@@ -306,7 +309,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
-      refresh();
+      refreshOnBranchEvent();
    }
 
    @Override
@@ -315,7 +318,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      refresh();
+      refreshOnBranchEvent();
    }
 
    public Button getCreateBranchButton() {

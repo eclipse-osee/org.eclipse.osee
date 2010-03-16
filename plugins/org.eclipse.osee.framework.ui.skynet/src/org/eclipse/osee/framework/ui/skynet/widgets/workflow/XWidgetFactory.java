@@ -105,7 +105,7 @@ public class XWidgetFactory {
             maxSelectionRequired = Integer.MAX_VALUE;
          }
          try {
-            multiBranchSelect.setSelectableItems(BranchManager.getNormalAllBranchesSorted());
+            multiBranchSelect.setSelectableItems(BranchManager.getNormalAllBranches());
             multiBranchSelect.setRequiredSelection(1, maxSelectionRequired);
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
