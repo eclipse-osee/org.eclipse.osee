@@ -33,5 +33,4 @@ Import-Package: org.apache.commons.codec.binary,
  org.apache.commons.httpclient,
  org.apache.commons.httpclient.methods,
  org.apache.commons.httpclient.params,
- org.apache.commons.lang;version="2.4.0",
  org.apache.xml.serialize;version="2.9.0"

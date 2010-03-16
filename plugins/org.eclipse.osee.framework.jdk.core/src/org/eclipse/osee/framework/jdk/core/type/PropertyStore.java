@@ -23,8 +23,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Map.Entry;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -32,7 +31,17 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Roberto E. Escobar
  */
 public class PropertyStore implements IPropertyStore, Serializable {
-   private static final long serialVersionUID = 9076969425223251739L;
+   /**
+	 * 
+	 */
+	private static final String EMPTY_STRING = new String();
+
+/**
+	 * 
+	 */
+	private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
+private static final long serialVersionUID = 9076969425223251739L;
 
    private static final String EXCEPTION_MESSAGE = "No setting found for key: [%s]";
 
@@ -54,7 +63,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    public PropertyStore() {
-      this(StringUtils.EMPTY);
+      this(EMPTY_STRING);
    }
 
    public PropertyStore(Properties properties) {
@@ -62,13 +71,13 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    public String get(String key) {
-      return storageData.getProperty(key, StringUtils.EMPTY);
+      return storageData.getProperty(key, EMPTY_STRING);
    }
 
    public String[] getArray(String key) {
       String[] value = (String[]) storageArrays.get(key);
       if (value == null) {
-         value = ArrayUtils.EMPTY_STRING_ARRAY;
+         value = EMPTY_STRING_ARRAY;
       }
       return value;
    }
@@ -127,7 +136,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
 
    public void put(String key, String[] value) {
       if (value == null) {
-         value = ArrayUtils.EMPTY_STRING_ARRAY;
+         value = EMPTY_STRING_ARRAY;
       }
       storageArrays.put(key, value);
    }
@@ -150,7 +159,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
 
    public void put(String key, String value) {
       if (value == null) {
-         value = StringUtils.EMPTY;
+         value = EMPTY_STRING;
       }
       storageData.setProperty(key, value);
    }
@@ -165,7 +174,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
 
    protected void setId(String name) {
       if (name == null) {
-         name = StringUtils.EMPTY;
+         name = EMPTY_STRING;
       }
       this.storeId = name;
    }
