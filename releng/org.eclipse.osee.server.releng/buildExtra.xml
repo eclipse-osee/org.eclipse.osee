@@ -46,11 +46,11 @@
 			</path>
 		</pathconvert>
 
-		<var name="file.content" />
 		<for param="map.file" delimiter=";" list="${map.files}">
 			<sequential>
 				<propertyregex property="resourceName" override="true" input="@{map.file}" regexp="[^/}]+$" select="\0" casesensitive="false" />
-				<loadfile property="@{file.content}" srcfile="@{map.file}" />
+				<var name="file.content" />
+				<loadfile property="file.content" srcfile="@{map.file}" />
 				<propertyregex property="mod.file.content" input="${file.content}" defaultvalue="${file.content}" regexp="trunk" replace="${fetchTag}" casesensitive="false" override="true" />
 				<echo append="false" file="@{map.file}" message="${mod.file.content}" />
 			</sequential>
