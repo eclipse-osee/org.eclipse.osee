@@ -75,5 +75,8 @@
 	<target name="preProcess" />
 	<target name="postProcess" />
 	<target name="postBuild" />
-	<target name="extraPackaging" />
+	
+	<target name="extraPackaging">
+		<ant antfile="${relengBuilderDir}/scripts/createServerRuntime.xml" target="run" inheritrefs="true" inheritall="true" />
+	</target>
 </project>

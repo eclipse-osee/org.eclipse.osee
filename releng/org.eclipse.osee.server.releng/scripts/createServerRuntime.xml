@@ -1,0 +1,152 @@
+<project name="Generates OSEE Application Server Runtime Bundle" default="run">
+
+	<target name="setup">
+		<propertyregex property="targetSiteFile" input="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-TARGET-" casesensitive="false" override="true" />
+		<property name="tempAppServerFolder" value="${buildDirectory}/${buildLabel}/${targetSiteFile}_tmp" />
+		<mkdir dir="${tempAppServerFolder}" />
+
+		<unzip src="${buildDirectory}/${buildLabel}/${targetSiteFile}" dest="${tempAppServerFolder}">
+			<patternset>
+				<excludesfile name="features/*" />
+				<excludesfile name="plugins/*source_*.jar" />
+			</patternset>
+		</unzip>
+
+		<mkdir dir="${tempAppServerFolder}/configuration" />
+		<property name="configFolder" value="${tempAppServerFolder}/configuration" />
+		<property name="pluginsFolder" value="${tempAppServerFolder}/plugins" />
+
+		<pathconvert property="launcherBundlePath" setonempty="false">
+			<path>
+				<fileset dir="${pluginsFolder}">
+					<include name="org.eclipse.equinox.launcher_*.jar" />
+				</fileset>
+			</path>
+		</pathconvert>
+		<propertyregex property="launcherJar" override="true" input="${launcherBundlePath}" regexp="[^/]+$" select="\0" casesensitive="false" />
+	</target>
+
+	<target name="generateConfig">
+		<generateConfigIni configFolder="${configFolder}" pluginsFolder="${pluginsFolder}" />
+	</target>
+
+	<target name="pack">
+		<propertyregex property="serverRuntimeFile" input="${targetSiteFile}" defaultvalue="server-runtime.zip" regexp="-TARGET-" replace="-osgi-runtime-" casesensitive="false" override="true" />
+		<zip destfile="${buildDirectory}/${buildLabel}/${serverRuntimeFile}">
+			<fileset dir="${tempAppServerFolder}" />
+		</zip>
+	</target>
+
+	<target name="cleanup">
+		<delete dir="${tempAppServerFolder}" quiet="true" />
+	</target>
+
+	<!-- *************************************************************** -->
+	<!--   LAUNCH CONFIGS                                                -->
+	<!-- *************************************************************** -->
+	<target name="generateTemplate">
+		<createLaunch 
+			filepath="${tempAppServerFolder}/runExample.sh"
+			connection.id="[id from connection file]" 
+			serverport="8089"
+			isexecutable="false" 
+			launcher="${launcherJar}"
+			extraVMArgs="-Dosee.connection.info.uri=[custom connection file path] -Dosee.application.server.data=[binary data path]" />
+	</target>
+
+	<target name="generateDerbyLaunch">
+		<createLaunch 
+			filepath="${tempAppServerFolder}/runDerby.sh" 
+			connection.id="derby" 
+			serverport="8089"
+			launcher="${launcherJar}" 
+			extraVMArgs="-Dosee.derby.server=127.0.0.1:1621" />
+	</target>
+
+	<target name="generateLocalPostgresLaunch">
+		<createLaunch 
+			filepath="${tempAppServerFolder}/runPostgresqlLocal.sh"
+			connection.id="postgresqlLocalhost" 
+			serverport="8089"
+			launcher="${launcherJar}" />
+	</target>
+
+	<target name="generateLaunchScripts" depends="generateTemplate,generateDerbyLaunch,generateLocalPostgresLaunch">
+	</target>
+
+	<!-- *************************************************************** -->
+	<!--   MAIN                                                          -->
+	<!-- *************************************************************** -->
+	<target name="run" depends="setup,generateConfig,generateLaunchScripts,pack,cleanup">
+	</target>
+
+	<!-- *************************************************************** -->
+	<!--   GENERATE CONFIG.INI                                           -->
+	<!-- *************************************************************** -->
+	<macrodef name="generateConfigIni">
+		<attribute name="configFolder" />
+		<attribute name="pluginsFolder" />
+		<sequential>
+			<echo file="@{configFolder}/config.ini" append="false" message="osgi.bundles= \${line.separator}\${line.separator}" />
+
+			<pathconvert property="serverBundles" setonempty="false" pathsep=";">
+				<path>
+					<fileset dir="@{pluginsFolder}">
+						<exclude name="org.eclipse.osgi_*.jar" />
+						<exclude name="org.eclipse.equinox.launcher_*.jar" />
+						<exclude name="*source*.jar" />
+					</fileset>
+				</path>
+			</pathconvert>
+
+			<var name="isFirst" value="false" />
+			<for param="bundle" delimiter=";" list="${serverBundles}" trim="true">
+				<sequential>
+					<propertyregex property="projectAndVersion" override="true" input="@{bundle}" regexp="[^${file.separator}]+$" select="\0" casesensitive="false" />
+					<propertyregex property="projectName" override="true" input="${projectAndVersion}" regexp="(.*?)_" select="\1" casesensitive="false" />
+					<if>
+						<equals arg1="${isFirst}" arg2="true" />
+						<then>
+							<echo file="@{configFolder}/config.ini" message=", \${line.separator}" append="true" />
+							<var name="isFirst" value="false" />
+						</then>
+					</if>
+					<echo file="@{configFolder}/config.ini" message="${projectName}@start" append="true" />
+					<var name="isFirst" value="true" />
+				</sequential>
+			</for>
+			<echo file="@{configFolder}/config.ini" append="true">
+osgi.noShutdown=true
+eclipse.ignoreApp=true
+equinox.ds.debug=true
+osee.log.default=INFO
+			</echo>
+		</sequential>
+	</macrodef>
+
+	<!-- *************************************************************** -->
+	<!--   GENERATE LAUNCH                                               -->
+	<!-- *************************************************************** -->
+	<macrodef name="createLaunch">
+		<attribute name="filepath" />
+		<attribute name="serverport" />
+		<attribute name="connection.id" />
+		<attribute name="launcher" />
+		<attribute name="serverMaxMem" default="1024m" />
+		<attribute name="isexecutable" default="true" />
+		<attribute name="extraVMArgs" default=" " />
+		<sequential>
+			<echo file="@{filepath}" append="false">java \
+-Dorg.osgi.service.http.port=@{serverport} \
+-Dosee.db.connection.id=@{connection.id} \
+@{extraVMArgs} -jar @{launcher} -console
+</echo>
+			<if>
+				<equals arg1="executable" arg2="true" />
+				<then>
+					<chmod file="@{filepath}" perm="ugo+rx" />
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+</project>
