@@ -59,6 +59,7 @@
 		<attribute name="srcfile" />
 		<attribute name="tag" />
 		<sequential>
+			<var name="data" unset="true" />
 			<loadfile property="data" srcfile="@{srcfile}" />
 			<propertyregex property="new.content" input="${data}" defaultvalue="${data}" regexp="trunk" replace="@{tag}" casesensitive="false" override="true" />
 			<echo append="false" file="@{destfile}" message="${new.content}" />
