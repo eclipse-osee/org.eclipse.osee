@@ -8,14 +8,17 @@ package org.eclipse.osee.coverage.action;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -43,25 +46,52 @@ public class ViewSourceAction extends Action {
       }
       if (selectedCoverageEditorItem.getSelectedCoverageEditorItems().size() > 0) {
          ICoverage item = selectedCoverageEditorItem.getSelectedCoverageEditorItems().iterator().next();
-         EntryDialog ed = new EntryDialog(item.getName(), "");
-         ed.setFillVertically(true);
-         String text;
+
          try {
-            text = item.getFileContents();
-            if (!Strings.isValid(text)) {
-               text = item.getParent().getFileContents();
-               if (!Strings.isValid(text)) {
-                  AWorkbench.popup("No Text Available");
-                  return;
+            if (item instanceof CoverageItem) {
+               AWorkbench.popup("Not implemented yet");
+            } else {
+               // If order number then parent has full file contents
+               // attempt to find line in file that matches
+               if (Strings.isValid(item.getOrderNumber())) {
+                  if (item.getParent() != null) {
+                     String itemLineText = item.getName();
+                     String parentFileContents = item.getParent().getFileContents();
+                     if (!Strings.isValid(parentFileContents)) {
+                        AWorkbench.popup("No File Contents Available");
+                        return;
+                     }
+                     String html = parentFileContents;
+                     if (Strings.isValid(itemLineText)) {
+                        html = html.replaceAll(itemLineText, "HEREBEGIN" + itemLineText + "HEREEND");
+                     }
+                     html = AHTML.textToHtml(html);
+                     html = html.replaceAll(" ", "&nbsp;");
+                     html = html.replaceFirst("HEREBEGIN", "<FONT style=\"BACKGROUND-COLOR: yellow\">");
+                     html = html.replaceFirst("HEREEND", "</FONT>");
+                     ResultsEditor.open("source",
+                           CoverageUtil.getFullPathWithName(item.getParent()) + "[" + item.getName() + "]", html);
+                  } else {
+                     AWorkbench.popup("No File Contents Available");
+                     return;
+                  }
+               }
+               // If no order number, just open full text
+               else {
+                  String text = item.getFileContents();
+                  if (!Strings.isValid(text)) {
+                     AWorkbench.popup("No File Contents Available");
+                     return;
+                  }
+                  String html = AHTML.textToHtml(text);
+                  html = html.replaceAll(" ", "&nbsp;");
+                  ResultsEditor.open("source", CoverageUtil.getFullPathWithName(item), html);
                }
             }
-            ed.setEntry(text);
-            ed.open();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
 
       }
    }
-
 }

@@ -169,6 +169,13 @@ public class CoverageUtil {
       return sb.toString();
    }
 
+   public static String getFullPathWithName(ICoverage coverage) {
+      StringBuffer sb = new StringBuffer();
+      getFullPathRecurse(coverage.getParent(), sb);
+      sb.append("[" + coverage.getName() + "]");
+      return sb.toString();
+   }
+
    public static void getFullPathRecurse(ICoverage coverage, StringBuffer sb) {
       if (coverage == null) return;
       getFullPathRecurse(coverage.getParent(), sb);
