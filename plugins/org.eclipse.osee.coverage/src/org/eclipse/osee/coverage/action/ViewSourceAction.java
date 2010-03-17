@@ -46,48 +46,57 @@ public class ViewSourceAction extends Action {
       }
       if (selectedCoverageEditorItem.getSelectedCoverageEditorItems().size() > 0) {
          ICoverage item = selectedCoverageEditorItem.getSelectedCoverageEditorItems().iterator().next();
+         String highlightLine = null;
 
          try {
             if (item instanceof CoverageItem) {
-               AWorkbench.popup("Not implemented yet");
-            } else {
-               // If order number then parent has full file contents
-               // attempt to find line in file that matches
-               if (Strings.isValid(item.getOrderNumber())) {
-                  if (item.getParent() != null) {
-                     String itemLineText = item.getName();
-                     String parentFileContents = item.getParent().getFileContents();
-                     if (!Strings.isValid(parentFileContents)) {
-                        AWorkbench.popup("No File Contents Available");
-                        return;
-                     }
-                     String html = parentFileContents;
-                     if (Strings.isValid(itemLineText)) {
-                        html = html.replaceAll(itemLineText, "HEREBEGIN" + itemLineText + "HEREEND");
-                     }
-                     html = AHTML.textToHtml(html);
-                     html = html.replaceAll(" ", "&nbsp;");
-                     html = html.replaceFirst("HEREBEGIN", "<FONT style=\"BACKGROUND-COLOR: yellow\">");
-                     html = html.replaceFirst("HEREEND", "</FONT>");
-                     ResultsEditor.open("source",
-                           CoverageUtil.getFullPathWithName(item.getParent()) + "[" + item.getName() + "]", html);
-                  } else {
-                     AWorkbench.popup("No File Contents Available");
-                     return;
-                  }
+               if (Strings.isValid(item.getName())) {
+                  highlightLine = item.getName();
                }
-               // If no order number, just open full text
-               else {
-                  String text = item.getFileContents();
-                  if (!Strings.isValid(text)) {
+               item = item.getParent();
+            }
+            // If order number then parent has full file contents
+            // attempt to find line in file that matches
+            if (Strings.isValid(item.getOrderNumber())) {
+               if (item.getParent() != null) {
+                  String itemLineText = item.getName();
+                  String parentFileContents = item.getParent().getFileContents();
+                  if (!Strings.isValid(parentFileContents)) {
                      AWorkbench.popup("No File Contents Available");
                      return;
                   }
-                  String html = AHTML.textToHtml(text);
+                  String html = parentFileContents;
+                  // mark text for method
+                  if (Strings.isValid(itemLineText)) {
+                     html = html.replaceAll(itemLineText, "HEREBEGIN" + itemLineText + "HEREEND");
+                  }
+                  // mark text for executable line
+                  if (Strings.isValid(highlightLine)) {
+                     html = html.replaceAll(highlightLine, "HEREBEGIN" + highlightLine + "HEREEND");
+                  }
+                  html = AHTML.textToHtml(html);
                   html = html.replaceAll(" ", "&nbsp;");
-                  ResultsEditor.open("source", CoverageUtil.getFullPathWithName(item), html);
+                  html = html.replaceAll("HEREBEGIN", "<FONT style=\"BACKGROUND-COLOR: yellow\">");
+                  html = html.replaceAll("HEREEND", "</FONT>");
+                  ResultsEditor.open("source",
+                        CoverageUtil.getFullPathWithName(item.getParent()) + "[" + item.getName() + "]", html);
+               } else {
+                  AWorkbench.popup("No File Contents Available");
+                  return;
                }
             }
+            // If no order number, just open full text
+            else {
+               String text = item.getFileContents();
+               if (!Strings.isValid(text)) {
+                  AWorkbench.popup("No File Contents Available");
+                  return;
+               }
+               String html = AHTML.textToHtml(text);
+               html = html.replaceAll(" ", "&nbsp;");
+               ResultsEditor.open("source", CoverageUtil.getFullPathWithName(item), html);
+            }
+
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
