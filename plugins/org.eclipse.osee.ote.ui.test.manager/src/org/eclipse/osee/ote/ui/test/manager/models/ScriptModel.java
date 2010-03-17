@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.ui.test.manager.models;
 
 import java.io.File;
+
 import org.eclipse.core.filebuffers.manipulation.ContainerCreator;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -18,7 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.svn.VersionControl;
 import org.eclipse.osee.framework.svn.entry.IRepositoryEntry;
-import org.eclipse.osee.framework.ui.plugin.util.AJavaProject;
+import org.eclipse.osee.framework.ui.ws.AJavaProject;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.environment.config.ScriptVersionConfig;
 

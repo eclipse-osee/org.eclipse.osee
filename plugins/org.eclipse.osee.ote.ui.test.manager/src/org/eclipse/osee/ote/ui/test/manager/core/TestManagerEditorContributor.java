@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.ui.test.manager.core;
 
 import java.util.logging.Level;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.logging.OseeLog;

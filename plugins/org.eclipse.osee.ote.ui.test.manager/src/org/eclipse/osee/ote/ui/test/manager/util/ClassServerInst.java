@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.ui.testclassserver;
+package org.eclipse.osee.ote.ui.test.manager.util;
 
 import java.io.File;
 import java.net.BindException;
@@ -16,6 +16,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
@@ -28,10 +29,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.CorePreferences;
 import org.eclipse.osee.framework.plugin.core.server.ClassServer;
 import org.eclipse.osee.framework.plugin.core.server.PathResourceFinder;
-import org.eclipse.osee.framework.ui.plugin.util.AJavaProject;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
+import org.eclipse.osee.framework.ui.ws.AJavaProject;
+import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.osee.ote.runtimemanager.UserLibResourceFinder;
-import org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin;
 
 public class ClassServerInst {
    private ClassServer classServer;
@@ -76,7 +76,7 @@ public class ClassServerInst {
                try {
                   addAnyNewProjects();
                } catch (Throwable th) {
-                  OseeLog.log(TestCoreGuiPlugin.class, Level.SEVERE, th.getMessage(), th);
+                  OseeLog.log(ClassServerInst.class, Level.SEVERE, th.getMessage(), th);
                }
                return Status.OK_STATUS;
             }
@@ -85,12 +85,12 @@ public class ClassServerInst {
          job.schedule();
       } catch (BindException ex) {
          OseeLog.log(
-               TestCoreGuiPlugin.class,
+               ClassServerInst.class,
                Level.SEVERE,
                "Class Server not started.  Likely the IP address used is not local.  Set your IP address in the advanced page.",
                ex);
       } catch (Exception ex) {
-         OseeLog.log(TestCoreGuiPlugin.class, Level.SEVERE, "Class Server not started.", ex);
+         OseeLog.log(ClassServerInst.class, Level.SEVERE, "Class Server not started.", ex);
       }
    }
 
