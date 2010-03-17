@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.FileSelector;
+import org.eclipse.osee.framework.ui.ws.FileSelector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -119,9 +119,7 @@ public class ActionImportPage extends WizardDataTransferPage {
          fileSelector.setText(currentResourceSelection.getLocation().toString());
       }
       setPageComplete(determinePageCompletion());
-   } /*
-                                   * @see WizardPage#becomesVisible
-                                   */
+   }
 
    @Override
    public void setVisible(boolean visible) {

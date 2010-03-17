@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
+import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.StacktraceData;
 
 /**
@@ -29,11 +29,11 @@ import org.eclipse.osee.ote.core.framework.saxparse.elements.StacktraceData;
  */
 public class OteMarkerHelper {
 
-   private List<MarkerInfo> markerInfo;
-   private List<IMarker> markersToDelete;
-   private Map<CheckPointHelper, CheckPointHelper> count = new HashMap<CheckPointHelper, CheckPointHelper>();
-   private StringBuilder builder = new StringBuilder();
-   private List<TestPointData> testPonitDatas;
+   private final List<MarkerInfo> markerInfo;
+   private final List<IMarker> markersToDelete;
+   private final Map<CheckPointHelper, CheckPointHelper> count = new HashMap<CheckPointHelper, CheckPointHelper>();
+   private final StringBuilder builder = new StringBuilder();
+   private final List<TestPointData> testPonitDatas;
 
    /**
     * @param testPointDatas
@@ -88,10 +88,10 @@ public class OteMarkerHelper {
       builder.setLength(0);
       for (int i = 0; i < helper.length && i < maxNumber; i++) {
          builder.append(helper[i].toString());
-         if ((i + 1) < Math.min(helper.length, maxNumber)) {
+         if (i + 1 < Math.min(helper.length, maxNumber)) {
             builder.append(", ");
          }
-         if ((i + 1) < helper.length && (i + 1) >= maxNumber) {
+         if (i + 1 < helper.length && i + 1 >= maxNumber) {
             builder.append("...");
          }
       }

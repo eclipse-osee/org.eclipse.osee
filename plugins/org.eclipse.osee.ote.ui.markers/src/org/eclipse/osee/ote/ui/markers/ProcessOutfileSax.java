@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
+import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.osee.ote.core.framework.saxparse.IBaseSaxElementListener;
 import org.eclipse.osee.ote.core.framework.saxparse.OteSaxHandler;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.StacktraceData;
@@ -39,14 +39,14 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class ProcessOutfileSax implements IExceptionableRunnable {
 
-   private IFile file;
-   private MarkerPlugin plugin;
+   private final IFile file;
+   private final MarkerPlugin plugin;
 
    private static final int _1_MB = 1048576;
    private static final int _20_MB = _1_MB * 20;
    private static final int _30_MB = _1_MB * 30;
 
-   private List<TestPointData> testPointDatas = new ArrayList<TestPointData>();
+   private final List<TestPointData> testPointDatas = new ArrayList<TestPointData>();
    private TestPointData currentData = null;
    private CheckPointData currentCheckPoint = null;
    protected StackTraceCollection currentStackTrace;
@@ -71,7 +71,7 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
       monitor.setTaskName(String.format("Computing overview information for [%s].", file.getName()));
 
       InputStream contents = file.getContents();
-      
+
       parseContents(contents);
 
       OteMarkerHelper helper = new OteMarkerHelper(this.testPointDatas);
@@ -96,18 +96,18 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
 
       final Stack<String> elementStack = new Stack<String>();
       handler.getHandler("*").addListener(new IBaseSaxElementListener() {
-         
+
          @Override
          public void onStartElement(Object obj) {
-            elementStack.push((String)obj);
+            elementStack.push((String) obj);
          }
-         
+
          @Override
          public void onEndElement(Object obj) {
             elementStack.pop();
          }
       });
-      
+
       handler.getHandler("TestPoint").addListener(new IBaseSaxElementListener() {
          @Override
          public void onEndElement(Object obj) {

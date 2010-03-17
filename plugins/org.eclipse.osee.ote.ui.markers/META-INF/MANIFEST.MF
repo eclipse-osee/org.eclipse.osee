@@ -15,6 +15,7 @@ Export-Package: org.eclipse.osee.ote.ui.markers
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.ui.ws,
  org.eclipse.osee.ote.core.framework.saxparse,
  org.eclipse.osee.ote.core.framework.saxparse.elements
 Bundle-Vendor: Eclipse.org

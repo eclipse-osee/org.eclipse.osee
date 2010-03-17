@@ -77,5 +77,6 @@ Import-Package: javax.mail,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.database.init,
  org.eclipse.osee.framework.logging,
- org.eclipse.osee.framework.ui.swt
+ org.eclipse.osee.framework.ui.swt,
+ org.eclipse.osee.framework.ui.ws
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,12 +32,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
+import org.eclipse.osee.framework.ui.ws.AWorkspace;
 
 public class ExtractTestRelations {
-   private String scriptsDir;
-   private String fileNamePattern;
-   private Branch branch;
+   private final String scriptsDir;
+   private final String fileNamePattern;
+   private final Branch branch;
    private static final Matcher testScriptMatcher = Pattern.compile("doTestCase").matcher("");
    private static final Matcher traceabilityMatcher = Pattern.compile("RequirementId\\(\\\"([^\\\"]+)\\\"").matcher("");
 
@@ -70,7 +69,7 @@ public class ExtractTestRelations {
       Pattern javaFilePattern = Pattern.compile(".*\\.java");
       for (IProject project : AWorkspace.getProjects()) {
          File projectLocation = project.getLocation().toFile();
-         for (File javaFile : (List<File>) Lib.recursivelyListFiles(projectLocation, javaFilePattern)) {
+         for (File javaFile : Lib.recursivelyListFiles(projectLocation, javaFilePattern)) {
             CharBuffer buf = Lib.fileToCharBuffer(javaFile);
             testScriptMatcher.reset(buf);
             if (testScriptMatcher.find()) {

@@ -78,5 +78,6 @@ Import-Package: org.apache.commons.lang;version="2.4.0",
  org.eclipse.osee.framework.ui.skynet.widgets.xBranch,
  org.eclipse.osee.framework.ui.skynet.widgets.xHistory,
  org.eclipse.osee.framework.ui.skynet.widgets.xnavigate,
- org.eclipse.osee.framework.ui.swt
+ org.eclipse.osee.framework.ui.swt,
+ org.eclipse.osee.framework.ui.ws
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -23,7 +23,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Map.Entry;
-
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -31,17 +30,10 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Roberto E. Escobar
  */
 public class PropertyStore implements IPropertyStore, Serializable {
-   /**
-	 * 
-	 */
-	private static final String EMPTY_STRING = new String();
+   private static final String EMPTY_STRING = new String();
+   private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
-/**
-	 * 
-	 */
-	private static final String[] EMPTY_STRING_ARRAY = new String[0];
-
-private static final long serialVersionUID = 9076969425223251739L;
+   private static final long serialVersionUID = 9076969425223251739L;
 
    private static final String EXCEPTION_MESSAGE = "No setting found for key: [%s]";
 
