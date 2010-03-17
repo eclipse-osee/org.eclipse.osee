@@ -855,14 +855,18 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    @Override
    public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
       Date date = getSoleAttributeValue(ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE.getStoreName(), null);
-      Date parentDate = null;
+      if (date != null) {
+         return date;
+      }
       if (getParentSMA() != null) {
-         parentDate = getParentSMA().getWorldViewEstimatedReleaseDate();
+         Date parentDate = getParentSMA().getWorldViewEstimatedCompletionDate();
+         if (parentDate != null) return parentDate;
       }
-      if (date == null && parentDate != null) {
-         return parentDate;
+      date = getWorldViewEstimatedReleaseDate();
+      if (date != null) {
+         return date;
       }
-      return date;
+      return null;
    }
 
    public String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException {

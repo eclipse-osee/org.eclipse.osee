@@ -28,15 +28,14 @@ import org.eclipse.swt.widgets.Shell;
 
 public class DateSelectionDialog extends MessageDialog {
 
-   private Date selectedDate;
+   private Date initialDate, selectedDate;
 
    private final String dialogMessage;
-   private boolean noneSelected = false;
 
    public DateSelectionDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex, Date selectedDate) {
       super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
             defaultIndex);
-      this.selectedDate = selectedDate;
+      this.initialDate = selectedDate;
       this.dialogMessage = dialogMessage;
    }
 
@@ -56,13 +55,10 @@ public class DateSelectionDialog extends MessageDialog {
       (new Label(filterComp, SWT.None)).setText(dialogMessage);
 
       final CalendarCombo dp = new CalendarCombo(filterComp, SWT.SINGLE | SWT.FLAT);
-      if (selectedDate != null) dp.setDate(selectedDate);
+      if (initialDate != null) dp.setDate(initialDate);
       dp.addCalendarListener(new CalendarListenerAdapter() {
          public void dateChanged(Calendar date) {
-            if (date == null) {
-               noneSelected = true;
-            } else {
-               noneSelected = false;
+            if (date != null) {
                selectedDate = dp.getDate().getTime();
             }
          }
@@ -82,15 +78,15 @@ public class DateSelectionDialog extends MessageDialog {
    /**
     * @param selectedDate the selectedDate to set
     */
-   public void setSelectedDate(Date selectedDate) {
-      this.selectedDate = selectedDate;
+   public void setSelectedDate(Date initialDate) {
+      this.initialDate = initialDate;
    }
 
    /**
     * @return the noneSelected
     */
    public boolean isNoneSelected() {
-      return noneSelected;
+      return selectedDate == null;
    }
 
 }
