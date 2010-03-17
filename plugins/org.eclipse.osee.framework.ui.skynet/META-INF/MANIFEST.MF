@@ -31,7 +31,8 @@ Require-Bundle: javax.mail.glassfish,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.update.core,
  org.eclipse.zest.core,
- org.eclipse.osee.framework.jdk.core
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.osee.framework.ui.ws
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: com.lowagie.text,

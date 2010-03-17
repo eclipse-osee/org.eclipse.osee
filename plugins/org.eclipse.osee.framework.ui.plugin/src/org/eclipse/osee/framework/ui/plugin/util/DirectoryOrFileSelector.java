@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.io.File;
+
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -155,7 +157,7 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
       if (file != null && Strings.isValid(file.getAbsolutePath())) {
          dialog.setFilterPath(file.getAbsolutePath());
       } else {
-         dialog.setFilterPath(AWorkspace.getWorkspacePath());
+         dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
       }
       String path = dialog.open();
 
@@ -172,7 +174,7 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
       if (file != null && Strings.isValid(file.getAbsolutePath())) {
          dialog.setFilterPath(file.getAbsolutePath());
       } else {
-         dialog.setFilterPath(AWorkspace.getWorkspacePath());
+         dialog.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
       }
       String path = dialog.open();
 

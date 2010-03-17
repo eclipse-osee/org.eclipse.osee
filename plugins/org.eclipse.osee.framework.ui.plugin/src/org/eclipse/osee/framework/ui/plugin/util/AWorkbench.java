@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.plugin.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.widgets.Composite;
@@ -74,7 +75,7 @@ public class AWorkbench {
       if (!PlatformUI.isWorkbenchRunning()) {
          OseeLog.log(AWorkbench.class, Level.SEVERE, message);
       } else {
-         Displays.ensureInDisplayThread(new Runnable() {
+         PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
             public void run() {
                MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
                      message);

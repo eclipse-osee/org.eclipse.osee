@@ -1,8 +1,9 @@
 package org.eclipse.osee.framework.types.bridge.wizards;
 
 import java.io.File;
+
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
+import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

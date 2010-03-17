@@ -13,11 +13,12 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.osee.framework.ui.plugin.util.AJavaProject;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
+import org.eclipse.osee.framework.ui.ws.AJavaProject;
+import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetAdapter;

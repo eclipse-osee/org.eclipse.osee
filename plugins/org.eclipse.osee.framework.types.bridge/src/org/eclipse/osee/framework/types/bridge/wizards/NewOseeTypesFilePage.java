@@ -1,6 +1,7 @@
 package org.eclipse.osee.framework.types.bridge.wizards;
 
 import java.io.File;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.osee.framework.jdk.core.util.Strings;

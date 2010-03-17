@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.ui.plugin.util;
 
+
+
 public class Result {
 
    public static Result TrueResult = new Result(true);
