@@ -24,7 +24,6 @@
 		</if>
 	</target>
 
-
 	<target name="getAdditionalMaps" if="mapLocation">
 		<for param="additionalMapFile" delimiter="," list="${mapLocation}">
 			<sequential>
@@ -52,6 +51,7 @@
 				<updateMapFile srcfile="@{map.file}" destfile="@{map.file}" tag="${fetchTag}" />
 			</sequential>
 		</for>
+		<updateMapFile srcfile="${buildDirectory}/directory.txt" destfile="${buildDirectory}/directory.txt" tag="${fetchTag}" />
 	</target>
 
 	<macrodef name="updateMapFile">
