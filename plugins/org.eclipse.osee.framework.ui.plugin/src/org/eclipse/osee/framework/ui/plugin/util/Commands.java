@@ -17,7 +17,6 @@ import org.eclipse.core.commands.CommandManager;
 import org.eclipse.core.commands.IParameter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
@@ -48,25 +47,6 @@ public final class Commands {
    public static CommandContributionItem getLocalCommandContribution(IWorkbenchPartSite site, String shortCommandId, String name, IParameter[] parameterDefs, Map<String, String> parameters, ImageDescriptor image, String mnemonic, String tooltip, String helpContextId) {
       return createCommandContributionItem(site, site.getId(), shortCommandId, name, parameterDefs, parameters, image,
             mnemonic, tooltip, helpContextId);
-   }
-
-   /**
-    * Sets up a local command with no id and uses that to retrieve a CommandContributionItem.
-    * 
-    * @param site may not be null
-    * @param id may not be null
-    * @param shortCommandId may not be null
-    * @param name may not be null
-    * @param parameterDefs may be null
-    * @param parameters may be null
-    * @param image may be null
-    * @param mnemonic may be null
-    * @param tooltip may be null
-    * @param helpContextId may be null
-    */
-   public static CommandContributionItem getLocalCommandContribution(String id, IWorkbenchSite site, String shortCommandId, String name, IParameter[] parameterDefs, Map<String, String> parameters, ImageDescriptor image, String mnemonic, String tooltip, String helpContextId) {
-      return createCommandContributionItem(site, id, shortCommandId, name, parameterDefs, parameters, image, mnemonic,
-            tooltip, helpContextId);
    }
 
    private static CommandContributionItem createCommandContributionItem(IServiceLocator site, String id, String shortCommandId, String name, IParameter[] parameterDefs, Map<String, String> parameters, ImageDescriptor image, String mnemonic, String tooltip, String helpContextId) {

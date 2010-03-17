@@ -75,7 +75,7 @@ import org.eclipse.swt.widgets.Tree;
  * @author Donald G. Dunne
  * @author Theron Virgin
  */
-public class XMergeViewer extends XWidget implements IAdaptable {
+public class MergeXWidget extends XWidget implements IAdaptable {
    private static final String COMPLETE_COMMIT_ACTION_ID = "complete.commit.action.id";
    private static final String REFRESH_ACTION_ID = "refresh.action.id";
    private MergeXViewer mergeXViewer;
@@ -97,7 +97,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
    private IToolBarManager toolBarManager;
    private final static String CONFLICTS_RESOLVED = "\nAll Conflicts Are Resolved";
 
-   public XMergeViewer() {
+   public MergeXWidget() {
       super("Merge Manager");
    }
 

@@ -35,6 +35,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -498,5 +500,17 @@ public class AttributeConflict extends Conflict {
          return true;
       }
       return false;
+   }
+
+   public boolean isSimpleStringAttribute() {
+      boolean returnValue = true;
+      returnValue &= !isWordAttribute();
+      returnValue &= !(attribute instanceof EnumeratedAttribute);
+      returnValue &= attribute instanceof StringAttribute;
+      return returnValue;
+   }
+
+   public boolean involvesNativeContent() throws OseeCoreException {
+      return getArtifact().isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT);
    }
 }

@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,9 +59,11 @@ import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.revert.RevertWizard;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.NonmodalWizardDialog;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -83,7 +86,7 @@ import org.eclipse.ui.part.ViewPart;
 public class MergeView extends ViewPart implements IActionable, IBranchEventListener, IFrameworkTransactionEventListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
    public static String HELP_CONTEXT_ID = "Merge_Manager_View";
-   private XMergeViewer xMergeViewer;
+   private MergeXWidget mergeXWidget;
    private Conflict[] conflicts;
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
@@ -156,8 +159,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
    @Override
    public void setFocus() {
-      if (xMergeViewer != null) {
-         xMergeViewer.setFocus();
+      if (mergeXWidget != null) {
+         mergeXWidget.setFocus();
       }
    }
 
@@ -177,12 +180,12 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       layout.marginHeight = 0;
       parent.setLayout(layout);
       parent.setLayoutData(new GridData(GridData.FILL_BOTH));
-      xMergeViewer = new XMergeViewer();
-      xMergeViewer.setDisplayLabel(false);
-      xMergeViewer.createWidgets(parent, 1);
+      mergeXWidget = new MergeXWidget();
+      mergeXWidget.setDisplayLabel(false);
+      mergeXWidget.createWidgets(parent, 1);
 
       if (conflicts != null) {
-         xMergeViewer.setConflicts(conflicts);
+         mergeXWidget.setConflicts(conflicts);
       }
       MenuManager menuManager = new MenuManager();
       menuManager.setRemoveAllWhenShown(true);
@@ -205,10 +208,11 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             addDestResourceHistoryMenuItem(menuManager);
             addDestRevealMenuItem(menuManager);
             menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+            addRevertUnresolvableConflictsMenuItem(menuManager);
          }
       });
 
-      xMergeViewer.getXViewer().getTree().setMenu(menuManager.createContextMenu(xMergeViewer.getXViewer().getTree()));
+      mergeXWidget.getXViewer().getTree().setMenu(menuManager.createContextMenu(mergeXWidget.getXViewer().getTree()));
 
       createEditArtifactMenuItem(menuManager);
       createMergeMenuItem(menuManager);
@@ -222,12 +226,13 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       createDestinationResourceHistoryMenuItem(menuManager);
       createDestinationRevealMenuItem(menuManager);
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+      createRevertUnresolvableConflictsMenuItem(menuManager);
 
       OseeContributionItem.addTo(this, true);
-      getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynetd.widgets.xmerge.MergeView", menuManager,
-            xMergeViewer.getXViewer());
+      getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView", menuManager,
+            mergeXWidget.getXViewer());
 
-      getSite().setSelectionProvider(xMergeViewer.getXViewer());
+      getSite().setSelectionProvider(mergeXWidget.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID, "org.eclipse.osee.framework.help.ui");
 
       OseeEventManager.addListener(this);
@@ -345,6 +350,15 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       return destReveal.getId();
    }
 
+   private String addRevertUnresolvableConflictsMenuItem(MenuManager menuManager) {
+      CommandContributionItem revertSelected;
+      revertSelected =
+            Commands.getLocalCommandContribution(getSite(), "revertSelected",
+                  "Revert Source Artifacts for Unresolvable Conflicts", null, null, null, null, null, null);
+      menuManager.add(revertSelected);
+      return revertSelected.getId();
+   }
+
    private void createEditArtifactMenuItem(MenuManager menuManager) {
 
       handlerService.activateHandler(addEditArtifactMenuItem(menuManager),
@@ -371,7 +385,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
          @Override
          public boolean isEnabledWithException() throws OseeCoreException {
-            List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
+            List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
                   0).statusEditable()) {
@@ -404,7 +418,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
          @Override
          public boolean isEnabledWithException() throws OseeCoreException {
-            List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
+            List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1) {
                return false;
@@ -436,7 +450,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
          @Override
          public boolean isEnabledWithException() throws OseeCoreException {
-            List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
+            List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1) {
                return false;
@@ -468,7 +482,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
          @Override
          public boolean isEnabledWithException() throws OseeCoreException {
-            List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
+            List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1) {
                return false;
@@ -500,7 +514,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
          @Override
          public boolean isEnabledWithException() throws OseeCoreException {
-            List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
+            List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1) {
                return false;
@@ -509,6 +523,53 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             return true;
          }
       });
+   }
+
+   private void createRevertUnresolvableConflictsMenuItem(MenuManager menuManager) {
+      handlerService.activateHandler(addRevertUnresolvableConflictsMenuItem(menuManager),
+            new AbstractSelectionEnabledHandler(menuManager) {
+               List<List<Artifact>> revertList;
+               List<Conflict> selectedConflicts;
+
+               @Override
+               public Object execute(ExecutionEvent event) throws ExecutionException {
+                  RevertWizard wizard = new RevertWizard(revertList);
+                  NonmodalWizardDialog wizardDialog =
+                        new NonmodalWizardDialog(Display.getCurrent().getActiveShell(), wizard);
+                  wizardDialog.create();
+                  wizardDialog.open();
+                  return null;
+               }
+
+               @Override
+               public boolean isEnabledWithException() throws OseeCoreException {
+                  selectedConflicts = mergeXWidget.getSelectedConflicts();
+                  revertList = new ArrayList<List<Artifact>>();
+                  populateRevertList();
+                  return !revertList.isEmpty();
+               }
+
+               private void populateRevertList() {
+                  for (Conflict conflict : selectedConflicts) {
+                     ArtifactConflict artifactConflict = (ArtifactConflict) conflict;
+                     if (conflict.statusNotResolvable()) {
+                        addArtifactToRevertList(artifactConflict);
+                     }
+                  }
+               }
+
+               private void addArtifactToRevertList(ArtifactConflict artifactConflict) {
+                  Artifact art;
+                  try {
+                     art = artifactConflict.getSourceArtifact();
+                  } catch (OseeCoreException ex) {
+                     return;
+                  }
+                  List<Artifact> ins = new ArrayList<Artifact>();
+                  ins.add(art);
+                  revertList.add(ins);
+               }
+            });
    }
 
    private String addMergeMenuItem(MenuManager menuManager) {
@@ -538,7 +599,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
          @Override
          public boolean isEnabledWithException() throws OseeCoreException {
-            List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
+            List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
                   0).statusEditable()) {
@@ -556,7 +617,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       this.transactionId = transactionId;
       this.commitTrans = commitTrans;
       try {
-         xMergeViewer.setInputData(sourceBranch, destBranch, transactionId, this, commitTrans, showConflicts);
+         mergeXWidget.setInputData(sourceBranch, destBranch, transactionId, this, commitTrans, showConflicts);
          if (sourceBranch != null) {
             setPartName("Merge Manager: " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName());
          } else if (commitTrans != null) {
@@ -600,7 +661,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                   if (sourceBranch == null) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
                            "Merge View can't init due to invalid source branch id " + sourceBranchId);
-                     xMergeViewer.setLabel("Could not restore this Merge View");
+                     mergeXWidget.setLabel("Could not restore this Merge View");
                      return;
                   }
                   destBranchId = memento.getInteger(DEST_BRANCH_ID);
@@ -608,7 +669,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                   if (destBranch == null) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
                            "Merge View can't init due to invalid destination branch id " + sourceBranchId);
-                     xMergeViewer.setLabel("Could not restore this Merge View");
+                     mergeXWidget.setLabel("Could not restore this Merge View");
                      return;
                   }
                   try {
@@ -618,7 +679,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                   } catch (OseeCoreException ex) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
                            "Merge View can't init due to invalid transaction id " + transactionId);
-                     xMergeViewer.setLabel("Could not restore this Merge View due to invalid transaction id " + transactionId);
+                     mergeXWidget.setLabel("Could not restore this Merge View due to invalid transaction id " + transactionId);
                      return;
                   }
                } else {
@@ -678,7 +739,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       @Override
       public boolean isEnabledWithException() throws OseeCoreException {
          artifacts = new LinkedList<Artifact>();
-         List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
+         List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
          for (Conflict conflict : conflicts) {
             try {
                switch (partToPreview) {
@@ -793,7 +854,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       @Override
       public boolean isEnabledWithException() throws OseeCoreException {
          artifacts = new LinkedList<Artifact>();
-         List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
+         List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
          if (conflicts.size() != 1) {
             return false;
          }
@@ -890,8 +951,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               if (xMergeViewer != null && xMergeViewer.getXViewer().getTree().isDisposed() != true) {
-                  xMergeViewer.refresh();
+               if (mergeXWidget != null && mergeXWidget.getXViewer().getTree().isDisposed() != true) {
+                  mergeXWidget.refresh();
                }
             }
          });
@@ -921,7 +982,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (xMergeViewer.getXViewer() == null || xMergeViewer.getXViewer().getTree() == null || xMergeViewer.getXViewer().getTree().isDisposed()) {
+            if (mergeXWidget.getXViewer() == null || mergeXWidget.getXViewer().getTree() == null || mergeXWidget.getXViewer().getTree().isDisposed()) {
                return;
             }
             for (Artifact artifact : transData.cacheChangedArtifacts) {
@@ -930,7 +991,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                   if (showConflicts) {
                      for (Conflict conflict : conflicts) {
                         if (artifact.equals(conflict.getSourceArtifact()) && branch.equals(conflict.getSourceBranch()) || artifact.equals(conflict.getDestArtifact()) && branch.equals(conflict.getDestBranch())) {
-                           xMergeViewer.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
+                           mergeXWidget.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
                                  "Source Artifact Changed", showConflicts);
                            if (artifact.equals(conflict.getSourceArtifact()) && sender.isLocal()) {
                               new MessageDialog(
@@ -943,11 +1004,11 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                            return;
                         } else if (artifact.equals(conflict.getArtifact())) {
                            conflict.computeEqualsValues();
-                           xMergeViewer.refresh();
+                           mergeXWidget.refresh();
                         }
                      }
                      if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(conflicts[0].getDestBranch()))) {
-                        xMergeViewer.setInputData(
+                        mergeXWidget.setInputData(
                               sourceBranch,
                               destBranch,
                               transactionId,
@@ -964,7 +1025,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             if (!transData.cacheDeletedArtifacts.isEmpty()) {
                Branch branch = transData.cacheDeletedArtifacts.iterator().next().getBranch();
                if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(conflicts[0].getDestBranch()))) {
-                  xMergeViewer.setInputData(
+                  mergeXWidget.setInputData(
                         sourceBranch,
                         destBranch,
                         transactionId,

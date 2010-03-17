@@ -633,7 +633,7 @@
        name="The merge view"
        point="org.eclipse.ui.menus">
     <menuContribution
-          locationURI="popup:org.eclipse.osee.framework.ui.skynetd.widgets.xmerge.MergeView">
+          locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView">
           <separator
                 name="org.eclipse.ui.edit.ChangeView.revert.seperator"
                 visible="true">

@@ -52,7 +52,7 @@ import org.eclipse.swt.widgets.Tree;
  */
 public class RevertWizardPage extends WizardPage implements IRelationModifiedEventListener {
 
-   private List<List<Artifact>> artifacts;
+   private final List<List<Artifact>> artifacts;
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.revert.RevertWizardPage";
    public static final String TITLE = "Revert Artifacts Page";
    private TreeViewer treeViewer;
@@ -205,8 +205,9 @@ public class RevertWizardPage extends WizardPage implements IRelationModifiedEve
          Object[] objects = selection.toArray();
          Artifact[] artifacts = new Artifact[objects.length];
 
-         for (int index = 0; index < objects.length; index++)
+         for (int index = 0; index < objects.length; index++) {
             artifacts[index] = (Artifact) objects[index];
+         }
 
          return artifacts;
       }

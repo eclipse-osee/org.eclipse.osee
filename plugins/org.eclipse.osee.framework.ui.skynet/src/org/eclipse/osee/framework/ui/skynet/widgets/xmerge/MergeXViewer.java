@@ -19,13 +19,13 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.enums.ConflictType;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MergeChangesInArtifactException;
+import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpBranchCreation;
-import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.MergeBranchEventType;
@@ -50,7 +50,7 @@ import org.eclipse.swt.widgets.Widget;
  */
 public class MergeXViewer extends XViewer {
 
-   private final XMergeViewer xMergeViewer;
+   private final MergeXWidget mergeXWidget;
    private Conflict[] conflicts;
    private ConflictResolutionWizard conWizard;
    private XMergeLabelProvider labelProvider;
@@ -60,9 +60,9 @@ public class MergeXViewer extends XViewer {
     * @param parent
     * @param style
     */
-   public MergeXViewer(Composite parent, int style, XMergeViewer xMergeViewer) {
+   public MergeXViewer(Composite parent, int style, MergeXWidget xMergeViewer) {
       super(parent, style, new MergeXViewerFactory());
-      this.xMergeViewer = xMergeViewer;
+      this.mergeXWidget = xMergeViewer;
    }
 
    @Override
@@ -133,8 +133,8 @@ public class MergeXViewer extends XViewer {
    /**
     * @return the xUserRoleViewer
     */
-   public XMergeViewer getXUserRoleViewer() {
-      return xMergeViewer;
+   public MergeXWidget getXUserRoleViewer() {
+      return mergeXWidget;
    }
 
    @Override
@@ -142,101 +142,98 @@ public class MergeXViewer extends XViewer {
       setSorter(new MergeXViewerSorter(this, labelProvider));
    }
 
-   /**
-    * @return the transactionArtifactChanges
-    */
    public Conflict[] getTransactionArtifactChanges() {
       return conflicts;
+   }
+
+   private boolean hasInteractiveIcon(TreeColumn treeColumn) {
+      return MergeXViewerFactory.Source.is(treeColumn) //
+            || MergeXViewerFactory.Destination.is(treeColumn) //
+            || MergeXViewerFactory.Conflict_Resolved.is(treeColumn) //
+            || MergeXViewerFactory.Merged.is(treeColumn);
    }
 
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       Conflict conflict = (Conflict) treeItem.getData();
-      Shell shell = Display.getCurrent().getActiveShell().getShell();
-      if (conflict.statusCommitted()) {
-         return super.handleLeftClickInIconArea(treeColumn, treeItem);
+      if (!conflict.statusCommitted() && hasInteractiveIcon(treeColumn)) {
+         respondToIconClick(conflict, treeColumn);
       }
+
+      return super.handleLeftClickInIconArea(treeColumn, treeItem);
+   }
+
+   private void respondToIconClick(Conflict conflict, TreeColumn treeColumn) {
+      Shell shell = Display.getCurrent().getActiveShell().getShell();
+
       try {
-         if (treeColumn.getText().equals(MergeXViewerFactory.Source.getName())) {
-            if (conflict.statusNotResolvable()) {
-               MergeUtility.showDeletedConflict(conflict, shell);
-            } else if (conflict.statusInformational()) {
-               MergeUtility.showInformationalConflict(shell);
-            } else {
-               MergeUtility.setToSource(conflict, shell, true);
+         if (conflict.statusNotResolvable()) {
+            if (MergeUtility.showDeletedConflict(conflict, shell)) {
+               mergeXWidget.refreshTable();
             }
-         } else if (treeColumn.getText().equals(MergeXViewerFactory.Destination.getName())) {
-            if (conflict.statusNotResolvable()) {
-               MergeUtility.showDeletedConflict(conflict, shell);
-            } else if (conflict.statusInformational()) {
-               MergeUtility.showInformationalConflict(shell);
-            } else {
-               MergeUtility.setToDest(conflict, shell, true);
-            }
-         } else if (treeColumn.getText().equals(MergeXViewerFactory.Merged.getName())) {
-            if (conflict.statusNotResolvable()) {
-               MergeUtility.showDeletedConflict(conflict, shell);
-            } else if (!conflict.getConflictType().equals(ConflictType.ARTIFACT)) {
-               AttributeConflict attributeConflict = (AttributeConflict) conflict;
-
-               // Not for word attribute or enumerations but other strings
-               if (!attributeConflict.isWordAttribute() && attributeConflict.getAttribute() instanceof StringAttribute && !(attributeConflict.getAttribute() instanceof EnumeratedAttribute)) {
-                  AttributeCompareItem leftContributionItem =
-                        new AttributeCompareItem(
-                              attributeConflict,
-                              attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getSourceBranch().getName(),
-                              attributeConflict.getAttribute().getDisplayableString(), true,
-                              ArtifactImageManager.getImage(attributeConflict.getArtifact()));
-                  AttributeCompareItem rightContributionItem =
-                        new AttributeCompareItem(
-                              attributeConflict,
-                              attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getDestBranch().getName(),
-                              attributeConflict.getDestDisplayData(), false,
-                              ArtifactImageManager.getImage(attributeConflict.getArtifact()));
-
-                  CompareHandler compareHandler = new CompareHandler(leftContributionItem, rightContributionItem, null);
-                  compareHandler.compare();
-               } else {
-                  if (attributeConflict.getArtifact().isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT.getName())) {
-                     MessageDialog dialog =
-                           new MessageDialog(
-                                 shell,
-                                 "Artifact type not supported",
-                                 null,
-                                 "Native artifact types are not currently supported for the merge wizzard.\n" + "You will need to populate the merge value with the source or destination values" + " and then merge by hand by righ-clicking edit merge artifact.",
-                                 2, new String[] {"OK"}, 1);
-                     dialog.open();
-                  } else {
-                     conWizard = new ConflictResolutionWizard(conflict);
-                     WizardDialog dialog = new WizardDialog(shell, conWizard);
-                     dialog.create();
-                     if (dialog.open() == 0) {
-                        conWizard.getResolved();
-                     }
-                  }
-               }
-            }
-         } else if (treeColumn.getText().equals(MergeXViewerFactory.Conflict_Resolved.getName())) {
-            if (conflict.statusNotResolvable()) {
-               if (MergeUtility.showDeletedConflict(conflict, shell)) {
-                  xMergeViewer.refreshTable();
-               }
-            } else if (conflict.statusInformational()) {
-               MergeUtility.showInformationalConflict(shell);
-            } else {
-               conflict.handleResolvedSelection();
-               OseeEventManager.kickMergeBranchEvent(HttpBranchCreation.class, MergeBranchEventType.ConflictResolved,
-                     conflict.getMergeBranchID());
-            }
+         } else if (conflict.statusInformational()) {
+            MergeUtility.showInformationalConflict(shell);
+         } else {
+            handleResolvableConflictClick(treeColumn, conflict, shell);
          }
-
       } catch (MergeChangesInArtifactException ex) {
          MessageDialog.openError(shell, "Error", ex.getMessage());
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      xMergeViewer.loadTable();
-      return super.handleLeftClickInIconArea(treeColumn, treeItem);
+   }
+
+   private void handleResolvableConflictClick(TreeColumn treeColumn, Conflict conflict, Shell shell) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
+      if (MergeXViewerFactory.Source.is(treeColumn)) {
+         MergeUtility.setToSource(conflict, shell, true);
+      } else if (MergeXViewerFactory.Destination.is(treeColumn)) {
+         MergeUtility.setToDest(conflict, shell, true);
+      } else if (MergeXViewerFactory.Conflict_Resolved.is(treeColumn)) {
+         conflict.handleResolvedSelection();
+         OseeEventManager.kickMergeBranchEvent(HttpBranchCreation.class, MergeBranchEventType.ConflictResolved,
+               conflict.getMergeBranchID());
+      } else if (MergeXViewerFactory.Merged.is(treeColumn)) {
+         if (!conflict.getConflictType().equals(ConflictType.ARTIFACT)) {
+            AttributeConflict attributeConflict = (AttributeConflict) conflict;
+            if (attributeConflict.isSimpleStringAttribute()) {
+               getCompareHandler(attributeConflict).compare();
+            } else if (attributeConflict.involvesNativeContent()) {
+               nativeContentAlert(shell);
+            } else {
+               conWizard = new ConflictResolutionWizard(conflict);
+               WizardDialog dialog = new WizardDialog(shell, conWizard);
+               dialog.create();
+               dialog.open();
+            }
+         }
+      }
+      mergeXWidget.loadTable();
+   }
+
+   private CompareHandler getCompareHandler(AttributeConflict attributeConflict) throws OseeCoreException {
+      AttributeCompareItem leftContributionItem =
+            new AttributeCompareItem(attributeConflict,
+                  attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getSourceBranch().getName(),
+                  attributeConflict.getAttribute().getDisplayableString(), true,
+                  ArtifactImageManager.getImage(attributeConflict.getArtifact()));
+      AttributeCompareItem rightContributionItem =
+            new AttributeCompareItem(attributeConflict,
+                  attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getDestBranch().getName(),
+                  attributeConflict.getDestDisplayData(), false,
+                  ArtifactImageManager.getImage(attributeConflict.getArtifact()));
+
+      return new CompareHandler(leftContributionItem, rightContributionItem, null);
+   }
+
+   private static void nativeContentAlert(Shell shell) {
+      MessageDialog dialog =
+            new MessageDialog(
+                  shell,
+                  "Artifact type not supported",
+                  null,
+                  "Native artifact types are not currently supported for the merge wizard.\n" + "You will need to populate the merge value with the source or destination values" + " and then merge by hand by right-clicking \"Edit Merge Artifact.\"",
+                  2, new String[] {"OK"}, 1);
+      dialog.open();
    }
 
    @Override
