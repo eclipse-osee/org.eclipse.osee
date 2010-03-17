@@ -52,6 +52,7 @@
 			</sequential>
 		</for>
 		<updateMapFile srcfile="${buildDirectory}/directory.txt" destfile="${buildDirectory}/directory.txt" tag="${fetchTag}" />
+		<updateMapFile srcfile="${buildDirectory}/../directory.txt" destfile="${buildDirectory}/../directory.txt" tag="${fetchTag}" />
 	</target>
 
 	<macrodef name="updateMapFile">
