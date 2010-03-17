@@ -6,10 +6,6 @@
 			<format property="buildTimestamp" pattern="yyyyMMddHHmm" />
 		</tstamp>
 
-		<!--
-		<property name="SNAPSHOT" value="false" />
-		<property name="fetchTag" value="HEAD" />
-		-->
 		<condition property="forceContextQualifier" value="v${buildTimestamp}">
 			<not>
 				<isset property="forceContextQualifier" />
@@ -76,47 +72,29 @@
 
 		<!-- can build in /tmp, eg., in /tmp/build, or in workspace, eg.,	${WORKSPACE}/build -->
 		<property name="writableBuildRoot" value="${WORKSPACE}/build" />
-
-		<!-- 
-					can be simple path, eg., 
-					${writableBuildRoot}/${buildType}${buildTimestamp} or longer, eg.,
-					${writableBuildRoot}/${topprojectName}/${projectName}/downloads/drops/${version}/${buildType}${buildTimestamp} or
-					${writableBuildRoot}/${topprojectName}/${projectName}/${subprojectName}/downloads/drops/${version}/${buildType}${buildTimestamp}
-		
-		<condition property="buildDir" value="${writableBuildRoot}/${buildType}${buildTimestamp}-${zipPrefix}">
-			<and>
-				<isfalse value="${isInHudson}" />
-				<isset property="zipPrefix" />
-				<not>
-					<isset property="buildDir" />
-				</not>
-			</and>
-		</condition>
-		<condition property="buildDir" value="${writableBuildRoot}/${buildType}${buildTimestamp}">
-			<not>
-				<isset property="buildDir" />
-			</not>
-		</condition>
-		-->
-
 		<property name="buildDir" value="${writableBuildRoot}/athena" />
-
-
 		<condition property="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng">
 			<not>
 				<isset property="relengCommonBuilderDir" />
 			</not>
 		</condition>
 
-		<echo>JAVA_HOME = ${JAVA_HOME}
-	WORKSPACE = ${WORKSPACE}
-	isInHudson = ${isInHudson}
-	relengCommonBuilderDir = ${relengCommonBuilderDir}
-	relengBaseBuilderDir = ${relengBaseBuilderDir}
-	writableBuildRoot = ${writableBuildRoot}
-	buildDir = ${buildDir}
-   fetchTag = ${fetchTag}
-	</echo>
+		<condition property="relengBaseBuilderDir" value="${workspaceDir}/org.eclipse.releng.basebuilder">
+			<not>
+				<isset property="relengBaseBuilderDir" />
+			</not>
+		</condition>
+
+		<echo message="JAVA_HOME = ${JAVA_HOME}" />
+		<echo message="JAVE 6.0 HOME: ${JAVA60_HOME}" />
+		<echo message="WORKSPACE = ${WORKSPACE}" />
+		<echo message="isInHudson = ${isInHudson}" />
+		<echo message="relengCommonBuilderDir = ${relengCommonBuilderDir}" />
+		<echo message="relengBaseBuilderDir = ${relengBaseBuilderDir}" />
+		<echo message="writableBuildRoot = ${writableBuildRoot}" />
+		<echo message="buildDir = ${buildDir}" />
+		<echo message="fetchTag = ${fetchTag}" />
+		<echo message="forceContextQualifier = ${forceContextQualifier}" />
 	</target>
 
 
@@ -124,20 +102,6 @@
 	</target>
 
 	<target name="build">
-		<echo message="Workspace: ${WORKSPACE}" />
-		<echo message="Writable Build Root: ${writableBuildRoot}" />
-		<echo message="Java Home: ${JAVA_HOME}" />
-		<echo message="Java 6.0 Home: ${JAVA60_HOME}" />
-		<echo message="Qualifier: ${forceContextQualifier}" />
-		<echo message="Fetch Tag: ${fetchTag}" />
-
-		<!--<propertyset id="proxy.properties">
-			<propertyref prefix="java.net.useSystemProxies" />
-			<propertyref prefix="http." />
-			<propertyref prefix="https." />
-			<propertyref prefix="ftp." />
-			<propertyref prefix="socksProxy" />
-		</propertyset>-->
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
 		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritrefs="true" inheritall="true" />
 	</target>

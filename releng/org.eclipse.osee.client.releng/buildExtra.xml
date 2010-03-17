@@ -10,8 +10,21 @@
 	<!-- ////////////////////////////////////////////////////////////////////// -->
 	<target name="getDependencies" />
 
-	<target name="preFetch" if="mapLocation">
-		<mkdir dir="${buildDirectory}/maps" />
+	<target name="preFetch">
+		<antcall target="getAdditionalMaps" />
+		<if>
+			<equals arg1="${fetchTag}" arg2="HEAD" />
+			<then>
+				<echo message="Building from HEAD" />
+			</then>
+			<else>
+				<echo message="Building from ${fetchTag}" />
+				<antcall target="updateMapFiles" />
+			</else>
+		</if>
+	</target>
+
+	<target name="getAdditionalMaps" if="mapLocation">
 		<for param="additionalMapFile" delimiter="," list="${mapLocation}">
 			<sequential>
 				<propertyregex property="resourceName" override="true" input="@{additionalMapFile}" regexp="[^/}]+$" select="\0" casesensitive="false" />
@@ -22,6 +35,35 @@
 			</sequential>
 		</for>
 	</target>
+
+	<target name="updateMapFiles">
+		<pathconvert property="map.files" setonempty="false" pathsep=";">
+			<path>
+				<fileset dir="${buildDirectory}/maps">
+					<include name="*.map" />
+				</fileset>
+			</path>
+		</pathconvert>
+
+		<for param="map.file" delimiter=";" list="${map.files}">
+			<sequential>
+				<updateMapFile file="@{map.file}" tag="${fetchTag}" />
+			</sequential>
+		</for>
+		<updateMapFile file="${buildDirectory}/directory.txt" tag="${fetchTag}" />
+		<updateMapFile file="${buildDirectory}/../directory.txt" tag="${fetchTag}" />
+	</target>
+
+	<macrodef name="updateMapFile">
+		<attribute name="file" />
+		<attribute name="tag" />
+		<sequential>
+			<var name="data" unset="true" />
+			<loadfile property="data" srcfile="@{file}" />
+			<propertyregex property="new.content" input="${data}" defaultvalue="${data}" regexp="trunk" replace="@{tag}" casesensitive="false" override="true" />
+			<echo append="false" file="@{file}" message="${new.content}" />
+		</sequential>
+	</macrodef>
 
 	<target name="postFetch" />
 	<target name="preGenerate" />
