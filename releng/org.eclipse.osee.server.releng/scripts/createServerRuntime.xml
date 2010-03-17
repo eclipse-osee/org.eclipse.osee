@@ -2,10 +2,10 @@
 
 	<target name="setup">
 		<propertyregex property="targetSiteFile" input="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-TARGET-" casesensitive="false" override="true" />
-		<property name="tempAppServerFolder" value="${buildDirectory}/${buildLabel}/${targetSiteFile}_tmp" />
+		<property name="tempAppServerFolder" value="${buildDirectory}/${targetSiteFile}_tmp" />
 		<mkdir dir="${tempAppServerFolder}" />
 
-		<unzip src="${buildDirectory}/${buildLabel}/${targetSiteFile}" dest="${tempAppServerFolder}">
+		<unzip src="${buildDirectory}/${targetSiteFile}" dest="${tempAppServerFolder}">
 			<patternset>
 				<excludesfile name="features/*" />
 				<excludesfile name="plugins/*source_*.jar" />
@@ -32,7 +32,7 @@
 
 	<target name="pack">
 		<propertyregex property="serverRuntimeFile" input="${targetSiteFile}" defaultvalue="server-runtime.zip" regexp="-TARGET-" replace="-osgi-runtime-" casesensitive="false" override="true" />
-		<zip destfile="${buildDirectory}/${buildLabel}/${serverRuntimeFile}">
+		<zip destfile="${buildDirectory}/${serverRuntimeFile}">
 			<fileset dir="${tempAppServerFolder}" />
 		</zip>
 	</target>
