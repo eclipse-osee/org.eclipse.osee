@@ -2,73 +2,108 @@
 
 	<target name="init">
 		<property environment="env" />
-
-		<!-- load properties and set timestamp for the build -->
-		<loadproperties srcFile="build.properties" />
 		<tstamp>
 			<format property="buildTimestamp" pattern="yyyyMMddHHmm" />
 		</tstamp>
 
-		<!--
-		<property name="SNAPSHOT" value="false" />
-		<property name="forceContextQualifier" value="v${buildTimestamp}" />
-		<property name="fetchTag" value="HEAD" />
-		-->
+		<condition property="forceContextQualifier" value="v${buildTimestamp}">
+			<not>
+				<isset property="forceContextQualifier" />
+			</not>
+		</condition>
+
+		<!-- set properties from hudson parameters, useful with ant build -->
+		<condition property="isInHudson" value="true">
+			<or>
+				<contains string="${user.dir}" substring="hudson" />
+				<contains string="${user.name}" substring="hudson" />
+				<contains string="${user.home}" substring="hudson" />
+			</or>
+		</condition>
+
+		<!-- Hudson default path if WORKSPACE not set -->
+		<dirname property="user.dir.parent" file="${user.dir}" />
+		<condition property="WORKSPACE" value="${user.dir.parent}">
+			<and>
+				<istrue value="${isInHudson}" />
+				<not>
+					<isset property="WORKSPACE" />
+				</not>
+			</and>
+		</condition>
+
+		<!-- Local default path if WORKSPACE not set -->
+		<condition property="WORKSPACE" value="${java.io.tmpdir}">
+			<and>
+				<isfalse value="${isInHudson}" />
+				<not>
+					<isset property="WORKSPACE" />
+				</not>
+			</and>
+		</condition>
+
+		<condition property="version" value="${VERSION}">
+			<isset property="VERSION" />
+		</condition>
+		<condition property="buildType" value="${BUILDTYPE}">
+			<isset property="BUILDTYPE" />
+		</condition>
+		<condition property="projectid" value="${PROJECTID}">
+			<isset property="PROJECTID" />
+		</condition>
+		<condition property="fetchTag" value="${FETCHTAG}">
+			<isset property="FETCHTAG" />
+		</condition>
+		<condition property="buildAlias" value="${BUILDALIAS}">
+			<isset property="BUILDALIAS" />
+		</condition>
+
+		<property file="build.properties" />
+
+		<condition property="buildType" value="N">
+			<not>
+				<isset property="buildType" />
+			</not>
+		</condition>
 
 		<!-- calculate workspaceDir as parent of this folder, the project's .releng folder (relengBuilderDir) -->
 		<property name="relengBuilderDir" value="${basedir}" />
 		<dirname file="${relengBuilderDir}" property="workspaceDir" />
 
-		<!-- 
-					can build in /tmp, eg., in /tmp/build, or in workspace, eg.,
-					${WORKSPACE}/build
-				-->
-		<property name="writableBuildRoot" value="/tmp/build" />
-
-		<!-- 
-					can be simple path, eg., 
-					${writableBuildRoot}/${buildType}${buildTimestamp} or longer, eg.,
-					${writableBuildRoot}/${topprojectName}/${projectName}/downloads/drops/${version}/${buildType}${buildTimestamp} or
-					${writableBuildRoot}/${topprojectName}/${projectName}/${subprojectName}/downloads/drops/${version}/${buildType}${buildTimestamp}
-				
-			<property name="buildDir" value="${writableBuildRoot}/${buildType}${buildTimestamp}" />
-		-->
+		<!-- can build in /tmp, eg., in /tmp/build, or in workspace, eg.,	${WORKSPACE}/build -->
+		<property name="writableBuildRoot" value="${WORKSPACE}/build" />
 		<property name="buildDir" value="${writableBuildRoot}/athena" />
+		<condition property="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng">
+			<not>
+				<isset property="relengCommonBuilderDir" />
+			</not>
+		</condition>
 
-		<delete dir="${buildDir}" failonerror="false" />
+		<condition property="relengBaseBuilderDir" value="${workspaceDir}/org.eclipse.releng.basebuilder">
+			<not>
+				<isset property="relengBaseBuilderDir" />
+			</not>
+		</condition>
+
+		<echo message="JAVA_HOME = ${JAVA_HOME}" />
+		<echo message="JAVE 6.0 HOME: ${JAVA60_HOME}" />
+		<echo message="WORKSPACE = ${WORKSPACE}" />
+		<echo message="isInHudson = ${isInHudson}" />
+		<echo message="relengCommonBuilderDir = ${relengCommonBuilderDir}" />
+		<echo message="relengBaseBuilderDir = ${relengBaseBuilderDir}" />
+		<echo message="writableBuildRoot = ${writableBuildRoot}" />
+		<echo message="buildDir = ${buildDir}" />
+		<echo message="fetchTag = ${fetchTag}" />
+		<echo message="forceContextQualifier = ${forceContextQualifier}" />
 	</target>
+
 
 	<target name="run" depends="init,build,createSnapshot,cleanUp">
 	</target>
 
 	<target name="build">
-		<echo message="Workspace: ${WORKSPACE}" />
-		<echo message="Writable Build Root: ${writableBuildRoot}" />
-		<echo message="Java Home: ${JAVA_HOME}" />
-		<echo message="Java 6.0 Home: ${JAVA60_HOME}" />
-
-		<echo message="Snapshot: ${SNAPSHOT}" />
-		<echo message="Qualifier: ${forceContextQualifier}" />
-		<echo message="Fetch Tag: ${fetchTag}" />
-
-		<echo message="Eclipse Base URL: ${eclipse.base.url}" />
-		<echo message="Eclipse Base File: ${eclipse.base.file}" />
-		<fail message="Specify the build workspace path 'WORKSPACE'">
-			<condition>
-				<not>
-					<isset property="WORKSPACE" />
-				</not>
-			</condition>
-		</fail>
-
-		<mkdir dir="${writableBuildRoot}" />
-
-		<!-- invoke a new Eclipse process and launch the build from the common.releng folder -->
-		<property name="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng" />
-
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
-		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />
-
+		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritrefs="true" inheritall="true" />
 	</target>
 
 	<target name="cleanUp">
