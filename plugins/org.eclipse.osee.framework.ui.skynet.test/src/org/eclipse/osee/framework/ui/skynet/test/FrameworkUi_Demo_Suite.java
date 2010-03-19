@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.ui.skynet.test.cases.PreviewAndMultiPreviewTes
 import org.eclipse.osee.framework.ui.skynet.test.cases.RelationOrderRendererTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.ResultsEditorConverterTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.ViewWordChangeAndDiffTest;
+import org.eclipse.osee.framework.ui.skynet.test.cases.WordArtifactElementExtractorTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordEditTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordTrackedChangesTest;
 import org.junit.BeforeClass;
@@ -29,7 +30,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( {ResultsEditorConverterTest.class, ArtifactPasteConfigurationTest.class,
       ArtifactPasteOperationTest.class, RelationOrderRendererTest.class, InterArtifactDropTest.class,
       WordEditTest.class, WordTrackedChangesTest.class, PreviewAndMultiPreviewTest.class,
-      ViewWordChangeAndDiffTest.class})
+      ViewWordChangeAndDiffTest.class, WordArtifactElementExtractorTest.class})
 /**
  * @author Donald G. Dunne
  */
