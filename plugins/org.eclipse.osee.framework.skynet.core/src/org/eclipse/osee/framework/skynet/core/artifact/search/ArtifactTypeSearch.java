@@ -37,7 +37,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
 
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       String sql =
-            "osee_arts.name" + operation + " ? AND osee_artifact_type.art_type_id = osee_arts.art_type_id";
+            "osee_artifact_type.name" + operation + " ? AND osee_artifact_type.art_type_id = osee_arts.art_type_id";
       dataList.add(typeName);
 
       return sql;

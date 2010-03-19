@@ -5,6 +5,9 @@
  */
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.logging.Level;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPerspectiveDescriptor;
@@ -14,6 +17,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.osgi.framework.Bundle;
 
 /**
  * @author Ryan Schmitt
@@ -87,8 +91,19 @@ public class OseeUiEarlyStartup implements IStartup {
                });
             }
          });
+         startOseeTypes();
       }
       WorkspaceContributionItem.addToAllViews();
    }
 
+   private void startOseeTypes() {
+      try {
+         Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.types.bridge");
+         if (bundle.getState() != Bundle.ACTIVE) {
+            bundle.start();
+         }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+   }
 }

@@ -29,5 +29,4 @@ Import-Package: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/uri.connection.contributor.xml,
  OSGI-INF/db.connection.consumer.xml,
- OSGI-INF/db.connection.contributor.consumer.xml,
- OSGI-INF/application.db.provider.consumer.xml
+ OSGI-INF/db.connection.contributor.consumer.xml

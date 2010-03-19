@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.init.OseeTypesSetup;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.types.bridge.internal.InternalTypesBridgeActivator;
 import org.eclipse.osee.framework.types.bridge.operations.ResolveImportsOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -44,7 +45,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.eclipse.xtext.resource.ClassloaderClasspathUriResolver;
-import org.eclipse.xtext.ui.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -190,7 +190,7 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
             file.delete();
             setCompositeFile(null);
          }
-         OseeLog.log(Activator.class, Level.INFO, "Resolving imports");
+         OseeLog.log(InternalTypesBridgeActivator.class, Level.INFO, "Resolving imports");
 
          final List<IFile> selectedFiles = new ArrayList<IFile>(oseeTypesPanel.getSelected());
          final List<LinkNode> dependencyData = new ArrayList<LinkNode>();
@@ -198,7 +198,7 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
          Collection<IOperation> ops = new ArrayList<IOperation>();
          ops.add(new ResolveImportsOperation(new ClassloaderClasspathUriResolver(), selectedFiles, dependencyData));
          ops.add(new CreateCombinedFile(dependencyData));
-         if (executeOperation(new CompositeOperation("Resolving imports", Activator.PLUGIN_ID, ops))) {
+         if (executeOperation(new CompositeOperation("Resolving imports", InternalTypesBridgeActivator.PLUGIN_ID, ops))) {
             messages.clear();
             messages.addAll(dependencyData);
             linksViewer.refresh();
@@ -236,7 +236,7 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
       private final List<LinkNode> dependencyData;
 
       public CreateCombinedFile(List<LinkNode> dependencyData) {
-         super("Create combined file", Activator.PLUGIN_ID);
+         super("Create combined file", InternalTypesBridgeActivator.PLUGIN_ID);
          this.dependencyData = dependencyData;
       }
 

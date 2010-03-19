@@ -57,7 +57,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
@@ -431,7 +430,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
 
    private void createWordPreviewMenuItem(Menu parentMenu) {
       wordPreviewItem = new MenuItem(parentMenu, SWT.PUSH);
-      wordPreviewItem.setText("Word Preview");
+      wordPreviewItem.setText("Open Preview");
       needSelectedArtifactListener.addArtifactEnabled(wordPreviewItem);
       wordPreviewItem.addSelectionListener(new SelectionAdapter() {
          @Override
@@ -450,10 +449,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             artifacts.add(link.getOther());
          }
       }
-
-      WordTemplateRenderer r = new WordTemplateRenderer();
       try {
-         r.preview(artifacts);
+         RendererManager.previewInJob(artifacts);
       } catch (OseeCoreException ex) {
       }
    }
@@ -574,7 +571,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
 
    /**
     * Performs the deletion functionality
-    * 
+    *
     * @param selection
     */
    private void performDeleteArtifact(IStructuredSelection selection) {
@@ -602,7 +599,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
 
    /**
     * Performs the deletion functionality
-    * 
+    *
     * @param selection
     * @throws ArtifactDoesNotExist
     */

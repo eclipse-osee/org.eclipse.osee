@@ -40,6 +40,5 @@ public class OseeTypesStandaloneSetup implements ISetup {
 		
 
 
-
 	}
 }

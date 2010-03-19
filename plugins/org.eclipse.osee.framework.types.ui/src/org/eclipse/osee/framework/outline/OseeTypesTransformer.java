@@ -3,12 +3,12 @@
 */
 package org.eclipse.osee.framework.outline;
 
-import org.eclipse.xtext.ui.common.editor.outline.transformer.AbstractDeclarativeSemanticModelTransformer;
+import org.eclipse.xtext.ui.editor.outline.transformer.AbstractDeclarativeSemanticModelTransformer;
 
 /**
  * customization of the default outline structure
- * 
+ *
  */
 public class OseeTypesTransformer extends AbstractDeclarativeSemanticModelTransformer {
-	
+
 }

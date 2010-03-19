@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -171,10 +172,12 @@ public class AttributeTypeManager {
    }
 
    @SuppressWarnings("unchecked")
-   public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, String attributeTypeName) throws OseeCoreException {
+	public static boolean isBaseTypeCompatible(
+			Class<? extends Attribute> baseType, String attributeTypeName) throws OseeCoreException {
       return baseType.isAssignableFrom(getAttributeBaseClass(getType(attributeTypeName)));
    }
 
+   @SuppressWarnings("unchecked")
    public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, IAttributeType attributeType) throws OseeCoreException {
       return baseType.isAssignableFrom(getAttributeBaseClass(attributeType));
    }

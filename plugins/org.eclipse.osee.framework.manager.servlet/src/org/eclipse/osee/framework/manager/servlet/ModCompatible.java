@@ -31,7 +31,10 @@ public final class ModCompatible {
       boolean result = false;
       if (Strings.isValid(clientVersion)) {
          String toCheck = clientVersion.toLowerCase();
-         if (toCheck.startsWith("0.9.2") || toCheck.startsWith("development")) {
+         if (toCheck.startsWith("0.9.2") ||
+               toCheck.startsWith("0.9.3") ||
+               toCheck.startsWith("0.9.4") ||
+               toCheck.startsWith("development")) {
             result = true;
          }
       }

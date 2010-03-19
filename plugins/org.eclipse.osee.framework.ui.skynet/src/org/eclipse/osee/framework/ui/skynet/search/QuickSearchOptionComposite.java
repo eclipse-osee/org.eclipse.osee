@@ -477,7 +477,7 @@ public class QuickSearchOptionComposite extends Composite {
 
             List<AttributeType> selectedElements = new ArrayList<AttributeType>();
             for (AttributeType type : taggableItems) {
-               if (configuration.contains(type.getName())) {
+               if (configuration.contains(type)) {
                   selectedElements.add(type);
                }
             }
@@ -519,7 +519,7 @@ public class QuickSearchOptionComposite extends Composite {
 
       @Override
       public void loadFrom(String[] items) {
-         if (items != null) {
+         if (items != null && items.length > 0) {
             configuration.clear();
             for (String entry : items) {
                try {

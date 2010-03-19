@@ -6,7 +6,7 @@
     <extension
             point="org.eclipse.ui.editors">
         <editor
-            class="org.eclipse.osee.framework.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.core.editor.XtextEditor"
+            class="org.eclipse.osee.framework.ui.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
             contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
             default="true"
             extensions="osee"
@@ -17,8 +17,8 @@
     <extension
         point="org.eclipse.ui.handlers">
         <handler
-            class="org.eclipse.osee.framework.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.common.editor.hyperlinking.OpenDeclarationHandler"
-            commandId="org.eclipse.xtext.ui.common.editor.hyperlinking.OpenDeclaration">
+            class="org.eclipse.osee.framework.ui.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.editor.hyperlinking.OpenDeclarationHandler"
+            commandId="org.eclipse.xtext.ui.editor.hyperlinking.OpenDeclaration">
             <activeWhen>
                 <reference
                     definitionId="org.eclipse.osee.framework.OseeTypes.Editor.opened">
@@ -26,7 +26,7 @@
             </activeWhen>
         </handler>
         <handler
-            class="org.eclipse.osee.framework.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.core.editor.handler.ValidateActionHandler"
+            class="org.eclipse.osee.framework.ui.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.editor.handler.ValidateActionHandler"
             commandId="org.eclipse.osee.framework.OseeTypes.validate">
          <activeWhen>
             <reference
@@ -40,7 +40,7 @@
             <and>
                 <reference definitionId="isActiveEditorAnInstanceOfXtextEditor"/>
                 <with variable="activeEditor">
-                    <test property="org.eclipse.xtext.ui.core.editor.XtextEditor.languageName" 
+                    <test property="org.eclipse.xtext.ui.editor.XtextEditor.languageName" 
                         value="org.eclipse.osee.framework.OseeTypes" 
                         forcePluginActivation="true"/>
                 </with>        
@@ -50,22 +50,21 @@
     <extension
             point="org.eclipse.ui.preferencePages">
         <page
-            class="org.eclipse.osee.framework.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.core.editor.preferences.LanguageRootPreferencePage"
+            class="org.eclipse.osee.framework.ui.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
             id="org.eclipse.osee.framework.OseeTypes"
-            name="OseeTypes"
-            category="org.eclipse.xtext.languages">
+            name="OseeTypes">
             <keywordReference id="org.eclipse.osee.framework.ui.keyword_OseeTypes"/>
         </page>
         <page
             category="org.eclipse.osee.framework.OseeTypes"
-            class="org.eclipse.osee.framework.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.common.editor.syntaxcoloring.SyntaxColoringPreferencePage"
+            class="org.eclipse.osee.framework.ui.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.editor.syntaxcoloring.SyntaxColoringPreferencePage"
             id="org.eclipse.osee.framework.OseeTypes.coloring"
             name="Syntax Coloring">
             <keywordReference id="org.eclipse.osee.framework.ui.keyword_OseeTypes"/>
         </page>
         <page
             category="org.eclipse.osee.framework.OseeTypes"
-            class="org.eclipse.osee.framework.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.common.editor.templates.XtextTemplatePreferencePage"
+            class="org.eclipse.osee.framework.ui.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.editor.templates.XtextTemplatePreferencePage"
             id="org.eclipse.osee.framework.OseeTypes.templates"
             name="Templates">
             <keywordReference id="org.eclipse.osee.framework.ui.keyword_OseeTypes"/>
@@ -87,7 +86,7 @@
     </extension>
     <extension point="org.eclipse.ui.menus">
         <menuContribution
-            locationURI="popup:#TextEditorContext?after=group.open">
+            locationURI="popup:#TextEditorContext?after=group.edit">
              <command
                  commandId="org.eclipse.osee.framework.OseeTypes.validate"
                  style="push"
@@ -100,31 +99,51 @@
          </command>  
          </menuContribution>
     </extension>
+    <extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:#TextEditorContext?endof=group.find">
+			<command commandId="org.eclipse.xtext.ui.editor.FindReferences">
+				<visibleWhen checkEnabled="false">
+                	<reference definitionId="org.eclipse.osee.framework.OseeTypes.Editor.opened">
+                	</reference>
+            	</visibleWhen>
+			</command>
+		</menuContribution>
+	</extension>
+	<extension point="org.eclipse.ui.handlers">
+	    <handler
+            class="org.eclipse.osee.framework.ui.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.editor.findrefs.FindReferencesHandler"
+            commandId="org.eclipse.xtext.ui.editor.FindReferences">
+            <activeWhen>
+                <reference
+                    definitionId="org.eclipse.osee.framework.OseeTypes.Editor.opened">
+                </reference>
+            </activeWhen>
+        </handler>
+    </extension>   
 
 <!-- adding resource factories -->
 
 	<extension
 		point="org.eclipse.emf.ecore.extension_parser">
 		<parser
-			class="org.eclipse.osee.framework.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.resource.XtextResourceFactory"
+			class="org.eclipse.osee.framework.ui.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
 			type="osee">
 		</parser>
 	</extension>
+	<extension point="org.eclipse.xtext.extension_resourceServiceProvider">
+        <resourceServiceProvider
+            class="org.eclipse.osee.framework.ui.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
+            uriExtension="osee">
+        </resourceServiceProvider>
+    </extension>
 
+
+   <!-- quickfix marker resolution generator -->
    <extension
-         point="org.eclipse.ui.newWizards">
-      <category
-            id="org.eclipse.osee.framework.new"
-            name="OSEE">
-      </category>
-      <wizard
-            category="org.eclipse.osee.framework.new"
-            class="org.eclipse.osee.framework.OseeTypesExecutableExtensionFactory:org.eclipse.osee.framework.ui.wizard.OseeTypesNewProjectWizard"
-            icon="icons/editor.gif"
-            id="org.eclipse.osee.framework.ui.wizard.OseeTypesNewProjectWizard"
-            name="OseeTypes Project"
-            project="true">
-      </wizard>
+         point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            class="org.eclipse.osee.framework.ui.OseeTypesExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator">
+      </markerResolutionGenerator>
    </extension>
 
 

@@ -5,6 +5,7 @@ grammar InternalOseeTypes;
 
 options {
 	superClass=AbstractInternalAntlrParser;
+	backtrack=true;
 	
 }
 
@@ -38,6 +39,11 @@ import org.eclipse.osee.framework.services.OseeTypesGrammarAccess;
 
 @parser::members {
 
+/*
+  This grammar contains a lot of empty actions to work around a bug in ANTLR.
+  Otherwise the ANTLR tool will create synpreds that cannot be compiled in some rare cases.
+*/
+ 
  	private OseeTypesGrammarAccess grammarAccess;
  	
     public InternalOseeTypesParser(TokenStream input, IAstFactory factory, OseeTypesGrammarAccess grammarAccess) {
@@ -56,7 +62,12 @@ import org.eclipse.osee.framework.services.OseeTypesGrammarAccess;
     @Override
     protected String getFirstRuleName() {
     	return "OseeTypeModel";	
-   	} 
+   	}
+   	
+   	@Override
+   	protected OseeTypesGrammarAccess getGrammarAccess() {
+   		return grammarAccess;
+   	}
 }
 
 @rulecatch { 
@@ -383,6 +394,9 @@ ruleOseeType returns [EObject current=null]
     	lastConsumedNode = currentNode;
     }:
 (
+	{ 
+	  /* */ 
+	}
     { 
         currentNode=createCompositeNode(grammarAccess.getOseeTypeAccess().getXArtifactTypeParserRuleCall_0(), currentNode); 
     }
@@ -393,6 +407,9 @@ ruleOseeType returns [EObject current=null]
     }
 
     |
+	{ 
+	  /* */ 
+	}
     { 
         currentNode=createCompositeNode(grammarAccess.getOseeTypeAccess().getXRelationTypeParserRuleCall_1(), currentNode); 
     }
@@ -403,6 +420,9 @@ ruleOseeType returns [EObject current=null]
     }
 
     |
+	{ 
+	  /* */ 
+	}
     { 
         currentNode=createCompositeNode(grammarAccess.getOseeTypeAccess().getXAttributeTypeParserRuleCall_2(), currentNode); 
     }
@@ -413,6 +433,9 @@ ruleOseeType returns [EObject current=null]
     }
 
     |
+	{ 
+	  /* */ 
+	}
     { 
         currentNode=createCompositeNode(grammarAccess.getOseeTypeAccess().getXOseeEnumTypeParserRuleCall_3(), currentNode); 
     }
@@ -499,6 +522,9 @@ ruleXArtifactType returns [EObject current=null]
     }
 (
 (
+		{ 
+		  /* */ 
+		}
 		{
 			if ($current==null) {
 	            $current = factory.create(grammarAccess.getXArtifactTypeRule().getType().getClassifier());
@@ -519,6 +545,9 @@ ruleXArtifactType returns [EObject current=null]
     }
 (
 (
+		{ 
+		  /* */ 
+		}
 		{
 			if ($current==null) {
 	            $current = factory.create(grammarAccess.getXArtifactTypeRule().getType().getClassifier());
@@ -622,6 +651,9 @@ ruleXAttributeTypeRef returns [EObject current=null]
     }
 (
 (
+		{ 
+		  /* */ 
+		}
 		{
 			if ($current==null) {
 	            $current = factory.create(grammarAccess.getXAttributeTypeRefRule().getType().getClassifier());
@@ -749,6 +781,9 @@ ruleXAttributeType returns [EObject current=null]
     }
 (
 (
+		{ 
+		  /* */ 
+		}
 		{
 			if ($current==null) {
 	            $current = factory.create(grammarAccess.getXAttributeTypeRule().getType().getClassifier());
@@ -994,6 +1029,9 @@ ruleXAttributeType returns [EObject current=null]
     }
 (
 (
+		{ 
+		  /* */ 
+		}
 		{
 			if ($current==null) {
 	            $current = factory.create(grammarAccess.getXAttributeTypeRule().getType().getClassifier());
@@ -1436,6 +1474,9 @@ ruleXOseeEnumOverride returns [EObject current=null]
     }
 (
 (
+		{ 
+		  /* */ 
+		}
 		{
 			if ($current==null) {
 	            $current = factory.create(grammarAccess.getXOseeEnumOverrideRule().getType().getClassifier());
@@ -1527,6 +1568,9 @@ ruleOverrideOption returns [EObject current=null]
     	lastConsumedNode = currentNode;
     }:
 (
+	{ 
+	  /* */ 
+	}
     { 
         currentNode=createCompositeNode(grammarAccess.getOverrideOptionAccess().getAddEnumParserRuleCall_0(), currentNode); 
     }
@@ -1537,6 +1581,9 @@ ruleOverrideOption returns [EObject current=null]
     }
 
     |
+	{ 
+	  /* */ 
+	}
     { 
         currentNode=createCompositeNode(grammarAccess.getOverrideOptionAccess().getRemoveEnumParserRuleCall_1(), currentNode); 
     }
@@ -1677,6 +1724,9 @@ ruleRemoveEnum returns [EObject current=null]
     }
 (
 (
+		{ 
+		  /* */ 
+		}
 		{
 			if ($current==null) {
 	            $current = factory.create(grammarAccess.getRemoveEnumRule().getType().getClassifier());
@@ -1808,6 +1858,9 @@ ruleXRelationType returns [EObject current=null]
     }
 (
 (
+		{ 
+		  /* */ 
+		}
 		{
 			if ($current==null) {
 	            $current = factory.create(grammarAccess.getXRelationTypeRule().getType().getClassifier());
@@ -1856,6 +1909,9 @@ ruleXRelationType returns [EObject current=null]
     }
 (
 (
+		{ 
+		  /* */ 
+		}
 		{
 			if ($current==null) {
 	            $current = factory.create(grammarAccess.getXRelationTypeRule().getType().getClassifier());

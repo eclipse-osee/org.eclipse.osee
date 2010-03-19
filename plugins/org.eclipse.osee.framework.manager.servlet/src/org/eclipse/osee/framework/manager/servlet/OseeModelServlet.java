@@ -15,11 +15,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.osee.framework.core.data.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.data.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
@@ -40,7 +38,7 @@ public class OseeModelServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = -2639113870500561780L;
    private final IOseeDataTranslationProvider dataTransalatorProvider;
-   
+
    public OseeModelServlet(IOseeDataTranslationProvider dataTransalatorProvider) {
       super();
       this.dataTransalatorProvider = dataTransalatorProvider;
@@ -48,6 +46,13 @@ public class OseeModelServlet extends OseeHttpServlet {
 
    private IOseeModelingService getModelingService() throws OseeCoreException {
       return Activator.getInstance().getOseeModelingService();
+   }
+
+   @Override
+   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
+      if(!request.getMethod().equalsIgnoreCase("GET")){
+         super.checkAccessControl(request);
+      }
    }
 
    private void handleError(HttpServletResponse resp, String request, Throwable th) throws IOException {

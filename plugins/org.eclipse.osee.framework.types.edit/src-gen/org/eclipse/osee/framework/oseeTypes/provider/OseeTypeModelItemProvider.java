@@ -164,27 +164,27 @@ public class OseeTypeModelItemProvider
       newChildDescriptors.add
          (createChildParameter
             (OseeTypesPackage.Literals.OSEE_TYPE_MODEL__ARTIFACT_TYPES,
-            OseeTypesFactory.eINSTANCE.createXArtifactType()));
+             OseeTypesFactory.eINSTANCE.createXArtifactType()));
 
       newChildDescriptors.add
          (createChildParameter
             (OseeTypesPackage.Literals.OSEE_TYPE_MODEL__RELATION_TYPES,
-            OseeTypesFactory.eINSTANCE.createXRelationType()));
+             OseeTypesFactory.eINSTANCE.createXRelationType()));
 
       newChildDescriptors.add
          (createChildParameter
             (OseeTypesPackage.Literals.OSEE_TYPE_MODEL__ATTRIBUTE_TYPES,
-            OseeTypesFactory.eINSTANCE.createXAttributeType()));
+             OseeTypesFactory.eINSTANCE.createXAttributeType()));
 
       newChildDescriptors.add
          (createChildParameter
             (OseeTypesPackage.Literals.OSEE_TYPE_MODEL__ENUM_TYPES,
-            OseeTypesFactory.eINSTANCE.createXOseeEnumType()));
+             OseeTypesFactory.eINSTANCE.createXOseeEnumType()));
 
       newChildDescriptors.add
          (createChildParameter
             (OseeTypesPackage.Literals.OSEE_TYPE_MODEL__ENUM_OVERRIDES,
-            OseeTypesFactory.eINSTANCE.createXOseeEnumOverride()));
+             OseeTypesFactory.eINSTANCE.createXOseeEnumOverride()));
    }
 
    /**

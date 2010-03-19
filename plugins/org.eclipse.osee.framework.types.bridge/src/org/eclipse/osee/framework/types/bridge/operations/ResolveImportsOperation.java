@@ -24,10 +24,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.types.bridge.internal.InternalTypesBridgeActivator;
 import org.eclipse.osee.framework.types.bridge.wizards.LinkMessage;
 import org.eclipse.osee.framework.types.bridge.wizards.LinkNode;
 import org.eclipse.xtext.resource.IClasspathUriResolver;
-import org.eclipse.xtext.ui.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -40,7 +40,7 @@ public class ResolveImportsOperation extends AbstractOperation {
    private final List<LinkNode> dependencyData;
 
    public ResolveImportsOperation(IClasspathUriResolver resolver, List<IFile> selectedItems, List<LinkNode> dependencyData) {
-      super("Extract imports", Activator.PLUGIN_ID);
+      super("Extract imports", InternalTypesBridgeActivator.PLUGIN_ID);
       this.matcher = pattern.matcher("");
       this.selectedItems = selectedItems;
       this.resolver = resolver;

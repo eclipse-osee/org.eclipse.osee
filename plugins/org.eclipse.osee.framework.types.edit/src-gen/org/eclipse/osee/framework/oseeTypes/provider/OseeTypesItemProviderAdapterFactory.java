@@ -165,141 +165,141 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
    }
 
    /**
-    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.ArtifactType} instances.
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.XArtifactType} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected ArtifactTypeItemProvider artifactTypeItemProvider;
+   protected XArtifactTypeItemProvider xArtifactTypeItemProvider;
 
    /**
-    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.ArtifactType}.
+    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.XArtifactType}.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
    public Adapter createXArtifactTypeAdapter() {
-      if (artifactTypeItemProvider == null) {
-         artifactTypeItemProvider = new ArtifactTypeItemProvider(this);
+      if (xArtifactTypeItemProvider == null) {
+         xArtifactTypeItemProvider = new XArtifactTypeItemProvider(this);
       }
 
-      return artifactTypeItemProvider;
+      return xArtifactTypeItemProvider;
    }
 
    /**
-    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef} instances.
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.XAttributeTypeRef} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected AttributeTypeRefItemProvider attributeTypeRefItemProvider;
+   protected XAttributeTypeRefItemProvider xAttributeTypeRefItemProvider;
 
    /**
-    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef}.
+    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.XAttributeTypeRef}.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
    public Adapter createXAttributeTypeRefAdapter() {
-      if (attributeTypeRefItemProvider == null) {
-         attributeTypeRefItemProvider = new AttributeTypeRefItemProvider(this);
+      if (xAttributeTypeRefItemProvider == null) {
+         xAttributeTypeRefItemProvider = new XAttributeTypeRefItemProvider(this);
       }
 
-      return attributeTypeRefItemProvider;
+      return xAttributeTypeRefItemProvider;
    }
 
    /**
-    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.AttributeType} instances.
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.XAttributeType} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected AttributeTypeItemProvider attributeTypeItemProvider;
+   protected XAttributeTypeItemProvider xAttributeTypeItemProvider;
 
    /**
-    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.AttributeType}.
+    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.XAttributeType}.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
    public Adapter createXAttributeTypeAdapter() {
-      if (attributeTypeItemProvider == null) {
-         attributeTypeItemProvider = new AttributeTypeItemProvider(this);
+      if (xAttributeTypeItemProvider == null) {
+         xAttributeTypeItemProvider = new XAttributeTypeItemProvider(this);
       }
 
-      return attributeTypeItemProvider;
+      return xAttributeTypeItemProvider;
    }
 
    /**
-    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.OseeEnumType} instances.
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.XOseeEnumType} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected OseeEnumTypeItemProvider oseeEnumTypeItemProvider;
+   protected XOseeEnumTypeItemProvider xOseeEnumTypeItemProvider;
 
    /**
-    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.OseeEnumType}.
+    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.XOseeEnumType}.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
    public Adapter createXOseeEnumTypeAdapter() {
-      if (oseeEnumTypeItemProvider == null) {
-         oseeEnumTypeItemProvider = new OseeEnumTypeItemProvider(this);
+      if (xOseeEnumTypeItemProvider == null) {
+         xOseeEnumTypeItemProvider = new XOseeEnumTypeItemProvider(this);
       }
 
-      return oseeEnumTypeItemProvider;
+      return xOseeEnumTypeItemProvider;
    }
 
    /**
-    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry} instances.
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected OseeEnumEntryItemProvider oseeEnumEntryItemProvider;
+   protected XOseeEnumEntryItemProvider xOseeEnumEntryItemProvider;
 
    /**
-    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry}.
+    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.XOseeEnumEntry}.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
    public Adapter createXOseeEnumEntryAdapter() {
-      if (oseeEnumEntryItemProvider == null) {
-         oseeEnumEntryItemProvider = new OseeEnumEntryItemProvider(this);
+      if (xOseeEnumEntryItemProvider == null) {
+         xOseeEnumEntryItemProvider = new XOseeEnumEntryItemProvider(this);
       }
 
-      return oseeEnumEntryItemProvider;
+      return xOseeEnumEntryItemProvider;
    }
 
    /**
-    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.OseeEnumOverride} instances.
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.XOseeEnumOverride} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected OseeEnumOverrideItemProvider oseeEnumOverrideItemProvider;
+   protected XOseeEnumOverrideItemProvider xOseeEnumOverrideItemProvider;
 
    /**
-    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.OseeEnumOverride}.
+    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.XOseeEnumOverride}.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
    public Adapter createXOseeEnumOverrideAdapter() {
-      if (oseeEnumOverrideItemProvider == null) {
-         oseeEnumOverrideItemProvider = new OseeEnumOverrideItemProvider(this);
+      if (xOseeEnumOverrideItemProvider == null) {
+         xOseeEnumOverrideItemProvider = new XOseeEnumOverrideItemProvider(this);
       }
 
-      return oseeEnumOverrideItemProvider;
+      return xOseeEnumOverrideItemProvider;
    }
 
    /**
@@ -372,26 +372,26 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
    }
 
    /**
-    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.RelationType} instances.
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.XRelationType} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected RelationTypeItemProvider relationTypeItemProvider;
+   protected XRelationTypeItemProvider xRelationTypeItemProvider;
 
    /**
-    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.RelationType}.
+    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.XRelationType}.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
    public Adapter createXRelationTypeAdapter() {
-      if (relationTypeItemProvider == null) {
-         relationTypeItemProvider = new RelationTypeItemProvider(this);
+      if (xRelationTypeItemProvider == null) {
+         xRelationTypeItemProvider = new XRelationTypeItemProvider(this);
       }
 
-      return relationTypeItemProvider;
+      return xRelationTypeItemProvider;
    }
 
    /**
@@ -444,7 +444,7 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
    public Object adapt(Object object, Object type) {
       if (isFactoryForType(type)) {
          Object adapter = super.adapt(object, type);
-         if (!(type instanceof Class<?>) || ((Class<?>)type).isInstance(adapter)) {
+         if (!(type instanceof Class<?>) || (((Class<?>)type).isInstance(adapter))) {
             return adapter;
          }
       }
@@ -493,48 +493,20 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
     * @generated
     */
    public void dispose() {
-      if (oseeTypeModelItemProvider != null) {
-         oseeTypeModelItemProvider.dispose();
-      }
-      if (importItemProvider != null) {
-         importItemProvider.dispose();
-      }
-      if (oseeElementItemProvider != null) {
-         oseeElementItemProvider.dispose();
-      }
-      if (oseeTypeItemProvider != null) {
-         oseeTypeItemProvider.dispose();
-      }
-      if (artifactTypeItemProvider != null) {
-         artifactTypeItemProvider.dispose();
-      }
-      if (attributeTypeRefItemProvider != null) {
-         attributeTypeRefItemProvider.dispose();
-      }
-      if (attributeTypeItemProvider != null) {
-         attributeTypeItemProvider.dispose();
-      }
-      if (oseeEnumTypeItemProvider != null) {
-         oseeEnumTypeItemProvider.dispose();
-      }
-      if (oseeEnumEntryItemProvider != null) {
-         oseeEnumEntryItemProvider.dispose();
-      }
-      if (oseeEnumOverrideItemProvider != null) {
-         oseeEnumOverrideItemProvider.dispose();
-      }
-      if (overrideOptionItemProvider != null) {
-         overrideOptionItemProvider.dispose();
-      }
-      if (addEnumItemProvider != null) {
-         addEnumItemProvider.dispose();
-      }
-      if (removeEnumItemProvider != null) {
-         removeEnumItemProvider.dispose();
-      }
-      if (relationTypeItemProvider != null) {
-         relationTypeItemProvider.dispose();
-      }
+      if (oseeTypeModelItemProvider != null) oseeTypeModelItemProvider.dispose();
+      if (importItemProvider != null) importItemProvider.dispose();
+      if (oseeElementItemProvider != null) oseeElementItemProvider.dispose();
+      if (oseeTypeItemProvider != null) oseeTypeItemProvider.dispose();
+      if (xArtifactTypeItemProvider != null) xArtifactTypeItemProvider.dispose();
+      if (xAttributeTypeRefItemProvider != null) xAttributeTypeRefItemProvider.dispose();
+      if (xAttributeTypeItemProvider != null) xAttributeTypeItemProvider.dispose();
+      if (xOseeEnumTypeItemProvider != null) xOseeEnumTypeItemProvider.dispose();
+      if (xOseeEnumEntryItemProvider != null) xOseeEnumEntryItemProvider.dispose();
+      if (xOseeEnumOverrideItemProvider != null) xOseeEnumOverrideItemProvider.dispose();
+      if (overrideOptionItemProvider != null) overrideOptionItemProvider.dispose();
+      if (addEnumItemProvider != null) addEnumItemProvider.dispose();
+      if (removeEnumItemProvider != null) removeEnumItemProvider.dispose();
+      if (xRelationTypeItemProvider != null) xRelationTypeItemProvider.dispose();
    }
 
 }

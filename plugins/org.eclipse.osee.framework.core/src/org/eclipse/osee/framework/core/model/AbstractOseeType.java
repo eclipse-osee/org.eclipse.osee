@@ -43,7 +43,7 @@ public abstract class AbstractOseeType extends NamedIdentity implements IOseeSto
    @SuppressWarnings("unchecked")
    protected <T> IOseeField<T> getField(String key) throws OseeCoreException {
       IOseeField<T> field = (AbstractOseeField<T>) fieldMap.get(key);
-      Conditions.checkNotNull(field, String.format("Field [%s]", key));
+      Conditions.checkNotNull(field, key);
       return field;
    }
 

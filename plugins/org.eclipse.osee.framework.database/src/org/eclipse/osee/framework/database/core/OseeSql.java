@@ -46,7 +46,7 @@ public enum OseeSql {
    LOAD_RELATIONS("SELECT%s txs.mod_type, rel_link_id, a_art_id, b_art_id, rel_link_type_id, rel.gamma_id, rationale, txs.branch_id FROM osee_join_artifact aj, osee_relation_link rel, osee_txs txs WHERE aj.query_id = ? AND (aj.art_id = rel.a_art_id OR aj.art_id = rel.b_art_id) AND rel.gamma_id = txs.gamma_id AND txs.tx_current = " + TxChange.CURRENT.getValue() + " AND aj.branch_id = txs.branch_id", Strings.HINTS__ORDERED__FIRST_ROWS),
    LOAD_CURRENT_ARTIFACTS(Strings.SELECT_CURRENT_ARTIFACTS_PREFIX + "= 1", Strings.HINTS__ORDERED__FIRST_ROWS),
    LOAD_CURRENT_ARTIFACTS_WITH_DELETED(Strings.SELECT_CURRENT_ARTIFACTS_PREFIX + "in (1, 2)", Strings.HINTS__ORDERED__FIRST_ROWS),
-   
+
    LOAD_REVISION_HISTORY_TRANSACTION_ATTR("SELECT %s txs.transaction_id from osee_attribute arv, osee_txs txs where arv.art_id = ? and arv.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <=?", Strings.HINTS__ORDERED__FIRST_ROWS),
    LOAD_REVISION_HISTORY_TRANSACTION_REL("SELECT %s txs.transaction_id from osee_relation_link rel, osee_txs txs where (rel.a_art_id = ? or rel.b_art_id = ?) and rel.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <=?", Strings.HINTS__ORDERED__FIRST_ROWS),
 
@@ -61,7 +61,7 @@ public enum OseeSql {
    CHANGE_TX_ARTIFACT("select art.art_id, art.art_type_id, art.gamma_id, txs.mod_type FROM osee_txs txs, osee_arts art WHERE txs.transaction_id = ? AND txs.gamma_id = art.gamma_id AND txs.mod_type in (" + ModificationType.DELETED.getValue() + ", " + ModificationType.NEW.getValue() + ", " + ModificationType.INTRODUCED.getValue() + ") "),
    CHANGE_TX_ARTIFACT_FOR_SPECIFIC_ARTIFACT(CHANGE_TX_ARTIFACT.sql + " and art.art_id =?"),
    CHANGE_TX_MODIFYING("SELECT arj.art_id, arj.branch_id, txs.transaction_id from osee_join_artifact arj, osee_arts art, osee_txs txs, osee_branch br where arj.query_id = ? AND arj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = arj.branch_id AND txs.transaction_id <= arj.transaction_id AND txs.branch_id = br.branch_id AND txs.transaction_id <> br.baseline_transaction_id", Strings.HINTS__ORDERED__FIRST_ROWS),
-   CHANGE_BRANCH_MODIFYING("SELECT count(txd.transaction_id) as tx_count, arj.branch_id, arj.art_id FROM osee_join_artifact arj, osee_arts art, osee_txs txs, osee_branch br where arj.query_id = ? AND arj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = arj.branch_id and txs.branch_id = br.branch_id AND txs.transaction_id <> br.baseline_transaction_id group by arj.art_id, arj.branch_id", Strings.HINTS__ORDERED__FIRST_ROWS),
+   CHANGE_BRANCH_MODIFYING("SELECT count(txs.transaction_id) as tx_count, arj.branch_id, arj.art_id FROM osee_join_artifact arj, osee_arts art, osee_txs txs, osee_branch br where arj.query_id = ? AND arj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = arj.branch_id and txs.branch_id = br.branch_id AND txs.transaction_id <> br.baseline_transaction_id group by arj.art_id, arj.branch_id", Strings.HINTS__ORDERED__FIRST_ROWS),
 
    IS_ARTIFACT_ON_BRANCH(
          "SELECT%s count(1) from osee_arts av1, osee_txs txs1 where av1.art_id = ? and av1.gamma_id = txs1.gamma_id and txs1.branch_id = ?", Strings.HINTS__ORDERED__FIRST_ROWS),

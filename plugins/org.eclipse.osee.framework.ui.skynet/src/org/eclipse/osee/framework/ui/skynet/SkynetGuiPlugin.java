@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.logging.Level;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
@@ -107,11 +106,6 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
 
          PlatformUI.getWorkbench().addWorkbenchListener(new ArtifactSaveNotificationHandler());
       }
-      try {
-         Platform.getBundle("org.eclipse.osee.framework.types.bridge").start();
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
    }
 
    public static SkynetGuiPlugin getInstance() {
@@ -194,7 +188,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       } else if (broadcastEventType == BroadcastEventType.Pong) {
-         // Got pong from another client; If message == this client's sessionId, then it's 
+         // Got pong from another client; If message == this client's sessionId, then it's
          // the response from this client's ping
          try {
             if (message != null && message.equals(ClientSessionManager.getSession().toString())) {
