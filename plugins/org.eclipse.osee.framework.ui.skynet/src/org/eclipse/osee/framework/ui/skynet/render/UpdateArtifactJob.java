@@ -23,9 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -200,7 +198,6 @@ public class UpdateArtifactJob extends UpdateJob {
 	                  content =
 	                        Lib.inputStreamToString(new ByteArrayInputStream(
 	                              WordTemplateRenderer.getFormattedContent(artElement)));
-	                  System.out.println(content);
 	               } catch (IOException ex) {
 	                  OseeExceptions.wrapAndThrow(ex);
 	               }
