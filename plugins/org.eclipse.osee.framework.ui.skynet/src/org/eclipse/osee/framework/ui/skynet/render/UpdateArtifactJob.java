@@ -211,17 +211,11 @@ public class UpdateArtifactJob extends UpdateJob {
 
 	               if (singleArtifact || multiSave) {
 	                  // TODO
-	                  if (DEBUG) {
-	                     System.err.println("Initial: " + content);
-	                  }
 	                  if (artElement.getNodeName().endsWith("body")) {
 	                     // This code pulls out all of the stuff after the inserted listnum reordering
 	                     // stuff. This needs to be
 	                     // here so that we remove unwanted template information from single editing
 	                     content = content.replace(WordMLProducer.LISTNUM_FIELD_HEAD, "");
-	                     if (DEBUG) {
-	                        System.err.println("AFTER:  " + content);
-	                     }
 	                  }
 	                  LinkType linkType = LinkType.OSEE_SERVER_LINK;
 	                  content = WordMlLinkHandler.unlink(linkType, artifact, content);
