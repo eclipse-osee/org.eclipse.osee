@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="compressed.content.fix">
+	<implementation class="org.eclipse.osee.sos.SosCommand"/>
+	<service>
+		<provide interface="org.eclipse.osgi.framework.console.CommandProvider"/>
+	</service>
+</component>
