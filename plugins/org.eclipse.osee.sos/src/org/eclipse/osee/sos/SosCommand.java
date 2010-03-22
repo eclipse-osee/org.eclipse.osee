@@ -148,7 +148,7 @@ public class SosCommand implements CommandProvider {
 
    private boolean isOseeBundle(Bundle bundle) {
       String bundleName = bundle.getSymbolicName();
-      return bundleName.contains("osee") || bundleName.contains("lba") || bundleName.contains("postgres");
+      return bundleName.matches(".*(osee|lba|postgres).*");
    }
 
    private Set<Bundle> allBundles() {
