@@ -8,10 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.ws;
+package org.eclipse.osee.framework.ui.swt;
 
 import java.io.File;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -24,23 +23,22 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.WizardDataTransferPage;
 
 /**
  * @author Robert A. Fisher
  */
 public class FileSelector extends Composite {
 
-   private Label radSingleFile;
-   private Text txtSingleFile;
-   private Button btnSingleFile;
+   private final Label radSingleFile;
+   private final Text txtSingleFile;
+   private final Button btnSingleFile;
+   private final String defaultPath;
+   private final String[] allowedExtensions;
 
-   /**
-    * @param parent
-    * @param style
-    */
-   public FileSelector(Composite parent, int style, String name, Listener listener) {
+   public FileSelector(Composite parent, int style, String name, String defaultPath, Listener listener, String... allowedExtensions) {
       super(parent, style);
+      this.defaultPath = defaultPath;
+      this.allowedExtensions = allowedExtensions;
       setLayout(new GridLayout());
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -63,15 +61,16 @@ public class FileSelector extends Composite {
          @Override
          public void widgetSelected(SelectionEvent e) {
             File file = selectFile();
-            if (file != null && file.isFile()) txtSingleFile.setText(file.getPath());
+            if (file != null && file.isFile()) {
+               txtSingleFile.setText(file.getPath());
+            }
          }
 
       });
    }
 
    public File getFile() {
-      File file = new File(txtSingleFile.getText());
-      return file;
+      return new File(getText());
    }
 
    public String getText() {
@@ -82,25 +81,13 @@ public class FileSelector extends Composite {
       txtSingleFile.setText(text);
    }
 
-   public boolean validate(WizardDataTransferPage wizardPage) {
-      if (getText().endsWith(".xml") && getFile().isFile()) return true;
-
-      wizardPage.setErrorMessage("File is not a valid xml file");
-      return false;
-   }
-
    private File selectFile() {
       FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.SINGLE);
-      dialog.setFilterExtensions(new String[] {"*.xml"});
-      dialog.setFilterPath(AWorkspace.getWorkspacePath());
+      dialog.setFilterExtensions(allowedExtensions);
+      dialog.setFilterPath(defaultPath);
 
       String path = dialog.open();
-
-      if (path != null) {
-         return new File(path);
-      } else {
-         return null;
-      }
+      return path != null ? new File(path) : null;
    }
 
 }

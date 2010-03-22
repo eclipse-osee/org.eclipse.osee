@@ -18,6 +18,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MergeChangesInArtifactException;
@@ -37,6 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.compare.AttributeCompareItem;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.mergeWizard.ConflictResolutionWizard;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -147,10 +149,14 @@ public class MergeXViewer extends XViewer {
    }
 
    private boolean hasInteractiveIcon(TreeColumn treeColumn) {
-      return MergeXViewerFactory.Source.is(treeColumn) //
-            || MergeXViewerFactory.Destination.is(treeColumn) //
-            || MergeXViewerFactory.Conflict_Resolved.is(treeColumn) //
-            || MergeXViewerFactory.Merged.is(treeColumn);
+      return isXViewerColumn(treeColumn, MergeXViewerFactory.Source) //
+            || isXViewerColumn(treeColumn, MergeXViewerFactory.Destination) //
+            || isXViewerColumn(treeColumn, MergeXViewerFactory.Conflict_Resolved) //
+            || isXViewerColumn(treeColumn, MergeXViewerFactory.Merged);
+   }
+
+   private boolean isXViewerColumn(TreeColumn treeColumn, XViewerColumn expected) {
+      return Widgets.isAccessible(treeColumn) && treeColumn.getText().equals(expected.getName());
    }
 
    @Override
@@ -184,15 +190,15 @@ public class MergeXViewer extends XViewer {
    }
 
    private void handleResolvableConflictClick(TreeColumn treeColumn, Conflict conflict, Shell shell) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
-      if (MergeXViewerFactory.Source.is(treeColumn)) {
+      if (isXViewerColumn(treeColumn, MergeXViewerFactory.Source)) {
          MergeUtility.setToSource(conflict, shell, true);
-      } else if (MergeXViewerFactory.Destination.is(treeColumn)) {
+      } else if (isXViewerColumn(treeColumn, MergeXViewerFactory.Destination)) {
          MergeUtility.setToDest(conflict, shell, true);
-      } else if (MergeXViewerFactory.Conflict_Resolved.is(treeColumn)) {
+      } else if (isXViewerColumn(treeColumn, MergeXViewerFactory.Conflict_Resolved)) {
          conflict.handleResolvedSelection();
          OseeEventManager.kickMergeBranchEvent(HttpBranchCreation.class, MergeBranchEventType.ConflictResolved,
                conflict.getMergeBranchID());
-      } else if (MergeXViewerFactory.Merged.is(treeColumn)) {
+      } else if (isXViewerColumn(treeColumn, MergeXViewerFactory.Merged)) {
          if (!conflict.getConflictType().equals(ConflictType.ARTIFACT)) {
             AttributeConflict attributeConflict = (AttributeConflict) conflict;
             if (attributeConflict.isSimpleStringAttribute()) {

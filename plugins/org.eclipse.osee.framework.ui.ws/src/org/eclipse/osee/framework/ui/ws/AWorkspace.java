@@ -11,50 +11,26 @@
 package org.eclipse.osee.framework.ui.ws;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.regex.Pattern;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.ui.IPackagesViewPart;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.DialogSelectionHelper;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
-import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
@@ -64,187 +40,9 @@ import org.eclipse.ui.views.navigator.ResourceNavigator;
 /**
  * @author Donald G. Dunne
  */
-public class AWorkspace {
-   private static HashMap<String, File> fileFindMap = new HashMap<String, File>();
+public final class AWorkspace {
 
-   private static boolean initializedWorkspaceSearch = false;
-   private static HashMap<String, List<File>> fileSearch = new HashMap<String, List<File>>();
-   private static IWindowListener windowListener;
-   private static IResourceChangeListener changeListener;
-
-   public static void init(final Object objectToNotify) {
-      Job initJob = new WorkspaceSearchInit(objectToNotify);
-      initJob.setPriority(Job.LONG);
-      initJob.schedule();
-   }
-
-   public static void reinit() {
-      Job initJob = new Job("Initializing Workspace Search") {
-         @Override
-         protected IStatus run(IProgressMonitor monitor) {
-            initializedWorkspaceSearch = false;
-            File savefile = OseeData.getFile("serializedFileFinder");
-            savefile.delete();
-
-            File mapfile = OseeData.getFile("fileFindMap");
-            mapfile.delete();
-
-            fileSearch.clear();
-            fileFindMap.clear();
-            initWorkspaceSearch();
-            return Status.OK_STATUS;
-         }
-      };
-      initJob.setPriority(Job.LONG);
-      initJob.schedule();
-   }
-
-   @SuppressWarnings("unchecked")
-   public static void initWorkspaceSearch() {
-      if (!initializedWorkspaceSearch) {
-         initializedWorkspaceSearch = true;
-         File savefile = OseeData.getFile("serializedFileFinder");
-         File mapfile = OseeData.getFile("fileFindMap");
-         if (savefile.exists() && mapfile.exists()) {
-            ObjectInputStream ois;
-            try {
-               OseeLog.log(AWorkspace.class, Level.INFO, "starting init");
-               long time = System.currentTimeMillis();
-               ois = new ObjectInputStream(new FileInputStream(savefile));
-               fileSearch = (HashMap<String, List<File>>) ois.readObject();
-               OseeLog.log(AWorkspace.class, Level.INFO,
-                     "ending init " + (System.currentTimeMillis() - time) / 1000 + " secs");
-
-               OseeLog.log(AWorkspace.class, Level.INFO, "starting init");
-               time = System.currentTimeMillis();
-               ois = new ObjectInputStream(new FileInputStream(mapfile));
-               fileFindMap = (HashMap<String, File>) ois.readObject();
-               OseeLog.log(AWorkspace.class, Level.INFO,
-                     "ending init " + (System.currentTimeMillis() - time) / 1000 + " secs");
-
-            } catch (FileNotFoundException ex) {
-               ex.printStackTrace();
-            } catch (IOException ex) {
-               ex.printStackTrace();
-            } catch (ClassNotFoundException ex) {
-               ex.printStackTrace();
-            }
-         } else {
-            OseeLog.log(AWorkspace.class, Level.INFO, "starting init");
-            long time = System.currentTimeMillis();
-            List files = Lib.recursivelyListFiles(new File(getWorkspacePath()), Pattern.compile(".*"));
-            for (Object obj : files) {
-               File file = (File) obj;
-               addFile(file);
-            }
-            OseeLog.log(AWorkspace.class, Level.INFO,
-                  "ending init " + (System.currentTimeMillis() - time) / 1000 + " secs");
-         }
-
-         if (changeListener == null) {
-            changeListener = new IResourceChangeListener() {
-
-               public void resourceChanged(IResourceChangeEvent event) {
-                  if (IResourceChangeEvent.POST_CHANGE == event.getType()) {
-                     recDeltaInfo(event.getDelta());
-                  }
-               }
-
-               private void recDeltaInfo(IResourceDelta delta) {
-                  File file = delta.getResource().getLocation().toFile();
-                  if ((delta.getKind() & IResourceDelta.ADDED) > 0) {
-                     addFile(file);
-                  } else if ((delta.getKind() & IResourceDelta.REMOVED) > 0) {
-                     removeFile(file);
-                  }
-                  IResourceDelta[] deltas =
-                        delta.getAffectedChildren(IResourceDelta.ADDED | IResourceDelta.REMOVED | IResourceDelta.CHANGED);
-                  for (IResourceDelta d : deltas) {
-                     recDeltaInfo(d);
-                  }
-               }
-            };
-            OseeData.getProject().getWorkspace().addResourceChangeListener(changeListener);
-         }
-         if (windowListener == null) {
-            windowListener = new IWindowListener() {
-
-               public void windowActivated(IWorkbenchWindow window) {
-               }
-
-               public void windowClosed(IWorkbenchWindow window) {
-                  OseeLog.log(AWorkspace.class, Level.INFO, "closed window");
-                  OseeLog.log(AWorkspace.class, Level.INFO, "saving...");
-
-                  try {
-                     ObjectOutputStream oos =
-                           new ObjectOutputStream(new FileOutputStream(OseeData.getFile("serializedFileFinder")));
-                     oos.writeObject(fileSearch);
-
-                     oos = new ObjectOutputStream(new FileOutputStream(OseeData.getFile("fileFindMap")));
-                     oos.writeObject(fileFindMap);
-                  } catch (FileNotFoundException ex) {
-                     ex.printStackTrace();
-                  } catch (IOException ex) {
-                     ex.printStackTrace();
-                  }
-
-               }
-
-               public void windowDeactivated(IWorkbenchWindow window) {
-               }
-
-               public void windowOpened(IWorkbenchWindow window) {
-               }
-
-            };
-            PlatformUI.getWorkbench().addWindowListener(windowListener);
-         }
-
-      }
-   }
-
-   /**
-    * @param file
-    */
-   protected static void removeFile(File file) {
-      List<File> files = fileSearch.get(file.getName());
-      Iterator<File> it = files.iterator();
-      while (it.hasNext()) {
-         File f = it.next();
-         if (f.equals(file)) {
-            it.remove();
-         }
-      }
-      if (files.size() == 0) {
-         fileSearch.remove(file.getName());
-      }
-   }
-
-   /**
-    * @param file
-    */
-   protected static void addFile(File file) {
-      if (file.isFile()) {
-         List<File> fileSearchResults = fileSearch.get(file.getName());
-         if (fileSearchResults == null) {
-            fileSearchResults = new ArrayList<File>();
-            fileSearch.put(file.getName(), fileSearchResults);
-         }
-         if (!fileSearchResults.contains(file)) {
-            fileSearchResults.add(file);
-         }
-      }
-   }
-
-   public static File getProjectFile(File fileFile) {
-      // If file is an artifact, go up one level to create tree
-      File parentFile = fileFile.getParentFile();
-      while (!parentFile.getParentFile().getName().equals("workspace") && !parentFile.getParentFile().getName().equals(
-            "runtime-workbench-workspace")) {
-         parentFile = parentFile.getParentFile();
-      }
-      return parentFile;
+   private AWorkspace() {
    }
 
    public static String getWorkspacePath() {
@@ -287,23 +85,6 @@ public class AWorkspace {
             }
          }
          // System.out.println("proj");
-      }
-      return null;
-   }
-
-   public static IProject fileToIProject(File file) {
-      String p = file.getAbsolutePath();
-      p = p.replace('\\', '/');
-      System.err.println("p *" + p + "*");
-      // Run through projects to see if any contain this file
-      IProject projs[] = getProjects();
-      for (int i = 0; i < projs.length; i++) {
-         IProject proj = projs[i];
-         String projLoc = proj.getLocation().toString();
-         System.err.println("proj *" + projLoc + "*");
-         if (p.equals(projLoc)) {
-            return proj;
-         }
       }
       return null;
    }
@@ -404,107 +185,11 @@ public class AWorkspace {
       return null;
    }
 
-   /**
-    * @return IResource arraylist
-    */
-   public static ArrayList<IResource> getSelectedResources() {
-      ArrayList<IResource> l = new ArrayList<IResource>();
-      StructuredSelection sel = getSelection();
-      Iterator<?> i = sel.iterator();
-      while (i.hasNext()) {
-         IResource resource = (IResource) i.next();
-         l.add(resource);
-      }
-      return l;
-   }
-
-   /**
-    * Return workspace file give workspace relative path and file. eg ".metadata/.log"
-    */
-   public static File getWorkspaceFile(String wsPathFileName) throws IOException {
-      return new File(getWorkspacePath() + "\\" + wsPathFileName);
-   }
-
-   public static File findWorkspaceFileNew(final String fileName) throws IOException {
-      File file = fileFindMap.get(fileName);
-      if (file != null) {
-         return file;
-      }
-      List<File> files = fileSearch.get(fileName);
-      if (files != null) {
-         if (files.size() == 1) {
-            return files.get(0);
-         } else if (files.size() > 0) {
-            DialogSelectionHelper selection = new DialogSelectionHelper(files.toArray());
-
-            Display.getDefault().syncExec(selection);
-
-            if (selection.getSelectionIndex() == -1) {
-               String message = "we found multiple matches";
-               for (int i = 0; i < files.size(); i++) {
-                  message += "\n" + files.get(i);
-               }
-               throw new IOException(message);
-            } else {
-               if (selection.isSaveSelection()) {
-                  fileFindMap.put(fileName, files.get(selection.getSelectionIndex()));
-               }
-               return files.get(selection.getSelectionIndex());
-            }
-         }
-      }
-      return null;
-   }
-
-   public static File findWorkspaceFile(String fileName, String filePathHint) throws IOException {
-      File file = fileFindMap.get(fileName);
-      if (file == null || !file.exists()) {
-         List<File> files = null;
-         if (filePathHint != null) {
-            files = Lib.recursivelyListFiles(new File(filePathHint), Pattern.compile(fileName));
-         }
-         if (files == null || files.size() == 0) {
-            files = Lib.recursivelyListFiles(new File(AWorkspace.getWorkspacePath()), Pattern.compile(fileName));
-         }
-         if (files.size() == 0) {
-            throw new IOException("we didn't find the file [" + fileName + "] in the workspace");
-         } else if (files.size() > 1) {
-
-            DialogSelectionHelper selection = new DialogSelectionHelper(files.toArray());
-
-            Display.getDefault().syncExec(selection);
-
-            if (selection.getSelectionIndex() == -1) {
-               String message = "we found multiple matches";
-               for (int i = 0; i < files.size(); i++) {
-                  message += "\n" + files.get(i);
-               }
-               throw new IOException(message);
-            } else {
-               if (selection.isSaveSelection()) {
-                  fileFindMap.put(fileName, files.get(selection.getSelectionIndex()));
-               }
-               return files.get(selection.getSelectionIndex());
-            }
-         } else {
-            file = files.get(0);
-            fileFindMap.put(fileName, file);
-         }
-      }
-      return file;
-   }
-
    public static IResource findWorkspaceFile(String fileName) throws IOException {
       IContainer ws = ResourcesPlugin.getWorkspace().getRoot();
       List<IResource> resources = new ArrayList<IResource>();
       recursiveFileFind(fileName, ws, resources);
-      for (IResource resource : resources) {
-         System.out.println("found a file " + resource.getName());
-      }
-      if (resources.size() > 0) {
-         return resources.get(0);
-      }
-      return null;
+      return !resources.isEmpty() ? resources.iterator().next() : null;
    }
 
    public static void recursiveFileFind(String fileName, IResource resource, List<IResource> matches) {
@@ -528,7 +213,7 @@ public class AWorkspace {
       return resources;
    }
 
-   public static void recursiveFileFindMatch(String regex, IResource resource, List<IResource> matches) {
+   private static void recursiveFileFindMatch(String regex, IResource resource, List<IResource> matches) {
       if (IResource.FILE == resource.getType() && resource.getName().length() > 0) {
          if (resource.getName().matches(regex)) {
             matches.add(resource);

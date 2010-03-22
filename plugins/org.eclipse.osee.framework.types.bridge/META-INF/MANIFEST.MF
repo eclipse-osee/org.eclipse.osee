@@ -17,7 +17,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.compare.match;bundle-version="1.0.0",
  org.eclipse.ui.forms,
  org.eclipse.osee.framework.ui.skynet;bundle-version="0.9.2",
- org.eclipse.osee.framework.ui.ws;bundle-version="1.0.0"
+ org.eclipse.osee.framework.ui.ws
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.core.cache,
  org.eclipse.osee.framework.core.client,

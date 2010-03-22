@@ -12,27 +12,30 @@ package org.eclipse.osee.framework.ui.ws;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Donald G. Dunne
  */
-public class AJavaProject {
+public final class AJavaProject {
 
-   private static Map<IJavaProject, IClasspathEntry[]> cachedPath = new HashMap<IJavaProject, IClasspathEntry[]>();
+   private static final Map<IJavaProject, IClasspathEntry[]> cachedPath =
+         new HashMap<IJavaProject, IClasspathEntry[]>();
+
+   private static final Pattern JAVA_PACKAGE_PATTERN = Pattern.compile(".*?package\\s*(.*?);.*", Pattern.DOTALL);
+   private static final Matcher JAVA_PACKAGE_MATCHER = JAVA_PACKAGE_PATTERN.matcher("");
+
+   private AJavaProject() {
+   }
 
    private static IClasspathEntry[] localGetResolvedClasspath(IJavaProject javaProject) throws JavaModelException {
       IClasspathEntry[] paths = cachedPath.get(javaProject);
@@ -41,75 +44,6 @@ public class AJavaProject {
          cachedPath.put(javaProject, paths);
       }
       return paths;
-   }
-
-   public static IJavaProject getJavaProject(File file) {
-      IFile ifile = AWorkspace.fileToIFile(file);
-      return JavaCore.create(ifile.getProject());
-   }
-
-   public static ArrayList<URL> getAllJavaProjectDependancies(IJavaProject javaProject) {
-      ArrayList<URL> urls = new ArrayList<URL>();
-      ArrayList<File> files = getJavaProjectProjectDependancies(javaProject);
-      for (int i = 0; i < files.size(); i++) {
-         try {
-            urls.add(files.get(i).toURI().toURL());
-         } catch (MalformedURLException ex) {
-            ex.printStackTrace();
-         }
-      }
-      return urls;
-   }
-
-   public static String getClassFilePath(String file) {
-      String classFile = null;
-      IJavaProject javaProject = getJavaProject(new File(file));
-      try {
-
-         IClasspathEntry[] paths = localGetResolvedClasspath(javaProject);
-
-         for (int i = 0; i < paths.length; i++) {
-            if (paths[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-               File projectlocation = javaProject.getProject().getLocation().toFile();
-               File projecttricky = javaProject.getProject().getFullPath().toFile();
-               IPath output = paths[i].getOutputLocation();
-               File fileLocation;
-               if (output == null) {
-                  fileLocation = new File(paths[i].getPath().toFile().getPath().replace("src", "bin"));
-               } else {
-                  fileLocation = paths[i].getOutputLocation().toFile();
-               }
-               File javaFileLocation = paths[i].getPath().toFile();
-               String realClassLocation =
-                     fileLocation.toString().replace(projecttricky.toString(), projectlocation.toString());
-               String realJavaLocation =
-                     javaFileLocation.toString().replace(projecttricky.toString(), projectlocation.toString());
-               String packagePath = file.replace(realJavaLocation, "");
-               packagePath = packagePath.replace(".java", ".class");
-               File theclassfile = new File(realClassLocation, packagePath);
-               if (theclassfile.exists()) {
-                  classFile = theclassfile.getAbsolutePath();
-                  break;
-               }
-            }
-         }
-
-      } catch (JavaModelException ex) {
-         ex.printStackTrace();
-      }
-      if (classFile == null) {
-         try {
-            String packageName = "";
-            File java = new File(file);
-            packageName = getJavaPackage(java);
-            packageName = packageName.replace(".", File.separator);
-            packageName += File.separator + java.getName();
-            classFile = file.replace(packageName, "");
-         } catch (IOException e) {
-            e.printStackTrace();
-         }
-      }
-      return classFile;
    }
 
    public static String getClassName(String file) {
@@ -130,14 +64,10 @@ public class AJavaProject {
    }
 
    public static String getJavaPackage(File javaFile) throws IOException {
-      String packageName = "";
       String javaFileContent = Lib.fileToString(javaFile);
-      Pattern pattern = Pattern.compile(".*?package\\s*(.*?);.*", Pattern.DOTALL);
-      Matcher match = pattern.matcher(javaFileContent);
-      if (match.matches()) {
-         packageName = match.group(1);
-      }
-      return packageName;
+      Matcher matcher = JAVA_PACKAGE_MATCHER;
+      matcher.reset(javaFileContent);
+      return matcher.matches() ? matcher.group(1) : "";
    }
 
    public static ArrayList<File> getJavaProjectProjectDependancies(IJavaProject javaProject) {

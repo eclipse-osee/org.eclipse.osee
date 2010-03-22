@@ -13,16 +13,18 @@ package org.eclipse.osee.ats.util.Import;
 
 import java.io.File;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.ws.FileSelector;
+import org.eclipse.osee.framework.ui.swt.FileSelector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -104,7 +106,7 @@ public class ActionImportPage extends WizardDataTransferPage {
    /**
     * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all events
     * and enablements for controls on this page. Subclasses may extend.
-    * 
+    *
     * @param event Event
     */
    public void handleEvent(Event event) {
@@ -113,7 +115,9 @@ public class ActionImportPage extends WizardDataTransferPage {
    }
 
    private void createSourceGroup(Composite parent) {
-      fileSelector = new FileSelector(parent, SWT.NONE, "Import Source (Excel saved as .xml", this);
+      String defaultPath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
+      fileSelector =
+            new FileSelector(parent, SWT.NONE, "Import Source (Excel saved as .xml", defaultPath, this, "*.xml");
 
       if (currentResourceSelection != null) {
          fileSelector.setText(currentResourceSelection.getLocation().toString());
@@ -132,7 +136,12 @@ public class ActionImportPage extends WizardDataTransferPage {
 
    @Override
    protected boolean validateSourceGroup() {
-      return fileSelector.validate(this);
+      String path = fileSelector.getText();
+      boolean isValid = Strings.isValid(path) && path.endsWith(".xml") && fileSelector.getFile().isFile();
+      if (!isValid) {
+         setErrorMessage("File is not a valid xml file");
+      }
+      return isValid;
    }
 
    public boolean finish() {
