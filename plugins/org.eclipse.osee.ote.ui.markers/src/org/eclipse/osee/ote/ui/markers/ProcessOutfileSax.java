@@ -44,7 +44,6 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
 
    private static final int _1_MB = 1048576;
    private static final int _20_MB = _1_MB * 20;
-   private static final int _30_MB = _1_MB * 30;
 
    private final List<TestPointData> testPointDatas = new ArrayList<TestPointData>();
    private TestPointData currentData = null;
