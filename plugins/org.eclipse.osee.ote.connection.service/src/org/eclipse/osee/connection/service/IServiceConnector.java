@@ -13,7 +13,9 @@ package org.eclipse.osee.connection.service;
 import java.io.File;
 import java.io.Serializable;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.rmi.server.ExportException;
+import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 
 /**
  * Provides a communication pipe to a service.
@@ -43,6 +45,7 @@ public interface IServiceConnector {
     */
    Object export(Object callback) throws ExportException;
 
+   void init(Object service, EnhancedProperties properties) throws UnknownHostException, ExportException;
    /**
     * finds the matching exported representation of supplied object
     * 
@@ -66,4 +69,6 @@ public interface IServiceConnector {
    URI upload(File file) throws Exception;
 
    boolean ping();
+
+   EnhancedProperties getProperties();
 }
