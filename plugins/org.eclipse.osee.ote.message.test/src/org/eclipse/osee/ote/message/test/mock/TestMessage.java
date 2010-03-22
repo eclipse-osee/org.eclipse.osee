@@ -24,11 +24,9 @@ public class TestMessage extends Message<UnitTestAccessor, TestMessageData, Test
    public final StringElement STRING_ELEMENT_1;
    public final EnumeratedElement<TestEnum> ENUM_ELEMENT_1;
    public final Float32Element FLOAT32_ELEMENT_1;
-   private final int defaultByteSize = 100;
-   private final int defaultOffset = 0;
 
    public TestMessage() {
-      super("TEST_MSG", true, 0, 50.0);
+      super("TEST_MSG", 100, 0, true, 0, 50.0);
       TestMessageData ethData =
             new TestMessageData(this.getClass().getName(), getName(), getDefaultByteSize(), getDefaultOffset(),
                   MemType.ETHERNET);
@@ -49,12 +47,5 @@ public class TestMessage extends Message<UnitTestAccessor, TestMessageData, Test
 
    }
 
-   public int getDefaultByteSize() {
-      return defaultByteSize;
-   }
-
-   public int getDefaultOffset() {
-      return defaultOffset;
-   }
 
 }
