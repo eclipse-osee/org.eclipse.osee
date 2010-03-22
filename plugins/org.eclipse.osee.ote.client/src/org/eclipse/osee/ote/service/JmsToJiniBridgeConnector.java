@@ -183,5 +183,21 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
    public String getUniqueServerId() {
       return uniqueServerId;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.connection.service.IServiceConnector#getProperties()
+    */
+   @Override
+   public EnhancedProperties getProperties() {
+      return properties;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.connection.service.IServiceConnector#init(java.lang.Object, org.eclipse.osee.framework.jdk.core.util.EnhancedProperties)
+    */
+   @Override
+   public void init(Object service, EnhancedProperties properties) throws UnknownHostException, ExportException {
+      
+   }
    
 }

@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.service;
 
+import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
+
 /**
  * @author Ken J. Aguilar
  */
 public interface IEnvironmentConfigurer {
-   void configure(ConnectionEvent event) throws Exception;
+   void configure(IHostTestEnvironment event) throws Exception;
 }

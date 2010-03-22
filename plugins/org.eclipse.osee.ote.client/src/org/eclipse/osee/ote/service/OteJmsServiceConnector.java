@@ -64,11 +64,11 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
 	}
 
 	public void start() {
-		remoteServiceLookup.register("lba.ote.server", "1.0", this);
+		remoteServiceLookup.register("osee.ote.server", "1.0", this);
 	}
 
 	public void stop() {
-		remoteServiceLookup.unregister("lba.ote.server", "1.0", this);
+		remoteServiceLookup.unregister("osee.ote.server", "1.0", this);
 	}
 
 	@Override

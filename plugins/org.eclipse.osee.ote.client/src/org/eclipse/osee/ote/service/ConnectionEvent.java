@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.service;
 
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
+import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 
 /**
@@ -25,6 +26,7 @@ public final class ConnectionEvent {
    private final IServiceConnector connector;
    private final UserTestSessionKey sessionKey;
    private final OteServiceProperties props;
+   private final IHostTestEnvironment hostTestEnvironment;
 
    /**
     * @param environment
@@ -32,13 +34,14 @@ public final class ConnectionEvent {
     * @param sessionKey
     * @param properties
     */
-   public ConnectionEvent(IServiceConnector connector, ITestEnvironment environment, UserTestSessionKey sessionKey) {
+   public ConnectionEvent(IHostTestEnvironment hostTestEnvironment, IServiceConnector connector, ITestEnvironment environment, UserTestSessionKey sessionKey) {
       if (connector == null) {
          throw new NullPointerException("connector cannot be null");
       }
       this.environment = environment;
       this.connector = connector;
       this.sessionKey = sessionKey;
+      this.hostTestEnvironment = hostTestEnvironment;
       props = new OteServiceProperties(connector);
    }
 
@@ -71,6 +74,10 @@ public final class ConnectionEvent {
 
    public OteServiceProperties getProperties() {
       return props;
+   }
+
+   public IHostTestEnvironment getHostEnvironment() {
+      return hostTestEnvironment;
    }
 
 }

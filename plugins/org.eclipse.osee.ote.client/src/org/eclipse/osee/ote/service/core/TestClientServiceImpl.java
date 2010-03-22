@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.connection.service.IConnectorListener;
 import org.eclipse.osee.connection.service.IServiceConnector;
@@ -101,20 +100,21 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 			throw new IllegalArgumentException("test host cannot be null");
 		}
 		try {
+		   configurer.configure(testHost);
 			testConnection = session.connect(testHosts.get(testHost), testHost, config);
 			if (testConnection != null) {
 				// success
 				ConnectionEvent event =
-					new ConnectionEvent(testHosts.get(testConnection.getConnectedTestHost()),
+					new ConnectionEvent(testHost, testHosts.get(testConnection.getConnectedTestHost()),
 							testConnection.getConnectEnvironment(), testConnection.getSessionKey());
-				if (configurer != null) {
-					try {
-						configurer.configure(event);
-					} catch (Exception e) {
-						session.disconnect(testConnection);
-						throw new IllegalStateException("could not configure environment", e);
-					}
-				}
+//				if (configurer != null) {
+//					try {
+//						configurer.configure(event);
+//					} catch (Exception e) {
+//						session.disconnect(testConnection);
+//						throw new IllegalStateException("could not configure environment", e);
+//					}
+//				}
 				listenerNotifier.notifyPostConnection(event);
 				return event;
 			}
@@ -149,7 +149,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 			testConnection = null;
 		} else {
 			ConnectionEvent event =
-				new ConnectionEvent(testHosts.get(testConnection.getConnectedTestHost()), envirnonment,
+				new ConnectionEvent(this.getConnectedHost(), testHosts.get(testConnection.getConnectedTestHost()), envirnonment,
 						testConnection.getSessionKey());
 			listenerNotifier.notifyDisconnect(event);
 			try {
@@ -200,7 +200,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 			try {
 				// check to see if a connection already established
 				if (testConnection != null) {
-					listener.onPostConnect(new ConnectionEvent(testConnection.getServiceConnector(),
+					listener.onPostConnect(new ConnectionEvent(this.getConnectedHost(), testConnection.getServiceConnector(),
 							testConnection.getConnectEnvironment(), testConnection.getSessionKey()));
 				}
 			} catch (Exception e) {
