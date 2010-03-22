@@ -28,6 +28,7 @@ plugin@org.eclipse.osee.ote.ui.define=SVN,trunk,https://dev.eclipse.org/svnroot/
 
 feature@org.eclipse.osee.define.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.define.feature
 plugin@org.eclipse.osee.coverage=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.coverage
+plugin@org.eclipse.osee.coverage.help.ui=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.coverage.help.ui
 plugin@org.eclipse.osee.define=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.define
 plugin@org.eclipse.osee.define.help.ui=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.define.help.ui
 
