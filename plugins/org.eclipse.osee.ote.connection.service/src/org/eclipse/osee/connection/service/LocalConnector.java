@@ -15,7 +15,6 @@ import java.io.Serializable;
 import java.net.URI;
 import java.rmi.server.ExportException;
 import java.util.HashSet;
-
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 
 /**
@@ -23,16 +22,22 @@ import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
  */
 public class LocalConnector implements IServiceConnector {
    public static final String TYPE = "local";
-   private final Object service;
-   private final EnhancedProperties properties;
+   private Object service;
+   private EnhancedProperties properties;
 
    private final HashSet<IServicePropertyChangeListener> propertyChangeListeners =
          new HashSet<IServicePropertyChangeListener>();
 
-   /**
-    * @param service
-    * @param properties
-    */
+
+   public LocalConnector(){
+      
+   }
+   
+   public void init(Object service, EnhancedProperties properties){
+      this.service = service;
+      this.properties = properties;
+   }
+   
    public LocalConnector(Object service, EnhancedProperties properties) {
       this.service = service;
       this.properties = properties;
@@ -100,5 +105,10 @@ public class LocalConnector implements IServiceConnector {
     public boolean ping() {
 	return true;
     }
+
+   @Override
+   public EnhancedProperties getProperties() {
+      return properties;
+   }
 
 }
