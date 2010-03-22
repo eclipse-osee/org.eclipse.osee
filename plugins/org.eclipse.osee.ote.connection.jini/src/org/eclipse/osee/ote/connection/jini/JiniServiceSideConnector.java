@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.logging.Level;
-
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
@@ -31,7 +30,6 @@ import net.jini.id.UuidFactory;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
-
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.ote.connection.jini.util.LeaseRenewTask;
@@ -43,15 +41,35 @@ public class JiniServiceSideConnector extends JiniConnector implements
  IJiniConnectorLink {
 	public static final String TYPE = "jini.service-end";
 	private final HashMap<ServiceRegistration, LeaseRenewTask> registrations = new HashMap<ServiceRegistration, LeaseRenewTask>();
-	private final Remote service;
-	private final Remote serviceProxy;
-	private final BasicJeriExporter serviceExporter;
-	private final ServiceID serviceId;
+	private Remote service;
+	private Remote serviceProxy;
+	private BasicJeriExporter serviceExporter;
+	private ServiceID serviceId;
 	private final Timer timer = new Timer();
-	private final ServiceItem serviceItem;
-	private final BasicJeriExporter linkExporter;
-	private final IJiniConnectorLink exportedThis;
+	private ServiceItem serviceItem;
+	private BasicJeriExporter linkExporter;
+	private IJiniConnectorLink exportedThis;
 	private boolean stopped = false;
+	
+	
+	public JiniServiceSideConnector() {
+      super();
+   }
+   
+   public void init(Object service, EnhancedProperties properties) throws UnknownHostException, ExportException{
+      super.init(properties);
+      this.service = (Remote)service;
+      serviceId = generateServiceId();
+      serviceExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0), new BasicILFactory(null, null,
+            Activator.getDefault().getExportClassLoader()), false, false);
+      linkExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0), new BasicILFactory(null, null, Activator
+            .getDefault().getExportClassLoader()), false, false);
+      serviceProxy = (Remote) serviceExporter.export(this.service);
+      exportedThis = (IJiniConnectorLink) linkExporter.export(this);
+      properties.setProperty(LINK_PROPERTY, (Serializable) exportedThis);
+      serviceItem = new ServiceItem(serviceId, serviceProxy, createEntries());
+   }
+	
 	public JiniServiceSideConnector(Remote service, EnhancedProperties props) throws UnknownHostException, ExportException {
 		super(props);
 		this.service = service;

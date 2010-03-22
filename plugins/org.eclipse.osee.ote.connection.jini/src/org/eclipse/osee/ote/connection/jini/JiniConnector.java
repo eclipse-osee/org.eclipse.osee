@@ -17,13 +17,11 @@ import java.rmi.server.ExportException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-
 import net.jini.core.entry.Entry;
 import net.jini.export.Exporter;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.connection.service.IServicePropertyChangeListener;
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
@@ -36,7 +34,7 @@ import org.eclipse.osee.framework.jini.service.core.PropertyEntry;
 public abstract class JiniConnector implements IServiceConnector {
     protected final static String LINK_PROPERTY = "JINI_CONNECTOR_LINK";
     private final HashMap<Object, ExportInfo> exports = new HashMap<Object, ExportInfo>();
-    private final EnhancedProperties properties;
+    private EnhancedProperties properties;
     private final HashSet<IServicePropertyChangeListener> propertyChangeListeners = new HashSet<IServicePropertyChangeListener>();
 
 
@@ -50,6 +48,10 @@ public abstract class JiniConnector implements IServiceConnector {
 	}
     }
 
+    public void init(EnhancedProperties properties){
+       this.properties = properties;
+    }
+    
     protected JiniConnector() {
 	this(new EnhancedProperties());
     }
@@ -179,7 +181,7 @@ public abstract class JiniConnector implements IServiceConnector {
 	}
     }
 
-    protected EnhancedProperties getProperties() {
+    public EnhancedProperties getProperties() {
 	return properties;
     }
 

@@ -12,9 +12,11 @@ package org.eclipse.osee.ote.connection.jini;
 
 import java.io.File;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
-
+import java.rmi.server.ExportException;
 import net.jini.core.lookup.ServiceItem;
+import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 
 /**
  * @author Ken J. Aguilar
@@ -53,5 +55,9 @@ public class JiniClientSideConnector extends JiniConnector {
 	    return false;
 	}
     }
+
+   @Override
+   public void init(Object service, EnhancedProperties properties) throws UnknownHostException, ExportException {
+   }
 
 }
