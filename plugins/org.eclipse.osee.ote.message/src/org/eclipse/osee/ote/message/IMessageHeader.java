@@ -34,4 +34,6 @@ public interface IMessageHeader {
     * @param data
     */
    public void setNewBackingBuffer(byte[] data);
+   
+   public String toXml();
 }

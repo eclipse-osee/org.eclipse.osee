@@ -12,11 +12,11 @@ package org.eclipse.osee.ote.message.data;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.log.Env;
@@ -123,8 +123,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    }
 
    public abstract IMessageHeader getMsgHeader();
-
-   public abstract void zeroize();
 
    public MemType getType() {
       return memType;
@@ -619,5 +617,10 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    
    public boolean isMessageCollectionNotEmpty(){
 	   return messages.size() > 0;
+   }
+   
+   public void zeroize() {
+      final byte[] data = toByteArray();
+      Arrays.fill(data, getMsgHeader().getHeaderSize(), data.length, (byte) 0);
    }
 }

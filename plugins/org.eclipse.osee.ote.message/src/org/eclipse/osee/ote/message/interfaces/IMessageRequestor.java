@@ -22,6 +22,8 @@ public interface IMessageRequestor<T extends MessageData, U extends Message<? ex
 
    <CLASSTYPE extends U> CLASSTYPE getMessageWriter(Class<CLASSTYPE> type) throws TestException;
 
+   String getName();
+   
    void remove(U message) throws TestException;
 
    void dispose();

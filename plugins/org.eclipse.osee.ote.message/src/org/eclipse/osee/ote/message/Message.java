@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
@@ -39,6 +40,8 @@ import org.eclipse.osee.ote.message.elements.Element;
 import org.eclipse.osee.ote.message.elements.MsgWaitResult;
 import org.eclipse.osee.ote.message.elements.RecordElement;
 import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.interfaces.IMessageManager;
+import org.eclipse.osee.ote.message.interfaces.IMessageRequestor;
 import org.eclipse.osee.ote.message.interfaces.IMessageScheduleChangeListener;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAccessor;
@@ -70,8 +73,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    private boolean regularUnscheduleCalled = false;
    private boolean isTurnedOff = false;
 
+   private IMessageRequestor messageRequestor = null;
+   private static final double doubleTolerance = 0.000001;
    private final EnumSet<MemType> memTypeActive = EnumSet.noneOf(MemType.class);
-   //	private IOteIO io;
 
    private T defaultMessageData;
 
@@ -80,14 +84,18 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    private List<IMessageDisposeListener> preMessageDisposeListeners = new ArrayList<IMessageDisposeListener>();
    private List<IMessageDisposeListener> postMessageDisposeListeners = new ArrayList<IMessageDisposeListener>();
 
-   //	public int BIT_OFFSET = 0;
-
+   private final int defaultByteSize;
+   private final int defaultOffset;
+   
+   
    protected final MessageSystemListener removableListenerHandler;
 
-   public Message(String name, boolean isScheduled, int phase, double rate) {
+   public Message(String name, int defaultByteSize, int defaultOffset, boolean isScheduled, int phase, double rate) {
       constructed.incrementAndGet();
       listenerHandler = new MessageSystemListener(this);
       this.name = name;
+      this.defaultByteSize = defaultByteSize;
+      this.defaultOffset = defaultOffset;
       elementMap = new LinkedHashMap<String, Element>(20);
       this.phase = phase;
       this.rate = rate;
@@ -126,6 +134,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    public void destroy() {
+      
+      
+      
       notifyPreDestroyListeners();
       destroyed = true;
       defaultMessageData.dispose();
@@ -141,6 +152,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       postMemSourceChangeListeners.clear();
       preMemSourceChangeListeners.clear();
       elementMap.clear();
+      
+      if (messageRequestor != null) {
+         messageRequestor.dispose();
+      }
+      removableListenerHandler.dispose();
    }
 
    /**
@@ -333,7 +349,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       switchElementAssociation(getMessageTypeAssociation(memType));
    }
 
-   public abstract void switchElementAssociation(Collection<U> messages);
+//   public abstract void switchElementAssociation(Collection<U> messages);
 
    public void addMessageTypeAssociation(MemType memType, U messageToBeAdded) {
       checkState();
@@ -683,6 +699,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public void notifyListeners(final MessageData data, final MemType type) {
       checkState();
       this.listenerHandler.onDataAvailable(data, type);
+      this.removableListenerHandler.onDataAvailable(data, type);
    }
 
    /*
@@ -1182,4 +1199,97 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
          return new IMessageHeader[0];
       }
    }
+   
+   public long getActivityCount() {
+      return getActiveDataSource().getActivityCount();
+   }
+
+   public long getSentCount() {
+      return getActiveDataSource().getSentCount();
+   }
+
+   public void setActivityCount(long activityCount) {
+      getActiveDataSource().setActivityCount(activityCount);
+   }
+   
+   public void switchElementAssociation(Collection<U> messages) {
+   }
+   
+   public Map<MemType, Class<? extends Message>[]> getAssociatedMessages() {
+      return new HashMap<MemType, Class<? extends Message>[]>();
+   }
+
+   public void postCreateMessageSetup(IMessageManager messageManager, MessageData data) throws Exception {
+      Map<MemType, Class<? extends Message>[]> o = getAssociatedMessages();
+      messageRequestor = messageManager.createMessageRequestor(getName());
+      for (MemType type : o.keySet()) {
+         if (messageManager.isPhysicalTypeAvailable(type)) {
+            Class<? extends Message>[] classes = o.get(type);
+            for (Class<? extends Message> clazz : classes) {
+               Message message = null;
+                  if (data.isWriter()) {
+                     message = messageRequestor.getMessageWriter(clazz);
+                  } else {
+                     message = messageRequestor.getMessageReader(clazz);
+                  }
+               this.addMessageDataSource((T)message.getDefaultMessageData());
+               this.addMessageTypeAssociation(type, (U)message);
+               setMemSource(type);
+            }
+         }
+      }
+   }
+   
+   /**
+    * Changes the rate a message is being published at. NOTE: This is only going to be allowed to be used on periodic
+    * message & users are not allowed to set rate to zero.
+    * 
+    * @param accessor
+    * @param newRate - hz
+    */
+   public void changeRate(double newRate) {
+      if (Math.abs(newRate - 0.0) < doubleTolerance) { //newRate == 0.0
+         throw new IllegalArgumentException(
+               "Cannot change message rate to zero (" + getName() + ")!\n\tUse unschedule() to do that!");
+      }
+      if (Math.abs(newRate - rate) > doubleTolerance) { //newRate != rate
+         //         accessor.getMsgManager().changeMessageRate(this, newRate, rate);
+         double oldRate = rate;
+         rate = newRate;
+         for (IMessageScheduleChangeListener listener : schedulingChangeListeners)
+            listener.onRateChanged(this, oldRate, newRate);
+      }
+   }
+
+   /**
+    * Changes the rate back to the default rate.
+    * 
+    * @param accessor
+    */
+   public void changeRateToDefault(ITestEnvironmentMessageSystemAccessor accessor) {
+      //      accessor.getMsgManager().changeMessageRate(this, defaultRate, rate);
+      double oldRate = getRate();
+      rate = defaultRate;
+      for (IMessageScheduleChangeListener listener : schedulingChangeListeners)
+         listener.onRateChanged(this, oldRate, defaultRate);
+   }
+   
+   public void sendWithLog(ITestAccessor accessor) {
+      if (accessor != null) {
+         accessor.getLogger().methodCalledOnObject(accessor, getMessageName(), new MethodFormatter(), this);
+      }
+      send();
+      if (accessor != null) {
+         accessor.getLogger().methodEnded(accessor);
+      }
+   }
+   
+   public int getDefaultByteSize() {
+      return defaultByteSize;
+   }
+
+   public int getDefaultOffset() {
+      return defaultOffset;
+   }
+   
 }
