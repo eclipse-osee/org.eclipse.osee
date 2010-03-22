@@ -34,11 +34,10 @@ import org.xml.sax.SAXException;
  */
 public class WordArtifactElementExtractorTest {
    private final static String WORDML_START =
-         "<w:wordDocument xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" >";
+         "<w:wordDocument xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"  xmlns:ns0=\"http:/ \" xmlns:ns1=\"http://www.w3.org/2001/XMLSchema\" w:macrosPresent=\"no\" w:embeddedObjPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\">";
    private final static String WORDML_END = "</w:wordDocument>";
 
-   private final static String NO_CHANGE =
-         "<w:body></w:body>";
+   private final static String NO_CHANGE = "<w:body></w:body>";
    private final static String CHANGE_IN_BETWEEN_2007 =
          "<w:body><w:p wsp:rsidR=\"00682312\" wsp:rsidRDefault=\"00B17B94\"><w:hlink w:dest=\"http://none/edit?guid=A+7R6BYOEiR5BY230lgA&amp;branchId=2380\"><w:r wsp:rsidR=\"00A05BEC\"><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>OSEE_EDIT_START</w:t></w:r></w:hlink></w:p><w:p wsp:rsidR=\"002D7BD4\" wsp:rsidRDefault=\"002D7BD4\"><w:r><w:t>Middle change</w:t></w:r></w:p><w:p wsp:rsidR=\"00B17B94\" wsp:rsidRDefault=\"00B17B94\"><w:hlink w:dest=\"http://none/edit?guid=A+7R6BYOEiR5BY230lgA&amp;branchId=2380\"><w:r wsp:rsidR=\"00A05BEC\"><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>OSEE_EDIT_END</w:t></w:r></w:hlink></w:p><w:p wsp:rsidR=\"00B17B94\" wsp:rsidRDefault=\"00B17B94\"/><w:p wsp:rsidR=\"00B17B94\" wsp:rsidRDefault=\"00B17B94\"><w:pPr><w:rPr><w:vanish/></w:rPr></w:pPr><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r wsp:rsidR=\"00A05BEC\"><w:rPr><w:vanish/></w:rPr><w:instrText>LISTNUM\"listreset\"\\l1\\s0</w:instrText></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"end\"/><wx:t wx:val=\" .\"/></w:r></w:p><w:sectPr wsp:rsidR=\"00B17B94\" wsp:rsidSect=\"007F3E1C\"><w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\"/><w:pgMar w:top=\"1440\" w:right=\"1440\" w:bottom=\"1440\" w:left=\"1440\" w:header=\"432\" w:footer=\"432\" w:gutter=\"0\"/><w:pgNumType w:start=\"1\"/><w:cols w:space=\"475\"/><w:noEndnote/><w:docGrid w:line-pitch=\"360\"/></w:sectPr></w:body>";
    private final static String START_CHANGE_2007 =
