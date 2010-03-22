@@ -14,6 +14,7 @@ import java.rmi.server.ExportException;
 import java.util.concurrent.Future;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
+import org.eclipse.osee.ote.core.environment.status.OTEStatusBoard;
 
 public interface ITestServerCommand {
 
@@ -21,7 +22,7 @@ public interface ITestServerCommand {
 
    ICommandHandle createCommandHandle(Future<ITestCommandResult> result, ITestContext context) throws ExportException;
 
-   ITestCommandResult execute(TestEnvironment context) throws Exception;
+   ITestCommandResult execute(TestEnvironment context, OTEStatusBoard statusBoard) throws Exception;
 
    String getGUID();
 }

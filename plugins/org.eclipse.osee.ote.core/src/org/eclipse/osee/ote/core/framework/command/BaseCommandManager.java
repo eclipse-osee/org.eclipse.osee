@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.framework.thread.OteThreadManager;
+import org.eclipse.osee.ote.core.internal.Activator;
 
 public class BaseCommandManager implements ICommandManager {
 
@@ -33,7 +34,7 @@ public class BaseCommandManager implements ICommandManager {
    }
 
    public ICommandHandle addCommand(ITestServerCommand cmd, TestEnvironment context) throws ExportException {
-      Future<ITestCommandResult> result = commands.submit(new TestCallableWrapper(this, cmd, context));
+      Future<ITestCommandResult> result = commands.submit(new TestCallableWrapper(this, cmd, context, Activator.getInstance().getOteStatusBoard()));
       cmdMap.put(cmd, result);
       return cmd.createCommandHandle(result, context);
    }

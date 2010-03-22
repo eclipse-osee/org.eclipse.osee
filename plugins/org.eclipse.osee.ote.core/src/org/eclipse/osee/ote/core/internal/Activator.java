@@ -52,7 +52,7 @@ public class Activator implements BundleActivator, RuntimeLibraryListener {
    private StandardShell stdShell;
    private ServiceRegistration consoleCommandRegistration;
    private ServiceRegistration commandDistributerRegistration;
-
+   
    public void start(BundleContext context) throws Exception {
       activator = this;
       statusBoard =  new StatusBoard();
@@ -69,6 +69,9 @@ public class Activator implements BundleActivator, RuntimeLibraryListener {
 
       commandDistributer = new CommandDistributerImpl();
       commandDistributerRegistration = context.registerService(CommandDistributer.class.getName(), commandDistributer, new Hashtable());
+      
+      
+      
    }
 
    public void stop(BundleContext context) throws Exception {
