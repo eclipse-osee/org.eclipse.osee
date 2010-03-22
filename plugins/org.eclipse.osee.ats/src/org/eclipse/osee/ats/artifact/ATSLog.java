@@ -179,6 +179,17 @@ public class ATSLog {
       }
    }
 
+   public void setCreationDate(Date date) throws OseeCoreException {
+      List<LogItem> logItems = getLogItems();
+      for (LogItem item : logItems) {
+         if (item.getType() == LogType.Originated) {
+            item.setDate(date);
+            putLogItems(logItems);
+            return;
+         }
+      }
+   }
+
    /**
     * Since originator can be changed, return the date of the first originated log item
     */
