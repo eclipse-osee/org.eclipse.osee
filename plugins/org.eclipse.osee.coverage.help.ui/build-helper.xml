@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="org.eclipse.osee.coverage.help.ui" basedir="."
+	default="all">
+	<property name="osee.base.help.plugin" value="../org.eclipse.osee.framework.help.ui" />
+	<property name="ant.file.imported" value="${osee.base.help.plugin}/scripts" />
+	<import file="${ant.file.imported}/help-build-common.xml" />
+
+	<description>
+		Generate Eclipse help content for the OSEE Coverage user guide
+	</description>
+
+	<property name="osee.help.doc.url.base" value="http://wiki.eclipse.org" />
+	<property name="osee.help.image.folder" value="images" />
+
+	<property name="osee.help.doc" value="OSEE/Coverage/Users_Guide" />
+	<property name="osee.help.doc.intro" value="${osee.help.doc}/Intro" />
+	<property name="osee.help.doc.views" value="${osee.help.doc}/Views" />
+	<property name="osee.help.doc.usage" value="${osee.help.doc}/Usage" />
+	<property name="osee.help.doc.tips" value="${osee.help.doc}/Tips" />
+	<property name="osee.help.doc.new" value="${osee.help.doc}/New" />
+	<property name="osee.help.doc.update" value="OSEE/Users_Guide/Update" />
+			
+	<property name="osee.help.intro.file.name" value="OSEE Coverage Intro" />
+	<property name="osee.help.views.file.name" value="OSEE Coverage Views" />
+	<property name="osee.help.usage.file.name" value="OSEE Coverage Usage" />
+	<property name="osee.help.tips.file.name" value="OSEE Coverage Tips" />
+	<property name="osee.help.new.file.name" value="OSEE Coverage New" />
+	<property name="osee.help.update.file.name" value="OSEE Update" />
+
+	<target name="all"
+		description="Generate Eclipse help content for the OSEE Coverage user guide">
+		<sequential>
+			<delete>
+				<fileset dir="userguide" />
+			</delete>
+			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
+					wiki.url.base="${osee.help.doc.url.base}/OSEE" 
+					help.doc.url.html="${osee.help.doc.url.base}/${osee.help.doc.intro}"
+					help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.doc.intro}"
+					help.doc.filenameNoExtension="${osee.help.intro.file.name}" help.imagefolder="${osee.help.image.folder}"
+					targetfolder="userguide" />
+				
+			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
+					wiki.url.base="${osee.help.doc.url.base}/OSEE" 
+					help.doc.url.html="${osee.help.doc.url.base}/${osee.help.doc.views}"
+					help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.doc.views}"
+					help.doc.filenameNoExtension="${osee.help.views.file.name}" help.imagefolder="${osee.help.image.folder}"
+					targetfolder="userguide" />
+				
+			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
+					wiki.url.base="${osee.help.doc.url.base}/OSEE" 
+					help.doc.url.html="${osee.help.doc.url.base}/${osee.help.doc.usage}"
+					help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.doc.usage}"
+					help.doc.filenameNoExtension="${osee.help.usage.file.name}" help.imagefolder="${osee.help.image.folder}"
+					targetfolder="userguide" />
+				
+			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
+					wiki.url.base="${osee.help.doc.url.base}/OSEE" 
+					help.doc.url.html="${osee.help.doc.url.base}/${osee.help.doc.tips}"
+					help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.doc.tips}"
+					help.doc.filenameNoExtension="${osee.help.tips.file.name}" help.imagefolder="${osee.help.image.folder}"
+					targetfolder="userguide" />
+				
+			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
+					wiki.url.base="${osee.help.doc.url.base}/OSEE" 
+					help.doc.url.html="${osee.help.doc.url.base}/${osee.help.doc.new}"
+					help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.doc.new}"
+					help.doc.filenameNoExtension="${osee.help.new.file.name}" help.imagefolder="${osee.help.image.folder}"
+					targetfolder="userguide" />
+			
+			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
+					wiki.url.base="${osee.help.doc.url.base}/OSEE" help.doc.url.html="${osee.help.doc.url.base}/${osee.help.doc.update}"
+					help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.doc.update}"
+					help.doc.filenameNoExtension="${osee.help.update.file.name}"
+					help.imagefolder="${osee.help.image.folder}" targetfolder="userguide" />
+		</sequential>
+	</target>
+</project>

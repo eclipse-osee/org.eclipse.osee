@@ -1,0 +1,12 @@
+<contexts>
+	<context id="coverageUsersGuide">
+	   <description>Users Guide for Coverage</description>
+	   <topic href="userguide/ATS-Workflow-Configuration-Editor.html" label="Workflow Configuration Editor"/>
+	   <topic href="userguide/Workflow-Configuration.html" label="Workflow Configuration"/>
+	   <topic href="userguide/Work-Page-Definition-Artifact.html" label="Work Page Definition"/>
+	   <topic href="userguide/Work-Rule-Widget-Artifact.html" label="Work Widget Definition"/>
+	   <topic href="userguide/Work-Rule-Definition-Artifact.html" label="Work Rule Definition"/>
+	</context>
+
+	
+</contexts>
