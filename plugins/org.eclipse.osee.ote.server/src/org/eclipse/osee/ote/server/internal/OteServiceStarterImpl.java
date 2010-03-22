@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.messaging.services.RegisteredServiceReference;
 import org.eclipse.osee.framework.messaging.services.RemoteServiceRegistrar;
 import org.eclipse.osee.framework.messaging.services.ServiceInfoPopulator;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceDescriptionPair;
-import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.core.OteBaseMessages;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentServiceConfig;
@@ -73,14 +72,15 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
    
    @Override
    public void start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config, PropertyParamter propertyParameter, String environmentFactoryClass) throws Exception{
-      ExportClassLoader exportClassLoader = new ExportClassLoader(packageAdmin);
-      Class<? extends TestEnvironmentFactory> clazz = exportClassLoader.loadClass(environmentFactoryClass).asSubclass(TestEnvironmentFactory.class);
-      TestEnvironmentFactory factory = clazz.newInstance();
-      start(serviceSideConnector, config, propertyParameter, factory);
+      start(serviceSideConnector, config, propertyParameter, null, environmentFactoryClass);
    }
    
    @Override
    public void start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config, PropertyParamter propertyParameter, TestEnvironmentFactory factory) throws Exception{
+     start(serviceSideConnector, config, propertyParameter, factory, null);
+   }
+   
+   private void start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config, PropertyParamter propertyParameter, TestEnvironmentFactory factory,  String environmentFactoryClass) throws Exception{
       if(service != null){
          throw new OseeStateException("An ote Server has already been started.");
       }
@@ -100,7 +100,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
       
       NodeInfo nodeInfo = new NodeInfo("OTEEmbeddedBroker", uri);
       
-      EnvironmentCreationParameter environmentCreationParameter = new EnvironmentCreationParameter(runtimeLibraryManager, nodeInfo, serviceSideConnector, config, factory);
+      EnvironmentCreationParameter environmentCreationParameter = new EnvironmentCreationParameter(runtimeLibraryManager, nodeInfo, serviceSideConnector, config, factory, environmentFactoryClass, packageAdmin);
       
       service = new OteService(runtimeLibraryManager,environmentCreationParameter, propertyParameter);
       
