@@ -66,6 +66,7 @@ feature@org.eclipse.osee.define.feature=SVN,url=https://dev.eclipse.org/svnroot/
 plugin@org.eclipse.osee.define=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.define
 plugin@org.eclipse.osee.define.help.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.define.help.ui
 plugin@org.eclipse.osee.coverage=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.coverage
+plugin@org.eclipse.osee.coverage.help.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.coverage.help.ui
 
 feature@org.eclipse.osee.ats.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.ats.feature
 plugin@org.eclipse.osee.ats=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.ats
