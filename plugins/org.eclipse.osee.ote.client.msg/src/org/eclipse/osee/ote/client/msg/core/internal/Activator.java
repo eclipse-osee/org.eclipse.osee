@@ -12,16 +12,11 @@ package org.eclipse.osee.ote.client.msg.core.internal;
 
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.eclipse.osee.ote.client.msg.core.IMessageDbFactory;
-import org.eclipse.osee.ote.service.IOteClientService;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The activator class controls the plug-in life cycle

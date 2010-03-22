@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.client.msg.core.internal.state;
 
 import java.util.Set;
-
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.enums.MemType;

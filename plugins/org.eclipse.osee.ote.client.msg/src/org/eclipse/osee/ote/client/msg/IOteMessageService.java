@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.client.msg;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.message.commands.RecordCommand;
 import org.eclipse.osee.ote.message.tool.IFileTransferHandle;

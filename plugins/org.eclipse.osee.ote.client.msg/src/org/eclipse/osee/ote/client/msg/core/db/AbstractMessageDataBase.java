@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.client.msg.core.internal.MessageReference;
 import org.eclipse.osee.ote.message.Message;

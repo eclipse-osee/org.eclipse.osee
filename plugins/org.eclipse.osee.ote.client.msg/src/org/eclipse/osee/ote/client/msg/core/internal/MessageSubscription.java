@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.client.msg.core.internal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.client.msg.core.ISubscriptionListener;
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;

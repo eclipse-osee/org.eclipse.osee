@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.client.msg.core.internal;
 
 import java.io.IOException;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
 import org.eclipse.osee.ote.client.msg.core.IMessageDbFactory;

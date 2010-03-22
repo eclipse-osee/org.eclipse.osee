@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.client.msg.core.db;
 
 import java.util.EnumSet;
-
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.commands.SubscribeToMessage;
 import org.eclipse.osee.ote.message.commands.UnSubscribeToMessage;

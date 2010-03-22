@@ -20,7 +20,6 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.message.enums.MemType;
 
