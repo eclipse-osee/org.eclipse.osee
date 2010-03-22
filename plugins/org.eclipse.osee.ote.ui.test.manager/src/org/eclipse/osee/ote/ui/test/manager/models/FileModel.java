@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.ui.test.manager.models;
 
 import java.io.File;
 import java.util.logging.Level;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;

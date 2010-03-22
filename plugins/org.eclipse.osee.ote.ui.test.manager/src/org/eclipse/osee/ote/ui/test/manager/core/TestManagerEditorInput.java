@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.ui.test.manager.core;
 
 import java.io.File;
 import java.io.InputStream;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;

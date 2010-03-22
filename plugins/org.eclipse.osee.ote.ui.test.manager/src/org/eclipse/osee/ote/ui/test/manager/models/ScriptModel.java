@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.ui.test.manager.models;
 
 import java.io.File;
-
 import org.eclipse.core.filebuffers.manipulation.ContainerCreator;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;

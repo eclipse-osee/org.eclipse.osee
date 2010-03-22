@@ -16,7 +16,6 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;

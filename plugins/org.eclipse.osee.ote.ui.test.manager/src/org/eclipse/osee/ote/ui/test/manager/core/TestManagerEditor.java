@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -101,6 +100,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
 
    private ITestEnvironment connectedEnv = null;
    private IServiceConnector connector = null;
+   private IHostTestEnvironment connectedHost;
 
    public TestManagerEditor(final ITestManagerFactory testManagerFactory) {
       super();
@@ -530,11 +530,13 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
             }
          });
       }
+      connectedHost = null;
    }
 
    @Override
    public void onPostConnect(ConnectionEvent event) {
       connectedEnv = event.getEnvironment();
+      connectedHost = event.getHostEnvironment();
       connector = event.getConnector();
       boolean problemEncountered = pageManager.onPostConnect(event);
       if (problemEncountered) {
@@ -552,6 +554,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    public void onPreDisconnect(ConnectionEvent event) {
       event.getEnvironment();
       connectedEnv = null;
+      
       connector = null;
       boolean problemEncountered = pageManager.onPreDisconnect(event);
       if (problemEncountered) {
@@ -563,6 +566,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
             }
          });
       }
+      connectedHost = null;
    }
 
    public boolean isConnected() {
@@ -571,6 +575,10 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
 
    public ITestEnvironment getConnectedEnvironment() {
       return connectedEnv;
+   }
+   
+   public IHostTestEnvironment getConnectedHostEnvironment(){
+      return connectedHost;
    }
 
    public IServiceConnector getConnector() {
