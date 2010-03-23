@@ -15,13 +15,14 @@ import static org.eclipse.osee.framework.core.enums.PermissionEnum.DENY;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.FULLACCESS;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.LOCK;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.READ;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IAccessControllable;
+
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
@@ -211,16 +212,16 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
 
       for (Object object : objectList) {
-         isValid &= hasPermission((IAccessControllable) object, permission);
+         isValid &= hasPermission(object, permission);
       }
       return isValid;
    }
 
-   public static boolean hasPermission(IAccessControllable object, PermissionEnum permission) throws OseeCoreException {
+   public static boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException {
       return hasPermission(UserManager.getUser(), object, permission);
    }
 
-   public static PermissionEnum getObjectPermission(Artifact subject, IAccessControllable object) {
+   public static PermissionEnum getObjectPermission(Artifact subject, Object object) {
       for (PermissionEnum permissionEnum : PermissionEnum.values()) {
          boolean result = hasPermission(subject, object, permissionEnum);
          System.out.println("subject " + subject + " object " + object + " permission " + permissionEnum.name() + " -> " + result);
@@ -231,7 +232,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       return FULLACCESS;
    }
 
-   private static boolean hasPermission(Artifact subject, IAccessControllable object, PermissionEnum permission) {
+   private static boolean hasPermission(Artifact subject, Object object, PermissionEnum permission) {
       PermissionEnum userPermission = null;
       PermissionEnum branchPermission = null;
       Branch branch = null;

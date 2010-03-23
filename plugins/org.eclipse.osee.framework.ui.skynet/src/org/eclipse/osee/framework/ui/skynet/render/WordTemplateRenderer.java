@@ -21,7 +21,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+
 import javax.xml.namespace.QName;
+
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.core.resources.IFile;
@@ -305,7 +307,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          }
       } else {
          diffPath =
-               getRenderFolder(baseVersion.getBranch(), PresentationType.SPECIALIZED_EDIT).getLocation().toOSString() + '\\' + fileName;
+               getRenderFolder(baseVersion.getBranch(), PresentationType.MERGE_EDIT).getLocation().toOSString() + '\\' + fileName;
       }
 
       VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();

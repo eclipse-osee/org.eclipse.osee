@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
+
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.osee.framework.core.data.IAccessControllable;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -52,13 +52,13 @@ public class PolicyDialog extends Dialog {
    private Button chkChildrenPermission;
    private Combo cmbUsers;
    private Combo cmbPermissionLevel;
-   private final IAccessControllable accessControlledObject;
+   private final Object accessControlledObject;
    private Label accessLabel;
 
    public PolicyDialog(Shell parentShell, Object accessControlledObject) {
       super(parentShell);
 
-      this.accessControlledObject = (IAccessControllable) accessControlledObject;
+      this.accessControlledObject = accessControlledObject;
       setShellStyle(SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | getDefaultOrientation() | SWT.RESIZE);
    }
 

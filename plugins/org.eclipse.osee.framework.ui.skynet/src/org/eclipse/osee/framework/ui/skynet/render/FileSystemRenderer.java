@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -164,7 +165,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       }
       IFolder baseFolder;
       if (presentationType == PresentationType.MERGE_EDIT) {
-         baseFolder = getRenderFolder(artifact.getBranch(), PresentationType.GENERALIZED_EDIT);
+         baseFolder = getRenderFolder(artifact.getBranch(), PresentationType.MERGE_EDIT);
       } else {
          baseFolder = getRenderFolder(artifact.getBranch(), PresentationType.DIFF);
       }

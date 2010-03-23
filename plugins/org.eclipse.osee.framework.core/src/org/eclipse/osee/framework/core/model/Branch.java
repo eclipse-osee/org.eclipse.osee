@@ -16,8 +16,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.core.data.IAccessControllable;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Roberto E. Escobar
  */
-public class Branch extends AbstractOseeType implements Comparable<Branch>, IAccessControllable, IAdaptable, IOseeBranch {
+public class Branch extends AbstractOseeType implements Comparable<Branch>, IAdaptable, IOseeBranch {
 
    private static final int SHORT_NAME_LIMIT = 25;
 

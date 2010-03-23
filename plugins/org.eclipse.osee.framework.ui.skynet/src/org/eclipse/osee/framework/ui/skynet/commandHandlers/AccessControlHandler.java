@@ -12,10 +12,10 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.data.IAccessControllable;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Jeff C. Phillips
  */
 public class AccessControlHandler extends CommandHandler {
-   private IAccessControllable object;
+   private Object object;
 
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
