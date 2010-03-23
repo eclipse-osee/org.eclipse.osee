@@ -1,15 +1,12 @@
 <project name="Generates OSEE Application Server Runtime Bundle" default="run">
 
 	<target name="setup">
-		<propertyregex property="targetSiteFile" input="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-TARGET-" casesensitive="false" override="true" />
-		<property name="tempAppServerFolder" value="${buildDirectory}/${targetSiteFile}_tmp" />
+		<propertyregex property="updateSiteFile" input="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-Update-" casesensitive="false" override="true" />
+		<property name="tempAppServerFolder" value="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp" />
 		<mkdir dir="${tempAppServerFolder}" />
 
-		<unzip src="${buildDirectory}/${targetSiteFile}" dest="${tempAppServerFolder}">
-			<patternset>
-				<excludesfile name="features/*" />
-				<excludesfile name="plugins/*source_*.jar" />
-			</patternset>
+		<unzip src="${buildDirectory}/${buildLabel}/${updateSiteFile}" dest="${tempAppServerFolder}">
+			<patternset includes="plugins/*" excludes="features/*,*.jar,*.xml,**/*source_*" />
 		</unzip>
 
 		<mkdir dir="${tempAppServerFolder}/configuration" />
@@ -31,7 +28,7 @@
 	</target>
 
 	<target name="pack">
-		<propertyregex property="serverRuntimeFile" input="${targetSiteFile}" defaultvalue="server-runtime.zip" regexp="-TARGET-" replace="-osgi-runtime-" casesensitive="false" override="true" />
+		<propertyregex property="serverRuntimeFile" input="${masterZip}" defaultvalue="server-runtime.zip" regexp="-Master-" replace="-osgi-runtime-" casesensitive="false" override="true" />
 		<zip destfile="${buildDirectory}/${serverRuntimeFile}">
 			<fileset dir="${tempAppServerFolder}" />
 		</zip>
