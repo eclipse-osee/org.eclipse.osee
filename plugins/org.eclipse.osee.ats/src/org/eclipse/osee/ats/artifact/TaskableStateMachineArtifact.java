@@ -57,6 +57,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
 
    @Override
    public void getSmaArtifactsOneLevel(StateMachineArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
+      super.getSmaArtifactsOneLevel(smaArtifact, artifacts);
       artifacts.addAll(getTaskArtifacts());
    }
 

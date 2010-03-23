@@ -75,6 +75,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    @Override
    public void getSmaArtifactsOneLevel(StateMachineArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
+      super.getSmaArtifactsOneLevel(smaArtifact, artifacts);
       try {
          if (getTargetedForVersion() != null) {
             artifacts.add(getTargetedForVersion());
