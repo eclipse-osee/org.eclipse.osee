@@ -14,3 +14,4 @@ plugin@org.eclipse.osee.framework.ui.jdk=SVN,trunk,https://dev.eclipse.org/svnro
 plugin@org.eclipse.osee.framework.ui.plugin=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.ui.plugin
 plugin@org.eclipse.osee.framework.ui.service.control=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.ui.service.control
 plugin@org.eclipse.osee.framework.ui.swt=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.ui.swt
+plugin@org.eclipse.osee.framework.ui.ws=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.ui.ws

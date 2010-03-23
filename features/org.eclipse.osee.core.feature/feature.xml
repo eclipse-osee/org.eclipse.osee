@@ -24,7 +24,6 @@
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.commons.codec"/>
       <import plugin="org.apache.commons.httpclient"/>
-      <import plugin="org.apache.commons.lang"/>
       <import plugin="org.apache.xerces"/>
       <import plugin="jms.libraries"/>
       <import plugin="javax.xml"/>
