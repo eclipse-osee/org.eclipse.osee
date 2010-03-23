@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.osee.framework.feature"
       label="%featureName"
-      version="0.9.3.qualifier"
+      version="0.9.4.qualifier"
       provider-name="%providerName">
 
    <description>
@@ -49,8 +49,8 @@
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.osee.framework.ui.plugin"/>
       <import plugin="org.eclipse.core.jobs"/>
-      <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.3.qualifier" match="greaterOrEqual"/>
-      <import feature="org.eclipse.osee.core.feature" version="0.9.3.qualifier"/>
+      <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.4.qualifier" match="greaterOrEqual"/>
+      <import feature="org.eclipse.osee.core.feature" version="0.9.4.qualifier"/>
    </requires>
 
    <plugin
