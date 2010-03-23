@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.admin;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;

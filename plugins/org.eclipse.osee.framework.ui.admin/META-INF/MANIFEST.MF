@@ -7,7 +7,8 @@ Bundle-ClassPath: admin.jar
 Bundle-Activator: org.eclipse.osee.framework.ui.admin.AdminPlugin
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.osee.framework.ui.ws
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.exception,
