@@ -5,6 +5,7 @@ plugin@org.eclipse.osee.ote.client=SVN,trunk,https://dev.eclipse.org/svnroot/tec
 plugin@org.eclipse.osee.ote.client.msg=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.ote.client.msg
 plugin@org.eclipse.osee.ote.connection.jini=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.ote.connection.jini
 plugin@org.eclipse.osee.ote.connection.service=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.ote.connection.service
+plugin@org.eclipse.osee.ote.server=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.ote.server
 plugin@org.eclipse.osee.ote.core=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.ote.core
 plugin@org.eclipse.osee.ote.message=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.ote.message
 plugin@org.eclipse.osee.ote.messaging.dds=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.ote.messaging.dds
