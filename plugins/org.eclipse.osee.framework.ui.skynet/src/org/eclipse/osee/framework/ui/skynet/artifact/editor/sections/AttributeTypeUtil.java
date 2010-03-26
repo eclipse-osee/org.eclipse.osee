@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,16 +26,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  */
 public class AttributeTypeUtil {
 
-   private final static String NAME_ATTRIBUTE_ID = "Name";
-
    private AttributeTypeUtil() {
    }
 
    public static AttributeType[] getEmptyTypes(Artifact artifact) throws OseeCoreException {
       List<AttributeType> items = new ArrayList<AttributeType>();
       for (AttributeType type : artifact.getAttributeTypes()) {
-         String typeName = type.getName();
-         if (!NAME_ATTRIBUTE_ID.equals(typeName) && artifact.getAttributes(typeName).isEmpty()) {
+         if (!CoreAttributeTypes.NAME.equals(type) && artifact.getAttributes(type).isEmpty()) {
             items.add(type);
          }
       }
@@ -54,11 +52,11 @@ public class AttributeTypeUtil {
       }
       typesInExistence.addAll(artifact.getAttributeTypes());
       for (AttributeType type : typesInExistence) {
-         if (type.getName().equals(NAME_ATTRIBUTE_ID)) {
+         if (CoreAttributeTypes.NAME.equals(type)) {
             nameType = type;
          } else {
             if (!artifact.getAttributes(type.getName()).isEmpty()) {
-               if (type.getName().equals("Annotation")) {
+               if (CoreAttributeTypes.Annotation.equals(type)) {
                   annotations = type;
                } else {
                   items.add(type);
