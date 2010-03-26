@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.messaging.services.RemoteServiceRegistrar;
 import org.eclipse.osee.framework.messaging.services.ServiceInfoPopulator;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceDescriptionPair;
 import org.eclipse.osee.ote.core.OteBaseMessages;
+import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentServiceConfig;
 import org.eclipse.osee.ote.server.OteServiceStarter;
@@ -72,16 +73,16 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 	}
 
 	@Override
-	public void start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config, PropertyParamter propertyParameter, String environmentFactoryClass) throws Exception{
-		start(serviceSideConnector, config, propertyParameter, null, environmentFactoryClass);
+	public IHostTestEnvironment start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config, PropertyParamter propertyParameter, String environmentFactoryClass) throws Exception{
+		return start(serviceSideConnector, config, propertyParameter, null, environmentFactoryClass);
 	}
 
 	@Override
-	public void start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config, PropertyParamter propertyParameter, TestEnvironmentFactory factory) throws Exception{
-		start(serviceSideConnector, config, propertyParameter, factory, null);
+	public IHostTestEnvironment start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config, PropertyParamter propertyParameter, TestEnvironmentFactory factory) throws Exception{
+		return start(serviceSideConnector, config, propertyParameter, factory, null);
 	}
 
-	private void start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config, PropertyParamter propertyParameter, TestEnvironmentFactory factory,  String environmentFactoryClass) throws Exception{
+	private IHostTestEnvironment start(IServiceConnector serviceSideConnector, ITestEnvironmentServiceConfig config, PropertyParamter propertyParameter, TestEnvironmentFactory factory,  String environmentFactoryClass) throws Exception{
 		if(service != null){
 			throw new OseeStateException("An ote Server has already been started.");
 		}
@@ -115,6 +116,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			RegisteredServiceReference ref = remoteServiceRegistrar.registerService("osee.ote.server", "1.0", service.getServiceID().toString(), uri, this, 60 * 3);
 			service.set(ref);      
 		}
+		return service;
 	}
 
 	@Override

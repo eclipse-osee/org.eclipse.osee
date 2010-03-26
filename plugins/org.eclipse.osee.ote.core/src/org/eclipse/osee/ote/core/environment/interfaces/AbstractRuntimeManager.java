@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
@@ -549,13 +550,13 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
 		   return;
 	   }
 	   cleanUpNeeded = false;
-      if (runtimeLibraryLoader != null) {
-         try {
-            onRuntimeUnloaded();
-         } catch (Throwable th) {
-            OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE, th);
-         }
-      }
+
+	   try {
+		   onRuntimeUnloaded();
+	   } catch (Throwable th) {
+		   OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE, th);
+	   }
+
 
       for (Bundle bundle : installedBundles) {
          try {

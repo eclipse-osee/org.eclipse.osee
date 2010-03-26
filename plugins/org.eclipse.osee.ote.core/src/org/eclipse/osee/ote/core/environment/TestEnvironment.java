@@ -37,6 +37,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.connection.service.LocalConnector;
@@ -413,6 +414,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       }
       isShutdown = true;
       runtimeManager.cleanup();
+      runtimeManager.removeRuntimeLibraryListener(Activator.getInstance());
       Activator.getInstance().unregisterTestEnvironment();
       // here we remove all environment tasks (emulators)
       removeAllTasks();
