@@ -16,6 +16,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.osee.framework.jdk.core.reportdata.ReportDataListener;
 import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.ote.core.IUserSession;
@@ -44,7 +45,7 @@ public interface ITestEnvironment extends Remote {
 
    UserTestSessionKey addUser(IUserSession user) throws RemoteException, Exception;
 
-   void disconnect(UserTestSessionKey user) throws RemoteException;
+   boolean disconnect(UserTestSessionKey user) throws RemoteException;
 
    boolean equals(ITestEnvironment testEnvironment) throws RemoteException;
 

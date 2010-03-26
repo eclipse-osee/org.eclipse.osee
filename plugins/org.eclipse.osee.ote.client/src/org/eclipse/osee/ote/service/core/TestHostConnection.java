@@ -28,13 +28,13 @@ class TestHostConnection {
    private final IServiceConnector serviceConnector;
    private final ITestEnvironment connectEnvironment;
    private final UserTestSessionKey sessionKey;
-
+   private final IHostTestEnvironment host;
    /**
     * @param connectedTestHost
     * @param connectEnvironment
     * @param sessionKey
     */
-   TestHostConnection(IServiceConnector connector, ITestEnvironment connectEnvironment, UserTestSessionKey sessionKey) {
+   TestHostConnection(IServiceConnector connector, IHostTestEnvironment host, ITestEnvironment connectEnvironment, UserTestSessionKey sessionKey) {
       // intentionally package-private
       if (connector == null) {
          throw new NullPointerException("service connector cannot be null");
@@ -46,6 +46,7 @@ class TestHostConnection {
          throw new NullPointerException("session key cannot be null");
       }
       this.serviceConnector = connector;
+      this.host = host;
       this.connectEnvironment = connectEnvironment;
       this.sessionKey = sessionKey;
    }
@@ -84,6 +85,6 @@ class TestHostConnection {
    void endConnection() throws RemoteException {
       // intentionally package-private
 
-      connectEnvironment.disconnect(sessionKey);
+      host.disconnect(sessionKey);
    }
 }

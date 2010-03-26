@@ -15,6 +15,7 @@ import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -173,7 +174,7 @@ public class ClientSession extends AbstractRemoteSession {
             Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
             ConnectionRequestResult result = testHost.requestEnvironment(exportedSession, config);
             if (result.getStatus().getStatus()) {
-               return new TestHostConnection(connector, result.getEnvironment(), result.getSessionKey());
+               return new TestHostConnection(connector, testHost, result.getEnvironment(), result.getSessionKey());
             } else {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error Connecting to the OTE Test Server.",
                      new Exception(result.getStatus().getMessage()));

@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ote.server.internal;
+package org.eclipse.osee.ote.server;
 
 import java.rmi.RemoteException;
 import org.eclipse.osee.ote.core.environment.console.ConsoleShell;

@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.rmi.server.ExportException;
+
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 
 /**
@@ -45,7 +46,7 @@ public interface IServiceConnector {
     */
    Object export(Object callback) throws ExportException;
 
-   void init(Object service, EnhancedProperties properties) throws UnknownHostException, ExportException;
+   void init(Object service) throws UnknownHostException, ExportException;
    /**
     * finds the matching exported representation of supplied object
     * 

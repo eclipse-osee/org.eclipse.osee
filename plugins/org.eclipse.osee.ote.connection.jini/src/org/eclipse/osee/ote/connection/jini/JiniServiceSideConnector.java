@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.logging.Level;
+
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
@@ -30,6 +31,7 @@ import net.jini.id.UuidFactory;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
+
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.ote.connection.jini.util.LeaseRenewTask;
@@ -56,8 +58,8 @@ public class JiniServiceSideConnector extends JiniConnector implements
       super();
    }
    
-   public void init(Object service, EnhancedProperties properties) throws UnknownHostException, ExportException{
-      super.init(properties);
+   public void init(Object service) throws UnknownHostException, ExportException{
+
       this.service = (Remote)service;
       serviceId = generateServiceId();
       serviceExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0), new BasicILFactory(null, null,
@@ -66,7 +68,7 @@ public class JiniServiceSideConnector extends JiniConnector implements
             .getDefault().getExportClassLoader()), false, false);
       serviceProxy = (Remote) serviceExporter.export(this.service);
       exportedThis = (IJiniConnectorLink) linkExporter.export(this);
-      properties.setProperty(LINK_PROPERTY, (Serializable) exportedThis);
+      setProperty(LINK_PROPERTY, (Serializable) exportedThis);
       serviceItem = new ServiceItem(serviceId, serviceProxy, createEntries());
    }
 	

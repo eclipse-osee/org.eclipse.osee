@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.reportdata.ReportDataListener;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -41,6 +42,7 @@ import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 import org.eclipse.osee.ote.message.instrumentation.IOInstrumentation;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystem;
+import org.eclipse.osee.ote.server.RemoteShell;
 
 public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
 
@@ -187,8 +189,21 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       }
    }
    //TODO
-   public void disconnect(UserTestSessionKey user) throws RemoteException {
-
+   public boolean disconnect(UserTestSessionKey user) throws RemoteException {
+       env.disconnect(user);
+       if (env.getSessionKeys().isEmpty()) {
+          try {
+             messageToolServiceTracker.close();
+             for (IRemoteCommandConsole console : exportedConsoles.keySet()) {
+                closeCommandConsole(console);
+             }
+          } catch (Exception ex) {
+             throw new RemoteException("failed to unexport test environment", ex);
+          }
+          env.shutdown();
+          return true;
+       }
+       return false;
    }
 
    public boolean equals(ITestEnvironment testEnvironment) throws RemoteException {
