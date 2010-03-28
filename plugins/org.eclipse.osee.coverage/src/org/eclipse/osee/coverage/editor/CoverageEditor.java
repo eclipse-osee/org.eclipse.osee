@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osee.coverage.event.CoverageEventManager;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
-import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -34,12 +34,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -60,7 +55,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEditor extends FormEditor implements IActionable, IFrameworkTransactionEventListener, IArtifactsPurgedEventListener {
+public class CoverageEditor extends FormEditor implements IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.coverage.editor.CoverageEditor";
    private Integer startPage = null;
    private CoverageEditorImportTab coverageEditorImportTab = null;
@@ -83,6 +78,7 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
          } else {
             Operations.executeAsJob(new LoadCoverage(loadingStr), true);
          }
+         CoverageEventManager.getInstance().register(this);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -226,6 +222,11 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
 
    @Override
    public void dispose() {
+      try {
+         CoverageEventManager.getInstance().unregister(this);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+      }
       super.dispose();
    }
 
@@ -313,33 +314,6 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
       return false;
    }
 
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      Integer branchId = transData.getBranchId();
-      if (branchId == null) {
-         return;
-      }
-      if (getCoverageEditorInput().getCoveragePackageArtifact() == null) {
-         return;
-      }
-      if (branchId != getCoverageEditorInput().getCoveragePackageArtifact().getBranch().getId()) {
-         return;
-      }
-      Artifact packageArt = getCoverageEditorInput().getCoveragePackageArtifact();
-      if (transData.isDeleted(packageArt)) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               closeEditor();
-            }
-         });
-         return;
-      }
-      for (ICoverage coverage : getCoverageEditorInput().getCoveragePackageBase().getChildren(true)) {
-         // TODO finish this
-      }
-   }
-
    public CoverageEditorImportTab getCoverageEditorImportTab() {
       return coverageEditorImportTab;
    }
@@ -348,23 +322,4 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
       return coverageEditorOverviewTab;
    }
 
-   @Override
-   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
-      if (getCoverageEditorInput().getCoveragePackageArtifact() == null) {
-         return;
-      }
-      try {
-         if (loadedArtifacts.getLoadedArtifacts().contains(getCoverageEditorInput().getCoveragePackageArtifact())) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  closeEditor();
-               }
-            });
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-
-   }
 }

@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
  * Changes the descriptor type of an artifact to the provided descriptor.
- *
+ * 
  * @author Jeff C. Phillips
  */
 public class ChangeArtifactType {
@@ -42,7 +42,7 @@ public class ChangeArtifactType {
 
    /**
     * Changes the descriptor of the artifacts to the provided artifact descriptor
-    *
+    * 
     * @param artifacts
     * @param artifactType
     */
@@ -62,7 +62,7 @@ public class ChangeArtifactType {
 
       // Kick Local and Remote Events
       OseeEventManager.kickArtifactsChangeTypeEvent(ChangeArtifactType.class, artifactType.getId(),
-            new LoadedArtifacts(artifacts));
+            artifactType.getGuid(), new LoadedArtifacts(artifacts));
    }
 
    public static void changeArtifactTypeReportOnly(StringBuffer results, Collection<Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {
@@ -82,8 +82,8 @@ public class ChangeArtifactType {
 
    private static void getConflictString(StringBuffer results, Artifact artifact, ArtifactType artifactType) {
       results.append("There has been a conflict in changing artifact " + artifact.getGuid() + " - \"" + artifact.getName() + "\"" +
-            //
-            " to \"" + artifactType.getName() + "\" type. \n" + "The following data will need to be purged ");
+      //
+      " to \"" + artifactType.getName() + "\" type. \n" + "The following data will need to be purged ");
       for (RelationLink relationLink : relationsToDelete) {
          results.append("([Relation][" + relationLink + "])");
       }
@@ -96,7 +96,7 @@ public class ChangeArtifactType {
    /**
     * Splits the attributes of the current artifact into two groups. The attributes that are compatible for the new type
     * and the attributes that will need to be purged.
-    *
+    * 
     * @param artifact
     * @param descriptor
     */
@@ -113,7 +113,7 @@ public class ChangeArtifactType {
    /**
     * Splits the relationLinks of the current artifact into Two groups. The links that are compatible for the new type
     * and the links that will need to be purged.
-    *
+    * 
     * @param artifact
     * @param artifactType
     * @throws OseeCoreException
@@ -153,7 +153,7 @@ public class ChangeArtifactType {
 
    /**
     * Sets the artifact descriptor.
-    *
+    * 
     * @param artifact
     * @param newArtifactType
     * @throws OseeCoreException

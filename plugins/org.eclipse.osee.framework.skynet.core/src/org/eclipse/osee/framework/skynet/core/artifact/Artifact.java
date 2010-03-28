@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,12 +24,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -1871,5 +1870,9 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    @Override
    public Artifact getFullArtifact() throws OseeCoreException {
       return this;
+   }
+
+   public DefaultBasicGuidArtifact getBasicGuidArtifact() {
+      return new DefaultBasicGuidArtifact(getBranch().getGuid(), getArtifactType().getGuid(), getGuid());
    }
 }

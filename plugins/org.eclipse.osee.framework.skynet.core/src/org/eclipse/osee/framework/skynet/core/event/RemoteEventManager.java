@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -163,7 +164,7 @@ public class RemoteEventManager {
        * all processing and then kicking off display-thread when need to update ui. SessionId needs
        * to be modified so this client doesn't think the events came from itself.
        */
-      if (InternalEventManager.enableRemoteEventLoopback) {
+      if (InternalEventManager.isEnableRemoteEventLoopback()) {
          OseeLog.log(Activator.class, Level.INFO, "REM: Loopback enabled - Returning events as Remote event.");
          Thread thread = new Thread() {
             @Override
@@ -337,6 +338,7 @@ public class RemoteEventManager {
                         LoadedArtifacts loadedArtifacts =
                               new LoadedArtifacts(((NetworkAccessControlArtifactsEvent) event).getId(),
                                     ((NetworkAccessControlArtifactsEvent) event).getArtifactIds(),
+                                    ((NetworkAccessControlArtifactsEvent) event).getArtifactGuids(),
                                     ((NetworkAccessControlArtifactsEvent) event).getArtifactTypeIds());
                         InternalEventManager.kickAccessControlArtifactsEvent(sender, accessControlModType,
                               loadedArtifacts);
@@ -439,9 +441,11 @@ public class RemoteEventManager {
                         LoadedArtifacts loadedArtifacts =
                               new LoadedArtifacts(((NetworkArtifactChangeTypeEvent) event).getId(),
                                     ((NetworkArtifactChangeTypeEvent) event).getArtifactIds(),
+                                    ((NetworkArtifactChangeTypeEvent) event).getArtifactGuids(),
                                     ((NetworkArtifactChangeTypeEvent) event).getArtifactTypeIds());
                         InternalEventManager.kickArtifactsChangeTypeEvent(sender,
-                              ((NetworkArtifactChangeTypeEvent) event).getToArtifactTypeId(), loadedArtifacts);
+                              ((NetworkArtifactChangeTypeEvent) event).getToArtifactTypeId(),
+                              ((NetworkArtifactChangeTypeEvent) event).getToArtifactTypeGuid(), loadedArtifacts);
                      } catch (Exception ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
@@ -450,6 +454,7 @@ public class RemoteEventManager {
                         LoadedArtifacts loadedArtifacts =
                               new LoadedArtifacts(((NetworkArtifactPurgeEvent) event).getId(),
                                     ((NetworkArtifactPurgeEvent) event).getArtifactIds(),
+                                    ((NetworkArtifactPurgeEvent) event).getArtifactGuids(),
                                     ((NetworkArtifactPurgeEvent) event).getArtifactTypeIds());
                         for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
                            //This is because applications may still have a reference to the artifact
@@ -495,8 +500,6 @@ public class RemoteEventManager {
 
       /**
        * Updates local cache
-       * 
-       * @param event
        */
       private static void updateArtifacts(Sender sender, ISkynetArtifactEvent event, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
          if (event == null) {
@@ -505,18 +508,21 @@ public class RemoteEventManager {
 
          try {
             int artId = event.getArtId();
+            String artGuid = event.getArtGuid();
             int artTypeId = event.getArtTypeId();
             List<String> dirtyAttributeName = new LinkedList<String>();
 
             if (event instanceof NetworkArtifactModifiedEvent) {
-               int branchId = ((NetworkArtifactModifiedEvent) event).getId();
+               int branchId = ((NetworkArtifactModifiedEvent) event).getBranchId();
                Artifact artifact = ArtifactCache.getActive(artId, branchId);
                if (artifact == null) {
-                  UnloadedArtifact unloadedArtifact = new UnloadedArtifact(branchId, artId, artTypeId);
+                  UnloadedArtifact unloadedArtifact =
+                        new UnloadedArtifact(event.getBranchGuid(), event.getArtTypeId(), event.getArtTypeGuid(),
+                              event.getArtId(), event.getArtGuid());
                   xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Changed, unloadedArtifact));
                } else if (!artifact.isHistorical()) {
                   for (SkynetAttributeChange skynetAttributeChange : ((NetworkArtifactModifiedEvent) event).getAttributeChanges()) {
-                     if (!InternalEventManager.enableRemoteEventLoopback) {
+                     if (!InternalEventManager.isEnableRemoteEventLoopback()) {
                         try {
                            Attribute<?> attribute =
                                  artifact.getAttributeById(skynetAttributeChange.getAttributeId(), true);
@@ -579,13 +585,16 @@ public class RemoteEventManager {
 
                }
             } else if (event instanceof NetworkArtifactDeletedEvent) {
-               int branchId = ((NetworkArtifactDeletedEvent) event).getId();
+               int branchId = ((NetworkArtifactDeletedEvent) event).getBranchId();
+               String branchGuid = ((NetworkArtifactDeletedEvent) event).getBranchGuid();
                Artifact artifact = ArtifactCache.getActive(artId, branchId);
                if (artifact == null) {
-                  UnloadedArtifact unloadedArtifact = new UnloadedArtifact(branchId, artId, artTypeId);
+                  UnloadedArtifact unloadedArtifact =
+                        new UnloadedArtifact(branchGuid, artTypeId, ArtifactTypeManager.getType(artTypeId).getGuid(),
+                              artId, artGuid);
                   xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, unloadedArtifact));
                } else if (!artifact.isHistorical()) {
-                  if (!InternalEventManager.enableRemoteEventLoopback) {
+                  if (!InternalEventManager.isEnableRemoteEventLoopback()) {
                      ArtifactCache.deCache(artifact);
                      artifact.internalSetDeleted();
                   }
@@ -600,10 +609,6 @@ public class RemoteEventManager {
          }
       }
 
-      /**
-       * @param event
-       * @param newTransactionId
-       */
       private static void updateRelations(Sender sender, ISkynetRelationLinkEvent event, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
          if (event == null) {
             return;

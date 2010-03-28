@@ -13,11 +13,21 @@ package org.eclipse.osee.framework.skynet.core.event;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
 
@@ -41,6 +51,7 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
 public class FrameworkTransactionData {
 
    Collection<ArtifactTransactionModifiedEvent> xModifiedEvents;
+   Set<IEventBasicGuidArtifact> artifactChanges;
 
    // artifact collections of artifacts based on artifactModType that are currently loaded in the client's artifact cache
    public Set<Artifact> cacheChangedArtifacts = new HashSet<Artifact>();
@@ -76,6 +87,10 @@ public class FrameworkTransactionData {
    public static enum ChangeType {
       Changed, Deleted, Added, All
    };
+
+   public FrameworkTransactionData(Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
+      this.xModifiedEvents = xModifiedEvents;
+   }
 
    /**
     * Return branchId of loaded artifacts or -1 if no loaded artifacts
@@ -240,6 +255,189 @@ public class FrameworkTransactionData {
 
    public void setXModifiedEvents(Collection<ArtifactTransactionModifiedEvent> modifiedEvents) {
       xModifiedEvents = modifiedEvents;
+      createTransactionDataRollup();
    }
 
+   private void createTransactionDataRollup() {
+      // Roll-up change information
+
+      for (ArtifactTransactionModifiedEvent xModifiedEvent : getXModifiedEvents()) {
+         if (xModifiedEvent instanceof ArtifactModifiedEvent) {
+            ArtifactModifiedEvent xArtifactModifiedEvent = (ArtifactModifiedEvent) xModifiedEvent;
+            if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Added) {
+               if (xArtifactModifiedEvent.artifact != null) {
+                  cacheAddedArtifacts.add(xArtifactModifiedEvent.artifact);
+                  if (branchId == -1) {
+                     branchId = xArtifactModifiedEvent.artifact.getBranch().getId();
+                  }
+               } else {
+                  unloadedAddedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
+                  if (branchId == -1) {
+                     try {
+                        branchId =
+                              BranchManager.getBranch(xArtifactModifiedEvent.unloadedArtifact.getBranchGuid()).getId();
+                     } catch (OseeCoreException ex) {
+                        OseeLog.log(Activator.class, OseeLevel.SEVERE, "Invalid branch id", ex);
+                     }
+                  }
+               }
+            }
+            if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Deleted) {
+               if (xArtifactModifiedEvent.artifact != null) {
+                  cacheDeletedArtifacts.add(xArtifactModifiedEvent.artifact);
+                  if (branchId == -1) {
+                     branchId = xArtifactModifiedEvent.artifact.getBranch().getId();
+                  }
+               } else {
+                  unloadedDeletedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
+                  if (branchId == -1) {
+                     try {
+                        branchId =
+                              BranchManager.getBranch(xArtifactModifiedEvent.unloadedArtifact.getBranchGuid()).getId();
+                     } catch (OseeCoreException ex) {
+                        OseeLog.log(Activator.class, OseeLevel.SEVERE, "Invalid branch id", ex);
+                     }
+                  }
+               }
+            }
+            if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Changed) {
+               if (xArtifactModifiedEvent.artifact != null) {
+                  cacheChangedArtifacts.add(xArtifactModifiedEvent.artifact);
+                  if (branchId == -1) {
+                     branchId = xArtifactModifiedEvent.artifact.getBranch().getId();
+                  }
+               } else {
+                  unloadedChangedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
+                  if (branchId == -1) {
+                     try {
+                        branchId =
+                              BranchManager.getBranch(xArtifactModifiedEvent.unloadedArtifact.getBranchGuid()).getId();
+                     } catch (OseeCoreException ex) {
+                        OseeLog.log(Activator.class, OseeLevel.SEVERE, "Invalid branch id", ex);
+                     }
+                  }
+               }
+            }
+         }
+         if (xModifiedEvent instanceof RelationModifiedEvent) {
+            RelationModifiedEvent xRelationModifiedEvent = (RelationModifiedEvent) xModifiedEvent;
+            UnloadedRelation unloadedRelation = xRelationModifiedEvent.unloadedRelation;
+            LoadedRelation loadedRelation = null;
+            // If link is loaded, get information from link
+            if (xRelationModifiedEvent.link != null) {
+               RelationLink link = xRelationModifiedEvent.link;
+               // Get artifact A/B if loaded in artifact cache
+               Artifact artA = ArtifactCache.getActive(link.getAArtifactId(), link.getABranch());
+               Artifact artB = ArtifactCache.getActive(link.getBArtifactId(), link.getBBranch());
+               try {
+                  loadedRelation =
+                        new LoadedRelation(artA, artB, xRelationModifiedEvent.link.getRelationType(),
+                              xRelationModifiedEvent.branch, unloadedRelation);
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+            }
+            // Else, get information from unloadedRelation (if != null)
+            else if (unloadedRelation != null) {
+               Artifact artA = ArtifactCache.getActive(unloadedRelation.getArtifactAId(), unloadedRelation.getId());
+               Artifact artB = ArtifactCache.getActive(unloadedRelation.getArtifactBId(), unloadedRelation.getId());
+               if (artA != null || artB != null) {
+                  try {
+                     loadedRelation =
+                           new LoadedRelation(artA, artB, RelationTypeManager.getType(unloadedRelation.getTypeId()),
+                                 artA != null ? artA.getBranch() : artB.getBranch(), unloadedRelation);
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
+                  }
+               }
+            }
+            if (xRelationModifiedEvent.relationEventType == RelationEventType.Added) {
+               if (loadedRelation != null) {
+                  cacheAddedRelations.add(loadedRelation);
+                  if (loadedRelation.getArtifactA() != null) {
+                     cacheRelationAddedArtifacts.add(loadedRelation.getArtifactA());
+                     if (branchId == -1) {
+                        branchId = loadedRelation.getArtifactA().getBranch().getId();
+                     }
+                  }
+                  if (loadedRelation.getArtifactB() != null) {
+                     cacheRelationAddedArtifacts.add(loadedRelation.getArtifactB());
+                     if (branchId == -1) {
+                        branchId = loadedRelation.getArtifactB().getBranch().getId();
+                     }
+                  }
+               }
+               if (unloadedRelation != null) {
+                  unloadedAddedRelations.add(unloadedRelation);
+               }
+            }
+            if (xRelationModifiedEvent.relationEventType == RelationEventType.Deleted) {
+               if (loadedRelation != null) {
+                  cacheDeletedRelations.add(loadedRelation);
+                  if (loadedRelation.getArtifactA() != null) {
+                     cacheRelationDeletedArtifacts.add(loadedRelation.getArtifactA());
+                     if (branchId == -1) {
+                        branchId = loadedRelation.getArtifactA().getBranch().getId();
+                        loadedRelation.getBranch();
+                     }
+                  }
+                  if (loadedRelation.getArtifactB() != null) {
+                     cacheRelationDeletedArtifacts.add(loadedRelation.getArtifactB());
+                     if (branchId == -1) {
+                        branchId = loadedRelation.getArtifactB().getBranch().getId();
+                     }
+                  }
+               }
+               if (unloadedRelation != null) {
+                  unloadedDeletedRelations.add(unloadedRelation);
+                  if (branchId == -1) {
+                     branchId = unloadedRelation.getId();
+                  }
+               }
+            }
+            if (xRelationModifiedEvent.relationEventType == RelationEventType.RationaleMod) {
+               if (loadedRelation != null) {
+                  cacheChangedRelations.add(loadedRelation);
+                  if (loadedRelation.getArtifactA() != null) {
+                     cacheRelationChangedArtifacts.add(loadedRelation.getArtifactA());
+                     if (branchId == -1) {
+                        branchId = loadedRelation.getArtifactA().getBranch().getId();
+                     }
+                  }
+                  if (loadedRelation.getArtifactB() != null) {
+                     cacheRelationChangedArtifacts.add(loadedRelation.getArtifactB());
+                     if (branchId == -1) {
+                        branchId = loadedRelation.getArtifactB().getBranch().getId();
+                     }
+                  }
+               }
+               if (unloadedRelation != null) {
+                  unloadedChangedRelations.add(unloadedRelation);
+                  if (branchId == -1) {
+                     branchId = unloadedRelation.getId();
+                  }
+               }
+            }
+         }
+      }
+
+      // Clean out known duplicates
+      cacheChangedArtifacts.removeAll(cacheDeletedArtifacts);
+      cacheAddedArtifacts.removeAll(cacheDeletedArtifacts);
+
+   }
+
+   public Set<IEventBasicGuidArtifact> getArtifactChanges() {
+      if (artifactChanges == null) {
+         artifactChanges = new HashSet<IEventBasicGuidArtifact>();
+         for (ArtifactTransactionModifiedEvent event : xModifiedEvents) {
+            try {
+               artifactChanges.addAll(event.getArtifactChanges());
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+            }
+         }
+      }
+      return artifactChanges;
+   }
 }

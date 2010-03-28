@@ -13,7 +13,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.jdk.core,
  org.eclipse.osee.framework.messaging.event.skynet,
  org.eclipse.osee.framework.database
-Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.access,
  org.eclipse.osee.framework.skynet.core.artifact,
@@ -30,6 +29,8 @@ Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.commit.actions,
  org.eclipse.osee.framework.skynet.core.conflict,
  org.eclipse.osee.framework.skynet.core.event,
+ org.eclipse.osee.framework.skynet.core.event.artifact,
+ org.eclipse.osee.framework.skynet.core.event.filter,
  org.eclipse.osee.framework.skynet.core.exportImport,
  org.eclipse.osee.framework.skynet.core.httpRequests,
  org.eclipse.osee.framework.skynet.core.importing,
@@ -64,3 +65,4 @@ Import-Package: org.apache.commons.lang;version="2.4.0",
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.plugin.core.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

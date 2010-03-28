@@ -11,17 +11,23 @@
 package org.eclipse.osee.framework.messaging.event.skynet.event;
 
 /**
- * @author Robert A. Fisher
  * @author Donald G. Dunne
  */
-public class NetworkArtifactDeletedEvent extends SkynetArtifactEventBase {
-   private static final long serialVersionUID = 568951803773151575L;
+public class NetworkMessageEventBase extends SkynetEventBase {
 
-   public NetworkArtifactDeletedEvent(int branchId, String branchGuid, int transactionId, int artId, String artGuid, int artTypeId, String artTypeGuid, String factoryName, NetworkSender networkSender) {
-      super(branchId, branchGuid, transactionId, artId, artGuid, artTypeId, artTypeGuid, factoryName, networkSender);
+   private static final long serialVersionUID = 4199206432501390599L;
+   private String message;
+
+   public NetworkMessageEventBase(String message, NetworkSender networkSender) {
+      super(networkSender);
+      this.message = message;
    }
 
-   public NetworkArtifactDeletedEvent(SkynetArtifactEventBase base) {
-      super(base);
+   protected String getMessage() {
+      return message;
+   }
+
+   protected void setMessage(String message) {
+      this.message = message;
    }
 }

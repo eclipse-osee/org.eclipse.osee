@@ -19,27 +19,15 @@ public class NetworkAccessControlArtifactsEvent extends SkynetArtifactsEventBase
    private static final long serialVersionUID = -4325821466558180270L;
    private final String accessControlModType;
 
-   /**
-    * @return the accessControlModType
-    */
    public String getAccessControlModTypeName() {
       return accessControlModType;
    }
 
-   /**
-    * @param branchId
-    * @param artifactIds
-    * @param toArtifactTypeId
-    * @param author
-    */
-   public NetworkAccessControlArtifactsEvent(String accessControlModType, int branchId, Collection<Integer> artifactIds, Collection<Integer> artifactTypeIds, NetworkSender networkSender) {
-      super(branchId, artifactIds, artifactTypeIds, networkSender);
+   public NetworkAccessControlArtifactsEvent(String accessControlModType, int branchId, Collection<Integer> artifactIds, Collection<String> artifactGuids, Collection<Integer> artifactTypeIds, NetworkSender networkSender) {
+      super(branchId, artifactIds, artifactGuids, artifactTypeIds, networkSender);
       this.accessControlModType = accessControlModType;
    }
 
-   /**
-    * @return Returns the serialVersionUID.
-    */
    public static long getSerialVersionUID() {
       return serialVersionUID;
    }

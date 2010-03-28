@@ -19,30 +19,24 @@ public class NetworkArtifactChangeTypeEvent extends SkynetArtifactsEventBase {
    private static final long serialVersionUID = -4325821466558180270L;
 
    private final int toArtifactTypeId;
+   private final String toArtifactTypeGuid;
 
-   /**
-    * @return the toArtifactTypeId
-    */
    public int getToArtifactTypeId() {
       return toArtifactTypeId;
    }
 
-   /**
-    * @param branchId
-    * @param artifactIds
-    * @param toArtifactTypeId
-    * @param author
-    */
-   public NetworkArtifactChangeTypeEvent(int branchId, Collection<Integer> artifactIds, Collection<Integer> artifactTypeIds, int toArtifactTypeId, NetworkSender networkSender) {
-      super(branchId, artifactIds, artifactTypeIds, networkSender);
+   public NetworkArtifactChangeTypeEvent(int branchId, Collection<Integer> artifactIds, Collection<String> artifactGuids, Collection<Integer> artifactTypeIds, int toArtifactTypeId, String toArtifactTypeGuid, NetworkSender networkSender) {
+      super(branchId, artifactIds, artifactGuids, artifactTypeIds, networkSender);
       this.toArtifactTypeId = toArtifactTypeId;
+      this.toArtifactTypeGuid = toArtifactTypeGuid;
    }
 
-   /**
-    * @return Returns the serialVersionUID.
-    */
    public static long getSerialVersionUID() {
       return serialVersionUID;
+   }
+
+   public String getToArtifactTypeGuid() {
+      return toArtifactTypeGuid;
    }
 
 }

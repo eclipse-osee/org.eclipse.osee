@@ -8,17 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.event;
+package org.eclipse.osee.framework.skynet.core.test;
 
-import java.util.Set;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactEventManagerLoopbackTest;
+import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactEventManagerTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {ArtifactEventManagerLoopbackTest.class, ArtifactEventManagerTest.class})
 /**
  * @author Donald G. Dunne
  */
-public abstract class ArtifactTransactionModifiedEvent {
-
-   public abstract Set<? extends IEventBasicGuidArtifact> getArtifactChanges() throws OseeCoreException;
+public class FrameworkCore_TestDb_Suite {
 
 }

@@ -11,9 +11,16 @@
 package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
+import org.eclipse.osee.framework.skynet.core.event.artifact.DefaultEventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 
 /**
@@ -53,5 +60,28 @@ public class ArtifactModifiedEvent extends ArtifactTransactionModifiedEvent {
 
    public Collection<SkynetAttributeChange> getAttributeChanges() {
       return dirtySkynetAttributeChanges;
+   }
+
+   @Override
+   public Set<? extends IEventBasicGuidArtifact> getArtifactChanges() throws OseeCoreException {
+      EventModType eventModType = null;
+      if (artifactModType == ArtifactModType.Added) {
+         eventModType = EventModType.Added;
+      } else if (artifactModType == ArtifactModType.Deleted) {
+         eventModType = EventModType.Deleted;
+      } else if (artifactModType == ArtifactModType.Reverted) {
+         eventModType = EventModType.Reloaded;
+      } else {
+         eventModType = EventModType.Modified;
+      }
+      if (artifact != null) {
+         return Collections.singleton(new DefaultEventBasicGuidArtifact(eventModType, artifact.getBranch().getGuid(),
+               artifact.getArtifactType().getGuid(), artifact.getGuid()));
+      } else if (unloadedArtifact != null) {
+         return Collections.singleton(new DefaultEventBasicGuidArtifact(eventModType, unloadedArtifact.getBranchGuid(),
+               unloadedArtifact.getArtTypeGuid(), unloadedArtifact.getGuid()));
+      } else {
+         throw new OseeStateException("unhandled artifact change state");
+      }
    }
 }

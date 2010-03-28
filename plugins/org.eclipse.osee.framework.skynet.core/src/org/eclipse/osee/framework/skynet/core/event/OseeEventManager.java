@@ -123,11 +123,12 @@ public class OseeEventManager {
    }
 
    // Kick LOCAL and REMOTE artifact change type depending on sender
-   public static void kickArtifactsChangeTypeEvent(Object source, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+   public static void kickArtifactsChangeTypeEvent(Object source, int toArtifactTypeId, String toArtifactTypeGuid, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickArtifactsChangeTypeEvent(getSender(source), toArtifactTypeId, loadedArtifacts);
+      InternalEventManager.kickArtifactsChangeTypeEvent(getSender(source), toArtifactTypeId, toArtifactTypeGuid,
+            loadedArtifacts);
    }
 
    // Kick LOCAL and REMOTE transaction deleted event
@@ -169,6 +170,14 @@ public class OseeEventManager {
 
    public static void removeListener(IEventListener listener) {
       InternalEventManager.removeListeners(listener);
+   }
+
+   public static void addDispatcher(IEventDispatcher dispatcher) {
+      InternalEventManager.addDispatcher(dispatcher);
+   }
+
+   public static void removeDispatcher(IEventDispatcher dispatcher) {
+      InternalEventManager.removeDispatcher(dispatcher);
    }
 
    public static boolean isDisableEvents() {

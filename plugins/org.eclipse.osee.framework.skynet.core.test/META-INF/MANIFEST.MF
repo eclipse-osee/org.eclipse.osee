@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Test2 Fragment
+Bundle-Name: Test Fragment
 Bundle-SymbolicName: org.eclipse.osee.framework.skynet.core.test;singleton:=true
 Bundle-Version: 0.9.4.qualifier
 Fragment-Host: org.eclipse.osee.framework.skynet.core
@@ -10,9 +10,18 @@ Require-Bundle: org.junit4,
 Export-Package: org.eclipse.osee.framework.skynet.core.test,
  org.eclipse.osee.framework.skynet.core.test.branch,
  org.eclipse.osee.framework.skynet.core.test.cases,
+ org.eclipse.osee.framework.skynet.core.test.importing,
+ org.eclipse.osee.framework.skynet.core.test.relation,
+ org.eclipse.osee.framework.skynet.core.test.relation.order,
+ org.eclipse.osee.framework.skynet.core.test.relation.sorters,
  org.eclipse.osee.framework.skynet.core.test.types,
  org.eclipse.osee.framework.skynet.core.test.util
 Import-Package: org.apache.commons.lang;version="2.4.0",
+ org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.test.mocks,
- org.eclipse.osee.framework.jdk.core.util
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.skynet.core.event,
+ org.eclipse.osee.framework.skynet.core.event.artifact,
+ org.eclipse.osee.framework.skynet.core.event.filter
+Bundle-Vendor: Eclipse.org
