@@ -115,6 +115,8 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			messageService.getDefault().subscribe(OteBaseMessages.RequestOteHost, listenForHostRequest, this);
 			RegisteredServiceReference ref = remoteServiceRegistrar.registerService("osee.ote.server", "1.0", service.getServiceID().toString(), uri, this, 60 * 3);
 			service.set(ref);      
+		} else {
+			serviceSideConnector.setProperty("OTEEmbeddedBroker", nodeInfo);
 		}
 		return service;
 	}
