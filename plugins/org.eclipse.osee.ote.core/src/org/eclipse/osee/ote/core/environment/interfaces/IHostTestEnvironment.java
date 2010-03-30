@@ -42,4 +42,7 @@ public interface IHostTestEnvironment extends Remote {
    void cleanupRuntimeBundles() throws RemoteException; 
 
    void disconnect(UserTestSessionKey key) throws RemoteException;
+   
+   void disconnectAll() throws RemoteException;
+   
 }

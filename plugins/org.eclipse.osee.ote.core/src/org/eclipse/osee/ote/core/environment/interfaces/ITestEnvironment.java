@@ -47,6 +47,8 @@ public interface ITestEnvironment extends Remote {
 
    boolean disconnect(UserTestSessionKey user) throws RemoteException;
 
+   void disconnectAll() throws RemoteException;
+   
    boolean equals(ITestEnvironment testEnvironment) throws RemoteException;
 
    List<String> getQueueLabels() throws RemoteException;

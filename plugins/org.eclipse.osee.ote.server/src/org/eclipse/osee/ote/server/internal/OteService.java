@@ -184,4 +184,12 @@ public class OteService implements IHostTestEnvironment, IService {
 		remoteEnvironment.disconnect(key);
 		updateDynamicInfo();		
 	}
+
+	@Override
+	public void disconnectAll() throws RemoteException {
+		remoteEnvironment.disconnectAll();
+		updateDynamicInfo();		
+	}
+	
+	
 }

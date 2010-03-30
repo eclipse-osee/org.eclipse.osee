@@ -206,6 +206,17 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
        return false;
    }
 
+   public void disconnectAll() throws RemoteException{
+	   for (Serializable session : env.getSessionKeys()) {
+		   env.disconnect((UserTestSessionKey) session);
+	   }
+       messageToolServiceTracker.close();
+       for (IRemoteCommandConsole console : exportedConsoles.keySet()) {
+          closeCommandConsole(console);
+       }
+       env.shutdown();
+   }
+   
    public boolean equals(ITestEnvironment testEnvironment) throws RemoteException {
       return env.getUniqueId() == testEnvironment.getUniqueId();
    }
