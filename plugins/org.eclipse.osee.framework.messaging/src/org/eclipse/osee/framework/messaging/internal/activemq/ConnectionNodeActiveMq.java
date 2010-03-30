@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
+
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.JMSException;
@@ -21,6 +22,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -91,13 +93,12 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    public synchronized void send(MessageID topic, Object body, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
       try {
          if (topic.isTopic()) {
-            Topic destination = getOrCreateTopic(topic);
-            MessageProducer producer = getOrCreateProducer(destination);
-            Message msg = activeMqUtil.createMessage(session, topic.getSerializationClass(), body);
-            if (topic.isReplyRequired()) {
-               msg.setJMSReplyTo(temporaryTopic);
+            try{
+            	sendInternal(topic, body, statusCallback);
+            } catch (JMSException ex){
+            	removeProducerFromCache(topic);
+            	sendInternal(topic, body, statusCallback);
             }
-            producer.send(msg);
             OseeLog.log(Activator.class, Level.FINE, String.format("Sending message %s - %s", topic.getName(), topic.getGuid()));
             statusCallback.success();
          }
@@ -109,6 +110,18 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          throw new OseeWrappedException(ex);
       }
    }
+   
+	private synchronized void sendInternal(MessageID topic, Object body, OseeMessagingStatusCallback statusCallback) throws JMSException, OseeCoreException {
+		Topic destination = getOrCreateTopic(topic);
+		MessageProducer producer = getOrCreateProducer(destination);
+		Message msg = activeMqUtil.createMessage(session, topic.getSerializationClass(), body);
+		if (topic.isReplyRequired()) {
+			msg.setJMSReplyTo(temporaryTopic);
+		}
+		producer.send(msg);
+		OseeLog.log(Activator.class, Level.FINE, String.format("Sending message %s - %s", topic.getName(), topic.getGuid()));
+		statusCallback.success();
+	}
 
    @Override
    public synchronized void subscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
@@ -152,6 +165,11 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          messageProducerCache.put(destination, producer);
       }
       return producer;
+   }
+   
+   private void removeProducerFromCache(MessageID topic) throws JMSException{
+	   Topic destination = getOrCreateTopic(topic);
+	   messageProducerCache.remove(destination);
    }
 
    private MessageConsumer getOrCreateConsumer(Topic topic) throws JMSException {
