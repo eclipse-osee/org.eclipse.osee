@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -25,6 +28,8 @@ import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.artifact.DefaultEventChangeTypeBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -42,27 +47,28 @@ public class ChangeArtifactType {
 
    /**
     * Changes the descriptor of the artifacts to the provided artifact descriptor
-    * 
-    * @param artifacts
-    * @param artifactType
     */
    public static void changeArtifactType(Collection<? extends Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {
       if (artifacts.isEmpty()) {
          throw new OseeArgumentException("The artifact list can not be empty");
       }
 
+      List<Artifact> artifactsUserAccepted = new ArrayList<Artifact>();
+      Set<IEventBasicGuidArtifact> artifactChanges = new HashSet<IEventBasicGuidArtifact>();
       for (Artifact artifact : artifacts) {
          processAttributes(artifact, artifactType);
          processRelations(artifact, artifactType);
-
+         artifactsUserAccepted.add(artifact);
          if (doesUserAcceptArtifactChange(artifact, artifactType)) {
             changeArtifactTypeThroughHistory(artifact, artifactType);
+            artifactChanges.add(new DefaultEventChangeTypeBasicGuidArtifact(artifact.getBranch().getGuid(),
+                  artifact.getArtifactType().getGuid(), artifactType.getGuid(), artifact.getGuid()));
          }
       }
 
       // Kick Local and Remote Events
       OseeEventManager.kickArtifactsChangeTypeEvent(ChangeArtifactType.class, artifactType.getId(),
-            artifactType.getGuid(), new LoadedArtifacts(artifacts));
+            artifactType.getGuid(), new LoadedArtifacts(artifactsUserAccepted), artifactChanges);
    }
 
    public static void changeArtifactTypeReportOnly(StringBuffer results, Collection<Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {

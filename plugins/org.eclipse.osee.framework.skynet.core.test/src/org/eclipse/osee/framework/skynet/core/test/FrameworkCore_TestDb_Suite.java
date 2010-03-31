@@ -12,11 +12,14 @@ package org.eclipse.osee.framework.skynet.core.test;
 
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactEventManagerLoopbackTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactEventManagerTest;
+import org.eclipse.osee.framework.skynet.core.test.cases.DefaultEventBasicGuidArtifactTest;
+import org.eclipse.osee.framework.skynet.core.test.cases.DefaultEventChangeTypeBasicGuidArtifactTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {ArtifactEventManagerLoopbackTest.class, ArtifactEventManagerTest.class})
+@Suite.SuiteClasses( {DefaultEventBasicGuidArtifactTest.class, DefaultEventChangeTypeBasicGuidArtifactTest.class,
+      ArtifactEventManagerLoopbackTest.class, ArtifactEventManagerTest.class,})
 /**
  * @author Donald G. Dunne
  */

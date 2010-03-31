@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.Collection;
+import java.util.Set;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -18,6 +19,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
+import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -115,20 +117,20 @@ public class OseeEventManager {
    }
 
    // Kick LOCAL and REMOTE purged event depending on sender
-   public static void kickArtifactsPurgedEvent(Object source, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+   public static void kickArtifactsPurgedEvent(Object source, LoadedArtifacts loadedArtifacts, Set<IEventBasicGuidArtifact> artifactChanges) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickArtifactsPurgedEvent(getSender(source), loadedArtifacts);
+      InternalEventManager.kickArtifactsPurgedEvent(getSender(source), loadedArtifacts, artifactChanges);
    }
 
    // Kick LOCAL and REMOTE artifact change type depending on sender
-   public static void kickArtifactsChangeTypeEvent(Object source, int toArtifactTypeId, String toArtifactTypeGuid, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+   public static void kickArtifactsChangeTypeEvent(Object source, int toArtifactTypeId, String toArtifactTypeGuid, LoadedArtifacts loadedArtifacts, Set<IEventBasicGuidArtifact> artifactChanges) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
       InternalEventManager.kickArtifactsChangeTypeEvent(getSender(source), toArtifactTypeId, toArtifactTypeGuid,
-            loadedArtifacts);
+            loadedArtifacts, artifactChanges);
    }
 
    // Kick LOCAL and REMOTE transaction deleted event
@@ -141,11 +143,11 @@ public class OseeEventManager {
    }
 
    // Kick LOCAL and REMOTE transaction event
-   public static void kickTransactionEvent(Object source, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) throws OseeAuthenticationRequiredException {
+   public static void kickTransactionEvent(Object source, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents, Set<IEventBasicGuidArtifact> artifactChanges) throws OseeAuthenticationRequiredException {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickTransactionEvent(getSender(source), xModifiedEvents);
+      InternalEventManager.kickTransactionEvent(getSender(source), xModifiedEvents, artifactChanges);
    }
 
    // Kick LOCAL transaction event

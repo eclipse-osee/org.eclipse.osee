@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
@@ -147,8 +148,7 @@ public class SkynetTransaction extends DbTransaction {
    private void ensureBranchIsEditable(RelationLink link) throws OseeStateException {
       if (!link.getBranch().isEditable()) {
          String msg =
-               String.format("The relation link [%s] is on a non-editable branch [%s]", link.getId(),
-                     link.getBranch());
+               String.format("The relation link [%s] is on a non-editable branch [%s]", link.getId(), link.getBranch());
          throw new OseeStateException(msg);
       }
    }
@@ -376,6 +376,7 @@ public class SkynetTransaction extends DbTransaction {
 
    private void updateModifiedCachedObject() throws OseeCoreException {
       Collection<ArtifactTransactionModifiedEvent> xModifiedEvents = new ArrayList<ArtifactTransactionModifiedEvent>();
+      Set<IEventBasicGuidArtifact> artifactChanges = new HashSet<IEventBasicGuidArtifact>();
 
       // Update all transaction items before collecting events
       for (BaseTransactionData transactionData : transactionDataItems.values()) {
@@ -384,7 +385,7 @@ public class SkynetTransaction extends DbTransaction {
 
       // Collect events before clearing any dirty flags
       for (BaseTransactionData transactionData : transactionDataItems.values()) {
-         transactionData.internalAddToEvents(xModifiedEvents);
+         transactionData.internalAddToEvents(xModifiedEvents, artifactChanges);
       }
 
       for (Artifact artifact : artifactReferences) {
@@ -400,7 +401,7 @@ public class SkynetTransaction extends DbTransaction {
       }
 
       if (xModifiedEvents.size() > 0) {
-         OseeEventManager.kickTransactionEvent(this, xModifiedEvents);
+         OseeEventManager.kickTransactionEvent(this, xModifiedEvents, artifactChanges);
          xModifiedEvents.clear();
       }
    }

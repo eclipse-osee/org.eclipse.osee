@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.messaging.event.skynet;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.Date;
+import net.jini.core.lookup.ServiceItem;
 import org.eclipse.osee.framework.jini.discovery.IServiceLookupListener;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
 import org.eclipse.osee.framework.jini.util.OseeJini;
-import net.jini.core.lookup.ServiceItem;
 
 public class Sample implements IServiceLookupListener, Serializable {
    private static final long serialVersionUID = 8195127334711471268L;
@@ -93,5 +93,6 @@ public class Sample implements IServiceLookupListener, Serializable {
          for (ISkynetEvent event : events)
             System.out.println("\t" + event);
       }
+
    }
 }

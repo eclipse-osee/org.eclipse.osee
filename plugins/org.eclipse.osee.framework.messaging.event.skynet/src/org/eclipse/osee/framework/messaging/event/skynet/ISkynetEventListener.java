@@ -17,4 +17,5 @@ import java.rmi.RemoteException;
 public interface ISkynetEventListener extends Remote, Serializable {
 
    public abstract void onEvent(ISkynetEvent[] events) throws RemoteException;
+
 }

@@ -75,8 +75,7 @@ public class ArtifactModifiedEvent extends ArtifactTransactionModifiedEvent {
          eventModType = EventModType.Modified;
       }
       if (artifact != null) {
-         return Collections.singleton(new DefaultEventBasicGuidArtifact(eventModType, artifact.getBranch().getGuid(),
-               artifact.getArtifactType().getGuid(), artifact.getGuid()));
+         return Collections.singleton(new DefaultEventBasicGuidArtifact(eventModType, artifact));
       } else if (unloadedArtifact != null) {
          return Collections.singleton(new DefaultEventBasicGuidArtifact(eventModType, unloadedArtifact.getBranchGuid(),
                unloadedArtifact.getArtTypeGuid(), unloadedArtifact.getGuid()));

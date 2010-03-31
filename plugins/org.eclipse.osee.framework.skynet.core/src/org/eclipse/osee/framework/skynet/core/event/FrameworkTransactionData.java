@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -51,7 +50,6 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
 public class FrameworkTransactionData {
 
    Collection<ArtifactTransactionModifiedEvent> xModifiedEvents;
-   Set<IEventBasicGuidArtifact> artifactChanges;
 
    // artifact collections of artifacts based on artifactModType that are currently loaded in the client's artifact cache
    public Set<Artifact> cacheChangedArtifacts = new HashSet<Artifact>();
@@ -427,17 +425,4 @@ public class FrameworkTransactionData {
 
    }
 
-   public Set<IEventBasicGuidArtifact> getArtifactChanges() {
-      if (artifactChanges == null) {
-         artifactChanges = new HashSet<IEventBasicGuidArtifact>();
-         for (ArtifactTransactionModifiedEvent event : xModifiedEvents) {
-            try {
-               artifactChanges.addAll(event.getArtifactChanges());
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
-            }
-         }
-      }
-      return artifactChanges;
-   }
 }

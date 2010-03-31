@@ -12,6 +12,7 @@ import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.data.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -30,12 +31,20 @@ public class DefaultEventBasicGuidArtifact extends DefaultBasicGuidArtifact impl
       return eventModType;
    }
 
+   public DefaultEventBasicGuidArtifact(EventModType eventModType, Artifact artifact) throws OseeCoreException {
+      this(eventModType, artifact.getBranch().getGuid(), artifact.getArtifactType().getGuid(), artifact.getGuid());
+   }
+
+   public DefaultEventBasicGuidArtifact(EventModType eventModType, IBasicGuidArtifact basicGuidArtifact) throws OseeCoreException {
+      this(eventModType, basicGuidArtifact.getBranchGuid(), basicGuidArtifact.getArtTypeGuid(),
+            basicGuidArtifact.getGuid());
+   }
+
    public static Set<IEventBasicGuidArtifact> get(EventModType eventModType, Collection<IBasicGuidArtifact> basicGuidArtifacts) throws OseeCoreException {
       if (eventModType == EventModType.ChangeType) throw new OseeArgumentException("Can't be used for ChangeType");
       Set<IEventBasicGuidArtifact> eventArts = new HashSet<IEventBasicGuidArtifact>();
       for (IBasicGuidArtifact guidArt : basicGuidArtifacts) {
-         eventArts.add(new DefaultEventBasicGuidArtifact(eventModType, guidArt.getBranchGuid(),
-               guidArt.getArtTypeGuid(), guidArt.getGuid()));
+         eventArts.add(new DefaultEventBasicGuidArtifact(eventModType, guidArt));
       }
       return eventArts;
    }
@@ -52,7 +61,6 @@ public class DefaultEventBasicGuidArtifact extends DefaultBasicGuidArtifact impl
    public boolean equals(Object obj) {
       if (this == obj) return true;
       if (!super.equals(obj)) return false;
-      if (getClass() != obj.getClass()) return false;
       DefaultEventBasicGuidArtifact other = (DefaultEventBasicGuidArtifact) obj;
       if (eventModType == null) {
          if (other.eventModType != null) return false;

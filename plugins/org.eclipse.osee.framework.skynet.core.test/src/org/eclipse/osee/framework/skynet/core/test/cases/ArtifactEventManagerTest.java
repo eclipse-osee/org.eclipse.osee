@@ -13,10 +13,12 @@ package org.eclipse.osee.framework.skynet.core.test.cases;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -28,14 +30,18 @@ import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.artifact.IArtifactListener;
 import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.artifact.IEventChangeTypeBasicGuidArtifact;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @author Donald G. Dunne
  */
 public class ArtifactEventManagerTest {
 
-   final List<IEventBasicGuidArtifact> resultEventArtifacts = new ArrayList<IEventBasicGuidArtifact>();
+   final Set<IEventBasicGuidArtifact> resultEventArtifacts = new HashSet<IEventBasicGuidArtifact>();
    public static Sender resultSender = null;
+   public static List<String> ignoreLogging =
+         Arrays.asList("OEM: TransactionEvent Loopback enabled", "OEM: kickArtifactReloadEvent Loopback enabled");
+
    public class ArtifactEventListener implements IArtifactListener {
       @Override
       public void handleArtifactModified(Collection<IEventBasicGuidArtifact> eventArtifacts, Sender sender) {
@@ -47,7 +53,8 @@ public class ArtifactEventManagerTest {
    private ArtifactEventListener artifactEventListener = new ArtifactEventListener();
 
    @org.junit.Test
-   public void testRegistration() throws OseeCoreException {
+   public void testRegistration() throws Exception {
+      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
       ArtifactEventManager.removeAllListeners();
       Assert.assertEquals(0, ArtifactEventManager.getNumberOfListeners());
@@ -57,10 +64,14 @@ public class ArtifactEventManagerTest {
 
       ArtifactEventManager.removeListener(artifactEventListener);
       Assert.assertEquals(0, ArtifactEventManager.getNumberOfListeners());
+
+      TestUtil.severeLoggingEnd(monitorLog);
    }
 
    @org.junit.Test
-   public void testAddModifyDeleteArtifactEvents() throws OseeCoreException, InterruptedException {
+   public void testAddModifyDeleteArtifactEvents() throws Exception {
+
+      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       ArtifactEventManager.removeAllListeners();
       Assert.assertEquals(0, ArtifactEventManager.getNumberOfListeners());
 
@@ -118,10 +129,13 @@ public class ArtifactEventManagerTest {
       Assert.assertTrue(deletedFound);
       Assert.assertTrue(modifiedFound);
 
+      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
    }
 
    @org.junit.Test
-   public void testPurgeArtifactEvents() throws OseeCoreException, InterruptedException {
+   public void testPurgeArtifactEvents() throws Exception {
+
+      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       ArtifactEventManager.removeAllListeners();
       Assert.assertEquals(0, ArtifactEventManager.getNumberOfListeners());
 
@@ -147,10 +161,16 @@ public class ArtifactEventManagerTest {
       Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
       Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
 
+      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
+   }
+
+   protected boolean isRemoteTest() {
+      return false;
    }
 
    @org.junit.Test
-   public void testReloadArtifactEvents() throws OseeCoreException, InterruptedException {
+   public void testReloadArtifactEvents() throws Exception {
+      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       ArtifactEventManager.removeAllListeners();
       Assert.assertEquals(0, ArtifactEventManager.getNumberOfListeners());
 
@@ -171,17 +191,24 @@ public class ArtifactEventManagerTest {
 
       Thread.sleep(3000);
 
-      Assert.assertEquals(1, resultEventArtifacts.size());
-      IEventBasicGuidArtifact guidArt = resultEventArtifacts.iterator().next();
-      Assert.assertEquals(EventModType.Reloaded, guidArt.getModType());
-      Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
-      Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
-      Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
-
+      // Reload events are local only, confirm that nothing comes through remote
+      if (isRemoteTest()) {
+         Assert.assertEquals(0, resultEventArtifacts.size());
+      } else {
+         Assert.assertEquals(1, resultEventArtifacts.size());
+         IEventBasicGuidArtifact guidArt = resultEventArtifacts.iterator().next();
+         Assert.assertEquals(EventModType.Reloaded, guidArt.getModType());
+         Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
+         Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
+         Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
+      }
+      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
    }
 
    @org.junit.Test
-   public void testChangeTypeArtifactEvents() throws OseeCoreException, InterruptedException {
+   public void testChangeTypeArtifactEvents() throws Exception {
+
+      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       ArtifactEventManager.removeAllListeners();
       Assert.assertEquals(0, ArtifactEventManager.getNumberOfListeners());
 
@@ -212,5 +239,7 @@ public class ArtifactEventManagerTest {
       // TODO Framework needs to reload artifact as new type; doesn't happen yet
       Assert.assertEquals(CoreArtifactTypes.Heading.getGuid(), newArt.getArtifactType().getGuid());
       Assert.assertEquals(CoreArtifactTypes.Heading.getGuid(), guidArt.getArtTypeGuid());
+
+      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
    }
 }

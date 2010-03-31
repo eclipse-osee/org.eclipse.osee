@@ -41,8 +41,6 @@ public class LoadedArtifacts {
 
    /**
     * Called when network event passes artifactIds that may or may not be in current client's cache
-    * 
-    * @throws OseeCoreException
     */
    public LoadedArtifacts(int branchId, Collection<Integer> artifactIds, Collection<String> artifactGuids, Collection<Integer> artifactTypeIds) throws OseeCoreException {
       unloadedArtifacts = new ArrayList<UnloadedArtifact>();
@@ -73,8 +71,6 @@ public class LoadedArtifacts {
 
    /**
     * Called when local event is kicked. Since local, all artifacts are, by definition, cached
-    * 
-    * @param artifacts
     */
    public LoadedArtifacts(Artifact artifact) {
       this.artifacts = new HashSet<Artifact>();
@@ -168,7 +164,7 @@ public class LoadedArtifacts {
             for (UnloadedArtifact unloadedArtifact : new CopyOnWriteArrayList<UnloadedArtifact>(unloadedArtifacts)) {
                Artifact art =
                      ArtifactCache.getActive(unloadedArtifact.getArtifactId(),
-                           BranchManager.getBranch(unloadedArtifact.getBranchGuid()));
+                           BranchManager.getBranchByGuid(unloadedArtifact.getBranchGuid()));
                if (art != null) {
                   unloadedArtifacts.remove(unloadedArtifact);
                   artifacts.add(art);

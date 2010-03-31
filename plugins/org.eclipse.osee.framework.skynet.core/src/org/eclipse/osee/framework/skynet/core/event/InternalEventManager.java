@@ -23,7 +23,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -54,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.artifact.ArtifactEventManager;
 import org.eclipse.osee.framework.skynet.core.event.artifact.DefaultEventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.artifact.DefaultEventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -339,7 +337,7 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and REMOTE purged event depending on sender
-   static void kickArtifactsPurgedEvent(final Sender sender, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+   static void kickArtifactsPurgedEvent(final Sender sender, final LoadedArtifacts loadedArtifacts, final Set<IEventBasicGuidArtifact> artifactChanges) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
@@ -349,12 +347,8 @@ public class InternalEventManager {
             // Kick LOCAL
             safelyInvokeListeners(IArtifactsPurgedEventListener.class, "handleArtifactsPurgedEvent", sender,
                   loadedArtifacts);
-            try {
-               ArtifactEventManager.processArtifactChanges(sender, DefaultEventBasicGuidArtifact.get(
-                     EventModType.Purged, loadedArtifacts.getArtifactChanges()));
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
+
+            ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
 
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
@@ -373,7 +367,7 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and REMOTE artifact change type depending on sender
-   static void kickArtifactsChangeTypeEvent(final Sender sender, final int toArtifactTypeId, final String toArtifactTypeGuid, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+   static void kickArtifactsChangeTypeEvent(final Sender sender, final int toArtifactTypeId, final String toArtifactTypeGuid, final LoadedArtifacts loadedArtifacts, final Set<IEventBasicGuidArtifact> artifactChanges) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
@@ -383,16 +377,8 @@ public class InternalEventManager {
             // Kick LOCAL
             safelyInvokeListeners(IArtifactsChangeTypeEventListener.class, "handleArtifactsChangeTypeEvent", sender,
                   toArtifactTypeId, loadedArtifacts);
-            try {
-               Set<IEventBasicGuidArtifact> artifactChanges = new HashSet<IEventBasicGuidArtifact>();
-               for (IBasicGuidArtifact guidArt : loadedArtifacts.getArtifactChanges()) {
-                  artifactChanges.add(new DefaultEventChangeTypeBasicGuidArtifact(guidArt.getBranchGuid(),
-                        guidArt.getArtTypeGuid(), toArtifactTypeGuid, guidArt.getGuid()));
-               }
-               ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
+
+            ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
 
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
@@ -437,7 +423,7 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and REMOTE TransactionEvent
-   static void kickTransactionEvent(final Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
+   static void kickTransactionEvent(final Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents, final Set<IEventBasicGuidArtifact> artifactChanges) {
       if (isDisableEvents()) {
          return;
       }
@@ -449,7 +435,6 @@ public class InternalEventManager {
          public void run() {
             // Roll-up change information
             FrameworkTransactionData transData = new FrameworkTransactionData(xModifiedEventsCopy);
-            transData.setXModifiedEvents(xModifiedEventsCopy);
             try {
                // Log if this is a loopback and what is happening
                if (enableRemoteEventLoopback) {
@@ -463,7 +448,7 @@ public class InternalEventManager {
                if (!enableRemoteEventLoopback || enableRemoteEventLoopback && sender.isRemote()) {
                   safelyInvokeListeners(IFrameworkTransactionEventListener.class, "handleFrameworkTransactionEvent",
                         sender, transData);
-                  ArtifactEventManager.processArtifactChanges(sender, transData.getArtifactChanges());
+                  ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
                   for (IEventDispatcher dispatcher : dispatchers) {
                      if (dispatcher instanceof ITransactionEventDispatcher) {
                         try {
@@ -518,8 +503,7 @@ public class InternalEventManager {
                   safelyInvokeListeners(IArtifactReloadEventListener.class, "handleReloadEvent", sender, artifacts);
                   Set<IEventBasicGuidArtifact> artifactChanges = new HashSet<IEventBasicGuidArtifact>();
                   for (Artifact artifact : artifacts) {
-                     artifactChanges.add(new DefaultEventBasicGuidArtifact(EventModType.Reloaded,
-                           artifact.getBranch().getGuid(), artifact.getArtifactType().getGuid(), artifact.getGuid()));
+                     artifactChanges.add(new DefaultEventBasicGuidArtifact(EventModType.Reloaded, artifact));
                   }
                   ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
                }

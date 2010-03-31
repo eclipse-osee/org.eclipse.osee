@@ -13,7 +13,9 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -27,6 +29,9 @@ import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.artifact.DefaultEventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -37,19 +42,19 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 public class PurgeArtifacts extends DbTransaction {
 
    private static final String INSERT_SELECT_ITEM =
-      "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) SELECT /*+ ordered FIRST_ROWS */ ?, ?, txs.gamma_id, txs.transaction_id FROM osee_join_artifact aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.branch_id = txs.branch_id";
+         "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) SELECT /*+ ordered FIRST_ROWS */ ?, ?, txs.gamma_id, txs.transaction_id FROM osee_join_artifact aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.branch_id = txs.branch_id";
    private static final String COUNT_ARTIFACT_VIOLATIONS =
-      "SELECT art.art_id, txs.branch_id FROM osee_join_artifact aj, osee_arts art, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id";
+         "SELECT art.art_id, txs.branch_id FROM osee_join_artifact aj, osee_arts art, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id";
    private static final String DELETE_FROM_TXS_USING_JOIN_TRANSACTION =
-      "DELETE FROM osee_txs txs1 WHERE EXISTS ( select 1 from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.transaction_id = txs1.transaction_id AND jt1.gamma_id = txs1.gamma_id)";
+         "DELETE FROM osee_txs txs1 WHERE EXISTS ( select 1 from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.transaction_id = txs1.transaction_id AND jt1.gamma_id = txs1.gamma_id)";
    private static final String DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION =
-      "DELETE FROM osee_tx_details txd1 WHERE EXISTS ( select 1 from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.transaction_id = txd1.transaction_id AND not exists ( select * from osee_txs txs1 where txs1.transaction_id = jt1.transaction_id))";
+         "DELETE FROM osee_tx_details txd1 WHERE EXISTS ( select 1 from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.transaction_id = txd1.transaction_id AND not exists ( select * from osee_txs txs1 where txs1.transaction_id = jt1.transaction_id))";
    private static final String DELETE_FROM_RELATION_VERSIONS =
-      "DELETE FROM osee_relation_link rel1 WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = rel1.gamma_id AND not exists ( select * from osee_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
+         "DELETE FROM osee_relation_link rel1 WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = rel1.gamma_id AND not exists ( select * from osee_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
    private static final String DELETE_FROM_ATTRIBUTE_VERSIONS =
-      "DELETE FROM osee_attribute attr1 WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = attr1.gamma_id AND not exists ( select * from osee_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
+         "DELETE FROM osee_attribute attr1 WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = attr1.gamma_id AND not exists ( select * from osee_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
    private static final String DELETE_FROM_ARTIFACT_VERSIONS =
-      "DELETE FROM osee_arts art WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = art.gamma_id AND not exists ( select * from osee_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
+         "DELETE FROM osee_arts art WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = art.gamma_id AND not exists ( select * from osee_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
 
    private final Collection<? extends Artifact> artifactsToPurge;
 
@@ -119,23 +124,22 @@ public class PurgeArtifacts extends DbTransaction {
                "(aj.art_id = item.a_art_id OR aj.art_id = item.b_art_id)", transactionJoinId, insertTime, queryId);
          insertSelectItems(connection, "osee_attribute", "aj.art_id = item.art_id", transactionJoinId, insertTime,
                queryId);
-         insertSelectItems(connection, "osee_arts", "aj.art_id = item.art_id", transactionJoinId,
-               insertTime, queryId);
+         insertSelectItems(connection, "osee_arts", "aj.art_id = item.art_id", transactionJoinId, insertTime, queryId);
 
          int txsDeletes =
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_TXS_USING_JOIN_TRANSACTION,
-                  transactionJoinId);
+               ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_TXS_USING_JOIN_TRANSACTION,
+                     transactionJoinId);
 
          int txDetails =
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION,
-                  transactionJoinId);
+               ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION,
+                     transactionJoinId);
 
          int relationVersions =
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_RELATION_VERSIONS, transactionJoinId);
+               ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_RELATION_VERSIONS, transactionJoinId);
          int attributeVersions =
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_ATTRIBUTE_VERSIONS, transactionJoinId);
+               ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_ATTRIBUTE_VERSIONS, transactionJoinId);
          int artifactVersions =
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_ARTIFACT_VERSIONS, transactionJoinId);
+               ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_ARTIFACT_VERSIONS, transactionJoinId);
 
          OseeLog.log(
                Activator.class,
@@ -148,19 +152,22 @@ public class PurgeArtifacts extends DbTransaction {
          ConnectionHandler.runPreparedUpdate(connection, "DELETE FROM osee_join_transaction where query_id = ?",
                transactionJoinId);
 
-         for (Artifact art : artifactsToPurge) {
-            ArtifactCache.deCache(art);
-            art.internalSetDeleted();
-            for (RelationLink rel : art.getRelationsAll(false)) {
+         Set<IEventBasicGuidArtifact> artifactChanges = new HashSet<IEventBasicGuidArtifact>();
+         for (Artifact artifact : artifactsToPurge) {
+            artifactChanges.add(new DefaultEventBasicGuidArtifact(EventModType.Purged, artifact));
+            ArtifactCache.deCache(artifact);
+            artifact.internalSetDeleted();
+            for (RelationLink rel : artifact.getRelationsAll(false)) {
                rel.markAsPurged();
             }
-            for (Attribute<?> attr : art.internalGetAttributes()) {
+            for (Attribute<?> attr : artifact.internalGetAttributes()) {
                attr.markAsPurged();
             }
          }
 
          // Kick Local and Remote Events
-         OseeEventManager.kickArtifactsPurgedEvent("PurgeDbTransaction", new LoadedArtifacts(artifactsToPurge));
+         OseeEventManager.kickArtifactsPurgedEvent("PurgeDbTransaction", new LoadedArtifacts(artifactsToPurge),
+               artifactChanges);
 
       } finally {
          ArtifactLoader.clearQuery(connection, queryId);

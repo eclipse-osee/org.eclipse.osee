@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-
 /**
  * @author Donald G. Dunne
  */
@@ -42,8 +41,7 @@ public class DefaultBasicGuidArtifact implements Identity, IBasicGuidArtifact {
    @Override
    public int hashCode() {
       final int prime = 31;
-      int result = super.hashCode();
-      result = prime * result + ((artTypeGuid == null) ? 0 : artTypeGuid.hashCode());
+      int result = prime * ((artTypeGuid == null) ? 0 : artTypeGuid.hashCode());
       result = prime * result + ((branchGuid == null) ? 0 : branchGuid.hashCode());
       return result;
    }
@@ -51,8 +49,6 @@ public class DefaultBasicGuidArtifact implements Identity, IBasicGuidArtifact {
    @Override
    public boolean equals(Object obj) {
       if (this == obj) return true;
-      if (!super.equals(obj)) return false;
-      if (getClass() != obj.getClass()) return false;
       DefaultBasicGuidArtifact other = (DefaultBasicGuidArtifact) obj;
       if (artTypeGuid == null) {
          if (other.artTypeGuid != null) return false;
@@ -60,6 +56,9 @@ public class DefaultBasicGuidArtifact implements Identity, IBasicGuidArtifact {
       if (branchGuid == null) {
          if (other.branchGuid != null) return false;
       } else if (!branchGuid.equals(other.branchGuid)) return false;
+      if (guid == null) {
+         if (other.guid != null) return false;
+      } else if (!guid.equals(other.guid)) return false;
       return true;
    }
 

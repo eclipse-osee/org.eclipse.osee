@@ -26,4 +26,10 @@ public class ArtifactEventManagerLoopbackTest extends ArtifactEventManagerTest {
    public static void tearDown() {
       InternalEventManager.setEnableRemoteEventLoopback(false);
    }
+
+   @Override
+   protected boolean isRemoteTest() {
+      return true;
+   }
+
 }
