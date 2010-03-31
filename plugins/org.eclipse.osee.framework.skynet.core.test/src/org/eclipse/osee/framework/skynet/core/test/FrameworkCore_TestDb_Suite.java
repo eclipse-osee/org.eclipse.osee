@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {DefaultEventBasicGuidArtifactTest.class, DefaultEventChangeTypeBasicGuidArtifactTest.class,
-      ArtifactEventManagerLoopbackTest.class, ArtifactEventManagerTest.class,})
+      ArtifactEventManagerTest.class, ArtifactEventManagerLoopbackTest.class,})
 /**
  * @author Donald G. Dunne
  */

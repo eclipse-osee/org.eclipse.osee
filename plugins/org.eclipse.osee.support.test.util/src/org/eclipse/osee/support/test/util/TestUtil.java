@@ -87,6 +87,10 @@ public class TestUtil {
    }
 
    public static void severeLoggingEnd(SevereLoggingMonitor monitorLog) throws Exception {
+      severeLoggingEnd(monitorLog, ignoreLogging);
+   }
+
+   public static void severeLoggingEnd(SevereLoggingMonitor monitorLog, Collection<String> ignoreLogging) throws Exception {
       OseeLog.unregisterLoggerListener(monitorLog);
       Collection<IHealthStatus> healthStatuses = monitorLog.getAllLogs();
       int numExceptions = 0;
@@ -97,6 +101,7 @@ public class TestUtil {
                for (String str : ignoreLogging) {
                   if (status.getMessage().startsWith(str)) {
                      ignoreIt = true;
+                     break;
                   }
                }
                if (ignoreIt) {
@@ -113,7 +118,8 @@ public class TestUtil {
             }
          }
          if (numExceptions > 0) {
-            throw new OseeStateException("SevereLoggingMonitor found " + numExceptions + " exceptions!");
+            throw new OseeStateException(
+                  "SevereLoggingMonitor found " + numExceptions + " exceptions (see console for details)!");
          }
       }
    }
