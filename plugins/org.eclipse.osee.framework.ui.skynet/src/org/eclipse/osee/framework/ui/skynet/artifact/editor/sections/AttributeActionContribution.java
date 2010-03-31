@@ -59,7 +59,6 @@ public class AttributeActionContribution implements IActionContributor {
    }
 
    public void contributeToToolBar(IToolBarManager manager) {
-      manager.add(new OpenSetDefaultAttributeTypeDialogAction());
       manager.add(new OpenAddAttributeTypeDialogAction());
       manager.add(new OpenDeleteAttributeTypeDialogAction());
    }
@@ -92,23 +91,6 @@ public class AttributeActionContribution implements IActionContributor {
       public void run() {
          try {
             attributeTypeEditor.onRemoveAttributeType();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-      }
-   }
-
-   private final class OpenSetDefaultAttributeTypeDialogAction extends Action {
-      public OpenSetDefaultAttributeTypeDialogAction() {
-         super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BACK));
-         setToolTipText("Opens a dialog to select which attribute type instances to set back to its default value");
-      }
-
-      @Override
-      public void run() {
-         try {
-            attributeTypeEditor.onSetToDefaults();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }

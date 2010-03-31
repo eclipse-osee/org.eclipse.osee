@@ -6,11 +6,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeEditPresenter.Display.OperationType;
 
 public class AttributeTypeEditPresenter {
@@ -20,7 +18,6 @@ public class AttributeTypeEditPresenter {
       public static enum OperationType {
          ADD_ITEM,
          REMOVE_ITEM,
-         SET_ITEMS_TO_DEFAULT;
       }
 
       void showInformation(String title, String message);
@@ -80,23 +77,6 @@ public class AttributeTypeEditPresenter {
          handleDirtyEditor();
          for (IAttributeType attributeType : selectedItems) {
             artifact.deleteAttributes(attributeType);
-         }
-      }
-   }
-
-   public void onSetToDefaults() throws OseeCoreException {
-      Artifact artifact = model.getArtifact();
-      IAttributeType[] types = AttributeTypeUtil.getTypesWithData(artifact);
-      List<IAttributeType> input = new ArrayList<IAttributeType>(Arrays.asList(types));
-      Collection<? extends IAttributeType> selectedItems =
-            selectItems(OperationType.SET_ITEMS_TO_DEFAULT, "Set Default Value for Attribute Types", "set to defaults",
-                  input);
-      if (!selectedItems.isEmpty()) {
-         handleDirtyEditor();
-         for (IAttributeType attributeType : selectedItems) {
-            Attribute<String> attr = artifact.getSoleAttribute(attributeType);
-            attr.internalInitialize(attr.getAttributeType(), artifact, ModificationType.MODIFIED, attr.getId(),
-                  attr.getGammaId(), true, true);
          }
       }
    }

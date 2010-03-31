@@ -68,68 +68,6 @@ public class AttributeTypeEditPresenterTest {
    }
 
    @Test
-   public void testSetDefaults() throws OseeCoreException {
-      String expectedTitle = "Set Default Value for Attribute Types";
-      String expectedOpMessage = "Select items to set to defaults.";
-      String expectedNoneMessage = "No attribute types available to set to defaults.";
-      OperationType expectedType = OperationType.SET_ITEMS_TO_DEFAULT;
-
-      editor.setDirty(true);
-      editor.setWasSaved(false);
-
-      // None Selected
-      display.setSelected();
-      List<IAttributeType> selectable = new ArrayList<IAttributeType>(Arrays.asList(selectableTypes));
-      selectable.add(CoreAttributeTypes.NAME);
-
-      // Set to something other than defaults
-      int count = 0;
-      for (IAttributeType type : selectable) {
-         artifact.setSoleAttributeValue(type, "Value: " + count);
-      }
-      performOp(controller, expectedType);
-
-      // Editor not saved unless artifact change
-      Assert.assertFalse(editor.wasSaved());
-      Assert.assertTrue(editor.isDirty());
-
-      // Select one at a time
-      for (IAttributeType itemToSelect : selectableTypes) {
-         display.setSelected(itemToSelect);
-         Assert.assertEquals("Value: " + count, artifact.getSoleAttributeValue(itemToSelect));
-
-         performOp(controller, expectedType);
-
-         // Editor saved before adding types
-         Assert.assertTrue(editor.wasSaved());
-         Assert.assertFalse(editor.isDirty());
-
-         checkDisplay(display, expectedType, expectedTitle, expectedOpMessage, selectable);
-         Assert.assertEquals("", artifact.getSoleAttributeValue(itemToSelect));
-      }
-
-      // None Selectable
-      display.setSelected();
-      Artifact emptyArtifact = null;
-      try {
-         Branch branch = BranchManager.getCommonBranch();
-         emptyArtifact =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.Artifact, branch, "test empty attribute types");
-         emptyArtifact.deleteAttributes(CoreAttributeTypes.NAME);
-         editor.setArtifact(emptyArtifact);
-         performOp(controller, expectedType);
-         Pair<String, String> info = display.getShowInfo();
-         Assert.assertEquals(expectedTitle, info.getFirst());
-         Assert.assertEquals(expectedNoneMessage, info.getSecond());
-      } finally {
-         editor.setArtifact(artifact);
-         if (emptyArtifact != null) {
-            emptyArtifact.purgeFromBranch();
-         }
-      }
-   }
-
-   @Test
    public void testRemoveItems() throws OseeCoreException {
       String expectedTitle = "Delete Attribute Types";
       String expectedOpMessage = "Select items to remove.";
@@ -146,9 +84,6 @@ public class AttributeTypeEditPresenterTest {
             break;
          case REMOVE_ITEM:
             controller.onRemoveAttributeType();
-            break;
-         case SET_ITEMS_TO_DEFAULT:
-            controller.onSetToDefaults();
             break;
          default:
             throw new UnsupportedOperationException();

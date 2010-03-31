@@ -78,9 +78,6 @@ public final class AttributeTypeEditDisplay implements AttributeTypeEditPresente
          case REMOVE_ITEM:
             toReturn = FrameworkImage.DELETE;
             break;
-         case SET_ITEMS_TO_DEFAULT:
-            toReturn = FrameworkImage.BACK;
-            break;
          default:
             break;
       }
