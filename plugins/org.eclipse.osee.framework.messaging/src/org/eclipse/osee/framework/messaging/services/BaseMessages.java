@@ -8,6 +8,7 @@ package org.eclipse.osee.framework.messaging.services;
 import org.eclipse.osee.framework.messaging.MessageID;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceHealthRequest;
+import org.eclipse.osee.framework.messaging.services.messages.Synch;
 
 /**
  * @author b1528444
@@ -15,7 +16,8 @@ import org.eclipse.osee.framework.messaging.services.messages.ServiceHealthReque
  */
 public enum BaseMessages implements MessageID {
 	ServiceHealth(true, "ABjyjamBQRvvAGcWpRQA", "topic:osee.message.core.ServiceHealth", ServiceHealth.class, false),
-	ServiceHealthRequest(true, "ABkAHOSFQ3VUZcfzsAgA", "topic:osee.message.core.ServiceHealthRequest", ServiceHealthRequest.class, true);
+	ServiceHealthRequest(true, "ABkAHOSFQ3VUZcfzsAgA", "topic:osee.message.core.ServiceHealthRequest", ServiceHealthRequest.class, true),
+	Synch(true, "ABkweOSFQ3yuZcfzsAgA", "topic:osee.message.core.ServiceHealthRequest", Synch.class, true);
 	
 	private String name;
 	private Class<?> clazz;

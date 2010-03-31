@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
@@ -36,7 +37,8 @@ public class ConnectionNodeFactoryImpl implements ConnectionNodeFactory {
 
    @Override
    public synchronized ConnectionNode create(NodeInfo nodeInfo) {
-      final ConnectionNodeActiveMq node = new ConnectionNodeActiveMq(version, sourceId, nodeInfo, executor);
+	  OseeExceptionListener exceptionListener = new OseeExceptionListener();
+      final ConnectionNodeActiveMq node = new ConnectionNodeActiveMq(version, sourceId, nodeInfo, executor, exceptionListener);
       OseeLog.log(Activator.class, Level.FINEST, "Going to start a connection node.");
       try {
          node.start();
@@ -44,7 +46,7 @@ public class ConnectionNodeFactoryImpl implements ConnectionNodeFactory {
          OseeLog.log(ConnectionNodeFactoryImpl.class, Level.SEVERE, ex);
       }
       OseeLog.log(Activator.class, Level.FINE, "Started a connection node.");
-      return new FailoverConnectionNode(node, scheduledExecutor);
+      return new FailoverConnectionNode(node, scheduledExecutor, exceptionListener);
    }
 
 }

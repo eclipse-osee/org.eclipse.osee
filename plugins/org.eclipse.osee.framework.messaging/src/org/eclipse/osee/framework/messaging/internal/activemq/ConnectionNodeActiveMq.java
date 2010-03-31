@@ -14,6 +14,7 @@ import java.util.logging.Level;
 
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
+import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -55,12 +56,14 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    private ConcurrentHashMap<String, Topic> topicCache;
    private ConcurrentHashMap<Topic, MessageProducer> messageProducerCache;
    private ConcurrentHashMap<Topic, MessageConsumer> messageConsumerCache;
+   private final ExceptionListener exceptionListener;
 
    private MessageProducer replyProducer;
    private ActiveMqUtil activeMqUtil;
 
-   public ConnectionNodeActiveMq(String version, String sourceId, NodeInfo nodeInfo, ExecutorService executor) {
+   public ConnectionNodeActiveMq(String version, String sourceId, NodeInfo nodeInfo, ExecutorService executor, ExceptionListener exceptionListener) {
       this.nodeInfo = nodeInfo;
+      this.exceptionListener = exceptionListener;
       activeMqUtil = new ActiveMqUtil();
       topicCache = new ConcurrentHashMap<String, Topic>();
       messageConsumerCache = new ConcurrentHashMap<Topic, MessageConsumer>();
@@ -77,6 +80,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          String uri = nodeInfo.getUri().toASCIIString();
          ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(ActiveMQConnectionFactory.DEFAULT_USER, ActiveMQConnectionFactory.DEFAULT_PASSWORD, uri);
          connection = factory.createConnection();
+         connection.setExceptionListener(exceptionListener);
          session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
          temporaryTopic = session.createTemporaryTopic();
          replyToConsumer = session.createConsumer(temporaryTopic);
@@ -234,9 +238,14 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
 
    @Override
    public synchronized void stop() {
+	  topicCache.clear();
+	  messageProducerCache.clear();
+	  messageConsumerCache.clear();
+	  regularListeners.clear();
       try {
          if (session != null) {
             session.close();
+            session = null;
          }
       } catch (JMSException ex) {
          OseeLog.log(ConnectionNodeActiveMq.class, Level.SEVERE, ex);
@@ -244,6 +253,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       try {
          if (connection != null) {
             connection.close();
+            connection = null;
          }
       } catch (JMSException ex) {
          OseeLog.log(ConnectionNodeActiveMq.class, Level.SEVERE, ex);
@@ -265,6 +275,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          return false;
       }
       connection.getMetaData();
+      session.createProducer(session.createTopic("mytest"));
       return true;
    }
 

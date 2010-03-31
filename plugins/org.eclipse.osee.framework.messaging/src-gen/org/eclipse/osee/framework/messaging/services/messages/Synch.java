@@ -15,17 +15,17 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ServiceDescriptionPair complex type.
+ * <p>Java class for Synch complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ServiceDescriptionPair">
+ * &lt;complexType name="Synch">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="value" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="topic" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="data" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -35,63 +35,63 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ServiceDescriptionPair", propOrder = {
-    "name",
-    "value"
+@XmlType(name = "Synch", propOrder = {
+    "topic",
+    "data"
 })
-public class ServiceDescriptionPair {
+public class Synch {
 
     @XmlElement(required = true)
-    protected String name;
+    protected String topic;
     @XmlElement(required = true)
-    protected String value;
+    protected String data;
 
     /**
-     * Gets the value of the name property.
+     * Gets the value of the topic property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getName() {
-        return name;
+    public String getTopic() {
+        return topic;
     }
 
     /**
-     * Sets the value of the name property.
+     * Sets the value of the topic property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setName(String value) {
-        this.name = value;
+    public void setTopic(String value) {
+        this.topic = value;
     }
 
     /**
-     * Gets the value of the value property.
+     * Gets the value of the data property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getValue() {
-        return value;
+    public String getData() {
+        return data;
     }
 
     /**
-     * Sets the value of the value property.
+     * Sets the value of the data property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setValue(String value) {
-        this.value = value;
+    public void setData(String value) {
+        this.data = value;
     }
 
 }

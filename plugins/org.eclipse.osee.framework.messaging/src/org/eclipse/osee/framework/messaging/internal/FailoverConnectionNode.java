@@ -10,6 +10,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
+import javax.jms.JMSException;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionListener;
@@ -18,6 +21,7 @@ import org.eclipse.osee.framework.messaging.ConnectionNodeFailoverSupport;
 import org.eclipse.osee.framework.messaging.MessageID;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
+import org.eclipse.osee.framework.messaging.internal.activemq.OseeExceptionListener;
 
 /**
  * @author b1528444 This is written using ActiveMQ as the use case. So it will only retry connection and it will keep
@@ -30,19 +34,30 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
    private List<ConnectionListener> connectionListeners;
    private ScheduledExecutorService scheduledExecutor;
    private boolean lastConnectedState = false;
-
-   public FailoverConnectionNode(ConnectionNodeFailoverSupport connectionNode, ScheduledExecutorService scheduledExecutor) {
+   private OseeExceptionListener exceptionListener;
+   
+   public FailoverConnectionNode(ConnectionNodeFailoverSupport connectionNode, ScheduledExecutorService scheduledExecutor, OseeExceptionListener exceptionListener) {
       this.connectionNode = connectionNode;
+      this.exceptionListener = exceptionListener;
+      exceptionListener.setListener(this);
       savedSubscribes = new CopyOnWriteArrayList<SavedSubscribe>();
       connectionListeners = new CopyOnWriteArrayList<ConnectionListener>();
       this.scheduledExecutor = scheduledExecutor;
-      this.scheduledExecutor.scheduleAtFixedRate(this, 60, 60, TimeUnit.SECONDS);
+      this.scheduledExecutor.scheduleAtFixedRate(this, 60, 15, TimeUnit.SECONDS);
    }
 
    @Override
    public void send(MessageID topic, Object body, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
       attemptSmartConnect();
-      connectionNode.send(topic, body, statusCallback);
+      if(lastConnectedState){
+    	  try{
+    		  connectionNode.send(topic, body, statusCallback);
+    	  } catch (OseeCoreException ex){
+    		  stop();
+    		  run();
+    		  connectionNode.send(topic, body, statusCallback);
+    	  }
+      }
    }
 
    private void attemptSmartConnect() {
@@ -164,11 +179,12 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
       } 
    }
 
-   private void connected() {
+   private synchronized void connected() {
       if (!lastConnectedState) {
+    	 lastConnectedState = true;
          notifyConnectionListenersConnected();
       }
-      lastConnectedState = true;
+      
    }
 
    private void notifyConnectionListenersConnected() {
@@ -177,7 +193,7 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
       }
    }
 
-   private void notConnected() {
+   private synchronized void notConnected() {
       if (lastConnectedState) {
          notifyConnectionListenersNotConnected();
       }
@@ -204,5 +220,10 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
    public String getSummary() {
       return connectionNode.getSummary();
    }
+
+	public void onException(JMSException ex) {
+		connectionNode.stop();
+		run();
+	}
 
 }
