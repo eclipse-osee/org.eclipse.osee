@@ -47,6 +47,8 @@ public class CoreAttributeTypes extends NamedIdentity implements IAttributeType 
    public static final CoreAttributeTypes USER_ID = new CoreAttributeTypes("AAMFEbKl8RCQr17bDAQA", "User Id");
    public static final CoreAttributeTypes VERIFICATION_LEVEL =
          new CoreAttributeTypes("AAMFEXRTkyKVIFqcMwQA", "Verification Level");
+   public static final CoreAttributeTypes STATIC_ID =
+      new CoreAttributeTypes("AAMFEcY5DUbWyuIpZVwA", "Static Id");
 
    private CoreAttributeTypes(String guid, String name) {
       super(guid, name);

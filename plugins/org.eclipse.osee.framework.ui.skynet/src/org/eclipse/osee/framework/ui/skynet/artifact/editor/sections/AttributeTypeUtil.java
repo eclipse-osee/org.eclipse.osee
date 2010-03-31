@@ -32,7 +32,8 @@ public class AttributeTypeUtil {
    public static AttributeType[] getEmptyTypes(Artifact artifact) throws OseeCoreException {
       List<AttributeType> items = new ArrayList<AttributeType>();
       for (AttributeType type : artifact.getAttributeTypes()) {
-         if (!CoreAttributeTypes.NAME.equals(type) && artifact.getAttributes(type).isEmpty()) {
+         String typeName = type.getName();
+         if (!CoreAttributeTypes.NAME.equals(typeName) && artifact.getAttributes(typeName).isEmpty()) {
             items.add(type);
          }
       }
@@ -40,28 +41,30 @@ public class AttributeTypeUtil {
       return items.toArray(new AttributeType[items.size()]);
    }
 
+   public static Set<AttributeType> toTypes(List<Attribute<?>> attributes) {
+      Set<AttributeType> types = new HashSet<AttributeType>();
+      for (Attribute<?> attribute : attributes) {
+         types.add(attribute.getAttributeType());
+      }
+      return types;
+   }
+
    public static AttributeType[] getTypesWithData(Artifact artifact) throws OseeCoreException {
       List<AttributeType> items = new ArrayList<AttributeType>();
+
+      List<Attribute<?>> attributeInstances = artifact.getAttributes(artifact.isDeleted());
+      Set<AttributeType> typesInExistence = toTypes(attributeInstances);
+
       AttributeType nameType = null;
       AttributeType annotations = null;
 
-      Set<AttributeType> typesInExistence = new HashSet<AttributeType>();
-      List<Attribute<?>> attributeInstances = artifact.getAttributes();
-      for (Attribute<?> attribute : attributeInstances) {
-         typesInExistence.add(attribute.getAttributeType());
-      }
-      typesInExistence.addAll(artifact.getAttributeTypes());
       for (AttributeType type : typesInExistence) {
          if (CoreAttributeTypes.NAME.equals(type)) {
             nameType = type;
+         } else if (CoreAttributeTypes.Annotation.equals(type)) {
+            annotations = type;
          } else {
-            if (!artifact.getAttributes(type.getName()).isEmpty()) {
-               if (CoreAttributeTypes.Annotation.equals(type)) {
-                  annotations = type;
-               } else {
-                  items.add(type);
-               }
-            }
+            items.add(type);
          }
       }
       Collections.sort(items);
