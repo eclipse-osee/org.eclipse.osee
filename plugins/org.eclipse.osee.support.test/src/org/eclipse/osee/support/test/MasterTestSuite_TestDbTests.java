@@ -13,7 +13,7 @@ package org.eclipse.osee.support.test;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.test.AtsTest_TestDb_Suite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.skynet.core.test.FrameworkCore_TestDb_Suite;
+import org.eclipse.osee.framework.messaging.event.res.test.FrameworkRes_TestDb_Suite;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactQueryTestDemo;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_TestDb_Suite;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {FrameworkCore_TestDb_Suite.class, ArtifactQueryTestDemo.class, AtsTest_TestDb_Suite.class,
+@Suite.SuiteClasses( {FrameworkRes_TestDb_Suite.class, ArtifactQueryTestDemo.class, AtsTest_TestDb_Suite.class,
       FrameworkUi_TestDb_Suite.class})
 /**
  * This Test Suite is to run against a postgres database with ATS Developer as the DbInit.<br>

@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.test.AtsTest_Demo_Suite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.test.FrameworkCoreTestSuite;
 import org.eclipse.osee.framework.jdk.core.test.JdkCoreTestSuite;
+import org.eclipse.osee.framework.messaging.event.res.test.FrameworkRes_Demo_Suite;
 import org.eclipse.osee.framework.skynet.core.test.FrameworkCore_Demo_Suite;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Demo_Suite;
@@ -30,6 +31,7 @@ import org.junit.runners.Suite;
 JdkCoreTestSuite.class, //
       FrameworkCoreTestSuite.class, //
       FrameworkCore_Demo_Suite.class, //
+      FrameworkRes_Demo_Suite.class, //
       AtsTest_Config_Suite.class,//
       AtsTest_Demo_Suite.class, //
       FrameworkUi_Demo_Suite.class, //

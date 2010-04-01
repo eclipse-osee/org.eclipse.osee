@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,6 +40,14 @@ public class AXml {
     */
    public static String addTagData(String elementName, String data) {
       return addTagData(elementName, data, false);
+   }
+
+   public static String addTagData(String elementName, Integer[] data, String separator) {
+      return addTagData(elementName, Collections.toString(separator, data), false);
+   }
+
+   public static String addTagData(String elementName, Collection<Integer> data, String separator) {
+      return addTagData(elementName, Collections.toString(separator, data), false);
    }
 
    public static String addTagData(String elementName, String data, boolean newLine) {
@@ -84,6 +95,19 @@ public class AXml {
       return v.toArray(new String[v.size()]);
    }
 
+   public static List<Integer> getTagIntegerDataArray(String xmlStr, String xmlRoot, String separator) {
+      List<Integer> results = new ArrayList<Integer>();
+      Matcher m;
+      m =
+            Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+                  xmlStr);
+      while (m.find()) {
+         for (String str : m.group(1).split(separator))
+            results.add(new Integer(xmlToText(str)));
+      }
+      return results;
+   }
+
    /**
     * Returns data between <xmlRoot> and </xmlRoot> from xmlStr
     * 
@@ -115,6 +139,15 @@ public class AXml {
          return intStr.equals("true") ? true : false;
       }
       return false;
+   }
+
+   public static Integer getTagIntegerData(String xmlStr, String xmlRoot) {
+      String tags[] = getTagDataArray(xmlStr, xmlRoot);
+      if (tags.length > 0) {
+         String intStr = tags[0];
+         return new Integer(intStr);
+      }
+      return null;
    }
 
    /**
