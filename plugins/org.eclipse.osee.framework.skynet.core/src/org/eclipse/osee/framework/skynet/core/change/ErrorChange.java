@@ -22,13 +22,13 @@ public class ErrorChange extends Change {
    final static String ERROR_STRING = "!Error - ";
    private String exception = "";
 
-   public ErrorChange(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      super(branch, artifactType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
-            isHistorical, artifact);
+   public ErrorChange(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+      super(branch, artifactType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, isHistorical,
+            artifact);
    }
 
    public ErrorChange(IOseeBranch branch, int artId, String exception) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      this(branch, null, 0, artId, null, null, null, ChangeType.OUTGOING, false, null);
+      this(branch, null, 0, artId, null, null, null, false, null);
       this.exception = exception;
    }
 

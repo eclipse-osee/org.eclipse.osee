@@ -27,9 +27,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public final class ArtifactChange extends Change {
 
-   public ArtifactChange(IOseeBranch branch, ArtifactType artType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      super(branch, artType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType, isHistorical,
-            artifact);
+   public ArtifactChange(IOseeBranch branch, ArtifactType artType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+      super(branch, artType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, isHistorical, artifact);
    }
 
    @Override

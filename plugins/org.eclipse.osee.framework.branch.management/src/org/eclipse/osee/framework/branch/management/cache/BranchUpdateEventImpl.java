@@ -74,10 +74,7 @@ public class BranchUpdateEventImpl implements IBranchUpdateEvent {
          for (String version : versions) {
             if (Strings.isValid(version)) {
                String toCheck = version.toLowerCase();
-               if (toCheck.startsWith("0.9.2") ||
-                     toCheck.startsWith("0.9.3") ||
-                     toCheck.startsWith("0.9.4") ||
-                     toCheck.startsWith("development")) {
+               if (!toCheck.startsWith("0.9.0") && !toCheck.startsWith("0.9.1")) {
                   return true;
                }
             }

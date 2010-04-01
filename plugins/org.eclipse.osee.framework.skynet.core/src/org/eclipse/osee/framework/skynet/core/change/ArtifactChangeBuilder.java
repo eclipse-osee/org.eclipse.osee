@@ -30,14 +30,13 @@ public class ArtifactChangeBuilder extends ChangeBuilder {
     * @param artifactType
     * @param isHistorical
     */
-   public ArtifactChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) {
-      super(branch, artifactType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
-            isHistorical);
+   public ArtifactChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, boolean isHistorical) {
+      super(branch, artifactType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, isHistorical);
    }
 
    @Override
    public Change build(Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       return new ArtifactChange(branch, getArtifactType(), getSourceGamma(), getArtId(), getToTransactionId(),
-            getFromTransactionId(), getModType(), getChangeType(), isHistorical(), loadArtifact());
+            getFromTransactionId(), getModType(), isHistorical(), loadArtifact());
    }
 }

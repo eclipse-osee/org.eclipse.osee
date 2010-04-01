@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
-import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTING;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Collections;
@@ -39,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
@@ -144,44 +141,45 @@ public final class ArtifactImageManager {
       throw new OseeArgumentException("Conflict not of supported type");
    }
 
-   private static Image getChangeTypeImageInternal(KeyedImage baseImage, ChangeType changeType, ModificationType modType) {
-      if (changeType == CONFLICTING && modType == NEW) {
-         modType = ModificationType.MODIFIED;
-      }
-      KeyedImage overlay = FrameworkImage.valueOf(changeType + "_" + modType.toString());
-      return ImageManager.getImage(ImageManager.setupImageWithOverlay(baseImage, overlay, Location.TOP_LEFT));
-   }
-
-   public static Image getChangeTypeImage(Change change) throws OseeArgumentException, OseeDataStoreException, OseeTypeDoesNotExist {
-      if (change.getItemKind().equals("Attribute")) {
-         return getAttributeChangeImage(change.getChangeType(), change.getModificationType());
-      }
-      if (change.getItemKind().equals("Artifact")) {
-         return getArtifactChangeImage(change.getArtifactType(), change.getChangeType(), change.getModificationType());
-      }
-      if (change.getItemKind().equals("Relation")) {
-         return getRelationChangeImage(change.getChangeType(), change.getModificationType());
-      }
-      throw new OseeArgumentException("Change not of supported type");
+   public static Image getChangeTypeImage(Change change) {
+      return getChangeImage(change, ChangeImageType.CHANGE_TYPE);
    }
 
    public static Image getChangeKindImage(Change change) throws OseeArgumentException, OseeDataStoreException, OseeTypeDoesNotExist {
-      if (change.getItemKind().equals("Attribute")) {
-         return getArtifactChangeImage(change.getArtifactType(), change.getChangeType(), change.getModificationType());
+      return getChangeImage(change, ChangeImageType.CHANGE_KIND);
+   }
+
+   private static enum ChangeImageType {
+      CHANGE_KIND,
+      CHANGE_TYPE;
+   }
+
+   private static Image getChangeImage(Change change, ChangeImageType changeImageType) {
+      Image toReturn = null;
+      KeyedImage keyedImage = null;
+      ModificationType modType = null;
+      if (change.getItemKind().equals("Artifact")) {
+         modType = change.getModificationType();
+         keyedImage = BaseImage.getBaseImageEnum(change.getArtifactType());
       }
-      return getChangeTypeImage(change);
-   }
-
-   private static Image getArtifactChangeImage(ArtifactType artifactType, ChangeType changeType, ModificationType modType) {
-      return getChangeTypeImageInternal(BaseImage.getBaseImageEnum(artifactType), changeType, modType);
-   }
-
-   private static Image getAttributeChangeImage(ChangeType changeType, ModificationType modType) {
-      return getChangeTypeImageInternal(FrameworkImage.ATTRIBUTE_MOLECULE, changeType, modType);
-   }
-
-   private static Image getRelationChangeImage(ChangeType changeType, ModificationType modType) {
-      return getChangeTypeImageInternal(FrameworkImage.RELATION, changeType, modType);
+      if (change.getItemKind().equals("Attribute")) {
+         if (ChangeImageType.CHANGE_TYPE == changeImageType) {
+            modType = change.getModificationType();
+            keyedImage = FrameworkImage.ATTRIBUTE_MOLECULE;
+         } else {
+            modType = change.getModificationType();
+            keyedImage = BaseImage.getBaseImageEnum(change.getArtifactType());
+         }
+      }
+      if (change.getItemKind().equals("Relation")) {
+         keyedImage = FrameworkImage.RELATION;
+         modType = change.getModificationType();
+      }
+      if (keyedImage != null && modType != null) {
+         KeyedImage overlay = FrameworkImage.valueOf("OUTGOING_" + modType.toString());
+         toReturn = ImageManager.getImage(ImageManager.setupImageWithOverlay(keyedImage, overlay, Location.TOP_LEFT));
+      }
+      return toReturn;
    }
 
    public static Image getImage(ArtifactType artifactType) {

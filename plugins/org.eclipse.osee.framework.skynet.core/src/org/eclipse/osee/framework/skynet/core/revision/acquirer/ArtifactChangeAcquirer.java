@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
-import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -72,7 +71,7 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
             ArtifactChangeBuilder artifactChangeBuilder =
                   new ArtifactChangeBuilder(getSourceBranch(),
                         ArtifactTypeManager.getType(chStmt.getInt("art_type_id")), chStmt.getInt("gamma_id"), artId,
-                        toTransactionId, fromTransactionId, modificationType, ChangeType.OUTGOING, !hasBranch);
+                        toTransactionId, fromTransactionId, modificationType, !hasBranch);
 
             getArtIds().add(artId);
             getChangeBuilders().add(artifactChangeBuilder);

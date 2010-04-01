@@ -19,7 +19,9 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -44,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -70,6 +71,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author Donald G. Dunne
@@ -234,24 +236,6 @@ public class XChangeWidget extends XWidget implements IActionable {
    private ToolItem associatedArtifactToolItem;
    private ToolItem openQuickSearchActionToolItem;
 
-   private void refreshAssociatedArtifact() throws OseeCoreException {
-      try {
-         Artifact associatedArtifact = null;
-         if (branch != null) {
-            associatedArtifact = (Artifact) branch.getAssociatedArtifact().getFullArtifact();
-         } else if (transactionId != null && transactionId.getCommit() != 0) {
-            associatedArtifact =
-                  ArtifactQuery.getArtifactFromId(transactionId.getCommit(), BranchManager.getCommonBranch());
-         }
-         if (associatedArtifact != null && !(associatedArtifact instanceof User)) {
-            associatedArtifactToolItem.setImage(ArtifactImageManager.getImage(associatedArtifact));
-            associatedArtifactToolItem.setEnabled(true);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-   }
-
    public void loadTable() {
       refresh();
    }
@@ -322,63 +306,20 @@ public class XChangeWidget extends XWidget implements IActionable {
 
       extraInfoLabel.setText(LOADING);
 
-      Job job = new Job("Open Change View") {
+      ChangeData changeData = new ChangeData();
+      final Job uiJob = new UpdateChangeView(branch, transactionId, loadChangeReport, changeData);
 
-         @Override
-         protected IStatus run(IProgressMonitor monitor) {
-            final boolean hasBranch = branch != null;
-            // need to determine if the branch has been updated from parent
-            final boolean rebaselined = hasBranch ? branch.getBranchState().equals(BranchState.REBASELINED) : false;
-            final Collection<Change> changes = new ArrayList<Change>();
-
-            try {
-               if (loadChangeReport && !rebaselined) {
-                  changes.addAll((hasBranch ? ChangeManager.getChangesPerBranch(branch, monitor) : ChangeManager.getChangesPerTransaction(
-                        transactionId, monitor)));
-               }
-               Displays.ensureInDisplayThread(new Runnable() {
-                  public void run() {
-                     if (loadChangeReport && !rebaselined) {
-                        if (changes.size() == 0) {
-                           extraInfoLabel.setText(NOT_CHANGES);
-                           xChangeViewer.setInput(changes);
-                        } else {
-                           try {
-                              String infoLabel =
-                                    String.format(
-                                          "Changes %s to branch: %s\n%s",
-                                          hasBranch || transactionId.getComment() == null ? "made" : "committed",
-                                          hasBranch ? branch : "(" + transactionId.getId() + ") " + transactionId.getBranch(),
-                                          hasBranch || transactionId.getComment() == null ? "" : "Comment: " + transactionId.getComment());
-                              extraInfoLabel.setText(infoLabel);
-                           } catch (OseeCoreException ex) {
-                              OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-                           }
-
-                           xChangeViewer.setInput(changes);
-                        }
-                        try {
-                           refreshAssociatedArtifact();
-                        } catch (OseeCoreException ex) {
-                           OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                        }
-                     } else {
-                        if (rebaselined) {
-                           extraInfoLabel.setText(branch.getShortName() + "has been updated from parent and cannot be refreshed. Please close down and re-open this change report.");
-                           xChangeViewer.setEnabled(false);
-                        } else {
-                           extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
-                        }
-                     }
-                  }
-               });
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      if (loadChangeReport) {
+         final Job loadJob = new LoadChangeJob(branch, transactionId, changeData);
+         Jobs.startJob(loadJob, new JobChangeAdapter() {
+            @Override
+            public void done(IJobChangeEvent event) {
+               Jobs.startJob(uiJob);
             }
-            return Status.OK_STATUS;
-         }
-      };
-      Jobs.startJob(job);
+         });
+      } else {
+         Jobs.startJob(uiJob);
+      }
    }
 
    @Override
@@ -446,4 +387,119 @@ public class XChangeWidget extends XWidget implements IActionable {
       return branch;
    }
 
+   private final static class ChangeData {
+      private final Collection<Change> changes;
+      private Artifact artifact;
+
+      public ChangeData() {
+         changes = new ArrayList<Change>();
+      }
+
+      public Collection<Change> getChanges() {
+         return changes;
+      }
+
+      public void setAssociatedArtifact(Artifact artifact) {
+         this.artifact = artifact;
+      }
+
+      public Artifact getAssociatedArtifact() {
+         return artifact;
+      }
+   }
+
+   private final static class LoadChangeJob extends Job {
+      private final ChangeData changeData;
+      private final Branch branch;
+      private final TransactionRecord transactionId;
+
+      public LoadChangeJob(Branch branch, TransactionRecord transactionId, ChangeData changeData) {
+         super("Load Change Data");
+         this.changeData = changeData;
+         this.branch = branch;
+         this.transactionId = transactionId;
+      }
+
+      @Override
+      protected IStatus run(IProgressMonitor monitor) {
+         IStatus toReturn = Status.OK_STATUS;
+         try {
+            boolean hasBranch = branch != null;
+            boolean isRebaselined = hasBranch ? branch.getBranchState().equals(BranchState.REBASELINED) : false;
+            if (!isRebaselined) {
+               Collection<Change> changes = changeData.getChanges();
+               if (hasBranch) {
+                  changes.addAll(ChangeManager.getChangesPerBranch(branch, monitor));
+               } else {
+                  changes.addAll(ChangeManager.getChangesPerTransaction(transactionId, monitor));
+               }
+            }
+            Artifact artifact = null;
+            if (hasBranch) {
+               artifact = (Artifact) branch.getAssociatedArtifact().getFullArtifact();
+            } else if (transactionId != null && transactionId.getCommit() != 0) {
+               artifact = ArtifactQuery.getArtifactFromId(transactionId.getCommit(), BranchManager.getCommonBranch());
+            }
+            changeData.setAssociatedArtifact(artifact);
+         } catch (OseeCoreException ex) {
+            toReturn = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error loading change data", ex);
+         }
+         return toReturn;
+      }
+   };
+
+   private final class UpdateChangeView extends UIJob {
+      private final ChangeData changeData;
+      private final Branch branch;
+      private final TransactionRecord transactionId;
+      private final boolean loadChangeReport;
+
+      public UpdateChangeView(Branch branch, TransactionRecord transactionId, boolean loadChangeReport, ChangeData changeData) {
+         super("Update Change View");
+         this.changeData = changeData;
+         this.branch = branch;
+         this.transactionId = transactionId;
+         this.loadChangeReport = loadChangeReport;
+      }
+
+      @Override
+      public IStatus runInUIThread(IProgressMonitor monitor) {
+         boolean hasBranch = branch != null;
+         boolean isRebaselined = hasBranch ? branch.getBranchState().equals(BranchState.REBASELINED) : false;
+
+         if (loadChangeReport && !isRebaselined) {
+            if (changeData.getChanges().isEmpty()) {
+               extraInfoLabel.setText(NOT_CHANGES);
+            } else {
+               try {
+                  String infoLabel =
+                        String.format(
+                              "Changes %s to branch: %s\n%s",
+                              hasBranch || transactionId.getComment() == null ? "made" : "committed",
+                              hasBranch ? branch : "(" + transactionId.getId() + ") " + transactionId.getBranch(),
+                              hasBranch || transactionId.getComment() == null ? "" : "Comment: " + transactionId.getComment());
+                  extraInfoLabel.setText(infoLabel);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+            }
+            xChangeViewer.setInput(changeData.getChanges());
+
+            Artifact associatedArtifact = changeData.getAssociatedArtifact();
+            if (associatedArtifact != null && !(associatedArtifact instanceof User)) {
+               associatedArtifactToolItem.setImage(ArtifactImageManager.getImage(associatedArtifact));
+               associatedArtifactToolItem.setEnabled(true);
+            }
+         } else {
+            if (isRebaselined) {
+               extraInfoLabel.setText(branch.getShortName() + "has been updated from parent and cannot be refreshed. Please close down and re-open this change report.");
+               xChangeViewer.setEnabled(false);
+            } else {
+               extraInfoLabel.setText("Cleared on shut down - press refresh to reload");
+            }
+         }
+         return Status.OK_STATUS;
+      }
+
+   }
 }

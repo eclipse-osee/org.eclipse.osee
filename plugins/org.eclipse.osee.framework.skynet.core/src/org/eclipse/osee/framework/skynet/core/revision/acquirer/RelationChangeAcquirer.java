@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
-import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.RelationChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -49,8 +48,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
             toTransactionId = TransactionManager.getHeadTransaction(getSourceBranch());
             chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_RELATION),
                   getSourceBranch().getId(), fromTransactionId.getId());
-         }
-         else {//Changes per a transaction
+         } else {//Changes per a transaction
             toTransactionId = getTransaction();
 
             if (getSpecificArtifact() != null) {
@@ -78,9 +76,8 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
                getChangeBuilders().add(
                      new RelationChangeBuilder(getSourceBranch(),
                            ArtifactTypeManager.getType(chStmt.getInt("art_type_id")), chStmt.getInt("gamma_id"),
-                           aArtId, toTransactionId, fromTransactionId, modificationType, ChangeType.OUTGOING, bArtId,
-                           relLinkId, rationale, RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")),
-                           !hasBranch));
+                           aArtId, toTransactionId, fromTransactionId, modificationType, bArtId, relLinkId, rationale,
+                           RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")), !hasBranch));
             }
          }
          getMonitor().worked(25);

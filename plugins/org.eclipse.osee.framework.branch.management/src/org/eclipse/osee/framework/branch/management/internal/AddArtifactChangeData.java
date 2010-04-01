@@ -12,7 +12,9 @@
 package org.eclipse.osee.framework.branch.management.internal;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.AttributeChangeItem;
@@ -21,7 +23,6 @@ import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.ChangeItemUtil;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 
 public class AddArtifactChangeData extends AbstractOperation {
    private final List<ChangeItem> changeItems;
@@ -33,42 +34,68 @@ public class AddArtifactChangeData extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      List<ChangeItem> newItems = new ArrayList<ChangeItem>();
-      CompositeKeyHashMap<Integer, Integer, ArtifactChangeItem> artEntries = new CompositeKeyHashMap<Integer, Integer, ArtifactChangeItem>();
+      Map<Integer, ArtifactChangeItem> artifactChanges = new HashMap<Integer, ArtifactChangeItem>();
       for (ChangeItem item : changeItems) {
          if (item instanceof ArtifactChangeItem) {
             ArtifactChangeItem artItem = (ArtifactChangeItem) item;
-            artEntries.put(artItem.getArtId(), artItem.getNetChange().getTransactionNumber(), artItem);
+            artifactChanges.put(artItem.getArtId(), artItem);
          }
       }
+
+      List<AttributeChangeItem> attrItems = new ArrayList<AttributeChangeItem>();
+      Map<Integer, ArtifactChangeItem> syntheticArtifactChanges = new HashMap<Integer, ArtifactChangeItem>();
       for (ChangeItem item : changeItems) {
          if (item instanceof AttributeChangeItem) {
-            AttributeChangeItem attrItem = (AttributeChangeItem) item;
-            ChangeVersion attrItemNet = attrItem.getNetChange();
-            ArtifactChangeItem artItem = artEntries.get(attrItem.getArtId(), attrItemNet.getTransactionNumber());
-            if (artItem == null) {
-               try {
-                  ChangeVersion currentVersion = attrItem.getCurrentVersion();
-                  artItem = new ArtifactChangeItem(currentVersion.getGammaId(), currentVersion.getModType(), currentVersion.getTransactionNumber(),
-                                                   attrItem.getArtId());
-                  ChangeItemUtil.copy(attrItemNet, artItem.getNetChange());
-                  artItem.getNetChange().setModType(ModificationType.MODIFIED);
+            AttributeChangeItem attributeChange = (AttributeChangeItem) item;
+            Integer artIdToCheck = attributeChange.getArtId();
 
-                  if (attrItem.getBaselineVersion().isValid()) {
-                     ChangeItemUtil.copy(attrItem.getBaselineVersion(), artItem.getBaselineVersion());
-                  }
-                  if (attrItem.getFirstNonCurrentChange().isValid()) {
-                     ChangeItemUtil.copy(attrItem.getFirstNonCurrentChange(), artItem.getFirstNonCurrentChange());
-                  }
-                  artEntries.put(artItem.getArtId(), attrItemNet.getTransactionNumber(), artItem);
-                  newItems.add(artItem);
+            ArtifactChangeItem artifactChange = artifactChanges.get(artIdToCheck);
+            if (artifactChange == null) {
+               artifactChange = syntheticArtifactChanges.get(artIdToCheck);
+               if (artifactChange == null) {
+                  artifactChange = new ArtifactChangeItem(-1, null, -1, artIdToCheck);
+                  syntheticArtifactChanges.put(artIdToCheck, artifactChange);
                }
-               catch (Exception ex) {
-                  ex.printStackTrace();
-               }
+               attrItems.add(attributeChange);
+               updateArtifactChangeItem(artifactChange, attributeChange);
             }
          }
       }
-      changeItems.addAll(newItems);
+      changeItems.addAll(syntheticArtifactChanges.values());
+
+      for (AttributeChangeItem item : attrItems) {
+         AttributeChangeItem attributeChange = item;
+         if (attributeChange.getNetChange().isValid()) {
+            ChangeVersion netVersion = attributeChange.getNetChange();
+            if (ChangeItemUtil.isNew(netVersion) || ChangeItemUtil.isIntroduced(netVersion)) {
+               ArtifactChangeItem artifactChange = syntheticArtifactChanges.get(attributeChange.getArtId());
+               ChangeItemUtil.copy(artifactChange.getBaselineVersion(), attributeChange.getBaselineVersion());
+            }
+         }
+      }
+   }
+
+   private void updateArtifactChangeItem(ArtifactChangeItem artifact, AttributeChangeItem attribute) {
+      try {
+         if (!artifact.getBaselineVersion().isValid() && attribute.getBaselineVersion().isValid()) {
+            ChangeItemUtil.copy(attribute.getBaselineVersion(), artifact.getBaselineVersion());
+         }
+
+         if (!artifact.getCurrentVersion().isValid() && attribute.getCurrentVersion().isValid()) {
+            ChangeItemUtil.copy(attribute.getCurrentVersion(), artifact.getCurrentVersion());
+         }
+
+         if (!artifact.getDestinationVersion().isValid() && attribute.getDestinationVersion().isValid()) {
+            ChangeItemUtil.copy(attribute.getDestinationVersion(), artifact.getDestinationVersion());
+         }
+
+         if (!artifact.getNetChange().isValid() && attribute.getNetChange().isValid()) {
+            ChangeItemUtil.copy(attribute.getNetChange(), artifact.getNetChange());
+            artifact.getNetChange().setModType(ModificationType.MODIFIED);
+         }
+
+      } catch (Exception ex) {
+         ex.printStackTrace();
+      }
    }
 }

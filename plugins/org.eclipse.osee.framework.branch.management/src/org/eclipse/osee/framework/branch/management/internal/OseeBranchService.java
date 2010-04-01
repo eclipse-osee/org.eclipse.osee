@@ -132,11 +132,9 @@ public class OseeBranchService implements IOseeBranchService {
       Operations.executeWorkAndCheckStatus(op, monitor, -1);
    }
 
-   private TransactionRecord getMergeTransaction(TransactionRecord srcTx, TransactionRecord destTx) throws OseeCoreException {
-      Branch sourceBranch = srcTx.getBranch();
-      Branch destinationBranch = destTx.getBranch();
-      Branch mergeBranch =
-            cachingService.getOseeCachingService().getBranchCache().findMergeBranch(sourceBranch, destinationBranch);
+   private TransactionRecord getMergeTransaction(TransactionRecord sourceTx, TransactionRecord destinationTx) throws OseeCoreException {
+      BranchCache cache = cachingService.getOseeCachingService().getBranchCache();
+      Branch mergeBranch = cache.findMergeBranch(sourceTx.getBranch(), destinationTx.getBranch());
       return mergeBranch != null ? cachingService.getOseeCachingService().getTransactionCache().getTransaction(
             mergeBranch, TransactionVersion.HEAD) : null;
    }

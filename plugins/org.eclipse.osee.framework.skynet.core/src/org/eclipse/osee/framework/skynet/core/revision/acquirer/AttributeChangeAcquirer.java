@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
-import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -66,7 +65,6 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             toTransactionId = TransactionManager.getHeadTransaction(getSourceBranch());
             chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS),
                   getSourceBranch().getId(), fromTransactionId.getId());
-
 
          }//Changes per transaction number
          else {
@@ -122,8 +120,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                if (artModType == ModificationType.MODIFIED && !modifiedArtifacts.contains(artId)) {
                   ArtifactChangeBuilder artifactChangeBuilder =
                         new ArtifactChangeBuilder(sourceBranch, ArtifactTypeManager.getType(artTypeId), -1, artId,
-                              toTransactionId, fromTransactionId, ModificationType.MODIFIED, ChangeType.OUTGOING,
-                              !hasBranch);
+                              toTransactionId, fromTransactionId, ModificationType.MODIFIED, !hasBranch);
 
                   changeBuilders.add(artifactChangeBuilder);
                   modifiedArtifacts.add(artId);
@@ -136,8 +133,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
 
                attributeChangeBuilder =
                      new AttributeChangeBuilder(sourceBranch, ArtifactTypeManager.getType(artTypeId), sourceGamma,
-                           artId, toTransactionId, fromTransactionId, modificationType, ChangeType.OUTGOING,
-                           !hasBranch, isValue, "", attrId, attrTypeId, artModType);
+                           artId, toTransactionId, fromTransactionId, modificationType, !hasBranch, isValue, "",
+                           attrId, attrTypeId, artModType);
 
                changeBuilders.add(attributeChangeBuilder);
                attributesWasValueCache.put(attrId, attributeChangeBuilder);

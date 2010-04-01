@@ -739,16 +739,6 @@
         </with>
      </enabledWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.WordChangesBetweenCurrentAndParentHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesBetweenCurrentAndParent.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
-      </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.WordChangesMadeToHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesMadeTo.command">
      <enabledWhen>
         <with
@@ -1459,8 +1449,6 @@
 	</extension>
 	<extension name="Commands of ChangeReportView" point="org.eclipse.ui.commands">
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesMadeTo.command" name="Word changes on this working branch">
-         </command>
-		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesBetweenCurrentAndParent.command" name="Word differences between current/parent branches">
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesToParent.command" name="Word changes made to parent branch since creating current branch">
          </command>

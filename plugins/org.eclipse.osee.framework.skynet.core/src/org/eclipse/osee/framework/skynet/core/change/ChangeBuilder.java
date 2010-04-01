@@ -22,21 +22,19 @@ public abstract class ChangeBuilder {
    private final int sourceGamma;
    private final int artId;
    private final TransactionRecord toTransactionId;
-   private TransactionRecord fromTransactionId;
+   private final TransactionRecord fromTransactionId;
    private ModificationType modType;
-   private final ChangeType changeType;
-   private Branch branch;
+   private final Branch branch;
    private final ArtifactType artifactType;
    private final boolean isHistorical;
 
-   public ChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) {
+   public ChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, boolean isHistorical) {
       super();
       this.sourceGamma = sourceGamma;
       this.artId = artId;
       this.toTransactionId = toTransactionId;
       this.fromTransactionId = fromTransactionId;
       this.modType = modType;
-      this.changeType = changeType;
       this.branch = branch;
       this.artifactType = artifactType;
       this.isHistorical = isHistorical;
@@ -61,13 +59,9 @@ public abstract class ChangeBuilder {
    public ModificationType getModType() {
       return modType;
    }
-   
+
    public void setModType(ModificationType modType) {
       this.modType = modType;
-   }
-
-   public ChangeType getChangeType() {
-      return changeType;
    }
 
    public Branch getBranch() {
@@ -82,14 +76,14 @@ public abstract class ChangeBuilder {
       return isHistorical;
    }
 
-   protected Artifact loadArtifact(){
+   protected Artifact loadArtifact() {
       Artifact artifact;
-      
+
       if (isHistorical()) {
          artifact = ArtifactCache.getHistorical(getArtId(), getToTransactionId().getId());
-       } else {
-          artifact = ArtifactCache.getActive(getArtId(), getBranch());
-       }
+      } else {
+         artifact = ArtifactCache.getActive(getArtId(), getBranch());
+      }
       return artifact;
    }
 

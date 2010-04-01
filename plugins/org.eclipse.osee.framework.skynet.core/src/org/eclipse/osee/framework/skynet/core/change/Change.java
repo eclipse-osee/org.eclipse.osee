@@ -32,14 +32,11 @@ public abstract class Change implements IAdaptable {
    private TransactionRecord fromTransactionId;
    private final Artifact artifact;
    private ModificationType modType;
-   private final ChangeType changeType;
    private final IOseeBranch branch;
    private final ArtifactType artifactType;
    private final boolean isHistorical;
 
-   public Change(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId,
-         TransactionRecord fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical, Artifact artifact)
-         throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+   public Change(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super();
       this.branch = branch;
       this.sourceGamma = sourceGamma;
@@ -47,7 +44,6 @@ public abstract class Change implements IAdaptable {
       this.toTransactionId = toTransactionId;
       this.fromTransactionId = fromTransactionId;
       this.modType = modType;
-      this.changeType = changeType;
       this.artifactType = artifactType;
       this.isHistorical = isHistorical;
       this.artifact = artifact;
@@ -59,17 +55,15 @@ public abstract class Change implements IAdaptable {
          Change change = (Change) obj;
          return change.getArtId() == artId &&
          //
-                change.getGamma() == sourceGamma &&
-                //
-                change.getBranch() == branch &&
-                //
-                change.getToTransactionId() == toTransactionId &&
-                //
-                change.getFromTransactionId() == fromTransactionId &&
-                //
-                change.getModificationType() == modType &&
-                //
-                change.getChangeType() == changeType;
+         change.getGamma() == sourceGamma &&
+         //
+         change.getBranch() == branch &&
+         //
+         change.getToTransactionId() == toTransactionId &&
+         //
+         change.getFromTransactionId() == fromTransactionId &&
+         //
+         change.getModificationType() == modType;
       }
       return false;
    }
@@ -83,7 +77,6 @@ public abstract class Change implements IAdaptable {
       hashCode += toTransactionId != null ? 13 * toTransactionId.hashCode() : 0;
       hashCode += fromTransactionId != null ? 13 * fromTransactionId.hashCode() : 0;
       hashCode += modType != null ? 13 * modType.hashCode() : 0;
-      hashCode += changeType != null ? 13 * changeType.hashCode() : 0;
       return hashCode;
    }
 
@@ -100,10 +93,6 @@ public abstract class Change implements IAdaptable {
     */
    public ModificationType getModificationType() {
       return modType;
-   }
-
-   public ChangeType getChangeType() {
-      return changeType;
    }
 
    public Artifact getArtifact() {
@@ -133,7 +122,7 @@ public abstract class Change implements IAdaptable {
    /**
     * For an artifact change this is the artifact type id. For an attribute this is the attribute
     * type id. For a relation this is the relation type id.
-    * 
+    *
     * @return typeId
     */
    public abstract int getItemTypeId();

@@ -73,7 +73,7 @@ import org.eclipse.swt.widgets.Display;
  * <br>
  * This test also ensures that all change reports can return their historical artifacts by loading and accessing the
  * descriptive name for each artifact.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ValidateChangeReports extends XNavigateItemAction {
@@ -173,7 +173,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
 
    /**
     * Return true if current change report is same as stored change report data
-    * 
+    *
     * @param teamArt
     * @return Result.TrueResult if same, else Result.FalseResult with comparison in resultData
     * @throws ParserConfigurationException
@@ -191,9 +191,9 @@ public class ValidateChangeReports extends XNavigateItemAction {
          storedChangeReport =
                artifactForStore.getSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, null);
       }
-      // Retrieve current 
+      // Retrieve current
       ChangeData currentChangeData = teamArt.getBranchMgr().getChangeDataFromEarliestTransactionId();
-      // Store 
+      // Store
       if (storedChangeReport == null) {
          // Reuse same artifact if already exists
          if (artifactForStore == null) {
@@ -298,7 +298,6 @@ public class ValidateChangeReports extends XNavigateItemAction {
       sb.append(AXml.addTagData("tTranId", String.valueOf(change.getToTransactionId().getId())));
       sb.append(AXml.addTagData("fTranId", String.valueOf(change.getFromTransactionId().getId())));
       sb.append(AXml.addTagData("mType", String.valueOf(change.getModificationType().name())));
-      sb.append(AXml.addTagData("cType", String.valueOf(change.getChangeType().name())));
       sb.append(AXml.addTagData("bArtId", String.valueOf(change.getBArtId())));
       sb.append(AXml.addTagData("relId", String.valueOf(change.getRelLinkId())));
       sb.append(AXml.addTagData("rat", change.getRationale()));
@@ -318,7 +317,6 @@ public class ValidateChangeReports extends XNavigateItemAction {
       sb.append(AXml.addTagData("tTranId", String.valueOf(change.getToTransactionId().getId())));
       sb.append(AXml.addTagData("fTranId", String.valueOf(change.getFromTransactionId().getId())));
       sb.append(AXml.addTagData("mType", String.valueOf(change.getModificationType().name())));
-      sb.append(AXml.addTagData("cType", String.valueOf(change.getChangeType().name())));
       sb.append(AXml.addTagData("hist", String.valueOf(change.isHistorical())));
       return AXml.addTagData("ArtChg", sb.toString());
    }
@@ -332,7 +330,6 @@ public class ValidateChangeReports extends XNavigateItemAction {
       sb.append(AXml.addTagData("tTranId", String.valueOf(change.getToTransactionId().getId())));
       sb.append(AXml.addTagData("fTranId", String.valueOf(change.getFromTransactionId().getId())));
       sb.append(AXml.addTagData("mType", String.valueOf(change.getModificationType().name())));
-      sb.append(AXml.addTagData("cType", String.valueOf(change.getChangeType().name())));
       sb.append(AXml.addTagData("aModType", String.valueOf(change.getArtModType().name())));
       sb.append(AXml.addTagData("attrId", String.valueOf(change.getAttrId())));
       sb.append(AXml.addTagData("attrTId", String.valueOf(change.getTypeId())));

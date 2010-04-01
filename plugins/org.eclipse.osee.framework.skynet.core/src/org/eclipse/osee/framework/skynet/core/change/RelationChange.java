@@ -56,9 +56,8 @@ public final class RelationChange extends Change {
     * @throws OseeDataStoreException
     * @throws ArtifactDoesNotExist
     */
-   public RelationChange(IOseeBranch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, Artifact artifact, Artifact bArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      super(branch, aArtType, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, changeType,
-            isHistorical, artifact);
+   public RelationChange(IOseeBranch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, Artifact artifact, Artifact bArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+      super(branch, aArtType, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, isHistorical, artifact);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
       this.rationale = rationale;

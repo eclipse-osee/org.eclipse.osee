@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 
 /**
  * Collection of changes from working branch or transactionId from committed branch.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ChangeData {
@@ -58,23 +58,9 @@ public class ChangeData {
       }
    }
 
-   public Collection<Artifact> getArtifactsByName(String name) throws OseeCoreException {
-      try {
-         List<Artifact> matches = new ArrayList<Artifact>();
-         for (Change change : changes) {
-            if (change.getArtifactName().equals(name)) {
-               matches.add(change.getArtifact());
-            }
-         }
-         return matches;
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
-   }
-
    /**
     * Return artifacts of kind and modType.
-    * 
+    *
     * @param kindType
     * @param modificationType
     * @return artifacts
@@ -97,7 +83,7 @@ public class ChangeData {
                      artifacts.add(change.getArtifact());
                   }
                }
-               // 
+               //
                else if ((kindType == KindType.Relation || kindType == KindType.ArtifactOrRelation) && change instanceof RelationChange) {
                   if (modTypes.contains(change.getModificationType())) {
                      artifacts.add(((RelationChange) change).getArtifact());

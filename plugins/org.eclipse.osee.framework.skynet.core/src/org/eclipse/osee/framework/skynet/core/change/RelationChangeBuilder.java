@@ -20,14 +20,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
  * @author Jeff C. Phillips
  */
 public class RelationChangeBuilder extends ChangeBuilder {
-   private int bArtId;
-   private int relLinkId;
-   private String rationale;
-   private RelationType relationType;
+   private final int bArtId;
+   private final int relLinkId;
+   private final String rationale;
+   private final RelationType relationType;
 
-   public RelationChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical) {
-      super(branch, artifactType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
-            isHistorical);
+   public RelationChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical) {
+      super(branch, artifactType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, isHistorical);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
       this.rationale = rationale;
@@ -44,8 +43,8 @@ public class RelationChangeBuilder extends ChangeBuilder {
          bArtifact = ArtifactCache.getActive(bArtId, branch);
       }
       return new RelationChange(branch, getArtifactType(), getSourceGamma(), getArtId(), getToTransactionId(),
-            getFromTransactionId(), getModType(), getChangeType(), bArtId, relLinkId, rationale,
-            relationType, isHistorical(), loadArtifact(), bArtifact);
+            getFromTransactionId(), getModType(), bArtId, relLinkId, rationale, relationType, isHistorical(),
+            loadArtifact(), bArtifact);
    }
 
 }
