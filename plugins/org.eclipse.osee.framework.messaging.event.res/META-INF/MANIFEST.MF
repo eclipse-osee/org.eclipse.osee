@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Framework Event Service (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.framework.messaging.event.res;singleton:=true
+Bundle-Version: 0.9.4.qualifier
+Eclipse-ExtensibleAPI: true
+Bundle-Activator: org.eclipse.osee.framework.messaging.event.res.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ net.jini,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.osee.framework.jini,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.ui
+Bundle-ActivationPolicy: lazy
+Bundle-Description: Skynet Event Service - Skynet Cache Network Manager
+Bundle-Vendor: Eclipse.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.logging
