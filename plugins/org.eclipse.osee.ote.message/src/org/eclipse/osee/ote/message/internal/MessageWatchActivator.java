@@ -2,6 +2,7 @@ package org.eclipse.osee.ote.message.internal;
 
 import java.io.IOException;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.message.interfaces.IMessageManager;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
@@ -20,7 +21,7 @@ public class MessageWatchActivator extends ServiceTracker{
    }
 
    @Override
-   public IMessageManager addingService(ServiceReference reference) {
+   public synchronized IMessageManager addingService(ServiceReference reference) {
       IMessageManager manager = (IMessageManager) super.addingService(reference);
       try {
          AbstractMessageToolService toolService = new AbstractMessageToolService(manager);

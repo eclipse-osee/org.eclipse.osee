@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message;
 
-import java.lang.ref.WeakReference;
-
 import org.eclipse.osee.ote.core.IUserSession;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.enums.ScriptTypeEnum;
@@ -34,84 +32,81 @@ import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAcce
  */
 public abstract class MessageSystemTestScript extends TestScript implements ITestAccessor {
 
-   private WeakReference<ITestEnvironmentMessageSystemAccessor> msgSysEnvironment;
+   private final ITestEnvironmentMessageSystemAccessor msgSysEnvironment;
 
    public MessageSystemTestScript(TestEnvironment environment, IUserSession callback, ScriptTypeEnum scriptType, boolean isBatchable) {
       super(environment, callback, scriptType, isBatchable);
-      msgSysEnvironment =
-            new WeakReference<ITestEnvironmentMessageSystemAccessor>(
-                  (ITestEnvironmentMessageSystemAccessor) environment);
-
+      msgSysEnvironment = (ITestEnvironmentMessageSystemAccessor) environment;
    }
 
    public IMessageManager<?, ?> getMsgManager() {
-      return msgSysEnvironment.get().getMsgManager();
+      return msgSysEnvironment.getMsgManager();
    }
 
    public boolean isPhysicalTypeAvailable(MemType mux) {
-      return msgSysEnvironment.get().isPhysicalTypeAvailable(mux);
+      return msgSysEnvironment.isPhysicalTypeAvailable(mux);
    }
 
    public void associateObject(Class<?> c, Object obj) {
-      msgSysEnvironment.get().associateObject(c, obj);
+      msgSysEnvironment.associateObject(c, obj);
    }
 
    public Object getAssociatedObject(Class<?> c) {
-      return msgSysEnvironment.get().getAssociatedObject(c);
+      return msgSysEnvironment.getAssociatedObject(c);
    }
 
    public Object getAssociatedObject() {
-      return msgSysEnvironment.get().getAssociatedObjects();
+      return msgSysEnvironment.getAssociatedObjects();
    }
 
    public IExecutionUnitManagement getExecutionUnitManagement() {
-      return msgSysEnvironment.get().getExecutionUnitManagement();
+      return msgSysEnvironment.getExecutionUnitManagement();
    }
 
    public ITestStation getTestStation() {
-      return msgSysEnvironment.get().getTestStation();
+      return msgSysEnvironment.getTestStation();
    }
 
    public ITestLogger getLogger() {
-      return msgSysEnvironment.get().getLogger();
+      return msgSysEnvironment.getLogger();
    }
 
    public ITimerControl getTimerCtrl() {
-      return msgSysEnvironment.get().getTimerCtrl();
+      return msgSysEnvironment.getTimerCtrl();
    }
 
    public IScriptControl getScriptCtrl() {
-      return msgSysEnvironment.get().getScriptCtrl();
+      return msgSysEnvironment.getScriptCtrl();
    }
 
    public ICancelTimer setTimerFor(ITimeout listener, int time) {
-      return msgSysEnvironment.get().setTimerFor(listener, time);
+      return msgSysEnvironment.setTimerFor(listener, time);
    }
 
    public final void onScriptSetup() {
-      msgSysEnvironment.get().onScriptSetup();
+      msgSysEnvironment.onScriptSetup();
    }
 
    public final void onScriptComplete() throws InterruptedException {
-      msgSysEnvironment.get().onScriptComplete();
+      msgSysEnvironment.onScriptComplete();
    }
 
    public long getEnvTime() {
-      return msgSysEnvironment.get().getEnvTime();
+      return msgSysEnvironment.getEnvTime();
    }
 
 //   public ITestPointTally getAttachedTestPointTally(TestScript script) {
-//      return msgSysEnvironment.get().getAttachedTestPointTally(script);
+//      return msgSysEnvironment.getAttachedTestPointTally(script);
 //   }
 
    //   public EnvironmentType getEnvironmentType() {
    //      return msgSysEnvironment.getEnvironmentType();
    //   }
    public void abortTestScript() {
-      msgSysEnvironment.get().abortTestScript();
+      msgSysEnvironment.abortTestScript();
    }
 
    public boolean addTask(EnvironmentTask task) {
-      return msgSysEnvironment.get().addTask(task);
+      return msgSysEnvironment.addTask(task);
    }
 }

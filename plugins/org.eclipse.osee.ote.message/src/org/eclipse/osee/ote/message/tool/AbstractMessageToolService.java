@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
@@ -77,7 +78,7 @@ public class AbstractMessageToolService implements IRemoteMessageService {
    private final DatagramChannel recorderOutputChannel;
    private volatile boolean terminated = false;
    private final AtomicInteger idCounter = new AtomicInteger(0x0DEF0000);
-   private final class ClientInfo {
+   private static final class ClientInfo {
       private final IMsgToolServiceClient remoteReference;
 
       private final InetSocketAddress ipAddress;
@@ -167,14 +168,15 @@ public class AbstractMessageToolService implements IRemoteMessageService {
 
       @Override
       public synchronized String toString() {
-         String string =
-               String.format("Message Watch Entry: mem type=%s, mode=%s, upd cnt=%d", key.getType(), key.getMode(),
-                     updateCount);
-         String string2 = " clients: ";
+         StringBuilder strBuilder = new StringBuilder(256);
+         strBuilder.append(String.format("Message Watch Entry: mem type=%s, mode=%s, upd cnt=%d", key.getType(), key.getMode(),
+                 updateCount));
+         
+         strBuilder.append(" clients: ");
          for (ClientInfo addr : clients) {
-            string2 = string2 + addr.ipAddress.toString() + " ";
+            strBuilder.append(addr.ipAddress.toString()).append(" ");
          }
-         return string + string2;
+         return strBuilder.toString();
       }
 
       SubscriptionRecord(final Message<?, ?, ?> msg, final MemType type, final MessageMode mode, final ArrayList<ClientInfo> clients) {

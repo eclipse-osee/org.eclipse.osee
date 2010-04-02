@@ -814,10 +814,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     */
    public boolean checkForNoTransmissions(ITestEnvironmentMessageSystemAccessor accessor, int milliseconds) throws InterruptedException {
       checkState();
-      if (accessor != null) {
-         accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
-               (new MethodFormatter()).add(milliseconds), this);
+      if (accessor == null) {
+    	  throw new IllegalArgumentException("accessor cannot be null");
       }
+      accessor.getLogger().methodCalledOnObject(accessor, getMessageName(),
+    		  (new MethodFormatter()).add(milliseconds), this);
       long time = accessor.getEnvTime();
       org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer cancelTimer =
          accessor.setTimerFor(listenerHandler, milliseconds);

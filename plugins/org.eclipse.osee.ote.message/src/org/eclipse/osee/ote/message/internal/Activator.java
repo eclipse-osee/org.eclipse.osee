@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.message.internal;
 
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.osgi.framework.BundleActivator;
@@ -48,7 +49,7 @@ public class Activator implements BundleActivator {
       testEnvTracker.close();
       messageWatchActivator.close();
       messageIoManagementStarter.close();
-      context = null;
+      this.context = null;
    }
    
    public static TestEnvironmentInterface getTestEnvironment(){

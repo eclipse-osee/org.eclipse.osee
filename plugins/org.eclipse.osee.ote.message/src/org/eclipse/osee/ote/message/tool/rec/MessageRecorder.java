@@ -20,10 +20,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
@@ -63,7 +63,7 @@ public class MessageRecorder {
 		if (channel == null) {
 			throw new IllegalArgumentException("channel cannot be null");
 		}
-		recLock.tryLock(2, TimeUnit.SECONDS);
+		recLock.lock();
         this.channel = channel;
 		try {			
 			for (MessageRecordConfig config : list) {
@@ -109,7 +109,7 @@ public class MessageRecorder {
      			 Level.INFO,  
      			"stopping message recorder...");
 		isRecording = false;
-		recLock.tryLock(2, TimeUnit.SECONDS);
+		recLock.lock();
 		try {
 			for (IMessageEntry handler : msgsToRecord) {
 				handler.enable(false);

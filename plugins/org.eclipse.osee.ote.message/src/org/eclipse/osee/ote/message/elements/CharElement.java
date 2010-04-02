@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
+
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
@@ -110,10 +111,12 @@ public class CharElement extends DiscreteElement<Character> {
     * @throws InterruptedException
     */
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
-      if (accessor != null) {
-         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
-               (new MethodFormatter()).add(value).add(milliseconds), getMessage());
-      }
+	  if (accessor == null) {
+		  throw new IllegalArgumentException("accessor cannot be null");
+	  }
+	   accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
+			   (new MethodFormatter()).add(value).add(milliseconds), getMessage());
+
       long time = accessor.getEnvTime();
       String currentValue;
       boolean result;

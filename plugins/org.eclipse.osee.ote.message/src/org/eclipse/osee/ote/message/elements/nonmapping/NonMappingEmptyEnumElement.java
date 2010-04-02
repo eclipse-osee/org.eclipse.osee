@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.message.elements.nonmapping;
 
 import java.lang.ref.WeakReference;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
@@ -359,7 +360,7 @@ public class NonMappingEmptyEnumElement extends EmptyEnum_Element {
 	@Override
 	public String toString() {
 		throwNoMappingElementException();
-		return null;
+		return "non mapping empty enum";
 	}
 
 	@Override

@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -36,7 +37,6 @@ public class SimulatedTime extends TimerControl {
 	private static final class Task {
 		private final EnvironmentTask task;
 		private final TestEnvironment env;
-		private long time;
 		public Task(EnvironmentTask task, TestEnvironment env) {
 			super();
 			this.task = task;
