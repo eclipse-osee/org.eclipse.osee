@@ -11,15 +11,20 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -105,7 +110,11 @@ public class XWidgetFactory {
             maxSelectionRequired = Integer.MAX_VALUE;
          }
          try {
-            multiBranchSelect.setSelectableItems(BranchManager.getNormalAllBranchesSorted());
+            List<Branch> branches =
+                  BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING, BranchType.BASELINE);
+            Collections.sort(branches);
+
+            multiBranchSelect.setSelectableItems(branches);
             multiBranchSelect.setRequiredSelection(1, maxSelectionRequired);
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

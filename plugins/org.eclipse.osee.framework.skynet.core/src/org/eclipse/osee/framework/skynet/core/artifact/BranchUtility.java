@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchUtility {
+public final class BranchUtility {
 
    private BranchUtility() {
    }

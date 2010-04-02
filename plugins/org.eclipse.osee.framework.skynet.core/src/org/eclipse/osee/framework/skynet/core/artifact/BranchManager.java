@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -24,10 +23,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.cache.BranchFilter;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -74,6 +73,7 @@ public class BranchManager {
    private Branch lastBranch;
 
    private BranchManager() {
+      // this constructor is defined to prevent the default constructor from allowing public construction
    }
 
    @Deprecated
@@ -101,60 +101,12 @@ public class BranchManager {
       return commonBranch;
    }
 
-   /**
-    * Excludes branches of type MERGE and SYSTEM_ROOT
-    * 
-    * @return branches that are not archived and are of type STANDARD, TOP_LEVEL, or BASELINE
-    * @throws OseeCoreException
-    */
-   public static List<Branch> getNormalBranches() throws OseeCoreException {
-      return getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL, BranchType.WORKING, BranchType.BASELINE);
+   public static List<Branch> getBranches(BranchArchivedState archivedState, BranchType... branchTypes) throws OseeCoreException {
+      return getBranches(new BranchFilter(archivedState, branchTypes));
    }
 
-   public static List<Branch> getNormalBranchesSorted() throws OseeCoreException {
-      List<Branch> branches = getNormalBranches();
-      Collections.sort(branches);
-      return branches;
-   }
-
-   /**
-    * Excludes branches of type MERGE and SYSTEM_ROOT
-    * 
-    * @return branches that are of type STANDARD, TOP_LEVEL, or BASELINE
-    * @throws OseeCoreException
-    */
-   public static List<Branch> getNormalAllBranches() throws OseeCoreException {
-      return getBranches(BranchArchivedState.ALL, BranchControlled.ALL, BranchType.WORKING, BranchType.BASELINE);
-   }
-
-   public static List<Branch> getNormalAllBranchesSorted() throws OseeCoreException {
-      List<Branch> branches = getNormalAllBranches();
-      Collections.sort(branches);
-      return branches;
-   }
-
-   public static List<Branch> getBranches(BranchArchivedState branchArchivedState, BranchControlled branchControlled, BranchType... branchTypes) throws OseeCoreException {
-      List<Branch> branches = new ArrayList<Branch>(1000);
-      for (Branch branch : getCache().getAll()) {
-         if (branch.getArchiveState().matches(branchArchivedState) && //
-         BranchControlled.fromBoolean(isChangeManaged(branch)).matches(branchControlled) && //
-         branch.getBranchType().isOfType(branchTypes)) {
-            branches.add(branch);
-         }
-      }
-      return branches;
-   }
-
-   public static Collection<Branch> getWorkingBranches(Branch parentBranch) throws OseeCoreException {
-      List<Branch> branches = new ArrayList<Branch>(500);
-      for (Branch branch : getCache().getAll()) {
-         if (branch.getArchiveState().isUnArchived() && //
-         branch.getBranchType().isOfType(BranchType.WORKING) && //
-         parentBranch.equals(branch.getParentBranch())) {
-            branches.add(branch);
-         }
-      }
-      return branches;
+   public static List<Branch> getBranches(BranchFilter branchFilter) throws OseeCoreException {
+      return getCache().getBranches(branchFilter);
    }
 
    public static void refreshBranches() throws OseeCoreException {
@@ -217,10 +169,6 @@ public class BranchManager {
 
    public static boolean doesMergeBranchExist(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       return getMergeBranch(sourceBranch, destBranch) != null;
-   }
-
-   public static Collection<Branch> getArchivedBranches() throws OseeCoreException {
-      return getBranches(BranchArchivedState.ARCHIVED, BranchControlled.ALL, BranchType.WORKING, BranchType.BASELINE);
    }
 
    public static Branch getBranch(Integer branchId) throws OseeCoreException {
@@ -486,12 +434,7 @@ public class BranchManager {
    }
 
    public static List<Branch> getBaselineBranches() throws OseeCoreException {
-      return getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL, BranchType.BASELINE);
-   }
-
-   public static List<Branch> getChangeManagedBranches() throws OseeCoreException {
-      return getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.CHANGE_MANAGED, BranchType.WORKING,
-            BranchType.BASELINE);
+      return getBranches(BranchArchivedState.UNARCHIVED, BranchType.BASELINE);
    }
 
    private void initializeLastBranchValue() {

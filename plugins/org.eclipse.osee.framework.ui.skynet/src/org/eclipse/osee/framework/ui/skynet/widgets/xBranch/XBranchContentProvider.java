@@ -20,7 +20,6 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -119,15 +118,14 @@ public class XBranchContentProvider implements ITreeContentProvider {
 
          List<Branch> branchesToReturn = new ArrayList<Branch>();
          if (showOnlyWorkingBranches) {
-            branchesToReturn.addAll(BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL,
-                  BranchType.WORKING));
+            branchesToReturn.addAll(BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING));
          }
          if (!showChildBranchesAtMainLevel) {
             if (AccessControlManager.isOseeAdmin()) {
                branchesToReturn.add(BranchManager.getSystemRootBranch());
             } else {
                branchTypes.add(BranchType.BASELINE);
-               for (Branch branch : BranchManager.getBranches(branchState, BranchControlled.ALL,
+               for (Branch branch : BranchManager.getBranches(branchState,
                      branchTypes.toArray(new BranchType[branchTypes.size()]))) {
                   if (branch.hasParentBranch() && branch.getParentBranch().getBranchType().isSystemRootBranch()) {
                      branchesToReturn.add(branch);
@@ -135,7 +133,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
                }
             }
          } else {
-            branchesToReturn.addAll(BranchManager.getBranches(branchState, BranchControlled.ALL,
+            branchesToReturn.addAll(BranchManager.getBranches(branchState,
                   branchTypes.toArray(new BranchType[branchTypes.size()])));
          }
          return branchesToReturn.toArray();

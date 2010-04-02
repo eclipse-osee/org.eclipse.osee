@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit;
 
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -46,7 +49,10 @@ public class CommitIntoHandler extends CommitHandler {
       Branch sourceBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       try {
-         List<Branch> branches = BranchManager.getNormalBranchesSorted();
+         List<Branch> branches =
+               BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING, BranchType.BASELINE);
+         Collections.sort(branches);
+
          branches.remove(sourceBranch);
          BranchSelectionDialog branchSelection =
                new BranchSelectionDialog(
@@ -70,7 +76,9 @@ public class CommitIntoHandler extends CommitHandler {
 
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
-      if (AWorkbench.getActivePage() == null) return false;
+      if (AWorkbench.getActivePage() == null) {
+         return false;
+      }
       IStructuredSelection selection =
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 

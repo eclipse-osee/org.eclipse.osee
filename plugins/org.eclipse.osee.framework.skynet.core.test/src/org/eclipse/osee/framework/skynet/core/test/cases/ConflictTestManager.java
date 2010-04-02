@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
@@ -40,17 +42,10 @@ import org.eclipse.osee.support.test.util.DemoSawBuilds;
  */
 public class ConflictTestManager {
    public static enum Type {
-      RELATION,
-      ARTIFACT,
-      ATTRIBUTE;
+      RELATION, ARTIFACT, ATTRIBUTE;
    };
    public static enum Modification {
-      CREATE,
-      DELETE,
-      CREATE_AND_MODIFY,
-      CREATE_AND_DELETE,
-      MODIFY,
-      MODIFY_AND_DELETE;
+      CREATE, DELETE, CREATE_AND_MODIFY, CREATE_AND_DELETE, MODIFY, MODIFY_AND_DELETE;
    };
 
    private static final boolean DEBUG = true;
@@ -339,7 +334,8 @@ public class ConflictTestManager {
       try {
          return BranchManager.getBranch(branchName);
       } catch (BranchDoesNotExist e) {
-         Collection<Branch> archivedBranches = BranchManager.getArchivedBranches();
+         Collection<Branch> archivedBranches =
+               BranchManager.getBranches(BranchArchivedState.ARCHIVED, BranchType.WORKING, BranchType.BASELINE);
          for (Branch archivedBranch : archivedBranches) {
             if (archivedBranch.getName().equals(branchName)) {
                return archivedBranch;

@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -92,9 +91,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       } else {
          createBranchButton = new Button(bComp, SWT.PUSH);
       }
-      if (getWorkingBranch() != null) {
-         createBranchButton.setEnabled(false);
-      }
+      createBranchButton.setEnabled(getWorkingBranch() == null);
       createBranchButton.setToolTipText("Create Working Branch");
       createBranchButton.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
@@ -107,9 +104,8 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       } else {
          showArtifactExplorer = new Button(bComp, SWT.PUSH);
       }
-      if (getWorkingBranch() == null) {
-         showArtifactExplorer.setEnabled(false);
-      }
+
+      showArtifactExplorer.setEnabled(isWorkingBranchInWork());
       showArtifactExplorer.setToolTipText("Show Artifact Explorer");
       showArtifactExplorer.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
@@ -137,9 +133,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       } else {
          purgeBranchButton = new Button(bComp, SWT.PUSH);
       }
-      if (getWorkingBranch() == null) {
-         purgeBranchButton.setEnabled(false);
-      }
+      purgeBranchButton.setEnabled(isWorkingBranchInWork());
       purgeBranchButton.setToolTipText("Delete Working Branch");
       purgeBranchButton.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
@@ -159,9 +153,18 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       refresh();
    }
 
+   private boolean isWorkingBranchInWork() {
+      try {
+         return teamArt.getBranchMgr().isWorkingBranchInWork();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+      return false;
+   }
+
    private Branch getWorkingBranch() {
       try {
-         return ((IBranchArtifact) teamArt).getWorkingBranch();
+         return teamArt.getWorkingBranch();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
          return null;
@@ -243,7 +246,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
             try {
                final boolean workingBranchInWork = teamArt.getBranchMgr().isWorkingBranchInWork();
                final boolean committedBranchExists = teamArt.getBranchMgr().isCommittedBranchExists();
-               final Branch workingBranch = teamArt.getBranchMgr().getWorkingBranch();
+               final Branch workingBranch = teamArt.getWorkingBranch();
                final String status = getStatus();
                final boolean changesNotPermitted = status.equals(BranchStatus.Changes_NotPermitted.name());
                final String labelStr =

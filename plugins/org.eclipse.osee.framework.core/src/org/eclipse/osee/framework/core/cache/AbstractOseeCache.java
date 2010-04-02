@@ -164,9 +164,21 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    }
 
    @Override
-   public Collection<T> getAll() throws OseeCoreException {
+   public synchronized Collection<T> getAll() throws OseeCoreException {
       ensurePopulated();
       return new ArrayList<T>(guidToTypeMap.values());
+   }
+
+   /**
+    * this method is intended for use by subclasses only. The calling method must synchronize the use of this view of
+    * the views because it is not a copy. This method exists to improve performance for subclasses
+    * 
+    * @return
+    * @throws OseeCoreException
+    */
+   protected synchronized Collection<T> getRawValues() throws OseeCoreException {
+      ensurePopulated();
+      return guidToTypeMap.values();
    }
 
    @Override
@@ -184,7 +196,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       return values.isEmpty() ? null : values.iterator().next();
    }
 
-   public Collection<T> getByName(String typeName) throws OseeCoreException {
+   public synchronized Collection<T> getByName(String typeName) throws OseeCoreException {
       ensurePopulated();
       Collection<T> types = new ArrayList<T>();
       Collection<T> values = nameToTypeMap.getValues(typeName);
@@ -218,7 +230,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    }
 
    @Override
-   public Collection<T> getAllDirty() throws OseeCoreException {
+   public synchronized Collection<T> getAllDirty() throws OseeCoreException {
       ensurePopulated();
       Collection<T> dirtyItems = new HashSet<T>();
       for (T type : guidToTypeMap.values()) {

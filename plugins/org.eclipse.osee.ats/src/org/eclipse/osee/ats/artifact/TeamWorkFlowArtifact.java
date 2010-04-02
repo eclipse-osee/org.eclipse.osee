@@ -162,7 +162,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       users.addAll(tda.getPrivilegedMembers());
 
       // Walk up tree to get other editors
-      if (tda.getParent() != null && (tda.getParent() instanceof TeamDefinitionArtifact)) {
+      if (tda.getParent() != null && tda.getParent() instanceof TeamDefinitionArtifact) {
          addPriviledgedUsersUpTeamDefinitionTree((TeamDefinitionArtifact) tda.getParent(), users);
       }
    }
@@ -220,8 +220,10 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    public TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException, OseeCoreException {
       String guid = this.getSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), "");
-      if (guid == null || guid.equals("")) throw new OseeArgumentException(
-            "TeamWorkflow [" + getHumanReadableId() + "] has no TeamDefinition associated.");
+      if (guid == null || guid.equals("")) {
+         throw new OseeArgumentException(
+               "TeamWorkflow [" + getHumanReadableId() + "] has no TeamDefinition associated.");
+      }
       return AtsCacheManager.getTeamDefinitionArtifact(guid);
    }
 
@@ -285,7 +287,9 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    @Override
    public ActionArtifact getParentActionArtifact() throws OseeCoreException {
-      if (parentAction != null) return parentAction;
+      if (parentAction != null) {
+         return parentAction;
+      }
       Collection<ActionArtifact> arts =
             getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_Action, ActionArtifact.class);
       if (arts.size() == 0) {
@@ -306,7 +310,9 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    public String getWorldViewTargetedVersionStr() throws OseeCoreException {
       Collection<VersionArtifact> verArts =
             getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
-      if (verArts.size() == 0) return "";
+      if (verArts.size() == 0) {
+         return "";
+      }
       if (verArts.size() > 1) {
          String errStr =
                "Workflow " + getHumanReadableId() + " targeted for multiple versions: " + Artifacts.commaArts(verArts);
@@ -398,9 +404,15 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
                   "You will be prompted to confirm this conversion.", Active.Both);
 
       diag.setInput(ActionableItemArtifact.getTopLevelActionableItems(Active.Both));
-      if (diag.open() != 0) return Result.FalseResult;
-      if (diag.getChecked().size() == 0) return new Result("At least one actionable item must must be selected.");
-      if (diag.getChecked().size() > 1) return new Result("Only ONE actionable item can be selected for converts");
+      if (diag.open() != 0) {
+         return Result.FalseResult;
+      }
+      if (diag.getChecked().size() == 0) {
+         return new Result("At least one actionable item must must be selected.");
+      }
+      if (diag.getChecked().size() > 1) {
+         return new Result("Only ONE actionable item can be selected for converts");
+      }
       ActionableItemArtifact selectedAia = diag.getChecked().iterator().next();
       Collection<TeamDefinitionArtifact> teamDefs =
             ActionableItemArtifact.getImpactedTeamDefs(Arrays.asList(selectedAia));
@@ -448,8 +460,9 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          if (date == null) {
             date = getSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
          }
-      } else
+      } else {
          date = getSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
+      }
       return date;
    }
 
@@ -467,8 +480,9 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          if (date == null) {
             date = getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
          }
-      } else
+      } else {
          date = getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
+      }
       return date;
    }
 
@@ -493,9 +507,13 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    @Override
    public double getWorldViewWeeklyBenefit() throws OseeCoreException {
-      if (isAttributeTypeValid(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName())) return 0;
+      if (isAttributeTypeValid(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName())) {
+         return 0;
+      }
       String value = getSoleAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName(), "");
-      if (value == null || value.equals("")) return 0;
+      if (value == null || value.equals("")) {
+         return 0;
+      }
       return new Float(value).doubleValue();
    }
 
@@ -503,13 +521,15 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    public double getWorldViewAnnualCostAvoidance() throws OseeCoreException {
       double benefit = getWorldViewWeeklyBenefit();
       double remainHrs = getRemainHoursTotal();
-      return (benefit * 52) - remainHrs;
+      return benefit * 52 - remainHrs;
    }
 
    private Result actionableItemsTx(Branch branch, Set<ActionableItemArtifact> selectedAlias, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
       Result workResult = actionableItemsDam.setActionableItems(selectedAlias);
       if (workResult.isTrue()) {
-         if (teamDefinition != null) setTeamDefinition(teamDefinition);
+         if (teamDefinition != null) {
+            setTeamDefinition(teamDefinition);
+         }
          SkynetTransaction transaction = new SkynetTransaction(branch, "Converate Actionable Item");
          getParentActionArtifact().resetAttributesOffChildren(transaction);
          persist(transaction);
@@ -521,9 +541,9 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public String getWorldViewBranchStatus() throws OseeCoreException {
       try {
-         if (getBranchMgr().isWorkingBranchInWork())
+         if (getBranchMgr().isWorkingBranchInWork()) {
             return "Working";
-         else if (getBranchMgr().isCommittedBranchExists()) {
+         } else if (getBranchMgr().isCommittedBranchExists()) {
             if (!getBranchMgr().isAllObjectsToCommitToConfigured() || !getBranchMgr().isBranchesAllCommitted()) {
                return "Needs Commit";
             }
@@ -540,10 +560,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    public Branch getWorkingBranch() throws OseeCoreException {
-      if (getBranchMgr().getWorkingBranch() != null) {
-         return getBranchMgr().getWorkingBranch();
-      }
-      return null;
+      return getBranchMgr().getWorkingBranch();
    }
 
    @Override

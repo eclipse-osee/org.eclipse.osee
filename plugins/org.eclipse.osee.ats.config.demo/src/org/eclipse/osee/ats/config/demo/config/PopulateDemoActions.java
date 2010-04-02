@@ -232,7 +232,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       DemoDbUtil.sleep(5000);
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Robot,
-            reqTeam.getBranchMgr().getWorkingBranch())) {
+            reqTeam.getWorkingBranch())) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, new StringBuilder("Modifying artifact => ").append(
                art).toString());
          art.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Navigation.name());
@@ -240,13 +240,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Navigation.name());
          Artifact navArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Navigation.name(),
-                     reqTeam.getBranchMgr().getWorkingBranch());
+                     reqTeam.getWorkingBranch());
          art.addRelation(CoreRelationTypes.Allocation__Component, navArt);
          art.persist();
       }
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Event,
-            reqTeam.getBranchMgr().getWorkingBranch())) {
+            reqTeam.getWorkingBranch())) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, new StringBuilder("Modifying artifact => ").append(
                art).toString());
          art.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Interface.name());
@@ -254,14 +254,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
          Artifact robotArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Robot_API.name(),
-                     reqTeam.getBranchMgr().getWorkingBranch());
+                     reqTeam.getWorkingBranch());
          art.addRelation(CoreRelationTypes.Allocation__Component, robotArt);
          art.persist();
       }
 
       // Delete two artifacts
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.daVinci,
-            reqTeam.getBranchMgr().getWorkingBranch())) {
+            reqTeam.getWorkingBranch())) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, new StringBuilder("Deleting artifact => ").append(
                art).toString());
          art.deleteAndPersist();
@@ -269,7 +269,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       // Add three new artifacts
       Artifact parentArt =
-            DemoDbUtil.getInterfaceInitializationSoftwareRequirement(reqTeam.getBranchMgr().getWorkingBranch());
+            DemoDbUtil.getInterfaceInitializationSoftwareRequirement(reqTeam.getWorkingBranch());
       for (int x = 1; x < 4; x++) {
          String name = "Robot Interface Init " + x;
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Adding artifact => " + name);
@@ -312,7 +312,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       Artifact branchArtifact =
             DemoDbUtil.getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, DemoDbUtil.HAPTIC_CONSTRAINTS_REQ,
-                  reqTeam.getBranchMgr().getWorkingBranch()).iterator().next();
+                  reqTeam.getWorkingBranch()).iterator().next();
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             new StringBuilder("Modifying branch artifact => ").append(branchArtifact).toString());
       branchArtifact.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Interface.name());
@@ -320,13 +320,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
       branchArtifact.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
       Artifact comArt =
             ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Robot_API.name(),
-                  reqTeam.getBranchMgr().getWorkingBranch());
+                  reqTeam.getWorkingBranch());
       branchArtifact.addRelation(CoreRelationTypes.Allocation__Component, comArt);
       branchArtifact.persist();
 
       Artifact parentArtifact =
             DemoDbUtil.getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, DemoDbUtil.HAPTIC_CONSTRAINTS_REQ,
-                  reqTeam.getBranchMgr().getWorkingBranch()).iterator().next();
+                  reqTeam.getWorkingBranch()).iterator().next();
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             new StringBuilder("Modifying parent artifact => ").append(parentArtifact).toString());
       parentArtifact.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Navigation.name());
@@ -358,7 +358,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       DemoDbUtil.sleep(5000);
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Functional,
-            reqTeam.getBranchMgr().getWorkingBranch())) {
+            reqTeam.getWorkingBranch())) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, new StringBuilder("Modifying artifact => ").append(
                art).toString());
          art.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Interface.name());
@@ -366,7 +366,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
          Artifact comArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Robot_API.name(),
-                     reqTeam.getBranchMgr().getWorkingBranch());
+                     reqTeam.getWorkingBranch());
 
          art.addRelation(CoreRelationTypes.Allocation__Component, comArt);
          art.persist();
@@ -374,7 +374,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       // Delete one artifacts
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.CISST,
-            reqTeam.getBranchMgr().getWorkingBranch())) {
+            reqTeam.getWorkingBranch())) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, new StringBuilder("Deleting artifact => ").append(
                art).toString());
          art.deleteAndPersist();
@@ -382,7 +382,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       // Add two new artifacts
       Artifact parentArt =
-            DemoDbUtil.getInterfaceInitializationSoftwareRequirement(reqTeam.getBranchMgr().getWorkingBranch());
+            DemoDbUtil.getInterfaceInitializationSoftwareRequirement(reqTeam.getWorkingBranch());
       for (int x = 15; x < 17; x++) {
          String name = "Claw Interface Init " + x;
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Adding artifact => " + name);

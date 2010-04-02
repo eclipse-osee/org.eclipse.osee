@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.cache;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -19,8 +22,10 @@ import org.eclipse.osee.framework.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
+ * @author Ryan D. Brooks
  */
 public class BranchCache extends AbstractOseeCache<Branch> {
+
    public BranchCache(IOseeDataAccessor<Branch> dataAccessor) {
       super(OseeCacheEnum.BRANCH_CACHE, dataAccessor, false);
    }
@@ -47,5 +52,16 @@ public class BranchCache extends AbstractOseeCache<Branch> {
          }
       }
       return toReturn;
+   }
+
+   public synchronized List<Branch> getBranches(BranchFilter branchFilter) throws OseeCoreException {
+      Collection<Branch> allBranches = getRawValues();
+      List<Branch> branches = new LinkedList<Branch>();
+      for (Branch branch : allBranches) {
+         if (branchFilter.matches(branch)) {
+            branches.add(branch);
+         }
+      }
+      return branches;
    }
 }

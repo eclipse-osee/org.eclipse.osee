@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -43,7 +44,11 @@ import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleOption;
+import org.eclipse.osee.framework.core.cache.BranchFilter;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -124,7 +129,7 @@ public class AtsBranchManager {
     * @throws OseeCoreException
     */
    public boolean isMergeBranchExists(Branch destinationBranch) throws OseeCoreException {
-      return isMergeBranchExists(getWorkingBranch(true, false), destinationBranch);
+      return isMergeBranchExists(getWorkingBranch(), destinationBranch);
    }
 
    /**
@@ -139,8 +144,7 @@ public class AtsBranchManager {
    }
 
    public boolean isMergeCompleted(Branch destinationBranch) throws OseeCoreException {
-      ConflictManagerExternal conflictManager =
-            new ConflictManagerExternal(destinationBranch, getWorkingBranch(true, false));
+      ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, getWorkingBranch());
       return !conflictManager.remainingConflictsExist();
    }
 
@@ -168,7 +172,7 @@ public class AtsBranchManager {
       if (result.isFalse()) {
          return CommitStatus.Branch_Commit_Disabled;
       }
-      if (teamArt.getBranchMgr().getWorkingBranch(true, false) == null) {
+      if (teamArt.getBranchMgr().getWorkingBranch() == null) {
          return CommitStatus.Working_Branch_Not_Created;
       }
       if (teamArt.getBranchMgr().isMergeBranchExists(branch)) {
@@ -206,10 +210,11 @@ public class AtsBranchManager {
    }
 
    public Integer getId() throws OseeCoreException {
-      if (getWorkingBranch() == null) {
+      Branch branch = getWorkingBranch();
+      if (branch == null) {
          return null;
       }
-      return getWorkingBranch().getId();
+      return branch.getId();
    }
 
    /**
@@ -457,13 +462,13 @@ public class AtsBranchManager {
    }
 
    /**
-    * Return working branch associated with SMA; This data is cached across all workflows with the cache being updated
-    * by local and remote events.
+    * Return working branch associated with SMA whether it is committed or not; This data is cached across all workflows
+    * with the cache being updated by local and remote events.
     * 
     * @return Branch
     */
    public Branch getWorkingBranch() throws OseeCoreException {
-      return getWorkingBranch(false, false);
+      return getWorkingBranchExcludeStates(BranchState.REBASELINED, BranchState.DELETED);
    }
 
    /**
@@ -474,33 +479,30 @@ public class AtsBranchManager {
     * @param includeDeleted
     * @return Branch
     */
-   public Branch getWorkingBranch(boolean includeCommitted, boolean includeDeleted) throws OseeCoreException {
-      Set<Branch> branches = new HashSet<Branch>();
-      for (Branch branch : BranchManager.getNormalAllBranches()) {
-         if (branch.getAssociatedArtifact().equals(teamArt) && !branch.getBranchState().isRebaselined()) {
-            if ((includeCommitted || !branch.getBranchState().isCommitted()) && (includeDeleted || !branch.getBranchState().isDeleted())) {
-               branches.add(branch);
-            }
-         }
-      }
+   public Branch getWorkingBranchExcludeStates(BranchState... negatedBranchStates) throws OseeCoreException {
+      BranchFilter branchFilter = new BranchFilter(BranchArchivedState.ALL, BranchType.WORKING, BranchType.BASELINE);
+      branchFilter.setAssociatedArtifact(teamArt);
+      branchFilter.setNegatedBranchStates(negatedBranchStates);
+
+      List<Branch> branches = BranchManager.getBranches(branchFilter);
+
       if (branches.size() == 0) {
          return null;
       } else if (branches.size() > 1) {
          throw new MultipleBranchesExist(
                "Unexpected multiple associated un-deleted working branches found for workflow " + teamArt.getHumanReadableId());
       } else {
-         return branches.iterator().next();
+         return branches.get(0);
       }
    }
 
    /**
-    * Returns true if there is a working branch that is not archived
-    * 
-    * @return result
+    * @return whether there is a working branch that is not committed
     * @throws OseeCoreException
     */
    public boolean isWorkingBranchInWork() throws OseeCoreException {
-      return getWorkingBranch(false, false) != null;
+      Branch branch = getWorkingBranch();
+      return branch != null && !branch.getBranchState().isCommitted();
    }
 
    /**
@@ -748,7 +750,7 @@ public class AtsBranchManager {
       protected IStatus run(IProgressMonitor monitor) {
          Branch workflowWorkingBranch = null;
          try {
-            workflowWorkingBranch = getWorkingBranch(true, false);
+            workflowWorkingBranch = getWorkingBranch();
             branchesInCommit.add(workflowWorkingBranch);
             if (workflowWorkingBranch == null) {
                return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
@@ -893,10 +895,4 @@ public class AtsBranchManager {
       }
       return changeData;
    }
-
-   public Boolean isWorkingBranchHaveChanges() throws OseeCoreException {
-      Branch branch = getWorkingBranch();
-      return branch != null && BranchManager.hasChanges(branch);
-   }
-
 }

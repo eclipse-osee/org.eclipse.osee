@@ -68,6 +68,7 @@ Export-Package: org.eclipse.osee.ats,
  org.eclipse.osee.ats.world.search
 Import-Package: javax.mail,
  javax.mail.internet,
+ org.eclipse.osee.framework.core.cache,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server,
  org.eclipse.osee.framework.core.data,

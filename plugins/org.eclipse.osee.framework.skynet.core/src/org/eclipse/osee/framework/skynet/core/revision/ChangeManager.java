@@ -17,6 +17,8 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -148,9 +150,12 @@ public class ChangeManager {
       for (Artifact artifact : artifacts) {
          artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
          // for each combination of artifact and all working branches in its hierarchy
-         for (Branch workingBranch : BranchManager.getWorkingBranches(artifact.getBranch())) {
-            insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), workingBranch.getId(),
-                  SQL3DataType.INTEGER});
+
+         for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING)) {
+            if (artifact.getBranch().equals(workingBranch.getParentBranch())) {
+               insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), workingBranch.getId(),
+                     SQL3DataType.INTEGER});
+            }
          }
       }
 

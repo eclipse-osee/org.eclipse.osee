@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -363,10 +362,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    @Override
    public Result isDirty() throws OseeCoreException {
       return Result.FalseResult;
-   }
-
-   public Branch getWorkingBranch() throws OseeCoreException {
-      return ((IBranchArtifact) teamArt).getWorkingBranch();
    }
 
    @Override

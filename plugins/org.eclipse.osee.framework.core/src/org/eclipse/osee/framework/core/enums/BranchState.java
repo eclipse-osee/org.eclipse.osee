@@ -63,4 +63,13 @@ public enum BranchState {
       return null;
    }
 
+   public boolean matches(BranchState... branchStates) {
+      for (BranchState branchState : branchStates) {
+         if (this == branchState) {
+            return true;
+         }
+      }
+      return false;
+   }
+
 }

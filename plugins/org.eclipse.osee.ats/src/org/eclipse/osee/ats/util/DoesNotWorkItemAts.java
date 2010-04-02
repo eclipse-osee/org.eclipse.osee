@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
@@ -271,8 +270,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       List<String> notRenamed = new ArrayList<String>();
       Pattern traxPattern = Pattern.compile("^(..... - TRAX RPCR .*)( - TRAX RPCR .*)$");
       Pattern shortPattern = Pattern.compile("^(..... -) +(.*?) - +(.*?)$");
-      Collection<Branch> branches =
-            BranchManager.getBranches(BranchArchivedState.ALL, BranchControlled.ALL, BranchType.WORKING);
+      Collection<Branch> branches = BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING);
       int x = 0;
       for (Branch branch : branches) {
          System.out.println(String.format("\n%d/%d - Branch = [%s]", x++, branches.size(), branch));

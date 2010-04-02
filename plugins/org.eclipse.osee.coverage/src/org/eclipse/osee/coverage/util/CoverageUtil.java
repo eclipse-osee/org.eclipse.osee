@@ -23,7 +23,6 @@ import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.ICoverageItemProvider;
 import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -48,8 +47,7 @@ public class CoverageUtil {
 
    public static boolean getBranchFromUser(boolean force) throws OseeCoreException {
       if (force || CoverageUtil.getBranch() == null) {
-         Collection<Branch> branches =
-               BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL, BranchType.WORKING);
+         Collection<Branch> branches = BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING);
          if (isAdmin()) {
             branches.add(BranchManager.getCommonBranch());
          }
@@ -177,7 +175,9 @@ public class CoverageUtil {
    }
 
    public static void getFullPathRecurse(ICoverage coverage, StringBuffer sb) {
-      if (coverage == null) return;
+      if (coverage == null) {
+         return;
+      }
       getFullPathRecurse(coverage.getParent(), sb);
       if (coverage instanceof CoverageImport) {
          sb.append("[Import]");
@@ -203,7 +203,9 @@ public class CoverageUtil {
    }
 
    public static void printTreeRecurse(ICoverage coverage, StringBuffer sb, int pad) throws OseeStateException {
-      if (coverage == null) return;
+      if (coverage == null) {
+         return;
+      }
       sb.append(Lib.getSpace(pad * 3) + coverage.toString() + "\n");
       if (coverage instanceof ICoverageUnitProvider) {
          for (CoverageUnit childCoverageUnit : ((ICoverageUnitProvider) coverage).getCoverageUnits()) {
@@ -229,8 +231,9 @@ public class CoverageUtil {
    }
 
    public static Pair<Integer, String> getPercent(int complete, int total, boolean showZero) {
-      if (total == 0 || complete == 0) return new Pair<Integer, String>(0, getPercentString(0, complete, total,
-            showZero));
+      if (total == 0 || complete == 0) {
+         return new Pair<Integer, String>(0, getPercentString(0, complete, total, showZero));
+      }
       Double percent = new Double(complete);
       percent = percent / total;
       percent = percent * 100;

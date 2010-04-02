@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
@@ -79,8 +78,7 @@ public class FrameworkTestUtil {
    public static void purgeWorkingBranches(Collection<String> branchNamesContain) throws Exception {
       try {
          // delete working branches
-         for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchControlled.ALL,
-               BranchType.WORKING)) {
+         for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING)) {
             for (String branchName : branchNamesContain) {
                if (workingBranch.getName().contains(branchName)) {
                   BranchManager.purgeBranch(workingBranch);

@@ -16,6 +16,8 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -103,7 +105,8 @@ public class User extends Artifact {
 
    public void toggleFavoriteBranch(Branch favoriteBranch) throws OseeCoreException {
       HashSet<String> branchGuids = new HashSet<String>();
-      for (Branch branch : BranchManager.getNormalBranches()) {
+      for (Branch branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
+            BranchType.BASELINE)) {
          branchGuids.add(branch.getGuid());
       }
 

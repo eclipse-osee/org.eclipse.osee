@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -188,10 +187,11 @@ public class AtsBranchConfigurationTest {
       // make changes
       OseeLog.log(AtsPlugin.class, Level.INFO, "Make new requirement artifact");
       Artifact rootArtifact =
-            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getBranchMgr().getWorkingBranch());
+            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getWorkingBranch());
       Artifact blk3MainArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT,
-                  teamWf.getBranchMgr().getWorkingBranch(), TestType.BranchViaVersions.getName() + " Requirement");
+                  teamWf.getWorkingBranch(),
+                  TestType.BranchViaVersions.getName() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist();
 
@@ -295,10 +295,11 @@ public class AtsBranchConfigurationTest {
       // make changes
       OseeLog.log(AtsPlugin.class, Level.INFO, "Make new requirement artifact");
       Artifact rootArtifact =
-            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getBranchMgr().getWorkingBranch());
+            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getWorkingBranch());
       Artifact blk3MainArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT,
-                  teamWf.getBranchMgr().getWorkingBranch(), TestType.BranchViaTeamDef.getName() + " Requirement");
+                  teamWf.getWorkingBranch(),
+                  TestType.BranchViaTeamDef.getName() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist();
 
@@ -389,8 +390,7 @@ public class AtsBranchConfigurationTest {
       try {
          BranchManager.refreshBranches();
          // delete working branches
-         for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchControlled.ALL,
-               BranchType.WORKING)) {
+         for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING)) {
             if (workingBranch.getName().contains(testType.getName())) {
                BranchManager.purgeBranch(workingBranch);
                TestUtil.sleep(2000);
@@ -411,7 +411,7 @@ public class AtsBranchConfigurationTest {
    private void commitBranch(TeamWorkFlowArtifact teamWf) throws Exception {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Commit Branch");
       teamWf.getBranchMgr().commitWorkingBranch(false, true,
-            teamWf.getBranchMgr().getWorkingBranch().getParentBranch(), true);
+            teamWf.getWorkingBranch().getParentBranch(), true);
       TestUtil.sleep(2000);
    }
 

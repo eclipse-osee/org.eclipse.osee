@@ -90,7 +90,7 @@ public class ExportChangeReportsAction extends Action {
             changes = ChangeManager.getChangesPerTransaction(pickTransaction(workflow), monitor);
          } else {
             Branch branch = atsBranchMgr.getWorkingBranch();
-            if (branch != null) {
+            if (atsBranchMgr.isWorkingBranchInWork()) {
                changes = ChangeManager.getChangesPerBranch(branch, monitor);
             }
          }

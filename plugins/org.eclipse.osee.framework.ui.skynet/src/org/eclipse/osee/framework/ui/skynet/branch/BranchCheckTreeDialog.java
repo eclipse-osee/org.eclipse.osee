@@ -14,8 +14,11 @@ package org.eclipse.osee.framework.ui.skynet.branch;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -43,7 +46,9 @@ public class BranchCheckTreeDialog extends MinMaxOSEECheckedFilteredTreeDialog {
    }
 
    public Collection<Branch> getChecked() {
-      if (super.getTreeViewer() == null) return Collections.emptyList();
+      if (super.getTreeViewer() == null) {
+         return Collections.emptyList();
+      }
       Set<Branch> checked = new HashSet<Branch>();
       for (Object obj : super.getTreeViewer().getChecked()) {
          checked.add((Branch) obj);
@@ -55,8 +60,13 @@ public class BranchCheckTreeDialog extends MinMaxOSEECheckedFilteredTreeDialog {
    protected Control createDialogArea(Composite container) {
       Control comp = super.createDialogArea(container);
       try {
-         getTreeViewer().getViewer().setInput(BranchManager.getNormalBranchesSorted());
-         if (getInitialBranches() != null) getTreeViewer().setInitalChecked(getInitialBranches());
+         List<Branch> branches =
+               BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING, BranchType.BASELINE);
+         Collections.sort(branches);
+         getTreeViewer().getViewer().setInput(branches);
+         if (getInitialBranches() != null) {
+            getTreeViewer().setInitalChecked(getInitialBranches());
+         }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

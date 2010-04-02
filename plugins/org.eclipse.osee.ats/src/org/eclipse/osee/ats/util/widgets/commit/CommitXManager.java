@@ -43,6 +43,7 @@ public class CommitXManager extends XViewer {
       super.createSupportWidgets(parent);
    }
 
+   @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
 
@@ -60,8 +61,11 @@ public class CommitXManager extends XViewer {
    public ArrayList<ICommitConfigArtifact> getSelectedConfigArtifacts() {
       ArrayList<ICommitConfigArtifact> arts = new ArrayList<ICommitConfigArtifact>();
       TreeItem items[] = getTree().getSelection();
-      if (items.length > 0) for (TreeItem item : items)
-         arts.add((ICommitConfigArtifact) item.getData());
+      if (items.length > 0) {
+         for (TreeItem item : items) {
+            arts.add((ICommitConfigArtifact) item.getData());
+         }
+      }
       return arts;
    }
 
@@ -70,13 +74,6 @@ public class CommitXManager extends XViewer {
     */
    public XCommitManager getXCommitViewer() {
       return xCommitManager;
-   }
-
-   /**
-    * @return the workingBranch
-    */
-   public Branch getWorkingBranch() throws OseeCoreException {
-      return xCommitManager.getWorkingBranch();
    }
 
    @Override
@@ -111,7 +108,9 @@ public class CommitXManager extends XViewer {
                         "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION,
                         new String[] {"Show Change Report", "Show Merge Manager", "Cancel"}, 0);
             int result = dialog.open();
-            if (result == 2) return;
+            if (result == 2) {
+               return;
+            }
             // change report
             if (result == 0) {
                xCommitManager.getTeamArt().getBranchMgr().showChangeReportForBranch(destBranch);

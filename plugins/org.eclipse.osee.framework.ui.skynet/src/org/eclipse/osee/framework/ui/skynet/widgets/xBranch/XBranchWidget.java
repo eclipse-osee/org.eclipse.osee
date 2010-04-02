@@ -370,17 +370,9 @@ public class XBranchWidget extends XWidget implements IActionable {
       }
    }
 
-   /**
-    * @param branch
-    */
    public void reveal(Branch branch) {
-      for (Object obj : ((XBranchContentProvider) branchXViewer.getContentProvider()).getAllElements(BranchManager.getInstance())) {
-         if (obj instanceof Branch && (Branch) obj == branch) {
-            branchXViewer.reveal(obj);
-            branchXViewer.setSelection(new StructuredSelection(obj), true);
-            refresh();
-            return;
-         }
-      }
+      branchXViewer.reveal(branch);
+      branchXViewer.setSelection(new StructuredSelection(branch), true);
+      refresh();
    }
 }

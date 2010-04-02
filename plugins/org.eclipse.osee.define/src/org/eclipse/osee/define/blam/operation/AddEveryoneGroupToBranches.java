@@ -13,6 +13,8 @@ package org.eclipse.osee.define.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -27,9 +29,10 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  */
 public class AddEveryoneGroupToBranches extends AbstractBlam {
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      for (Branch brnch : BranchManager.getNormalBranches()) {
-
+      for (Branch brnch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
+            BranchType.BASELINE)) {
          if (!AccessControlManager.getAccessControlList(brnch).isEmpty()) {
             Artifact everyone =
                   ArtifactQuery.getArtifactFromAttribute("Name", "Everyone", BranchManager.getCommonBranch());
@@ -43,6 +46,7 @@ public class AddEveryoneGroupToBranches extends AbstractBlam {
       return "Add Everone Group to Branches";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Define");
    }
