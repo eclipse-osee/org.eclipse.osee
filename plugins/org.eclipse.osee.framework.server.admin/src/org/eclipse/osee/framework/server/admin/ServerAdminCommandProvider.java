@@ -112,7 +112,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        remove_osee_version [version string]- removes the version string from the list of supported osee versions\n");
       sb.append("        finish_partial_archives - move txs addressing to osee_txs_archived for archived branches\n");
       sb.append("        consolidate_artifact_versions - migrate to 0.9.2 database schema\n");
-      sb.append("        tx_currents - detect and optionaly fix tx current and mod types inconsistencies\n");
+      sb.append("        tx_currents [true | false] - detect and fix tx current and mod types inconsistencies on archive txs or txs\n");
       sb.append("        osee_shutdown [-oseeOnly] - immediately release the listening port then waits for all existing operations to finish. \n");
       sb.append("        gc - run java garbage collecction\n");
       sb.append("        schedule <delay seconds> <iterations> <command> - runs the command after the specified delay and repeat given number of times\n");
