@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.client.msg.core.internal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.client.msg.core.ISubscriptionListener;
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
@@ -209,7 +210,7 @@ public class MessageSubscription implements IMessageSubscription {
 	}
 
 	@Override
-	public boolean addSubscriptionListener(ISubscriptionListener listener) {
+	public synchronized boolean addSubscriptionListener(ISubscriptionListener listener) {
 		boolean result = listeners.add(listener);
 		if (currentState == null) {
 			listener.subscriptionCanceled(this);

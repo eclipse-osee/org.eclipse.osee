@@ -50,6 +50,9 @@ public class MessageReference {
 	
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == null) {
+			throw new NullPointerException();
+		}
 		MessageReference otherRef = (MessageReference) obj;
 		return msgClassName.equals(otherRef.msgClassName) && type == otherRef.type && mode == otherRef.mode;
 	}

@@ -24,6 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -276,7 +277,7 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 	}
 
 	@Override
-	public void onDictionaryLoaded(IMessageDictionary dictionary) {
+	public synchronized void onDictionaryLoaded(IMessageDictionary dictionary) {
 		msgDatabase = messageDbFactory.createMessageDataBase(dictionary);
 		for (MessageSubscription subscription : subscriptions) {
 			subscription.attachMessageDb(msgDatabase);
@@ -284,7 +285,7 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 	}
 
 	@Override
-	public void onDictionaryUnloaded(IMessageDictionary dictionary) {
+	public synchronized void onDictionaryUnloaded(IMessageDictionary dictionary) {
 		for (MessageSubscription subscription : subscriptions) {
 			subscription.detachMessageDb(msgDatabase);
 		}
@@ -292,7 +293,7 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 	}
 
 	@Override
-	public IFileTransferHandle startRecording(String fileName, List<MessageRecordDetails> list) throws FileNotFoundException, IOException {
+	public synchronized IFileTransferHandle startRecording(String fileName, List<MessageRecordDetails> list) throws FileNotFoundException, IOException {
 		if (service == null) {
 			throw new IllegalStateException("can't record: not connected to test server");
 		}
@@ -319,7 +320,7 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 	}
 
 	@Override
-	public void stopRecording() throws RemoteException, IOException {
+	public synchronized void stopRecording() throws RemoteException, IOException {
 		try {
 			service.stopRecording();
 		} finally {

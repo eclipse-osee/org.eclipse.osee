@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.connection.service.IConnectorListener;
 import org.eclipse.osee.connection.service.IServiceConnector;
@@ -239,7 +240,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	}
 
 	@Override
-	public OSEEPerson1_4 getUser() {
+	public synchronized OSEEPerson1_4 getUser() {
 		if (session != null) {
 			return session.getUser();
 		}
@@ -247,7 +248,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	}
 
 	@Override
-	public UserTestSessionKey getSessionKey() {
+	public synchronized UserTestSessionKey getSessionKey() {
 		return (testConnection != null) ? testConnection.getSessionKey() : null;
 
 	}
@@ -362,13 +363,13 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	}
 
 	@Override
-	public IServiceConnector getConnector() {
+	public synchronized IServiceConnector getConnector() {
 		checkState();
 		return testConnection == null ? null : testConnection.getServiceConnector();
 	}
 
 	@Override
-	public void addDictionaryListener(IMessageDictionaryListener listener) {
+	public synchronized void addDictionaryListener(IMessageDictionaryListener listener) {
 		if (listenerNotifier.addDictionaryListener(listener) && dictionary != null) {
 			listener.onDictionaryLoaded(dictionary);
 		}
@@ -385,7 +386,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	}
 
 	@Override
-	public boolean isConnected() {
+	public synchronized boolean isConnected() {
 		return testConnection != null;
 	}
 
