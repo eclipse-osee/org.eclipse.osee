@@ -16,7 +16,8 @@
          <editor
             class="org.eclipse.osee.ats.editor.SMAEditor"
             icon="images/plan.gif"
-            default="false"
+            default="false"            
+            contributorClass="org.eclipse.osee.ats.editor.SMAEditorContributor"
             id="org.eclipse.osee.ats.editor.SMAEditor"
             name="ATS Workflow Editor"/>
          <editor

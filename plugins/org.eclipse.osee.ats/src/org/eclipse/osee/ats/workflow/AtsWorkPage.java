@@ -28,8 +28,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -126,6 +129,30 @@ public class AtsWorkPage extends WorkPage {
 
    public boolean isStartPage() throws OseeCoreException {
       return workFlowDefinition.getStartPage().getId().equals(getId());
+   }
+
+   public void generateLayoutDatas(StateMachineArtifact sma) throws OseeCoreException {
+      this.sma = sma;
+      // Add static layoutDatas to atsWorkPage
+      for (WorkItemDefinition workItemDefinition : getWorkPageDefinition().getWorkItems(true)) {
+         if (workItemDefinition instanceof WorkWidgetDefinition) {
+            DynamicXWidgetLayoutData data = ((WorkWidgetDefinition) workItemDefinition).get();
+            data.setDynamicXWidgetLayout(getDynamicXWidgetLayout());
+            data.setArtifact(sma);
+            addLayoutData(data);
+         }
+      }
+
+      // Add dynamic WorkItemDefinitions to atsWorkPage
+      for (WorkItemDefinition workItemDefinition : WorkItemDefinitionFactory.getDynamicWorkItemDefintions(
+            sma.getWorkFlowDefinition(), getWorkPageDefinition(), sma)) {
+         if (workItemDefinition instanceof WorkWidgetDefinition) {
+            DynamicXWidgetLayoutData data = ((WorkWidgetDefinition) workItemDefinition).get();
+            data.setDynamicXWidgetLayout(getDynamicXWidgetLayout());
+            data.setArtifact(sma);
+            addLayoutData(data);
+         }
+      }
    }
 
    public StateMachineArtifact getSma() {

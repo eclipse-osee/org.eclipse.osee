@@ -37,6 +37,8 @@ import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
+import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
@@ -1702,6 +1704,21 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public String getWorldViewGoalOrder() throws OseeCoreException {
       return GoalArtifact.getGoalOrder(this);
+   }
+
+   public List<AtsWorkPage> getAtsWorkPages() throws OseeCoreException {
+      List<AtsWorkPage> atsWorkPages = new ArrayList<AtsWorkPage>();
+      for (WorkPageDefinition workPageDefinition : getWorkFlowDefinition().getPagesOrdered()) {
+         try {
+            AtsWorkPage atsWorkPage =
+                  new AtsWorkPage(getWorkFlowDefinition(), workPageDefinition, null,
+                        ATSXWidgetOptionResolver.getInstance());
+            atsWorkPages.add(atsWorkPage);
+         } catch (Exception ex) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         }
+      }
+      return atsWorkPages;
    }
 
 }

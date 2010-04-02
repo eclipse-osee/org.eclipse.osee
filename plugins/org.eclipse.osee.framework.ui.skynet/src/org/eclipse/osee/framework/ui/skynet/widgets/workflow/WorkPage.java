@@ -192,6 +192,10 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       dynamicXWidgetLayout.addWorkLayoutDatas(datas);
    }
 
+   public void addLayoutData(DynamicXWidgetLayoutData data) {
+      dynamicXWidgetLayout.addWorkLayoutData(data);
+   }
+
    public DynamicXWidgetLayoutData getLayoutData(String layoutName) {
       return dynamicXWidgetLayout.getLayoutData(layoutName);
    }

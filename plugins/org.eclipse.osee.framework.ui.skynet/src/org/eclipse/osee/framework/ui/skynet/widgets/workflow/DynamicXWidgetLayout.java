@@ -303,6 +303,10 @@ public class DynamicXWidgetLayout {
       this.datas.addAll(datas);
    }
 
+   public void addWorkLayoutData(DynamicXWidgetLayoutData data) {
+      this.datas.add(data);
+   }
+
    public DynamicXWidgetLayoutData getLayoutData(String attrName) {
       for (DynamicXWidgetLayoutData layoutData : datas) {
          if (layoutData.getStorageName().equals(attrName)) {

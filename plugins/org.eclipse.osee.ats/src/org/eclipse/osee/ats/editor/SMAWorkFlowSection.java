@@ -63,13 +63,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinitionLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinitionViewSorter;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -153,30 +149,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
    protected Composite createWorkArea(Composite comp, AtsWorkPage atsWorkPage, XFormToolkit toolkit) throws OseeCoreException {
 
-      // Add static layoutDatas to atsWorkPage
-      List<DynamicXWidgetLayoutData> staticDatas = new ArrayList<DynamicXWidgetLayoutData>();
-      for (WorkItemDefinition workItemDefinition : atsWorkPage.getWorkPageDefinition().getWorkItems(true)) {
-         if (workItemDefinition instanceof WorkWidgetDefinition) {
-            DynamicXWidgetLayoutData data = ((WorkWidgetDefinition) workItemDefinition).get();
-            data.setDynamicXWidgetLayout(atsWorkPage.getDynamicXWidgetLayout());
-            staticDatas.add(data);
-         }
-      }
-      atsWorkPage.addLayoutDatas(staticDatas);
-
-      // Add dynamic WorkItemDefinitions to atsWorkPage
-      List<DynamicXWidgetLayoutData> dynamicDatas = new ArrayList<DynamicXWidgetLayoutData>();
-      for (WorkItemDefinition workItemDefinition : WorkItemDefinitionFactory.getDynamicWorkItemDefintions(
-            sma.getWorkFlowDefinition(), atsWorkPage.getWorkPageDefinition(), sma)) {
-         if (workItemDefinition instanceof WorkWidgetDefinition) {
-            DynamicXWidgetLayoutData data = ((WorkWidgetDefinition) workItemDefinition).get();
-            data.setDynamicXWidgetLayout(atsWorkPage.getDynamicXWidgetLayout());
-            dynamicDatas.add(data);
-         }
-      }
-      atsWorkPage.addLayoutDatas(dynamicDatas);
-
-      atsWorkPage.setsma(sma);
+      atsWorkPage.generateLayoutDatas(sma);
 
       // Create Page
       Composite workComp = toolkit.createContainer(comp, 1);

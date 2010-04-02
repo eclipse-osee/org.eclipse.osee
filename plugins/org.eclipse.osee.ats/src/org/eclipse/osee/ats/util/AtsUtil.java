@@ -91,6 +91,8 @@ public final class AtsUtil {
    private static OseeGroup atsAdminGroup = null;
    private static final Date today = new Date();
    public static int MILLISECS_PER_DAY = 1000 * 60 * 60 * 24;
+   public final static String normalColor = "#FFFFFF";
+   public final static String activeColor = "#EEEEEE";
 
    private AtsUtil() {
       super();

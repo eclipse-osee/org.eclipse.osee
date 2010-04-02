@@ -133,9 +133,8 @@ public class AtsExportManager extends Action {
                   if (artifact instanceof StateMachineArtifact) {
                      SMAEditor.editArtifact((StateMachineArtifact) artifact, true);
                      SMAEditor editor = SMAEditor.getSmaEditor((StateMachineArtifact) artifact);
-                     SMAPrint smaPrint =
-                           new SMAPrint(((StateMachineArtifact) artifact), editor.getWorkFlowTab(),
-                                 (includeTaskList ? editor.getTaskComposite() : null));
+                     SMAPrint smaPrint = new SMAPrint(((StateMachineArtifact) artifact));
+                     smaPrint.setIncludeTaskList(includeTaskList);
                      String html = smaPrint.getResultData().getReport("").getManipulatedHtml();
                      editor.closeEditor();
                      if (multipleFile) {

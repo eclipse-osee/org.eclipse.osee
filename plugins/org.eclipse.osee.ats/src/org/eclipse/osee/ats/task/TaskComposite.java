@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
@@ -23,7 +22,6 @@ import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction.IOpenNewAtsTaskEd
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTaskEditorSelectedHandler;
 import org.eclipse.osee.ats.actions.TaskAddAction.ITaskAddActionHandler;
 import org.eclipse.osee.ats.actions.TaskDeleteAction.ITaskDeleteActionHandler;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
@@ -31,11 +29,9 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.world.WorldContentProvider;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -235,31 +231,6 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
          }
       }
       return items;
-   }
-
-   public String toHTML(String labelFont) {
-      if (getTaskXViewer().getTree().getItemCount() == 0) {
-         return "";
-      }
-      StringBuffer html = new StringBuffer();
-      try {
-         html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
-         html.append(AHTML.startBorderTable(100, Overview.normalColor, ""));
-         html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Title", "State", "POC", "%", "Hrs",
-               "Resolution", "ID"}));
-         for (TaskArtifact art : iXTaskViewer.getTaskArtifacts("")) {
-            html.append(AHTML.addRowMultiColumnTable(new String[] {art.getName(),
-                  art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""), art.getWorldViewActivePoc(),
-                  art.getPercentCompleteSMATotal() + "", art.getHoursSpentSMATotal() + "",
-                  art.getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), ""),
-                  art.getHumanReadableId()}));
-         }
-         html.append(AHTML.endBorderTable());
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return "Task Exception - " + ex.getLocalizedMessage();
-      }
-      return html.toString();
    }
 
    public TaskXViewer getTaskXViewer() {

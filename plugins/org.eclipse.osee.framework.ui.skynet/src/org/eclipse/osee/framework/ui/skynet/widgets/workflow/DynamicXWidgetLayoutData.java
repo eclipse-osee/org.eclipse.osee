@@ -11,6 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOptionHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -35,6 +40,7 @@ public class DynamicXWidgetLayoutData implements Cloneable {
    private String defaultValue;
    private String keyedBranchName;
    private final XOptionHandler xOptionHandler = new XOptionHandler();
+   private Artifact artifact;
 
    public DynamicXWidgetLayoutData(DynamicXWidgetLayout dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -107,6 +113,13 @@ public class DynamicXWidgetLayoutData implements Cloneable {
    public XWidget getXWidget() throws OseeArgumentException {
       if (xWidget == null) {
          xWidget = xWidgetFactory.createXWidget(this);
+         if (artifact != null && xWidget instanceof IArtifactWidget) {
+            try {
+               ((IArtifactWidget) xWidget).setArtifact(artifact, getStorageName());
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
       }
       return xWidget;
    }
@@ -237,6 +250,14 @@ public class DynamicXWidgetLayoutData implements Cloneable {
     */
    public XOptionHandler getXOptionHandler() {
       return xOptionHandler;
+   }
+
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
+   public void setArtifact(Artifact artifact) {
+      this.artifact = artifact;
    }
 
 }

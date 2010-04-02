@@ -91,6 +91,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -173,6 +174,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
       }
 
       enableGlobalPrint();
+
    }
 
    private void createTaskTab() throws OseeCoreException, PartInitException {
@@ -237,9 +239,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
    }
 
    void enableGlobalPrint() {
-      printAction =
-            new SMAPrint(sma, workFlowTab,
-                  taskTabXWidgetActionPage == null ? null : taskTabXWidgetActionPage.getTaskComposite());
+      printAction = new SMAPrint(sma);
       getEditorSite().getActionBars().setGlobalActionHandler(ActionFactory.PRINT.getId(), printAction);
    }
 
@@ -750,6 +750,15 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
    @Override
    public Set<? extends Artifact> getSelectedSMAArtifacts() throws OseeStateException {
       return Collections.singleton(sma);
+   }
+
+   public Action getPrintAction() {
+      return printAction;
+   }
+
+   @Override
+   public IEditorPart getActiveEditor() {
+      return this;
    }
 
 }

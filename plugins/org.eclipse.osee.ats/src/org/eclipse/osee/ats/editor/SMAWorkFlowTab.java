@@ -42,16 +42,13 @@ import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
-import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -66,8 +63,6 @@ import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -248,11 +243,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private void createPageSections() {
       try {
          // Only display current or past states
-         for (WorkPageDefinition workPageDefinition : sma.getWorkFlowDefinition().getPagesOrdered()) {
+         for (AtsWorkPage atsWorkPage : sma.getAtsWorkPages()) {
             try {
-               AtsWorkPage atsWorkPage =
-                     new AtsWorkPage(sma.getWorkFlowDefinition(), workPageDefinition, null,
-                           ATSXWidgetOptionResolver.getInstance());
                if (sma.isCurrentState(atsWorkPage.getName()) || sma.getStateMgr().isStateVisited(atsWorkPage.getName())) {
                   // Don't show completed or cancelled state if not currently those state
                   if (atsWorkPage.isCompletePage() && !sma.isCompleted()) continue;
@@ -418,33 +410,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       return "Workflow Tab";
    }
 
-   public final static String normalColor = "#FFFFFF";
-   private final static String activeColor = "#EEEEEE";
-
-   public String getHtml() throws OseeCoreException {
-      StringBuffer htmlSb = new StringBuffer();
-      for (WorkPage wPage : atsWorkPages) {
-         AtsWorkPage page = (AtsWorkPage) wPage;
-         StringBuffer notesSb = new StringBuffer();
-         for (NoteItem note : sma.getNotes().getNoteItems()) {
-            if (note.getState().equals(page.getName())) {
-               notesSb.append(note.toHTML() + AHTML.newline());
-            }
-         }
-         if (sma.isCurrentState(page.getName()) || sma.getStateMgr().isStateVisited(page.getName()) && sma.isTeamWorkflow()) {
-            htmlSb.append(page.getHtml(sma.isCurrentState(page.getName()) ? activeColor : normalColor,
-                  notesSb.toString(), getStateHoursSpentHtml(page) + ReviewInfoXWidget.toHTML(
-                        (TeamWorkFlowArtifact) sma, page.getName())));
-            htmlSb.append(AHTML.newline());
-         }
-      }
-      return htmlSb.toString();
-   }
-
-   private String getStateHoursSpentHtml(WorkPage page) throws OseeCoreException {
-      return AHTML.getLabelValueStr("State Hours Spent", AtsUtil.doubleToI18nString(sma.getStateMgr().getHoursSpent(
-            page.getName())) + "<br>");
-   }
    private Control control = null;
 
    private void storeScrollLocation() throws OseeStateException {
