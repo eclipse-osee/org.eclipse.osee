@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -85,7 +86,7 @@ public class WorkspaceSetupViewItems implements IXNavigateContainer {
       return getResource(bundleName, configName);
    }
 
-   private final class XNavigateItemRunnable extends XNavigateItem {
+   private static final class XNavigateItemRunnable extends XNavigateItem {
       private URL projectSetFile;
       private String jobName;
 

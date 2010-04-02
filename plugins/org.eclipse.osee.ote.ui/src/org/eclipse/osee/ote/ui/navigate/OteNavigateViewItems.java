@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateContributionManager;
@@ -71,11 +72,12 @@ public class OteNavigateViewItems extends XNavigateViewItems {
       for (XNavigateExtensionPointData data : oteNavigateItemExtensions) {
          if (!categoryToNavigateItem.containsKey(data.getCategory())) {
             String[] path = data.getItemPath();
-            String key = "";
+            StringBuilder keyBuilder = new StringBuilder(256);
             XNavigateItem lastItem = null;
             for (int i = 0; i < path.length; i++) {
 
-               key += path[i];
+               keyBuilder.append(path[i]);
+               String key = keyBuilder.toString();
                XNavigateItem foundItem = categoryToNavigateItem.get(key);
                if (foundItem == null) {
                   foundItem = new XNavigateItem(lastItem, path[i], PluginUiImage.FOLDER);
@@ -88,7 +90,7 @@ public class OteNavigateViewItems extends XNavigateViewItems {
                   }
                }
                lastItem = foundItem;
-               key += ".";
+               keyBuilder.append('.');
             }
          }
       }

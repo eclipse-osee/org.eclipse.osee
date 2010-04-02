@@ -51,7 +51,7 @@ public class MessageReference {
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
-			throw new NullPointerException();
+			return false;
 		}
 		MessageReference otherRef = (MessageReference) obj;
 		return msgClassName.equals(otherRef.msgClassName) && type == otherRef.type && mode == otherRef.mode;
