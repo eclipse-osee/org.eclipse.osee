@@ -5,13 +5,15 @@
  */
 package org.eclipse.osee.framework.messaging.internal.activemq;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
-
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.ExceptionListener;
@@ -23,10 +25,11 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
-
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionListener;
 import org.eclipse.osee.framework.messaging.ConnectionNodeFailoverSupport;
@@ -50,12 +53,11 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    private TemporaryTopic temporaryTopic;
    private MessageConsumer replyToConsumer;
    private Map<String, OseeMessagingListener> replyListeners;
-   private Map<String, ActiveMqMessageListenerWrapper> regularListeners;
+   private CompositeKeyHashMap<String, MessageConsumer, OseeMessagingListener> regularListeners;
    private boolean started = false;
 
    private ConcurrentHashMap<String, Topic> topicCache;
    private ConcurrentHashMap<Topic, MessageProducer> messageProducerCache;
-   private ConcurrentHashMap<Topic, MessageConsumer> messageConsumerCache;
    private final ExceptionListener exceptionListener;
 
    private MessageProducer replyProducer;
@@ -66,9 +68,8 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       this.exceptionListener = exceptionListener;
       activeMqUtil = new ActiveMqUtil();
       topicCache = new ConcurrentHashMap<String, Topic>();
-      messageConsumerCache = new ConcurrentHashMap<Topic, MessageConsumer>();
       messageProducerCache = new ConcurrentHashMap<Topic, MessageProducer>();
-      regularListeners = new ConcurrentHashMap<String, ActiveMqMessageListenerWrapper>();
+      regularListeners = new CompositeKeyHashMap<String, MessageConsumer, OseeMessagingListener>(64, true);
       replyListeners = new ConcurrentHashMap<String, OseeMessagingListener>();
    }
 
@@ -95,13 +96,18 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
 
    @Override
    public synchronized void send(MessageID topic, Object body, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
+      send(topic, body, null, statusCallback);
+   }
+   
+   @Override
+   public synchronized void send(MessageID topic, Object body, Properties properties, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
       try {
          if (topic.isTopic()) {
             try{
-            	sendInternal(topic, body, statusCallback);
+               sendInternal(topic, body, properties, statusCallback);
             } catch (JMSException ex){
-            	removeProducerFromCache(topic);
-            	sendInternal(topic, body, statusCallback);
+               removeProducerFromCache(topic);
+               sendInternal(topic, body, properties, statusCallback);
             }
             OseeLog.log(Activator.class, Level.FINE, String.format("Sending message %s - %s", topic.getName(), topic.getGuid()));
             statusCallback.success();
@@ -115,12 +121,35 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       }
    }
    
-	private synchronized void sendInternal(MessageID topic, Object body, OseeMessagingStatusCallback statusCallback) throws JMSException, OseeCoreException {
+	private synchronized void sendInternal(MessageID topic, Object body, Properties properties, OseeMessagingStatusCallback statusCallback) throws JMSException, OseeCoreException {
 		Topic destination = getOrCreateTopic(topic);
 		MessageProducer producer = getOrCreateProducer(destination);
 		Message msg = activeMqUtil.createMessage(session, topic.getSerializationClass(), body);
 		if (topic.isReplyRequired()) {
 			msg.setJMSReplyTo(temporaryTopic);
+		}
+		if(properties != null){
+		   for(Entry<Object, Object> entry:properties.entrySet()){
+		      if(entry.getValue() instanceof Integer){
+		         msg.setIntProperty(entry.getKey().toString(), (Integer)entry.getValue());
+		      } if(entry.getValue() instanceof Boolean){
+		         msg.setBooleanProperty(entry.getKey().toString(), (Boolean)entry.getValue());
+            } if(entry.getValue() instanceof Byte){
+               msg.setByteProperty(entry.getKey().toString(), (Byte)entry.getValue());
+            } if(entry.getValue() instanceof Double){
+               msg.setDoubleProperty(entry.getKey().toString(), (Double)entry.getValue());
+            } if(entry.getValue() instanceof Float){
+               msg.setFloatProperty(entry.getKey().toString(), (Float)entry.getValue());
+            } if(entry.getValue() instanceof Long){
+               msg.setLongProperty(entry.getKey().toString(), (Long)entry.getValue());
+            } if(entry.getValue() instanceof String){
+               msg.setStringProperty(entry.getKey().toString(), (String)entry.getValue());
+            } if(entry.getValue() instanceof Short){
+               msg.setShortProperty(entry.getKey().toString(), (Short)entry.getValue());
+            } else {
+		         msg.setObjectProperty(entry.getKey().toString(), entry.getValue());
+		      }
+		   }
 		}
 		producer.send(msg);
 		OseeLog.log(Activator.class, Level.FINE, String.format("Sending message %s - %s", topic.getName(), topic.getGuid()));
@@ -132,15 +161,30 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       Topic destination;
       try {
          if (isConnectedThrow()) {
-            ActiveMqMessageListenerWrapper wrapperListener = regularListeners.get(messageId.getGuid());
-            if (wrapperListener == null) {
-               wrapperListener = new ActiveMqMessageListenerWrapper(activeMqUtil, replyProducer, session);
-               regularListeners.put(messageId.getGuid(), wrapperListener);
-               destination = getOrCreateTopic(messageId);
-               MessageConsumer consumer = getOrCreateConsumer(destination);
-               consumer.setMessageListener(wrapperListener);
-            }
-            wrapperListener.addListener(listener);
+            destination = getOrCreateTopic(messageId);
+            MessageConsumer consumer = session.createConsumer(destination);
+            consumer.setMessageListener(new ActiveMqMessageListenerWrapper(activeMqUtil, replyProducer, session, listener));
+            regularListeners.put(messageId.getGuid(), consumer, listener);
+            statusCallback.success();
+         } else {
+            statusCallback.fail(new OseeCoreException("This connection is not started."));
+         }
+      } catch (JMSException ex) {
+         statusCallback.fail(ex);
+      } catch (NullPointerException ex) {
+         statusCallback.fail(ex);
+      }
+   }
+   
+   @Override
+   public void subscribe(MessageID messageId, OseeMessagingListener listener, String selector, OseeMessagingStatusCallback statusCallback) {
+      Topic destination;
+      try {
+         if (isConnectedThrow()) {
+            destination = getOrCreateTopic(messageId);
+            MessageConsumer consumer = session.createConsumer(destination, selector);
+            consumer.setMessageListener(new ActiveMqMessageListenerWrapper(activeMqUtil, replyProducer, session, listener));
+            regularListeners.put(messageId.getGuid(), consumer, listener);
             statusCallback.success();
          } else {
             statusCallback.fail(new OseeCoreException("This connection is not started."));
@@ -176,15 +220,6 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
 	   messageProducerCache.remove(destination);
    }
 
-   private MessageConsumer getOrCreateConsumer(Topic topic) throws JMSException {
-      MessageConsumer consumer = messageConsumerCache.get(topic);
-      if (consumer == null) {
-         consumer = session.createConsumer(topic);
-         messageConsumerCache.put(topic, consumer);
-      }
-      return consumer;
-   }
-
    @Override
    public boolean subscribeToReply(MessageID messageId, OseeMessagingListener listener) {
       replyListeners.put(messageId.getGuid(), listener);
@@ -193,22 +228,25 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
 
    @Override
    public void unsubscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
-      ActiveMqMessageListenerWrapper wrapperListener = regularListeners.get(messageId.getGuid());
-      if (wrapperListener != null) {
-         wrapperListener.removeListener(listener);
-         if (wrapperListener.isEmpty()) {
-            try {
-               Topic topic = getOrCreateTopic(messageId);
-               MessageConsumer consumer = getOrCreateConsumer(topic);
-               consumer.setMessageListener(null);
-               consumer.close();
-               messageConsumerCache.remove(topic);
-               regularListeners.remove(messageId.getGuid());
-            } catch (JMSException ex) {
-               statusCallback.fail(ex);
+      Map<MessageConsumer, OseeMessagingListener> listeners = regularListeners.getKeyedValues(messageId.getGuid());
+      List<MessageConsumer> consumersToRemove = new ArrayList<MessageConsumer>();
+      if (listeners != null) {
+         try{ 
+            for(Entry<MessageConsumer, OseeMessagingListener> entry:listeners.entrySet()){
+               if(entry.getValue().equals(listener)){
+                  entry.getKey().setMessageListener(null);
+                  entry.getKey().close();
+                  consumersToRemove.add(entry.getKey());
+               }
             }
+            for(MessageConsumer messageConsumer: consumersToRemove){
+               messageConsumer.setMessageListener(null);
+               messageConsumer.close();
+            }
+         }catch (JMSException ex) {
+            statusCallback.fail(ex);
          }
-      } 
+      }
       statusCallback.success();
    }
 
@@ -240,7 +278,6 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    public synchronized void stop() {
 	  topicCache.clear();
 	  messageProducerCache.clear();
-	  messageConsumerCache.clear();
 	  regularListeners.clear();
       try {
          if (session != null) {
@@ -305,16 +342,14 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    @Override
    public String getSubscribers() {
       StringBuilder sb = new StringBuilder();
-      for(Entry<Topic, MessageConsumer> entry:this.messageConsumerCache.entrySet()){
+      for(Pair<String, MessageConsumer> entry:this.regularListeners.keySet()){
          try {
-            sb.append(String.format("Topic [%s] \n", entry.getKey().getTopicName()));
-            sb.append(String.format("\tConsumer Selector [%s]\n", entry.getValue().getMessageSelector()));
-            MessageListener listener = entry.getValue().getMessageListener();
+            sb.append(String.format("Topic [%s] \n", entry.getFirst()));
+            sb.append(String.format("\tConsumer Selector [%s]\n", entry.getSecond().getMessageSelector()));
+            MessageListener listener = entry.getSecond().getMessageListener();
             if(listener instanceof ActiveMqMessageListenerWrapper){
                sb.append("\tConsumer Listeners:\n");   
-               for(OseeMessagingListener item:((ActiveMqMessageListenerWrapper)listener).getListeners()){
-                  sb.append(String.format("\t\t%s\n", item.toString()));   
-               }
+               sb.append(String.format("\t\t%s\n", ((ActiveMqMessageListenerWrapper)listener).getListener().toString()));   
             }
          } catch (JMSException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -333,5 +368,5 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       sb.append(getSubscribers());
       return sb.toString();
    }
-   
+
 }

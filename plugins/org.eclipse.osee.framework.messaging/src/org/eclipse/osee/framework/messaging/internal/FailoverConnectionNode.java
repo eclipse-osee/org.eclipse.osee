@@ -6,13 +6,12 @@
 package org.eclipse.osee.framework.messaging.internal;
 
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
 import javax.jms.JMSException;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionListener;
@@ -48,18 +47,24 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
 
    @Override
    public void send(MessageID topic, Object body, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
-      attemptSmartConnect();
-      if(lastConnectedState){
-    	  try{
-    		  connectionNode.send(topic, body, statusCallback);
-    	  } catch (OseeCoreException ex){
-    		  stop();
-    		  run();
-    		  connectionNode.send(topic, body, statusCallback);
-    	  }
-      }
+     send(topic, body, null, statusCallback);
    }
 
+
+   @Override
+   public void send(MessageID topic, Object body, Properties properties, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
+      attemptSmartConnect();
+      if(lastConnectedState){
+        try{
+           connectionNode.send(topic, body, properties, statusCallback);
+        } catch (OseeCoreException ex){
+           stop();
+           run();
+           connectionNode.send(topic, body, properties, statusCallback);
+        }
+      }
+   }
+   
    private void attemptSmartConnect() {
       if(!lastConnectedState){
          run();
@@ -78,6 +83,13 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
       connectionNode.subscribe(messageId, listener, statusCallback);
    }
 
+   @Override
+   public void subscribe(MessageID messageId, OseeMessagingListener listener, String selector, OseeMessagingStatusCallback statusCallback) {
+      savedSubscribes.add(new SavedSubscribe(messageId, listener, statusCallback));
+      attemptSmartConnect();
+      connectionNode.subscribe(messageId, listener, selector, statusCallback);
+   }
+   
    @Override
    public boolean subscribeToReply(MessageID messageId, OseeMessagingListener listener) {
       return connectionNode.subscribeToReply(messageId, listener);
@@ -110,7 +122,11 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
 
    private void subscribeToMessages() {
       for (SavedSubscribe subscribe : savedSubscribes) {
-         connectionNode.subscribe(subscribe.messageId, subscribe.listener, subscribe.statusCallback);
+         if(subscribe.selector == null){
+            connectionNode.subscribe(subscribe.messageId, subscribe.listener, subscribe.statusCallback);
+         } else {
+            connectionNode.subscribe(subscribe.messageId, subscribe.listener, subscribe.selector, subscribe.statusCallback);
+         }
       }
    }
 
@@ -118,13 +134,21 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
       MessageID messageId;
       OseeMessagingListener listener;
       OseeMessagingStatusCallback statusCallback;
+      String selector;
+
+      public SavedSubscribe(MessageID messageId, OseeMessagingListener listener, String selector, OseeMessagingStatusCallback statusCallback) {
+         this.messageId = messageId;
+         this.listener = listener;
+         this.statusCallback = statusCallback;
+         this.selector = selector;
+      }
 
       public SavedSubscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
          this.messageId = messageId;
          this.listener = listener;
          this.statusCallback = statusCallback;
       }
-
+      
       @Override
       public int hashCode() {
          final int prime = 31;
@@ -225,5 +249,4 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
 		connectionNode.stop();
 		run();
 	}
-
 }
