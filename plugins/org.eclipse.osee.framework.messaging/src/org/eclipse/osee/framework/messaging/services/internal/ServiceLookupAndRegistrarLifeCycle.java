@@ -26,7 +26,6 @@ import org.osgi.util.tracker.ServiceTracker;
 public class ServiceLookupAndRegistrarLifeCycle extends ServiceTracker {
 
 	private RemoteServiceRegistrar registrar;
-	private RemoteServiceLookup lookup;
 	private ServiceRegistration lookupRegistration;
 	private ServiceRegistration registrarRegistration;
 	private ClassLoader contextClassLoader;
@@ -75,7 +74,6 @@ public class ServiceLookupAndRegistrarLifeCycle extends ServiceTracker {
 	public void removedService(ServiceReference reference, Object service) {
 		lookupRegistration.unregister();
 		registrarRegistration.unregister();
-		lookup.stop();
 		registrar.stop();
 		super.removedService(reference, service);
 	}
