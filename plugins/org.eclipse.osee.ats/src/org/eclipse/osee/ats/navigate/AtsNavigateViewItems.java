@@ -37,8 +37,10 @@ import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
+import org.eclipse.osee.ats.world.search.GoalSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
+import org.eclipse.osee.ats.world.search.MyFavoritesGoalsSearchItem;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.ats.world.search.MyGoalWorkflowItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
@@ -121,36 +123,10 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new SearchNavigateItem(null, new ActionableItemWorldSearchItem(null, "Actionable Item Search",
                false, false, false)));
 
-         XNavigateItem releaseItems = new XNavigateItem(null, "Versions", FrameworkImage.VERSION);
-         new MassEditTeamVersionItem("Team Versions", releaseItems, (TeamDefinitionArtifact) null,
-               FrameworkImage.VERSION);
-         new SearchNavigateItem(releaseItems, new VersionTargetedForTeamSearchItem(null, null, false,
-               LoadView.WorldEditor));
-         new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));
-         new ReleaseVersionItem(releaseItems, null);
-         new CreateNewVersionItem(releaseItems, null);
-         new GenerateVersionReportItem(releaseItems);
-         new GenerateFullVersionReportItem(releaseItems);
-         items.add(releaseItems);
-
+         createGoalsSection(items);
+         createVersionsSection(items);
          addExtensionPointItems(items);
-
-         XNavigateItem reviewItem = new XNavigateItem(null, "Reviews", AtsImage.REVIEW);
-         new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
-               "Show Open " + AtsArtifactTypes.DecisionReview.getName() + "s", AtsArtifactTypes.DecisionReview, false,
-               false, AtsImage.REVIEW));
-         new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
-               "Show Workflows Waiting " + AtsArtifactTypes.DecisionReview.getName() + "s",
-               AtsArtifactTypes.DecisionReview, false, true, AtsImage.REVIEW));
-         new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
-               "Show Open " + AtsArtifactTypes.PeerToPeerReview.getName() + "s", AtsArtifactTypes.PeerToPeerReview,
-               false, false, AtsImage.REVIEW));
-         new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
-               "Show Workflows Waiting " + AtsArtifactTypes.PeerToPeerReview.getName() + "s",
-               AtsArtifactTypes.PeerToPeerReview, false, true, AtsImage.REVIEW));
-         new NewPeerToPeerReviewItem(reviewItem);
-         new GenerateReviewParticipationReport(reviewItem);
-         items.add(reviewItem);
+         createReviewsSection(items);
 
          XNavigateItem stateItems = new XNavigateItem(null, "States", AtsImage.STATE);
          new SearchNavigateItem(stateItems, new StateWorldSearchItem());
@@ -246,6 +222,60 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       }
 
       return items;
+   }
+
+   public void createReviewsSection(List<XNavigateItem> items) {
+      try {
+         XNavigateItem reviewItem = new XNavigateItem(null, "Reviews", AtsImage.REVIEW);
+         new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
+               "Show Open " + AtsArtifactTypes.DecisionReview.getName() + "s", AtsArtifactTypes.DecisionReview, false,
+               false, AtsImage.REVIEW));
+         new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
+               "Show Workflows Waiting " + AtsArtifactTypes.DecisionReview.getName() + "s",
+               AtsArtifactTypes.DecisionReview, false, true, AtsImage.REVIEW));
+         new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
+               "Show Open " + AtsArtifactTypes.PeerToPeerReview.getName() + "s", AtsArtifactTypes.PeerToPeerReview,
+               false, false, AtsImage.REVIEW));
+         new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
+               "Show Workflows Waiting " + AtsArtifactTypes.PeerToPeerReview.getName() + "s",
+               AtsArtifactTypes.PeerToPeerReview, false, true, AtsImage.REVIEW));
+         new NewPeerToPeerReviewItem(reviewItem);
+         new GenerateReviewParticipationReport(reviewItem);
+         items.add(reviewItem);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, "Can't create Goals section");
+      }
+   }
+
+   public void createVersionsSection(List<XNavigateItem> items) {
+      try {
+         XNavigateItem releaseItems = new XNavigateItem(null, "Versions", FrameworkImage.VERSION);
+         new MassEditTeamVersionItem("Team Versions", releaseItems, (TeamDefinitionArtifact) null,
+               FrameworkImage.VERSION);
+         new SearchNavigateItem(releaseItems, new VersionTargetedForTeamSearchItem(null, null, false,
+               LoadView.WorldEditor));
+         new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));
+         new ReleaseVersionItem(releaseItems, null);
+         new CreateNewVersionItem(releaseItems, null);
+         new GenerateVersionReportItem(releaseItems);
+         new GenerateFullVersionReportItem(releaseItems);
+         items.add(releaseItems);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, "Can't create Goals section");
+      }
+   }
+
+   public void createGoalsSection(List<XNavigateItem> items) {
+      try {
+         XNavigateItem goalItem = new XNavigateItem(null, "Goals", AtsImage.GOAL);
+         new SearchNavigateItem(goalItem, new GoalSearchItem("InWork Goals", new ArrayList<TeamDefinitionArtifact>(),
+               false, null));
+         new SearchNavigateItem(goalItem, new GoalSearchWorkflowSearchItem());
+         new SearchNavigateItem(goalItem, new MyFavoritesGoalsSearchItem("Favorites", UserManager.getUser()));
+         items.add(goalItem);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, "Can't create Goals section");
+      }
    }
 
    public void addExtensionPointItems(List<XNavigateItem> items) {

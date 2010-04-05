@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.world.search.GoalSearchItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -119,6 +121,11 @@ public class GoalArtifact extends StateMachineArtifact {
          if (art instanceof GoalArtifact) {
             goals.add(art);
          }
+         if (art instanceof ActionArtifact) {
+            for (TeamWorkFlowArtifact teamArt : ((ActionArtifact) art).getTeamWorkFlowArtifacts()) {
+               getGoals(teamArt, goals, recurse);
+            }
+         }
          goals.addAll(art.getRelatedArtifacts(AtsRelationTypes.Goal_Goal, GoalArtifact.class));
          if (recurse && art instanceof StateMachineArtifact && ((StateMachineArtifact) art).getParentSMA() != null) {
             getGoals(((StateMachineArtifact) art).getParentSMA(), goals, recurse);
@@ -137,7 +144,7 @@ public class GoalArtifact extends StateMachineArtifact {
       if (!isHasGoal(artifact)) return "";
       Collection<Artifact> goals = GoalArtifact.getGoals(artifact, false);
       if (goals.size() > 1) {
-         return "duplicate parents";
+         return "unable to resolve duplicate parents";
       }
       Artifact goal = goals.iterator().next();
       return getGoalOrder((GoalArtifact) goal, artifact);
@@ -145,6 +152,7 @@ public class GoalArtifact extends StateMachineArtifact {
 
    public static String getGoalOrder(GoalArtifact goalArtifact, Artifact member) throws OseeCoreException {
       List<Artifact> members = goalArtifact.getMembers();
+      if (!members.contains(member)) return "";
       try {
          return String.valueOf(members.indexOf(member) + 1);
       } catch (Exception ex) {
@@ -175,10 +183,10 @@ public class GoalArtifact extends StateMachineArtifact {
       }
    }
 
-   public static boolean promptChangeGoalOrder(Artifact artifact) throws OseeCoreException {
+   public static GoalArtifact promptChangeGoalOrder(Artifact artifact) throws OseeCoreException {
       if (!isHasGoal(artifact)) {
          AWorkbench.popup(String.format("No Goal set for artifact [%s]", artifact));
-         return false;
+         return null;
       }
       Collection<Artifact> goals = getGoals(artifact, false);
       GoalArtifact goal = null;
@@ -192,30 +200,40 @@ public class GoalArtifact extends StateMachineArtifact {
          if (dialog.open() == 0) {
             goal = (GoalArtifact) dialog.getSelection();
          } else {
-            return false;
+            return null;
          }
       }
 
       List<Artifact> members = goal.getMembers();
       String currIndexStr = getGoalOrder(goal, artifact);
       EntryDialog ed =
-            new EntryDialog("Change Goal Order", String.format(
-                  "Current Order = %s\n\nEnter New Order Number from 1..%d", currIndexStr, members.size()));
+            new EntryDialog(
+                  "Change Goal Order",
+                  String.format(
+                        "Goal: %s\n\nCurrent Order: %s\n\nEnter New Order Number from 1..%d or %d for last\n\nNote: Goal will be placed before number entered.",
+                        goal, currIndexStr, members.size(), members.size() + 1));
       ed.setNumberFormat(NumberFormat.getIntegerInstance());
 
       int result = ed.open();
       if (result == EntryDialog.OK) {
          String newIndexStr = ed.getEntry();
-         Integer newIndex = new Integer(newIndexStr) - 1;
-         if (newIndex == 0 || newIndex > members.size()) {
+         Integer enteredIndex = new Integer(newIndexStr);
+         boolean insertLast = enteredIndex == members.size() + 1;
+         Integer membersIndex = insertLast ? members.size() - 1 : enteredIndex - 1;
+         if (membersIndex > members.size()) {
             AWorkbench.popup(String.format("New Order Number [%s] out of range 1..%d", newIndexStr, members.size()));
-            return false;
+            return null;
          }
-         Artifact insertTarget = members.get(newIndex);
-         goal.setRelationOrder(AtsRelationTypes.Goal_Member, insertTarget, false, artifact);
+         Artifact insertTarget = members.get(membersIndex);
+         goal.setRelationOrder(AtsRelationTypes.Goal_Member, insertTarget, insertLast ? true : false, artifact);
          goal.persist();
-         return true;
+         return goal;
       }
-      return false;
+      return null;
+   }
+
+   public Collection<GoalArtifact> getInWorkGoals() throws OseeCoreException {
+      GoalSearchItem searchItem = new GoalSearchItem("", new ArrayList<TeamDefinitionArtifact>(), false, null);
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(searchItem.performSearchGetResults());
    }
 }

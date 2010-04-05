@@ -25,11 +25,6 @@ public class SearchNavigateItem extends XNavigateItem {
 
    private final WorldSearchItem wsi;
 
-   /**
-    * @param parent
-    * @param wsi
-    * @throws OseeCoreException
-    */
    public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi) throws OseeCoreException {
       super(parent, wsi.getName(), AtsImage.GLOBE);
       this.wsi = wsi;

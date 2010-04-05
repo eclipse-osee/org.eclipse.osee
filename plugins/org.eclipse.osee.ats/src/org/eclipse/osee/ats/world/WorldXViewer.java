@@ -78,10 +78,12 @@ import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchPage;
@@ -460,6 +462,20 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
+      } else if (treeColumn.getData().equals(WorldXViewerFactory.Goals_Col)) {
+         try {
+            Set<StateMachineArtifact> smas = new HashSet<StateMachineArtifact>();
+            for (TreeItem item : treeItems) {
+               Artifact art = (Artifact) item.getData();
+               if (art instanceof StateMachineArtifact) {
+                  smas.add((StateMachineArtifact) art);
+               }
+            }
+            PromptChangeUtil.promptChangeGoals(smas, true);
+            return;
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
       } else if (treeColumn.getData().equals(WorldXViewerFactory.Points_Col)) {
          try {
             Set<TeamWorkFlowArtifact> smas = new HashSet<TeamWorkFlowArtifact>();
@@ -709,6 +725,18 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       return arts;
    }
 
+   public ArrayList<GoalArtifact> getLoadedGoals() {
+      ArrayList<GoalArtifact> arts = new ArrayList<GoalArtifact>();
+      if (getRoot() != null) {
+         for (Object artifact : (Collection<?>) getRoot()) {
+            if (artifact instanceof GoalArtifact) {
+               arts.add((GoalArtifact) artifact);
+            }
+         }
+      }
+      return arts;
+   }
+
    public void clear(boolean forcePend) {
       ((WorldContentProvider) getContentProvider()).clear(forcePend);
    }
@@ -943,6 +971,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             modified = PromptChangeUtil.promptChangeEstimatedReleaseDate(sma);
          } else if (xCol.equals(WorldXViewerFactory.Groups_Col)) {
             modified = PromptChangeUtil.promptChangeGroups(sma, persist);
+         } else if (xCol.equals(WorldXViewerFactory.Goals_Col)) {
+            modified = PromptChangeUtil.promptChangeGoals(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Completion_Date_Col)) {
             modified =
                   PromptChangeUtil.promptChangeDate(sma, ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE, persist);
@@ -984,8 +1014,11 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          } else if (xCol.equals(WorldXViewerFactory.Priority_Col)) {
             modified = PromptChangeUtil.promptChangePriority(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Goal_Order)) {
-            GoalArtifact.promptChangeGoalOrder((Artifact) treeItem.getData());
-            update(useArt, null);
+            GoalArtifact changedGoal = GoalArtifact.promptChangeGoalOrder((Artifact) treeItem.getData());
+            if (changedGoal != null) {
+               refresh(changedGoal);
+               update(useArt, null);
+            }
             return false;
          }
          if (modified) {
@@ -1031,6 +1064,19 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          }
       });
 
+   }
+
+   /**
+    * store off parent goalItem in label provider so it can determine parent when providing order of goal member
+    */
+   protected void doUpdateItem(Item item, Object element) {
+      if (item instanceof TreeItem) {
+         TreeItem treeItem = (TreeItem) item;
+         if (Widgets.isAccessible(treeItem) && Widgets.isAccessible(treeItem.getParentItem()) && treeItem.getParentItem().getData() instanceof GoalArtifact) {
+            ((WorldLabelProvider) getLabelProvider()).setParentGoal((GoalArtifact) treeItem.getParentItem().getData());
+         }
+      }
+      super.doUpdateItem(item, element);
    }
 
 }

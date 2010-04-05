@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -32,12 +33,13 @@ import org.eclipse.swt.widgets.Display;
 
 public class WorldLabelProvider extends XViewerLabelProvider {
 
-   private final WorldXViewer treeViewer;
+   private final WorldXViewer worldXViewer;
    protected Font font;
+   private GoalArtifact parentGoalArtifact;
 
-   public WorldLabelProvider(WorldXViewer treeViewer) {
-      super(treeViewer);
-      this.treeViewer = treeViewer;
+   public WorldLabelProvider(WorldXViewer worldXViewer) {
+      super(worldXViewer);
+      this.worldXViewer = worldXViewer;
    }
 
    @Override
@@ -250,6 +252,9 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             return wva.getWorldViewGoalOrderVote();
          }
          if (xCol.equals(WorldXViewerFactory.Goal_Order)) {
+            if (parentGoalArtifact != null) {
+               return GoalArtifact.getGoalOrder(parentGoalArtifact, art);
+            }
             return wva.getWorldViewGoalOrder();
          }
          if (xCol.equals(WorldXViewerFactory.Category_Col)) {
@@ -370,8 +375,15 @@ public class WorldLabelProvider extends XViewerLabelProvider {
    public void removeListener(ILabelProviderListener listener) {
    }
 
-   public WorldXViewer getTreeViewer() {
-      return treeViewer;
+   public WorldXViewer getWorldXViewer() {
+      return worldXViewer;
    }
 
+   /**
+    * Value will be set, and changed, as label provider refreshes its elements. This is so the goal members can tell
+    * which parent they belong to.
+    */
+   public void setParentGoal(GoalArtifact parentGoalArtifact) {
+      this.parentGoalArtifact = parentGoalArtifact;
+   }
 }

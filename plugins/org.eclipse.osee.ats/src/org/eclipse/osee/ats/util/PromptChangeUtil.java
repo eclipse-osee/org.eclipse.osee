@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsPriorityDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
+import org.eclipse.osee.ats.world.search.GoalSearchItem;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -33,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeTypeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
@@ -62,6 +65,32 @@ public class PromptChangeUtil {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Set Groups");
          for (StateMachineArtifact sma : smas) {
             sma.setRelations(CoreRelationTypes.Universal_Grouping__Group, dialog.getSelection());
+            sma.persist(transaction);
+         }
+         transaction.execute();
+         return true;
+      }
+      return false;
+   }
+
+   public static boolean promptChangeGoals(StateMachineArtifact sma, boolean persist) throws OseeCoreException {
+      return promptChangeGoals(Arrays.asList(sma), persist);
+   }
+
+   public static boolean promptChangeGoals(final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
+      Set<Artifact> selected = new HashSet<Artifact>();
+      for (StateMachineArtifact sma : smas) {
+         selected.addAll(sma.getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
+      }
+      Collection<Artifact> allGoals =
+            (new GoalSearchItem("", new ArrayList<TeamDefinitionArtifact>(), false, null)).performSearchGetResults();
+      ArtifactCheckTreeDialog dialog = new ArtifactCheckTreeDialog(allGoals);
+      dialog.setTitle("Select Goals");
+      dialog.setInitialSelections(selected.toArray());
+      if (dialog.open() == 0) {
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Set Goals");
+         for (StateMachineArtifact sma : smas) {
+            sma.setRelations(AtsRelationTypes.Goal_Goal, dialog.getSelection());
             sma.persist(transaction);
          }
          transaction.execute();
