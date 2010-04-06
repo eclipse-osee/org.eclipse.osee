@@ -87,7 +87,6 @@ public class SkyWalkerArtTypeTabItem {
          }
 
          public void widgetSelected(SelectionEvent e) {
-            //            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), true);
             treeViewer.setAllChecked(true);
             storeSelected();
          }
@@ -100,7 +99,6 @@ public class SkyWalkerArtTypeTabItem {
          }
 
          public void widgetSelected(SelectionEvent e) {
-            //            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), false);
             treeViewer.setAllChecked(false);
             storeSelected();
          }

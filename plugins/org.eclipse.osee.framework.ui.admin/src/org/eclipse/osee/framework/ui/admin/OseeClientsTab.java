@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.admin;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -226,8 +225,7 @@ public class OseeClientsTab {
    }
 
    private void selectAll(boolean isSelectAll) {
-      peopleCheckboxTreeViewer.setSubtreeChecked(peopleCheckboxTreeViewer.getTree().getItems(), isSelectAll);
-      //      peopleCheckboxTreeViewer.setAllChecked(isSelectAll);
+      peopleCheckboxTreeViewer.setAllChecked(isSelectAll);
    }
 
    private static class TreeContentProvider implements ITreeContentProvider {

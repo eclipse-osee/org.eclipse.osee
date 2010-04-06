@@ -14,7 +14,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
@@ -153,8 +152,7 @@ public class GenerateTypeEnumAction implements IActionDelegate {
 
             public void checkStateChanged(CheckStateChangedEvent event) {
                boolean wasChecked = event.getChecked();
-               //               getTreeViewer().setAllChecked(false);
-               getTreeViewer().setSubtreeChecked(getTreeViewer().getTree().getItems(), false);
+               getTreeViewer().setAllChecked(false);
                event.getCheckable().setChecked(event.getElement(), wasChecked);
             }
 

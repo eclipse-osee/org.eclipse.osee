@@ -80,7 +80,6 @@ public class SkyWalkerRelTypeTabItem {
 
          public void widgetSelected(SelectionEvent e) {
             treeViewer.setAllChecked(true);
-            //            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), true);
             storeSelected();
          }
       });
@@ -93,7 +92,6 @@ public class SkyWalkerRelTypeTabItem {
 
          public void widgetSelected(SelectionEvent e) {
             treeViewer.setAllChecked(false);
-            //            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), false);
             storeSelected();
          }
       });
