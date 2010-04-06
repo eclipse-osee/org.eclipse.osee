@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -271,12 +270,7 @@ public class FrameworkTransactionData {
                } else {
                   unloadedAddedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
                   if (branchId == -1) {
-                     try {
-                        branchId =
-                              BranchManager.getBranch(xArtifactModifiedEvent.unloadedArtifact.getBranchGuid()).getId();
-                     } catch (OseeCoreException ex) {
-                        OseeLog.log(Activator.class, OseeLevel.SEVERE, "Invalid branch id", ex);
-                     }
+                     branchId = xArtifactModifiedEvent.unloadedArtifact.getId();
                   }
                }
             }
@@ -289,12 +283,7 @@ public class FrameworkTransactionData {
                } else {
                   unloadedDeletedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
                   if (branchId == -1) {
-                     try {
-                        branchId =
-                              BranchManager.getBranch(xArtifactModifiedEvent.unloadedArtifact.getBranchGuid()).getId();
-                     } catch (OseeCoreException ex) {
-                        OseeLog.log(Activator.class, OseeLevel.SEVERE, "Invalid branch id", ex);
-                     }
+                     branchId = xArtifactModifiedEvent.unloadedArtifact.getId();
                   }
                }
             }
@@ -307,12 +296,7 @@ public class FrameworkTransactionData {
                } else {
                   unloadedChangedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
                   if (branchId == -1) {
-                     try {
-                        branchId =
-                              BranchManager.getBranch(xArtifactModifiedEvent.unloadedArtifact.getBranchGuid()).getId();
-                     } catch (OseeCoreException ex) {
-                        OseeLog.log(Activator.class, OseeLevel.SEVERE, "Invalid branch id", ex);
-                     }
+                     branchId = xArtifactModifiedEvent.unloadedArtifact.getId();
                   }
                }
             }

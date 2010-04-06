@@ -20,9 +20,8 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event.artifact.DefaultEventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -76,7 +75,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events, Set<IEventBasicGuidArtifact> artifactChanges) throws OseeCoreException {
+   protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events, Set<EventBasicGuidArtifact> artifactChanges) throws OseeCoreException {
       ArtifactModType artifactModType;
       EventModType eventModType;
       switch (getModificationType()) {
@@ -95,6 +94,6 @@ public class ArtifactTransactionData extends BaseTransactionData {
       }
       events.add(new ArtifactModifiedEvent(new Sender(this.getClass().getName()), artifactModType, artifact,
             artifact.getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
-      artifactChanges.add(new DefaultEventBasicGuidArtifact(eventModType, artifact));
+      artifactChanges.add(new EventBasicGuidArtifact(eventModType, artifact));
    }
 }

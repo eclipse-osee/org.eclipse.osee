@@ -18,8 +18,14 @@ import java.util.Collection;
 public class NetworkArtifactPurgeEvent extends SkynetArtifactsEventBase {
    private static final long serialVersionUID = -4325821466558180270L;
 
-   public NetworkArtifactPurgeEvent(int branchId, Collection<Integer> artifactIds, Collection<String> artifactGuids, Collection<Integer> artifactTypeIds, NetworkSender networkSender) {
-      super(branchId, artifactIds, artifactGuids, artifactTypeIds, networkSender);
+   /**
+    * @param branchId
+    * @param artifactIds
+    * @param toArtifactTypeId
+    * @param author
+    */
+   public NetworkArtifactPurgeEvent(int branchId, Collection<Integer> artifactIds, Collection<Integer> artifactTypeIds, NetworkSender networkSender) {
+      super(branchId, artifactIds, artifactTypeIds, networkSender);
    }
 
    /**

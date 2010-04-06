@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.res.test;
 
-import org.eclipse.osee.framework.messaging.event.res.test.cases.DefaultEventBasicGuidArtifactTest;
-import org.eclipse.osee.framework.messaging.event.res.test.cases.DefaultEventChangeTypeBasicGuidArtifactTest;
 import org.eclipse.osee.framework.messaging.event.res.test.cases.NetworkBranchEventTest;
 import org.eclipse.osee.framework.messaging.event.res.test.cases.NetworkBranchRenameEventTest;
 import org.eclipse.osee.framework.messaging.event.res.test.cases.NetworkBroadcastEventTest;
@@ -22,8 +20,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {NetworkBranchEventTest.class, NetworkBranchRenameEventTest.class,
-      NetworkBroadcastEventTest.class, NetworkTransactionDeletedEventTest.class, NetworkSenderTest.class,
-      DefaultEventBasicGuidArtifactTest.class, DefaultEventChangeTypeBasicGuidArtifactTest.class})
+      NetworkBroadcastEventTest.class, NetworkTransactionDeletedEventTest.class, NetworkSenderTest.class})
 /**
  * @author Donald G. Dunne
  */

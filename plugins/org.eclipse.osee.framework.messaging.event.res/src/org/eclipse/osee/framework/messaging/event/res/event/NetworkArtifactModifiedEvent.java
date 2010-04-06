@@ -11,45 +11,27 @@
 package org.eclipse.osee.framework.messaging.event.res.event;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 
 /**
- * @author Robert A. Fisher
  * @author Donald G. Dunne
  */
-public class NetworkArtifactModifiedEvent extends SkynetArtifactEventBase {
-   private static final long serialVersionUID = -4325821466558180270L;
-   private final Collection<AttributeChange> attributeValues;
+public class NetworkArtifactModifiedEvent extends FrameworkArtifactEventBase {
+   private final Collection<AttributeChange> attributeChanges;
 
-   public NetworkArtifactModifiedEvent(int branchId, String branchGuid, int transactionId, int artId, String artGuid, int artTypeId, String artTypeGuid, String factoryName, NetworkSender networkSender, Collection<AttributeChange> attributeValues) {
-      super(branchId, branchGuid, transactionId, artId, artGuid, artTypeId, artTypeGuid, factoryName, networkSender);
+   public static String GUID = "Aylfa1oLKh60Jl40MkQA";
 
-      this.attributeValues = attributeValues;
+   public NetworkArtifactModifiedEvent(String branchGuid, String artTypeGuid, String artGuid, Collection<AttributeChange> attributeChanges, NetworkSender networkSender) {
+      super(GUID, new DefaultBasicGuidArtifact(branchGuid, artTypeGuid, artGuid), networkSender);
+      this.attributeChanges = attributeChanges;
    }
 
-   public NetworkArtifactModifiedEvent(SkynetArtifactEventBase base, Collection<AttributeChange> attributeValues) {
+   public NetworkArtifactModifiedEvent(NetworkArtifactModifiedEvent base) {
       super(base);
-
-      this.attributeValues = attributeValues;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof NetworkArtifactModifiedEvent) {
-         return getArtId() == ((NetworkArtifactModifiedEvent) obj).getArtId();
-      }
-      return super.equals(obj);
-   }
-
-   @Override
-   public int hashCode() {
-      return getArtId();
-   }
-
-   public static long getSerialVersionUID() {
-      return serialVersionUID;
+      this.attributeChanges = base.getAttributeChanges();
    }
 
    public Collection<AttributeChange> getAttributeChanges() {
-      return attributeValues;
+      return attributeChanges;
    }
 }

@@ -12,15 +12,12 @@ package org.eclipse.osee.framework.messaging.event.res.test;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.messaging.event.res.test.cases.ArtifactEventManagerLoopbackTest;
-import org.eclipse.osee.framework.messaging.event.res.test.cases.ArtifactEventManagerTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {FrameworkRes_Fast_Suite.class, ArtifactEventManagerTest.class,
-      ArtifactEventManagerLoopbackTest.class,})
+@Suite.SuiteClasses( {FrameworkRes_Fast_Suite.class,})
 /**
  * @author Donald G. Dunne
  */

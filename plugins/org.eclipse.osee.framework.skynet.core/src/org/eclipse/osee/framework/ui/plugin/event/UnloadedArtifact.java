@@ -10,38 +10,70 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.plugin.event;
 
-import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class UnloadedArtifact extends DefaultBasicGuidArtifact {
-
-   private int artifactTypeId;
+public class UnloadedArtifact {
    private int artifactId;
+   private int branchId;
+   private int artifactTypeId;
 
-   public UnloadedArtifact(String branchGuid, int artifactTypeId, String artTypeGuid, int artifactId, String artifactGuid) {
-      this(branchGuid, artTypeGuid, artifactGuid);
-      this.artifactTypeId = artifactTypeId;
+   public UnloadedArtifact(int branchId, int artifactId, int artifactTypeId) {
+      this.branchId = branchId;
       this.artifactId = artifactId;
+      this.artifactTypeId = artifactTypeId;
    }
 
-   public UnloadedArtifact(String branchGuid, String artTypeGuid, String guid) {
-      super(branchGuid, artTypeGuid, guid);
-   }
-
+   /**
+    * @return the artifactId
+    */
    public int getArtifactId() {
       return artifactId;
    }
 
+   public String getArtTypeGuid() throws OseeCoreException {
+      return ArtifactTypeManager.getType(artifactTypeId).getGuid();
+   }
+
+   public String getBranchGuid() throws OseeCoreException {
+      return BranchManager.getBranch(branchId).getGuid();
+   }
+
+   /**
+    * @param artifactId the artifactId to set
+    */
    public void setArtifactId(int artifactId) {
       this.artifactId = artifactId;
    }
 
+   /**
+    * @return the branchId
+    */
+   public int getId() {
+      return branchId;
+   }
+
+   /**
+    * @param branchId the branchId to set
+    */
+   public void setBranchId(int branchId) {
+      this.branchId = branchId;
+   }
+
+   /**
+    * @return the artifactTypeId
+    */
    public int getArtifactTypeId() {
       return artifactTypeId;
    }
 
+   /**
+    * @param artifactTypeId the artifactTypeId to set
+    */
    public void setArtifactTypeId(int artifactTypeId) {
       this.artifactTypeId = artifactTypeId;
    }

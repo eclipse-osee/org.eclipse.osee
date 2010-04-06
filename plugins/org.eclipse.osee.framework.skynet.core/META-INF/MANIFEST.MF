@@ -62,6 +62,8 @@ Import-Package: org.apache.commons.lang;version="2.4.0",
  org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.messaging.event.res,
+ org.eclipse.osee.framework.messaging.event.res.event,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.plugin.core.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

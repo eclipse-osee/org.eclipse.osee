@@ -81,6 +81,12 @@ public class Sender {
             oseeSession.getUserId(), oseeSession.getMachineIp(), oseeSession.getPort(), oseeSession.getVersion());
    }
 
+   public org.eclipse.osee.framework.messaging.event.res.event.NetworkSender getNetworkSenderRes() {
+      return new org.eclipse.osee.framework.messaging.event.res.event.NetworkSender(sourceObject, oseeSession.getId(),
+            oseeSession.getMachineName(), oseeSession.getUserId(), oseeSession.getMachineIp(),
+            String.valueOf(oseeSession.getPort()), oseeSession.getVersion());
+   }
+
    @Override
    public String toString() {
       String remote = "Source Unknown";

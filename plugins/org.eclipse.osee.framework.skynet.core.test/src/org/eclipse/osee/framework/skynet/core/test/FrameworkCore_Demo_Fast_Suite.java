@@ -23,6 +23,8 @@ import org.eclipse.osee.framework.skynet.core.test.cases.RelationOrderingTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.SevereLogMonitorTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.StaticIdManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.TransactionManagerTest;
+import org.eclipse.osee.framework.skynet.core.test.event.DefaultEventBasicGuidArtifactTest;
+import org.eclipse.osee.framework.skynet.core.test.event.DefaultEventChangeTypeBasicGuidArtifactTest;
 import org.eclipse.osee.framework.skynet.core.test.relation.RelationTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.types.OseeCacheTestSuite;
 import org.junit.BeforeClass;
@@ -30,10 +32,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {ArtifactQueryTestDemo.class, TransactionManagerTest.class, BranchTestSuite.class,
-      RelationTestSuite.class, OseeCacheTestSuite.class, ArtifactTypeInheritanceTest.class,
-      Artifact_setAttributeValues.class, CsvArtifactTest.class, SevereLogMonitorTest.class, RelationDeletionTest.class,
-      StaticIdManagerTest.class, DuplicateHridTest.class, RelationOrderingTest.class})
+@Suite.SuiteClasses( {DefaultEventBasicGuidArtifactTest.class, DefaultEventChangeTypeBasicGuidArtifactTest.class,
+      ArtifactQueryTestDemo.class, TransactionManagerTest.class, BranchTestSuite.class, RelationTestSuite.class,
+      OseeCacheTestSuite.class, ArtifactTypeInheritanceTest.class, Artifact_setAttributeValues.class,
+      CsvArtifactTest.class, SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class,
+      DuplicateHridTest.class, RelationOrderingTest.class})
 /**
  * @author Donald G. Dunne
  */

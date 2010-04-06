@@ -12,19 +12,12 @@ package org.eclipse.osee.framework.messaging.event.skynet;
 
 /**
  * @author Robert A. Fisher
- * @author Donald G. Dunne
  */
 public interface ISkynetArtifactEvent extends ISkynetEvent {
 
    public String getFactoryName();
 
-   public String getBranchGuid();
-
-   public String getArtGuid();
-
    public int getArtId();
-
-   public String getArtTypeGuid();
 
    public int getArtTypeId();
 }

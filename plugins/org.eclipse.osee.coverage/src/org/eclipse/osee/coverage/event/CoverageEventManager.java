@@ -16,9 +16,9 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.artifact.IArtifactListener;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.FilteredEventListener;
 
@@ -64,10 +64,10 @@ public class CoverageEventManager implements IArtifactListener {
    }
 
    @Override
-   public void handleArtifactModified(Collection<IEventBasicGuidArtifact> eventArtifacts, Sender sender) {
+   public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Sender sender) {
       for (CoverageEditor editor : editors) {
          try {
-            for (IEventBasicGuidArtifact eventArt : eventArtifacts) {
+            for (EventBasicGuidArtifact eventArt : eventArtifacts) {
                if (editor.getCoverageEditorInput().getCoveragePackageArtifact() == null) return;
                if (editor.getCoverageEditorInput().getCoveragePackageArtifact().getBranch().getGuid() != eventArt.getBranchGuid()) return;
                if (eventArt.getModType() == EventModType.Deleted || eventArt.getModType() == EventModType.ChangeType || eventArt.getModType() == EventModType.Purged) {

@@ -29,9 +29,8 @@ import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.artifact.DefaultEventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -152,9 +151,9 @@ public class PurgeArtifacts extends DbTransaction {
          ConnectionHandler.runPreparedUpdate(connection, "DELETE FROM osee_join_transaction where query_id = ?",
                transactionJoinId);
 
-         Set<IEventBasicGuidArtifact> artifactChanges = new HashSet<IEventBasicGuidArtifact>();
+         Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
          for (Artifact artifact : artifactsToPurge) {
-            artifactChanges.add(new DefaultEventBasicGuidArtifact(EventModType.Purged, artifact));
+            artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged, artifact));
             ArtifactCache.deCache(artifact);
             artifact.internalSetDeleted();
             for (RelationLink rel : artifact.getRelationsAll(false)) {

@@ -10,26 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.res.event;
 
-import java.util.Collection;
+import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 
 /**
  * @author Donald G. Dunne
  */
-public class NetworkAccessControlArtifactsEvent extends SkynetArtifactsEventBase {
-   private static final long serialVersionUID = -4325821466558180270L;
+public class NetworkAccessControlArtifactsEvent extends FrameworkArtifactEventBase {
    private final String accessControlModType;
 
-   public String getAccessControlModTypeName() {
-      return accessControlModType;
-   }
+   public static String GUID = "Aylfa1pAo0QntOBC7TgA";
 
-   public NetworkAccessControlArtifactsEvent(String accessControlModType, int branchId, Collection<Integer> artifactIds, Collection<String> artifactGuids, Collection<Integer> artifactTypeIds, NetworkSender networkSender) {
-      super(branchId, artifactIds, artifactGuids, artifactTypeIds, networkSender);
+   public NetworkAccessControlArtifactsEvent(String accessControlModType, String branchGuid, String artGuid, String artTypeGuid, NetworkSender networkSender) {
+      super(GUID, new DefaultBasicGuidArtifact(branchGuid, artTypeGuid, artGuid), networkSender);
       this.accessControlModType = accessControlModType;
    }
 
-   public static long getSerialVersionUID() {
-      return serialVersionUID;
+   public NetworkAccessControlArtifactsEvent(NetworkAccessControlArtifactsEvent base) {
+      super(base);
+      this.accessControlModType = base.getAccessControlModTypeName();
+   }
+
+   public String getAccessControlModTypeName() {
+      return accessControlModType;
    }
 
 }

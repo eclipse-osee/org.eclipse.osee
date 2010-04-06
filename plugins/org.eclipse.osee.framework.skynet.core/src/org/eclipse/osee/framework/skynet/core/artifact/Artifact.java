@@ -71,6 +71,7 @@ import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.event.res.event.AttributeChange;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -139,7 +140,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * A historical artifact always corresponds to a fixed revision of an artifact
-    *
+    * 
     * @return whether this artifact represents a fixed revision
     */
    public boolean isHistorical() {
@@ -166,7 +167,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * All the artifacts related to this artifact by relations of type relationTypeName are returned in a list order
     * based on the stored relation order
-    *
+    * 
     * @param relationTypeName
     * @return the artifacts related to this artifact by relations of type relationTypeName
     * @throws ArtifactDoesNotExist
@@ -219,7 +220,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * Check if artifacts are related to each other by relation type
-    *
+    * 
     * @param relationEnum
     * @param other artifact to check
     * @return whether they are related
@@ -233,7 +234,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * Get the exactly one artifact related to this artifact by relations of type relationType are returned in a list
     * order based on
-    *
+    * 
     * @param relationType
     * @return the related artifact
     * @throws ArtifactDoesNotExist
@@ -324,7 +325,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * Determines if this artifact type equals, or is a sub-type of, the artifact type specified by the
     * <code>otherType</code> parameter.
-    *
+    * 
     * @param artifactTypeName
     * @return whether this artifact's type or any of its super-types (any ancestor type) are the specified type
     * @throws OseeDataStoreException
@@ -337,7 +338,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * Determines if this artifact type equals, or is a sub-type of, the artifact type specified by the
     * <code>otherType</code> parameter.
-    *
+    * 
     * @param oseeType
     * @return
     * @throws OseeCoreException
@@ -465,7 +466,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * Creates an instance of <code>Attribute</code> of the given attribute type. This method should not be called by
     * applications. Use addAttribute() instead
-    *
+    * 
     * @param <T>
     * @param attributeType
     * @return new Attribute
@@ -510,7 +511,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * The use of this method is discouraged since it directly returns Attributes.
-    *
+    * 
     * @param <T>
     * @param attributeTypeName
     * @param value
@@ -528,7 +529,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * The use of this method is discouraged since it directly returns Attributes.
-    *
+    * 
     * @return attributes All attributes including deleted and artifact deleted
     * @throws OseeCoreException
     */
@@ -538,7 +539,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * The use of this method is discouraged since it directly returns Attributes.
-    *
+    * 
     * @return attributes All attributes of the specified type name including deleted and artifact deleted
     * @throws OseeCoreException
     */
@@ -548,7 +549,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * The use of this method is discouraged since it directly returns Attributes.
-    *
+    * 
     * @return attributes
     * @throws OseeCoreException
     */
@@ -568,7 +569,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * The use of this method is discouraged since it directly returns Attributes.
-    *
+    * 
     * @param <T>
     * @param attributeTypeName
     * @throws OseeCoreException
@@ -614,7 +615,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * Deletes all attributes of the given type, if any
-    *
+    * 
     * @param attributeTypeName
     * @throws OseeCoreException
     */
@@ -626,7 +627,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * Deletes all attributes of the given type, if any
-    *
+    * 
     * @param attributeTypeName
     * @throws OseeCoreException
     */
@@ -697,7 +698,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     * invalid.<br>
     * <br>
     * Used for quick access to attribute value that should only have 0 or 1 instances of the attribute.
-    *
+    * 
     * @param <T>
     * @param attributeTypeName
     * @return sole attribute value
@@ -733,7 +734,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     * defaultReturnValue.<br>
     * <br>
     * Used for display purposes where toString() of attribute is to be displayed.
-    *
+    * 
     * @param attributeTypeName
     * @param defaultReturnValue return value if attribute instance does not exist
     * @return attribute value
@@ -768,7 +769,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     * defaultReturnValue.<br>
     * <br>
     * Used for purposes where attribute value of specified type is desired.
-    *
+    * 
     * @param <T>
     * @param attributeTypeName
     * @param defaultReturnValue
@@ -806,7 +807,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     * NOTE: Use only for inline calls. This method returns identical data as
     * getSoleTAttributeValue(attributeTypeName,defaultReturnValue) but provides an extra parameter that allows it to be
     * called within another method call because it specifically defines the return type as clazz
-    *
+    * 
     * @param <T>
     * @param attributeTypeName
     * @param defaultReturnValue
@@ -822,7 +823,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * Delete attribute if exactly one exists. Does nothing if attribute does not exist and throw MultipleAttributesExist
     * is more than one instance of the attribute type exsits for this artifact
-    *
+    * 
     * @param attributeTypeName
     * @throws OseeCoreException
     */
@@ -844,7 +845,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * Used on attribute types with no more than one instance. If the attribute exists, it's value is changed, otherwise
     * a new attribute is added and its value set.
-    *
+    * 
     * @param <T>
     * @param attributeTypeName
     * @param value
@@ -897,7 +898,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     * All existing attributes matching a new value will be left untouched. Then for any remaining values, other existing
     * attributes will be changed to match or if need be new attributes will be added to stored these values. Finally any
     * excess attributes will be deleted.
-    *
+    * 
     * @param attributeType
     * @param newValues
     * @throws OseeCoreException
@@ -910,7 +911,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     * All existing attributes matching a new value will be left untouched. Then for any remaining values, other existing
     * attributes will be changed to match or if need be new attributes will be added to stored these values. Finally any
     * excess attributes will be deleted.
-    *
+    * 
     * @param attributeTypeName
     * @param newValues
     * @throws OseeCoreException
@@ -955,7 +956,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * adds a new attribute of the type named attributeTypeName and assigns it the given value
-    *
+    * 
     * @param <T>
     * @param attributeTypeName
     * @param value
@@ -967,7 +968,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * adds a new attribute of the type named attributeTypeName and assigns it the given value
-    *
+    * 
     * @param <T>
     * @param attributeType
     * @param value
@@ -980,7 +981,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * adds a new attribute of the type named attributeTypeName. The attribute is set to the default value for its type,
     * if any.
-    *
+    * 
     * @param attributeType
     * @throws OseeCoreException
     */
@@ -991,7 +992,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * adds a new attribute of the type named attributeTypeName. The attribute is set to the default value for its type,
     * if any.
-    *
+    * 
     * @param attributeType
     * @throws OseeCoreException
     */
@@ -1001,7 +1002,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * adds a new attribute of the type named attributeTypeName and assigns it the given value
-    *
+    * 
     * @param attributeTypeName
     * @param value
     * @throws OseeCoreException
@@ -1014,7 +1015,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * we do not what duplicated enumerated values so this method silently returns if the specified attribute type is
     * enumerated and value is already present
-    *
+    * 
     * @param <T>
     * @param attributeTypeName
     * @param value
@@ -1083,7 +1084,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * This is used to mark that the artifact deleted.
-    *
+    * 
     * @throws OseeCoreException
     */
    public void internalSetDeleted() throws OseeCoreException {
@@ -1164,7 +1165,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * Reloads this artifact's attributes and relations back to the last state saved. This will have no effect if the
     * artifact has never been saved.
-    *
+    * 
     * @throws OseeCoreException
     */
    public void reloadAttributesAndRelations() throws OseeCoreException {
@@ -1221,7 +1222,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * Returns all of the descendants through the primary decomposition tree that have a particular human readable id.
     * This will not return the called upon node if the name matches since it can not be a descendant of itself.
-    *
+    * 
     * @param humanReadableId The human readable id text to match against.
     * @param caseSensitive Whether to use case sensitive matching.
     * @return <code>Collection</code> of <code>Artifact</code>'s that match.
@@ -1245,7 +1246,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     * Starting from this artifact, walks down the child hierarchy based on the list of child names provided and returns
     * the child of the last name provided. ArtifactDoesNotExist exception is thrown ff any child along the path does not
     * exist.
-    *
+    * 
     * @param names
     * @return child at the leaf (bottom) of the specified hierarchy.
     * @throws OseeCoreException
@@ -1287,7 +1288,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * Remove artifact from a specific branch in the database
-    *
+    * 
     * @throws OseeCoreException
     */
    public void purgeFromBranch() throws OseeCoreException {
@@ -1372,7 +1373,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * Creates new relations that don't already exist and removes relations to artifacts that are not in collection
-    *
+    * 
     * @param relationSide
     * @param artifacts
     * @throws OseeCoreException
@@ -1461,7 +1462,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * Return true if this artifact any of it's links specified or any of the artifacts on the other side of the links
     * are dirty
-    *
+    * 
     * @param links
     */
    public String isRelationsAndArtifactsDirty(Set<IRelationEnumeration> links) {
@@ -1498,7 +1499,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * Creates a new artifact and duplicates all of its attribute data.
-    *
+    * 
     * @throws OseeCoreException
     */
    public Artifact duplicate(Branch branch) throws OseeCoreException {
@@ -1525,7 +1526,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * An artifact reflected about its own branch returns itself. Otherwise a new artifact is introduced on the
     * destinationBranch
-    *
+    * 
     * @param destinationBranch
     * @return the newly created artifact or this artifact if the destinationBranch is this artifact's branch
     * @throws OseeCoreException
@@ -1612,9 +1613,22 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       return dirtyAttributes;
    }
 
+   public Collection<AttributeChange> getDirtyFrameworkAttributeChanges() throws OseeDataStoreException {
+      List<AttributeChange> dirtyAttributes = new LinkedList<AttributeChange>();
+
+      for (Attribute<?> attribute : internalGetAttributes()) {
+         if (attribute.isDirty()) {
+            dirtyAttributes.add(new AttributeChange(attribute.getAttributeType().getGuid(),
+                  attribute.getAttributeDataProvider().getData(), attribute.getModificationType(), attribute.getId(),
+                  attribute.getGammaId()));
+         }
+      }
+      return dirtyAttributes;
+   }
+
    /**
     * Changes the artifact type.
-    *
+    * 
     * @param artifactType
     * @throws OseeDataStoreException
     */
@@ -1641,7 +1655,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * Since artifact names are free text it is important to reformat the name to ensure it is suitable as an element
     * name
-    *
+    * 
     * @return artifact name in a form that is valid as an XML element
     */
    public String getSafeName() {
@@ -1793,7 +1807,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * Return relations that exist between artifacts
-    *
+    * 
     * @throws ArtifactDoesNotExist
     */
    @Deprecated
@@ -1817,7 +1831,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    /**
     * Return relations that exist between artifacts of type side
-    *
+    * 
     * @throws OseeCoreException
     */
    @Deprecated

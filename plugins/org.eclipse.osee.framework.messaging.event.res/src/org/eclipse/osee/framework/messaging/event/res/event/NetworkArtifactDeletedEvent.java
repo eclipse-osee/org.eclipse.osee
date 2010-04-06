@@ -10,18 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.res.event;
 
+import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
+
 /**
- * @author Robert A. Fisher
  * @author Donald G. Dunne
  */
-public class NetworkArtifactDeletedEvent extends SkynetArtifactEventBase {
-   private static final long serialVersionUID = 568951803773151575L;
+public class NetworkArtifactDeletedEvent extends FrameworkArtifactEventBase {
 
-   public NetworkArtifactDeletedEvent(int branchId, String branchGuid, int transactionId, int artId, String artGuid, int artTypeId, String artTypeGuid, String factoryName, NetworkSender networkSender) {
-      super(branchId, branchGuid, transactionId, artId, artGuid, artTypeId, artTypeGuid, factoryName, networkSender);
+   public static String GUID = "Aylfa1mOw39qD3vQTsQA";
+
+   public NetworkArtifactDeletedEvent(String branchGuid, String artTypeGuid, String artGuid, NetworkSender networkSender) {
+      super(GUID, new DefaultBasicGuidArtifact(branchGuid, artTypeGuid, artGuid), networkSender);
    }
 
-   public NetworkArtifactDeletedEvent(SkynetArtifactEventBase base) {
+   public NetworkArtifactDeletedEvent(NetworkArtifactDeletedEvent base) {
       super(base);
    }
 }

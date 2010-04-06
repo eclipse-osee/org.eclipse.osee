@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -81,7 +81,7 @@ public class RelationTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events, Set<IEventBasicGuidArtifact> artifactChanges) throws OseeCoreException {
+   protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events, Set<EventBasicGuidArtifact> artifactChanges) throws OseeCoreException {
       RelationEventType relationEventType =
             getModificationType().isDeleted() ? RelationEventType.Deleted : RelationEventType.Added;
       events.add(new RelationModifiedEvent(new Sender(this.getClass().getName()), relationEventType, relation,

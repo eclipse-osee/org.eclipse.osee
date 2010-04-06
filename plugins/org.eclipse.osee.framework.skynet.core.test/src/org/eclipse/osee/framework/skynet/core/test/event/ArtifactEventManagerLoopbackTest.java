@@ -3,9 +3,9 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.messaging.event.res.test.cases;
+package org.eclipse.osee.framework.skynet.core.test.event;
 
-import org.eclipse.osee.framework.skynet.core.event.InternalEventManager;
+import org.eclipse.osee.framework.skynet.core.event.InternalEventManager2;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -19,12 +19,12 @@ public class ArtifactEventManagerLoopbackTest extends ArtifactEventManagerTest {
 
    @BeforeClass
    public static void setUp() {
-      InternalEventManager.setEnableRemoteEventLoopback(true);
+      InternalEventManager2.setEnableRemoteEventLoopback(true);
    }
 
    @AfterClass
    public static void tearDown() {
-      InternalEventManager.setEnableRemoteEventLoopback(false);
+      InternalEventManager2.setEnableRemoteEventLoopback(false);
    }
 
    @Override

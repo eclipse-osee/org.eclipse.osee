@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.messaging.event.skynet.ISkynetArtifactEvent;
 
 /**
  * @author Robert A. Fisher
- * @author Donald G. Dunne
  */
 public class SkynetArtifactEventBase extends SkynetEventBase implements ISkynetArtifactEvent {
    private static final long serialVersionUID = 7923550763258313718L;
@@ -24,35 +23,30 @@ public class SkynetArtifactEventBase extends SkynetEventBase implements ISkynetA
    private final String factoryName;
    private final int transactionId;
    private final int branchId;
-   private final String branchGuid;
-   private final String artGuid;
-   private final String artTypeGuid;
 
-   public SkynetArtifactEventBase(int branchId, String branchGuid, int transactionId, int artId, String artGuid, int artTypeId, String artTypeGuid, String factoryName, NetworkSender networkSender) {
+   public SkynetArtifactEventBase(int branchId, int transactionId, int artId, int artTypeId, String factoryName, NetworkSender networkSender) {
       super(networkSender);
       this.branchId = branchId;
-      this.branchGuid = branchGuid;
+
       this.artId = artId;
-      this.artGuid = artGuid;
       this.artTypeId = artTypeId;
-      this.artTypeGuid = artTypeGuid;
       this.factoryName = factoryName;
       this.transactionId = transactionId;
    }
 
    public SkynetArtifactEventBase(SkynetArtifactEventBase base) {
       super(base.getNetworkSender());
+
       this.branchId = base.branchId;
-      this.branchGuid = base.branchGuid;
+
       this.artId = base.artId;
-      this.artGuid = base.artGuid;
       this.artTypeId = base.artTypeId;
-      this.artTypeGuid = base.artTypeGuid;
       this.factoryName = base.factoryName;
       this.transactionId = base.transactionId;
+
    }
 
-   public int getBranchId() {
+   public int getId() {
       return branchId;
    }
 
@@ -71,20 +65,4 @@ public class SkynetArtifactEventBase extends SkynetEventBase implements ISkynetA
    public String getFactoryName() {
       return factoryName;
    }
-
-   @Override
-   public String getArtGuid() {
-      return artGuid;
-   }
-
-   @Override
-   public String getArtTypeGuid() {
-      return artTypeGuid;
-   }
-
-   @Override
-   public String getBranchGuid() {
-      return branchGuid;
-   }
-
 }

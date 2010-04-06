@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.artifact.DefaultEventChangeTypeBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.artifact.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -54,14 +54,14 @@ public class ChangeArtifactType {
       }
 
       List<Artifact> artifactsUserAccepted = new ArrayList<Artifact>();
-      Set<IEventBasicGuidArtifact> artifactChanges = new HashSet<IEventBasicGuidArtifact>();
+      Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
       for (Artifact artifact : artifacts) {
          processAttributes(artifact, artifactType);
          processRelations(artifact, artifactType);
          artifactsUserAccepted.add(artifact);
          if (doesUserAcceptArtifactChange(artifact, artifactType)) {
             changeArtifactTypeThroughHistory(artifact, artifactType);
-            artifactChanges.add(new DefaultEventChangeTypeBasicGuidArtifact(artifact.getBranch().getGuid(),
+            artifactChanges.add(new EventChangeTypeBasicGuidArtifact(artifact.getBranch().getGuid(),
                   artifact.getArtifactType().getGuid(), artifactType.getGuid(), artifact.getGuid()));
          }
       }

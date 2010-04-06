@@ -46,7 +46,7 @@ public class ArtifactEventManager {
       return event instanceof IArtifactListener || (event instanceof FilteredEventListener && ((FilteredEventListener) event).isOfType(IArtifactListener.class));
    }
 
-   public static void processArtifactChanges(Sender sender, Set<IEventBasicGuidArtifact> artifactChanges) {
+   public static void processArtifactChanges(Sender sender, Set<EventBasicGuidArtifact> artifactChanges) {
       for (IEventListener listener : listeners) {
          IArtifactListener artifactListener = null;
          Collection<IEventFilter> eventFilters = null;

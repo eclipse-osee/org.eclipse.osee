@@ -137,4 +137,8 @@ public class NetworkSender {
       return true;
    }
 
+   public void setSessionId(String sessionId) {
+      this.sessionId = sessionId;
+   }
+
 }

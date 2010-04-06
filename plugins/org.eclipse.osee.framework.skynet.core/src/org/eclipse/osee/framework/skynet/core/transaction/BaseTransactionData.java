@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
 
 /**
  * @author Jeff C. Phillips
@@ -120,5 +120,5 @@ public abstract class BaseTransactionData {
    /**
     * Should not be called by application. This should only be called once after the transaction has been committed.
     */
-   protected abstract void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events, Set<IEventBasicGuidArtifact> artifactChanges) throws OseeCoreException;
+   protected abstract void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events, Set<EventBasicGuidArtifact> artifactChanges) throws OseeCoreException;
 }

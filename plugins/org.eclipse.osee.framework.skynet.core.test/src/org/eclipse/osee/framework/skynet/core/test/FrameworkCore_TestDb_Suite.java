@@ -8,19 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.messaging.event.res.event;
+package org.eclipse.osee.framework.skynet.core.test;
 
-import java.util.Collection;
-import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.test.event.ArtifactEventManagerLoopbackTest;
+import org.eclipse.osee.framework.skynet.core.test.event.ArtifactEventManagerTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {ArtifactEventManagerTest.class, ArtifactEventManagerLoopbackTest.class,})
 /**
  * @author Donald G. Dunne
  */
-public class NetworkArtifactPurgeEvent extends FrameworkArtifactEventBase {
-   public static String GUID = "Aylfa1pxv1325eRLuvwA";
-
-   public NetworkArtifactPurgeEvent(Collection<? extends DefaultBasicGuidArtifact> defaultBasicGuidArtifacts, NetworkSender networkSender) {
-      super(GUID, defaultBasicGuidArtifacts, networkSender);
-   }
+public class FrameworkCore_TestDb_Suite {
 
 }

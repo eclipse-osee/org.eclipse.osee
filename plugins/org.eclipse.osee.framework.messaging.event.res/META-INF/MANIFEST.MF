@@ -5,15 +5,14 @@ Bundle-SymbolicName: org.eclipse.osee.framework.messaging.event.res;singleton:=t
 Bundle-Version: 0.9.4.qualifier
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.framework.messaging.event.res.Activator
-Require-Bundle: org.eclipse.core.runtime,
- net.jini,
- org.eclipse.osee.framework.jdk.core,
- org.eclipse.osee.framework.jini,
+Require-Bundle: org.eclipse.osee.framework.jdk.core,
  org.eclipse.osee.framework.plugin.core,
- org.eclipse.ui
+ org.eclipse.osee.framework.core,
+ org.eclipse.core.runtime;bundle-version="3.5.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Description: Skynet Event Service - Skynet Cache Network Manager
 Bundle-Vendor: Eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.osee.framework.core.enums,
- org.eclipse.osee.framework.logging
+Import-Package: org.eclipse.osee.framework.core.enums
+Export-Package: org.eclipse.osee.framework.messaging.event.res,
+ org.eclipse.osee.framework.messaging.event.res.event

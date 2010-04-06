@@ -12,13 +12,13 @@ package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
 
 /**
  * @author Donald G. Dunne
  */
 public abstract class ArtifactTransactionModifiedEvent {
 
-   public abstract Set<? extends IEventBasicGuidArtifact> getArtifactChanges() throws OseeCoreException;
+   public abstract Set<? extends EventBasicGuidArtifact> getArtifactChanges() throws OseeCoreException;
 
 }

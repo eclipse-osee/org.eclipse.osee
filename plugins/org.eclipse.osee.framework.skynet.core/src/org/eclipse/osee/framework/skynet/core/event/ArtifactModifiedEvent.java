@@ -17,10 +17,11 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
-import org.eclipse.osee.framework.skynet.core.event.artifact.DefaultEventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 
 /**
@@ -63,7 +64,7 @@ public class ArtifactModifiedEvent extends ArtifactTransactionModifiedEvent {
    }
 
    @Override
-   public Set<? extends IEventBasicGuidArtifact> getArtifactChanges() throws OseeCoreException {
+   public Set<? extends EventBasicGuidArtifact> getArtifactChanges() throws OseeCoreException {
       EventModType eventModType = null;
       if (artifactModType == ArtifactModType.Added) {
          eventModType = EventModType.Added;
@@ -75,12 +76,18 @@ public class ArtifactModifiedEvent extends ArtifactTransactionModifiedEvent {
          eventModType = EventModType.Modified;
       }
       if (artifact != null) {
-         return Collections.singleton(new DefaultEventBasicGuidArtifact(eventModType, artifact));
+         return Collections.singleton(new EventBasicGuidArtifact(eventModType, artifact));
       } else if (unloadedArtifact != null) {
-         return Collections.singleton(new DefaultEventBasicGuidArtifact(eventModType, unloadedArtifact.getBranchGuid(),
-               unloadedArtifact.getArtTypeGuid(), unloadedArtifact.getGuid()));
+         Artifact artifact =
+               ArtifactCache.getActive(unloadedArtifact.getArtifactId(),
+                     BranchManager.getBranchByGuid(unloadedArtifact.getBranchGuid()));
+         if (artifact != null) {
+            return Collections.singleton(new EventBasicGuidArtifact(eventModType, unloadedArtifact.getBranchGuid(),
+                  unloadedArtifact.getArtTypeGuid(), artifact.getGuid()));
+         }
       } else {
          throw new OseeStateException("unhandled artifact change state");
       }
+      return Collections.emptySet();
    }
 }

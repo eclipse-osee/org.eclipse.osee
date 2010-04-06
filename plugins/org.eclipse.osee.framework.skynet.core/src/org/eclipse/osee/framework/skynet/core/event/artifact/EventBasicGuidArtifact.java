@@ -17,34 +17,38 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public class DefaultEventBasicGuidArtifact extends DefaultBasicGuidArtifact implements IEventBasicGuidArtifact {
+public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
 
    private final EventModType eventModType;
 
-   public DefaultEventBasicGuidArtifact(EventModType eventModType, String branchGuid, String artTypeGuid, String guid) {
+   public EventBasicGuidArtifact(EventModType eventModType, DefaultBasicGuidArtifact guidArt) {
+      super(guidArt.getBranchGuid(), guidArt.getArtTypeGuid(), guidArt.getGuid());
+      this.eventModType = eventModType;
+   }
+
+   public EventBasicGuidArtifact(EventModType eventModType, String branchGuid, String artTypeGuid, String guid) {
       super(branchGuid, artTypeGuid, guid);
       this.eventModType = eventModType;
    }
 
-   @Override
-   public EventModType getModType() {
-      return eventModType;
-   }
-
-   public DefaultEventBasicGuidArtifact(EventModType eventModType, Artifact artifact) throws OseeCoreException {
+   public EventBasicGuidArtifact(EventModType eventModType, Artifact artifact) throws OseeCoreException {
       this(eventModType, artifact.getBranch().getGuid(), artifact.getArtifactType().getGuid(), artifact.getGuid());
    }
 
-   public DefaultEventBasicGuidArtifact(EventModType eventModType, IBasicGuidArtifact basicGuidArtifact) throws OseeCoreException {
+   public EventBasicGuidArtifact(EventModType eventModType, IBasicGuidArtifact basicGuidArtifact) throws OseeCoreException {
       this(eventModType, basicGuidArtifact.getBranchGuid(), basicGuidArtifact.getArtTypeGuid(),
             basicGuidArtifact.getGuid());
    }
 
-   public static Set<IEventBasicGuidArtifact> get(EventModType eventModType, Collection<IBasicGuidArtifact> basicGuidArtifacts) throws OseeCoreException {
+   public EventModType getModType() {
+      return eventModType;
+   }
+
+   public static Set<EventBasicGuidArtifact> get(EventModType eventModType, Collection<IBasicGuidArtifact> basicGuidArtifacts) throws OseeCoreException {
       if (eventModType == EventModType.ChangeType) throw new OseeArgumentException("Can't be used for ChangeType");
-      Set<IEventBasicGuidArtifact> eventArts = new HashSet<IEventBasicGuidArtifact>();
+      Set<EventBasicGuidArtifact> eventArts = new HashSet<EventBasicGuidArtifact>();
       for (IBasicGuidArtifact guidArt : basicGuidArtifacts) {
-         eventArts.add(new DefaultEventBasicGuidArtifact(eventModType, guidArt));
+         eventArts.add(new EventBasicGuidArtifact(eventModType, guidArt));
       }
       return eventArts;
    }
@@ -61,7 +65,7 @@ public class DefaultEventBasicGuidArtifact extends DefaultBasicGuidArtifact impl
    public boolean equals(Object obj) {
       if (this == obj) return true;
       if (!super.equals(obj)) return false;
-      DefaultEventBasicGuidArtifact other = (DefaultEventBasicGuidArtifact) obj;
+      EventBasicGuidArtifact other = (EventBasicGuidArtifact) obj;
       if (eventModType == null) {
          if (other.eventModType != null) return false;
       } else if (!eventModType.equals(other.eventModType)) return false;

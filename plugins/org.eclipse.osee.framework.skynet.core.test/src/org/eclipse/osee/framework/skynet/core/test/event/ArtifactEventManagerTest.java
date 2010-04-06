@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.messaging.event.res.test.cases;
+package org.eclipse.osee.framework.skynet.core.test.event;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event.artifact.ArtifactEventManager;
+import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.artifact.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.artifact.IArtifactListener;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IEventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -37,14 +37,14 @@ import org.eclipse.osee.support.test.util.TestUtil;
  */
 public class ArtifactEventManagerTest {
 
-   final Set<IEventBasicGuidArtifact> resultEventArtifacts = new HashSet<IEventBasicGuidArtifact>();
+   final Set<EventBasicGuidArtifact> resultEventArtifacts = new HashSet<EventBasicGuidArtifact>();
    public static Sender resultSender = null;
    public static List<String> ignoreLogging =
          Arrays.asList("OEM: TransactionEvent Loopback enabled", "OEM: kickArtifactReloadEvent Loopback enabled");
 
    public class ArtifactEventListener implements IArtifactListener {
       @Override
-      public void handleArtifactModified(Collection<IEventBasicGuidArtifact> eventArtifacts, Sender sender) {
+      public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Sender sender) {
          resultEventArtifacts.addAll(eventArtifacts);
          resultSender = sender;
       }
@@ -86,7 +86,7 @@ public class ArtifactEventManagerTest {
 
       Assert.assertEquals(2, resultEventArtifacts.size());
       boolean addedFound = false, modifiedFound = false;
-      for (IEventBasicGuidArtifact guidArt : resultEventArtifacts) {
+      for (EventBasicGuidArtifact guidArt : resultEventArtifacts) {
          if (guidArt.getModType() == EventModType.Added) addedFound = true;
          if (guidArt.getModType() == EventModType.Modified) modifiedFound = true;
          Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
@@ -104,7 +104,7 @@ public class ArtifactEventManagerTest {
       Thread.sleep(3000);
 
       Assert.assertEquals(1, resultEventArtifacts.size());
-      IEventBasicGuidArtifact guidArt = resultEventArtifacts.iterator().next();
+      EventBasicGuidArtifact guidArt = resultEventArtifacts.iterator().next();
       Assert.assertEquals(EventModType.Modified, guidArt.getModType());
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
@@ -119,7 +119,7 @@ public class ArtifactEventManagerTest {
       Assert.assertEquals(2, resultEventArtifacts.size());
       boolean deletedFound = false;
       modifiedFound = false;
-      for (IEventBasicGuidArtifact guidArt1 : resultEventArtifacts) {
+      for (EventBasicGuidArtifact guidArt1 : resultEventArtifacts) {
          if (guidArt1.getModType() == EventModType.Deleted) deletedFound = true;
          if (guidArt1.getModType() == EventModType.Modified) modifiedFound = true;
          Assert.assertEquals(newArt.getGuid(), guidArt1.getGuid());
@@ -155,7 +155,7 @@ public class ArtifactEventManagerTest {
       Thread.sleep(3000);
 
       Assert.assertEquals(1, resultEventArtifacts.size());
-      IEventBasicGuidArtifact guidArt = resultEventArtifacts.iterator().next();
+      EventBasicGuidArtifact guidArt = resultEventArtifacts.iterator().next();
       Assert.assertEquals(EventModType.Purged, guidArt.getModType());
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
@@ -196,7 +196,7 @@ public class ArtifactEventManagerTest {
          Assert.assertEquals(0, resultEventArtifacts.size());
       } else {
          Assert.assertEquals(1, resultEventArtifacts.size());
-         IEventBasicGuidArtifact guidArt = resultEventArtifacts.iterator().next();
+         EventBasicGuidArtifact guidArt = resultEventArtifacts.iterator().next();
          Assert.assertEquals(EventModType.Reloaded, guidArt.getModType());
          Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
          Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
@@ -230,8 +230,8 @@ public class ArtifactEventManagerTest {
       Thread.sleep(5000);
 
       Assert.assertEquals(1, resultEventArtifacts.size());
-      IEventChangeTypeBasicGuidArtifact guidArt =
-            (IEventChangeTypeBasicGuidArtifact) resultEventArtifacts.iterator().next();
+      EventChangeTypeBasicGuidArtifact guidArt =
+            (EventChangeTypeBasicGuidArtifact) resultEventArtifacts.iterator().next();
       Assert.assertEquals(EventModType.ChangeType, guidArt.getModType());
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());

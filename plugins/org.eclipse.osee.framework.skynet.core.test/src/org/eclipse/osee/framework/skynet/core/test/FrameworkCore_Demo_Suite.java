@@ -25,12 +25,14 @@ import org.eclipse.osee.framework.skynet.core.test.cases.ConflictTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.CsvArtifactTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.DuplicateHridTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.NativeArtifactTest;
+import org.eclipse.osee.framework.skynet.core.test.cases.PurgeTransactionTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.RelationDeletionTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.RelationOrderingTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.SevereLogMonitorTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.StaticIdManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.TransactionManagerTest;
-import org.eclipse.osee.framework.skynet.core.test.cases.PurgeTransactionTest;
+import org.eclipse.osee.framework.skynet.core.test.event.ArtifactEventManagerLoopbackTest;
+import org.eclipse.osee.framework.skynet.core.test.event.ArtifactEventManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.importing.ReqNumberingTest;
 import org.eclipse.osee.framework.skynet.core.test.relation.RelationTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.types.OseeCacheTestSuite;
@@ -39,12 +41,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {ArtifactQueryTestDemo.class, TransactionManagerTest.class, BranchTestSuite.class,
-      BranchManagerTest.class, RelationTestSuite.class, OseeCacheTestSuite.class, ArtifactTypeInheritanceTest.class,
-      ArtifactPurgeTest.class, BranchPurgeTest.class, PurgeTransactionTest.class, Artifact_setAttributeValues.class,
-      CsvArtifactTest.class, NativeArtifactTest.class, ConflictTest.class, ChangeManagerTest.class,
-      SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class, BranchStateTest.class,
-      DuplicateHridTest.class, RelationOrderingTest.class, ReqNumberingTest.class})
+@Suite.SuiteClasses( {ArtifactEventManagerTest.class, ArtifactEventManagerLoopbackTest.class,
+      ArtifactQueryTestDemo.class, TransactionManagerTest.class, BranchTestSuite.class, BranchManagerTest.class,
+      RelationTestSuite.class, OseeCacheTestSuite.class, ArtifactTypeInheritanceTest.class, ArtifactPurgeTest.class,
+      BranchPurgeTest.class, PurgeTransactionTest.class, Artifact_setAttributeValues.class, CsvArtifactTest.class,
+      NativeArtifactTest.class, ConflictTest.class, ChangeManagerTest.class, SevereLogMonitorTest.class,
+      RelationDeletionTest.class, StaticIdManagerTest.class, BranchStateTest.class, DuplicateHridTest.class,
+      RelationOrderingTest.class, ReqNumberingTest.class})
 /**
  * @author Donald G. Dunne
  */

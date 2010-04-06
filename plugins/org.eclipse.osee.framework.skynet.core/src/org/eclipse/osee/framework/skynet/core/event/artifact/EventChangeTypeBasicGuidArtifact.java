@@ -11,11 +11,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 /**
  * @author Donald G. Dunne
  */
-public class DefaultEventChangeTypeBasicGuidArtifact extends DefaultEventBasicGuidArtifact implements IEventChangeTypeBasicGuidArtifact {
+public class EventChangeTypeBasicGuidArtifact extends EventBasicGuidArtifact {
 
    private final String fromArtTypeGuid;
 
-   public DefaultEventChangeTypeBasicGuidArtifact(String branchGuid, String fromArtTypeGuid, String artTypeGuid, String guid) {
+   public EventChangeTypeBasicGuidArtifact(String branchGuid, String fromArtTypeGuid, String artTypeGuid, String guid) {
       super(EventModType.ChangeType, branchGuid, artTypeGuid, guid);
       this.fromArtTypeGuid = fromArtTypeGuid;
    }
@@ -48,7 +48,7 @@ public class DefaultEventChangeTypeBasicGuidArtifact extends DefaultEventBasicGu
       if (this == obj) return true;
       if (!super.equals(obj)) return false;
       if (getClass() != obj.getClass()) return false;
-      DefaultEventChangeTypeBasicGuidArtifact other = (DefaultEventChangeTypeBasicGuidArtifact) obj;
+      EventChangeTypeBasicGuidArtifact other = (EventChangeTypeBasicGuidArtifact) obj;
       if (fromArtTypeGuid == null) {
          if (other.fromArtTypeGuid != null) return false;
       } else if (!fromArtTypeGuid.equals(other.fromArtTypeGuid)) return false;

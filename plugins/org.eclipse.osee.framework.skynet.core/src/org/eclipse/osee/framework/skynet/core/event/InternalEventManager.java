@@ -15,15 +15,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -50,17 +47,16 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkTransactio
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetArtifactEventBase;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetRelationLinkEventBase;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.event.artifact.ArtifactEventManager;
-import org.eclipse.osee.framework.skynet.core.event.artifact.DefaultEventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IEventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
+import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
 
 /**
  * Internal implementation of OSEE Event Manager that should only be accessed from RemoteEventManager and
@@ -72,7 +68,6 @@ public class InternalEventManager {
 
    private static final List<IEventListener> priorityListeners = new CopyOnWriteArrayList<IEventListener>();
    private static final List<IEventListener> listeners = new CopyOnWriteArrayList<IEventListener>();
-   private static final List<IEventDispatcher> dispatchers = new CopyOnWriteArrayList<IEventDispatcher>();
    public static final Collection<UnloadedArtifact> EMPTY_UNLOADED_ARTIFACTS = Collections.emptyList();
    private static boolean disableEvents = false;
 
@@ -83,10 +78,11 @@ public class InternalEventManager {
    // This will disable all Local TransactionEvents and enable loopback routing of Remote TransactionEvents back
    // through the RemoteEventService as if they came from another client.  This is for testing purposes only and
    // should be reset to false before release.
-   private static boolean enableRemoteEventLoopback = false;
+   public static final boolean enableRemoteEventLoopback = false;
 
-   private static final boolean DEBUG =
-         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Events"));
+   private static final boolean DEBUG = true;
+
+   //         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Events"));
 
    // Kick LOCAL "remote event manager" event
    static void kickRemoteEventManagerEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
@@ -272,20 +268,16 @@ public class InternalEventManager {
                      branchId = loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getId();
                   }
                   Collection<Integer> artifactIds;
-                  Collection<String> artifactGuids;
                   Collection<Integer> artifactTypeIds;
                   if (loadedArtifacts != null) {
                      artifactIds = loadedArtifacts.getAllArtifactIds();
-                     artifactGuids = loadedArtifacts.getAllArtifactGuids();
                      artifactTypeIds = loadedArtifacts.getAllArtifactTypeIds();
                   } else {
                      artifactIds = Collections.emptyList();
                      artifactTypeIds = Collections.emptyList();
-                     artifactGuids = Collections.emptyList();
                   }
                   RemoteEventManager.kick(new NetworkAccessControlArtifactsEvent(accessControlEventType.name(),
-                        branchId == null ? -1 : branchId, artifactIds, artifactGuids, artifactTypeIds,
-                        sender.getNetworkSender()));
+                        branchId == null ? -1 : branchId, artifactIds, artifactTypeIds, sender.getNetworkSender()));
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -337,7 +329,7 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and REMOTE purged event depending on sender
-   static void kickArtifactsPurgedEvent(final Sender sender, final LoadedArtifacts loadedArtifacts, final Set<IEventBasicGuidArtifact> artifactChanges) throws OseeCoreException {
+   static void kickArtifactsPurgedEvent(final Sender sender, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
@@ -347,16 +339,13 @@ public class InternalEventManager {
             // Kick LOCAL
             safelyInvokeListeners(IArtifactsPurgedEventListener.class, "handleArtifactsPurgedEvent", sender,
                   loadedArtifacts);
-
-            ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
-
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
                if (sender.isLocal()) {
                   RemoteEventManager.kick(new NetworkArtifactPurgeEvent(
                         loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getId(),
-                        loadedArtifacts.getAllArtifactIds(), loadedArtifacts.getAllArtifactGuids(),
-                        loadedArtifacts.getAllArtifactTypeIds(), sender.getNetworkSender()));
+                        loadedArtifacts.getAllArtifactIds(), loadedArtifacts.getAllArtifactTypeIds(),
+                        sender.getNetworkSender()));
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -367,7 +356,7 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and REMOTE artifact change type depending on sender
-   static void kickArtifactsChangeTypeEvent(final Sender sender, final int toArtifactTypeId, final String toArtifactTypeGuid, final LoadedArtifacts loadedArtifacts, final Set<IEventBasicGuidArtifact> artifactChanges) throws OseeCoreException {
+   static void kickArtifactsChangeTypeEvent(final Sender sender, final int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
@@ -377,16 +366,12 @@ public class InternalEventManager {
             // Kick LOCAL
             safelyInvokeListeners(IArtifactsChangeTypeEventListener.class, "handleArtifactsChangeTypeEvent", sender,
                   toArtifactTypeId, loadedArtifacts);
-
-            ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
-
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
                if (sender.isLocal()) {
                   RemoteEventManager.kick(new NetworkArtifactChangeTypeEvent(
                         loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getId(),
-                        loadedArtifacts.getAllArtifactIds(), loadedArtifacts.getAllArtifactGuids(),
-                        loadedArtifacts.getAllArtifactTypeIds(), toArtifactTypeId, toArtifactTypeGuid,
+                        loadedArtifacts.getAllArtifactIds(), loadedArtifacts.getAllArtifactTypeIds(), toArtifactTypeId,
                         sender.getNetworkSender()));
                }
             } catch (OseeCoreException ex) {
@@ -423,7 +408,7 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and REMOTE TransactionEvent
-   static void kickTransactionEvent(final Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents, final Set<IEventBasicGuidArtifact> artifactChanges) {
+   static void kickTransactionEvent(final Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       if (isDisableEvents()) {
          return;
       }
@@ -434,7 +419,7 @@ public class InternalEventManager {
       Runnable runnable = new Runnable() {
          public void run() {
             // Roll-up change information
-            FrameworkTransactionData transData = new FrameworkTransactionData(xModifiedEventsCopy);
+            FrameworkTransactionData transData = createTransactionDataRollup(xModifiedEventsCopy);
             try {
                // Log if this is a loopback and what is happening
                if (enableRemoteEventLoopback) {
@@ -448,29 +433,11 @@ public class InternalEventManager {
                if (!enableRemoteEventLoopback || enableRemoteEventLoopback && sender.isRemote()) {
                   safelyInvokeListeners(IFrameworkTransactionEventListener.class, "handleFrameworkTransactionEvent",
                         sender, transData);
-                  ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
-                  for (IEventDispatcher dispatcher : dispatchers) {
-                     if (dispatcher instanceof ITransactionEventDispatcher) {
-                        try {
-                           ((ITransactionEventDispatcher) dispatcher).kickLocalEvents(sender, xModifiedEventsCopy,
-                                 transData);
-                        } catch (Exception ex) {
-                           OseeLog.log(Activator.class, Level.SEVERE, ex);
-                        }
-                     }
-                  }
                }
 
                // Kick REMOTE (If source was Local and this was not a default branch changed event
                if (sender.isLocal()) {
-                  List<ISkynetEvent> events = new ArrayList<ISkynetEvent>();
-                  generateNetworkSkynetEvents(sender, xModifiedEventsCopy, events);
-                  for (IEventDispatcher dispatcher : dispatchers) {
-                     if (dispatcher instanceof ITransactionEventDispatcher) {
-                        ((ITransactionEventDispatcher) dispatcher).generateNetworkSkynetEvents(sender,
-                              xModifiedEventsCopy, events);
-                     }
-                  }
+                  List<ISkynetEvent> events = generateNetworkSkynetEvents(sender, xModifiedEventsCopy);
                   RemoteEventManager.kick(events);
                }
             } catch (Exception ex) {
@@ -501,11 +468,6 @@ public class InternalEventManager {
                // Kick LOCAL
                if (!enableRemoteEventLoopback) {
                   safelyInvokeListeners(IArtifactReloadEventListener.class, "handleReloadEvent", sender, artifacts);
-                  Set<IEventBasicGuidArtifact> artifactChanges = new HashSet<IEventBasicGuidArtifact>();
-                  for (Artifact artifact : artifacts) {
-                     artifactChanges.add(new DefaultEventBasicGuidArtifact(EventModType.Reloaded, artifact));
-                  }
-                  ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -545,21 +507,6 @@ public class InternalEventManager {
       priorityListeners.remove(listener);
    }
 
-   static void addDispatcher(IEventDispatcher dispatcher) {
-      if (dispatcher == null) {
-         throw new IllegalArgumentException("dispatcher can not be null");
-      }
-      if (!dispatchers.contains(dispatcher)) {
-         dispatchers.add(dispatcher);
-      }
-      eventLog("OEM: addDispatcher (" + dispatchers.size() + ") " + dispatcher);
-   }
-
-   static void removeDispatcher(IEventDispatcher dispatcher) {
-      eventLog("OEM: removeDispatcher: (" + dispatchers.size() + ") " + dispatcher);
-      dispatchers.remove(dispatcher);
-   }
-
    // This method clears all listeners. Should only be used for testing purposes.
    public static void removeAllListeners() {
       listeners.clear();
@@ -595,10 +542,12 @@ public class InternalEventManager {
       return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", (Object[]) listArr);
    }
 
-   private static void generateNetworkSkynetEvents(Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents, List<ISkynetEvent> resultEvents) {
+   private static List<ISkynetEvent> generateNetworkSkynetEvents(Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
+      List<ISkynetEvent> events = new ArrayList<ISkynetEvent>();
       for (ArtifactTransactionModifiedEvent xModifiedEvent : xModifiedEvents) {
-         resultEvents.add(generateNetworkSkynetEvent(xModifiedEvent, sender));
+         events.add(generateNetworkSkynetEvent(xModifiedEvent, sender));
       }
+      return events;
    }
 
    private static ISkynetEvent generateNetworkSkynetEvent(ArtifactTransactionModifiedEvent xModifiedEvent, Sender sender) {
@@ -630,9 +579,8 @@ public class InternalEventManager {
    private static SkynetArtifactEventBase getArtifactEventBase(ArtifactModifiedEvent artEvent, Sender sender) {
       Artifact artifact = artEvent.artifact;
       SkynetArtifactEventBase eventBase =
-            new SkynetArtifactEventBase(artifact.getBranch().getId(), artifact.getBranch().getGuid(),
-                  artEvent.transactionNumber, artifact.getArtId(), artifact.getGuid(), artifact.getArtTypeId(),
-                  artifact.getArtifactType().getGuid(), artifact.getFactory().getClass().getCanonicalName(),
+            new SkynetArtifactEventBase(artifact.getBranch().getId(), artEvent.transactionNumber, artifact.getArtId(),
+                  artifact.getArtTypeId(), artifact.getFactory().getClass().getCanonicalName(),
                   artEvent.sender.getNetworkSender());
 
       return eventBase;
@@ -672,6 +620,162 @@ public class InternalEventManager {
       return ret;
    }
 
+   private static FrameworkTransactionData createTransactionDataRollup(Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
+      // Roll-up change information
+      FrameworkTransactionData transData = new FrameworkTransactionData(xModifiedEvents);
+
+      for (ArtifactTransactionModifiedEvent xModifiedEvent : xModifiedEvents) {
+         if (xModifiedEvent instanceof ArtifactModifiedEvent) {
+            ArtifactModifiedEvent xArtifactModifiedEvent = (ArtifactModifiedEvent) xModifiedEvent;
+            if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Added) {
+               if (xArtifactModifiedEvent.artifact != null) {
+                  transData.cacheAddedArtifacts.add(xArtifactModifiedEvent.artifact);
+                  if (transData.branchId == -1) {
+                     transData.branchId = xArtifactModifiedEvent.artifact.getBranch().getId();
+                  }
+               } else {
+                  transData.unloadedAddedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
+                  if (transData.branchId == -1) {
+                     transData.branchId = xArtifactModifiedEvent.unloadedArtifact.getId();
+                  }
+               }
+            }
+            if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Deleted) {
+               if (xArtifactModifiedEvent.artifact != null) {
+                  transData.cacheDeletedArtifacts.add(xArtifactModifiedEvent.artifact);
+                  if (transData.branchId == -1) {
+                     transData.branchId = xArtifactModifiedEvent.artifact.getBranch().getId();
+                  }
+               } else {
+                  transData.unloadedDeletedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
+                  if (transData.branchId == -1) {
+                     transData.branchId = xArtifactModifiedEvent.unloadedArtifact.getId();
+                  }
+               }
+            }
+            if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Changed) {
+               if (xArtifactModifiedEvent.artifact != null) {
+                  transData.cacheChangedArtifacts.add(xArtifactModifiedEvent.artifact);
+                  if (transData.branchId == -1) {
+                     transData.branchId = xArtifactModifiedEvent.artifact.getBranch().getId();
+                  }
+               } else {
+                  transData.unloadedChangedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
+                  if (transData.branchId == -1) {
+                     transData.branchId = xArtifactModifiedEvent.artifact.getBranch().getId();
+                  }
+               }
+            }
+         }
+         if (xModifiedEvent instanceof RelationModifiedEvent) {
+            RelationModifiedEvent xRelationModifiedEvent = (RelationModifiedEvent) xModifiedEvent;
+            UnloadedRelation unloadedRelation = xRelationModifiedEvent.unloadedRelation;
+            LoadedRelation loadedRelation = null;
+            // If link is loaded, get information from link
+            if (xRelationModifiedEvent.link != null) {
+               RelationLink link = xRelationModifiedEvent.link;
+               // Get artifact A/B if loaded in artifact cache
+               Artifact artA = ArtifactCache.getActive(link.getAArtifactId(), link.getABranch());
+               Artifact artB = ArtifactCache.getActive(link.getBArtifactId(), link.getBBranch());
+               try {
+                  loadedRelation =
+                        new LoadedRelation(artA, artB, xRelationModifiedEvent.link.getRelationType(),
+                              xRelationModifiedEvent.branch, unloadedRelation);
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+            }
+            // Else, get information from unloadedRelation (if != null)
+            else if (unloadedRelation != null) {
+               Artifact artA = ArtifactCache.getActive(unloadedRelation.getArtifactAId(), unloadedRelation.getId());
+               Artifact artB = ArtifactCache.getActive(unloadedRelation.getArtifactBId(), unloadedRelation.getId());
+               if (artA != null || artB != null) {
+                  try {
+                     loadedRelation =
+                           new LoadedRelation(artA, artB, RelationTypeManager.getType(unloadedRelation.getTypeId()),
+                                 artA != null ? artA.getBranch() : artB.getBranch(), unloadedRelation);
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
+                  }
+               }
+            }
+            if (xRelationModifiedEvent.relationEventType == RelationEventType.Added) {
+               if (loadedRelation != null) {
+                  transData.cacheAddedRelations.add(loadedRelation);
+                  if (loadedRelation.getArtifactA() != null) {
+                     transData.cacheRelationAddedArtifacts.add(loadedRelation.getArtifactA());
+                     if (transData.branchId == -1) {
+                        transData.branchId = loadedRelation.getArtifactA().getBranch().getId();
+                     }
+                  }
+                  if (loadedRelation.getArtifactB() != null) {
+                     transData.cacheRelationAddedArtifacts.add(loadedRelation.getArtifactB());
+                     if (transData.branchId == -1) {
+                        transData.branchId = loadedRelation.getArtifactB().getBranch().getId();
+                     }
+                  }
+               }
+               if (unloadedRelation != null) {
+                  transData.unloadedAddedRelations.add(unloadedRelation);
+               }
+            }
+            if (xRelationModifiedEvent.relationEventType == RelationEventType.Deleted) {
+               if (loadedRelation != null) {
+                  transData.cacheDeletedRelations.add(loadedRelation);
+                  if (loadedRelation.getArtifactA() != null) {
+                     transData.cacheRelationDeletedArtifacts.add(loadedRelation.getArtifactA());
+                     if (transData.branchId == -1) {
+                        transData.branchId = loadedRelation.getArtifactA().getBranch().getId();
+                        loadedRelation.getBranch();
+                     }
+                  }
+                  if (loadedRelation.getArtifactB() != null) {
+                     transData.cacheRelationDeletedArtifacts.add(loadedRelation.getArtifactB());
+                     if (transData.branchId == -1) {
+                        transData.branchId = loadedRelation.getArtifactB().getBranch().getId();
+                     }
+                  }
+               }
+               if (unloadedRelation != null) {
+                  transData.unloadedDeletedRelations.add(unloadedRelation);
+                  if (transData.branchId == -1) {
+                     transData.branchId = unloadedRelation.getId();
+                  }
+               }
+            }
+            if (xRelationModifiedEvent.relationEventType == RelationEventType.RationaleMod) {
+               if (loadedRelation != null) {
+                  transData.cacheChangedRelations.add(loadedRelation);
+                  if (loadedRelation.getArtifactA() != null) {
+                     transData.cacheRelationChangedArtifacts.add(loadedRelation.getArtifactA());
+                     if (transData.branchId == -1) {
+                        transData.branchId = loadedRelation.getArtifactA().getBranch().getId();
+                     }
+                  }
+                  if (loadedRelation.getArtifactB() != null) {
+                     transData.cacheRelationChangedArtifacts.add(loadedRelation.getArtifactB());
+                     if (transData.branchId == -1) {
+                        transData.branchId = loadedRelation.getArtifactB().getBranch().getId();
+                     }
+                  }
+               }
+               if (unloadedRelation != null) {
+                  transData.unloadedChangedRelations.add(unloadedRelation);
+                  if (transData.branchId == -1) {
+                     transData.branchId = unloadedRelation.getId();
+                  }
+               }
+            }
+         }
+      }
+
+      // Clean out known duplicates
+      transData.cacheChangedArtifacts.removeAll(transData.cacheDeletedArtifacts);
+      transData.cacheAddedArtifacts.removeAll(transData.cacheDeletedArtifacts);
+
+      return transData;
+   }
+
    public static void safelyInvokeListeners(Class<? extends IEventListener> c, String methodName, Object... args) {
       for (IEventListener listener : priorityListeners) {
          try {
@@ -709,13 +813,5 @@ public class InternalEventManager {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.INFO, ex);
       }
-   }
-
-   public static boolean isEnableRemoteEventLoopback() {
-      return enableRemoteEventLoopback;
-   }
-
-   public static void setEnableRemoteEventLoopback(boolean enableRemoteEventLoopback) {
-      InternalEventManager.enableRemoteEventLoopback = enableRemoteEventLoopback;
    }
 }

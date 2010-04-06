@@ -14,14 +14,13 @@ import java.util.Collection;
 
 /**
  * @author Robert A. Fisher
- * @author Donald G. Dunne
  */
 public class NetworkArtifactModifiedEvent extends SkynetArtifactEventBase {
    private static final long serialVersionUID = -4325821466558180270L;
    private final Collection<SkynetAttributeChange> attributeValues;
 
-   public NetworkArtifactModifiedEvent(int branchId, String branchGuid, int transactionId, int artId, String artGuid, int artTypeId, String artTypeGuid, String factoryName, NetworkSender networkSender, Collection<SkynetAttributeChange> attributeValues) {
-      super(branchId, branchGuid, transactionId, artId, artGuid, artTypeId, artTypeGuid, factoryName, networkSender);
+   public NetworkArtifactModifiedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, NetworkSender networkSender, Collection<SkynetAttributeChange> attributeValues) {
+      super(branchId, transactionId, artId, artTypeId, factoryName, networkSender);
 
       this.attributeValues = attributeValues;
    }
