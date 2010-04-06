@@ -53,6 +53,9 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    private static final String POPULATE_ARTS =
          "insert into osee_arts(gamma_id, art_id, art_type_id, guid, human_readable_id) select gamma_id, art.art_id, art_type_id, guid, human_readable_id from osee_artifact art, osee_artifact_version arv where art.art_id = arv.art_id and not exists (select 1 from osee_arts arts where art.art_id = arts.art_id)";
 
+   private static final String FIND_ARTIFACT_MODS =
+         "select * from osee_arts art, osee_txs txs where art.gamma_id = txs.gamma_id order by art_id, branch_id, transaction_id";
+
    private List<Long[]> deleteArtifactVersionData;
    private final List<Long> obsoleteGammas = new ArrayList<Long>();
    private final List<Object[]> addressingToDelete = new ArrayList<Object[]>(13000);
@@ -79,6 +82,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       obsoleteGammas.clear();
       updateAddressingData.clear();
       addressingToDelete.clear();
+      previousArtifactId = -1;
       previousNetGammaId = -1;
       previousBranchId = -1;
       previuosTransactionId = -1;
@@ -88,10 +92,76 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       gammaJoin = JoinUtility.createExportImportJoinQuery();
    }
 
+   private void findArtifactMods() throws OseeCoreException {
+      List<ModificationType> mods = new ArrayList<ModificationType>();
+      try {
+         chStmt.runPreparedQuery(10000, FIND_ARTIFACT_MODS);
+         while (chStmt.next()) {
+            int artifactId = chStmt.getInt("art_id");
+            int branchId = chStmt.getInt("branch_id");
+
+            if (previousArtifactId != artifactId || previousBranchId != branchId) {
+               consolidateMods(mods);
+               mods.clear();
+               previousArtifactId = artifactId;
+               previousBranchId = branchId;
+            }
+            mods.add(ModificationType.getMod(chStmt.getInt("mod_type")));
+         }
+      } finally {
+         if (chStmt != null) {
+            chStmt.close();
+         }
+      }
+   }
+
+   private void consolidateMods(List<ModificationType> mods) {
+      boolean knownCase = false;
+      if (mods.size() == 0) {
+         knownCase = true;
+      } else if (mods.size() == 1) {
+         if (mods.get(0) == ModificationType.MODIFIED) {
+            knownCase = true;
+            // must make new instead of modified
+         } else {
+            knownCase = true;
+         }
+      } else {
+         if (mods.get(0).matches(ModificationType.NEW, ModificationType.INTRODUCED, ModificationType.MERGED)) {
+            if (mods.size() == 2 && mods.get(1).matches(ModificationType.DELETED, ModificationType.MERGED)) {
+               knownCase = true;
+            }
+            if (mods.size() == 3) {
+               if (mods.get(1) == ModificationType.DELETED && mods.get(2) == ModificationType.DELETED) {
+                  knownCase = true;
+                  // must purge most recent delete and set previous one to current
+               }
+               if (mods.get(1) == ModificationType.MERGED && mods.get(2) == ModificationType.DELETED) {
+                  knownCase = true;
+               }
+            }
+
+            for (int i = 1; i < mods.size(); i++) {
+               mods.get(i);
+            }
+
+         }
+      }
+      if (!knownCase) {
+         reporter.report(String.format("unknown case: artifact id: %d branch_id: %d", previousArtifactId,
+               previousBranchId));
+      }
+   }
+
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       this.connection = connection;
       init();
+
+      if (true) {
+         findArtifactMods();
+         return;
+      }
 
       findObsoleteGammas();
       reporter.report("gamma join size: " + gammaJoin.size());

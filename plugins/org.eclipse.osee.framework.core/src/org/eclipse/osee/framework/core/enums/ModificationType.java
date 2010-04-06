@@ -15,7 +15,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
 /**
@@ -72,6 +71,15 @@ public enum ModificationType implements Serializable {
 
    public String getDisplayName() {
       return displayName;
+   }
+
+   public boolean matches(ModificationType... modTypes) {
+      for (ModificationType modType : modTypes) {
+         if (modType == this) {
+            return true;
+         }
+      }
+      return false;
    }
 
    /**
