@@ -79,8 +79,8 @@ public class SkyWalkerRelTypeTabItem {
          }
 
          public void widgetSelected(SelectionEvent e) {
-            //            treeViewer.setAllChecked(true);
-            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), true);
+            treeViewer.setAllChecked(true);
+            //            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), true);
             storeSelected();
          }
       });
@@ -92,8 +92,8 @@ public class SkyWalkerRelTypeTabItem {
          }
 
          public void widgetSelected(SelectionEvent e) {
-            //            treeViewer.setAllChecked(false);
-            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), false);
+            treeViewer.setAllChecked(false);
+            //            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), false);
             storeSelected();
          }
       });
@@ -116,8 +116,10 @@ public class SkyWalkerRelTypeTabItem {
    public void handleOptionModified(ModType... modTypes) {
       List<ModType> modList = Arrays.asList(modTypes);
       if (modList.contains(ModType.FilterEnabled)) {
-         if (selectAll != null) selectAll.setEnabled(options.isFilterEnabled());
-         if (deSelectAll != null) deSelectAll.setEnabled(options.isFilterEnabled());
+         if (selectAll != null)
+            selectAll.setEnabled(options.isFilterEnabled());
+         if (deSelectAll != null)
+            deSelectAll.setEnabled(options.isFilterEnabled());
       }
       if (modList.contains(ModType.RelType)) {
          if (treeViewer != null) {

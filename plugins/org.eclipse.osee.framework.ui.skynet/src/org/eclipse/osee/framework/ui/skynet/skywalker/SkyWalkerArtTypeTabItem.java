@@ -87,8 +87,8 @@ public class SkyWalkerArtTypeTabItem {
          }
 
          public void widgetSelected(SelectionEvent e) {
-            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), true);
-            //            treeViewer.setAllChecked(true);
+            //            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), true);
+            treeViewer.setAllChecked(true);
             storeSelected();
          }
       });
@@ -100,8 +100,8 @@ public class SkyWalkerArtTypeTabItem {
          }
 
          public void widgetSelected(SelectionEvent e) {
-            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), false);
-            //            treeViewer.setAllChecked(false);
+            //            treeViewer.setSubtreeChecked(treeViewer.getTree().getItems(), false);
+            treeViewer.setAllChecked(false);
             storeSelected();
          }
       });
@@ -120,8 +120,10 @@ public class SkyWalkerArtTypeTabItem {
    public void handleOptionModified(ModType... modTypes) {
       List<ModType> modList = Arrays.asList(modTypes);
       if (modList.contains(ModType.FilterEnabled)) {
-         if (selectAll != null) selectAll.setEnabled(options.isFilterEnabled());
-         if (deSelectAll != null) deSelectAll.setEnabled(options.isFilterEnabled());
+         if (selectAll != null)
+            selectAll.setEnabled(options.isFilterEnabled());
+         if (deSelectAll != null)
+            deSelectAll.setEnabled(options.isFilterEnabled());
       }
       if (modList.contains(ModType.ArtType)) {
          if (treeViewer != null) {
@@ -140,7 +142,8 @@ public class SkyWalkerArtTypeTabItem {
    public void storeSelected() {
       Set<ArtifactType> selected = new HashSet<ArtifactType>();
       for (Object obj : treeViewer.getCheckedElements()) {
-         if (obj instanceof ArtifactType) selected.add((ArtifactType) obj);
+         if (obj instanceof ArtifactType)
+            selected.add((ArtifactType) obj);
       }
       options.setSelectedArtTypes(selected);
    }
