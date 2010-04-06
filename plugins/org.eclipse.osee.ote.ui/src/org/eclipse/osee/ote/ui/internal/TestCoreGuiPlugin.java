@@ -58,9 +58,11 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
 		
 		@Override
 		public void removedService(ServiceReference reference, Object service) {
+			if (oteConsoleService != null) {
 			oteConsoleServiceRegistration.unregister();
 			oteConsoleService.close();
 			oteConsoleService = null;
+			}
 		}
 		
 		@Override
@@ -100,6 +102,7 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
       if (oteConsoleServiceRegistration != null) {
          oteConsoleServiceRegistration.unregister();
          oteConsoleService.close();
+         oteConsoleService = null;
       }
       workspaceStartTracker.close();
       pluginInstance = null;
