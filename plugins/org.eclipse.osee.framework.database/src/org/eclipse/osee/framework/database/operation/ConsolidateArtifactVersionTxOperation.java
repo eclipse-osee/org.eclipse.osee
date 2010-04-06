@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.server.admin.management;
+package org.eclipse.osee.framework.database.operation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.ExportImportJoinQuery;
-import org.eclipse.osee.framework.server.admin.internal.Activator;
+import org.eclipse.osee.framework.database.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -56,10 +56,14 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    private static final String FIND_ARTIFACT_MODS =
          "select * from osee_arts art, osee_txs txs where art.gamma_id = txs.gamma_id order by art_id, branch_id, transaction_id";
 
+   private static final String UPDATE_TXS_MOD_CURRENT =
+         "update osee_txs%s set mod_type = ?, tx_current = ? where transaction_id = ? and gamma_id = ?";
+
    private List<Long[]> deleteArtifactVersionData;
    private final List<Long> obsoleteGammas = new ArrayList<Long>();
    private final List<Object[]> addressingToDelete = new ArrayList<Object[]>(13000);
    private final List<Object[]> updateAddressingData = new ArrayList<Object[]>(5000);
+   private final List<Object[]> updateTxsCurrentModData = new ArrayList<Object[]>(5000);
    private ExportImportJoinQuery gammaJoin;
    private OseeConnection connection;
    private int previousArtifactId;
@@ -93,7 +97,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    }
 
    private void findArtifactMods() throws OseeCoreException {
-      List<ModificationType> mods = new ArrayList<ModificationType>();
+      List<Address> mods = new ArrayList<Address>();
       try {
          chStmt.runPreparedQuery(10000, FIND_ARTIFACT_MODS);
          while (chStmt.next()) {
@@ -101,12 +105,16 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
             int branchId = chStmt.getInt("branch_id");
 
             if (previousArtifactId != artifactId || previousBranchId != branchId) {
-               consolidateMods(mods);
-               mods.clear();
+               if (mods.size() > 0) {
+                  consolidateMods(mods);
+                  mods.clear();
+               }
                previousArtifactId = artifactId;
                previousBranchId = branchId;
             }
-            mods.add(ModificationType.getMod(chStmt.getInt("mod_type")));
+            mods.add(new Address(false, -1, -1, chStmt.getInt("transaction_id"), chStmt.getInt("gamma_id"),
+                  ModificationType.getMod(chStmt.getInt("mod_type")),
+                  TxChange.getChangeType(chStmt.getInt("tx_current"))));
          }
       } finally {
          if (chStmt != null) {
@@ -115,36 +123,34 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       }
    }
 
-   private void consolidateMods(List<ModificationType> mods) {
+   private void consolidateMods(List<Address> mods) {
+      ModificationType mod0 = mods.get(0).modType;
       boolean knownCase = false;
-      if (mods.size() == 0) {
-         knownCase = true;
-      } else if (mods.size() == 1) {
-         if (mods.get(0) == ModificationType.MODIFIED) {
+      if (mods.size() == 1) {
+         if (mod0 == ModificationType.MODIFIED) {
             knownCase = true;
-            // must make new instead of modified
+            updateTxsCurrentModData.add(new Object[] {ModificationType.NEW.getValue(),
+                  mods.get(0).txCurrent.getValue(), mods.get(0).transactionId, mods.get(0).gammaId});
          } else {
             knownCase = true;
          }
       } else {
-         if (mods.get(0).matches(ModificationType.NEW, ModificationType.INTRODUCED, ModificationType.MERGED)) {
-            if (mods.size() == 2 && mods.get(1).matches(ModificationType.DELETED, ModificationType.MERGED)) {
+         ModificationType mod1 = mods.get(1).modType;
+         if (mod0.matches(ModificationType.NEW, ModificationType.INTRODUCED, ModificationType.MERGED)) {
+            if (mods.size() == 2 && mod1.matches(ModificationType.DELETED, ModificationType.MERGED)) {
                knownCase = true;
-            }
-            if (mods.size() == 3) {
-               if (mods.get(1) == ModificationType.DELETED && mods.get(2) == ModificationType.DELETED) {
+            } else if (mods.size() == 3) {
+               ModificationType mod2 = mods.get(2).modType;
+               if (mod1 == ModificationType.DELETED && mod2 == ModificationType.DELETED) {
                   knownCase = true;
                   // must purge most recent delete and set previous one to current
-               }
-               if (mods.get(1) == ModificationType.MERGED && mods.get(2) == ModificationType.DELETED) {
+                  updateTxsCurrentModData.add(new Object[] {mods.get(1).modType.getValue(),
+                        TxChange.DELETED.getValue(), mods.get(1).transactionId, mods.get(1).gammaId});
+                  addressingToDelete.add(new Object[] {mods.get(2).transactionId, mods.get(2).gammaId});
+               } else if (mod1 == ModificationType.MERGED && mod2 == ModificationType.DELETED) {
                   knownCase = true;
                }
             }
-
-            for (int i = 1; i < mods.size(); i++) {
-               mods.get(i);
-            }
-
          }
       }
       if (!knownCase) {
@@ -160,6 +166,14 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
 
       if (true) {
          findArtifactMods();
+
+         reporter.report("updateTxsCurrentModData size: " + updateTxsCurrentModData.size());
+         reporter.report("addressingToDelete size: " + addressingToDelete.size());
+
+         getDatabaseService().runBatchUpdate(connection, prepareSql(UPDATE_TXS_MOD_CURRENT, false),
+               updateTxsCurrentModData);
+         getDatabaseService().runBatchUpdate(connection, prepareSql(DELETE_TXS, false), addressingToDelete);
+
          return;
       }
 
@@ -175,7 +189,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       updataConflicts("source_gamma_id");
       updataConflicts("dest_gamma_id");
 
-      //setBaselineTransactions();
+      setBaselineTransactions();
 
       populateArts();
 
@@ -288,19 +302,22 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       return previousNetGammaId != netGammaId || previousBranchId != branchId;
    }
 
+   private String prepareSql(String sql, boolean archived) {
+      return String.format(sql, archived ? "_archived" : "");
+   }
+
    private void writeAddressingChanges(boolean archived, boolean force) throws OseeDataStoreException {
       String archivedStr = archived ? "_archived" : "";
       if (addressingToDelete.size() > 99960 || force) {
          deleteTxsCounter +=
-               getDatabaseService().runBatchUpdate(connection, String.format(DELETE_TXS, archivedStr),
-                     addressingToDelete);
+               getDatabaseService().runBatchUpdate(connection, prepareSql(DELETE_TXS, archived), addressingToDelete);
          reporter.report("Number of txs" + archivedStr + " rows deleted: " + deleteTxsCounter);
          addressingToDelete.clear();
       }
 
       if (updateAddressingData.size() > 99960 || force) {
          updateTxsCounter +=
-               getDatabaseService().runBatchUpdate(connection, String.format(UPDATE_TXS_GAMMAS, archivedStr),
+               getDatabaseService().runBatchUpdate(connection, prepareSql(UPDATE_TXS_GAMMAS, archived),
                      updateAddressingData);
          reporter.report("Number of txs" + archivedStr + " rows updated: " + updateTxsCounter);
 

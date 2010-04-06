@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.CommandInterpreterReporter;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.operation.ConsolidateArtifactVersionTxOperation;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
