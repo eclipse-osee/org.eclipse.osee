@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="help.common" basedir=".">
 	<property name="url" value="http://wiki.eclipse.org/OSEE" />
-	<path id="wikitext.classpath2">
+	<path id="wikitext.classpath">
 		<fileset dir="../org.eclipse.osee.framework.help.ui/lib">
 			<include name="*.jar" />
 		</fileset>
@@ -9,8 +9,8 @@
 
 	<taskdef
 		resource="org/eclipse/mylyn/wikitext/core/util/anttask/tasks.properties"
-		classpathref="wikitext.classpath2" />
+		classpathref="wikitext.classpath" />
 	<taskdef
 		resource="org/eclipse/mylyn/internal/wikitext/mediawiki/core/tasks/tasks.properties"
-		classpathref="wikitext.classpath2" />
+		classpathref="wikitext.classpath" />
 </project>
