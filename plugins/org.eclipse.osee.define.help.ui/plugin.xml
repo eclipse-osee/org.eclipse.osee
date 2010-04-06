@@ -9,30 +9,6 @@
             file="toc.xml"
             primary="true">
       </toc>
-      <toc
-            file="userguide/OSEE Define Intro-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Define Concepts-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Define Reference-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Define Tasks-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Define Tips-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Define New-toc.xml"
-            primary="false">
-      </toc>
    </extension>
 <extension
       point="org.eclipse.help.contexts">

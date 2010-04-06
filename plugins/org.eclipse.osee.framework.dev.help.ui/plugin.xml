@@ -9,9 +9,5 @@
 	            file="toc.xml"
 	            primary="true">
 	      </toc>
-	      <toc
-	            file="userguide/OSEE Developers Guide-toc.xml"
-	            primary="false">
-	      </toc>
 	</extension>
 </plugin>

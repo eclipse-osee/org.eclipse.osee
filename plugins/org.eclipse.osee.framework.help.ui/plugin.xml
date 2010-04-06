@@ -9,30 +9,6 @@
             file="toc.xml"
             primary="true">
       </toc>
-      <toc
-            file="userguide/OSEE Features-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Intro-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Concepts-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Tips-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE New-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Update-toc.xml"
-            primary="false">
-      </toc>
    </extension>
    <extension
          point="org.eclipse.ui.intro.configExtension">

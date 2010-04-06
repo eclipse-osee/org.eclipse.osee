@@ -1,109 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="help.common" basedir=".">
-	<property name="extract.style.sheet" value="${ant.file.imported}${file.separator}extract-markup.xsl" />
-	<dirname property="help.common.dir" file="${ant.file.help.common}" />
-	<property name="mylyn.plugins.path" value="${help.common.dir}\..\lib" />
-	
-	<fail message="Specify the path to mylyn wikitext jars by setting 'mylyn.plugins.path'">
-		<condition>
-			<not>
-				<isset property="mylyn.plugins.path" />
-			</not>
-
-		</condition>
-	</fail>
-
-	<taskdef resource="org/eclipse/osee/framework/help/ui/internal/anttask/tasks.properties">
-		<classpath>
-			<pathelement path="${classpath}" />
-			<pathelement location="../org.eclipse.osee.framework.help.ui/@dot" />
-			<pathelement location="../org.eclipse.osee.framework.help.ui/bin" />
-		</classpath>
-
-	</taskdef>
-
-	<path id="wikitext.classpath">
-		<fileset dir="${mylyn.plugins.path}">
-			<include name="*.jar"/>
+	<property name="url" value="http://wiki.eclipse.org/OSEE" />
+	<path id="wikitext.classpath2">
+		<fileset dir="../org.eclipse.osee.framework.help.ui/lib">
+			<include name="*.jar" />
 		</fileset>
 	</path>
 
-	<taskdef resource="org/eclipse/mylyn/wikitext/core/util/anttask/tasks.properties" classpathref="wikitext.classpath"/>
-	<taskdef resource="org/eclipse/mylyn/internal/wikitext/mediawiki/core/tasks/tasks.properties" classpathref="wikitext.classpath"/>
-
-	<target name="init">
-		<mkdir dir="tmp" />
-	</target>
-
-	<target name="clean" depends="init">
-		<delete includeemptydirs="true" failonerror="false">
-			<fileset dir="tmp" />
-		</delete>
-	</target>
-
-<!-- <macrodef name="eclipse-wiki-to-help">
-		<attribute name="help.doc.url.base" />
-		<attribute name="wiki.url.base" />
-		<attribute name="help.doc.url.html" />
-		<attribute name="help.doc.url.xml" />
-		<attribute name="help.doc.filenameNoExtension" />
-		<attribute name="help.imageFolder" />
-		<attribute name="targetFolder" />
-
-		<sequential>
-			<antcall target="init" />
-			<osee-get dest="tmp/help.doc.xml" src="@{help.doc.url.xml}" />
-			<osee-get dest="tmp/help.doc.html" src="@{help.doc.url.html}" />
-
-			<copy todir="tmp">
-				<fileset dir="images" />
-			</copy>
-
-			<osee-mediawiki-fetch-images 
-				src="tmp/help.doc.html" 
-				dest="tmp/" 
-				base="@{help.doc.url.base}" />
-
-			<xslt style="${extract.style.sheet}" in="tmp/help.doc.xml" out="tmp/@{help.doc.filenameNoExtension}.mediawiki" />
-			
-			<wikitext-to-eclipse-help 
-				markupLanguage="org.eclipse.mylyn.wikitext.mediawiki.core.MediaWikiLanguage" 
-				multipleOutputFiles="true" 
-				navigationImages="true" 
-				helpPrefix="@{targetFolder}" 
-				internallinkpattern="@{wiki.url.base}/{0}" 
-				validate="true" 
-				failonvalidationerror="true" 
-				prependImagePrefix="@{help.imageFolder}" 
-				formatoutput="true">
-				<fileset dir="tmp" includes="**/*.mediawiki" />
-				<stylesheet url="book.css" />
-			</wikitext-to-eclipse-help>
-
-			<mkdir dir="@{targetFolder}/@{help.imageFolder}" />
-			<copy todir="@{targetFolder}/@{help.imageFolder}" overwrite="true">
-				<fileset dir="tmp">
-					<exclude name="*.html" />
-					<exclude name="*.mediawiki" />
-					<exclude name="*.xml" />
-					<exclude name="*.dtd" />
-				</fileset>
-			</copy>
-			<copy todir="@{targetFolder}" overwrite="true">
-				<fileset dir="tmp">
-					<include name="*.html" />
-					<include name="*toc.xml" />
-					<exclude name="help.doc.html" />
-				</fileset>
-			</copy>
-			<mkdir dir="@{targetFolder}/@{help.imageFolder}/@{help.imageFolder}" />
-			<copy todir="@{targetFolder}/@{help.imageFolder}/@{help.imageFolder}" overwrite="true">
-				<fileset dir="${ant.file.imported}/commonImages" />
-			</copy>
-			<antcall target="test" />
-			<antcall target="clean" />
-		</sequential>
-	</macrodef>
- -->	
-
+	<taskdef
+		resource="org/eclipse/mylyn/wikitext/core/util/anttask/tasks.properties"
+		classpathref="wikitext.classpath2" />
+	<taskdef
+		resource="org/eclipse/mylyn/internal/wikitext/mediawiki/core/tasks/tasks.properties"
+		classpathref="wikitext.classpath2" />
 </project>
