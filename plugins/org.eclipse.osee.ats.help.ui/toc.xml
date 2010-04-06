@@ -1,46 +1,166 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?NLS TYPE="org.eclipse.help.toc"?>
-
-<toc label="OSEE ATS User Guide">
- <anchor id="before-reference" />
- <topic label="Getting Started">
-  	<anchor id="before-reference-content"/>
-    <link toc="userguide/OSEE ATS Intro-toc.xml"/>
-    <anchor id="after-reference-content"/>
-    <anchor id="additions-reference" />
- </topic>
- <topic label="Views and Editors">
-    <anchor id="before-reference-content"/>
-    <link toc="userguide/OSEE ATS Views-toc.xml"/>
-    <anchor id="after-reference-content"/>
-    <anchor id="additions-reference"/>
- </topic>
- <topic label="Using ATS">
-    <anchor id="before-reference-content"/>
-    <link toc="userguide/OSEE ATS Usage-toc.xml"/>
-    <anchor id="after-reference-content"/>
-    <anchor id="additions-reference"/>
- </topic>
- <topic href="userguide/OSEE ATS Tips.html" label="Tips and Tricks">
-    <anchor id="before-reference-content"/>
-    <link toc="userguide/OSEE ATS Tips-toc.xml"/>
-    <anchor id="after-reference-content"/>
-    <anchor id="additions-reference"/>
- </topic>
- <topic href="userguide/OSEE ATS New.html" label="What&apos;s New">
-    <anchor id="before-reference-content"/>
-    <link toc="userguide/OSEE ATS New-toc.xml"/>
-    <anchor id="after-reference-content"/>
-    <anchor id="additions-reference"/>
- </topic>
- <topic href="userguide/OSEE Update.html" label="Updating this Document">
-    <anchor id="before-reference-content"/>
-    <link toc="userguide/OSEE ATS New-toc.xml"/>
-    <anchor id="after-reference-content"/>
-    <anchor id="additions-reference"/>
- </topic>
-  	<anchor id="after-reference" />
-  	<anchor id="additions" />
+<?xml version='1.0' encoding='utf-8' ?>
+<toc topic="\OSEE\ATS\Users_Guide\Intro/Intro.html" label="OSEE User's Guide">
+	<topic href="\OSEE\ATS\Users_Guide\Intro/Intro.html" label="Getting Started">
+		<topic href="\OSEE\ATS\Users_Guide\Intro/Intro.html" label="ATS Overview">
+			<topic href="\OSEE\ATS\Users_Guide\Intro/Intro.html#Terms" label="Terms"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Intro/Intro.html#Configuration" label="Configuration">
+			<topic href="\OSEE\ATS\Users_Guide\Intro/Intro.html#Configuring_ATS_for_Change_Tracking" label="Configuring ATS for Change Tracking"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Intro/Intro.html#Configuring_ATS_Workflows_for_Branch_Configuration" label="Configuring ATS Workflows for Branch Configuration"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Intro/Intro.html#Configuring_ATS_for_Multi-Branch_Committing" label="Configuring ATS for Multi-Branch Committing"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Intro/Intro.html#Updating_This_Document" label="Updating This Document"></topic>
+	</topic>
+	<topic href="\OSEE\ATS\Users_Guide\Views/Views.html" label="Views and Editors">
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html" label="ATS Icons">
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#ATS_Objects" label="ATS Objects"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#ATS_Overlays" label="ATS Overlays"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#ATS_Operations" label="ATS Operations"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#ATS_Configuration" label="ATS Configuration"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#ATS_Navigator" label="ATS Navigator"></topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#ATS_Action_View" label="ATS Action View"></topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#ATS_World_View" label="ATS World View">
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Purpose" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#How_to_do_it" label="How to do it"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Open_ATS_Action.2C_Team_Workflow.2C_Task_or_Review" label="Open ATS Action, Team Workflow, Task or Review"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Sorting" label="Sorting"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Bottom_Status_Line" label="Bottom Status Line"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Top_Status_Line" label="Top Status Line"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Filtering" label="Filtering"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Actions" label="Actions"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Result_View" label="Result View">
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Actions_2" label="Actions"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#ATS_Workflow_Editor" label="ATS Workflow Editor">
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Workflow_Tab" label="Workflow Tab"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Task_Tab" label="Task Tab">
+				<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Actions_3" label="Actions"></topic>
+			</topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Working_Branch_Widget" label="Working Branch Widget"></topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Commit_Manager_Widget" label="Commit Manager Widget"></topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#ATS_Workflow_Configuration_Editor" label="ATS Workflow Configuration Editor">
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Purpose_2" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#How_to_do_it_2" label="How to do it"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Validation" label="Validation"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Work_Flow_Definition_Artifact" label="Work Flow Definition Artifact">
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Purpose_3" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#How_to_do_it_-_Configuration_Editor" label="How to do it - Configuration Editor"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#How_to_do_it_-_Artifact_Editor" label="How to do it - Artifact Editor"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Work_Page_Definition_Artifact" label="Work Page Definition Artifact">
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Purpose_4" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#How_to_do_it_-_ATS_Workflow_Configuration_Editor" label="How to do it - ATS Workflow Configuration Editor"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#How_to_do_it_-_Artifact_Editor_2" label="How to do it - Artifact Editor"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Work_Rule_Widget_Artifact" label="Work Rule Widget Artifact">
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Purpose_5" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#How_to_do_it_-_Artifact_Editor_3" label="How to do it - Artifact Editor"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Work_Rule_Definition_Artifact" label="Work Rule Definition Artifact">
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Purpose_6" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#How_to_do_it_-_Artifact_Editor_4" label="How to do it - Artifact Editor"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Mass_Artifact_Editor" label="Mass Artifact Editor">
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Purpose_7" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Actions_4" label="Actions"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Table_Customization" label="Table Customization">
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Purpose_8" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Select_Customization" label="Select Customization"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Select_Customization_-_Icons_.2F_Overlays" label="Select Customization - Icons / Overlays"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Select_Customization_-_Buttons" label="Select Customization - Buttons"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Configure_Customization" label="Configure Customization"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Configure_Customization_-_Buttons" label="Configure Customization - Buttons"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Views/Views.html#Updating_This_Document" label="Updating This Document"></topic>
+	</topic>
+	<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html" label="Using ATS">
+		<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html" label="Creating a new ATS action">
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Page_One" label="Page One">
+				<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Title" label="Title"></topic>
+				<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Select_Actionable_Items" label="Select Actionable Items"></topic>
+				<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Filter" label="Filter"></topic>
+			</topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Page_Two" label="Page Two">
+				<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Description" label="Description"></topic>
+				<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Change_Type" label="Change Type"></topic>
+				<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Priority" label="Priority"></topic>
+				<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Deadline" label="Deadline"></topic>
+				<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Validation_Required" label="Validation Required"></topic>
+				<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#User_Community" label="User Community"></topic>
+			</topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Priorities_for_classifying_problems" label="Priorities for classifying problems"></topic>
+		<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#OSEE_Spell_Checking" label="OSEE Spell Checking">
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Purpose" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#How_to_do_it" label="How to do it"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Main_Dictionary" label="Main Dictionary"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Additional_Released_Dictionaries" label="Additional Released Dictionaries"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Run-time_Global_Dictionary" label="Run-time Global Dictionary"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Run-time_Personal_Dictionary" label="Run-time Personal Dictionary"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Peer_To_Peer_Review_Workflow" label="Peer To Peer Review Workflow">
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Purpose_2" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#State_Machine" label="State Machine"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#How_to_do_it_2" label="How to do it"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Prepare_State" label="Prepare State"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Review_State" label="Review State"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Decision_Review_Workflow" label="Decision Review Workflow">
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Purpose_3" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#State_Machine_2" label="State Machine"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#How_to_do_it_3" label="How to do it"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Prepare_State_2" label="Prepare State"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Decision_State" label="Decision State"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Followup_State" label="Followup State"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Configure_ATS_for_Change_Tracking" label="Configure ATS for Change Tracking">
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Purpose_4" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#How_to_do_it_4" label="How to do it"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Configure_Team_Definition" label="Configure Team Definition">
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Purpose_5" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#How_to_do_it_5" label="How to do it"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Configure_Actionable_Items_.28AI.29" label="Configure Actionable Items (AI)">
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Purpose_6" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#How_to_do_it_6" label="How to do it"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Workflow_Configuration" label="Workflow Configuration">
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Purpose_7" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Ats_Workflow_Configuration_artifacts." label="Ats Workflow Configuration artifacts."></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#How_to_do_it_7" label="How to do it"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Configure_ATS_for_Help" label="Configure ATS for Help">
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Purpose_8" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#How_to_do_it_8" label="How to do it"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#OSEE_Branching_and_Differences_Diagrams" label="OSEE Branching and Differences Diagrams"></topic>
+		<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Report_a_Bug" label="Report a Bug">
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Purpose_9" label="Purpose"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#How_to_do_it_9" label="How to do it"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Usage/Usage.html#Updating_This_Document" label="Updating This Document"></topic>
+	</topic>
+	<topic href="\OSEE\ATS\Users_Guide\Tips/Tips.html" label="Tips and Tricks">
+		<topic href="\OSEE\ATS\Users_Guide\Tips/Tips.html" label="Frequently Asked Questions">
+			<topic href="\OSEE\ATS\Users_Guide\Tips/Tips.html#How_do_I_add_Actionable_Items_or_Team_Workflows_to_an_Action.3F" label="How do I add Actionable Items or Team Workflows to an Action?"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Tips/Tips.html#How_do_I_edit_the_fields_of_a_state_in_a_Team_Workflow.2C_Task_or_Review.3F" label="How do I edit the fields of a state in a Team Workflow, Task or Review?"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Tips/Tips.html#How_do_I_become_an_assignee_for_a_Team_Workflow.2C_Task_or_Review.3F" label="How do I become an assignee for a Team Workflow, Task or Review?"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Tips/Tips.html#What_is_a_Privileged_Edit.3F" label="What is a Privileged Edit?"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Tips/Tips.html#What_is_the_basic_workflow_of_an_Action_in_ATS.3F" label="What is the basic workflow of an Action in ATS?"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Tips/Tips.html#How_do_I_create_a_Working_Branch.3F" label="How do I create a Working Branch?"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Tips/Tips.html#How_do_I_create_Tasks_for_a_Team_Workflow.3F" label="How do I create Tasks for a Team Workflow?"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Tips/Tips.html#How_do_I_configure_ATS_for_multi-branch_committing.3F" label="How do I configure ATS for multi-branch committing?"></topic>
+			<topic href="\OSEE\ATS\Users_Guide\Tips/Tips.html#How_do_I_configure_teams_to_share_the_same_versions.3F" label="How do I configure teams to share the same versions?"></topic>
+		</topic>
+		<topic href="\OSEE\ATS\Users_Guide\Tips/Tips.html#Updating_This_Document" label="Updating This Document"></topic>
+	</topic>
+	<topic href="\OSEE\ATS\Users_Guide\New/New.html" label="What's New">
+		<topic href="\OSEE\ATS\Users_Guide\New/New.html" label="Updating This Document"></topic>
+	</topic>
 </toc>
-
-

@@ -1,14 +1,68 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?NLS TYPE="org.eclipse.help.toc"?>
-
-<toc label="OSEE Developers' Guide">
-	<anchor id="before-reference" />
-	<topic label="OSEE Developers' Guide">
-	<anchor id="before-reference-content"/>
-		<link toc="userguide/OSEE Developers Guide-toc.xml"/>
-		<anchor id="after-reference-content"/>
-		<anchor id="additions-reference" />
+<?xml version='1.0' encoding='utf-8' ?>
+<toc topic="\OSEE\Developers_Guide/Developers-Guide.html" label="OSEE User's Guide">
+	<topic href="\OSEE\Developers_Guide/Developers-Guide.html" label="Developers' Guide">
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html" label="Architecture">
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Client_Architecture" label="Client Architecture"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Client.2FServer_Architecture" label="Client/Server Architecture"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Data_Model" label="Data Model"></topic>
+		</topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Configuration_Properties" label="Configuration Properties">
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Datastore_Preferences_.28via_Global_Preferences_artifact.29" label="Datastore Preferences (via Global Preferences artifact)"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Common_Java_System_Properties" label="Common Java System Properties"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Application_Server_Java_System_Properties" label="Application Server Java System Properties"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Client_Java_System_Properties" label="Client Java System Properties"></topic>
+		</topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Database_Connection_Information" label="Database Connection Information"></topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Custom_Data_Model" label="Custom Data Model">
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Artifact_Type_Table" label="Artifact Type Table"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Artifact_Factory" label="Artifact Factory"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Attribute_Type_Table" label="Attribute Type Table"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Artifact_Type_.2F_Attribute_Type_Mapping_Table" label="Artifact Type / Attribute Type Mapping Table"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Relation_Type_Table" label="Relation Type Table"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Artifact_Type_.2F_Relation_Type_Mapping_Table" label="Artifact Type / Relation Type Mapping Table"></topic>
+		</topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Importing_an_OSEE_Data_Model" label="Importing an OSEE Data Model"></topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Migrating_Branches_to_Another_OSEE_Database_.28including_from_previous_OSEE_version.29" label="Migrating Branches to Another OSEE Database (including from previous OSEE version)"></topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Configuring_ATS_for_Change_Tracking" label="Configuring ATS for Change Tracking"></topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Custom_OSEE_Operations_using_BLAM" label="Custom OSEE Operations using BLAM"></topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Event_Handling" label="Event Handling">
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#General_Design_Considerations" label="General Design Considerations"></topic>
+		</topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Requirements" label="Requirements">
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#OSEE_Event_Handling_-_Current" label="OSEE Event Handling - Current"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#OSEE_Event_Handling_-_New" label="OSEE Event Handling - New"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Event_Model" label="Event Model"></topic>
+		</topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Use_Cases" label="Use Cases"></topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Building_OSEE_using_PDE_Build" label="Building OSEE using PDE Build">
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Non-Eclipse_System_Requirements" label="Non-Eclipse System Requirements"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Install_Eclipse" label="Install Eclipse"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Install_Plug-ins" label="Install Plug-ins"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#If_Using_Windows" label="If Using Windows"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#SVN_Checkout" label="SVN Checkout"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Build" label="Build"></topic>
+		</topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Database_Schema" label="Database Schema"></topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Helpful_links" label="Helpful links"></topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Design_Questions" label="Design Questions">
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#I_have_strange_eclipse.2Fosee_issues_can_I_delete_stuff_from_my_.27.27.27.27.27configuration.27.27.27.27.27_folder.3F" label="I have strange eclipse/osee issues can I delete stuff from my '''''configuration''''' folder?"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Is_OSEE_an_application_framework_or_an_application.3F" label="Is OSEE an application framework or an application?"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Other_products_sound_similar.__Why_OSEE.3F" label="Other products sound similar.  Why OSEE?"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Is_OSEE_only_for_Avionics_Engineering.3F" label="Is OSEE only for Avionics Engineering?"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#What_is_Skynet.3F" label="What is Skynet?"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#What_are_Artifact_Framework_types.3F" label="What are Artifact Framework types?"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#What_is_the_Action_Tracking_System_.28ATS.29.3F" label="What is the Action Tracking System (ATS)?"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Why_build_yet_another_bug_tracking_tool_like_the_Action_Tracking_System_.28ATS.29.3F" label="Why build yet another bug tracking tool like the Action Tracking System (ATS)?"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#How_does_OSEE_handle_traceability.3F" label="How does OSEE handle traceability?"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#What_is_Define.3F" label="What is Define?"></topic>
+		</topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#What_is_an_HRID_and_how_is_it_used.3F" label="What is an HRID and how is it used?">
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Purpose" label="Purpose"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Format" label="Format"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Design" label="Design"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Implementation" label="Implementation"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Migration" label="Migration"></topic>
+		</topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Updating_This_Document" label="Updating This Document"></topic>
 	</topic>
-	<anchor id="after-reference" />
-	<anchor id="additions" />
 </toc>

@@ -28,51 +28,56 @@
 	<property name="osee.help.update.file.name" value="OSEE Update" />
 
 	<target name="all"
-		description="Generate Eclipse help content for the OSEE Coverage user guide">
+		description="Generate Eclipse help content for the OSEE ATS user guide">
 		<sequential>
 			<delete>
 				<fileset dir="userguide" />
 			</delete>
-			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
-					wiki.url.base="${osee.help.doc.url.base}/OSEE" 
-					help.doc.url.html="${osee.help.doc.url.base}/${osee.help.doc.intro}"
-					help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.doc.intro}"
-					help.doc.filenameNoExtension="${osee.help.intro.file.name}" help.imagefolder="${osee.help.image.folder}"
-					targetfolder="userguide" />
-				
-			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
-					wiki.url.base="${osee.help.doc.url.base}/OSEE" 
-					help.doc.url.html="${osee.help.doc.url.base}/${osee.help.doc.views}"
-					help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.doc.views}"
-					help.doc.filenameNoExtension="${osee.help.views.file.name}" help.imagefolder="${osee.help.image.folder}"
-					targetfolder="userguide" />
-				
-			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
-					wiki.url.base="${osee.help.doc.url.base}/OSEE" 
-					help.doc.url.html="${osee.help.doc.url.base}/${osee.help.doc.usage}"
-					help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.doc.usage}"
-					help.doc.filenameNoExtension="${osee.help.usage.file.name}" help.imagefolder="${osee.help.image.folder}"
-					targetfolder="userguide" />
-				
-			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
-					wiki.url.base="${osee.help.doc.url.base}/OSEE" 
-					help.doc.url.html="${osee.help.doc.url.base}/${osee.help.doc.tips}"
-					help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.doc.tips}"
-					help.doc.filenameNoExtension="${osee.help.tips.file.name}" help.imagefolder="${osee.help.image.folder}"
-					targetfolder="userguide" />
-				
-			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
-					wiki.url.base="${osee.help.doc.url.base}/OSEE" 
-					help.doc.url.html="${osee.help.doc.url.base}/${osee.help.doc.new}"
-					help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.doc.new}"
-					help.doc.filenameNoExtension="${osee.help.new.file.name}" help.imagefolder="${osee.help.image.folder}"
-					targetfolder="userguide" />
-			
-			<eclipse-wiki-to-help help.doc.url.base="${osee.help.doc.url.base}"
-					wiki.url.base="${osee.help.doc.url.base}/OSEE" help.doc.url.html="${osee.help.doc.url.base}/${osee.help.doc.update}"
-					help.doc.url.xml="${osee.help.doc.url.base}/Special:Export/${osee.help.doc.update}"
-					help.doc.filenameNoExtension="${osee.help.update.file.name}"
-					help.imagefolder="${osee.help.image.folder}" targetfolder="userguide" />
+			<antcall target="generate-help"/>
 		</sequential>
 	</target>
+	
+		<target name="generate-help" description="Generate Eclipse help content for the OSEE user guide">
+		<path id="wikitext.classpath2">
+			<fileset dir="../org.eclipse.osee.framework.help.ui/lib">
+				<include name="*.jar"/>
+			</fileset>
+		</path>
+
+		<taskdef resource="org/eclipse/mylyn/wikitext/core/util/anttask/tasks.properties" classpathref="wikitext.classpath2"/>
+		<taskdef resource="org/eclipse/mylyn/internal/wikitext/mediawiki/core/tasks/tasks.properties" classpathref="wikitext.classpath2"/>
+
+		<delete failonerror="false">
+			<fileset dir="OSEE" />
+		</delete>
+
+		<mediawiki-to-eclipse-help
+    		wikiBaseUrl="${osee.help.doc.url.base}"
+			validate="true"
+			failonvalidationerror="true"
+			prependImagePrefix="images"
+			formatoutput="true"
+			defaultAbsoluteLinkTarget="osee_external"
+			dest="${basedir}"
+			navigationimages="true"
+    		title="OSEE User's Guide"
+    		generateUnifiedToc="true">
+			<path name="OSEE/Coverage/Users_Guide/Intro" title="Getting Started"/>
+			<path name="OSEE/Coverage/Users_Guide/Views" title="Views and Editors"/>
+			<path name="OSEE/Coverage/Users_Guide/Usage" title="Using Coverage"/>
+			<path name="OSEE/Coverage/Users_Guide/Tips" title="Tips and Tricks"/>
+			<path name="OSEE/Coverage/Users_Guide/New" title="What's New"/>
+			<stylesheet url="book.css"/>
+		    		<pageAppendum>
+
+= Updating This Document =
+
+This document is maintained in a collaborative wiki.  If you wish to update or modify this document please visit 
+{url}</pageAppendum>
+    	</mediawiki-to-eclipse-help>
+		<mkdir dir="images/images" />
+		<copy todir="${basedir}/images" overwrite="true">
+			<fileset dir="${ant.file.imported}/commonImages" />
+		</copy>
+	</target>	
 </project>
