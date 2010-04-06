@@ -15,7 +15,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import org.apache.tools.ant.taskdefs.Get;
 
-
 public class OseeGet extends Get {
    @Override
    public void execute() {

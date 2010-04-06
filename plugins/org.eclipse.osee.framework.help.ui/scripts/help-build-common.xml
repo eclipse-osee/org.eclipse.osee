@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="help.common" basedir=".">
 	<property name="extract.style.sheet" value="${ant.file.imported}${file.separator}extract-markup.xsl" />
-	<property name="mylyn.plugins.path" value="${eclipse.home}${file.separator}plugins" />
-
+	<dirname property="help.common.dir" file="${ant.file.help.common}" />
+	<property name="mylyn.plugins.path" value="${help.common.dir}\..\lib" />
+	
 	<fail message="Specify the path to mylyn wikitext jars by setting 'mylyn.plugins.path'">
 		<condition>
 			<not>
 				<isset property="mylyn.plugins.path" />
 			</not>
+
 		</condition>
 	</fail>
 
@@ -17,15 +19,17 @@
 			<pathelement location="../org.eclipse.osee.framework.help.ui/@dot" />
 			<pathelement location="../org.eclipse.osee.framework.help.ui/bin" />
 		</classpath>
+
 	</taskdef>
 
-	<taskdef resource="org/eclipse/mylyn/wikitext/core/util/anttask/tasks.properties">
-		<classpath>
-			<pathelement path="${classpath}" />
-			<fileset dir="${mylyn.plugins.path}" includes="org.eclipse.mylyn.wikitext.core_*.jar" />
-			<fileset dir="${mylyn.plugins.path}" includes="org.eclipse.mylyn.wikitext.mediawiki.core_*.jar" />
-		</classpath>
-	</taskdef>
+	<path id="wikitext.classpath">
+		<fileset dir="${mylyn.plugins.path}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<taskdef resource="org/eclipse/mylyn/wikitext/core/util/anttask/tasks.properties" classpathref="wikitext.classpath"/>
+	<taskdef resource="org/eclipse/mylyn/internal/wikitext/mediawiki/core/tasks/tasks.properties" classpathref="wikitext.classpath"/>
 
 	<target name="init">
 		<mkdir dir="tmp" />
@@ -54,12 +58,24 @@
 			<copy todir="tmp">
 				<fileset dir="images" />
 			</copy>
-			<osee-mediawiki-fetch-images src="tmp/help.doc.html" dest="tmp/" base="@{help.doc.url.base}" />
+
+			<osee-mediawiki-fetch-images 
+				src="tmp/help.doc.html" 
+				dest="tmp/" 
+				base="@{help.doc.url.base}" />
 
 			<xslt style="${extract.style.sheet}" in="tmp/help.doc.xml" out="tmp/@{help.doc.filenameNoExtension}.mediawiki" />
-
-			<wikitext-to-eclipse-help markupLanguage="org.eclipse.mylyn.wikitext.mediawiki.core.MediaWikiLanguage" multipleOutputFiles="true" navigationImages="true" helpPrefix="@{targetFolder}" internallinkpattern="@{wiki.url.base}/{0}" validate="true" failonvalidationerror="true" prependImagePrefix="@{help.imageFolder}" formatoutput="true">
-				<!--defaultAbsoluteLinkTarget="osee_external"-->
+			
+			<wikitext-to-eclipse-help 
+				markupLanguage="org.eclipse.mylyn.wikitext.mediawiki.core.MediaWikiLanguage" 
+				multipleOutputFiles="true" 
+				navigationImages="true" 
+				helpPrefix="@{targetFolder}" 
+				internallinkpattern="@{wiki.url.base}/{0}" 
+				validate="true" 
+				failonvalidationerror="true" 
+				prependImagePrefix="@{help.imageFolder}" 
+				formatoutput="true">
 				<fileset dir="tmp" includes="**/*.mediawiki" />
 				<stylesheet url="book.css" />
 			</wikitext-to-eclipse-help>
