@@ -9,30 +9,6 @@
             file="toc.xml"
             primary="true">
       </toc>
-      <toc
-            file="userguide/OSEE Coverage Intro-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Coverage Views-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Coverage Usage-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Coverage Tips-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Coverage New-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Update-toc.xml"
-            primary="false">
-      </toc>
    </extension>
  <extension
        point="org.eclipse.ui.intro.configExtension">
