@@ -121,7 +121,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       // Else, get workflows from teamdefs
       else if (teamDefs.size() > 0) {
          TeamWorldSearchItem teamWorldSearchItem =
-               new TeamWorldSearchItem("", teamDefs, true, false, false, null, null, ReleasedOption.UnReleased);
+               new TeamWorldSearchItem("", teamDefs, true, false, false, null, null, ReleasedOption.Both);
          workflows.addAll(teamWorldSearchItem.performSearchGetResults(false, SearchType.Search));
       } else if (groups.size() > 0) {
          Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
