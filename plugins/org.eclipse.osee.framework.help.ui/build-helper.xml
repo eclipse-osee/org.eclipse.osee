@@ -13,6 +13,7 @@
 		<sequential>
 			<delete failonerror="false">
 				<fileset dir="OSEE" />
+				<fileset dir="images" />
 			</delete>
 
 			<mediawiki-to-eclipse-help wikiBaseUrl="${osee.help.doc.url.base}"
