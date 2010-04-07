@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.artifact.IArtifactListener;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
@@ -42,13 +43,6 @@ public class CoverageEventManager implements IArtifactListener, OseeMessagingSta
    private OseeMessagingTracker oseeMessagingTracker;
 
    private CoverageEventManager() {
-      artifactTypeEventFilter =
-            new ArtifactTypeEventFilter(CoverageArtifactTypes.CoverageFolder, CoverageArtifactTypes.CoverageUnit,
-                  CoverageArtifactTypes.CoveragePackage);
-      filteredEventListener = new FilteredEventListener(this, artifactTypeEventFilter);
-      OseeEventManager.addListener(filteredEventListener);
-      oseeMessagingTracker = new OseeMessagingTracker();
-      oseeMessagingTracker.open(true);
    }
 
    public static CoverageEventManager getInstance() {
@@ -60,10 +54,42 @@ public class CoverageEventManager implements IArtifactListener, OseeMessagingSta
 
    public static void dispose() {
       if (instance != null) {
-         OseeEventManager.removeListener(instance);
+         instance.stopListeneingForFrameworkEvents();
+         instance.stopListeningForRemoteCoverageEvents();
          instance.editors.clear();
+         instance.oseeMessagingTracker.close();
          instance = null;
       }
+   }
+
+   private void stopListeneingForFrameworkEvents() {
+      if (filteredEventListener != null) {
+         OseeEventManager.removeListener(filteredEventListener);
+      }
+   }
+
+   private void startListeningForFrameworkEvents() {
+      if (filteredEventListener == null) {
+         filteredEventListener = new FilteredEventListener(this, artifactTypeEventFilter);
+      }
+      if (artifactTypeEventFilter == null) {
+         artifactTypeEventFilter =
+               new ArtifactTypeEventFilter(CoverageArtifactTypes.CoverageFolder, CoverageArtifactTypes.CoverageUnit,
+                     CoverageArtifactTypes.CoveragePackage);
+      }
+      OseeEventManager.addListener(filteredEventListener);
+   }
+
+   private void startListeningForRemoteCoverageEvents() {
+      if (oseeMessagingTracker == null) {
+         oseeMessagingTracker = new OseeMessagingTracker();
+         oseeMessagingTracker.open(true);
+      }
+   }
+
+   private void stopListeningForRemoteCoverageEvents() {
+      oseeMessagingTracker.close();
+      oseeMessagingTracker = null;
    }
 
    public void addingRemoteEventService(ConnectionNode connectionNode) {
@@ -84,10 +110,16 @@ public class CoverageEventManager implements IArtifactListener, OseeMessagingSta
 
    public void register(CoverageEditor coverageEditor) throws OseeCoreException {
       editors.add(coverageEditor);
+      startListeningForRemoteCoverageEvents();
+      startListeningForFrameworkEvents();
    }
 
    public void unregister(CoverageEditor coverageEditor) throws OseeCoreException {
       editors.remove(coverageEditor);
+      if (editors.size() == 0) {
+         stopListeningForRemoteCoverageEvents();
+         stopListeneingForFrameworkEvents();
+      }
    }
 
    @Override
