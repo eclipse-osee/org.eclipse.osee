@@ -26,7 +26,6 @@
 				<path name="OSEE/Users_Guide/Features" title="Features" />
 				<path name="OSEE/Users_Guide/Tips" title="Tips" />
 				<path name="OSEE/Users_Guide/New" title="New" />
-				<path name="OSEE/Users_Guide/Update" title="Update" />
 				<stylesheet url="book.css" />
 				<pageAppendum>
 
