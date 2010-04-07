@@ -396,7 +396,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          }
       };
       toGoal.setToolTipText("Re-display as Goals");
-      toGoal.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ACTION));
+      toGoal.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GOAL));
 
       toWorkFlow = new Action("Re-display as WorkFlows", Action.AS_PUSH_BUTTON) {
 
