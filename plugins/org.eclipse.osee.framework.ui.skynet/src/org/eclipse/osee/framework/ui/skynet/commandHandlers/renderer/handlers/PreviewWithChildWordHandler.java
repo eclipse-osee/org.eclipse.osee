@@ -47,6 +47,7 @@ public class PreviewWithChildWordHandler extends PreviewWordHandler {
     * @return
     * @throws OseeArgumentException
     */
+   @Override
    protected VariableMap getOptions() throws OseeArgumentException {
       return new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR);
    }
