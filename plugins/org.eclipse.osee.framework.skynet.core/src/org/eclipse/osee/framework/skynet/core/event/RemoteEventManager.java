@@ -163,7 +163,7 @@ public class RemoteEventManager {
        * all processing and then kicking off display-thread when need to update ui. SessionId needs
        * to be modified so this client doesn't think the events came from itself.
        */
-      if (InternalEventManager.enableRemoteEventLoopback) {
+      if (InternalEventManager.isEnableRemoteEventLoopback()) {
          OseeLog.log(Activator.class, Level.INFO, "REM: Loopback enabled - Returning events as Remote event.");
          Thread thread = new Thread() {
             @Override
@@ -516,7 +516,7 @@ public class RemoteEventManager {
                   xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Changed, unloadedArtifact));
                } else if (!artifact.isHistorical()) {
                   for (SkynetAttributeChange skynetAttributeChange : ((NetworkArtifactModifiedEvent) event).getAttributeChanges()) {
-                     if (!InternalEventManager.enableRemoteEventLoopback) {
+                     if (!InternalEventManager.isEnableRemoteEventLoopback()) {
                         try {
                            Attribute<?> attribute =
                                  artifact.getAttributeById(skynetAttributeChange.getAttributeId(), true);
@@ -585,10 +585,7 @@ public class RemoteEventManager {
                   UnloadedArtifact unloadedArtifact = new UnloadedArtifact(branchId, artId, artTypeId);
                   xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, unloadedArtifact));
                } else if (!artifact.isHistorical()) {
-                  if (!InternalEventManager.enableRemoteEventLoopback) {
-                     ArtifactCache.deCache(artifact);
-                     artifact.internalSetDeleted();
-                  }
+                  internalHandleRemoteArtifactDeleted(artifact);
 
                   xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, artifact,
                         ((NetworkArtifactDeletedEvent) event).getTransactionId(),
@@ -600,10 +597,6 @@ public class RemoteEventManager {
          }
       }
 
-      /**
-       * @param event
-       * @param newTransactionId
-       */
       private static void updateRelations(Sender sender, ISkynetRelationLinkEvent event, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
          if (event == null) {
             return;
@@ -668,4 +661,24 @@ public class RemoteEventManager {
          }
       }
    }
+
+   public static void internalHandleRemoteArtifactModified(Artifact artifact) throws OseeCoreException {
+      if (artifact == null) {
+         return;
+      }
+      // TODO move processing of artifact modified to here
+   }
+
+   public static void internalHandleRemoteArtifactDeleted(Artifact artifact) throws OseeCoreException {
+      if (artifact == null) {
+         return;
+      }
+      if (!artifact.isHistorical()) {
+         if (!InternalEventManager.isEnableRemoteEventLoopback()) {
+            ArtifactCache.deCache(artifact);
+            artifact.internalSetDeleted();
+         }
+      }
+   }
+
 }

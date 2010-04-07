@@ -158,6 +158,7 @@ public class OseeEventManager {
          return;
       }
       InternalEventManager.kickArtifactReloadEvent(getSender(source), artifacts);
+      InternalEventManager2.kickArtifactReloadEvent(getSender(source), artifacts);
    }
 
    /**
@@ -183,6 +184,7 @@ public class OseeEventManager {
    // Turn off all event processing including LOCAL and REMOTE
    public static void setDisableEvents(boolean disableEvents) {
       InternalEventManager.setDisableEvents(disableEvents);
+      InternalEventManager2.setDisableEvents(disableEvents);
    }
 
    // Return report showing all listeners registered

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -19,6 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.artifact.ArtifactEventManager;
 import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
@@ -54,6 +56,39 @@ public class InternalEventManager2 {
 
    private static void execute(Runnable runnable) {
       executorService.submit(runnable);
+   }
+
+   // Kick LOCAL ArtifactReloadEvent
+   static void kickArtifactReloadEvent(final Sender sender, final Collection<? extends Artifact> artifacts) {
+      if (isDisableEvents()) {
+         return;
+      }
+      eventLog("OEM: kickArtifactReloadEvent #Reloads: " + artifacts.size() + " - " + sender);
+      Runnable runnable = new Runnable() {
+         public void run() {
+            try {
+               // Log if this is a loopback and what is happening
+               if (enableRemoteEventLoopback) {
+                  OseeLog.log(
+                        InternalEventManager.class,
+                        Level.WARNING,
+                        "OEM2: kickArtifactReloadEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+               }
+
+               // Kick LOCAL
+               if (!enableRemoteEventLoopback) {
+                  Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
+                  for (Artifact artifact : artifacts) {
+                     artifactChanges.add(new EventBasicGuidArtifact(EventModType.Reloaded, artifact));
+                  }
+                  ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
+               }
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      };
+      execute(runnable);
    }
 
    // Kick LOCAL and REMOTE purged event depending on sender
@@ -107,7 +142,7 @@ public class InternalEventManager2 {
    }
 
    // Kick LOCAL and REMOTE TransactionEvent
-   static void kickTransactionEvent(final Sender sender, final Set<EventBasicGuidArtifact> artifactChanges) {
+   static void kickTransactionEvent(final Sender sender, final Collection<EventBasicGuidArtifact> artifactChanges) {
       if (isDisableEvents()) {
          return;
       }
@@ -121,7 +156,7 @@ public class InternalEventManager2 {
                   OseeLog.log(
                         InternalEventManager.class,
                         Level.WARNING,
-                        "OEM2:TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+                        "OEM2: TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
                // Kick LOCAL
@@ -142,7 +177,7 @@ public class InternalEventManager2 {
       execute(runnable);
    }
 
-   private static List<IFrameworkEvent> generateNetworkFrameworkEvents(Sender sender, Set<EventBasicGuidArtifact> artifactChanges) {
+   private static List<IFrameworkEvent> generateNetworkFrameworkEvents(Sender sender, Collection<EventBasicGuidArtifact> artifactChanges) {
       List<IFrameworkEvent> events = new ArrayList<IFrameworkEvent>();
       for (EventBasicGuidArtifact artifactChange : artifactChanges) {
          events.add(generateNetworkSkynetArtifactEvent(artifactChange, sender));

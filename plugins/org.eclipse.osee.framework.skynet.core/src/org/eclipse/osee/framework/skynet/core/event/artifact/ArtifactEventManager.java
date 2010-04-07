@@ -8,7 +8,6 @@ package org.eclipse.osee.framework.skynet.core.event.artifact;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.skynet.core.event.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
@@ -46,7 +45,7 @@ public class ArtifactEventManager {
       return event instanceof IArtifactListener || (event instanceof FilteredEventListener && ((FilteredEventListener) event).isOfType(IArtifactListener.class));
    }
 
-   public static void processArtifactChanges(Sender sender, Set<EventBasicGuidArtifact> artifactChanges) {
+   public static void processArtifactChanges(Sender sender, Collection<EventBasicGuidArtifact> artifactChanges) {
       for (IEventListener listener : listeners) {
          IArtifactListener artifactListener = null;
          Collection<IEventFilter> eventFilters = null;

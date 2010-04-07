@@ -40,7 +40,8 @@ public class ArtifactEventManagerTest {
    final Set<EventBasicGuidArtifact> resultEventArtifacts = new HashSet<EventBasicGuidArtifact>();
    public static Sender resultSender = null;
    public static List<String> ignoreLogging =
-         Arrays.asList("OEM: TransactionEvent Loopback enabled", "OEM: kickArtifactReloadEvent Loopback enabled");
+         Arrays.asList("OEM: TransactionEvent Loopback enabled", "OEM: kickArtifactReloadEvent Loopback enabled",
+               "OEM2: TransactionEvent Loopback enabled", "OEM2: kickArtifactReloadEvent Loopback enabled");
 
    public class ArtifactEventListener implements IArtifactListener {
       @Override

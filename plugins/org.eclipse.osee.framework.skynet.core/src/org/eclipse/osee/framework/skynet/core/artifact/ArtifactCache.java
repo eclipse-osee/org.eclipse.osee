@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -135,6 +136,11 @@ public final class ArtifactCache {
 
    public static Artifact getHistorical(String guid, Integer transactionNumber) {
       return HISTORICAL_CACHE.getByGuid(guid, transactionNumber);
+   }
+
+   public static Artifact getActive(IBasicGuidArtifact basicGuidArtifact) throws OseeCoreException {
+      return ACTIVE_CACHE.getByGuid(basicGuidArtifact.getGuid(),
+            BranchManager.getBranchByGuid(basicGuidArtifact.getBranchGuid()));
    }
 
    public static Artifact getActive(Integer artId, Branch branch) {

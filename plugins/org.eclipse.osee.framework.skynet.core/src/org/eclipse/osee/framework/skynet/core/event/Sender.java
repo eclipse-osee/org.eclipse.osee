@@ -36,6 +36,12 @@ public class Sender {
             networkSender.userId, networkSender.machineIp, networkSender.port, networkSender.clientVersion, "n/a"));
    }
 
+   public Sender(org.eclipse.osee.framework.messaging.event.res.event.NetworkSender networkSender) {
+      this(networkSender.getSourceObject(), new OseeClientSession(networkSender.getSessionId(),
+            networkSender.getMachineName(), networkSender.getUserId(), networkSender.getMachineIp(), new Integer(
+                  networkSender.getPort()).intValue(), networkSender.getClientVersion(), "n/a"));
+   }
+
    public Sender(Object sourceObject) throws OseeAuthenticationRequiredException {
       this.sourceObject = InternalEventManager.getObjectSafeName(sourceObject);
       this.oseeSession = ClientSessionManager.getSession();

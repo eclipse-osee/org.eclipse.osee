@@ -26,11 +26,6 @@ public class NetworkArtifactModifiedEvent extends FrameworkArtifactEventBase {
       this.attributeChanges = attributeChanges;
    }
 
-   public NetworkArtifactModifiedEvent(NetworkArtifactModifiedEvent base) {
-      super(base);
-      this.attributeChanges = base.getAttributeChanges();
-   }
-
    public Collection<AttributeChange> getAttributeChanges() {
       return attributeChanges;
    }

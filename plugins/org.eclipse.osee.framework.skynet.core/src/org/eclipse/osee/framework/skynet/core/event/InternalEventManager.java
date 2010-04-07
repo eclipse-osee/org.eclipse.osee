@@ -78,7 +78,7 @@ public class InternalEventManager {
    // This will disable all Local TransactionEvents and enable loopback routing of Remote TransactionEvents back
    // through the RemoteEventService as if they came from another client.  This is for testing purposes only and
    // should be reset to false before release.
-   public static final boolean enableRemoteEventLoopback = false;
+   private static boolean enableRemoteEventLoopback = false;
 
    private static final boolean DEBUG = true;
 
@@ -813,5 +813,13 @@ public class InternalEventManager {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.INFO, ex);
       }
+   }
+
+   public static boolean isEnableRemoteEventLoopback() {
+      return enableRemoteEventLoopback;
+   }
+
+   public static void setEnableRemoteEventLoopback(boolean enableRemoteEventLoopback) {
+      InternalEventManager.enableRemoteEventLoopback = enableRemoteEventLoopback;
    }
 }
