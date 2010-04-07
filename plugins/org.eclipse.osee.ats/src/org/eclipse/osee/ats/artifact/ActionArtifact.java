@@ -24,7 +24,6 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -747,13 +746,14 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          }
       }
 
-      // Initialize state machine
-      teamArt.getStateMgr().initializeStateMachine(DefaultTeamState.Endorse.name(), assignees);
-      teamArt.getLog().addLog(LogType.StateEntered, DefaultTeamState.Endorse.name(), "");
-
       // Relate WorkFlow to Team Definition (by guid due to relation loading
       // issues)
       teamArt.setTeamDefinition(teamDef);
+
+      // Initialize state machine
+      String startState = teamArt.getWorkFlowDefinition().getStartPage().getPageName();
+      teamArt.getStateMgr().initializeStateMachine(startState, assignees);
+      teamArt.getLog().addLog(LogType.StateEntered, startState, "");
 
       // Relate Action to WorkFlow
       addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, teamArt);
@@ -765,10 +765,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    /**
     * Set Team Workflow attributes off given action artifact
-    * 
-    * @param fromAction
-    * @param toTeam
-    * @throws OseeArgumentException
     */
    public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws OseeCoreException {
       String priorityStr = fromAction.getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), "");
@@ -791,8 +787,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    /**
     * Since there is no shared attribute yet, action and workflow arts are all populate with identify data
-    * 
-    * @param art
     */
    public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Boolean validationRequired, Date needByDate) throws OseeCoreException {
       art.setName(title);
