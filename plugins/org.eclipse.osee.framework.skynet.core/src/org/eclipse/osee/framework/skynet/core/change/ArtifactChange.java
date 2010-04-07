@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public final class ArtifactChange extends Change {
 
-   public ArtifactChange(IOseeBranch branch, ArtifactType artType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      super(branch, artType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, isHistorical, artifact);
+   public ArtifactChange(IOseeBranch branch, ArtifactType artType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, boolean isHistorical, Artifact toArtifact, Artifact fromArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+      super(branch, artType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, isHistorical, toArtifact, fromArtifact);
    }
 
    @Override
@@ -53,8 +53,8 @@ public final class ArtifactChange extends Change {
          throw new IllegalArgumentException("adapter can not be null");
       }
 
-      if (adapter.isInstance(getArtifact())) {
-         return getArtifact();
+      if (adapter.isInstance(getToArtifact())) {
+         return getToArtifact();
       } else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
          return getToTransactionId();
       } else if (adapter.isInstance(this)) {

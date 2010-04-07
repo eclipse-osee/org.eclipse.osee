@@ -10,113 +10,81 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.change;
 
-import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
-import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Jeff C. Phillips
  */
 public class SingleNativeDiffHandler extends CommandHandler {
-   private ArrayList<Change> changes;
+	private ArrayList<Change> changes;
 
-   @Override
-   public boolean isEnabledWithException() throws OseeCoreException {
-      boolean enabled = false;
+	@Override
+	public boolean isEnabledWithException() throws OseeCoreException {
+		boolean enabled = false;
 
-      if (PlatformUI.getWorkbench().isClosing()) {
-         return false;
-      }
+		if (PlatformUI.getWorkbench().isClosing()) {
+			return false;
+		}
 
-      try {
-         ISelectionProvider selectionProvider =
-               AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+		try {
+			ISelectionProvider selectionProvider = AWorkbench.getActivePage()
+					.getActivePart().getSite().getSelectionProvider();
 
-         if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
+			if (selectionProvider != null
+					&& selectionProvider.getSelection() instanceof IStructuredSelection) {
+				IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider
+						.getSelection();
 
-            changes = new ArrayList<Change>(Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
+				changes = new ArrayList<Change>(
+						Handlers
+								.getArtifactChangesFromStructuredSelection(structuredSelection));
 
-            enabled =
-                  changes.size() == 1 && AccessControlManager.hasPermission(changes.get(0).getArtifact(),
-                        PermissionEnum.READ);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
-      }
-      return enabled;
-   }
+				enabled = changes.size() == 1
+						&& AccessControlManager.hasPermission(changes.get(0)
+								.getToArtifact(), PermissionEnum.READ);
+			}
+		} catch (Exception ex) {
+			OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+		}
+		return enabled;
+	}
 
-   @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
-      Change change = changes.iterator().next();
-      Set<Artifact> artifacts = new HashSet<Artifact>();
-      try {
-         Artifact baseArtifact =
-               change.getModificationType() == NEW || change.getModificationType() == ModificationType.INTRODUCED ? null : ArtifactQuery.getHistoricalArtifactFromId(
-                     change.getArtifact().getArtId(), change.getFromTransactionId(), true);
-         artifacts.addAll(checkForTrackedChangesOn(baseArtifact));
-         Artifact newerArtifact =
-               change.getModificationType().isDeleted() ? null : change.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
-                     change.getArtifact().getArtId(), change.getToTransactionId(), true) : change.getArtifact();
-         artifacts.addAll(checkForTrackedChangesOn(newerArtifact));
-         if (artifacts.isEmpty()) {
-            VariableMap variableMap = new VariableMap();
-            String fileName = baseArtifact != null ? baseArtifact.getSafeName() : newerArtifact.getSafeName();
-            variableMap.setValue("fileName", fileName + "_" + new Date().toString().replaceAll(":", ";") + ".xml");
+	@Override
+	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-            RendererManager.diff(baseArtifact, newerArtifact, true);
-         } else {
-            WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
-                  "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
-            WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
-         }
+		Collection<Pair<Artifact, Artifact>> compareArtifacts = ChangeManager
+				.getCompareArtifacts(changes);
 
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return null;
-   }
-
-   private Set<Artifact> checkForTrackedChangesOn(Artifact artifact) throws OseeCoreException {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
-      if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
-         if (artifact != null) {
-            String value = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.WORD_TEMPLATE_CONTENT, "");
-            // check for track changes
-            if (WordAnnotationHandler.containsWordAnnotations(value)) {
-               // capture those artifacts that have tracked changes on 
-               artifacts.add(artifact);
-            }
-         }
-      }
-      return artifacts;
-   }
+		for (Pair<Artifact, Artifact> pair : compareArtifacts) {
+			try {
+				Artifact baseArtifact = pair.getFirst();
+				Artifact newerArtifact = pair.getSecond();
+				RendererManager.diff(baseArtifact, newerArtifact, true);
+			} catch (OseeCoreException ex) {
+				OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+			}
+		}
+		return null;
+	}
 }

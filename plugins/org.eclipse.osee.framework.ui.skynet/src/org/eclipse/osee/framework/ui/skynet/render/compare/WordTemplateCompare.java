@@ -8,15 +8,18 @@ package org.eclipse.osee.framework.ui.skynet.render.compare;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -48,11 +51,24 @@ public class WordTemplateCompare implements IComparator {
       artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(baseArtifact));
       artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(newerArtifact));
 
-      Attribute<String> baseContent = getWordContent(baseArtifact, attributeType);
-      Attribute<String> newerContent = getWordContent(newerArtifact, attributeType);
 
-      if (artifacts.isEmpty()) {
-         if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+
+		if (!artifacts.isEmpty()) {
+			 if (RenderingUtil.arePopupsAllowed()) {
+			WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
+							"Detected tracked changes for some artifacts. Please refer to the results HTML report.");
+			WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
+			 }
+		} else {
+      
+	           if (baseArtifact == null && newerArtifact == null) {
+	                  throw new OseeArgumentException("baseVersion and newerVersion can't both be null.");
+	               }
+	           
+		      Attribute<String> baseContent = getWordContent(baseArtifact, attributeType);
+		      Attribute<String> newerContent = getWordContent(newerArtifact, attributeType);
+         
+		      if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
             originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
          }
 
@@ -66,12 +82,6 @@ public class WordTemplateCompare implements IComparator {
          WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);
 
          return compare(baseArtifact, newerArtifact, baseFile, newerFile, presentationType, show);
-      } else {
-         if (RenderingUtil.arePopupsAllowed()) {
-            WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
-                  "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
-            WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
-         }
       }
       return "";
    }
@@ -81,7 +91,7 @@ public class WordTemplateCompare implements IComparator {
       String diffPath;
 
       String fileName = renderer.getStringOption("fileName");
-      if (fileName == null || fileName.equals("")) {
+      if (!Strings.isValid(fileName)) {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();
             diffPath =
@@ -117,14 +127,10 @@ public class WordTemplateCompare implements IComparator {
 
    private IFile renderFile(IProgressMonitor monitor, FileRenderer renderer, Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException {
       IFile toReturn = null;
-      if (artifact != null) {
-         if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
-            toReturn = renderer.renderForMerge(monitor, artifact, presentationType);
-         } else {
-            toReturn = renderer.renderForDiff(monitor, artifact);
-         }
+      if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
+    	  toReturn = renderer.renderForMerge(monitor, artifact, branch, presentationType);
       } else {
-         toReturn = renderer.renderForDiff(monitor, branch);
+    	  toReturn = renderer.renderForDiff(monitor, artifact, branch);
       }
       return toReturn;
    }

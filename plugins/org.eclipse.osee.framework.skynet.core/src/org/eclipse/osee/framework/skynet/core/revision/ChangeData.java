@@ -80,13 +80,13 @@ public class ChangeData {
             for (Change change : changes) {
                if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && change instanceof ArtifactChange) {
                   if (modTypes.contains(change.getModificationType())) {
-                     artifacts.add(change.getArtifact());
+                     artifacts.add(change.getToArtifact());
                   }
                }
                //
                else if ((kindType == KindType.Relation || kindType == KindType.ArtifactOrRelation) && change instanceof RelationChange) {
                   if (modTypes.contains(change.getModificationType())) {
-                     artifacts.add(((RelationChange) change).getArtifact());
+                     artifacts.add(((RelationChange) change).getToArtifact());
                      artifacts.add(((RelationChange) change).getBArtifact());
                   }
                }

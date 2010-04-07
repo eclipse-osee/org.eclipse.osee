@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.branch.management.change;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
  * @author Ryan D. Brooks
@@ -49,8 +49,8 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private final HashMap<Integer, ChangeItem> artifactChangesByItemId = new HashMap<Integer, ChangeItem>();
    private final HashMap<Integer, ChangeItem> relationChangesByItemId = new HashMap<Integer, ChangeItem>();
    private final HashMap<Integer, ChangeItem> attributeChangesByItemId = new HashMap<Integer, ChangeItem>();
-   private final HashMap<Long, Pair<Integer, ModificationType>> changeByGammaId =
-         new HashMap<Long, Pair<Integer, ModificationType>>();
+   private final HashMap<Long, ModificationType> changeByGammaId =
+         new HashMap<Long, ModificationType>();
 
    private final Collection<ChangeItem> changeData;
    private final TransactionRecord sourceTransaction;
@@ -128,8 +128,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
             txJoin.add(chStmt.getLong("gamma_id"), -1);
-            changeByGammaId.put(chStmt.getLong("gamma_id"), new Pair<Integer, ModificationType>(
-                  sourceTransaction.getId(), ModificationType.getMod(chStmt.getInt("mod_type"))));
+            changeByGammaId.put(chStmt.getLong("gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type")));
          }
          txJoin.store();
       } finally {
@@ -147,9 +146,9 @@ public class LoadChangeDataOperation extends AbstractOperation {
          chStmt.runPreparedQuery(10000, query, queryId);
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            Pair<Integer, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
+            ModificationType modType = changeByGammaId.get(chStmt.getLong("gamma_id"));
             ArtifactChangeItem changeItem =
-                  new ArtifactChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(), txsTableData.getFirst(),
+                  new ArtifactChangeItem(chStmt.getLong("gamma_id"), modType,
                         chStmt.getInt("art_id"));
             changesByItemId.put(changeItem.getItemId(), changeItem);
          }
@@ -167,10 +166,9 @@ public class LoadChangeDataOperation extends AbstractOperation {
          chStmt.runPreparedQuery(10000, query, queryId);
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            Pair<Integer, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
+            ModificationType modType = changeByGammaId.get(chStmt.getLong("gamma_id"));
             AttributeChangeItem changeItem =
-                  new AttributeChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(),
-                        txsTableData.getFirst(), chStmt.getInt("attr_id"), chStmt.getInt("art_id"),
+                  new AttributeChangeItem(chStmt.getLong("gamma_id"), modType, chStmt.getInt("attr_id"), chStmt.getInt("art_id"),
                         chStmt.getString("value"));
 
             changesByItemId.put(changeItem.getItemId(), changeItem);
@@ -189,9 +187,9 @@ public class LoadChangeDataOperation extends AbstractOperation {
          chStmt.runPreparedQuery(10000, query, queryId);
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            Pair<Integer, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
+            ModificationType modType = changeByGammaId.get(chStmt.getLong("gamma_id"));
             RelationChangeItem changeItem =
-                  new RelationChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(), txsTableData.getFirst(),
+                  new RelationChangeItem(chStmt.getLong("gamma_id"), modType,
                         chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"), chStmt.getInt("rel_link_id"),
                         chStmt.getInt("rel_link_type_id"), chStmt.getString("rationale"));
 

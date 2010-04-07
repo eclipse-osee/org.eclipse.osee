@@ -25,16 +25,15 @@ public final class ChangeVersion {
       this(null, null, null);
    }
 
-   public ChangeVersion(Long gammaId, ModificationType modType, Integer transactionNumber) {
-      this(null, gammaId, modType, transactionNumber);
+   public ChangeVersion(Long gammaId, ModificationType modType) {
+      this(null, gammaId, modType);
    }
 
-   public ChangeVersion(String value, Long gammaId, ModificationType modType, Integer transactionNumber) {
+   public ChangeVersion(String value, Long gammaId, ModificationType modType) {
       super();
       this.value = value;
       this.gammaId = gammaId;
       this.modType = modType;
-      this.transactionNumber = transactionNumber;
    }
 
    public Long getGammaId() {
@@ -47,10 +46,6 @@ public final class ChangeVersion {
 
    public String getValue() {
       return value;
-   }
-
-   public Integer getTransactionNumber() {
-      return transactionNumber;
    }
 
    public void setTransactionNumber(Integer transactionNumber) {
@@ -76,13 +71,12 @@ public final class ChangeVersion {
    public void copy(ChangeVersion item) {
       setGammaId(item.getGammaId());
       setModType(item.getModType());
-      setTransactionNumber(item.getTransactionNumber());
       setValue(item.getValue());
    }
 
    @Override
    public String toString() {
-      return String.format("[%s,%s,%s]", getTransactionNumber(), getGammaId(), getModType());
+      return String.format("[%s,%s]", getGammaId(), getModType());
    }
 
    @Override

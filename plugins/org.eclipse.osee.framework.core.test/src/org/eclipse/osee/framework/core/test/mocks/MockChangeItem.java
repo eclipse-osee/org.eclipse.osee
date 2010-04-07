@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
  */
 public class MockChangeItem extends ChangeItem {
 
-   public MockChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, int currentSourceTransactionNumber) {
-      super(currentSourceGammaId, currentSourceModType, currentSourceTransactionNumber);
+   public MockChangeItem(long currentSourceGammaId, ModificationType currentSourceModType) {
+      super(currentSourceGammaId, currentSourceModType);
    }
 
    @Override

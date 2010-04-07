@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -40,8 +41,8 @@ public final class AttributeChange extends Change {
    private AttributeType dynamicAttributeDescriptor;
    private final ModificationType artModType;
 
-   public AttributeChange(IOseeBranch branch, ArtifactType artType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      super(branch, artType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, isHistorical, artifact);
+   public AttributeChange(IOseeBranch branch, ArtifactType artType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical, Artifact toArtifact, Artifact fromArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+      super(branch, artType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, isHistorical, toArtifact, fromArtifact);
       this.isValue = isValue;
       this.wasValue = wasValue;
       this.attrId = attrId;
@@ -118,7 +119,7 @@ public final class AttributeChange extends Change {
    }
 
    public Attribute<?> getAttribute() throws OseeCoreException {
-      for (Attribute<?> attribute : getArtifact().getAllAttributesIncludingHardDeleted()) {
+      for (Attribute<?> attribute : getToArtifact().getAllAttributesIncludingHardDeleted()) {
          if (attribute.getId() == attrId) {
             return attribute;
          }
@@ -133,8 +134,8 @@ public final class AttributeChange extends Change {
       }
 
       try {
-         if (adapter.isInstance(getArtifact())) {
-            return getArtifact();
+         if (adapter.isInstance(getToArtifact())) {
+            return getToArtifact();
          } else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
             return getToTransactionId();
          } else if (adapter.isInstance(this)) {

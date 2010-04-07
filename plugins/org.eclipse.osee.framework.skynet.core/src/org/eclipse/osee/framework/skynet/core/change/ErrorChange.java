@@ -24,7 +24,7 @@ public class ErrorChange extends Change {
 
    public ErrorChange(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super(branch, artifactType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, isHistorical,
-            artifact);
+            artifact, null);
    }
 
    public ErrorChange(IOseeBranch branch, int artId, String exception) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {

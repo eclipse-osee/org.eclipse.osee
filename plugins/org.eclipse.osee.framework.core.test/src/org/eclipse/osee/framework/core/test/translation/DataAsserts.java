@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.core.test.translation;
 
 import java.util.List;
+
 import junit.framework.Assert;
+
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.data.BranchCreationRequest;
@@ -207,7 +209,6 @@ public final class DataAsserts {
          Assert.assertEquals(expected.isValid(), actual.isValid());
          Assert.assertEquals(expected.getGammaId(), actual.getGammaId());
          Assert.assertEquals(expected.getModType(), actual.getModType());
-         Assert.assertEquals(expected.getTransactionNumber(), actual.getTransactionNumber());
          Assert.assertEquals(expected.getValue(), actual.getValue());
       }
    }

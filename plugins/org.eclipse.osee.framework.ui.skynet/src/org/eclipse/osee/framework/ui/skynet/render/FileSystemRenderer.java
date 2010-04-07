@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -97,16 +98,17 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       return renderToFileSystem(baseFolder, null, branch, PresentationType.DIFF);
    }
 
-   public IFile renderForDiff(IProgressMonitor monitor, Artifact artifact) throws OseeCoreException {
-      if (artifact == null) {
-         throw new OseeArgumentException("Artifact can not be null.");
-      }
-
-      IFolder baseFolder = RenderingUtil.getRenderFolder(artifact.getBranch(), PresentationType.DIFF);
-      return renderToFileSystem(baseFolder, artifact, artifact.getBranch(), PresentationType.DIFF);
+   public IFile renderForDiff(IProgressMonitor monitor, Artifact artifact, Branch branch) throws OseeCoreException {
+	   Artifact artifactToRender = artifact;
+	   if(artifactToRender == null || artifactToRender.isDeleted() ){
+		   artifactToRender = null;
+	   }
+      
+      IFolder baseFolder = RenderingUtil.getRenderFolder(branch, PresentationType.DIFF);
+      return renderToFileSystem(baseFolder, artifactToRender, branch, PresentationType.DIFF);
    }
 
-   public IFile renderForMerge(IProgressMonitor monitor, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+   public IFile renderForMerge(IProgressMonitor monitor, Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException {
       if (artifact == null) {
          throw new IllegalArgumentException("Artifact can not be null.");
       }

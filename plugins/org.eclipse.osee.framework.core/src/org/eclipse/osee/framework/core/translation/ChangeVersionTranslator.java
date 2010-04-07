@@ -23,7 +23,6 @@ public class ChangeVersionTranslator implements ITranslator<ChangeVersion> {
       GAMMA_ID,
       MOD_TYPE,
       VALUE,
-      TRANSACTION_NUMBER,
       IS_VALID;
    }
 
@@ -40,11 +39,9 @@ public class ChangeVersionTranslator implements ITranslator<ChangeVersion> {
          ModificationType modificationType =
                ModificationType.getMod(Integer.parseInt(propertyStore.get(Entry.MOD_TYPE.name())));
          Long gammaId = Long.parseLong(propertyStore.get(Entry.GAMMA_ID.name()));
-         Integer transactionNumber = Integer.parseInt(propertyStore.get(Entry.TRANSACTION_NUMBER.name()));
 
          changeVersion.setGammaId(gammaId);
          changeVersion.setModType(modificationType);
-         changeVersion.setTransactionNumber(transactionNumber);
          changeVersion.setValue(value);
       }
       return changeVersion;
@@ -59,7 +56,6 @@ public class ChangeVersionTranslator implements ITranslator<ChangeVersion> {
          store.put(Entry.GAMMA_ID.name(), changeVersion.getGammaId());
          store.put(Entry.MOD_TYPE.name(), changeVersion.getModType().getValue());
          store.put(Entry.VALUE.name(), changeVersion.getValue());
-         store.put(Entry.TRANSACTION_NUMBER.name(), changeVersion.getTransactionNumber());
       }
       return store;
    }

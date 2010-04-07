@@ -6,6 +6,7 @@
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
 import java.util.Collection;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -119,17 +120,13 @@ public class WholeWordCompare implements IComparator {
    }
 
    private IFile renderFile(IProgressMonitor monitor, FileRenderer renderer, Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException {
-      IFile toReturn = null;
-      if (artifact != null) {
-         if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
-            toReturn = renderer.renderForMerge(monitor, artifact, presentationType);
-         } else {
-            toReturn = renderer.renderForDiff(monitor, artifact);
-         }
-      } else {
-         toReturn = renderer.renderForDiff(monitor, branch);
-      }
-      return toReturn;
+	   IFile toReturn = null;
+	   if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
+		   toReturn = renderer.renderForMerge(monitor, artifact, branch, presentationType);
+	   } else {
+		   toReturn = renderer.renderForDiff(monitor, artifact, branch);
+	   }
+	   return toReturn;
    }
 
    private Attribute<String> getWordContent(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {

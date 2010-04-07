@@ -25,9 +25,9 @@ public abstract class ChangeItem {
    private final ChangeVersion destinationEntry;
    private final ChangeVersion netEntry;
 
-   protected ChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, int currentSourceTransactionNumber) {
+   protected ChangeItem(long currentSourceGammaId, ModificationType currentSourceModType) {
       super();
-      this.currentEntry = new ChangeVersion(currentSourceGammaId, currentSourceModType, currentSourceTransactionNumber);
+      this.currentEntry = new ChangeVersion(currentSourceGammaId, currentSourceModType);
 
       this.baseEntry = new ChangeVersion();
       this.firstChange = new ChangeVersion();

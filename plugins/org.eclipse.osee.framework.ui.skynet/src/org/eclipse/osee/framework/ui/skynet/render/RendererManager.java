@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -331,6 +332,7 @@ public class RendererManager {
          public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
             Pair<Artifact, Artifact> entry = itemsToCompare.iterator().next();
             Artifact sampleArtifact = entry.getFirst() != null ? entry.getFirst() : entry.getSecond();
+            
             IRenderer renderer = getBestRenderer(PresentationType.DIFF, sampleArtifact, options);
             IComparator comparator = renderer.getComparator();
             comparator.compareArtifacts(monitor, PresentationType.DIFF, itemsToCompare);

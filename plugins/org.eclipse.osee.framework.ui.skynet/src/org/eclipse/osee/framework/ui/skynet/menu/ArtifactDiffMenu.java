@@ -83,7 +83,7 @@ public class ArtifactDiffMenu {
          try {
             valid =
                   (RendererManager.getBestFileRenderer(PresentationType.DIFF,
-                        ((Change) selections[0]).getArtifact()).supportsCompare());
+                        ((Change) selections[0]).getToArtifact()).supportsCompare());
          } catch (OseeCoreException ex) {
          }
       }

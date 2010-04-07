@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
  */
 public class AttributeChangeItem extends ChangeItem {
 
-   public AttributeChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, int currentSourceTransactionNumber, int attrId, int artId, String value) {
-      super(currentSourceGammaId, currentSourceModType, currentSourceTransactionNumber);
+   public AttributeChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, int attrId, int artId, String value) {
+      super(currentSourceGammaId, currentSourceModType);
 
       this.setItemId(attrId);
       this.setArtId(artId);

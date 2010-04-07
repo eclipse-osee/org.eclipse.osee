@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -95,9 +96,14 @@ public final class WordChangeReportOperation extends AbstractOperation {
                artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(entry.getFirst()));
                artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(entry.getSecond()));
 
-               if (!artifacts.isEmpty()) {
-                  continue;
-               }
+				if (!artifacts.isEmpty()) {
+					if (RenderingUtil.arePopupsAllowed()) {
+					WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
+									"Detected tracked changes for some artifacts. Please refer to the results HTML report.");
+					WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
+					}
+					continue;
+				}
 
                Artifact baseArtifact = entry.getFirst();
                Artifact newerArtifact = entry.getSecond();

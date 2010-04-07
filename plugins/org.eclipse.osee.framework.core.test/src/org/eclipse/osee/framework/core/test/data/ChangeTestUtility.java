@@ -25,7 +25,7 @@ public class ChangeTestUtility {
    }
 
    public static ChangeVersion createChange(Long long1, ModificationType mod1) {
-      return new ChangeVersion(long1, mod1, 0);
+      return new ChangeVersion(long1, mod1);
    }
 
    public static void checkChange(String message, ChangeVersion expected, ChangeVersion actual) {
@@ -33,7 +33,6 @@ public class ChangeTestUtility {
       Assert.assertEquals(message, expected.getModType(), actual.getModType());
 
       Assert.assertEquals(message, expected.getValue(), actual.getValue());
-      Assert.assertEquals(message, expected.getTransactionNumber(), actual.getTransactionNumber());
    }
 
    public static void checkChange(ChangeVersion expected, ChangeVersion actual) {
@@ -42,7 +41,7 @@ public class ChangeTestUtility {
 
    public static ChangeItem createItem(int itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net) {
       MockChangeItem change =
-            new MockChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber());
+            new MockChangeItem(current.getGammaId(), current.getModType());
       change.setItemId(itemId);
       if (base != null) {
          change.getBaselineVersion().copy(base);

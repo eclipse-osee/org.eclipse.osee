@@ -74,12 +74,12 @@ public class ChangeItemTranslator implements ITranslator<ChangeItem> {
          case ARTIFACT:
             changeItem =
                   new ArtifactChangeItem(currentChangeVersion.getGammaId(), currentChangeVersion.getModType(),
-                        currentChangeVersion.getTransactionNumber(), artId);
+                       artId);
             break;
          case ATTRIBUTE:
             changeItem =
                   new AttributeChangeItem(currentChangeVersion.getGammaId(), currentChangeVersion.getModType(),
-                        currentChangeVersion.getTransactionNumber(), itemId, artId, currentChangeVersion.getValue());
+                        itemId, artId, currentChangeVersion.getValue());
             break;
          case RELATION:
             int bArtId = Integer.parseInt(propertyStore.get(Entry.B_ART_ID.name()));
@@ -88,7 +88,7 @@ public class ChangeItemTranslator implements ITranslator<ChangeItem> {
 
             changeItem =
                   new RelationChangeItem(currentChangeVersion.getGammaId(), currentChangeVersion.getModType(),
-                        currentChangeVersion.getTransactionNumber(), artId, bArtId, itemId, relTypeId, rationale);
+                        artId, bArtId, itemId, relTypeId, rationale);
             break;
          default:
             throw new OseeStateException("Invalid change item type");
@@ -102,7 +102,6 @@ public class ChangeItemTranslator implements ITranslator<ChangeItem> {
       if (srcVersion != null && destVersion != null && srcVersion.isValid()) {
          destVersion.setGammaId(srcVersion.getGammaId());
          destVersion.setModType(srcVersion.getModType());
-         destVersion.setTransactionNumber(srcVersion.getTransactionNumber());
          destVersion.setValue(srcVersion.getValue());
       }
    }

@@ -104,7 +104,7 @@ public class WordEditTest {
       List<Artifact> arts = new ArrayList<Artifact>();
       Collection<Change> changes = ChangeManager.getChangesPerBranch(branch, new NullProgressMonitor());
       for (Change change : changes) {
-         Artifact art = change.getArtifact();
+         Artifact art = change.getToArtifact();
          if (art.isOfType(CoreArtifactTypes.AbstractSoftwareRequirement)) {
             arts.add(art);
          }

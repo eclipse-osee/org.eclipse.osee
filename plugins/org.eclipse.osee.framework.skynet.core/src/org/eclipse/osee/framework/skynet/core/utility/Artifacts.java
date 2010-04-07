@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -24,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
@@ -46,6 +49,21 @@ public final class Artifacts {
          guids.add(artifact.getGuid());
       }
       return guids;
+   }
+   
+   public static ModificationType getArtifactModType(Artifact artifact) throws OseeCoreException{
+	   ModificationType modificationType = artifact.getModType();
+	   
+	   if(modificationType == ModificationType.NEW || modificationType == ModificationType.INTRODUCED){
+		   for(Attribute<?> attribute : artifact.getAttributes()){
+			   if(attribute.getModificationType() != ModificationType.NEW && 
+					   attribute.getModificationType() != ModificationType.INTRODUCED){
+				   modificationType = attribute.getModificationType();
+				   break;
+			   }
+		   }
+	   }
+	   return modificationType;
    }
 
    public static String commaArts(Collection<? extends Artifact> artifacts) {

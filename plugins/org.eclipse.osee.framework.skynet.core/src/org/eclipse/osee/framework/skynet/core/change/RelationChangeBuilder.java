@@ -44,7 +44,7 @@ public class RelationChangeBuilder extends ChangeBuilder {
       }
       return new RelationChange(branch, getArtifactType(), getSourceGamma(), getArtId(), getToTransactionId(),
             getFromTransactionId(), getModType(), bArtId, relLinkId, rationale, relationType, isHistorical(),
-            loadArtifact(), bArtifact);
+            loadArtifact(), bArtifact, null);
    }
 
 }

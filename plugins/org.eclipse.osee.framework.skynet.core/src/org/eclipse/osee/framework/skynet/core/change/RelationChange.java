@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -56,8 +57,8 @@ public final class RelationChange extends Change {
     * @throws OseeDataStoreException
     * @throws ArtifactDoesNotExist
     */
-   public RelationChange(IOseeBranch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, Artifact artifact, Artifact bArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      super(branch, aArtType, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, isHistorical, artifact);
+   public RelationChange(IOseeBranch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, Artifact toArtifact, Artifact bArtifact, Artifact fromArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+      super(branch, aArtType, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, isHistorical, toArtifact, fromArtifact);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
       this.rationale = rationale;
@@ -73,8 +74,8 @@ public final class RelationChange extends Change {
       }
 
       try {
-         if (adapter.isInstance(getArtifact())) {
-            return getArtifact();
+         if (adapter.isInstance(getToArtifact())) {
+            return getToArtifact();
          } else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
             return getToTransactionId();
          } else if (adapter.isInstance(this)) {

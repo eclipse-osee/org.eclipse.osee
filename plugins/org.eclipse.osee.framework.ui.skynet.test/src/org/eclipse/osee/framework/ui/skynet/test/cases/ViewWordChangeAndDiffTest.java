@@ -84,7 +84,7 @@ public class ViewWordChangeAndDiffTest {
    @org.junit.Test
    public void testSingleNativeDiff() throws Exception {
       Collection<Change> changes = ChangeManager.getChangesPerBranch(getTestBranch(), new NullProgressMonitor());
-      Artifact artifact = changes.iterator().next().getArtifact();
+      Artifact artifact = changes.iterator().next().getToArtifact();
 
       checkPermissions(Collections.singletonList(artifact));
 
@@ -130,7 +130,7 @@ public class ViewWordChangeAndDiffTest {
    private static ArrayList<Artifact> asArtifacts(Collection<Change> changes) throws ArtifactDoesNotExist {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
       for (Change artifactChange : changes) {
-         arts.add(artifactChange.getArtifact());
+         arts.add(artifactChange.getToArtifact());
       }
       return arts;
    }

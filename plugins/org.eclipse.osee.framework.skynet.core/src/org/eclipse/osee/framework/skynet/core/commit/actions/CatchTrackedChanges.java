@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.commit.actions;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -54,10 +55,12 @@ public class CatchTrackedChanges implements CommitAction {
                   }
                }
             }
-            Artifact artifactChanged = change.getArtifact();
+            
+            Artifact artifactChanged = change.getToArtifact();
             if (artifactChanged != null) {
                changedArtifacts.add(artifactChanged);
             }
+            
          }
       }
 

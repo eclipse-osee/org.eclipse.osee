@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.AttributeChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeItem;
-import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.ChangeItemUtil;
@@ -53,7 +53,7 @@ public class AddArtifactChangeData extends AbstractOperation {
             if (artifactChange == null) {
                artifactChange = syntheticArtifactChanges.get(artIdToCheck);
                if (artifactChange == null) {
-                  artifactChange = new ArtifactChangeItem(-1, null, -1, artIdToCheck);
+                  artifactChange = new ArtifactChangeItem(-1, null, artIdToCheck);
                   syntheticArtifactChanges.put(artIdToCheck, artifactChange);
                }
                attrItems.add(attributeChange);
@@ -62,17 +62,6 @@ public class AddArtifactChangeData extends AbstractOperation {
          }
       }
       changeItems.addAll(syntheticArtifactChanges.values());
-
-      for (AttributeChangeItem item : attrItems) {
-         AttributeChangeItem attributeChange = item;
-         if (attributeChange.getNetChange().isValid()) {
-            ChangeVersion netVersion = attributeChange.getNetChange();
-            if (ChangeItemUtil.isNew(netVersion) || ChangeItemUtil.isIntroduced(netVersion)) {
-               ArtifactChangeItem artifactChange = syntheticArtifactChanges.get(attributeChange.getArtId());
-               ChangeItemUtil.copy(artifactChange.getBaselineVersion(), attributeChange.getBaselineVersion());
-            }
-         }
-      }
    }
 
    private void updateArtifactChangeItem(ArtifactChangeItem artifact, AttributeChangeItem attribute) {

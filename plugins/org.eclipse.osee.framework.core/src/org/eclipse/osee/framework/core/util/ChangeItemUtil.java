@@ -49,7 +49,6 @@ public class ChangeItemUtil {
       
       dest.setGammaId(source.getGammaId());
       dest.setModType(source.getModType());
-      dest.setTransactionNumber(source.getTransactionNumber());
       dest.setValue(source.getValue());
    }
 

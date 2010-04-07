@@ -19,7 +19,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
+
 import javax.xml.namespace.QName;
+
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -235,8 +237,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-      return TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION)).getSoleAttributeValue(
-            CoreAttributeTypes.WHOLE_WORD_CONTENT);
+	   Artifact templateArtifact = TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION));
+      return templateArtifact.getSoleAttributeValue(CoreAttributeTypes.WHOLE_WORD_CONTENT);
    }
 
    @Override

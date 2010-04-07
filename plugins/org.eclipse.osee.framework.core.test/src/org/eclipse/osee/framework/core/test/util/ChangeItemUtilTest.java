@@ -14,8 +14,10 @@ package org.eclipse.osee.framework.core.test.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -328,7 +330,7 @@ public class ChangeItemUtilTest {
 
    @Test
    public void testCopy() throws OseeCoreException {
-      ChangeVersion expected = new ChangeVersion(5679L, ModificationType.MERGED, 1234);
+      ChangeVersion expected = new ChangeVersion(5679L, ModificationType.MERGED);
 
       ChangeVersion actual = new ChangeVersion();
       ChangeItemUtil.copy(expected, actual);

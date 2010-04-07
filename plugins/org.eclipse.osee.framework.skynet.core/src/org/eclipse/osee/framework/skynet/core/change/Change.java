@@ -30,13 +30,14 @@ public abstract class Change implements IAdaptable {
    private final int artId;
    private final TransactionRecord toTransactionId;
    private TransactionRecord fromTransactionId;
-   private final Artifact artifact;
+   private final Artifact toArtifact;
+   private final Artifact fromArtifact;
    private ModificationType modType;
    private final IOseeBranch branch;
    private final ArtifactType artifactType;
    private final boolean isHistorical;
 
-   public Change(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+   public Change(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, boolean isHistorical, Artifact toArtifact, Artifact fromArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super();
       this.branch = branch;
       this.sourceGamma = sourceGamma;
@@ -46,7 +47,8 @@ public abstract class Change implements IAdaptable {
       this.modType = modType;
       this.artifactType = artifactType;
       this.isHistorical = isHistorical;
-      this.artifact = artifact;
+      this.toArtifact = toArtifact;
+      this.fromArtifact = fromArtifact;
    }
 
    @Override
@@ -95,12 +97,16 @@ public abstract class Change implements IAdaptable {
       return modType;
    }
 
-   public Artifact getArtifact() {
-      return artifact;
+   public Artifact getToArtifact() {
+      return toArtifact;
    }
+   
+	public Artifact getFromArtifact(){
+        return fromArtifact;
+	}
 
    public String getArtifactName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      return getArtifact().getName();
+      return getToArtifact().getName();
    }
 
    public int getGamma() {

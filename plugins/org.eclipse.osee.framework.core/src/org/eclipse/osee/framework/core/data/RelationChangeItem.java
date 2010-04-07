@@ -20,8 +20,8 @@ public class RelationChangeItem extends ChangeItem {
    private final int relTypeId;
    private final String rationale;
 
-   public RelationChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, int currentSourceTansactionNumber, int aArtId, int bArtId, int relLinkId, int relTypeId, String rationale) {
-      super(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber);
+   public RelationChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, int aArtId, int bArtId, int relLinkId, int relTypeId, String rationale) {
+      super(currentSourceGammaId, currentSourceModType);
 
       this.setItemId(relLinkId);
       this.getCurrentVersion().setValue(rationale);
