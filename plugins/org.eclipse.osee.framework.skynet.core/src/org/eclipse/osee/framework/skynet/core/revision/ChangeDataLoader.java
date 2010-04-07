@@ -14,11 +14,12 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.AttributeChangeItem;
@@ -47,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * @author Jeff C. Phillips
@@ -59,16 +59,26 @@ public class ChangeDataLoader {
       IOseeBranch branch = isHistorical ? transactionId.getBranch() : sourceBranch;
 
       ArrayList<Change> changes = new ArrayList<Change>();
-      Pair<TransactionRecord, TransactionRecord> toTransactionFromTransactionPair = getTransactionRecords(sourceBranch, transactionId, monitor, isHistorical);
+      Pair<TransactionRecord, TransactionRecord> toTransactionFromTransactionPair =
+            getTransactionRecords(sourceBranch, transactionId, monitor, isHistorical);
       ChangeReportResponse response =
-          HttpChangeDataRequester.getChanges(toTransactionFromTransactionPair.getFirst(), toTransactionFromTransactionPair.getSecond(), monitor, isHistorical);
+            HttpChangeDataRequester.getChanges(toTransactionFromTransactionPair.getFirst(),
+                  toTransactionFromTransactionPair.getSecond(), monitor, isHistorical);
       List<ChangeItem> changeItems = response.getChangeItems();
 
       //This is to keep the weak reference from being collected before they can be used.
       Collection<Artifact> bulkLoadedToArtifacts =
             preloadArtifacts(changeItems, sourceBranch, transactionId, isHistorical, monitor);
       Collection<Artifact> bulkLoadedFromArtifacts =
-          preloadArtifacts(changeItems, sourceBranch, toTransactionFromTransactionPair.getSecond(), true, monitor);
+            preloadArtifacts(changeItems, sourceBranch, toTransactionFromTransactionPair.getSecond(), true, monitor);
+
+      Map<Integer, ArtifactChangeItem> artifactChanges = new HashMap<Integer, ArtifactChangeItem>();
+      for (ChangeItem item : changeItems) {
+         if (item instanceof ArtifactChangeItem) {
+            ArtifactChangeItem artItem = (ArtifactChangeItem) item;
+            artifactChanges.put(artItem.getArtId(), artItem);
+         }
+      }
 
       for (ChangeItem item : changeItems) {
          Change change = null;
@@ -79,26 +89,31 @@ public class ChangeDataLoader {
             } else {
                toArtifact = ArtifactQuery.getArtifactFromId(item.getArtId(), branch, true);
             }
-            
-            Artifact fromArtifact =  null;
-    		ModificationType modType = Artifacts.getArtifactModType(toArtifact);
 
-            if (modType != ModificationType.NEW && modType != ModificationType.INTRODUCED) {
-            	fromArtifact = ArtifactCache.getHistorical(item.getArtId(), toTransactionFromTransactionPair.getSecond().getId());
+            Artifact fromArtifact = null;
+
+            ArtifactChangeItem artifactChangeItem = artifactChanges.get(item.getArtId());
+            ModificationType artifactModType = artifactChangeItem.getBaselineVersion().getModType();
+
+            if (artifactModType != ModificationType.NEW && artifactModType != ModificationType.INTRODUCED) {
+               fromArtifact =
+                     ArtifactCache.getHistorical(item.getArtId(), toTransactionFromTransactionPair.getSecond().getId());
             }
-            
+
             String wasValue = "";
-            
+
             if (!isHistorical) {
                ChangeVersion netChange = item.getNetChange();
                if (!ChangeItemUtil.isNew(netChange) && !ChangeItemUtil.isIntroduced(netChange)) {
-            	  ChangeVersion fromVersion = ChangeItemUtil.getStartingVersion(item);
+                  ChangeVersion fromVersion = ChangeItemUtil.getStartingVersion(item);
                   wasValue = fromVersion.getValue();
                }
             }
             monitor.subTask("Build Change Display Objects");
             //The artifacts have been previously bulk loaded for performance
-            change = asChange(item, toArtifact, fromArtifact, branch, toTransactionFromTransactionPair.getSecond(), toTransactionFromTransactionPair.getFirst(), wasValue, isHistorical);
+            change =
+                  asChange(item, toArtifact, fromArtifact, branch, toTransactionFromTransactionPair.getSecond(),
+                        toTransactionFromTransactionPair.getFirst(), wasValue, isHistorical);
          } catch (Exception ex) {
             change = new ErrorChange(branch, item.getArtId(), ex.toString());
          }
@@ -110,20 +125,20 @@ public class ChangeDataLoader {
       return changes;
    }
 
-   private Pair<TransactionRecord, TransactionRecord> getTransactionRecords(IOseeBranch sourceBranch, TransactionRecord transactionId, 
-		   IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException {
-	   TransactionRecord destinationTransactionId;
-	   TransactionRecord sourceTransactionId;
+   private Pair<TransactionRecord, TransactionRecord> getTransactionRecords(IOseeBranch sourceBranch, TransactionRecord transactionId,
+         IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException {
+      TransactionRecord destinationTransactionId;
+      TransactionRecord sourceTransactionId;
 
-	   if (isHistorical) {
-		   destinationTransactionId = TransactionManager.getPriorTransaction(transactionId);
-		   sourceTransactionId = transactionId;
-	   } else {
-		   destinationTransactionId =
-			   TransactionManager.getHeadTransaction(BranchManager.getBranch(sourceBranch).getParentBranch());
-		   sourceTransactionId = TransactionManager.getHeadTransaction(sourceBranch);
-	   }
-	return  new Pair<TransactionRecord, TransactionRecord>(sourceTransactionId, destinationTransactionId);
+      if (isHistorical) {
+         destinationTransactionId = TransactionManager.getPriorTransaction(transactionId);
+         sourceTransactionId = transactionId;
+      } else {
+         destinationTransactionId =
+               TransactionManager.getHeadTransaction(BranchManager.getBranch(sourceBranch).getParentBranch());
+         sourceTransactionId = TransactionManager.getHeadTransaction(sourceBranch);
+      }
+      return new Pair<TransactionRecord, TransactionRecord>(sourceTransactionId, destinationTransactionId);
    }
 
    private Change asChange(ChangeItem item, Artifact toArtifact, Artifact fromArtifact, IOseeBranch branch, TransactionRecord fromTransactionId, TransactionRecord toTransactionId, String wasValue, boolean isHistorical) throws OseeCoreException {
@@ -157,7 +172,8 @@ public class ChangeDataLoader {
                      (int) relationChangeItem.getCurrentVersion().getGammaId().longValue(), item.getArtId(),
                      toTransactionId, fromTransactionId, relationChangeItem.getNetChange().getModType(),
                      bArtifact.getArtId(), relationChangeItem.getItemId(), relationChangeItem.getRationale(),
-                     RelationTypeManager.getType(relationChangeItem.getRelTypeId()), isHistorical, toArtifact, bArtifact, fromArtifact);
+                     RelationTypeManager.getType(relationChangeItem.getRelTypeId()), isHistorical, toArtifact,
+                     bArtifact, fromArtifact);
       } else {
          throw new OseeCoreException("The change item must map to either a artifact, attribute or relation change");
       }
