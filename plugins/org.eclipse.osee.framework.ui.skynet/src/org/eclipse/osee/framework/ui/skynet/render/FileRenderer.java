@@ -12,10 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
@@ -27,7 +25,6 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -44,7 +41,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public abstract class FileRenderer extends FileSystemRenderer {
    private static final ResourceAttributes readonlyfileAttributes = new ResourceAttributes();
-   private static Random generator = new Random();
 
    protected static final FileWatcher watcher = new ArtifactEditFileWatcher(3, TimeUnit.SECONDS);
    private static boolean firstTime = true;
@@ -57,8 +53,9 @@ public abstract class FileRenderer extends FileSystemRenderer {
 
    @Override
    public IFile renderToFileSystem(IFolder baseFolder, Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException {
-      return renderToFile(baseFolder, getFilenameFromArtifact(artifact, presentationType), branch,
-            getRenderInputStream(artifact, presentationType), presentationType);
+      String fileName = RenderingUtil.getFilenameFromArtifact(this, artifact, presentationType);
+      InputStream inputStream = getRenderInputStream(artifact, presentationType);
+      return renderToFile(baseFolder, fileName, branch, inputStream, presentationType);
    }
 
    @Override
@@ -74,16 +71,16 @@ public abstract class FileRenderer extends FileSystemRenderer {
          }
       }
 
+      Artifact artifact = null;
       if (artifacts.size() == 1) {
-         return renderToFile(baseFolder, getFilenameFromArtifact(artifacts.iterator().next(), presentationType),
-               initialBranch, getRenderInputStream(artifacts, presentationType), presentationType);
-      } else {
-         return renderToFile(baseFolder, getFilenameFromArtifact(null, presentationType), initialBranch,
-               getRenderInputStream(artifacts, presentationType), presentationType);
+         artifact = artifacts.iterator().next();
       }
+      String fileName = RenderingUtil.getFilenameFromArtifact(this, artifact, presentationType);
+      InputStream inputStream = getRenderInputStream(artifacts, presentationType);
+      return renderToFile(baseFolder, fileName, initialBranch, inputStream, presentationType);
    }
 
-   protected IFile renderToFile(IFolder baseFolder, String fileName, Branch branch, InputStream renderInputStream, PresentationType presentationType) throws OseeCoreException {
+   public IFile renderToFile(IFolder baseFolder, String fileName, Branch branch, InputStream renderInputStream, PresentationType presentationType) throws OseeCoreException {
       try {
          IFile workingFile = baseFolder.getFile(fileName);
          AIFile.writeToFile(workingFile, renderInputStream);
@@ -100,38 +97,9 @@ public abstract class FileRenderer extends FileSystemRenderer {
       }
    }
 
-   protected void addFileToWatcher(IFolder baseFolder, String fileName) {
+   public void addFileToWatcher(IFolder baseFolder, String fileName) {
       IFile workingFile = baseFolder.getFile(fileName);
       monitorFile(workingFile.getLocation().toFile());
-   }
-
-   protected String getFilenameFromArtifact(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-      StringBuilder name = new StringBuilder(100);
-
-      if (artifact != null) {
-
-         name.append(artifact.getSafeName());
-         name.append("(");
-         name.append(artifact.getGuid());
-         name.append(")");
-
-         if (artifact.isHistorical() || presentationType == PresentationType.DIFF) {
-            name.append("(");
-            name.append(artifact.getTransactionNumber());
-            name.append(")");
-         }
-
-         name.append(" ");
-         name.append(new Date().toString().replaceAll(":", ";"));
-         name.append("-");
-         name.append(generator.nextInt(99) + 1);
-         name.append(".");
-         name.append(getAssociatedExtension(artifact));
-      } else {
-         name.append(GUID.create());
-         name.append(".xml");
-      }
-      return name.toString();
    }
 
    public abstract InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException;

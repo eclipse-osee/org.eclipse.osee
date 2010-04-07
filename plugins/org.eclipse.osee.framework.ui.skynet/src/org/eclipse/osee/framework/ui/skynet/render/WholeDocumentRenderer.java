@@ -15,30 +15,29 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
-import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
+import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
+import org.eclipse.osee.framework.ui.skynet.render.compare.WholeWordCompare;
 
 /**
  * @author Jeff C. Phillips
  */
 public class WholeDocumentRenderer extends WordRenderer {
 
-   private static boolean noPopups = false;
+   private final IComparator comparator;
+
+   public WholeDocumentRenderer() {
+      this.comparator = new WholeWordCompare(this);
+   }
 
    @Override
    public WholeDocumentRenderer newInstance() throws OseeCoreException {
@@ -95,118 +94,7 @@ public class WholeDocumentRenderer extends WordRenderer {
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, PresentationType presentationType, boolean show) throws OseeCoreException {
-      if (baseVersion == null && newerVersion == null) {
-         throw new IllegalArgumentException("baseVersion and newerVersion can't both be null.");
-      }
-
-      Branch branch = baseVersion != null ? baseVersion.getBranch() : newerVersion.getBranch();
-      IFile baseFile;
-      IFile newerFile;
-      Pair<String, Boolean> originalValue = null;
-      Pair<String, Boolean> newAnnotationValue = null;
-      Pair<String, Boolean> oldAnnotationValue = null;
-      if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
-
-         if (baseVersion != null) {
-            Attribute<?> baseAttribute = baseVersion.getSoleAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT);
-            if (baseAttribute != null) {
-               String value = baseAttribute.getValue().toString();
-               if (WordAnnotationHandler.containsWordAnnotations(value)) {
-                  oldAnnotationValue = new Pair<String, Boolean>(value, baseAttribute.isDirty());
-                  baseAttribute.setFromString(WordAnnotationHandler.removeAnnotations(value));
-               }
-            }
-         }
-
-         if (newerVersion != null) {
-            Attribute<?> newerAttribute = newerVersion.getSoleAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT);
-            if (newerAttribute != null) {
-               String value = newerAttribute.getValue().toString();
-               if (WordAnnotationHandler.containsWordAnnotations(value)) {
-                  newAnnotationValue = new Pair<String, Boolean>(value, newerAttribute.isDirty());
-                  newerAttribute.setFromString(WordAnnotationHandler.removeAnnotations(value));
-               }
-            }
-         }
-      }
-
-      if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
-         originalValue =
-               WordImageChecker.checkForImageDiffs(
-                     baseVersion != null ? baseVersion.getSoleAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT) : null,
-                     newerVersion != null ? newerVersion.getSoleAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT) : null);
-      }
-      if (baseVersion != null) {
-         if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
-            baseFile = renderForMerge(monitor, baseVersion, presentationType);
-         } else {
-            baseFile = renderForDiff(monitor, baseVersion);
-         }
-      } else {
-         baseFile = renderForDiff(monitor, branch);
-      }
-
-      if (newerVersion != null) {
-         if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
-            newerFile = renderForMerge(monitor, newerVersion, presentationType);
-         } else {
-            newerFile = renderForDiff(monitor, newerVersion);
-         }
-      } else {
-         newerFile = renderForDiff(monitor, branch);
-      }
-      WordImageChecker.restoreOriginalValue(
-            baseVersion != null ? baseVersion.getSoleAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT) : null,
-            oldAnnotationValue != null ? oldAnnotationValue : originalValue);
-      WordImageChecker.restoreOriginalValue(
-            newerVersion != null ? newerVersion.getSoleAttribute(CoreAttributeTypes.WHOLE_WORD_CONTENT) : null,
-            newAnnotationValue);
-      return compare(baseVersion, newerVersion, baseFile, newerFile, presentationType, show);
-   }
-
-   @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException {
-      String diffPath;
-      String fileName = getStringOption("fileName");
-      if (fileName == null || fileName.equals("")) {
-         if (baseVersion != null) {
-            String baseFileStr = baseFile.getLocation().toOSString();
-            diffPath =
-                  baseFileStr.substring(0, baseFileStr.lastIndexOf(')') + 1) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')') + 1);
-         } else {
-            String baseFileStr = newerFile.getLocation().toOSString();
-            diffPath =
-                  baseFileStr.substring(0, baseFileStr.lastIndexOf('(') + 1) + "new " + baseFileStr.substring(baseFileStr.lastIndexOf('(') + 1);
-         }
-      } else {
-         diffPath =
-               getRenderFolder(baseVersion.getBranch(), PresentationType.SPECIALIZED_EDIT).getLocation().toOSString() + '\\' + fileName;
-      }
-
-      VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
-      diffGenerator.initialize(presentationType == PresentationType.DIFF,
-            presentationType == PresentationType.MERGE_EDIT);
-      if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
-         addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.MERGE_EDIT),
-               diffPath.substring(diffPath.lastIndexOf('\\') + 1));
-         diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
-         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs", show);
-      } else {
-         if (!noPopups) {
-            diffGenerator.addComparison(baseFile, newerFile, diffPath, false);
-            diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs", show);
-         }
-      }
-
-      return diffPath;
-   }
-
-   public static boolean isNoPopups() {
-      return noPopups;
-   }
-
-   public static void setNoPopups(boolean noPopups) {
-      WholeDocumentRenderer.noPopups = noPopups;
+   public IComparator getComparator() {
+      return comparator;
    }
 }

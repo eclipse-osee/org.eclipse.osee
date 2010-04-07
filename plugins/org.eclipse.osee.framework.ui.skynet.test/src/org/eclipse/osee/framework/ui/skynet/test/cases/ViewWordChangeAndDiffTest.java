@@ -10,21 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
-import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
-import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.logging.Level;
+import java.util.Collections;
+import java.util.List;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -35,97 +33,23 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.After;
 import org.junit.Before;
 
 /**
  * @author Megumi Telles
  */
 public class ViewWordChangeAndDiffTest {
-   private final boolean isWordRunning = false;
-   private Collection<Change> artifactChanges = new ArrayList<Change>();
-   private final ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>();
-   private final ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>();
-   private ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
-   private Artifact baseArtifact = null;
-   private Artifact newerArtifact = null;
-   private final VariableMap variableMap = new VariableMap();
-   private Artifact instanceOfArtifact = null;
-   private String fileName = null;
 
-   /**
-    * @throws java.lang.Exception
-    */
    @Before
    public void setUp() throws Exception {
       assertFalse("Not to be run on production database.", TestUtil.isProductionDb());
-      WholeDocumentRenderer.setNoPopups(true);
-      WordTemplateRenderer.setNoPopups(true);
-      FileSystemRenderer.setNoPopups(true);
-   }
-
-   @org.junit.Test
-   public void testViewWordChangeReport() throws Exception {
-      Branch theBranch = getTestBranch();
-      artifactChanges = ChangeManager.getChangesPerBranch(theBranch, new NullProgressMonitor());
-      // get the artifacts from the changed list
-      artifacts = getArtifacts();
-      // make sure permissions are right
-      assertTrue("Valid object permissions", AccessControlManager.checkObjectListPermission(artifacts,
-            PermissionEnum.READ));
-      // initialize the lists for the test
-      initializeViewChangeReportBaseAndNewArtifacts();
-      Artifact bArtifact = baseArtifacts.iterator().next();
-      Artifact nArtifact = newerArtifacts.iterator().next();
-      instanceOfArtifact = bArtifact != null ? bArtifact : nArtifact;
-      // set up renderer and compare
-      viewWordChangeCompareArtifacts();
-      // if we get here there were no exceptions on the compare considered successful
-      assertTrue("View Word Change Report test passed", true);
-   }
-
-   @org.junit.Test
-   public void testSingleNativeDiff() throws Exception {
-      artifactChanges = ChangeManager.getChangesPerBranch(getTestBranch(), new NullProgressMonitor());
-      // get the artifacts from the changed list
-      artifacts = getArtifacts();
-      // make sure permissions are right
-      assertTrue("Valid object permissions", AccessControlManager.hasPermission(
-            artifactChanges.iterator().next().getArtifact(), PermissionEnum.READ));
-      initializeBaseAndNewArtifact(artifactChanges.iterator().next());
-      singleNativeDiff(baseArtifact, newerArtifact);
-      // if we get here there were no exceptions on the diff considered successful
-      assertTrue("Single Native Diff test passed", true);
-   }
-
-   @org.junit.Test
-   public void testCompareTwoArtifacts() throws Exception {
-
-      try {
-         artifactChanges = ChangeManager.getChangesPerBranch(getTestBranch(), new NullProgressMonitor());
-         // get the artifacts from the changed list
-         artifacts = getArtifacts();
-         newerArtifact =
-               ArtifactQuery.getHistoricalArtifactFromId(artifacts.get(0).getArtId(),
-                     artifacts.get(0).getTransactionId(), true);
-         baseArtifact =
-               ArtifactQuery.getHistoricalArtifactFromId(artifacts.get(1).getArtId(),
-                     artifacts.get(1).getTransactionId(), true);
-         RendererManager.diff(baseArtifact, newerArtifact, false);
-         // if we get here there were no exceptions on the diff considered successful
-         assertTrue("Compare Two Artifacts test passed", true);
-      } catch (Exception ex) {
-         fail("Compare Two Artifacts test failed");
-         throw ex;
-      }
-
+      RenderingUtil.setPopupsAllowed(false);
    }
 
    private Branch getTestBranch() throws OseeCoreException {
@@ -136,75 +60,78 @@ public class ViewWordChangeAndDiffTest {
       return BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
    }
 
-   /**
-    * @throws java.lang.Exception
-    */
-   @After
-   public void tearDown() throws Exception {
-   }
+   @org.junit.Test
+   public void testViewWordChangeReport() throws Exception {
+      Collection<Change> changes = ChangeManager.getChangesPerBranch(getTestBranch(), new NullProgressMonitor());
+      checkPermissions(asArtifacts(changes));
 
-   private ArrayList<Artifact> getArtifacts() throws ArtifactDoesNotExist {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      for (Change artifactChange : artifactChanges) {
-         arts.add(artifactChange.getArtifact());
-      }
-      return arts;
-   }
-
-   private void initializeViewChangeReportBaseAndNewArtifacts() {
-      for (Change artifactChange : artifactChanges) {
-         try {
-            initializeBaseAndNewArtifact(artifactChange);
-         } catch (OseeCoreException ex1) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex1);
-            fail("Initialization of base and new artifacts failed");
-         }
-      }
-   }
-
-   private void initializeBaseAndNewArtifact(Change artifactChange) throws ArtifactDoesNotExist, OseeCoreException {
-      baseArtifact =
-            artifactChange.getModificationType() == NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED ? null : ArtifactQuery.getHistoricalArtifactFromId(
-                  artifactChange.getArtifact().getArtId(), artifactChange.getFromTransactionId(), true);
-
-      newerArtifact =
-            artifactChange.getModificationType() == DELETED ? null : artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
-                  artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true) : artifactChange.getArtifact();
-
-      baseArtifacts.add(baseArtifact);
-      newerArtifacts.add(newerArtifact);
-
-      if (fileName == null) {
-         if (artifactChanges.size() == 1) {
-            fileName = baseArtifact != null ? baseArtifact.getSafeName() : newerArtifact.getSafeName();
-         } else {
-            fileName =
-                  baseArtifact != null ? baseArtifact.getBranch().getShortName() : newerArtifact.getBranch().getShortName();
-         }
-         variableMap.setValue("fileName", fileName + "_" + new Date().toString().replaceAll(":", ";") + ".xml");
-      }
-   }
-
-   private void viewWordChangeCompareArtifacts() {
+      Collection<Pair<Artifact, Artifact>> itemsToCompare = ChangeManager.getCompareArtifacts(changes);
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       try {
+         VariableMap variableMap = new VariableMap();
          variableMap.setValue("suppressWord", true);
          renderer.setOptions(variableMap);
-         renderer.compareArtifacts(baseArtifacts, newerArtifacts, new NullProgressMonitor(),
-               instanceOfArtifact.getBranch(), PresentationType.DIFF);
+         renderer.getComparator().compareArtifacts(new NullProgressMonitor(), PresentationType.DIFF, itemsToCompare);
       } catch (OseeCoreException e) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, e);
          fail("View Word Change Report test failed");
       }
+
+      // if we get here there were no exceptions on the compare considered successful
+      assertTrue("View Word Change Report test passed", true);
    }
 
-   private void singleNativeDiff(Artifact baseArtifact, Artifact newerArtifact) {
+   @org.junit.Test
+   public void testSingleNativeDiff() throws Exception {
+      Collection<Change> changes = ChangeManager.getChangesPerBranch(getTestBranch(), new NullProgressMonitor());
+      Artifact artifact = changes.iterator().next().getArtifact();
+
+      checkPermissions(Collections.singletonList(artifact));
+
+      Collection<Pair<Artifact, Artifact>> itemsToCompare = ChangeManager.getCompareArtifacts(changes);
+      Pair<Artifact, Artifact> firstEntry = itemsToCompare.iterator().next();
       try {
-         RendererManager.diff(baseArtifact, newerArtifact, false);
+         RendererManager.diff(firstEntry.getFirst(), firstEntry.getSecond(), false);
+         assertTrue("Single Native Diff test passed", true);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          fail("Single Native Diff test failed.");
       }
    }
 
+   @org.junit.Test
+   public void testCompareTwoArtifacts() throws Exception {
+      Collection<Change> changes = ChangeManager.getChangesPerBranch(getTestBranch(), new NullProgressMonitor());
+      ArrayList<Artifact> artifacts = asArtifacts(changes);
+
+      checkPermissions(artifacts);
+      try {
+         Artifact newerArtifact = loadHistorical(artifacts.get(0));
+         Artifact baseArtifact = loadHistorical(artifacts.get(1));
+
+         RendererManager.diff(baseArtifact, newerArtifact, false);
+
+         assertTrue("Compare Two Artifacts test passed", true);
+      } catch (Exception ex) {
+         fail("Compare Two Artifacts test failed");
+         throw ex;
+      }
+   }
+
+   private static Artifact loadHistorical(Artifact artifact) throws OseeCoreException {
+      return ArtifactQuery.getHistoricalArtifactFromId(artifact.getArtId(), artifact.getTransactionId(), true);
+   }
+
+   private static void checkPermissions(List<Artifact> artifacts) throws OseeCoreException {
+      boolean isReadable = AccessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+      assertTrue("Valid object permissions", isReadable);
+   }
+
+   private static ArrayList<Artifact> asArtifacts(Collection<Change> changes) throws ArtifactDoesNotExist {
+      ArrayList<Artifact> arts = new ArrayList<Artifact>();
+      for (Change artifactChange : changes) {
+         arts.add(artifactChange.getArtifact());
+      }
+      return arts;
+   }
 }

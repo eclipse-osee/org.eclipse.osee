@@ -13,12 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -29,6 +27,8 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.compare.DefaultArtifactCompare;
+import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
@@ -39,6 +39,8 @@ import org.eclipse.swt.graphics.Image;
  * @author Jeff C. Philips
  */
 public class DefaultArtifactRenderer implements IRenderer {
+   private static final IComparator DEFAULT_COMPARATOR = new DefaultArtifactCompare();
+
    private VariableMap options;
 
    public String getName() {
@@ -52,23 +54,6 @@ public class DefaultArtifactRenderer implements IRenderer {
    public void print(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
          print(artifact, monitor);
-      }
-   }
-
-   @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, PresentationType presentationType, boolean show) throws OseeCoreException {
-      throw new OseeCoreException("The default renderer does not support the compare operation");
-   }
-
-   @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, boolean show) throws OseeCoreException {
-      throw new OseeCoreException("The default renderer does not support the compare operation");
-   }
-
-   @Override
-   public void compareArtifacts(List<Artifact> baseArtifacts, List<Artifact> newerArtifacts, IProgressMonitor monitor, Branch branch, PresentationType presentationType) throws OseeCoreException {
-      for (int i = 0; i < baseArtifacts.size(); i++) {
-         compare(baseArtifacts.get(i), newerArtifacts.get(i), monitor, presentationType, true);
       }
    }
 
@@ -94,10 +79,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    @Override
    public boolean getBooleanOption(String key) throws OseeArgumentException {
       if (options != null) {
-         Boolean option = options.getBoolean(key);
-         if (option != null) {
-            return option;
-         }
+         return options.getBoolean(key);
       }
       return false;
    }
@@ -195,5 +177,10 @@ public class DefaultArtifactRenderer implements IRenderer {
       }
 
       return commandIds;
+   }
+
+   @Override
+   public IComparator getComparator() {
+      return DEFAULT_COMPARATOR;
    }
 }

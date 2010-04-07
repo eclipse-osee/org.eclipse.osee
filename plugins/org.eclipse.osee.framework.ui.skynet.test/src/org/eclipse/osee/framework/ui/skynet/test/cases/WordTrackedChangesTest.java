@@ -26,9 +26,7 @@ import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
@@ -47,9 +45,7 @@ public class WordTrackedChangesTest {
       assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1),
             WordTrackedChangesTest.class.getSimpleName());
-      WholeDocumentRenderer.setNoPopups(true);
-      WordTemplateRenderer.setNoPopups(true);
-      FileSystemRenderer.setNoPopups(true);
+      RenderingUtil.setPopupsAllowed(false);
    }
 
    @org.junit.Test(expected = OseeTrackedChangesException.class)

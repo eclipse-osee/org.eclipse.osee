@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
@@ -25,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Ryan D. Brooks
  */
 public class VariableMap {
-   private final HashMap<String, Object> variableMap = new HashMap<String, Object>();
+   private final Map<String, Object> variableMap = new HashMap<String, Object>();
 
    public VariableMap() {
    }
@@ -66,8 +67,9 @@ public class VariableMap {
       return getValue(Branch.class, parameterName);
    }
 
-   public Boolean getBoolean(String parameterName) throws OseeArgumentException {
-      return getValue(Boolean.class, parameterName);
+   public boolean getBoolean(String parameterName) throws OseeArgumentException {
+      Boolean value = getValue(Boolean.class, parameterName);
+      return value != null ? value : false;
    }
 
    @SuppressWarnings("unchecked")

@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -160,24 +161,27 @@ public class PublishRequirements extends AbstractBlam {
          nonFolderChildren = buildRecursiveList(nonFolderChildren);
          int transactionId = getBranchTransaction(date, branch.getId());
          ArrayList<Artifact> olderArtifacts = getOlderArtifacts(nonFolderChildren, transactionId, branch.getId());
-         int index = 0;
-         for (Artifact art : olderArtifacts) {
-            if (art != null && art.isDeleted()) {
-               olderArtifacts.set(index, null);
+
+         Collection<Pair<Artifact, Artifact>> compareItems = new ArrayList<Pair<Artifact, Artifact>>();
+         for (int index = 0; index < olderArtifacts.size() && index < nonFolderChildren.size(); index++) {
+            Artifact base = olderArtifacts.get(index);
+            Artifact newer = nonFolderChildren.get(index);
+            if (isDeleted(base)) {
+               base = null;
             }
-            index++;
-         }
-         index = 0;
-         for (Artifact art : nonFolderChildren) {
-            if (art != null && art.isDeleted()) {
-               nonFolderChildren.set(index, null);
+            if (isDeleted(newer)) {
+               newer = null;
             }
-            index++;
+            compareItems.add(new Pair<Artifact, Artifact>(base, newer));
          }
-         RendererManager.diffInJob(olderArtifacts, nonFolderChildren, options);
+         RendererManager.diffInJob(compareItems, options);
       } else {
          RendererManager.preview(nonFolderChildren, monitor, options);
       }
+   }
+
+   private boolean isDeleted(Artifact artifact) {
+      return artifact != null && artifact.isDeleted();
    }
 
    @Override

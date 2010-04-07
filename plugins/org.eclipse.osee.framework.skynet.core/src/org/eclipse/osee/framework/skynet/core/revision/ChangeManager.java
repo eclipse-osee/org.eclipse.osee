@@ -28,26 +28,78 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.change.RelationChange;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * Public API class for access to change data from branches and transactionIds
- * 
+ *
  * @author Jeff C. Phillips
  * @author Donald G. Dunne
  */
-public class ChangeManager {
+public final class ChangeManager {
 
    private final static RevisionChangeLoader revsionChangeLoader = new RevisionChangeLoader();
 
+   private ChangeManager() {
+   }
+
+   public static Collection<Pair<Artifact, Artifact>> getCompareArtifacts(Collection<Change> changes) {
+      Collection<Pair<Artifact, Artifact>> toReturn = new ArrayList<Pair<Artifact, Artifact>>(changes.size());
+      for (Change change : changes) {
+         try {
+            ModificationType modType = change.getModificationType();
+            // REMOVE THIS IF IT DOESN'T WORK
+            if (change instanceof AttributeChange) {
+               modType = change.getArtifact().getModType();
+            }
+
+            Artifact baseArtifact = null;
+            if (modType != ModificationType.NEW && modType != ModificationType.INTRODUCED) {
+               baseArtifact =
+                     ArtifactQuery.getHistoricalArtifactFromId(change.getArtifact().getArtId(),
+                           change.getFromTransactionId(), true);
+            }
+
+            //Relation changes just pick artifact A and that might not correspond to the correct change modification type.
+            ModificationType newerArtifactModType = modType;
+            if (change instanceof RelationChange) {
+               newerArtifactModType = change.getArtifact().getModType();
+            }
+
+            Artifact newerArtifact = null;
+            if (!newerArtifactModType.isDeleted()) {
+               if (change.isHistorical()) {
+                  newerArtifact =
+                        ArtifactQuery.getHistoricalArtifactFromId(change.getArtifact().getArtId(),
+                              change.getToTransactionId(), true);
+               } else {
+                  newerArtifact = change.getArtifact();
+               }
+            }
+            toReturn.add(new Pair<Artifact, Artifact>(baseArtifact, newerArtifact));
+
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
+      return toReturn;
+   }
+
    /**
     * Acquires changes for a particular artifact
-    * 
+    *
     * @param artifact
     * @param monitor
     * @return changes
@@ -59,7 +111,7 @@ public class ChangeManager {
 
    /**
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
-    * 
+    *
     * @param transactionId
     * @param monitor
     * @return changes
@@ -71,7 +123,7 @@ public class ChangeManager {
 
    /**
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
-    * 
+    *
     * @param sourceBranch
     * @param monitor
     * @return changes
@@ -84,7 +136,7 @@ public class ChangeManager {
    /**
     * For the given list of artifacts determine which transactions (on that artifact's branch) affected that artifact.
     * The branch's baseline transaction is excluded.
-    * 
+    *
     * @param artifacts
     * @return a map of artifact to collection of TransactionIds which affected the given artifact
     * @throws OseeCoreException
@@ -136,7 +188,7 @@ public class ChangeManager {
    /**
     * For the given list of artifacts determine which branches (in the branch hierarchy for that artifact) affected that
     * artifact.
-    * 
+    *
     * @param artifacts
     * @return a map of artifact to collection of branches which affected the given artifact
     * @throws OseeCoreException

@@ -699,7 +699,7 @@
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenSkywalkerEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewWordChangeReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
+		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewWordChangeReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -729,27 +729,7 @@
         </with>
      </enabledWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.WordChangesToParentHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesToParent.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
-      </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.WordChangesMadeToHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesMadeTo.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
-      </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.RevertArtifactHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
+				<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.RevertArtifactHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -1448,10 +1428,6 @@
   </command>
 	</extension>
 	<extension name="Commands of ChangeReportView" point="org.eclipse.ui.commands">
-		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesMadeTo.command" name="Word changes on this working branch">
-         </command>
-		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesToParent.command" name="Word changes made to parent branch since creating current branch">
-         </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command" name="Revert Artifact...">
          </command>
   <command

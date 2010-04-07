@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  */
 public class WordImageChecker {
 
-   public static void restoreOriginalValue(Attribute attr, Pair<String, Boolean> originalValue) throws OseeCoreException {
+   public static void restoreOriginalValue(Attribute<String> attr, Pair<String, Boolean> originalValue) throws OseeCoreException {
       if (attr != null && originalValue != null) {
          attr.setValue(originalValue.getFirst());
          if (!originalValue.getSecond()) {
@@ -33,7 +33,7 @@ public class WordImageChecker {
       }
    }
 
-   public static Pair<String, Boolean> checkForImageDiffs(Attribute oldAttr, Attribute newAttr) throws OseeCoreException {
+   public static Pair<String, Boolean> checkForImageDiffs(Attribute<String> oldAttr, Attribute<String> newAttr) throws OseeCoreException {
       String downArrow = "";
       try {
          downArrow = new String(new byte[] {(byte) 0xE2, (byte) 0x86, (byte) 0x93}, "UTF-8");
@@ -42,8 +42,8 @@ public class WordImageChecker {
       String MODIFIED_STRING =
             "<w:t>" + downArrow + " OSEE Detected Image Modification " + downArrow + "</w:t></w:r></w:p><w:p><w:r></w:r></w:p><w:p><w:r>";
       if (oldAttr != null && newAttr != null) {
-         String oldValue = (String) oldAttr.getValue();
-         String newValue = (String) newAttr.getValue();
+         String oldValue = oldAttr.getValue();
+         String newValue = newAttr.getValue();
          boolean attrDirty = newAttr.isDirty();
          String originalValue = new String(oldValue);
          List<WordmlPicture> oldPictures = createPictureList(oldValue, oldAttr);

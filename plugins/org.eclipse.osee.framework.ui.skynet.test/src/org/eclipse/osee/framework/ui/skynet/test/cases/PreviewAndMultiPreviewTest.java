@@ -27,9 +27,9 @@ import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewWithChildWordHandler;
 import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -46,7 +46,6 @@ public class PreviewAndMultiPreviewTest {
    private static Artifact newArt;
    private static SevereLoggingMonitor monitorLog = null;
    private static Branch branch;
-   private static boolean isWordRunning = false;
 
    @Before
    public void setUp() throws Exception {
@@ -58,9 +57,8 @@ public class PreviewAndMultiPreviewTest {
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1),
             PreviewAndMultiPreviewTest.class.getSimpleName());
       FileRenderer.setWorkbenchSavePopUpDisabled(true);
-      FileSystemRenderer.setNoPopups(true);
-      WholeDocumentRenderer.setNoPopups(true);
-      WordTemplateRenderer.setNoPopups(true);
+
+      RenderingUtil.setPopupsAllowed(false);
       branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       // create a new requirement artifact
       newArt =

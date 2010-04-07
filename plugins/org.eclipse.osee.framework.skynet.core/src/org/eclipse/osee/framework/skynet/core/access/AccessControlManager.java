@@ -204,7 +204,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       return isValid;
    }
 
-   public static boolean checkObjectListPermission(List<?> objectList, PermissionEnum permission) throws OseeCoreException {
+   public static boolean checkObjectListPermission(Collection<?> objectList, PermissionEnum permission) throws OseeCoreException {
       boolean isValid = true;
 
       if (objectList.isEmpty()) {

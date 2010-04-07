@@ -50,11 +50,11 @@ import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 
@@ -120,7 +120,7 @@ public class WordTemplateProcessor {
    /**
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts Only used by Publish SRS
-    * 
+    *
     * @throws IOException
     */
    public void publishWithExtensionTemplates(VariableMap variableMap, Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
@@ -129,7 +129,7 @@ public class WordTemplateProcessor {
             slaveTemplateArtifact != null ? slaveTemplateArtifact.getSoleAttributeValue(
                   CoreAttributeTypes.WHOLE_WORD_CONTENT, "") : "";
 
-      IFolder folder = FileSystemRenderer.ensureRenderFolderExists(PresentationType.PREVIEW);
+      IFolder folder = RenderingUtil.ensureRenderFolderExists(PresentationType.PREVIEW);
       String fileName = String.format("%s_%s.xml", masterTemplateArtifact.getSafeName(), Lib.getDateTimeString());
       AIFile.writeToFile(folder.getFile(fileName), applyTemplate(variableMap, artifacts, masterTemplate, folder, null,
             null, PresentationType.PREVIEW));
@@ -138,7 +138,7 @@ public class WordTemplateProcessor {
    /**
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts. Only used by Publish SRS
-    * 
+    *
     * @param variableMap = will be filled with artifacts when specified in the template
     * @param artifacts = null if the template defines the artifacts to be used in the publishing
     * @param template
