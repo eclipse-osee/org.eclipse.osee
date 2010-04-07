@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -70,6 +71,8 @@ public class InternalEventManager {
    private static final List<IEventListener> listeners = new CopyOnWriteArrayList<IEventListener>();
    public static final Collection<UnloadedArtifact> EMPTY_UNLOADED_ARTIFACTS = Collections.emptyList();
    private static boolean disableEvents = false;
+   private static final boolean DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Events"));
 
    private static final ThreadFactory threadFactory = new OseeEventThreadFactory("Osee Events");
    private static final ExecutorService executorService =
@@ -79,10 +82,6 @@ public class InternalEventManager {
    // through the RemoteEventService as if they came from another client.  This is for testing purposes only and
    // should be reset to false before release.
    private static boolean enableRemoteEventLoopback = false;
-
-   private static final boolean DEBUG = true;
-
-   //         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Events"));
 
    // Kick LOCAL "remote event manager" event
    static void kickRemoteEventManagerEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
