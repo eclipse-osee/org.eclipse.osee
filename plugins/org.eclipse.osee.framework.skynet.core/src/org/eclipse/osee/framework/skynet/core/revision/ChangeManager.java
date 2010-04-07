@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -31,16 +30,10 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.change.RelationChange;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -59,41 +52,10 @@ public final class ChangeManager {
    public static Collection<Pair<Artifact, Artifact>> getCompareArtifacts(Collection<Change> changes) {
       Collection<Pair<Artifact, Artifact>> toReturn = new ArrayList<Pair<Artifact, Artifact>>(changes.size());
       for (Change change : changes) {
-         try {
-            ModificationType modType = change.getModificationType();
-            // REMOVE THIS IF IT DOESN'T WORK
-            if (change instanceof AttributeChange) {
-               modType = change.getArtifact().getModType();
-            }
+         Artifact baseArtifact = change.getFromArtifact();
+         Artifact newerArtifact = change.getToArtifact();
+         toReturn.add(new Pair<Artifact, Artifact>(baseArtifact, newerArtifact));
 
-            Artifact baseArtifact = null;
-            if (modType != ModificationType.NEW && modType != ModificationType.INTRODUCED) {
-               baseArtifact =
-                     ArtifactQuery.getHistoricalArtifactFromId(change.getArtifact().getArtId(),
-                           change.getFromTransactionId(), true);
-            }
-
-            //Relation changes just pick artifact A and that might not correspond to the correct change modification type.
-            ModificationType newerArtifactModType = modType;
-            if (change instanceof RelationChange) {
-               newerArtifactModType = change.getArtifact().getModType();
-            }
-
-            Artifact newerArtifact = null;
-            if (!newerArtifactModType.isDeleted()) {
-               if (change.isHistorical()) {
-                  newerArtifact =
-                        ArtifactQuery.getHistoricalArtifactFromId(change.getArtifact().getArtId(),
-                              change.getToTransactionId(), true);
-               } else {
-                  newerArtifact = change.getArtifact();
-               }
-            }
-            toReturn.add(new Pair<Artifact, Artifact>(baseArtifact, newerArtifact));
-
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         }
       }
       return toReturn;
    }
@@ -111,7 +73,8 @@ public final class ChangeManager {
    }
 
    /**
-    * Acquires artifact, relation and attribute changes from a source branch since its creation.
+    * Acquires artifact, relation and attribute changes from a source branch
+    * since its creation.
     *
     * @param transactionId
     * @param monitor
@@ -123,7 +86,8 @@ public final class ChangeManager {
    }
 
    /**
-    * Acquires artifact, relation and attribute changes from a source branch since its creation.
+    * Acquires artifact, relation and attribute changes from a source branch
+    * since its creation.
     *
     * @param sourceBranch
     * @param monitor
@@ -135,11 +99,13 @@ public final class ChangeManager {
    }
 
    /**
-    * For the given list of artifacts determine which transactions (on that artifact's branch) affected that artifact.
-    * The branch's baseline transaction is excluded.
+    * For the given list of artifacts determine which transactions (on that
+    * artifact's branch) affected that artifact. The branch's baseline
+    * transaction is excluded.
     *
     * @param artifacts
-    * @return a map of artifact to collection of TransactionIds which affected the given artifact
+    * @return a map of artifact to collection of TransactionIds which affected
+    *         the given artifact
     * @throws OseeCoreException
     */
    public static HashCollection<Artifact, TransactionRecord> getModifingTransactions(Collection<Artifact> artifacts) throws OseeCoreException {
@@ -187,11 +153,12 @@ public final class ChangeManager {
    }
 
    /**
-    * For the given list of artifacts determine which branches (in the branch hierarchy for that artifact) affected that
-    * artifact.
+    * For the given list of artifacts determine which branches (in the branch
+    * hierarchy for that artifact) affected that artifact.
     *
     * @param artifacts
-    * @return a map of artifact to collection of branches which affected the given artifact
+    * @return a map of artifact to collection of branches which affected the
+    *         given artifact
     * @throws OseeCoreException
     */
    public static HashCollection<Artifact, Branch> getModifingBranches(Collection<Artifact> artifacts) throws OseeCoreException {
@@ -202,7 +169,8 @@ public final class ChangeManager {
       CompositeKeyHashMap<Integer, Branch, Artifact> artifactMap = new CompositeKeyHashMap<Integer, Branch, Artifact>();
       for (Artifact artifact : artifacts) {
          artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
-         // for each combination of artifact and all working branches in its hierarchy
+         // for each combination of artifact and all working branches in its
+         // hierarchy
          for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING)) {
             if (artifact.getBranch().equals(workingBranch.getParentBranch())) {
                insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), workingBranch.getId(),
