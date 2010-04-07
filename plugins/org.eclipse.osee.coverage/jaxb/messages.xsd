@@ -3,9 +3,9 @@
             xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
             jxb:version="2.0">
 
-<xsd:element name="EditorSave" type="EditorSave"/>
+<xsd:element name="CoveragePackageSave" type="CoveragePackageSave"/>
 
-<xsd:complexType name="EditorSave">
+<xsd:complexType name="CoveragePackageSave">
   <xsd:sequence>
     <xsd:element name="name" type="xsd:string"/>
     <xsd:element name="guids" type="xsd:string"/>

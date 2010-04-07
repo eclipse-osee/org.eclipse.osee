@@ -3,7 +3,7 @@ package org.eclipse.osee.coverage.event;
 import org.eclipse.osee.framework.messaging.MessageID;
 
 public enum CoverageMessages implements MessageID {
-   EditorSave(true, "Aylfa1rRxx6NQf4MfNwA", "topic:org.eclipse.osee.coverage.msgs.EditorSave", org.eclipse.osee.coverage.msgs.EditorSave.class, false);
+   CoveragePackageSave(true, "Aylfa1rRxx6NQf4MfNwA", "topic:org.eclipse.osee.coverage.msgs.CoveragePackageSave", org.eclipse.osee.coverage.msgs.CoveragePackageSave.class, false);
 
    private String name;
    private Class<?> clazz;

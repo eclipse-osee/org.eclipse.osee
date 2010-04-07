@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Collection;
+import org.eclipse.osee.coverage.event.CoverageEventManager;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
@@ -17,6 +18,7 @@ import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.msgs.CoveragePackageSave;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -94,6 +96,8 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
    public Result save(SkynetTransaction transaction) throws OseeCoreException {
       getArtifact(true);
       ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save");
+      CoveragePackageSave coveragePackageSave = new CoveragePackageSave();
+      coveragePackageSave.setName(coveragePackage.getName());
       artifact.setName(coveragePackage.getName());
       artifact.setSoleAttributeValue(CoverageAttributes.ACTIVE.getStoreName(), coveragePackage.isEditable().isTrue());
       for (CoverageUnit coverageUnit : coveragePackage.getCoverageUnits()) {
@@ -105,12 +109,15 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          }
       }
       artifact.persist(transaction);
+      CoverageEventManager.getInstance().sendRemoteEvent(coveragePackageSave);
       elapsedTime.end();
       return Result.TrueResult;
    }
 
    public Result save(SkynetTransaction transaction, Collection<ICoverage> coverages) throws OseeCoreException {
       ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save(coverages)");
+      CoveragePackageSave coveragePackageSave = new CoveragePackageSave();
+      coveragePackageSave.setName(coveragePackage.getName());
       for (ICoverage coverage : coverages) {
          CoverageUnit coverageUnit = null;
          if (coverage instanceof CoverageItem) {
@@ -124,6 +131,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          store.save(transaction);
       }
       elapsedTime.end();
+      CoverageEventManager.getInstance().sendRemoteEvent(coveragePackageSave);
       return Result.TrueResult;
    }
 
