@@ -16,8 +16,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,7 +35,7 @@ public abstract class Change implements IAdaptable {
    private final ArtifactType artifactType;
    private final boolean isHistorical;
 
-   public Change(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, boolean isHistorical, Artifact toArtifact, Artifact fromArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+   public Change(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, boolean isHistorical, Artifact toArtifact, Artifact fromArtifact) {
       super();
       this.branch = branch;
       this.sourceGamma = sourceGamma;
@@ -56,16 +54,16 @@ public abstract class Change implements IAdaptable {
       if (obj instanceof Change) {
          Change change = (Change) obj;
          return change.getArtId() == artId &&
-         //
-         change.getGamma() == sourceGamma &&
-         //
-         change.getBranch() == branch &&
-         //
-         change.getToTransactionId() == toTransactionId &&
-         //
-         change.getFromTransactionId() == fromTransactionId &&
-         //
-         change.getModificationType() == modType;
+               //
+               change.getGamma() == sourceGamma &&
+               //
+               change.getBranch() == branch &&
+               //
+               change.getToTransactionId() == toTransactionId &&
+               //
+               change.getFromTransactionId() == fromTransactionId &&
+               //
+               change.getModificationType() == modType;
       }
       return false;
    }
@@ -100,12 +98,12 @@ public abstract class Change implements IAdaptable {
    public Artifact getToArtifact() {
       return toArtifact;
    }
-   
-	public Artifact getFromArtifact(){
-        return fromArtifact;
-	}
 
-   public String getArtifactName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public Artifact getFromArtifact() {
+      return fromArtifact;
+   }
+
+   public String getArtifactName() {
       return getToArtifact().getName();
    }
 
@@ -126,9 +124,9 @@ public abstract class Change implements IAdaptable {
    }
 
    /**
-    * For an artifact change this is the artifact type id. For an attribute this is the attribute
-    * type id. For a relation this is the relation type id.
-    *
+    * For an artifact change this is the artifact type id. For an attribute this is the attribute type id. For a
+    * relation this is the relation type id.
+    * 
     * @return typeId
     */
    public abstract int getItemTypeId();
