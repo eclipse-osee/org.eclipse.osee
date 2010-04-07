@@ -89,16 +89,20 @@ public final class RenderingUtil {
       IFolder toReturn = null;
       switch (presentationType) {
          case DIFF:
-            toReturn = getOrCreateFolder(diffFolder, ".diff");
+            diffFolder = getOrCreateFolder(diffFolder, ".diff");
+            toReturn = diffFolder;
             break;
          case SPECIALIZED_EDIT:
-            toReturn = getOrCreateFolder(workingFolder, ".working");
+            workingFolder = getOrCreateFolder(workingFolder, ".working");
+            toReturn = workingFolder;
             break;
          case PREVIEW:
-            toReturn = getOrCreateFolder(previewFolder, ".preview");
+            previewFolder = getOrCreateFolder(previewFolder, ".preview");
+            toReturn = previewFolder;
             break;
          case MERGE_EDIT:
-            toReturn = getOrCreateFolder(mergeEditFolder, ".mergeEdit");
+            mergeEditFolder = getOrCreateFolder(mergeEditFolder, ".mergeEdit");
+            toReturn = mergeEditFolder;
             break;
          default:
             throw new OseeArgumentException("Unexpected presentation type");

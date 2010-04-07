@@ -44,13 +44,13 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private boolean finalized;
    private boolean initialized;
    private boolean first;
-   private final String diffPath = null;
-   private boolean merge = false;
+   private boolean merge;
 
    public VbaWordDiffGenerator() {
       initialized = false;
       finalized = false;
       first = true;
+      merge = false;
    }
 
    public boolean initialize(boolean visible, boolean detectFormatChanges) {
@@ -149,9 +149,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          errorCatcher.start();
          outputCatcher.start();
          proc.waitFor();
-      } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      } catch (InterruptedException ex) {
+      } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
    }
