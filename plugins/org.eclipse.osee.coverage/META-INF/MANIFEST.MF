@@ -24,7 +24,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.ui.workbench.texteditor;bundle-version="3.5.0",
  org.eclipse.osee.framework.skynet.core,
- org.eclipse.osee.framework.core;bundle-version="0.9.1"
+ org.eclipse.osee.framework.core;bundle-version="0.9.1",
+ org.eclipse.osee.framework.messaging;bundle-version="0.9.4"
 Bundle-ActivationPolicy: lazy
 Import-Package: com.lowagie.text;version="1.5.4",
  com.lowagie.text.pdf;version="1.5.4",

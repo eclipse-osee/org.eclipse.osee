@@ -1,0 +1,1 @@
+xjc messages.xsd -d ../src-gen -p org.eclipse.osee.coverage.msgs

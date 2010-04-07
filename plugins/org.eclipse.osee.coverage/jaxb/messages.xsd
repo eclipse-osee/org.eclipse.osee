@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+            jxb:version="2.0">
+
+<xsd:element name="EditorSave" type="EditorSave"/>
+
+<xsd:complexType name="EditorSave">
+  <xsd:sequence>
+    <xsd:element name="name" type="xsd:string"/>
+    <xsd:element name="guids" type="xsd:string"/>
+    <xsd:element name="sourceObject" type="xsd:string"/>
+    <xsd:element name="sessionId" type="xsd:string"/>
+    <xsd:element name="machineName" type="xsd:string"/>
+    <xsd:element name="userId" type="xsd:string"/>
+    <xsd:element name="machineIp" type="xsd:string"/>
+    <xsd:element name="clientVersion" type="xsd:string"/>
+    <xsd:element name="port" type="xsd:string"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+</xsd:schema>
