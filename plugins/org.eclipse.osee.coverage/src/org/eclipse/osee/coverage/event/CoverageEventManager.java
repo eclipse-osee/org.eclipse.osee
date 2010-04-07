@@ -14,9 +14,9 @@ import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.artifact.IArtifactListener;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
@@ -32,12 +32,14 @@ public class CoverageEventManager implements IArtifactListener {
    private ArtifactTypeEventFilter artifactTypeEventFilter;
    private FilteredEventListener filteredEventListener;
 
-   private CoverageEventManager() {
+   private CoverageEventManager(ConnectionNode connectionNode) {
       artifactTypeEventFilter =
             new ArtifactTypeEventFilter(CoverageArtifactTypes.CoverageFolder, CoverageArtifactTypes.CoverageUnit,
                   CoverageArtifactTypes.CoveragePackage);
       filteredEventListener = new FilteredEventListener(this, artifactTypeEventFilter);
       OseeEventManager.addListener(filteredEventListener);
+      
+      connectionNode.subscribe(CoverageMessages.EditorSave, new CoverageMessageListener(), this);
    }
 
    public static CoverageEventManager getInstance() {
