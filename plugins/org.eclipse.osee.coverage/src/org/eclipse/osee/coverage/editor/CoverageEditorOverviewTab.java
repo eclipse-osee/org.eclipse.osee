@@ -13,6 +13,7 @@ import java.util.Map;
 import org.eclipse.osee.coverage.action.GenerateDetailedCoverageReportAction;
 import org.eclipse.osee.coverage.action.ICoveragePackageHandler;
 import org.eclipse.osee.coverage.model.CoverageOption;
+import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -146,7 +147,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
                      values.add(percent);
                }
                // Show totals for each coverage method
-               else {
+               else if (!rowName.equals(CoverageOptionManagerDefault.Not_Covered.getName())) {
                   int totalCoverageItems = coveragePackageBase.getCoverageItems().size();
                   if (totalCoverageItems == 0) {
                      values.add("0");
@@ -169,7 +170,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
                      values.add(CoverageUtil.getPercent(coverageUnit.getCoverageItemsCovered(true).size(),
                            totalCoverageItems, false).getSecond());
                   }
-               } else {
+               } else if (!rowName.equals(CoverageOptionManagerDefault.Not_Covered.getName())) {
                   CoverageOption CoverageOption = rowToCoverageOption.get(rowName);
                   int totalCoverageItems = coverageUnit.getCoverageItems(true).size();
                   if (totalCoverageItems == 0) {
@@ -190,7 +191,9 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       List<String> rowNames = new ArrayList<String>();
       rowNames.add(ALL_COVERAGE_METHODS);
       for (CoverageOption option : coveragePackageBase.getCoverageOptionManager().get()) {
-         rowNames.add(option.getName());
+         if (!option.getName().equals(CoverageOptionManagerDefault.Not_Covered.getName())) {
+            rowNames.add(option.getName());
+         }
       }
       String rowsSorted[] = rowNames.toArray(new String[rowNames.size()]);
       Arrays.sort(rowsSorted);
