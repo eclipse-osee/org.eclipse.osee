@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.message.tool.rec;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
@@ -40,12 +39,12 @@ public class MessageRecorder {
 	private final IMessageEntryFactory factory;
 	
 	private final ExecutorService taskHandler = Executors.newFixedThreadPool(2);
-	private final WeakReference<TestEnvironmentInterface> env;
+	private final TestEnvironmentInterface env;
 	private final ArrayBlockingQueue<ByteBuffer> bufferQueue = new ArrayBlockingQueue<ByteBuffer>(NUM_BUFFERS);
 	
 	public MessageRecorder(IMessageEntryFactory factory) {
 		this.factory = factory;
-		this.env = new WeakReference<TestEnvironmentInterface>(Activator.getTestEnvironment());
+		this.env = Activator.getTestEnvironment();
 		try {
          for (int i = 0; i < NUM_BUFFERS; i++) {
             bufferQueue.put(ByteBuffer.allocateDirect(256000));
@@ -64,8 +63,8 @@ public class MessageRecorder {
 			throw new IllegalArgumentException("channel cannot be null");
 		}
 		recLock.lock();
-        this.channel = channel;
 		try {			
+	        this.channel = channel;
 			for (MessageRecordConfig config : list) {
 				IMessageEntry handler = factory.createMessageEntry(config, this);
 				msgsToRecord.add(handler);
@@ -101,7 +100,7 @@ public class MessageRecorder {
 	}
 
 	public long getTimeStamp() {
-		return env.get().getEnvTime();
+		return env.getEnvTime();
 	}
 	
 	public void stopRecording(boolean closeOutputChannel) throws IOException, InterruptedException {

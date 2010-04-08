@@ -187,10 +187,11 @@ public class CharElement extends DiscreteElement<Character> {
     * @throws InterruptedException
     */
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
-      if (accessor != null) {
-         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
-               (new MethodFormatter()).add(value).add(milliseconds), this.getMessage());
+      if (accessor == null) {
+    	  throw new IllegalArgumentException("accessor cannot be null");
       }
+      accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
+    		  (new MethodFormatter()).add(value).add(milliseconds), this.getMessage());
       long time = accessor.getEnvTime();
       String currentValue;
       if (milliseconds > 0) {
@@ -518,7 +519,7 @@ public class CharElement extends DiscreteElement<Character> {
 
    @Override
    public Character valueOf(MemoryResource otherMem) {
-      return new Character((char) otherMem.getInt(byteOffset, msb, lsb));
+      return Character.valueOf((char) otherMem.getInt(byteOffset, msb, lsb));
    }
 
    @Override

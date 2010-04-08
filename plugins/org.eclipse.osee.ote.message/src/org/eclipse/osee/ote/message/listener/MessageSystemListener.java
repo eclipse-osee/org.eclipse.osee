@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.listener;
 
-import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
 import org.eclipse.osee.framework.jdk.core.util.benchmark.Benchmark;
 import org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
@@ -38,7 +38,7 @@ IOSEEMessageWriterListener, ITimeout {
 	private volatile boolean isTimedOut = false;
 	private int masterMessageCount = 0;
 //	private final Message message;
-	private WeakReference<Message<?,?,?>> message;
+	private final Message<?,?,?> message;
 	private static final Benchmark tbm = new Benchmark("Total Message System Listener", 2500);
 
 	private int messageCount = 0;
@@ -75,7 +75,7 @@ IOSEEMessageWriterListener, ITimeout {
 	 */
 	public MessageSystemListener(Message<?,?,?> msg) {
 		super();
-		this.message = new WeakReference<Message<?,?,?>>(msg);  
+		this.message = msg;  
 	}
 
 	/**
@@ -221,7 +221,7 @@ IOSEEMessageWriterListener, ITimeout {
 	public synchronized void onDataAvailable(final MessageData data, MemType type) throws MessageSystemException{
 
 		tbm.startSample();
-		if (message.get().getMemType() == type) {
+		if (message.getMemType() == type) {
 			messageCount++;
 			masterMessageCount++; 
 			notifyAll();  

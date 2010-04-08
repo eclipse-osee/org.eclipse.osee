@@ -367,7 +367,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    public void removeUser(OSEEPerson1_4 user) {
       if (users.containsKey(user)) {
-         users.put(user, new Integer(((Integer) users.get(user)).intValue() - 1));
+         users.put(user, Integer.valueOf(((Integer) users.get(user)).intValue() - 1));
          if (((Integer) users.get(user)).intValue() == 0) {
             users.remove(user);
          }

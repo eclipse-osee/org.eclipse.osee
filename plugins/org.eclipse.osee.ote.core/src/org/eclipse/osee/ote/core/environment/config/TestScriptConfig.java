@@ -21,7 +21,6 @@ public class TestScriptConfig implements Serializable {
    private String outFile;
    private String fullScriptName;
    private String[] classPathStrs;
-   private String cppExePath;
    private boolean isExe;
    private ScriptVersionConfig scriptVersion;
 
@@ -54,10 +53,6 @@ public class TestScriptConfig implements Serializable {
 
    public boolean isExe() {
       return isExe;
-   }
-
-   public String getCppExePath() {
-      return cppExePath;
    }
 
    public ScriptVersionConfig getScriptVersion() {

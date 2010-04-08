@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MemoryResource;
@@ -58,12 +59,12 @@ public class SignedInteger16Element extends NumericElement<Integer> {
 
    @Override
    public Integer getValue() {
-      return new Integer(getMsgData().getMem().getSignedInt16(byteOffset, msb, lsb));
+      return Integer.valueOf(getMsgData().getMem().getSignedInt16(byteOffset, msb, lsb));
    }
 
    @Override
    public Integer valueOf(MemoryResource mem) {
-      return new Integer(mem.getSignedInt16(byteOffset, msb, lsb));
+      return Integer.valueOf(mem.getSignedInt16(byteOffset, msb, lsb));
    }
 
    /**
@@ -150,7 +151,7 @@ public class SignedInteger16Element extends NumericElement<Integer> {
     * @throws InterruptedException
     */
    public int waitForRange(ITestEnvironmentAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
-      return super.waitForRange(accessor, new Integer(minValue), minInclusive, new Integer(maxValue), maxInclusive,
+      return super.waitForRange(accessor, Integer.valueOf(minValue), minInclusive, Integer.valueOf(maxValue), maxInclusive,
             milliseconds);
    }
 
@@ -183,7 +184,7 @@ public class SignedInteger16Element extends NumericElement<Integer> {
     * @throws InterruptedException
     */
    public int waitForNotRange(ITestEnvironmentAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
-      return (Integer) super.waitForNotRange(accessor, new Integer(minValue), minInclusive, new Integer(maxValue),
+      return (Integer) super.waitForNotRange(accessor, Integer.valueOf(minValue), minInclusive, Integer.valueOf(maxValue),
             maxInclusive, milliseconds);
    }
 

@@ -44,7 +44,7 @@ public class BooleanElement extends DiscreteElement<Boolean> {
 
 	@Override
 	public Boolean getValue() {
-		return new Boolean(getMsgData().getMem().getBoolean(byteOffset, msb, lsb));
+		return Boolean.valueOf(getMsgData().getMem().getBoolean(byteOffset, msb, lsb));
 	}
 	
 	
@@ -60,7 +60,7 @@ public class BooleanElement extends DiscreteElement<Boolean> {
 
 	@Override
 	public Boolean valueOf(MemoryResource mem) {
-		return new Boolean(mem.getBoolean(byteOffset, msb, lsb));
+		return Boolean.valueOf(mem.getBoolean(byteOffset, msb, lsb));
 	}
 
 	@Override

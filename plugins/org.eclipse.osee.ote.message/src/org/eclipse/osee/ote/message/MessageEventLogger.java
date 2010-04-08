@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message;
 
-import java.lang.ref.WeakReference;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.message.enums.MemType;
 
@@ -27,7 +27,7 @@ public class MessageEventLogger implements UniversalMessageListener{
       }
    }
    
-   private final WeakReference<Message<?,?,?>> message;
+   private final Message<?,?,?> message;
    private final String modeStatus;
    
    private volatile boolean showStackTrace = false;
@@ -41,7 +41,7 @@ public class MessageEventLogger implements UniversalMessageListener{
     * @return the message
     */
    public Message<?, ?, ?> getMessage() {
-      return message.get();
+      return message;
    }
 
 
@@ -51,7 +51,7 @@ public class MessageEventLogger implements UniversalMessageListener{
     * @param showStackTrace
     */
    public MessageEventLogger(Message<?,?,?> message, boolean showStackTrace) {
-      this.message = new WeakReference<Message<?,?,?>>(message);
+      this.message = message;
       modeStatus = message.isWriter() ? "wirter " : "reader";
       message.addPostMemSourceChangeListener(this);
       message.addPostMessageDisposeListener(this);
@@ -86,7 +86,7 @@ public class MessageEventLogger implements UniversalMessageListener{
    public void isScheduledChanged(boolean isScheduled) {
       log(Level.INFO, String.format(
             "schedule status for %s %s has changed to %s. Env time is %d", 
-            message.get().getName(), 
+            message.getName(), 
             modeStatus,
             isScheduled ? "scheduled" :  "not scheduled"), showStackTrace ? new StackTrace() : null);
    }

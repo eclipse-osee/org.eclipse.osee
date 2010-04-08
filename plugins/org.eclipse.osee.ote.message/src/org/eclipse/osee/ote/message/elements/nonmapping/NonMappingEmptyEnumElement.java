@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.elements.nonmapping;
 
-import java.lang.ref.WeakReference;
-
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
@@ -34,11 +32,8 @@ public class NonMappingEmptyEnumElement extends EmptyEnum_Element {
 	 * @param element
 	 */
 	public NonMappingEmptyEnumElement(EmptyEnum_Element element) {
-		super(null, element.getElementName(), element.getMsgData(), element
+		super(element.getMessage(), element.getElementName(), element.getMsgData(), element
 				.getByteOffset(), element.getMsb(), element.getLsb());
-		// This is being done so it doesn't get added to the element list hash
-		// map.
-		this.msg = new WeakReference<Message<?, ?, ?>>(element.getMessage());
 		for (Object obj : element.getElementPath()) {
 			this.getElementPath().add(obj);
 		}

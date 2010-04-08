@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
+
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
@@ -111,10 +112,10 @@ public class StringElement extends DiscreteElement<String> {
       }
 
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
-            (new MethodFormatter()).add(value).add(milliseconds), this.msg.get());
+            (new MethodFormatter()).add(value).add(milliseconds), this.msg);
       final StringTrimCondition c = new StringTrimCondition(this, value);
 
-      MsgWaitResult result = msg.get().waitForCondition(accessor, c, false, milliseconds);
+      MsgWaitResult result = msg.waitForCondition(accessor, c, false, milliseconds);
       CheckPoint passFail =
             new CheckPoint(getFullName(), toString(value), toString(c.getLastCheckValue()), result.isPassed(),
                   result.getElapsedTime());
@@ -157,10 +158,10 @@ public class StringElement extends DiscreteElement<String> {
       }
 
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(), (new MethodFormatter()).add(milliseconds),
-            this.msg.get());
+            this.msg);
       final EmptyStringCondition c = new EmptyStringCondition(this);
 
-      MsgWaitResult result = msg.get().waitForCondition(accessor, c, false, milliseconds);
+      MsgWaitResult result = msg.waitForCondition(accessor, c, false, milliseconds);
       CheckPoint passFail =
             new CheckPoint(getFullName(), "Empty", result.isPassed() ? "Empty" : "Not Empty", result.isPassed(),
                   result.getElapsedTime());
@@ -177,10 +178,10 @@ public class StringElement extends DiscreteElement<String> {
       }
 
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(), (new MethodFormatter()).add(milliseconds),
-            this.msg.get());
+            this.msg);
       final EmptyStringCondition c = new EmptyStringCondition(this);
 
-      MsgWaitResult result = msg.get().waitForCondition(accessor, c, true, milliseconds);
+      MsgWaitResult result = msg.waitForCondition(accessor, c, true, milliseconds);
       CheckPoint passFail =
             new CheckPoint(getFullName(), "Empty", result.isPassed() ? "Empty" : "Not Empty", result.isPassed(),
                   result.getElapsedTime());

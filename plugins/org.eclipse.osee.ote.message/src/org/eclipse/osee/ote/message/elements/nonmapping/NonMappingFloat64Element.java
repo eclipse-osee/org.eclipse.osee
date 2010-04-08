@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.elements.nonmapping;
 
-import java.lang.ref.WeakReference;
-
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.Float64Element;
@@ -28,10 +26,8 @@ public class NonMappingFloat64Element extends Float64Element {
     * @param element
     */
     public NonMappingFloat64Element(Float64Element element) {
-       super(null, element.getElementName(), element.getMsgData(), 
+       super(element.getMessage(), element.getElementName(), element.getMsgData(), 
              element.getByteOffset(), element.getMsb(), element.getLsb());
-       // This is being done so it doesn't get added to the element list hash map.
-       this.msg = new WeakReference<Message<?,?,?>>(element.getMessage()); 
        for(Object obj:element.getElementPath()){
           this.getElementPath().add(obj);
        }

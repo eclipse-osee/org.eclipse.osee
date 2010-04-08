@@ -14,6 +14,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -91,7 +92,7 @@ import org.w3c.dom.Element;
  */
 public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
    protected ITestLogger logger;
-   private final WeakReference<ITestEnvironmentAccessor> environment;
+   private final ITestEnvironmentAccessor environment;
    private final boolean standAlone;
    public int testCaseNumber;
    private final WeakReference<TestScript> testScript;
@@ -133,7 +134,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
          this.testCaseNumber = testScript.addTestCase(this);
       }
       this.testScript = new WeakReference<TestScript>(testScript);
-      this.environment = new WeakReference<ITestEnvironmentAccessor>(testScript.getTestEnvironment());
+      this.environment = testScript.getTestEnvironment();
       GCHelper.getGCHelper().addRefWatch(this);
    }
 
@@ -149,7 +150,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
       ;
       this.testCaseNumber = 1;
       this.testScript = null;
-      this.environment = new WeakReference<ITestEnvironmentAccessor>(accessor);
+      this.environment = accessor;
 
    }
 
@@ -186,7 +187,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
    }
 
    public ITestEnvironmentAccessor getTestEnvironment() {
-      return environment.get();
+      return environment;
    }
 
    public TestRecord getTestRecord() {
@@ -293,23 +294,23 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
    }
 
    public void abortTestScript() {
-      environment.get().abortTestScript();
+      environment.abortTestScript();
    }
 
    public boolean addTask(EnvironmentTask task) {
-      return environment.get().addTask(task);
+      return environment.addTask(task);
    }
 
    public void associateObject(Class<?> c, Object obj) {
-      environment.get().associateObject(c, obj);
+      environment.associateObject(c, obj);
    }
 
    public Object getAssociatedObject(Class<?> c) {
-      return environment.get().getAssociatedObject(c);
+      return environment.getAssociatedObject(c);
    }
 
    public Set<Class<?>> getAssociatedObjects() {
-      return environment.get().getAssociatedObjects();
+      return environment.getAssociatedObjects();
    }
 
    /*
@@ -321,19 +322,19 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
    // return environment.getEnvironmentType();
    // }
    public long getEnvTime() {
-      return environment.get().getEnvTime();
+      return environment.getEnvTime();
    }
 
    public IExecutionUnitManagement getExecutionUnitManagement() {
-      return environment.get().getExecutionUnitManagement();
+      return environment.getExecutionUnitManagement();
    }
 
    public ITestLogger getLogger() {
-      return environment.get().getLogger();
+      return environment.getLogger();
    }
 
    public IScriptControl getScriptCtrl() {
-      return environment.get().getScriptCtrl();
+      return environment.getScriptCtrl();
    }
 
    /*
@@ -341,23 +342,23 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
     */
 
    public ITestStation getTestStation() {
-      return environment.get().getTestStation();
+      return environment.getTestStation();
    }
 
    public ITimerControl getTimerCtrl() {
-      return environment.get().getTimerCtrl();
+      return environment.getTimerCtrl();
    }
 
    public void onScriptComplete() throws InterruptedException {
-      environment.get().onScriptComplete();
+      environment.onScriptComplete();
    }
 
    public void onScriptSetup() {
-      environment.get().onScriptSetup();
+      environment.onScriptSetup();
    }
 
    public ICancelTimer setTimerFor(ITimeout listener, int time) {
-      return environment.get().setTimerFor(listener, time);
+      return environment.setTimerFor(listener, time);
    }
 
    public void logTestPoint(boolean isPassed, String testPointName, String expected, String actual) {

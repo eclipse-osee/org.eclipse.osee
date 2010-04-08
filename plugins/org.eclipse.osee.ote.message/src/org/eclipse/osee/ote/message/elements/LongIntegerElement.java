@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.message.Message;
@@ -60,12 +61,12 @@ public class LongIntegerElement extends NumericElement<Long> {
 
    @Override
    public Long getValue() {
-      return new Long(getMsgData().getMem().getLong(byteOffset, msb, lsb));
+      return Long.valueOf(getMsgData().getMem().getLong(byteOffset, msb, lsb));
    }
 
    @Override
    public Long valueOf(MemoryResource mem) {
-      return new Long(mem.getLong(byteOffset, msb, lsb));
+      return Long.valueOf(mem.getLong(byteOffset, msb, lsb));
    }
 
    /**

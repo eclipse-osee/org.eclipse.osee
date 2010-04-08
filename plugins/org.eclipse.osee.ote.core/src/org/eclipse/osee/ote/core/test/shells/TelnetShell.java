@@ -24,6 +24,7 @@ import java.nio.channels.WritableByteChannel;
 import java.util.logging.Level;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
+
 import org.apache.commons.net.telnet.EchoOptionHandler;
 import org.apache.commons.net.telnet.InvalidTelnetOptionException;
 import org.apache.commons.net.telnet.SuppressGAOptionHandler;
@@ -46,8 +47,6 @@ public class TelnetShell implements TelnetNotificationHandler {
       private final OutputStream outStream;
 
       public final ByteBuffer buffer = ByteBuffer.allocateDirect(1024);
-      private final boolean done = false;
-
       public Piper(InputStream in, OutputStream out) {
          super("Stream Piper");
          this.inStream = in;
@@ -60,7 +59,7 @@ public class TelnetShell implements TelnetNotificationHandler {
          final WritableByteChannel out = Channels.newChannel(outStream);
          try {
             buffer.clear();
-            while (!done) {
+            while (true) {
                in.read(buffer);
                buffer.flip();
                out.write(buffer);
@@ -256,7 +255,11 @@ public class TelnetShell implements TelnetNotificationHandler {
          System.out.println("Enter host name or ip address (#.#.#.#))");
          String host = reader.readLine();
          System.out.println("Enter port");
-         int port = Integer.parseInt(reader.readLine());
+         String string = reader.readLine();
+         if (string == null) {
+        	 return;
+         }
+         int port = Integer.parseInt(string);
          TelnetShell shell = new TelnetShell(host, port, false);
          Piper piper = new Piper(shell.in, System.out);
          piper.start();

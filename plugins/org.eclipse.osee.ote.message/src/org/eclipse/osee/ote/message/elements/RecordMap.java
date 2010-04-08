@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
 import java.util.HashMap;
+
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 
@@ -23,14 +24,12 @@ public class RecordMap<T extends RecordElement> extends RecordElement{
 
    private final int NUMBER_OF_RECORDS;
    
-   MessageData messageData;
 
-   private HashMap<Integer, T> records;
+   private final HashMap<Integer, T> records;
    private IRecordFactory factory;
 
    public RecordMap(Message<?,?,?> message, MessageData messageData, String elementName, int numberOfRecords, IRecordFactory factory) {
       super(message, elementName, 1, messageData, 0, factory.getBitLength());
-      this.messageData = messageData;
       NUMBER_OF_RECORDS = numberOfRecords;
       records = new HashMap<Integer, T>(numberOfRecords);
       this.factory = factory;
@@ -39,7 +38,6 @@ public class RecordMap<T extends RecordElement> extends RecordElement{
    public RecordMap(Message<?,?,?> message, MessageData messageData, int firstRecordByteOffset, int recordByteSize,
          int numberOfRecords) {
       super(message, "", 1, messageData, 0, 0);
-      this.messageData = messageData;
      NUMBER_OF_RECORDS = numberOfRecords;
       records = new HashMap<Integer, T>(numberOfRecords);
    }

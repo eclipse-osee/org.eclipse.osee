@@ -19,6 +19,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.osee.ote.core.IUserSession;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.environment.BundleDescription;
@@ -26,7 +27,6 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.BasicTimeout;
 import org.eclipse.osee.ote.core.environment.interfaces.IEnvironmentFactory;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
-import org.eclipse.osee.ote.core.log.Env;
 import org.eclipse.osee.ote.core.model.IModelManager;
 import org.eclipse.osee.ote.message.instrumentation.IOInstrumentation;
 import org.eclipse.osee.ote.message.interfaces.IMessageManager;
@@ -135,30 +135,6 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
    }
 
    public abstract void singleStepEnv();
-
-   public void wakeScript() {
-      synchronized (getTestScript()) {
-         System.out.println("notifying");
-         getTestScript().notifyAll();
-      }
-   }
-
-   protected synchronized boolean waitForPromptResponse() {
-      this.promptResponse = false;
-      int count = 0;
-      while (count < 120) {
-         if (this.promptResponse) {
-            return true;
-         }
-         try {
-            Thread.sleep(1000);
-         } catch (InterruptedException ex) {
-            Env.getInstance().exception(ex);
-         }
-         count++;
-      }
-      return false;
-   }
 
    public void setClientClasses(URL[] urls) throws RemoteException {
       clientClasses = urls;

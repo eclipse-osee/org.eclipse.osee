@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.elements;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.MessageSystemException;
@@ -26,38 +26,35 @@ import org.eclipse.osee.ote.message.enums.MemType;
  * @author Andrew M. Finkbeiner
  */
 public abstract class Element  implements ITimeout {
-   protected WeakReference<Message<?,?,?>> msg;
+   protected final Message<?,?,?> msg;
    protected String elementName;
    private volatile boolean timedOut;
-   private List<Object> elementPath;
-   private String fullName;
+   private final List<Object> elementPath;
+   private final String fullName;
    
-   protected int byteOffset;
+   protected final int byteOffset;
    protected int lsb;
-   protected WeakReference<MessageData> messageData;
+   protected final MessageData messageData;
    protected int msb;
-   protected int originalMsb;
-   protected int originalLsb;
+   protected final int originalMsb;
+   protected final int originalLsb;
    private String elementPathAsString;
 
    public Element(Message<?,?,?> msg, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalMsb, int originalLsb) {
-      this.msg = new WeakReference<Message<?,?,?>>(msg);
+      this.msg = msg;
       this.elementName = elementName;
-      this.messageData = new WeakReference<MessageData>(messageData);
+      this.messageData = messageData;
       this.byteOffset = byteOffset;
       this.lsb = lsb;
       this.msb = msb;
       this.originalLsb = originalLsb;
       this.originalMsb = originalMsb;
-      // if (msg!=null)
-      // msg.addElement(this);
       elementPath = new ArrayList<Object>();
       fullName = (msg != null ? msg.getName() : messageData.getName()) + "." + this.elementName;
    }
 
    public Element(Message<?,?,?> msg, String elementName, MessageData messageData, int bitOffset, int bitLength) {
-      this(msg, elementName, messageData, 0, 0, 0, 0, 0);
-      this.byteOffset = bitOffset / 8;
+      this(msg, elementName, messageData,  bitOffset / 8, 0, 0, 0, 0);
       this.msb = bitOffset % 8;
       this.lsb = msb + (bitLength - 1);
    }
@@ -79,7 +76,7 @@ public abstract class Element  implements ITimeout {
    }
 
    public MessageData getMsgData() {
-      return messageData.get();
+      return messageData;
    }
 
    public int getBitLength() {
@@ -115,7 +112,7 @@ public abstract class Element  implements ITimeout {
     * @return Returns the msg.
     */
    public Message<?,?,?> getMessage() {
-      return msg.get();
+      return msg;
    }
 
    public String getElementName() {
@@ -131,7 +128,7 @@ public abstract class Element  implements ITimeout {
    }
 
    public MemType getType() {
-      return messageData.get().getType();
+      return messageData.getType();
    }
 
    /**
@@ -242,7 +239,7 @@ public abstract class Element  implements ITimeout {
    protected abstract Element getNonMappingElement();
 
    protected void throwNoMappingElementException() {
-      throw new MessageSystemException("The element " + msg.get().getName() + "." + elementName + " does not exist for the message's current MemType!! "
+      throw new MessageSystemException("The element " + msg.getName() + "." + elementName + " does not exist for the message's current MemType!! "
             + "\nIt shouldn't be used for this environment type!!", Level.SEVERE);
    }
 
