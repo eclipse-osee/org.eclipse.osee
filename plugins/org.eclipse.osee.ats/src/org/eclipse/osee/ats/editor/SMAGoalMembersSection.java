@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.goal.GoalXViewerFactory;
@@ -104,13 +105,16 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
          public void performArtifactDrop(Artifact[] dropArtifacts) {
             super.performArtifactDrop(dropArtifacts);
             try {
-               Collection<Artifact> members = ((GoalArtifact) editor.getSma()).getMembers();
+               List<Artifact> members = new ArrayList<Artifact>();
+               members.addAll(((GoalArtifact) editor.getSma()).getMembers());
                for (Artifact art : dropArtifacts) {
                   if (!members.contains(art)) {
+                     members.add(art);
                      editor.getSma().addRelation(AtsRelationTypes.Goal_Member, art);
                   }
                }
-               editor.onDirtied();
+               editor.getSma().setRelationOrder(AtsRelationTypes.Goal_Member, members);
+               editor.doSave(null);
             } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -134,7 +138,7 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
                for (Artifact art : dropArtifacts) {
                   editor.getSma().deleteRelation(AtsRelationTypes.Goal_Member, art);
                }
-               editor.onDirtied();
+               editor.doSave(null);
             } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
