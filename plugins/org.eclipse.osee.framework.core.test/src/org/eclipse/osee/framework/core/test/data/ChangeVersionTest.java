@@ -17,7 +17,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link ChangeVersion}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ChangeVersionTest {
@@ -91,10 +91,10 @@ public class ChangeVersionTest {
    @Test
    public void testToString() {
       ChangeVersion actual1 = new ChangeVersion("hello", 47L, ModificationType.MERGED);
-      Assert.assertEquals("[46,47,MERGED]", actual1.toString());
+      Assert.assertEquals("[47,MERGED]", actual1.toString());
 
       ChangeVersion expected = new ChangeVersion();
-      Assert.assertEquals("[null,null,null]", expected.toString());
+      Assert.assertEquals("[null,null]", expected.toString());
 
    }
 }
