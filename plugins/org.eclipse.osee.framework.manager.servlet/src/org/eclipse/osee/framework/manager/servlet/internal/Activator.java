@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider
 import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.services.IOseeModelingServiceProvider;
 import org.eclipse.osee.framework.manager.servlet.ArtifactFileServlet;
+import org.eclipse.osee.framework.manager.servlet.AtsServlet;
 import org.eclipse.osee.framework.manager.servlet.BranchExchangeServlet;
 import org.eclipse.osee.framework.manager.servlet.BranchManagerServlet;
 import org.eclipse.osee.framework.manager.servlet.ClientInstallInfoServlet;
@@ -100,6 +101,8 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
       createHttpServiceTracker(context, new ClientInstallInfoServlet(), "osee/install/info");
       createHttpServiceTracker(context, new OseeCacheServlet(this), OseeServerContext.CACHE_CONTEXT);
       createHttpServiceTracker(context, new OseeModelServlet(this), OseeServerContext.OSEE_MODEL_CONTEXT);
+
+      createHttpServiceTracker(context, new AtsServlet(), "osee/ats");
    }
 
    public void stop(BundleContext context) throws Exception {

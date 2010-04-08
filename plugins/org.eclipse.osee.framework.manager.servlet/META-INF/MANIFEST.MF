@@ -24,13 +24,17 @@ Import-Package: com.lowagie.text,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io.xml,
+ org.eclipse.osee.framework.jdk.core.util.xml,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.osee,
  org.eclipse.osee.framework.oseeTypes,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.exception,
+ org.eclipse.osee.framework.resource.management.util,
  org.eclipse.osee.framework.search.engine,
  org.osgi.framework,
  org.osgi.service.http,
  org.osgi.util.tracker
+Service-Component: OSGI-INF/ats.provider.xml,
+ OSGI-INF/locator.provider.ats.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
