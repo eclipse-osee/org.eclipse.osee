@@ -175,6 +175,7 @@ public final class ImportController {
 
       ManifestVersionRule versionRule = new ManifestVersionRule();
       versionRule.setReplaceVersion(false);
+      transformExportItem(ExportItem.EXPORT_MANIFEST, versionRule);
       String version = versionRule.getVersion();
       versionRule.setReplaceVersion(true);
 

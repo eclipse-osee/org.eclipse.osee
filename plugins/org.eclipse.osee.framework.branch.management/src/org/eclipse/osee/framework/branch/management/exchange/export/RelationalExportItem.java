@@ -125,8 +125,18 @@ public class RelationalExportItem extends AbstractDbExportItem {
             } else if (name.equals(ExportImportXml.RATIONALE)) {
                handleStringContent(rationaleBuffer, getWriteLocation(), chStmt.getString(name),
                      ExportImportXml.RATIONALE);
-            } else if (name.equals(ExportImportXml.ART_TYPE_ID) || name.equals(ExportImportXml.ATTR_TYPE_ID) || name.equals(ExportImportXml.REL_TYPE_ID)) {
-               ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, chStmt.getString(name));
+            } else if (name.equals(ExportImportXml.ART_TYPE_ID)) {
+               int typeId = chStmt.getInt(name);
+               String guid = services.getCachingService().getArtifactTypeCache().getById(typeId).getGuid();
+               ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, guid);
+            } else if (name.equals(ExportImportXml.ATTR_TYPE_ID)) {
+               int typeId = chStmt.getInt(name);
+               String guid = services.getCachingService().getAttributeTypeCache().getById(typeId).getGuid();
+               ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, guid);
+            } else if (name.equals(ExportImportXml.REL_TYPE_ID)) {
+               int typeId = chStmt.getInt(name);
+               String guid = services.getCachingService().getRelationTypeCache().getById(typeId).getGuid();
+               ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, guid);
             } else {
                switch (chStmt.getColumnType(columnIndex)) {
                   case Types.TIMESTAMP:

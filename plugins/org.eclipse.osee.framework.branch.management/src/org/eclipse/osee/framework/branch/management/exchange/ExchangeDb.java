@@ -96,16 +96,16 @@ public class ExchangeDb {
          "SELECT txd1.TRANSACTION_ID, txd1.TIME, txd1.AUTHOR, txd1.OSEE_COMMENT, txd1.BRANCH_ID, txd1.COMMIT_ART_ID, txd1.TX_TYPE FROM osee_tx_details txd1, osee_join_export_import jex1 WHERE txd1.branch_id = jex1.id1 AND jex1.query_id=? %s ORDER BY txd1.transaction_id";
 
    private static final String TXS_TABLE_QUERY =
-         "SELECT txs1.GAMMA_ID, txs1.TRANSACTION_ID, txs1.TX_CURRENT, txs1.MOD_TYPE FROM osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
+         "SELECT txs1.GAMMA_ID, txs1.TRANSACTION_ID, txs1.TX_CURRENT, txs1.MOD_TYPE, txs1.BRANCH_ID FROM osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE txs1.transaction_id = txd1.transaction_id AND txs1.branch_id = jex1.id1 AND jex1.query_id=? %s";
 
    private static final String ARTIFACT_TABLE_QUERY =
-         "SELECT DISTINCT (art1.GAMMA_ID), art1.art_id, art1.GUID, art1.HUMAN_READABLE_ID, art1.ART_TYPE_ID FROM osee_arts art1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE art1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
+         "SELECT DISTINCT (art1.GAMMA_ID), art1.art_id, art1.GUID, art1.HUMAN_READABLE_ID, art1.ART_TYPE_ID FROM osee_arts art1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE art1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txs1.branch_id = jex1.id1 AND jex1.query_id=? %s";
 
    private static final String ATTRIBUTE_TABLE_QUERY =
-         "SELECT DISTINCT (attr1.GAMMA_ID), attr1.ATTR_ID, attr1.ART_ID, attr1.VALUE, attr1.ATTR_TYPE_ID, attr1.URI FROM osee_attribute attr1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
+         "SELECT DISTINCT (attr1.GAMMA_ID), attr1.ATTR_ID, attr1.ART_ID, attr1.VALUE, attr1.ATTR_TYPE_ID, attr1.URI FROM osee_attribute attr1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txs1.branch_id = jex1.id1 AND jex1.query_id=? %s";
 
    private static final String RELATION_LINK_TABLE_QUERY =
-         "SELECT DISTINCT (rel1.GAMMA_ID), rel1.REL_LINK_ID, rel1.B_ART_ID, rel1.A_ART_ID, rel1.RATIONALE, rel1.REL_LINK_TYPE_ID FROM osee_relation_link rel1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
+         "SELECT DISTINCT (rel1.GAMMA_ID), rel1.REL_LINK_ID, rel1.B_ART_ID, rel1.A_ART_ID, rel1.RATIONALE, rel1.REL_LINK_TYPE_ID FROM osee_relation_link rel1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txs1.branch_id = jex1.id1 AND jex1.query_id=? %s";
 
    private static final String MERGE_TABLE_QUERY =
          "SELECT om1.* FROM osee_merge om1, osee_join_export_import jex1 WHERE om1.merge_branch_id = jex1.id1 AND jex1.query_id=? %s";
@@ -178,7 +178,7 @@ public class ExchangeDb {
                if (originalQuery.contains("om1")) {
                   optionString.append(" AND om1.commit_transaction_id >= ?");
                   dataArray.add(minTxs);
-               } else if (originalQuery.contains("txd1")) {
+               } else if (originalQuery.contains("txs1")) {
                   optionString.append(" AND txd1.transaction_id >= ?");
                   dataArray.add(minTxs);
                }
@@ -188,7 +188,7 @@ public class ExchangeDb {
                if (originalQuery.contains("om1")) {
                   optionString.append(" AND om1.commit_transaction_id <= ?");
                   dataArray.add(maxTxs);
-               } else if (originalQuery.contains("txd1")) {
+               } else if (originalQuery.contains("txs1")) {
                   optionString.append(" AND txd1.transaction_id <= ?");
                   dataArray.add(maxTxs);
                }

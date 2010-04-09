@@ -42,7 +42,7 @@ public class ManifestExportItem extends AbstractExportItem {
    protected void doWork(Appendable appendable) throws Exception {
       ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.EXPORT_ENTRY);
       ExportImportXml.addXmlAttribute(appendable, ExportImportXml.DATABASE_ID, OseeInfo.getDatabaseGuid());
-      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.EXPORT_VERSION, OseeCodeVersion.getVersion());
+      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.EXPORT_VERSION, OseeCodeVersion.getBundleVersion());
 
       ExportImportXml.addXmlAttribute(appendable, ExportImportXml.EXPORT_DATE,
             new Long(new Date().getTime()).toString());
