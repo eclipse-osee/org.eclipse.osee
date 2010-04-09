@@ -46,6 +46,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
       return "Re-Assign ATS Objects To User";
    }
 
+   @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
@@ -81,7 +82,9 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                      new ArtifactCheckTreeDialog(atsArts, new ArtifactTypeAndDescriptiveLabelProvider());
                dialog.setTitle("ReAssign ATS Object to User");
                dialog.setMessage("Select to re-assign to user \"" + toUser);
-               if (dialog.open() != 0) return;
+               if (dialog.open() != 0) {
+                  return;
+               }
                final Collection<Artifact> artsToReAssign = dialog.getSelection();
 
                // Make the changes and persist
@@ -117,6 +120,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
       return "Re-Assign ATS Workflows, Tasks and Reviews to another user.  Enter to and from User and select play.  You will be promted to select the ATS Objects to reassign.";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("ATS.Admin");
    }

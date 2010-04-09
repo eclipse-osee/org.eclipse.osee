@@ -61,6 +61,7 @@ public class PurgeUser extends AbstractBlam {
       return "Purge User";
    }
 
+   @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       final IProgressMonitor mon = monitor;
       Displays.ensureInDisplayThread(new Runnable() {
@@ -183,6 +184,7 @@ public class PurgeUser extends AbstractBlam {
       return "Purge the specified User.  You will be prompted to choose which user to re-assign existing transactions and relations.";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
    }
