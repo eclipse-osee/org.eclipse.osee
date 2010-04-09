@@ -183,6 +183,9 @@ public class GoalArtifact extends StateMachineArtifact {
       }
    }
 
+   /**
+    * change goal, prompt if member of two goals
+    */
    public static GoalArtifact promptChangeGoalOrder(Artifact artifact) throws OseeCoreException {
       if (!isHasGoal(artifact)) {
          AWorkbench.popup(String.format("No Goal set for artifact [%s]", artifact));
@@ -203,15 +206,26 @@ public class GoalArtifact extends StateMachineArtifact {
             return null;
          }
       }
+      return promptChangeGoalOrder(goal, artifact);
+   }
 
-      List<Artifact> members = goal.getMembers();
-      String currIndexStr = getGoalOrder(goal, artifact);
+   /**
+    * change goal order for artifact within given goal
+    */
+   public static GoalArtifact promptChangeGoalOrder(GoalArtifact goalArtifact, Artifact artifact) throws OseeCoreException {
+      if (!isHasGoal(artifact) || goalArtifact == null) {
+         AWorkbench.popup(String.format("No Goal set for artifact [%s]", artifact));
+         return null;
+      }
+
+      List<Artifact> members = goalArtifact.getMembers();
+      String currIndexStr = getGoalOrder(goalArtifact, artifact);
       EntryDialog ed =
             new EntryDialog(
                   "Change Goal Order",
                   String.format(
                         "Goal: %s\n\nCurrent Order: %s\n\nEnter New Order Number from 1..%d or %d for last\n\nNote: Goal will be placed before number entered.",
-                        goal, currIndexStr, members.size(), members.size() + 1));
+                        goalArtifact, currIndexStr, members.size(), members.size() + 1));
       ed.setNumberFormat(NumberFormat.getIntegerInstance());
 
       int result = ed.open();
@@ -225,9 +239,9 @@ public class GoalArtifact extends StateMachineArtifact {
             return null;
          }
          Artifact insertTarget = members.get(membersIndex);
-         goal.setRelationOrder(AtsRelationTypes.Goal_Member, insertTarget, insertLast ? true : false, artifact);
-         goal.persist();
-         return goal;
+         goalArtifact.setRelationOrder(AtsRelationTypes.Goal_Member, insertTarget, insertLast ? true : false, artifact);
+         goalArtifact.persist();
+         return goalArtifact;
       }
       return null;
    }

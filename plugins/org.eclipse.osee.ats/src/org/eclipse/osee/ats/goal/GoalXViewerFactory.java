@@ -17,6 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class GoalXViewerFactory extends SkynetXViewerFactory {
 
+   private GoalArtifact soleGoalArtifact;
    public static final List<XViewerColumn> GoalViewerVisibleColumns =
          Arrays.asList(WorldXViewerFactory.Goal_Order, WorldXViewerFactory.Goal_Order_Vote_Col,
                WorldXViewerFactory.Title_Col, WorldXViewerFactory.Type_Col, WorldXViewerFactory.State_Col,
@@ -38,8 +40,9 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
                WorldXViewerFactory.Version_Target_Col, WorldXViewerFactory.Notes_Col);
    public static Integer[] widths = new Integer[] {75, 75, 250, 60, 60, 20, 20, 100, 50, 50, 50, 80};
 
-   public GoalXViewerFactory() {
+   public GoalXViewerFactory(GoalArtifact soleGoalArtifact) {
       super("org.eclipse.osee.ats.GoalXViewer");
+      this.soleGoalArtifact = soleGoalArtifact;
       int widthIndex = 0;
       // Create new column from world columns but set show and width for task
       for (XViewerColumn taskCol : GoalViewerVisibleColumns) {
@@ -84,6 +87,14 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
       }
       customizeData.getSortingData().setSortingNames(WorldXViewerFactory.Goal_Order.getId());
       return customizeData;
+   }
+
+   public GoalArtifact getSoleGoalArtifact() {
+      return soleGoalArtifact;
+   }
+
+   public void setSoleGoalArtifact(GoalArtifact soleGoalArtifact) {
+      this.soleGoalArtifact = soleGoalArtifact;
    }
 
 }

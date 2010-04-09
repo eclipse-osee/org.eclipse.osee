@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
+import org.eclipse.osee.ats.goal.GoalXViewerFactory;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
@@ -725,18 +726,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       return arts;
    }
 
-   public ArrayList<GoalArtifact> getLoadedGoals() {
-      ArrayList<GoalArtifact> arts = new ArrayList<GoalArtifact>();
-      if (getRoot() != null) {
-         for (Object artifact : (Collection<?>) getRoot()) {
-            if (artifact instanceof GoalArtifact) {
-               arts.add((GoalArtifact) artifact);
-            }
-         }
-      }
-      return arts;
-   }
-
    public void clear(boolean forcePend) {
       ((WorldContentProvider) getContentProvider()).clear(forcePend);
    }
@@ -1014,11 +1003,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          } else if (xCol.equals(WorldXViewerFactory.Priority_Col)) {
             modified = PromptChangeUtil.promptChangePriority(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Goal_Order)) {
-            GoalArtifact changedGoal = GoalArtifact.promptChangeGoalOrder((Artifact) treeItem.getData());
-            if (changedGoal != null) {
-               refresh(changedGoal);
-               update(useArt, null);
-            }
+            handleAltLeftClickGoalOrder(treeItem, sma);
             return false;
          }
          if (modified) {
@@ -1029,6 +1014,27 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
+   }
+
+   private void handleAltLeftClickGoalOrder(TreeItem treeItem, StateMachineArtifact sma) throws OseeCoreException {
+
+      GoalArtifact parentGoalArtifact = null;
+      if (xViewerFactory instanceof GoalXViewerFactory) {
+         parentGoalArtifact = ((GoalXViewerFactory) xViewerFactory).getSoleGoalArtifact();
+      }
+      if (parentGoalArtifact == null) {
+         parentGoalArtifact = getParentGoalArtifact(treeItem);
+      }
+      GoalArtifact changedGoal = null;
+      if (parentGoalArtifact != null) {
+         changedGoal = GoalArtifact.promptChangeGoalOrder(parentGoalArtifact, (Artifact) treeItem.getData());
+      } else {
+         changedGoal = GoalArtifact.promptChangeGoalOrder((Artifact) treeItem.getData());
+      }
+      if (changedGoal != null) {
+         refresh(changedGoal);
+         update(sma, null);
+      }
    }
 
    public String getExtendedStatusString() {
@@ -1066,14 +1072,21 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
 
    }
 
+   private GoalArtifact getParentGoalArtifact(TreeItem treeItem) {
+      if (Widgets.isAccessible(treeItem) && Widgets.isAccessible(treeItem.getParentItem()) && treeItem.getParentItem().getData() instanceof GoalArtifact) {
+         return (GoalArtifact) treeItem.getParentItem().getData();
+      }
+      return null;
+   }
+
    /**
     * store off parent goalItem in label provider so it can determine parent when providing order of goal member
     */
    protected void doUpdateItem(Item item, Object element) {
       if (item instanceof TreeItem) {
-         TreeItem treeItem = (TreeItem) item;
-         if (Widgets.isAccessible(treeItem) && Widgets.isAccessible(treeItem.getParentItem()) && treeItem.getParentItem().getData() instanceof GoalArtifact) {
-            ((WorldLabelProvider) getLabelProvider()).setParentGoal((GoalArtifact) treeItem.getParentItem().getData());
+         GoalArtifact parentGoalArtifact = getParentGoalArtifact((TreeItem) item);
+         if (parentGoalArtifact != null) {
+            ((WorldLabelProvider) getLabelProvider()).setParentGoal(parentGoalArtifact);
          }
       }
       super.doUpdateItem(item, element);

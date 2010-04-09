@@ -16,6 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCreatedDateColumn;
@@ -32,6 +33,7 @@ import org.eclipse.swt.SWT;
  */
 public class WorldXViewerFactory extends SkynetXViewerFactory {
 
+   public GoalArtifact soleGoalArtifact;
    public static String COLUMN_NAMESPACE = "ats.column";
    public static final XViewerColumn Type_Col =
          new XViewerColumn("ats.column.type", "Type", 150, SWT.LEFT, true, SortDataType.String, false, null);

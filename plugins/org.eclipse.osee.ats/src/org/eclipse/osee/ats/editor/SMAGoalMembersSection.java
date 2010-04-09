@@ -75,12 +75,14 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
       addDropToAddLabel(toolkit, sectionBody);
       addDropToRemoveLabel(toolkit, sectionBody);
 
-      worldComposite = new WorldComposite(this, new GoalXViewerFactory(), sectionBody, SWT.BORDER);
+      worldComposite =
+            new WorldComposite(this, new GoalXViewerFactory((GoalArtifact) editor.getSma()), sectionBody, SWT.BORDER);
       try {
          CustomizeData customizeData = worldComposite.getCustomizeDataCopy();
          worldComposite.load("Members", editor.getSma().getRelatedArtifacts(AtsRelationTypes.Goal_Member),
                customizeData, TableLoadOption.None);
          ((WorldLabelProvider) worldComposite.getXViewer().getLabelProvider()).setParentGoal((GoalArtifact) editor.getSma());
+
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
