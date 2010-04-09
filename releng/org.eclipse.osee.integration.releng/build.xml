@@ -1,4 +1,4 @@
-<project default="run" name="org.eclipse.osee.server.releng/build.xml - Run a OSEE build using the Athena CBI">
+<project default="run" name="org.eclipse.osee.integration.releng/build.xml - Run an OSEE build using the Athena CBI">
 
 	<target name="init">
 		<property environment="env" />
