@@ -1,3 +1,5 @@
+feature@org.eclipse.osee.main.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.main.feature
+
 feature@org.eclipse.osee.client.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.client.feature
 feature@org.eclipse.osee.client.ote.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.client.ote.feature
 feature@org.eclipse.osee.core.runtime.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.core.runtime.feature
