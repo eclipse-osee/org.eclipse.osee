@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.osee.main.feature"
+      label="%featureName"
+      version="0.9.4.qualifier"
+      provider-name="%providerName">
+
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <includes
+         id="org.eclipse.osee.client.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.client.ote.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.core.runtime.feature"
+         version="0.0.0"/>
+
+</feature>
