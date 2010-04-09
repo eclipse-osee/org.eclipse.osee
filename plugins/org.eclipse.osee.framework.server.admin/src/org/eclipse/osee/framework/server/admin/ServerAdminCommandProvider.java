@@ -33,22 +33,6 @@ public class ServerAdminCommandProvider implements CommandProvider {
       this.adminCommands = new AdminCommands();
    }
 
-   //   public void _native_content_fix(CommandInterpreter ci) {
-   //      CompressedContentFix.getInstance().execute(ci);
-   //   }
-   //
-   //   public void _native_content_fix_stop(CommandInterpreter ci) {
-   //      CompressedContentFix.getInstance().executeStop(ci);
-   //   }
-   //
-   //   public void _convert(CommandInterpreter ci) {
-   //      DataConversion.getInstance().convert(ci);
-   //   }
-   //
-   //   public void _convertstop(CommandInterpreter ci) {
-   //      DataConversion.getInstance().convertStop(ci);
-   //   }
-
    public void _server_status(CommandInterpreter ci) {
       adminCommands.getServerStatus(ci);
    }

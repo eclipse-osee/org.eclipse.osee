@@ -17,7 +17,6 @@ Require-Bundle: javax.mail.glassfish,
  org.eclipse.jface.text,
  org.eclipse.nebula.widgets.xviewer,
  org.eclipse.osee.framework.core,
- org.eclipse.osee.framework.help.ui;resolution:=optional,
  org.eclipse.osee.framework.messaging.event.skynet,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.skynet.core,
@@ -32,7 +31,8 @@ Require-Bundle: javax.mail.glassfish,
  org.eclipse.update.core,
  org.eclipse.zest.core,
  org.eclipse.osee.framework.jdk.core,
- org.eclipse.osee.framework.ui.ws
+ org.eclipse.osee.framework.ui.ws,
+ org.eclipse.osee.framework.help.ui;bundle-version="0.9.4";resolution:=optional
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: com.lowagie.text,

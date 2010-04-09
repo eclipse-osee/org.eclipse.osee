@@ -139,10 +139,6 @@
           file="../org.eclipse.osee.framework.help.ui/contexts/contexts.xml">
     </contexts>
 	</extension>
-	<extension point="org.eclipse.help.toc">
-		<toc file="reference/toc.xml" primary="true"/>
-		<toc file="reference/skynet_toc.xml" primary="false"/>
-	</extension>
 	<extension id="org.eclipse.osee.framework.ui.skynet" name="OSEE" point="org.eclipse.ui.views">
 		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer" icon="images/artifact_explorer.gif" id="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer" name="Artifact Explorer"/>
 		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" icon="images/group.gif" id="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" name="OSEE Group Explorer"/>
