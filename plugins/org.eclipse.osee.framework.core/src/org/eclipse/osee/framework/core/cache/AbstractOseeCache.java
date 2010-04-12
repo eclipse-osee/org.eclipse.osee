@@ -268,8 +268,22 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       storeItems(items);
    }
 
-   public synchronized void reloadCache() throws OseeCoreException {
-      getDataAccessor().load(this);
+   private long lastReload = 0;
+   private static final long RELOAD_LIMIT = 500;
+
+   private boolean isReloadAllowed() {
+      long currentTime = System.currentTimeMillis();
+      return currentTime - lastReload > RELOAD_LIMIT;
+   }
+
+   public synchronized boolean reloadCache() throws OseeCoreException {
+      boolean wasLoaded = false;
+      if (isReloadAllowed()) {
+         getDataAccessor().load(this);
+         wasLoaded = true;
+         lastReload = System.currentTimeMillis();
+      }
+      return wasLoaded;
    }
 
    @Override

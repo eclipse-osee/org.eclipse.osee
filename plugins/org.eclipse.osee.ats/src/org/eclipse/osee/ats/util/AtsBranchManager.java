@@ -158,12 +158,15 @@ public class AtsBranchManager {
          return CommitStatus.Committed;
       }
       Collection<TransactionRecord> transactions = TransactionManager.getCommittedArtifactTransactionIds(teamArt);
-      for (TransactionRecord transId : transactions) {
-         if (transId.getBranchId() == branch.getId()) {
-            if (teamArt.getBranchMgr().isMergeBranchExists(branch)) {
-               return CommitStatus.Committed_With_Merge;
-            } else {
-               return CommitStatus.Committed;
+      if (!transactions.isEmpty()) {
+         boolean mergeBranchExists = teamArt.getBranchMgr().isMergeBranchExists(branch);
+         for (TransactionRecord transId : transactions) {
+            if (transId.getBranchId() == branch.getId()) {
+               if (mergeBranchExists) {
+                  return CommitStatus.Committed_With_Merge;
+               } else {
+                  return CommitStatus.Committed;
+               }
             }
          }
       }
