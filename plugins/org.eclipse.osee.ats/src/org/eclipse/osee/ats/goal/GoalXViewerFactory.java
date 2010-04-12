@@ -81,7 +81,7 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData customizeData = super.getDefaultTableCustomizeData();
       for (XViewerColumn xCol : customizeData.getColumnData().getColumns()) {
-         if (xCol.getId() == WorldXViewerFactory.Goal_Order.getId()) {
+         if (xCol.getId().equals(WorldXViewerFactory.Goal_Order.getId())) {
             xCol.setSortForward(true);
          }
       }
