@@ -237,16 +237,15 @@ public class WordArtifactElementExtractor  implements IElementExtractor{
 	 * @return
 	 */
 	private boolean properLevelChildWord2003(Element element) {
-		String greatGrandParentName = getAncestorName(element, 3);
 		String grandParentName = getAncestorName(element, 2);
 		String parentName = getAncestorName(element, 1);
 		String myName = element.getNodeName();
 
 		boolean nonSubsectionBodyChild = parentName.equals(BODY_TAG) && !myName.equals(SUB_SECTION_TAG) && !myName.equals(SECTION_TAG);
 		boolean sectionChild = grandParentName.equals(BODY_TAG) && parentName.equals(SECTION_TAG) && !myName.equals(SUB_SECTION_TAG);
-		boolean subsectionGrandChild = greatGrandParentName.equals(BODY_TAG) && grandParentName.equals(SECTION_TAG) && parentName.equals(SUB_SECTION_TAG);
+		boolean subsectionChild = parentName.equals(SUB_SECTION_TAG) && !myName.equals(SUB_SECTION_TAG);
 
-		return nonSubsectionBodyChild || sectionChild || subsectionGrandChild;
+		return nonSubsectionBodyChild || sectionChild || subsectionChild;
 	}
 
 	/**
@@ -259,7 +258,7 @@ public class WordArtifactElementExtractor  implements IElementExtractor{
 		String myName = element.getNodeName();
 
 		boolean nonSubsectionBodyChild = parentName.equals(BODY_TAG) && !myName.equals(SUB_SECTION_TAG) && !myName.equals(SECTION_TAG);
-		boolean subsectionChild = grandParentName.equals(BODY_TAG) && parentName.equals(SUB_SECTION_TAG);
+		boolean subsectionChild = parentName.equals(SUB_SECTION_TAG) && !myName.equals(SUB_SECTION_TAG);
 
 		return nonSubsectionBodyChild || subsectionChild;
 	}
