@@ -186,6 +186,7 @@ public class User extends Artifact {
       if (this.equals(UserManager.getUser(SystemUser.OseeSystem)) || this.equals(UserManager.getUser(SystemUser.UnAssigned)) || this.equals(UserManager.getUser(SystemUser.Guest))) {
          return true;
       }
+
       return false;
    }
 
