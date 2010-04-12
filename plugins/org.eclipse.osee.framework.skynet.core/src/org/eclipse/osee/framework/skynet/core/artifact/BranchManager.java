@@ -161,8 +161,9 @@ public class BranchManager {
       // so refresh the cache.
       MergeBranch mergeBranch = cache.findMergeBranch(sourceBranch, destinationBranch);
       if (mergeBranch == null) {
-         cache.reloadCache();
-         mergeBranch = cache.findMergeBranch(sourceBranch, destinationBranch);
+         if (cache.reloadCache()) {
+            mergeBranch = cache.findMergeBranch(sourceBranch, destinationBranch);
+         }
       }
       return mergeBranch;
    }
@@ -189,10 +190,12 @@ public class BranchManager {
       BranchCache cache = getCache();
       // If someone else made a branch on another machine, we may not know about it
       // so refresh the cache.
-      if (cache.getById(branchId) == null) {
-         cache.reloadCache();
-      }
       Branch branch = cache.getById(branchId);
+      if (branch == null) {
+         if (cache.reloadCache()) {
+            branch = cache.getById(branchId);
+         }
+      }
       if (throwExcpetion && branch == null) {
          throw new BranchDoesNotExist("Branch could not be acquired for branch id: " + branchId);
       }
