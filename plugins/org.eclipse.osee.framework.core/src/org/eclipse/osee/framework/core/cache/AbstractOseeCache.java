@@ -38,12 +38,16 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    private final Map<Integer, T> idToTypeMap = new ConcurrentHashMap<Integer, T>();
    private final Map<String, T> guidToTypeMap = new ConcurrentHashMap<String, T>();
 
+   public static final long RELOAD_TIME_LIMIT_MS = 500;
+
    private final IOseeDataAccessor<T> dataAccessor;
    private final OseeCacheEnum cacheId;
    private final boolean uniqueName;
    private boolean ensurePopulatedRanOnce;
+   private long lastLoaded;
 
    protected AbstractOseeCache(OseeCacheEnum cacheId, IOseeDataAccessor<T> dataAccessor, boolean uniqueName) {
+      this.lastLoaded = 0;
       this.cacheId = cacheId;
       this.ensurePopulatedRanOnce = false;
       this.dataAccessor = dataAccessor;
@@ -164,21 +168,9 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    }
 
    @Override
-   public synchronized Collection<T> getAll() throws OseeCoreException {
+   public Collection<T> getAll() throws OseeCoreException {
       ensurePopulated();
       return new ArrayList<T>(guidToTypeMap.values());
-   }
-
-   /**
-    * this method is intended for use by subclasses only. The calling method must synchronize the use of this view of
-    * the views because it is not a copy. This method exists to improve performance for subclasses
-    * 
-    * @return
-    * @throws OseeCoreException
-    */
-   protected synchronized Collection<T> getRawValues() throws OseeCoreException {
-      ensurePopulated();
-      return guidToTypeMap.values();
    }
 
    @Override
@@ -196,7 +188,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       return values.isEmpty() ? null : values.iterator().next();
    }
 
-   public synchronized Collection<T> getByName(String typeName) throws OseeCoreException {
+   public Collection<T> getByName(String typeName) throws OseeCoreException {
       ensurePopulated();
       Collection<T> types = new ArrayList<T>();
       Collection<T> values = nameToTypeMap.getValues(typeName);
@@ -230,7 +222,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    }
 
    @Override
-   public synchronized Collection<T> getAllDirty() throws OseeCoreException {
+   public Collection<T> getAllDirty() throws OseeCoreException {
       ensurePopulated();
       Collection<T> dirtyItems = new HashSet<T>();
       for (T type : guidToTypeMap.values()) {
@@ -268,12 +260,17 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       storeItems(items);
    }
 
-   private long lastReload = 0;
-   private static final long RELOAD_LIMIT = 500;
+   public long getLastLoaded() {
+      return lastLoaded;
+   }
 
-   private boolean isReloadAllowed() {
+   private synchronized void setLastLoaded(long lastLoaded) {
+      this.lastLoaded = lastLoaded;
+   }
+
+   public boolean isReloadAllowed() {
       long currentTime = System.currentTimeMillis();
-      return currentTime - lastReload > RELOAD_LIMIT;
+      return currentTime - getLastLoaded() > RELOAD_TIME_LIMIT_MS;
    }
 
    public synchronized boolean reloadCache() throws OseeCoreException {
@@ -281,7 +278,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       if (isReloadAllowed()) {
          getDataAccessor().load(this);
          wasLoaded = true;
-         lastReload = System.currentTimeMillis();
+         setLastLoaded(System.currentTimeMillis());
       }
       return wasLoaded;
    }

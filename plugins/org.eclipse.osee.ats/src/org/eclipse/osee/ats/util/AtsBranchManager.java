@@ -84,7 +84,7 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * BranchManager contains methods necessary for ATS objects to interact with creation, view and commit of branches.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsBranchManager {
@@ -123,7 +123,7 @@ public class AtsBranchManager {
 
    /**
     * Return true if merge branch exists in DB (whether archived or not)
-    * 
+    *
     * @param destinationBranch
     * @return true
     * @throws OseeCoreException
@@ -158,15 +158,14 @@ public class AtsBranchManager {
          return CommitStatus.Committed;
       }
       Collection<TransactionRecord> transactions = TransactionManager.getCommittedArtifactTransactionIds(teamArt);
-      if (!transactions.isEmpty()) {
-         boolean mergeBranchExists = teamArt.getBranchMgr().isMergeBranchExists(branch);
-         for (TransactionRecord transId : transactions) {
-            if (transId.getBranchId() == branch.getId()) {
-               if (mergeBranchExists) {
-                  return CommitStatus.Committed_With_Merge;
-               } else {
-                  return CommitStatus.Committed;
-               }
+      boolean mergeBranchExists = teamArt.getBranchMgr().isMergeBranchExists(branch);
+
+      for (TransactionRecord transId : transactions) {
+         if (transId.getBranchId() == branch.getId()) {
+            if (mergeBranchExists) {
+               return CommitStatus.Committed_With_Merge;
+            } else {
+               return CommitStatus.Committed;
             }
          }
       }
@@ -178,7 +177,7 @@ public class AtsBranchManager {
       if (teamArt.getBranchMgr().getWorkingBranch() == null) {
          return CommitStatus.Working_Branch_Not_Created;
       }
-      if (teamArt.getBranchMgr().isMergeBranchExists(branch)) {
+      if (mergeBranchExists) {
          return CommitStatus.Merge_In_Progress;
       }
       return CommitStatus.Commit_Needed;
@@ -306,7 +305,7 @@ public class AtsBranchManager {
 
    /**
     * Either return a single commit transaction or user must choose from a list of valid commit transactions
-    * 
+    *
     * @param title
     * @param showMergeManager
     * @return TransactionRecord
@@ -467,7 +466,7 @@ public class AtsBranchManager {
    /**
     * Return working branch associated with SMA whether it is committed or not; This data is cached across all workflows
     * with the cache being updated by local and remote events.
-    * 
+    *
     * @return Branch
     */
    public Branch getWorkingBranch() throws OseeCoreException {
@@ -478,7 +477,7 @@ public class AtsBranchManager {
     * Return working branch associated with SMA, even if it's been archived; This data is cached across all workflows
     * with the cache being updated by local and remote events. Filters out rebaseline branches (which are working
     * branches also).
-    * 
+    *
     * @param includeDeleted
     * @return Branch
     */
@@ -511,7 +510,7 @@ public class AtsBranchManager {
    /**
     * Returns true if there was ever a commit of a working branch regardless of whether the working branch is archived
     * or not.
-    * 
+    *
     * @return result
     * @throws OseeCoreException
     */
@@ -590,7 +589,7 @@ public class AtsBranchManager {
 
    /**
     * Return true if all commit destination branches are configured and have been committed to
-    * 
+    *
     * @return true
     * @throws OseeCoreException
     */
@@ -616,7 +615,7 @@ public class AtsBranchManager {
 
    /**
     * Perform error checks and popup confirmation dialogs associated with creating a working branch.
-    * 
+    *
     * @param pageId if specified, WorkPage gets callback to provide confirmation that branch can be created
     * @param popup if true, errors are popped up to user; otherwise sent silently in Results
     * @return Result return of status
@@ -866,7 +865,7 @@ public class AtsBranchManager {
 
    /**
     * Return ChangeData represented by commit to commitConfigArt or earliest commit if commitConfigArt == null
-    * 
+    *
     * @param commitConfigArt that configures commit or null
     */
    public ChangeData getChangeData(ICommitConfigArtifact commitConfigArt) throws OseeCoreException {

@@ -23,6 +23,10 @@ public interface IOseeCache<T> {
 
    int size();
 
+   boolean isReloadAllowed();
+
+   long getLastLoaded();
+
    boolean reloadCache() throws OseeCoreException;
 
    void decacheAll();

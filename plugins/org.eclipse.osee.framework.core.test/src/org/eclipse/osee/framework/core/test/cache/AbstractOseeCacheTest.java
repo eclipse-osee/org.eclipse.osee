@@ -28,15 +28,17 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link AbstractOseeCache}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
    private final List<T> data;
    private final AbstractOseeCache<T> cache;
    private final TypeComparator comparator;
+   private final Object lock;
 
    public AbstractOseeCacheTest(List<T> artifactTypes, AbstractOseeCache<T> typeCache) {
+      this.lock = new Object();
       this.comparator = new TypeComparator();
       this.data = artifactTypes;
       this.cache = typeCache;
@@ -197,9 +199,27 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
       for (T type : cache.getAll()) {
          cache.decache(type);
       }
+
       Assert.assertEquals(0, cache.size());
-      cache.reloadCache();
+
+      waitForReloadAllowed();
+      Assert.assertTrue(cache.isReloadAllowed());
+      Assert.assertTrue(cache.reloadCache());
+      Assert.assertFalse(cache.isReloadAllowed());
+      Assert.assertFalse(cache.reloadCache());
       Assert.assertEquals(fullCacheSize, cache.size());
+   }
+
+   private void waitForReloadAllowed() {
+      while (!cache.isReloadAllowed()) {
+         synchronized (lock) {
+            try {
+               lock.wait(AbstractOseeCache.RELOAD_TIME_LIMIT_MS);
+            } catch (InterruptedException ex) {
+
+            }
+         }
+      }
    }
 
    @Test(expected = OseeTypeDoesNotExist.class)
@@ -237,7 +257,7 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
 
       //      T item2 = data.get(1);
       //
-      //      
+      //
       //      cache.storeItem(item);
       //      cache.storeItems(toStore);
       //      cache.storeItems(items);

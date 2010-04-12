@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.util.Conditions;
  * @author Roberto E. Escobar
  */
 public class TransactionCache implements IOseeCache<TransactionRecord> {
+   private static final long RELOAD_TIME_LIMIT_MS = 500;
 
    private ITransactionDataAccessor accessor;
 
@@ -36,6 +37,7 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
 
    private final OseeCacheEnum cacheId;
    private boolean ensurePopulatedRanOnce;
+   private long lastLoaded;
 
    public TransactionCache() {
       this.cacheId = OseeCacheEnum.TRANSACTION_CACHE;
@@ -172,12 +174,17 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
       }
    }
 
-   private long lastReload = 0;
-   private static final long RELOAD_LIMIT = 500;
+   public long getLastLoaded() {
+      return lastLoaded;
+   }
 
-   private boolean isReloadAllowed() {
+   private synchronized void setLastLoaded(long lastLoaded) {
+      this.lastLoaded = lastLoaded;
+   }
+
+   public boolean isReloadAllowed() {
       long currentTime = System.currentTimeMillis();
-      return currentTime - lastReload > RELOAD_LIMIT;
+      return currentTime - getLastLoaded() > RELOAD_TIME_LIMIT_MS;
    }
 
    public synchronized boolean reloadCache() throws OseeCoreException {
@@ -185,7 +192,7 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
       if (isReloadAllowed()) {
          getDataAccessor().load(this);
          wasLoaded = true;
-         lastReload = System.currentTimeMillis();
+         setLastLoaded(System.currentTimeMillis());
       }
       return wasLoaded;
    }
