@@ -50,7 +50,7 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
       OseeLog.log(SkynetGuiPlugin.class, OseeLevel.INFO, "Verifying Artifact Persistence");
       try {
          Collection<Artifact> dirtyArts = ArtifactCache.getDirtyArtifacts();
-         if (dirtyArts.size() == 0) {
+         if (dirtyArts.isEmpty()) {
             return true;
          }
          ArtifactDecorator artDecorator = new ArtifactDecorator("");
