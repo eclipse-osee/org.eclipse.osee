@@ -46,6 +46,6 @@ public abstract class FrameworkEventListener implements IFrameworkEventListener 
    /**
     * Callback for the client
     */
-   public abstract void onEvent(IFrameworkEvent[] events) throws RemoteException;
+   public abstract void onEvent(RemoteEvent[] events) throws RemoteException;
 
 }

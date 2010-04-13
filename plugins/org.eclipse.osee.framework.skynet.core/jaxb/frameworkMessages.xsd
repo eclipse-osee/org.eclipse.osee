@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+           jaxb:extensionBindingPrefixes="xjc"
+           jaxb:version="1.0">
+
+    <xsd:annotation>
+       <xsd:appinfo>
+          <jaxb:globalBindings>
+           <xjc:superClass name="org.eclipse.osee.framework.skynet.core.event2.FrameworkEvent"/>
+          </jaxb:globalBindings>
+       </xsd:appinfo>
+    </xsd:annotation>
+
+<xsd:complexType name="TransactionEvent">
+  <xsd:sequence>
+    <xsd:element name="branchGuid" type="xsd:string"/>
+    <xsd:element name="transactionId" type="xsd:int"/>
+    <xsd:element name="modified" type="BasicModifiedGuidArtifact" maxOccurs="unbounded" minOccurs="1"/>
+    <xsd:element name="added" type="DefaultBasicGuidArtifact" maxOccurs="unbounded" minOccurs="1"/>
+    <xsd:element name="deleted" type="DefaultBasicGuidArtifact" maxOccurs="unbounded" minOccurs="1"/>
+    <xsd:element name="networkSender" type="NetworkSender" maxOccurs="1" minOccurs="1"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ChangeTypeArtifactsEvent">
+  <xsd:sequence>
+    <xsd:element name="toArtTypeGuid" type="xsd:string"/>
+    <xsd:element name="artifacts" type="DefaultBasicGuidArtifact" maxOccurs="unbounded" minOccurs="1"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="BranchRenameEvent">
+  <xsd:sequence>
+    <xsd:element name="name" type="xsd:string"/>
+    <xsd:element name="shortName" type="xsd:string"/>
+    <xsd:element name="modTypeGuid" type="xsd:string"/>
+    <xsd:element name="branchGuid" type="xsd:string"/>
+    <xsd:element name="networkSender" type="NetworkSender" maxOccurs="1" minOccurs="1"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="BranchEvent">
+  <xsd:sequence>
+    <xsd:element name="modTypeGuid" type="xsd:string"/>
+    <xsd:element name="branchGuid" type="xsd:string"/>
+    <xsd:element name="networkSender" type="NetworkSender" maxOccurs="1" minOccurs="1"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="BroadcastEvent">
+  <xsd:sequence>
+    <xsd:element name="eventTypeGuid" type="xsd:string"/>
+    <xsd:element name="userIds" type="xsd:string" maxOccurs="unbounded" minOccurs="1"/>
+    <xsd:element name="message" type="xsd:string"/>
+    <xsd:element name="networkSender" type="NetworkSender" maxOccurs="1" minOccurs="1"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="TransactionDeletedEvent">
+  <xsd:sequence>
+    <xsd:element name="transactionIds" type="xsd:string" maxOccurs="unbounded" minOccurs="1"/>
+    <xsd:element name="networkSender" type="NetworkSender" maxOccurs="1" minOccurs="1"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="PurgedArtifactsEvent">
+  <xsd:sequence>
+    <xsd:element name="artifacts" type="DefaultBasicGuidArtifact" maxOccurs="unbounded" minOccurs="1"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="AccessControlArtifactsEvent">
+  <xsd:sequence>
+    <xsd:element name="modTypeGuid" type="xsd:string"/>
+    <xsd:element name="artifacts" type="DefaultBasicGuidArtifact" maxOccurs="unbounded" minOccurs="1"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="BasicModifiedGuidArtifact">
+  <xsd:sequence>
+    <xsd:element name="branchGuid" type="xsd:string"/>
+    <xsd:element name="artTypeGuid" type="xsd:string"/>
+    <xsd:element name="artGuid" type="xsd:string"/>    
+    <xsd:element name="attributes" type="AttributeChange" maxOccurs="unbounded" minOccurs="1"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="AttributeChange">
+  <xsd:sequence>
+    <xsd:element name="attrTypeGuid" type="xsd:string"/>
+    <xsd:element name="modTypeGuid" type="xsd:string"/>
+    <xsd:element name="attributeId" type="xsd:int"/>
+    <xsd:element name="gammaId" type="xsd:int"/>
+    <xsd:element name="was" type="xsd:string"/>
+    <xsd:element name="is" type="xsd:string"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="DefaultBasicGuidArtifact">
+  <xsd:sequence>
+    <xsd:element name="branchGuid" type="xsd:string"/>
+    <xsd:element name="artTypeGuid" type="xsd:string"/>
+    <xsd:element name="artGuid" type="xsd:string"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="NetworkSender">
+  <xsd:sequence>
+    <xsd:element name="sourceObject" type="xsd:string"/>
+    <xsd:element name="sessionId" type="xsd:string"/>
+    <xsd:element name="machineName" type="xsd:string"/>
+    <xsd:element name="userId" type="xsd:string"/>
+    <xsd:element name="machineIp" type="xsd:string"/>
+    <xsd:element name="clientVersion" type="xsd:string"/>
+    <xsd:element name="port" type="xsd:int"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+</xsd:schema>

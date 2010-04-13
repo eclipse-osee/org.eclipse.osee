@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 
 /**
  * @author Donald G. Dunne

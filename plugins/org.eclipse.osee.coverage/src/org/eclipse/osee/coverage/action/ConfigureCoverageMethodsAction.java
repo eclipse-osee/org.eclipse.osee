@@ -14,8 +14,9 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
-import org.eclipse.osee.coverage.store.CoverageAttributes;
+import org.eclipse.osee.coverage.store.CoverageOptionManagerStore;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
+import org.eclipse.osee.coverage.store.CoverageOptionManagerStore.StoreLocation;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -56,16 +57,27 @@ public class ConfigureCoverageMethodsAction extends Action {
          dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts());
          if (dialog.open() == 0) {
             Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
-            String coverageOptions =
-                  coveragePackageArtifact.getSoleAttributeValueAsString(
-                        CoverageAttributes.COVERAGE_OPTIONS.getStoreName(), null);
-            if (coverageOptions == null) {
-               if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getText(),
-                     "No Custom Coverage Methods Configured, Configure Now?")) {
+            OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(coveragePackageArtifact);
+            CoverageOptionManagerStore optionsStore = new CoverageOptionManagerStore(packageStore);
+            String coverageOptions = null;
+            StoreLocation storeLocation = optionsStore.getStoreLocation();
+            if (storeLocation == StoreLocation.None) {
+               MessageDialog localGlobalDialog =
+                     new MessageDialog(Display.getCurrent().getActiveShell(), "Question", null,
+                           "No Custom Coverage Methods Configured, Configure Now?", MessageDialog.WARNING,
+                           new String[] {"Save local to Coverage Pacakge", "Save globally for Branch", "Cancel"}, 0);
+
+               int result = localGlobalDialog.open();
+               if (result == 0) {
+                  storeLocation = StoreLocation.Local;
+               } else if (result == 1) {
+                  storeLocation = StoreLocation.Global;
+               } else {
                   return;
                }
                coverageOptions = CoverageOptionManagerDefault.instance().toXml();
             }
+
             boolean successOrCancel = false;
             // Keep allowing user to enter options until valid
             while (!successOrCancel) {
@@ -91,9 +103,7 @@ public class ConfigureCoverageMethodsAction extends Action {
                            names.add(option.getName());
                         }
                      }
-                     coveragePackageArtifact.setSoleAttributeFromString(
-                           CoverageAttributes.COVERAGE_OPTIONS.getStoreName(), coverageOptions);
-                     coveragePackageArtifact.persist();
+                     optionsStore.store(coverageOptions, storeLocation);
                      successOrCancel = true;
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,

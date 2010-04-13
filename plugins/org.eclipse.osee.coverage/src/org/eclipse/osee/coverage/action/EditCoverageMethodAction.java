@@ -58,6 +58,12 @@ public class EditCoverageMethodAction extends Action {
             AWorkbench.popup("Coverage Method can only be set on Coverage Items");
             return;
          }
+         CoverageItem item = (CoverageItem) coverage;
+         if (!item.getCoverageMethod().isEnabled()) {
+            AWorkbench.popup(String.format("Invalid to change locked Coverage Method [%s] for Coveage Item:\n\n[%s]",
+                  item.getCoverageMethod().getName(), item));
+            return;
+         }
       }
 
       Result result = saveable.isEditable();

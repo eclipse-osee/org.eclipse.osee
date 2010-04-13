@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 

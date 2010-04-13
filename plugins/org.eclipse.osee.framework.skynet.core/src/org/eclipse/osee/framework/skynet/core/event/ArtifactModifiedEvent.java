@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 
 /**

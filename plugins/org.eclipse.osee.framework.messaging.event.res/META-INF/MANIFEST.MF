@@ -15,4 +15,4 @@ Bundle-Vendor: Eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.core.enums
 Export-Package: org.eclipse.osee.framework.messaging.event.res,
- org.eclipse.osee.framework.messaging.event.res.event
+ org.eclipse.osee.framework.messaging.event.res.msgs

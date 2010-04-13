@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
@@ -47,15 +46,9 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
 
    public OseeCoveragePackageStore(Artifact artifact) throws OseeCoreException {
       super(null, CoverageArtifactTypes.CoveragePackage);
-
-      String coverageOptions =
-            artifact.getSoleAttributeValueAsString(CoverageAttributes.COVERAGE_OPTIONS.getStoreName(), null);
-      if (Strings.isValid(coverageOptions)) {
-         coverageOptionManager = new CoverageOptionManager(coverageOptions);
-      }
-
       this.artifact = artifact;
-      this.coveragePackage = new CoveragePackage(artifact.getName(), getCoverageOptionManager());
+      coverageOptionManager = (new CoverageOptionManagerStore(this)).getCoverageOptionManager();
+      this.coveragePackage = new CoveragePackage(artifact.getName(), coverageOptionManager);
       load(coverageOptionManager);
    }
 

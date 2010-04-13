@@ -25,11 +25,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event.artifact.ArtifactEventManager;
-import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.artifact.EventChangeTypeBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IArtifactListener;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.ArtifactEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventChangeTypeBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**

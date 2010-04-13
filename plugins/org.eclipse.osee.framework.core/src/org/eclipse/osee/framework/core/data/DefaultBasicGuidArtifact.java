@@ -16,14 +16,17 @@ package org.eclipse.osee.framework.core.data;
 public class DefaultBasicGuidArtifact implements Identity, IBasicGuidArtifact {
 
    private static final long serialVersionUID = -4997763989583925345L;
-   private final String branchGuid;
-   private final String artTypeGuid;
-   private final String guid;
+   private String branchGuid;
+   private String artTypeGuid;
+   private String artGuid;
+
+   public DefaultBasicGuidArtifact() {
+   }
 
    public DefaultBasicGuidArtifact(String branchGuid, String artTypeGuid, String guid) {
       this.branchGuid = branchGuid;
       this.artTypeGuid = artTypeGuid;
-      this.guid = guid;
+      this.artGuid = guid;
    }
 
    public String getBranchGuid() {
@@ -35,7 +38,7 @@ public class DefaultBasicGuidArtifact implements Identity, IBasicGuidArtifact {
    }
 
    public String toString() {
-      return String.format("[%s]", guid);
+      return String.format("[%s]", artGuid);
    }
 
    @Override
@@ -56,14 +59,26 @@ public class DefaultBasicGuidArtifact implements Identity, IBasicGuidArtifact {
       if (branchGuid == null) {
          if (other.branchGuid != null) return false;
       } else if (!branchGuid.equals(other.branchGuid)) return false;
-      if (guid == null) {
-         if (other.guid != null) return false;
-      } else if (!guid.equals(other.guid)) return false;
+      if (artGuid == null) {
+         if (other.artGuid != null) return false;
+      } else if (!artGuid.equals(other.artGuid)) return false;
       return true;
    }
 
    public String getGuid() {
-      return guid;
+      return artGuid;
+   }
+
+   public void setBranchGuid(String branchGuid) {
+      this.branchGuid = branchGuid;
+   }
+
+   public void setArtTypeGuid(String artTypeGuid) {
+      this.artTypeGuid = artTypeGuid;
+   }
+
+   public void setGuid(String guid) {
+      this.artGuid = guid;
    }
 
 }

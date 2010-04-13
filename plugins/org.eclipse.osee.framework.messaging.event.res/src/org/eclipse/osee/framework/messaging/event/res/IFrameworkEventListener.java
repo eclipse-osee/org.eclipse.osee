@@ -19,6 +19,6 @@ import java.rmi.RemoteException;
  */
 public interface IFrameworkEventListener extends Remote, Serializable {
 
-   public abstract void onEvent(IFrameworkEvent[] events) throws RemoteException;
+   public abstract void onEvent(RemoteEvent[] events) throws RemoteException;
 
 }

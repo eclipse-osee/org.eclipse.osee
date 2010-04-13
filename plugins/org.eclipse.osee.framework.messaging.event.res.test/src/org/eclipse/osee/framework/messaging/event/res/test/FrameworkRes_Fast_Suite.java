@@ -10,17 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.res.test;
 
-import org.eclipse.osee.framework.messaging.event.res.test.cases.NetworkBranchEventTest;
-import org.eclipse.osee.framework.messaging.event.res.test.cases.NetworkBranchRenameEventTest;
-import org.eclipse.osee.framework.messaging.event.res.test.cases.NetworkBroadcastEventTest;
-import org.eclipse.osee.framework.messaging.event.res.test.cases.NetworkSenderTest;
-import org.eclipse.osee.framework.messaging.event.res.test.cases.NetworkTransactionDeletedEventTest;
+import org.eclipse.osee.framework.messaging.event.res.test.cases.RemoteNetworkSenderTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {NetworkBranchEventTest.class, NetworkBranchRenameEventTest.class,
-      NetworkBroadcastEventTest.class, NetworkTransactionDeletedEventTest.class, NetworkSenderTest.class})
+@Suite.SuiteClasses( {RemoteNetworkSenderTest.class})
 /**
  * @author Donald G. Dunne
  */

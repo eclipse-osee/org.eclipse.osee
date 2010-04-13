@@ -21,13 +21,13 @@ import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
-import org.eclipse.osee.framework.skynet.core.event.artifact.IArtifactListener;
-import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.filter.FilteredEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.ArtifactEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
+import org.eclipse.osee.framework.skynet.core.event2.filter.FilteredEventListener;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -64,20 +64,25 @@ public class CoverageEventManager implements IArtifactListener, OseeMessagingSta
 
    private void stopListeneingForFrameworkEvents() {
       if (filteredEventListener != null) {
-         OseeEventManager.removeListener(filteredEventListener);
+         ArtifactEventManager.removeListener(filteredEventListener);
       }
    }
 
    private void startListeningForFrameworkEvents() {
       if (filteredEventListener == null) {
-         filteredEventListener = new FilteredEventListener(this, artifactTypeEventFilter);
+         filteredEventListener = new FilteredEventListener(this);
+         filteredEventListener.addFilter(createArtifactTypeEventFilter());
       }
+      ArtifactEventManager.addListener(filteredEventListener);
+   }
+
+   private ArtifactTypeEventFilter createArtifactTypeEventFilter() {
       if (artifactTypeEventFilter == null) {
          artifactTypeEventFilter =
                new ArtifactTypeEventFilter(CoverageArtifactTypes.CoverageFolder, CoverageArtifactTypes.CoverageUnit,
                      CoverageArtifactTypes.CoveragePackage);
       }
-      OseeEventManager.addListener(filteredEventListener);
+      return artifactTypeEventFilter;
    }
 
    private void startListeningForRemoteCoverageEvents() {

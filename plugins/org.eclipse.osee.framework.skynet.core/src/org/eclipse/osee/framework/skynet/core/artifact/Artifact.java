@@ -71,7 +71,7 @@ import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.event.res.event.AttributeChange;
+import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -82,6 +82,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnot
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -1205,7 +1206,11 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    }
 
    public final void persist() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(branch, "artifact.persist() default transaction");
+      persist("artifact.persist() default transaction");
+   }
+
+   public final void persist(String comment) throws OseeCoreException {
+      SkynetTransaction transaction = new SkynetTransaction(branch, comment);
       persist(transaction);
       transaction.execute();
    }
@@ -1618,9 +1623,13 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
-            dirtyAttributes.add(new AttributeChange(attribute.getAttributeType().getGuid(),
-                  attribute.getAttributeDataProvider().getData(), attribute.getModificationType(), attribute.getId(),
-                  attribute.getGammaId()));
+            AttributeChange change = new AttributeChange();
+            change.setAttrTypeGuid(attribute.getAttributeType().getGuid());
+            change.setGammaId(attribute.getGammaId());
+            change.setAttributeId(attribute.getId());
+            change.setModTypeGuid(AttributeEventModificationType.getType(attribute.getModificationType()).getGuid());
+            change.setIs(attribute.getAttributeDataProvider().getData().toString());
+            // TODO change.setWas()
          }
       }
       return dirtyAttributes;

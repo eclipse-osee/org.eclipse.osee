@@ -54,6 +54,8 @@ public class KeyValueArtifact {
                keyValues.add(key + "=" + value);
          }
          artifact.setAttributeValues(keyValueAttributeName, keyValues);
+      } else {
+         artifact.deleteAttributes(keyValueAttributeName);
       }
    }
 
@@ -94,6 +96,10 @@ public class KeyValueArtifact {
 
    public void addValue(String key, String value) {
       keyValueMap.put(key, value);
+   }
+
+   public void removeValues(String key) {
+      keyValueMap.removeValues(key);
    }
 
 }

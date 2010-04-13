@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -36,7 +37,7 @@ public class Sender {
             networkSender.userId, networkSender.machineIp, networkSender.port, networkSender.clientVersion, "n/a"));
    }
 
-   public Sender(org.eclipse.osee.framework.messaging.event.res.event.NetworkSender networkSender) {
+   public Sender(RemoteNetworkSender1 networkSender) {
       this(networkSender.getSourceObject(), new OseeClientSession(networkSender.getSessionId(),
             networkSender.getMachineName(), networkSender.getUserId(), networkSender.getMachineIp(), new Integer(
                   networkSender.getPort()).intValue(), networkSender.getClientVersion(), "n/a"));
@@ -87,10 +88,16 @@ public class Sender {
             oseeSession.getUserId(), oseeSession.getMachineIp(), oseeSession.getPort(), oseeSession.getVersion());
    }
 
-   public org.eclipse.osee.framework.messaging.event.res.event.NetworkSender getNetworkSenderRes() {
-      return new org.eclipse.osee.framework.messaging.event.res.event.NetworkSender(sourceObject, oseeSession.getId(),
-            oseeSession.getMachineName(), oseeSession.getUserId(), oseeSession.getMachineIp(),
-            String.valueOf(oseeSession.getPort()), oseeSession.getVersion());
+   public RemoteNetworkSender1 getNetworkSenderRes() {
+      RemoteNetworkSender1 sender = new RemoteNetworkSender1();
+      sender.setSourceObject(sourceObject);
+      sender.setSessionId(oseeSession.getId());
+      sender.setMachineName(oseeSession.getMachineName());
+      sender.setUserId(oseeSession.getUserId());
+      sender.setMachineIp(oseeSession.getMachineIp());
+      sender.setPort(oseeSession.getPort());
+      sender.setClientVersion(oseeSession.getVersion());
+      return sender;
    }
 
    @Override

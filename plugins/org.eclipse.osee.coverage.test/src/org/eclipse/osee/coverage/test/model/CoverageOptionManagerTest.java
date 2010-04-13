@@ -17,12 +17,6 @@ import org.junit.Test;
  */
 public class CoverageOptionManagerTest {
 
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageOptionManager#CoverageOptionManager(java.util.List)}.
-    * 
-    * @throws OseeArgumentException
-    */
    @Test
    public void testCoverageOptionManagerListOfCoverageOption() throws OseeArgumentException {
       CoverageOptionManager manager = new CoverageOptionManager();
@@ -59,9 +53,6 @@ public class CoverageOptionManagerTest {
 
    }
 
-   /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageOptionManager#getDefaultCoverageMethodEnum()}.
-    */
    @Test
    public void testCoverageOptionManagerDefault() {
       CoverageOptionManager defaultCoverageOptionManager = CoverageOptionManagerDefault.instance();

@@ -12,6 +12,8 @@ package org.eclipse.osee.coverage.test;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.coverage.test.model.CoverageItemPersistTest;
+import org.eclipse.osee.coverage.test.model.CoverageOptionManagerStoreTest;
+import org.eclipse.osee.coverage.test.model.CoveragePreferencesTest;
 import org.eclipse.osee.coverage.test.model.CoverageUnitPersistTest;
 import org.eclipse.osee.coverage.test.model.DbTestUnitProviderTest;
 import org.eclipse.osee.coverage.test.model.TestUnitStoreTest;
@@ -23,9 +25,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {TestUnitStoreTest.class, DbTestUnitProviderTest.class, Coverage_Suite.class,
-      CoverageParametersTest.class, CoverageItemPersistTest.class, CoverageUnitPersistTest.class,
-      CoveragePackageImportTest.class, VectorCastImportTest.class})
+@Suite.SuiteClasses( {CoveragePreferencesTest.class, CoverageOptionManagerStoreTest.class, TestUnitStoreTest.class,
+      DbTestUnitProviderTest.class, Coverage_Suite.class, CoverageParametersTest.class, CoverageItemPersistTest.class,
+      CoverageUnitPersistTest.class, CoveragePackageImportTest.class, VectorCastImportTest.class})
 /**
  * @author Donald G. Dunne
  */

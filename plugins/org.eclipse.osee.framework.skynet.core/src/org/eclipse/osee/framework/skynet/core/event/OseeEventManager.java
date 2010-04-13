@@ -19,7 +19,8 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
-import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.InternalEventManager2;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -122,7 +123,7 @@ public class OseeEventManager {
          return;
       }
       InternalEventManager.kickArtifactsPurgedEvent(getSender(source), loadedArtifacts);
-      InternalEventManager2.kickArtifactsPurgedEvent(getSender(source), artifactChanges);
+      //      InternalEventManager2.kickArtifactsPurgedEvent(getSender(source), artifactChanges);
    }
 
    // Kick LOCAL and REMOTE artifact change type depending on sender
@@ -131,7 +132,7 @@ public class OseeEventManager {
          return;
       }
       InternalEventManager.kickArtifactsChangeTypeEvent(getSender(source), toArtifactTypeId, loadedArtifacts);
-      InternalEventManager2.kickArtifactsChangeTypeEvent(getSender(source), artifactChanges, toArtifactTypeGuid);
+      //      InternalEventManager2.kickArtifactsChangeTypeEvent(getSender(source), artifactChanges, toArtifactTypeGuid);
    }
 
    // Kick LOCAL and REMOTE transaction deleted event
@@ -149,7 +150,7 @@ public class OseeEventManager {
          return;
       }
       InternalEventManager.kickTransactionEvent(getSender(source), xModifiedEvents);
-      InternalEventManager2.kickTransactionEvent(getSender(source), artifactChanges);
+      //      InternalEventManager2.kickTransactionEvent(getSender(source), artifactChanges);
    }
 
    // Kick LOCAL transaction event
@@ -158,7 +159,7 @@ public class OseeEventManager {
          return;
       }
       InternalEventManager.kickArtifactReloadEvent(getSender(source), artifacts);
-      InternalEventManager2.kickArtifactReloadEvent(getSender(source), artifacts);
+      //      InternalEventManager2.kickArtifactReloadEvent(getSender(source), artifacts);
    }
 
    /**

@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event.artifact.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
