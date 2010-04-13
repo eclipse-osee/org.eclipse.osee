@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.Collection;
-import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -25,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.msgs.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -137,6 +136,6 @@ public class AttributeTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events, Set<EventBasicGuidArtifact> artifactChanges) throws OseeCoreException {
+   protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events, TransactionEvent transactionEvent) throws OseeCoreException {
    }
 }

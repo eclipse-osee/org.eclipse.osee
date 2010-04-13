@@ -64,6 +64,10 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
       return eventArts;
    }
 
+   public DefaultBasicGuidArtifact getBasicGuidArtifact() {
+      return new DefaultBasicGuidArtifact(getBranchGuid(), getArtTypeGuid(), getGuid());
+   }
+
    @Override
    public int hashCode() {
       final int prime = 31;

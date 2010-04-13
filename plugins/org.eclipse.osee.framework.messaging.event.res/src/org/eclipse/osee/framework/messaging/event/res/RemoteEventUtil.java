@@ -12,10 +12,10 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
  */
 public class RemoteEventUtil {
 
-   public static RemoteNetworkSender1 getNetworkSender(Object sourceObject, String sessionId, String machineName, String userId, String machineIp, int port, String clientVersion) {
+   public static RemoteNetworkSender1 getNetworkSender(String sourceObject, String sessionId, String machineName, String userId, String machineIp, int port, String clientVersion) {
       RemoteNetworkSender1 networkSender = new RemoteNetworkSender1();
-      networkSender.setSourceObject(String.valueOf(sourceObject));
-      networkSender.setSourceObject(sessionId);
+      networkSender.setSourceObject(sourceObject);
+      networkSender.setSessionId(sessionId);
       networkSender.setMachineName(machineName);
       networkSender.setUserId(userId);
       networkSender.setMachineIp(machineIp);

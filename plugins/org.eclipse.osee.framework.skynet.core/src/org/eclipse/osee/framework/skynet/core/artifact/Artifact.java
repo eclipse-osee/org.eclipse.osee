@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.Identity;
@@ -94,7 +95,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.osgi.framework.Bundle;
 
-public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Named, Identity {
+public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Named, Identity, IBasicGuidArtifact {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
@@ -1933,5 +1934,15 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    public DefaultBasicGuidArtifact getBasicGuidArtifact() {
       return new DefaultBasicGuidArtifact(getBranch().getGuid(), getArtifactType().getGuid(), getGuid());
+   }
+
+   @Override
+   public String getArtTypeGuid() {
+      return getArtifactType().getGuid();
+   }
+
+   @Override
+   public String getBranchGuid() {
+      return getBranch().getGuid();
    }
 }

@@ -19,8 +19,9 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
-import org.eclipse.osee.framework.skynet.core.event2.InternalEventManager2;
+import org.eclipse.osee.framework.skynet.core.event.msgs.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -123,7 +124,7 @@ public class OseeEventManager {
          return;
       }
       InternalEventManager.kickArtifactsPurgedEvent(getSender(source), loadedArtifacts);
-      //      InternalEventManager2.kickArtifactsPurgedEvent(getSender(source), artifactChanges);
+      InternalEventManager2.kickArtifactsPurgedEvent(getSender(source), artifactChanges);
    }
 
    // Kick LOCAL and REMOTE artifact change type depending on sender
@@ -145,21 +146,23 @@ public class OseeEventManager {
    }
 
    // Kick LOCAL and REMOTE transaction event
-   public static void kickTransactionEvent(Object source, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents, Set<EventBasicGuidArtifact> artifactChanges) throws OseeAuthenticationRequiredException {
+   public static void kickTransactionEvent(Object source, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents, TransactionEvent transactionEvent) throws OseeAuthenticationRequiredException {
       if (isDisableEvents()) {
          return;
       }
       InternalEventManager.kickTransactionEvent(getSender(source), xModifiedEvents);
-      //      InternalEventManager2.kickTransactionEvent(getSender(source), artifactChanges);
+      transactionEvent.setNetworkSender(getSender(source).getNetworkSender2());
+      InternalEventManager2.kickTransactionEvent(getSender(source), transactionEvent);
    }
 
    // Kick LOCAL transaction event
-   public static void kickArtifactReloadEvent(Object source, Collection<? extends Artifact> artifacts) throws OseeAuthenticationRequiredException {
+   public static void kickArtifactReloadEvent(Object source, Collection<? extends Artifact> artifacts) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
       InternalEventManager.kickArtifactReloadEvent(getSender(source), artifacts);
-      //      InternalEventManager2.kickArtifactReloadEvent(getSender(source), artifacts);
+      InternalEventManager2.kickArtifactReloadEvent(getSender(source), EventBasicGuidArtifact.get(
+            EventModType.Reloaded, artifacts));
    }
 
    /**

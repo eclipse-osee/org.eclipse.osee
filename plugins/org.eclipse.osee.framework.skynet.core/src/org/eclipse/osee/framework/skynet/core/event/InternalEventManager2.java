@@ -3,26 +3,26 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.skynet.core.event2;
+package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.IEventListener;
-import org.eclipse.osee.framework.skynet.core.event.InternalEventManager;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventThreadFactory;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event.msgs.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.ArtifactEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 
@@ -54,64 +54,60 @@ public class InternalEventManager2 {
       executorService.submit(runnable);
    }
 
-   //   // Kick LOCAL ArtifactReloadEvent
-   //   static void kickArtifactReloadEvent(final Sender sender, final Collection<? extends Artifact> artifacts) {
-   //      if (isDisableEvents()) {
-   //         return;
-   //      }
-   //      eventLog("OEM: kickArtifactReloadEvent #Reloads: " + artifacts.size() + " - " + sender);
-   //      Runnable runnable = new Runnable() {
-   //         public void run() {
-   //            try {
-   //               // Log if this is a loopback and what is happening
-   //               if (enableRemoteEventLoopback) {
-   //                  OseeLog.log(
-   //                        InternalEventManager.class,
-   //                        Level.WARNING,
-   //                        "OEM2: kickArtifactReloadEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
-   //               }
-   //
-   //               // Kick LOCAL
-   //               if (!enableRemoteEventLoopback) {
-   //                  Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
-   //                  for (Artifact artifact : artifacts) {
-   //                     artifactChanges.add(new EventBasicGuidArtifact(EventModType.Reloaded, artifact));
-   //                  }
-   //                  ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
-   //               }
-   //            } catch (Exception ex) {
-   //               OseeLog.log(Activator.class, Level.SEVERE, ex);
-   //            }
-   //         }
-   //      };
-   //      execute(runnable);
-   //   }
+   // Kick LOCAL ArtifactReloadEvent
+   static void kickArtifactReloadEvent(final Sender sender, final Set<EventBasicGuidArtifact> artifactChanges) {
+      if (isDisableEvents()) {
+         return;
+      }
+      eventLog("OEM: kickArtifactReloadEvent #Reloads: " + artifactChanges.size() + " - " + sender);
+      Runnable runnable = new Runnable() {
+         public void run() {
+            try {
+               // Log if this is a loopback and what is happening
+               if (enableRemoteEventLoopback) {
+                  OseeLog.log(
+                        InternalEventManager.class,
+                        Level.WARNING,
+                        "OEM2: kickArtifactReloadEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+               }
+
+               // Kick LOCAL
+               if (!enableRemoteEventLoopback) {
+                  ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
+               }
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      };
+      execute(runnable);
+   }
 
    // Kick LOCAL and REMOTE purged event depending on sender
-   //   static void kickArtifactsPurgedEvent(final Sender sender, final Set<EventBasicGuidArtifact> artifactChanges) throws OseeCoreException {
-   //      if (isDisableEvents()) {
-   //         return;
-   //      }
-   //      eventLog("OEM2:kickArtifactsPurgedEvent " + sender + " - " + artifactChanges);
-   //      Runnable runnable = new Runnable() {
-   //         public void run() {
-   //            // Kick LOCAL
-   //            ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
-   //
-   //            // Kick REMOTE (If source was Local and this was not a default branch changed event
-   //            try {
-   //               if (sender.isLocal()) {
-   //                  RemoteEventManager2.kick(new org.eclipse.osee.framework.messaging.event.res.event.NetworkArtifactPurgeEvent(
-   //                        artifactChanges, sender.getNetworkSenderRes()));
-   //               }
-   //            } catch (OseeCoreException ex) {
-   //               OseeLog.log(Activator.class, Level.SEVERE, ex);
-   //            }
-   //         }
-   //      };
-   //      execute(runnable);
-   //   }
-   //
+   static void kickArtifactsPurgedEvent(final Sender sender, final Set<EventBasicGuidArtifact> artifactChanges) throws OseeCoreException {
+      if (isDisableEvents()) {
+         return;
+      }
+      eventLog("OEM2:kickArtifactsPurgedEvent " + sender + " - " + artifactChanges);
+      Runnable runnable = new Runnable() {
+         public void run() {
+            // Kick LOCAL
+            ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
+
+            // Kick REMOTE (If source was Local and this was not a default branch changed event
+            try {
+               if (sender.isLocal()) {
+                  RemoteEventManager2.kick(FrameworkEventUtil.getRemotePurgedArtifactsEvent(sender.getNetworkSender2(),
+                        artifactChanges));
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      };
+      execute(runnable);
+   }
+
    //   // Kick LOCAL and REMOTE artifact change type depending on sender
    //   static void kickArtifactsChangeTypeEvent(final Sender sender, final Set<EventBasicGuidArtifact> artifactChanges, final String toArtifactTypeGuid) throws OseeCoreException {
    //      if (isDisableEvents()) {

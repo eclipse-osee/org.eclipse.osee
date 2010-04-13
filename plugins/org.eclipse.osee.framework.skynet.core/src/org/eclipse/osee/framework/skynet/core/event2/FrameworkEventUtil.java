@@ -5,16 +5,19 @@
  */
 package org.eclipse.osee.framework.skynet.core.event2;
 
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAttributeChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicModifiedGuidArtifact1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePurgedArtifactsEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.msgs.BasicModifiedGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.event.msgs.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 
 /**
  * @author Donald G. Dunne
@@ -69,6 +72,15 @@ public class FrameworkEventUtil {
       remoteGuidArt.setBranchGuid(guidArt.getBranchGuid());
       remoteGuidArt.setArtTypeGuid(guidArt.getArtTypeGuid());
       return remoteGuidArt;
+   }
+
+   public static RemotePurgedArtifactsEvent1 getRemotePurgedArtifactsEvent(NetworkSender networkSender, Set<EventBasicGuidArtifact> artifactChanges) {
+      RemotePurgedArtifactsEvent1 event = new RemotePurgedArtifactsEvent1();
+      event.setNetworkSender(getRemoteNetworkSender(networkSender));
+      for (EventBasicGuidArtifact guidArt : artifactChanges) {
+         event.getArtifacts().add(getRemoteBasicGuidArtifact(guidArt.getBasicGuidArtifact()));
+      }
+      return event;
    }
 
    public static BasicModifiedGuidArtifact getBasicModifiedGuidArtifact(RemoteBasicModifiedGuidArtifact1 remGuidArt) {

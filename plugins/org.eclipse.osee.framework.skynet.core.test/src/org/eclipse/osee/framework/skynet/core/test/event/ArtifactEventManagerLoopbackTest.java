@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.framework.skynet.core.test.event;
 
-import org.eclipse.osee.framework.skynet.core.event2.InternalEventManager2;
+import org.eclipse.osee.framework.skynet.core.event.InternalEventManager2;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 

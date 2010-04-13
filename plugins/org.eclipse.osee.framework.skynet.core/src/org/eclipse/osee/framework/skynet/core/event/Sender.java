@@ -88,6 +88,19 @@ public class Sender {
             oseeSession.getUserId(), oseeSession.getMachineIp(), oseeSession.getPort(), oseeSession.getVersion());
    }
 
+   public org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender getNetworkSender2() {
+      org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender sender =
+            new org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender();
+      sender.setSourceObject(sourceObject);
+      sender.setSessionId(oseeSession.getId());
+      sender.setMachineName(oseeSession.getMachineName());
+      sender.setUserId(oseeSession.getUserId());
+      sender.setMachineIp(oseeSession.getMachineIp());
+      sender.setPort(oseeSession.getPort());
+      sender.setClientVersion(oseeSession.getVersion());
+      return sender;
+   }
+
    public RemoteNetworkSender1 getNetworkSenderRes() {
       RemoteNetworkSender1 sender = new RemoteNetworkSender1();
       sender.setSourceObject(sourceObject);

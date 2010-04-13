@@ -86,6 +86,11 @@ public class ArtifactEventManagerTest {
       Thread.sleep(3000);
 
       Assert.assertEquals(2, resultEventArtifacts.size());
+      if (isRemoteTest()) {
+         Assert.assertTrue(resultSender.isRemote());
+      } else {
+         Assert.assertTrue(resultSender.isLocal());
+      }
       boolean addedFound = false, modifiedFound = false;
       for (EventBasicGuidArtifact guidArt : resultEventArtifacts) {
          if (guidArt.getModType() == EventModType.Added) addedFound = true;
@@ -105,6 +110,11 @@ public class ArtifactEventManagerTest {
       Thread.sleep(3000);
 
       Assert.assertEquals(1, resultEventArtifacts.size());
+      if (isRemoteTest()) {
+         Assert.assertTrue(resultSender.isRemote());
+      } else {
+         Assert.assertTrue(resultSender.isLocal());
+      }
       EventBasicGuidArtifact guidArt = resultEventArtifacts.iterator().next();
       Assert.assertEquals(EventModType.Modified, guidArt.getModType());
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
@@ -121,6 +131,11 @@ public class ArtifactEventManagerTest {
       boolean deletedFound = false;
       modifiedFound = false;
       for (EventBasicGuidArtifact guidArt1 : resultEventArtifacts) {
+         if (isRemoteTest()) {
+            Assert.assertTrue(resultSender.isRemote());
+         } else {
+            Assert.assertTrue(resultSender.isLocal());
+         }
          if (guidArt1.getModType() == EventModType.Deleted) deletedFound = true;
          if (guidArt1.getModType() == EventModType.Modified) modifiedFound = true;
          Assert.assertEquals(newArt.getGuid(), guidArt1.getGuid());
@@ -158,6 +173,11 @@ public class ArtifactEventManagerTest {
       Assert.assertEquals(1, resultEventArtifacts.size());
       EventBasicGuidArtifact guidArt = resultEventArtifacts.iterator().next();
       Assert.assertEquals(EventModType.Purged, guidArt.getModType());
+      if (isRemoteTest()) {
+         Assert.assertTrue(resultSender.isRemote());
+      } else {
+         Assert.assertTrue(resultSender.isLocal());
+      }
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
       Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
@@ -199,6 +219,7 @@ public class ArtifactEventManagerTest {
          Assert.assertEquals(1, resultEventArtifacts.size());
          EventBasicGuidArtifact guidArt = resultEventArtifacts.iterator().next();
          Assert.assertEquals(EventModType.Reloaded, guidArt.getModType());
+         Assert.assertTrue(resultSender.isLocal());
          Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
          Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
          Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());

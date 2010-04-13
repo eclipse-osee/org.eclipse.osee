@@ -64,13 +64,6 @@ public class ObjectFactory {
    }
 
    /**
-    * Create an instance of {@link PurgedArtifactsEvent }
-    */
-   public PurgedArtifactsEvent createPurgedArtifactsEvent() {
-      return new PurgedArtifactsEvent();
-   }
-
-   /**
     * Create an instance of {@link BroadcastEvent }
     */
    public BroadcastEvent createBroadcastEvent() {

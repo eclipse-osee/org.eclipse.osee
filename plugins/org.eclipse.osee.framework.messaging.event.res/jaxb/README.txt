@@ -1,1 +1,1 @@
-xjc resMessages.xsd -extension -d ../src-gen -p org.eclipse.osee.framework.skynet.core.event.msgs
+xjc resMessages.xsd -extension -d ../src-gen -p org.eclipse.osee.framework.messaging.event.res.msgs

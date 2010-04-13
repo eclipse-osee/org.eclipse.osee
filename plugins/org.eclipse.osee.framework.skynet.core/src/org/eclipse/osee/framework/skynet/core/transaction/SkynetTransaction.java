@@ -49,8 +49,9 @@ import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModifiedBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.event.msgs.BasicModifiedGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.msgs.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
@@ -377,7 +378,7 @@ public class SkynetTransaction extends DbTransaction {
 
    private void updateModifiedCachedObject() throws OseeCoreException {
       Collection<ArtifactTransactionModifiedEvent> xModifiedEvents = new ArrayList<ArtifactTransactionModifiedEvent>();
-      Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
+      TransactionEvent transactionEvent = new TransactionEvent();
 
       // Update all transaction items before collecting events
       for (BaseTransactionData transactionData : transactionDataItems.values()) {
@@ -386,7 +387,7 @@ public class SkynetTransaction extends DbTransaction {
 
       // Collect events before clearing any dirty flags
       for (BaseTransactionData transactionData : transactionDataItems.values()) {
-         transactionData.internalAddToEvents(xModifiedEvents, artifactChanges);
+         transactionData.internalAddToEvents(xModifiedEvents, transactionEvent);
       }
 
       for (Artifact artifact : artifactReferences) {
@@ -394,8 +395,14 @@ public class SkynetTransaction extends DbTransaction {
             xModifiedEvents.add(new ArtifactModifiedEvent(new Sender(this.getClass().getName()),
                   ArtifactModType.Changed, artifact, artifact.getTransactionNumber(),
                   artifact.getDirtySkynetAttributeChanges()));
-            artifactChanges.add(new EventModifiedBasicGuidArtifact(artifact,
-                  artifact.getDirtyFrameworkAttributeChanges()));
+            BasicModifiedGuidArtifact basicModifiedGuidArtifact = new BasicModifiedGuidArtifact();
+            basicModifiedGuidArtifact.setBranchGuid(artifact.getBranch().getGuid());
+            basicModifiedGuidArtifact.setArtTypeGuid(artifact.getArtifactType().getGuid());
+            basicModifiedGuidArtifact.setArtGuid(artifact.getGuid());
+            for (AttributeChange attributeChange : artifact.getDirtyFrameworkAttributeChanges()) {
+               basicModifiedGuidArtifact.getAttributes().add(attributeChange);
+            }
+            transactionEvent.getModified().add(basicModifiedGuidArtifact);
          }
       }
       // Clear all dirty flags
@@ -404,7 +411,7 @@ public class SkynetTransaction extends DbTransaction {
       }
 
       if (xModifiedEvents.size() > 0) {
-         OseeEventManager.kickTransactionEvent(this, xModifiedEvents, artifactChanges);
+         OseeEventManager.kickTransactionEvent(this, xModifiedEvents, transactionEvent);
          xModifiedEvents.clear();
       }
    }
