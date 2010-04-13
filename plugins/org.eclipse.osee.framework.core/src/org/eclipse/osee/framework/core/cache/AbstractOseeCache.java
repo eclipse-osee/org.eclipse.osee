@@ -104,6 +104,18 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       }
    }
 
+   /**
+    * this method is intended for use by subclasses only. The calling method must synchronize the use of this view of
+    * the views because it is not a copy. This method exists to improve performance for subclasses
+    * 
+    * @return
+    * @throws OseeCoreException
+    */
+   protected synchronized Collection<T> getRawValues() throws OseeCoreException {
+      ensurePopulated();
+      return guidToTypeMap.values();
+   }
+
    private void decacheByName(T type) {
       Set<String> keysToRemove = new HashSet<String>();
 
