@@ -586,12 +586,15 @@ public class RelationManager {
 
    public static void ensureRelationCanBeAdded(RelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeCoreException {
       // For now, relations can not be cross branch.  Ensure that both artifacts are on same branch
-      // TODO Fix this when fix cross branching (not writing or reading from db correctly)
-      //      if (!artifactA.getBranch().equals(artifactB.getBranch())) {
-      //         throw new OseeArgumentException("Cross branch linking is not yet supported.");
-      //      }
+      ensureSameBranch(artifactA, artifactB);
       ensureSideWillSupport(artifactA, relationType, RelationSide.SIDE_A, 1);
       ensureSideWillSupport(artifactB, relationType, RelationSide.SIDE_B, 1);
+   }
+
+   private static void ensureSameBranch(Artifact a, Artifact b) throws OseeArgumentException {
+      if (!a.getBranch().equals(b.getBranch())) {
+         throw new OseeArgumentException("Cross branch linking is not yet supported.");
+      }
    }
 
    /**
