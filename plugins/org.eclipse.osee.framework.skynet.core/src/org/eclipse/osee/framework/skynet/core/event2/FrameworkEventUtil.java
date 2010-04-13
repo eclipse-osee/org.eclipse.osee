@@ -10,6 +10,7 @@ import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAttributeChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicModifiedGuidArtifact1;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteChangeTypeArtifactsEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePurgedArtifactsEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
@@ -80,6 +81,16 @@ public class FrameworkEventUtil {
       for (EventBasicGuidArtifact guidArt : artifactChanges) {
          event.getArtifacts().add(getRemoteBasicGuidArtifact(guidArt.getBasicGuidArtifact()));
       }
+      return event;
+   }
+
+   public static RemoteChangeTypeArtifactsEvent1 getRemoteChangeTypeArtifactsEvent(NetworkSender networkSender, String toArtifactTypeGuid, Set<EventBasicGuidArtifact> artifactChanges) {
+      RemoteChangeTypeArtifactsEvent1 event = new RemoteChangeTypeArtifactsEvent1();
+      event.setNetworkSender(getRemoteNetworkSender(networkSender));
+      for (EventBasicGuidArtifact guidArt : artifactChanges) {
+         event.getArtifacts().add(getRemoteBasicGuidArtifact(guidArt.getBasicGuidArtifact()));
+      }
+      event.setToArtTypeGuid(toArtifactTypeGuid);
       return event;
    }
 

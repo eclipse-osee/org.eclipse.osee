@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteChangeTypeArtifactsEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePurgedArtifactsEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 import org.eclipse.osee.framework.skynet.core.event.msgs.TransactionEvent;
@@ -91,42 +92,26 @@ public class RemoteEventManager2 {
                            artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged,
                                  FrameworkEventUtil.getBasicGuidArtifact(guidArt)));
                         }
-                        // TODO process transaction event by updating artifact/relation caches
+                        // TODO process purge event by updating artifact/relation caches
                         InternalEventManager2.kickArtifactsPurgedEvent(sender, artifactChanges);
                      } catch (Exception ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
+                  } else if (event instanceof RemoteChangeTypeArtifactsEvent1) {
+                     try {
+                        RemoteChangeTypeArtifactsEvent1 event1 = (RemoteChangeTypeArtifactsEvent1) event;
+                        Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
+                        for (RemoteBasicGuidArtifact1 guidArt : event1.getArtifacts()) {
+                           artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged,
+                                 FrameworkEventUtil.getBasicGuidArtifact(guidArt)));
+                        }
+                        // TODO process change type event by updating artifact/relation caches
+                        InternalEventManager2.kickArtifactsChangeTypeEvent(sender, artifactChanges,
+                              event1.getToArtTypeGuid());
+                     } catch (Exception ex) {
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
+                     }
                   }
-                  //                  } else if (event instanceof NetworkArtifactChangeTypeEvent) {
-                  //                     try {
-                  //                        // TODO do work here to reload change type artifact if loaded
-                  //                        InternalEventManager2.kickArtifactsChangeTypeEvent(sender, EventBasicGuidArtifact.get(
-                  //                              EventModType.ChangeType,
-                  //                              ((NetworkArtifactChangeTypeEvent) event).getDefaultBasicGuidArtifacts()),
-                  //                              ((NetworkArtifactChangeTypeEvent) event).getToArtTypeGuid());
-                  //                     } catch (Exception ex) {
-                  //                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  //                     }
-                  //                  } else if (event instanceof NetworkArtifactPurgeEvent) {
-                  //                     try {
-                  //                        for (DefaultBasicGuidArtifact guidArt : ((NetworkArtifactPurgeEvent) event).getDefaultBasicGuidArtifacts()) {
-                  //                           Artifact artifact = ArtifactCache.getActive(guidArt);
-                  //                           if (artifact != null) {
-                  //                              //This is because applications may still have a reference to the artifact
-                  //                              for (RelationLink link : RelationManager.getRelationsAll(artifact.getArtId(),
-                  //                                    artifact.getBranch().getId(), false)) {
-                  //                                 link.internalRemoteEventDelete();
-                  //                              }
-                  //                              ArtifactCache.deCache(artifact);
-                  //                              artifact.internalSetDeleted();
-                  //                           }
-                  //                        }
-                  //                        InternalEventManager2.kickArtifactsPurgedEvent(sender, EventBasicGuidArtifact.get(
-                  //                              EventModType.Purged, ((NetworkArtifactPurgeEvent) event).getDefaultBasicGuidArtifacts()));
-                  //                     } catch (Exception ex) {
-                  //                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  //                     }
-                  //                  }
                }
                return Status.OK_STATUS;
             }

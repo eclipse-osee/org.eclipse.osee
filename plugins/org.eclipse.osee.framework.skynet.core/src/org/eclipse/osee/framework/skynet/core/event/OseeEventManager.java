@@ -133,7 +133,7 @@ public class OseeEventManager {
          return;
       }
       InternalEventManager.kickArtifactsChangeTypeEvent(getSender(source), toArtifactTypeId, loadedArtifacts);
-      //      InternalEventManager2.kickArtifactsChangeTypeEvent(getSender(source), artifactChanges, toArtifactTypeGuid);
+      InternalEventManager2.kickArtifactsChangeTypeEvent(getSender(source), artifactChanges, toArtifactTypeGuid);
    }
 
    // Kick LOCAL and REMOTE transaction deleted event

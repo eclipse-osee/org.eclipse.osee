@@ -24,13 +24,6 @@
   </xsd:sequence>
 </xsd:complexType>
 
-<xsd:complexType name="ChangeTypeArtifactsEvent">
-  <xsd:sequence>
-    <xsd:element name="toArtTypeGuid" type="xsd:string"/>
-    <xsd:element name="artifacts" type="DefaultBasicGuidArtifact" maxOccurs="unbounded" minOccurs="1"/>
-  </xsd:sequence>
-</xsd:complexType>
-
 <xsd:complexType name="BranchRenameEvent">
   <xsd:sequence>
     <xsd:element name="name" type="xsd:string"/>

@@ -108,30 +108,30 @@ public class InternalEventManager2 {
       execute(runnable);
    }
 
-   //   // Kick LOCAL and REMOTE artifact change type depending on sender
-   //   static void kickArtifactsChangeTypeEvent(final Sender sender, final Set<EventBasicGuidArtifact> artifactChanges, final String toArtifactTypeGuid) throws OseeCoreException {
-   //      if (isDisableEvents()) {
-   //         return;
-   //      }
-   //      eventLog("OEM2:kickArtifactsChangeTypeEvent " + sender + " - " + artifactChanges);
-   //      Runnable runnable = new Runnable() {
-   //         public void run() {
-   //            // Kick LOCAL
-   //            ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
-   //
-   //            // Kick REMOTE (If source was Local and this was not a default branch changed event
-   //            try {
-   //               if (sender.isLocal()) {
-   //                  RemoteEventManager2.kick(new org.eclipse.osee.framework.messaging.event.res.event.NetworkArtifactChangeTypeEvent(
-   //                        toArtifactTypeGuid, artifactChanges, sender.getNetworkSenderRes()));
-   //               }
-   //            } catch (OseeCoreException ex) {
-   //               OseeLog.log(Activator.class, Level.SEVERE, ex);
-   //            }
-   //         }
-   //      };
-   //      execute(runnable);
-   //   }
+   // Kick LOCAL and REMOTE artifact change type depending on sender
+   static void kickArtifactsChangeTypeEvent(final Sender sender, final Set<EventBasicGuidArtifact> artifactChanges, final String toArtifactTypeGuid) throws OseeCoreException {
+      if (isDisableEvents()) {
+         return;
+      }
+      eventLog("OEM2:kickArtifactsChangeTypeEvent " + sender + " - " + artifactChanges);
+      Runnable runnable = new Runnable() {
+         public void run() {
+            // Kick LOCAL
+            ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
+
+            // Kick REMOTE (If source was Local and this was not a default branch changed event
+            try {
+               if (sender.isLocal()) {
+                  RemoteEventManager2.kick(FrameworkEventUtil.getRemoteChangeTypeArtifactsEvent(
+                        sender.getNetworkSender2(), toArtifactTypeGuid, artifactChanges));
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      };
+      execute(runnable);
+   }
 
    // Kick LOCAL and REMOTE TransactionEvent
    static void kickTransactionEvent(final Sender sender, final TransactionEvent transEvent) {

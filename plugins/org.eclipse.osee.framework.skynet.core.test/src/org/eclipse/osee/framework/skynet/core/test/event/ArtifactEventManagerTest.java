@@ -255,6 +255,11 @@ public class ArtifactEventManagerTest {
       EventChangeTypeBasicGuidArtifact guidArt =
             (EventChangeTypeBasicGuidArtifact) resultEventArtifacts.iterator().next();
       Assert.assertEquals(EventModType.ChangeType, guidArt.getModType());
+      if (isRemoteTest()) {
+         Assert.assertTrue(resultSender.isRemote());
+      } else {
+         Assert.assertTrue(resultSender.isLocal());
+      }
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
       Assert.assertEquals(CoreArtifactTypes.GeneralData.getGuid(), guidArt.getFromArtTypeGuid());

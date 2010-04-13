@@ -29,13 +29,6 @@ public class ObjectFactory {
    }
 
    /**
-    * Create an instance of {@link ChangeTypeArtifactsEvent }
-    */
-   public ChangeTypeArtifactsEvent createChangeTypeArtifactsEvent() {
-      return new ChangeTypeArtifactsEvent();
-   }
-
-   /**
     * Create an instance of {@link BranchEvent }
     */
    public BranchEvent createBranchEvent() {
