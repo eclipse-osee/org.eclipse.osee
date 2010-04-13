@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.skynet.core.test.branch.BranchTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactQueryTestDemo;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactTypeInheritanceTest;
+import org.eclipse.osee.framework.skynet.core.test.cases.Artifact_getLastModified;
 import org.eclipse.osee.framework.skynet.core.test.cases.Artifact_setAttributeValues;
 import org.eclipse.osee.framework.skynet.core.test.cases.CsvArtifactTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.DuplicateHridTest;
@@ -35,8 +36,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( {EventBasicGuidArtifactTest.class, EventChangeTypeBasicGuidArtifactTest.class,
       ArtifactQueryTestDemo.class, TransactionManagerTest.class, BranchTestSuite.class, RelationTestSuite.class,
       OseeCacheTestSuite.class, ArtifactTypeInheritanceTest.class, Artifact_setAttributeValues.class,
-      CsvArtifactTest.class, SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class,
-      DuplicateHridTest.class, RelationOrderingTest.class})
+      Artifact_getLastModified.class, CsvArtifactTest.class, SevereLogMonitorTest.class, RelationDeletionTest.class,
+      StaticIdManagerTest.class, DuplicateHridTest.class, RelationOrderingTest.class})
 /**
  * @author Donald G. Dunne
  */
