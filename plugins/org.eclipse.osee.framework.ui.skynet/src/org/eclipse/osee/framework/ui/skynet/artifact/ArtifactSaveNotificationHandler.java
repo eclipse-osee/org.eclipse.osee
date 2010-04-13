@@ -31,7 +31,7 @@ import org.eclipse.ui.IWorkbenchListener;
 
 /**
  * This handler will find any artifacts in the artifact cache that were dirty and allow user to persist before shutdown.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
@@ -53,7 +53,7 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
          if (dirtyArts.isEmpty()) {
             return true;
          }
-         ArtifactDecorator artDecorator = new ArtifactDecorator("");
+         ArtifactDecorator artDecorator = new ArtifactDecorator();
          artDecorator.addActions(null, null);
          artDecorator.setShowArtBranch(true);
          artDecorator.setShowArtType(true);

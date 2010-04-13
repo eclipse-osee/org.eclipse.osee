@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -56,33 +60,37 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
       if (element instanceof Artifact) {
          Artifact artifact = (Artifact) element;
 
-         String name = artifact.getName();
+         List<String> extraInfo = new ArrayList<String>();
+         extraInfo.add(artifact.getName());
          if (artifact.isDeleted()) {
-            name += " <Deleted>";
+            extraInfo.add("<Deleted>");
          }
          if (artifactDecorator != null) {
-            if (artifactDecorator.showArtVersion()) {
-               name += " -" + artifact.getGammaId() + "- ";
+
+            if (artifactDecorator.showArtIds() && artifactDecorator.showArtVersion()) {
+               extraInfo.add(String.format("[%s rev.%s]", artifact.getArtId(), artifact.getGammaId()));
+            } else if (artifactDecorator.showArtIds() && !artifactDecorator.showArtVersion()) {
+               extraInfo.add(String.format("[id %s]", artifact.getArtId()));
+            } else if (!artifactDecorator.showArtIds() && artifactDecorator.showArtVersion()) {
+               extraInfo.add(String.format("[rev.%s]", artifact.getGammaId()));
             }
 
-            if (artifactDecorator.showArtIds()) {
-               name += " (" + artifact.getArtId() + ") ";
+            if (artifactDecorator.showArtType()) {
+               extraInfo.add("<" + artifact.getArtifactTypeName() + ">");
             }
+
+            if (artifactDecorator.showArtBranch()) {
+               extraInfo.add("[" + artifact.getBranch().getShortName() + "]");
+            }
+
             try {
-               if (artifactDecorator.showArtType()) {
-                  name += " <" + artifact.getArtifactTypeName() + "> ";
-               }
-               if (artifactDecorator.showArtBranch()) {
-                  name += " [" + artifact.getBranch() + "] ";
-               }
-
-               name += artifactDecorator.getSelectedAttributeData(artifact);
-            } catch (Exception ex) {
+               extraInfo.add(artifactDecorator.getSelectedAttributeData(artifact));
+            } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               name += ex.getLocalizedMessage();
+               extraInfo.add(ex.getLocalizedMessage());
             }
          }
-         return name;
+         return Collections.toString(extraInfo, " ");
       } else {
          return element.toString();
       }

@@ -58,6 +58,7 @@ import org.eclipse.search.ui.ISearchResultViewPart;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IMemento;
@@ -124,8 +125,8 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    private static final int DEFAULT_ELEMENT_LIMIT = 1000;
 
    private IArtifactSearchContentProvider fContentProvider;
-   private ArtifactDecorator artifactDecorator;
    private ISelectionProvider selectionProvider;
+   private final ArtifactDecorator artifactDecorator = new ArtifactDecorator();
 
    public ArtifactSearchPage() {
       setElementLimit(new Integer(DEFAULT_ELEMENT_LIMIT));
@@ -148,11 +149,15 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    }
 
    private ArtifactDecorator getArtifactDecorator() {
-      if (artifactDecorator == null) {
-         artifactDecorator = new ArtifactDecorator(SkynetGuiPlugin.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
-         artifactDecorator.addActions(getSite().getActionBars().getMenuManager(), this);
-      }
       return artifactDecorator;
+   }
+
+   @Override
+   public void createControl(Composite parent) {
+      super.createControl(parent);
+      artifactDecorator.addActions(getSite().getActionBars().getMenuManager(), this);
+      artifactDecorator.loadState(SkynetGuiPlugin.getInstance().getPreferenceStore(),
+            SkynetGuiPlugin.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
    }
 
    private ISelectionProvider getSearchSelectionProvider() {
@@ -165,9 +170,9 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    @Override
    protected void configureTableViewer(TableViewer viewer) {
       viewer.setUseHashlookup(true);
-      ArtifactDecorator decorator = getArtifactDecorator();
-      decorator.setViewer(viewer);
-      ArtifactSearchLabelProvider innerLabelProvider = new ArtifactSearchLabelProvider(this, decorator);
+      artifactDecorator.setViewer(viewer);
+
+      ArtifactSearchLabelProvider innerLabelProvider = new ArtifactSearchLabelProvider(this, artifactDecorator);
       viewer.setLabelProvider(new DecoratingArtifactSearchLabelProvider(innerLabelProvider));
       viewer.setContentProvider(new ArtifactTableContentProvider(this));
       viewer.setComparator(new DecoratorIgnoringViewerSorter(innerLabelProvider));
@@ -178,9 +183,9 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    @Override
    protected void configureTreeViewer(TreeViewer viewer) {
       viewer.setUseHashlookup(true);
-      ArtifactDecorator decorator = getArtifactDecorator();
-      decorator.setViewer(viewer);
-      ArtifactSearchLabelProvider innerLabelProvider = new ArtifactSearchLabelProvider(this, decorator);
+      artifactDecorator.setViewer(viewer);
+
+      ArtifactSearchLabelProvider innerLabelProvider = new ArtifactSearchLabelProvider(this, artifactDecorator);
       viewer.setLabelProvider(new DecoratingArtifactSearchLabelProvider(innerLabelProvider));
       viewer.setContentProvider(new ArtifactTreeContentProvider(this, viewer));
       viewer.setComparator(new DecoratorIgnoringViewerSorter(innerLabelProvider));
@@ -259,6 +264,8 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    public void saveState(IMemento memento) {
       super.saveState(memento);
       memento.putInteger(KEY_LIMIT, getElementLimit().intValue());
+      artifactDecorator.saveState(SkynetGuiPlugin.getInstance().getPreferenceStore(),
+            SkynetGuiPlugin.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
    }
 
    @SuppressWarnings("unchecked")

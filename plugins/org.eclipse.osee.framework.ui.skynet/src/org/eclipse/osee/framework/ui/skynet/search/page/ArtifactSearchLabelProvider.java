@@ -98,19 +98,26 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
          coloredName.append(' ').append("<Deleted>", DELETED_ARTIFACT_STYLE);
       }
       if (artifactDecorator != null) {
-         if (artifactDecorator.showArtVersion()) {
-            coloredName.append(' ').append("-" + artifact.getGammaId() + "-", StyledString.DECORATIONS_STYLER);
+
+         if (artifactDecorator.showArtIds() && artifactDecorator.showArtVersion()) {
+            coloredName.append(' ').append("[" + artifact.getArtId() + " rev." + artifact.getGammaId() + "]",
+                  StyledString.DECORATIONS_STYLER);
+         } else if (artifactDecorator.showArtIds() && !artifactDecorator.showArtVersion()) {
+            coloredName.append(' ').append("[id " + artifact.getArtId() + "]", StyledString.DECORATIONS_STYLER);
+         } else if (!artifactDecorator.showArtIds() && artifactDecorator.showArtVersion()) {
+            coloredName.append(' ').append("[rev." + artifact.getGammaId() + "]", StyledString.DECORATIONS_STYLER);
          }
 
-         if (artifactDecorator.showArtIds()) {
-            coloredName.append(' ').append("(" + artifact.getArtId() + ")", StyledString.DECORATIONS_STYLER);
+         if (artifactDecorator.showArtType()) {
+            coloredName.append(' ').append("<" + artifact.getArtifactTypeName() + ">", StyledString.DECORATIONS_STYLER);
          }
+
+         if (artifactDecorator.showArtBranch()) {
+            coloredName.append(' ').append("[" + artifact.getBranch().getShortName() + "]",
+                  StyledString.DECORATIONS_STYLER);
+         }
+
          try {
-            if (artifactDecorator.showArtType()) {
-               coloredName.append(' ').append("<" + artifact.getArtifactTypeName() + ">",
-                     StyledString.DECORATIONS_STYLER);
-            }
-
             String selectedAttributes = artifactDecorator.getSelectedAttributeData(artifact);
             if (Strings.isValid(selectedAttributes)) {
                coloredName.append(' ').append(selectedAttributes, StyledString.DECORATIONS_STYLER);

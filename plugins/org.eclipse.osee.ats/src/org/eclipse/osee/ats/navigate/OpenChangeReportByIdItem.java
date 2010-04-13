@@ -59,7 +59,9 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
       try {
          final MultipleHridSearchItem srch = new MultipleHridSearchItem(getName());
          srch.performUI(SearchType.Search);
-         if (srch.isCancelled()) return;
+         if (srch.isCancelled()) {
+            return;
+         }
          String name = "Open Change Report by ID: \"" + srch.getEnteredIds() + "\"";
          Job openJob = new Job(name) {
             @Override
@@ -77,7 +79,7 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
                      }
                      if (artifact instanceof TeamWorkFlowArtifact) {
                         if (((TeamWorkFlowArtifact) artifact).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) artifact).getBranchMgr().isWorkingBranchInWork()) {
-                           addedArts.add((artifact));
+                           addedArts.add(artifact);
                         }
                      }
                   }
@@ -96,7 +98,7 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
                      Displays.ensureInDisplayThread(new Runnable() {
                         @Override
                         public void run() {
-                           ArtifactDecorator artDecorator = new ArtifactDecorator("");
+                           ArtifactDecorator artDecorator = new ArtifactDecorator();
                            artDecorator.addActions(null, null);
                            artDecorator.setShowArtBranch(true);
                            artDecorator.setShowArtType(true);

@@ -10,19 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.model.AttributeType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IMemento;
@@ -84,27 +76,5 @@ public class SkynetViews {
             }
          });
       }
-   }
-
-   /**
-    * @param memento
-    * @return Returns a collection of <code>DynamicAttributeDescriptor</code> stored in a memento.
-    * @throws OseeDataStoreException
-    */
-   public static List<AttributeType> loadAttrTypesFromPreferenceStore(String preferenceKey, Branch branch) throws OseeCoreException {
-      List<AttributeType> attributeDescriptors = new LinkedList<AttributeType>();
-      Collection<AttributeType> descriptors = AttributeTypeManager.getValidAttributeTypes(branch);
-
-      IPreferenceStore preferenceStore = SkynetGuiPlugin.getInstance().getPreferenceStore();
-      for (String attributeType : preferenceStore.getString(preferenceKey).split("\\|")) {
-         for (AttributeType descriptor : descriptors) {
-            if (attributeType.equals(descriptor.getName())) {
-               attributeDescriptors.add(descriptor);
-               break;
-            }
-         }
-      }
-
-      return attributeDescriptors;
    }
 }

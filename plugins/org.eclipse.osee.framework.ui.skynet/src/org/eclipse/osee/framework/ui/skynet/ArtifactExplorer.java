@@ -184,6 +184,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private Composite stackComposite;
    private Control branchUnreadableWarning;
    private StackLayout stackLayout;
+   private final ArtifactDecorator artifactDecorator = new ArtifactDecorator();
 
    public ArtifactExplorer() {
    }
@@ -312,8 +313,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          Tree tree = treeViewer.getTree();
          treeViewer.setContentProvider(new ArtifactContentProvider());
 
-         ArtifactDecorator artifactDecorator =
-               new ArtifactDecorator(treeViewer, SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
          treeViewer.setLabelProvider(new ArtifactLabelProvider(artifactDecorator));
          treeViewer.addDoubleClickListener(new ArtifactDoubleClick());
          treeViewer.getControl().setLayoutData(gridData);
@@ -334,6 +333,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          createShowChangeReportAction(toolbarManager);
          addOpenQuickSearchAction(toolbarManager);
 
+         artifactDecorator.setViewer(treeViewer);
          artifactDecorator.addActions(getViewSite().getActionBars().getMenuManager(), this);
 
          getSite().setSelectionProvider(treeViewer);
@@ -360,6 +360,8 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          checkBranchReadable();
          getViewSite().getActionBars().updateActionBars();
 
+         artifactDecorator.loadState(SkynetGuiPlugin.getInstance().getPreferenceStore(),
+               SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -369,7 +371,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    /**
     * Reveal an artifact in the viewer and select it.
-    * 
+    *
     * @param artifact
     */
    public static void revealArtifact(Artifact artifact) {
@@ -397,7 +399,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    /**
     * Reveal an artifact in the viewer and select it.
-    * 
+    *
     * @param artifact
     */
    public static void exploreBranch(Branch branch) {
@@ -1203,7 +1205,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                return;
             }
          }
-
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -1216,6 +1217,8 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          memento.putString(ROOT_GUID, exploreRoot.getGuid());
          memento.putString(ROOT_BRANCH, String.valueOf(exploreRoot.getBranch().getId()));
       }
+      artifactDecorator.saveState(SkynetGuiPlugin.getInstance().getPreferenceStore(),
+            SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
    }
 
    @Override
