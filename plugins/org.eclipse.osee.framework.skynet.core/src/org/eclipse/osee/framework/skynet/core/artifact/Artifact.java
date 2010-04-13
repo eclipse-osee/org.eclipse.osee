@@ -98,6 +98,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
+   public static final int TRANSACTION_SENTINEL = -1;
+
    private final HashCollection<String, Attribute<?>> attributes =
          new HashCollection<String, Attribute<?>>(false, LinkedList.class, 12);
    private final Branch branch;
@@ -106,7 +108,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    private ArtifactType artifactType;
    private final ArtifactFactory parentFactory;
    private AttributeAnnotationManager annotationMgr;
-   private TransactionRecord transactionId;
+   private int transactionId = TRANSACTION_SENTINEL;
    private int artId;
    private int gammaId;
    private boolean linksLoaded;
@@ -136,7 +138,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    }
 
    public boolean isInDb() {
-      return transactionId != null;
+      return transactionId != TRANSACTION_SENTINEL;
    }
 
    /**
@@ -1458,7 +1460,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       String name = getName();
 
       if (isHistorical()) {
-         name += " [Rev:" + transactionId.getId() + "]";
+         name += " [Rev:" + transactionId + "]";
       }
 
       return name;
@@ -1541,7 +1543,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
          return this;
       }
       Artifact reflectedArtifact = reflectHelper(destinationBranch);
-      reflectedArtifact.transactionId = TransactionManager.getHeadTransaction(destinationBranch);
+      reflectedArtifact.setTransactionId(TransactionManager.getHeadTransaction(destinationBranch).getId());
       return reflectedArtifact;
    }
 
@@ -1584,14 +1586,17 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    }
 
    /**
-    * @return the transaction number for this artifact if it is historical, otherwise 0
+    * @return the transaction number that was set when this artifact was loaded
     */
    public int getTransactionNumber() {
-      return transactionId != null ? transactionId.getId() : -1;
+      return transactionId;
    }
 
-   public TransactionRecord getTransactionId() {
-      return transactionId;
+   public TransactionRecord getTransactionRecord() throws OseeCoreException {
+      if (transactionId == TRANSACTION_SENTINEL) {
+         return null;
+      }
+      return TransactionManager.getTransactionId(transactionId);
    }
 
    /**
@@ -1874,7 +1879,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * This method should never be called from outside the OSEE Application Framework
     */
-   void internalSetPersistenceData(int gammaId, TransactionRecord transactionId, ModificationType modType, boolean historical) {
+   void internalSetPersistenceData(int gammaId, int transactionId, ModificationType modType, boolean historical) {
       this.gammaId = gammaId;
       this.transactionId = transactionId;
       this.historical = historical;
@@ -1883,18 +1888,26 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       this.objectEditState = EditState.NO_CHANGE;
    }
 
-   public Date getLastModified() {
-      if (transactionId == null) {
+   /**
+    * This method should never be called from outside the OSEE Application Framework
+    */
+   void setTransactionId(int transactionId) {
+      this.transactionId = transactionId;
+   }
+
+   public Date getLastModified() throws OseeCoreException {
+      if (transactionId == TRANSACTION_SENTINEL) {
          return new Date();
       }
-      return transactionId.getTimeStamp();
+      return getTransactionRecord().getTimeStamp();
    }
 
    public User getLastModifiedBy() throws OseeCoreException {
-      if (transactionId == null) {
+      TransactionRecord transactionRecord = getTransactionRecord();
+      if (transactionRecord == null) {
          return UserManager.getUser(SystemUser.OseeSystem);
       }
-      return UserManager.getUserByArtId(transactionId.getAuthor());
+      return UserManager.getUserByArtId(transactionRecord.getAuthor());
    }
 
    void meetMinimumAttributeCounts(boolean isNewArtifact) throws OseeCoreException {

@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 
 /**
@@ -69,10 +68,10 @@ public abstract class ArtifactFactory {
 
    public synchronized Artifact reflectExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modificationType) throws OseeCoreException {
       return internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, branch, modificationType,
-            false, null);
+            false, Artifact.TRANSACTION_SENTINEL);
    }
 
-   private Artifact internalExistingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modType, boolean historical, TransactionRecord transactionId) throws OseeCoreException {
+   private Artifact internalExistingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modType, boolean historical, int transactionId) throws OseeCoreException {
       Artifact artifact = getArtifactInstance(guid, humandReadableId, BranchManager.getBranch(branch), artifactType);
 
       artifact.setArtId(artId);
@@ -82,8 +81,8 @@ public abstract class ArtifactFactory {
       return artifact;
    }
 
-   public synchronized Artifact loadExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, TransactionRecord transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
-      return internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, transactionId.getBranch(),
+   public synchronized Artifact loadExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
+      return internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, branch,
             modType, historical, transactionId);
    }
 
@@ -92,7 +91,7 @@ public abstract class ArtifactFactory {
     * call to the persistence manager to acquire the <code>Artifact</code> or else an infinite loop will occur since
     * this method is used by the persistence manager when it needs a new instance of the class to work with and can not
     * come up with it on its own.
-    *
+    * 
     * @param branch branch on which this instance of this artifact will be associated
     */
    protected abstract Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException;

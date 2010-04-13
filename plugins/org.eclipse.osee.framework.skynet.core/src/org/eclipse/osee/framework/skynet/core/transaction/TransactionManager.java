@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * Manages a cache of <code>TransactionId</code>.
- *
+ * 
  * @author Jeff C. Phillips
  */
 public final class TransactionManager {
@@ -231,13 +231,10 @@ public final class TransactionManager {
 
    private synchronized static TransactionRecord getTransactionId(int txId, IOseeStatement chStmt) throws OseeCoreException {
       TransactionCache txCache = getTransactionCache();
-      TransactionRecord transactionId = txCache.getById(txId);
-
-      TransactionRecordFactory factory = Activator.getInstance().getOseeFactoryService().getTransactionFactory();
-      BranchCache branchCache = Activator.getInstance().getOseeCacheService().getBranchCache();
+      TransactionRecord transactionRecord = txCache.getById(txId);
 
       boolean useLocalConnection = chStmt == null;
-      if (transactionId == null) {
+      if (transactionRecord == null) {
          try {
             if (useLocalConnection) {
                chStmt = ConnectionHandler.getStatement();
@@ -248,10 +245,13 @@ public final class TransactionManager {
             }
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
-            transactionId =
+            TransactionRecordFactory factory = Activator.getInstance().getOseeFactoryService().getTransactionFactory();
+            BranchCache branchCache = Activator.getInstance().getOseeCacheService().getBranchCache();
+
+            transactionRecord =
                   factory.createOrUpdate(txCache, txId, chStmt.getInt("branch_id"), chStmt.getString("osee_comment"),
                         chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType);
-            transactionId.setBranchCache(branchCache);
+            transactionRecord.setBranchCache(branchCache);
 
          } finally {
             if (useLocalConnection) {
@@ -259,6 +259,6 @@ public final class TransactionManager {
             }
          }
       }
-      return transactionId;
+      return transactionRecord;
    }
 }

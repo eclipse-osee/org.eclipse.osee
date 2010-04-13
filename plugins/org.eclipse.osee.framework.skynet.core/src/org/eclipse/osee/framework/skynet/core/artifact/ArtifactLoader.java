@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -46,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Ryan D. Brooks
@@ -199,7 +199,7 @@ public final class ArtifactLoader {
 
    /**
     * should only be used in tandem with with selectArtifacts()
-    *
+    * 
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     *           selectArtifacts
     */
@@ -209,7 +209,7 @@ public final class ArtifactLoader {
 
    /**
     * should only be used in tandem with with selectArtifacts()
-    *
+    * 
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     *           selectArtifacts
     */
@@ -255,15 +255,12 @@ public final class ArtifactLoader {
    private static Artifact retrieveShallowArtifact(IOseeStatement chStmt, boolean reload, boolean historical) throws OseeCoreException {
       int artifactId = chStmt.getInt("art_id");
       Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
-      TransactionRecord transactionId = TransactionManager.getTransactionId(chStmt.getInt("transaction_id"));
       Artifact artifact;
-
+      int transactionId = Artifact.TRANSACTION_SENTINEL;
       if (historical) {
          int stripeTransactionNumber = chStmt.getInt("stripe_transaction_id");
-         if (stripeTransactionNumber != transactionId.getId()) {
-            transactionId = TransactionManager.getTransactionId(stripeTransactionNumber);
-         }
-         artifact = ArtifactCache.getHistorical(artifactId, transactionId.getId());
+         transactionId = stripeTransactionNumber;
+         artifact = ArtifactCache.getHistorical(artifactId, stripeTransactionNumber);
       } else {
          artifact = ArtifactCache.getActive(artifactId, branch);
       }
@@ -274,7 +271,8 @@ public final class ArtifactLoader {
 
          artifact =
                factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"),
-                     chStmt.getString("human_readable_id"), artifactType, chStmt.getInt("gamma_id"), transactionId,
+                     chStmt.getString("human_readable_id"), artifactType, chStmt.getInt("gamma_id"), branch,
+                     transactionId,
                      ModificationType.getMod(chStmt.getInt("mod_type")), historical);
 
       } else if (reload) {
@@ -381,6 +379,8 @@ public final class ArtifactLoader {
          int previousGammaId = -1;
          int previousModType = -1;
 
+         List<Integer> transactionNumbers = new ArrayList<Integer>();
+
          while (chStmt.next()) {
             int artifactId = chStmt.getInt("art_id");
             int branchId = chStmt.getInt("branch_id");
@@ -392,6 +392,8 @@ public final class ArtifactLoader {
             if (branchId != previousBranchId || artifactId != previousArtifactId) {
                if (artifact != null) { // exclude the first pass because there is no previous artifact
                   // meet minimum attributes for the previous artifact since its existing attributes have already been loaded
+
+                  setLastAttributePersistTransaction(artifact, transactionNumbers);
                   artifact.meetMinimumAttributeCounts(false);
                   ArtifactCache.cachePostAttributeLoad(artifact);
                }
@@ -428,13 +430,13 @@ public final class ArtifactLoader {
                      AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType);
                boolean isEnumAttribute =
                      AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType);
-               // If boolean or enumerated attribute type, the string value can be shared by using .intern()
                String value = chStmt.getString("value");
-               if ((isBooleanAttribute || isEnumAttribute) && value != null) {
-                  value = value.intern();
+               if (isBooleanAttribute || isEnumAttribute) {
+                  value = Strings.intern(value);
                }
                artifact.internalInitializeAttribute(attributeType, attrId, gammaId, ModificationType.getMod(modType),
                      false, value, chStmt.getString("uri"));
+               transactionNumbers.add(chStmt.getInt("transaction_id"));
             }
 
             previousArtifactId = artifactId;
@@ -446,6 +448,16 @@ public final class ArtifactLoader {
       } finally {
          chStmt.close();
       }
+   }
+
+   private static void setLastAttributePersistTransaction(Artifact artifact, List<Integer> transactionNumbers) {
+      int maxTransactionId = -1;
+      for (Integer transactionId : transactionNumbers) {
+         if (transactionId > maxTransactionId) {
+            maxTransactionId = transactionId;
+         }
+      }
+      artifact.setTransactionId(maxTransactionId);
    }
 
    public static int getNewQueryId() {

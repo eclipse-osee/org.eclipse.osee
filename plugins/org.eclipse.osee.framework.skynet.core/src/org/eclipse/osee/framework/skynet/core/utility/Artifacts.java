@@ -150,7 +150,7 @@ public final class Artifacts {
       return children;
    }
 
-   public static String getDetailsFormText(Artifact artifact) {
+   public static String getDetailsFormText(Artifact artifact) throws OseeCoreException {
       String template = "<p><b>%s:</b> %s</p>";
       StringBuilder sb = new StringBuilder();
       sb.append("<form>");
