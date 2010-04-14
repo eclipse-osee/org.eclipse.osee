@@ -156,11 +156,15 @@ public class BranchManager {
     * returns the merge branch for this source destination pair from the cache or null if not found
     */
    public static MergeBranch getMergeBranch(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
+      return getMergeBranch(sourceBranch, destinationBranch, true);
+   }
+
+   public static MergeBranch getMergeBranch(Branch sourceBranch, Branch destinationBranch, boolean isReLoadAllowed) throws OseeCoreException {
       BranchCache cache = getCache();
       // If someone else made a branch on another machine, we may not know about it
       // so refresh the cache.
       MergeBranch mergeBranch = cache.findMergeBranch(sourceBranch, destinationBranch);
-      if (mergeBranch == null) {
+      if (mergeBranch == null && isReLoadAllowed) {
          if (cache.reloadCache()) {
             mergeBranch = cache.findMergeBranch(sourceBranch, destinationBranch);
          }
@@ -169,7 +173,7 @@ public class BranchManager {
    }
 
    public static boolean doesMergeBranchExist(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
-      return getMergeBranch(sourceBranch, destBranch) != null;
+      return getMergeBranch(sourceBranch, destBranch, false) != null;
    }
 
    public static Branch getBranch(Integer branchId) throws OseeCoreException {
