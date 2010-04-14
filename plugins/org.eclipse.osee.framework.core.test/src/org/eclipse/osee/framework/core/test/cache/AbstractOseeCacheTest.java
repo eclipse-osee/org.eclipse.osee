@@ -201,25 +201,8 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
       }
 
       Assert.assertEquals(0, cache.size());
-
-      waitForReloadAllowed();
-      Assert.assertTrue(cache.isReloadAllowed());
       Assert.assertTrue(cache.reloadCache());
-      Assert.assertFalse(cache.isReloadAllowed());
-      Assert.assertFalse(cache.reloadCache());
       Assert.assertEquals(fullCacheSize, cache.size());
-   }
-
-   private void waitForReloadAllowed() {
-      while (!cache.isReloadAllowed()) {
-         synchronized (lock) {
-            try {
-               lock.wait(AbstractOseeCache.RELOAD_TIME_LIMIT_MS);
-            } catch (InterruptedException ex) {
-
-            }
-         }
-      }
    }
 
    @Test(expected = OseeTypeDoesNotExist.class)

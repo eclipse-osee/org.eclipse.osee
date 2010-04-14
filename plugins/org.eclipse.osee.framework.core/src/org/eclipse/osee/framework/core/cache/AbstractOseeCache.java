@@ -38,8 +38,6 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    private final Map<Integer, T> idToTypeMap = new ConcurrentHashMap<Integer, T>();
    private final Map<String, T> guidToTypeMap = new ConcurrentHashMap<String, T>();
 
-   public static final long RELOAD_TIME_LIMIT_MS = 500;
-
    private final IOseeDataAccessor<T> dataAccessor;
    private final OseeCacheEnum cacheId;
    private final boolean uniqueName;
@@ -107,7 +105,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    /**
     * this method is intended for use by subclasses only. The calling method must synchronize the use of this view of
     * the views because it is not a copy. This method exists to improve performance for subclasses
-    * 
+    *
     * @return
     * @throws OseeCoreException
     */
@@ -280,19 +278,10 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       this.lastLoaded = lastLoaded;
    }
 
-   public boolean isReloadAllowed() {
-      long currentTime = System.currentTimeMillis();
-      return currentTime - getLastLoaded() > RELOAD_TIME_LIMIT_MS;
-   }
-
    public synchronized boolean reloadCache() throws OseeCoreException {
-      boolean wasLoaded = false;
-      if (isReloadAllowed()) {
-         getDataAccessor().load(this);
-         wasLoaded = true;
-         setLastLoaded(System.currentTimeMillis());
-      }
-      return wasLoaded;
+      getDataAccessor().load(this);
+      setLastLoaded(System.currentTimeMillis());
+      return true;
    }
 
    @Override
