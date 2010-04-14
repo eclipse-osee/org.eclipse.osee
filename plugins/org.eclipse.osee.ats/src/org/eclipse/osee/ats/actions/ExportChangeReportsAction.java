@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class ExportChangeReportsAction extends Action {
    private final WorldEditor worldEditor;
    private final List<TeamWorkFlowArtifact> workflows = new ArrayList<TeamWorkFlowArtifact>();
-   private final boolean reverse = false;
+   private final boolean reverse = true;
 
    public ExportChangeReportsAction(WorldEditor worldEditor) {
       setText("Export Change Report(s)");
