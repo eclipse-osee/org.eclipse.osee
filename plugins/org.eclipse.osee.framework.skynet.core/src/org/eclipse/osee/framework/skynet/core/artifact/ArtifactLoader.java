@@ -199,7 +199,7 @@ public final class ArtifactLoader {
 
    /**
     * should only be used in tandem with with selectArtifacts()
-    * 
+    *
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     *           selectArtifacts
     */
@@ -209,7 +209,7 @@ public final class ArtifactLoader {
 
    /**
     * should only be used in tandem with with selectArtifacts()
-    * 
+    *
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     *           selectArtifacts
     */
@@ -394,6 +394,7 @@ public final class ArtifactLoader {
                   // meet minimum attributes for the previous artifact since its existing attributes have already been loaded
 
                   setLastAttributePersistTransaction(artifact, transactionNumbers);
+                  transactionNumbers.clear();
                   artifact.meetMinimumAttributeCounts(false);
                   ArtifactCache.cachePostAttributeLoad(artifact);
                }
