@@ -51,18 +51,5 @@ public class DefinePerspectiveFactory implements IPerspectiveFactory {
 
       IFolderLayout underLower = layout.createFolder("underBottom", IPageLayout.BOTTOM, .75f, "bottom");
       underLower.addView(QuickSearchView.VIEW_ID);
-
-      // The following is some sample code that can be used for future reference for other areas and
-      // placeholders ...
-      // topLeft.addPlaceholder(IPageLayout.ID_BOOKMARKS);
-      //
-      // // Bottom left: Outline view and Property Sheet view
-      // IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.50f,
-      // "topLeft");
-      // bottomLeft.addView(IPageLayout.ID_OUTLINE);
-      // bottomLeft.addView(IPageLayout.ID_PROP_SHEET);
-      //
-      // // Bottom right: Task List view
-      // layout.addView(IPageLayout.ID_TASK_LIST, IPageLayout.BOTTOM, 0.66f, editorArea);
    }
 }
