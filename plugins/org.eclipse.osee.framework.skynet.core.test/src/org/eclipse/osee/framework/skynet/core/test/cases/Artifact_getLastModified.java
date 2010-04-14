@@ -43,12 +43,14 @@ public class Artifact_getLastModified {
 
    @org.junit.Test
    public void testGetLastModified() throws Exception {
+      boolean debug = false;
+
       Branch branch = BranchManager.getCommonBranch();
       Assert.assertNotNull(branch);
       Artifact artifact = ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName());
 
       // Test pre-persist
-      System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
+      if (!debug) System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
             artifact.getLastModifiedBy()));
       Assert.assertNotNull(artifact.getLastModified());
       Assert.assertEquals(UserManager.getUser(SystemUser.OseeSystem), artifact.getLastModifiedBy());
@@ -57,7 +59,7 @@ public class Artifact_getLastModified {
       artifact.persist();
 
       // Test post-persist
-      System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
+      if (!debug) System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
             artifact.getLastModifiedBy()));
       Assert.assertNotSame(createdDate, artifact.getLastModified());
       Assert.assertNotSame(UserManager.getUser(SystemUser.OseeSystem), artifact.getLastModifiedBy());
@@ -66,7 +68,7 @@ public class Artifact_getLastModified {
       StaticIdManager.setSingletonAttributeValue(artifact, "this");
       artifact.persist();
 
-      System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
+      if (!debug) System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
             artifact.getLastModifiedBy()));
       Assert.assertNotSame(createdDate, artifact.getLastModified());
       Assert.assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
