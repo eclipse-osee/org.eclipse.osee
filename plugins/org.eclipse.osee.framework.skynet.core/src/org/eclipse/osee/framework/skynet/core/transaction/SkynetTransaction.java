@@ -235,6 +235,11 @@ public class SkynetTransaction extends DbTransaction {
       checkBranch(artifact);
 
       if (artifact.isDeleted() && !artifact.isInDb()) {
+         for (Attribute<?> attribute : artifact.internalGetAttributes()) {
+            if (attribute.isDirty()) {
+               attribute.setNotDirty();
+            }
+         }
          return;
       }
       madeChanges = true;
@@ -330,8 +335,12 @@ public class SkynetTransaction extends DbTransaction {
        * Always want to persist artifacts on other side of dirty relation. This is necessary for ordering attribute to
        * be persisted and desired for other cases.
        */
-      if (aArtifact != null) aArtifact.persist(this);
-      if (bArtifact != null) bArtifact.persist(this);
+      if (aArtifact != null) {
+         aArtifact.persist(this);
+      }
+      if (bArtifact != null) {
+         bArtifact.persist(this);
+      }
 
       BaseTransactionData txItem = transactionDataItems.get(RelationTransactionData.class, link.getId());
       if (txItem == null) {
