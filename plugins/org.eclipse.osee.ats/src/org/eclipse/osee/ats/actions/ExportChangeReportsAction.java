@@ -152,10 +152,7 @@ public class ExportChangeReportsAction extends Action {
          IProgressMonitor monitor = new NullProgressMonitor();
          Collection<Change> changes = null;
          if (atsBranchMgr.isCommittedBranchExists()) {
-            TransactionRecord transactionRecord = pickTransaction(workflow);
-            if (!transactionRecord.getBranch().getBranchType().isBaselineBranch()) {
-               changes = ChangeManager.getChangesPerTransaction(transactionRecord, monitor);
-            }
+            changes = ChangeManager.getChangesPerTransaction(pickTransaction(workflow), monitor);
          } else {
             Branch branch = atsBranchMgr.getWorkingBranch();
             if (atsBranchMgr.isWorkingBranchInWork() && !branch.getBranchType().isBaselineBranch()) {
