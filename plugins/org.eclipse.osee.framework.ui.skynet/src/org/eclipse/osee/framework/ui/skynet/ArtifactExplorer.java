@@ -184,7 +184,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private Composite stackComposite;
    private Control branchUnreadableWarning;
    private StackLayout stackLayout;
-   private final ArtifactDecorator artifactDecorator = new ArtifactDecorator();
+   private final ArtifactDecorator artifactDecorator = new ArtifactDecorator(SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
 
    public ArtifactExplorer() {
    }
@@ -360,8 +360,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          checkBranchReadable();
          getViewSite().getActionBars().updateActionBars();
 
-         artifactDecorator.loadState(SkynetGuiPlugin.getInstance().getPreferenceStore(),
-               SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -1217,8 +1215,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          memento.putString(ROOT_GUID, exploreRoot.getGuid());
          memento.putString(ROOT_BRANCH, String.valueOf(exploreRoot.getBranch().getId()));
       }
-      artifactDecorator.saveState(SkynetGuiPlugin.getInstance().getPreferenceStore(),
-            SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
    }
 
    @Override

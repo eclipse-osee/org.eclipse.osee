@@ -126,7 +126,8 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
 
    private IArtifactSearchContentProvider fContentProvider;
    private ISelectionProvider selectionProvider;
-   private final ArtifactDecorator artifactDecorator = new ArtifactDecorator();
+   private final ArtifactDecorator artifactDecorator =
+         new ArtifactDecorator(SkynetGuiPlugin.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
 
    public ArtifactSearchPage() {
       setElementLimit(new Integer(DEFAULT_ELEMENT_LIMIT));
@@ -148,16 +149,10 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       new SearchDragAndDrop(viewer.getControl(), VIEW_ID);
    }
 
-   private ArtifactDecorator getArtifactDecorator() {
-      return artifactDecorator;
-   }
-
    @Override
    public void createControl(Composite parent) {
       super.createControl(parent);
       artifactDecorator.addActions(getSite().getActionBars().getMenuManager(), this);
-      artifactDecorator.loadState(SkynetGuiPlugin.getInstance().getPreferenceStore(),
-            SkynetGuiPlugin.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
    }
 
    private ISelectionProvider getSearchSelectionProvider() {
@@ -264,8 +259,6 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    public void saveState(IMemento memento) {
       super.saveState(memento);
       memento.putInteger(KEY_LIMIT, getElementLimit().intValue());
-      artifactDecorator.saveState(SkynetGuiPlugin.getInstance().getPreferenceStore(),
-            SkynetGuiPlugin.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
    }
 
    @SuppressWarnings("unchecked")

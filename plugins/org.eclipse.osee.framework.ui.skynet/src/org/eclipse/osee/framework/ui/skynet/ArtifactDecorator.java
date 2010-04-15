@@ -10,17 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -32,6 +34,8 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
@@ -45,15 +49,23 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  */
 public class ArtifactDecorator {
 
+   private static final Collection<WeakReference<ArtifactDecorator>> DECORATOR_INSTANCES =
+         new CopyOnWriteArrayList<WeakReference<ArtifactDecorator>>();
+
    private DecoratorAction showArtIds;
    private DecoratorAction showArtType;
    private DecoratorAction showArtVersion;
    private DecoratorAction showArtBranch;
    private ShowAttributeAction attributesAction;
+   private SetSettingsAsDefault saveSettingsAction;
    private StructuredViewer viewer;
 
-   public ArtifactDecorator() {
+   private final String storageKey;
+
+   public ArtifactDecorator(String storageKey) {
       this.viewer = null;
+      this.storageKey = storageKey;
+      addDecoratorInstance(this);
    }
 
    public void setViewer(StructuredViewer viewer) {
@@ -64,43 +76,57 @@ public class ArtifactDecorator {
       return String.format("%s.%s", prefix, name);
    }
 
-   public void saveState(IPreferenceStore store, String key) {
-      saveAction(store, showArtIds, asKey(key, "artifact.decorator.show.artId"));
-      saveAction(store, showArtType, asKey(key, "artifact.decorator.show.artType"));
-      saveAction(store, showArtBranch, asKey(key, "artifact.decorator.show.artBranch"));
-      saveAction(store, showArtVersion, asKey(key, "artifact.decorator.show.artVersion"));
-      if (attributesAction != null) {
-         Collection<String> items = attributesAction.getSelected();
-         store.setValue(asKey(key, "artifact.decorator.attrTypes"), Collections.toString(items, ","));
-         saveAction(store, attributesAction, asKey(key, "artifact.decorator.show.attrTypes"));
-      }
-   }
-
-   public void loadState(IPreferenceStore store, String key) {
-      loadAction(store, showArtIds, asKey(key, "artifact.decorator.show.artId"));
-      loadAction(store, showArtType, asKey(key, "artifact.decorator.show.artType"));
-      loadAction(store, showArtBranch, asKey(key, "artifact.decorator.show.artBranch"));
-      loadAction(store, showArtVersion, asKey(key, "artifact.decorator.show.artVersion"));
-      if (attributesAction != null) {
-         String value = store.getString(asKey(key, "artifact.decorator.attrTypes"));
-         if (Strings.isValid(value)) {
-            String[] entries = value.split(",");
-            attributesAction.setSelected(Arrays.asList(entries));
+   private void storeState() {
+      try {
+         User store = UserManager.getUser();
+         if (store != null) {
+            saveAction(store, showArtIds, "artifact.decorator.show.artId");
+            saveAction(store, showArtType, "artifact.decorator.show.artType");
+            saveAction(store, showArtBranch, "artifact.decorator.show.artBranch");
+            saveAction(store, showArtVersion, "artifact.decorator.show.artVersion");
+            if (attributesAction != null) {
+               Collection<String> items = attributesAction.getSelected();
+               store.setSetting(asKey(storageKey, "artifact.decorator.attrTypes"), Collections.toString(items, ","));
+               saveAction(store, attributesAction, "artifact.decorator.show.attrTypes");
+            }
          }
-         loadAction(store, attributesAction, asKey(key, "artifact.decorator.show.attrTypes"));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
-   private void loadAction(IPreferenceStore store, Action action, String key) {
+   private void loadState() {
+      try {
+         User store = UserManager.getUser();
+         if (store != null) {
+            loadAction(store, showArtIds, "artifact.decorator.show.artId");
+            loadAction(store, showArtType, "artifact.decorator.show.artType");
+            loadAction(store, showArtBranch, "artifact.decorator.show.artBranch");
+            loadAction(store, showArtVersion, "artifact.decorator.show.artVersion");
+            if (attributesAction != null) {
+               String value = store.getSetting("artifact.decorator.attrTypes");
+               if (Strings.isValid(value)) {
+                  String[] entries = value.split(",");
+                  attributesAction.setSelected(Arrays.asList(entries));
+               }
+               loadAction(store, attributesAction, "artifact.decorator.show.attrTypes");
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   private void loadAction(User store, Action action, String key) throws OseeCoreException {
       if (action != null) {
-         boolean isChecked = store.getBoolean(key);
+         boolean isChecked = store.getBooleanSetting(asKey(storageKey, key));
          action.setChecked(isChecked);
       }
    }
 
-   private void saveAction(IPreferenceStore store, Action action, String key) {
+   private void saveAction(User store, Action action, String key) throws OseeCoreException {
       boolean isChecked = action != null && action.isChecked();
-      store.setValue(key, isChecked);
+      store.setSetting(asKey(storageKey, key), String.valueOf(isChecked));
    }
 
    private void checkActionsCreated(IBranchProvider branchProvider) {
@@ -120,6 +146,9 @@ public class ArtifactDecorator {
 
       if (showArtIds == null && isAdmin()) {
          showArtIds = new DecoratorAction("Artifact Ids", FrameworkImage.FILTERS);
+      }
+      if (saveSettingsAction == null) {
+         saveSettingsAction = new SetSettingsAsDefault();
       }
    }
 
@@ -158,6 +187,10 @@ public class ArtifactDecorator {
       if (manager != null) {
          manager.add(attributesAction);
       }
+      manager.add(new Separator());
+      manager.add(saveSettingsAction);
+
+      loadState();
    }
 
    public String getSelectedAttributeData(Artifact artifact) throws OseeCoreException {
@@ -212,6 +245,12 @@ public class ArtifactDecorator {
       }
    }
 
+   private void refreshView() {
+      if (viewer != null) {
+         viewer.refresh();
+      }
+   }
+
    private final class DecoratorAction extends Action {
       private final String name;
       private boolean isSelected;
@@ -229,7 +268,7 @@ public class ArtifactDecorator {
       @Override
       public void run() {
          setChecked(!isChecked());
-         viewer.refresh();
+         refreshView();
       }
 
       @Override
@@ -291,7 +330,7 @@ public class ArtifactDecorator {
                         selectedTypes.add(((IAttributeType) object).getGuid());
                      }
                   }
-                  viewer.refresh();
+                  refreshView();
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -307,5 +346,40 @@ public class ArtifactDecorator {
          selectedTypes.clear();
          selectedTypes.addAll(selected);
       }
+   }
+
+   private final class SetSettingsAsDefault extends Action {
+
+      public SetSettingsAsDefault() {
+         super("Store Label Settings", IAction.AS_PUSH_BUTTON);
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.SAVE));
+      }
+
+      @Override
+      public void run() {
+         storeState();
+         notifySettingsChanged(ArtifactDecorator.this);
+      }
+   }
+
+   private static void addDecoratorInstance(ArtifactDecorator source) {
+      DECORATOR_INSTANCES.add(new WeakReference<ArtifactDecorator>(source));
+   }
+
+   private static void notifySettingsChanged(ArtifactDecorator source) {
+      List<Object> toRemove = new ArrayList<Object>();
+
+      for (WeakReference<ArtifactDecorator> ref : DECORATOR_INSTANCES) {
+         ArtifactDecorator decorator = ref.get();
+         if (decorator != null) {
+            if (!source.equals(decorator)) {
+               decorator.loadState();
+               decorator.refreshView();
+            }
+         } else {
+            toRemove.add(ref);
+         }
+      }
+      DECORATOR_INSTANCES.removeAll(toRemove);
    }
 }

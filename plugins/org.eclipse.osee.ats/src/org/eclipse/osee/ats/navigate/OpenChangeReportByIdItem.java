@@ -98,7 +98,7 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
                      Displays.ensureInDisplayThread(new Runnable() {
                         @Override
                         public void run() {
-                           ArtifactDecorator artDecorator = new ArtifactDecorator();
+                           ArtifactDecorator artDecorator = new ArtifactDecorator("open.change.report");
                            artDecorator.addActions(null, null);
                            artDecorator.setShowArtBranch(true);
                            artDecorator.setShowArtType(true);

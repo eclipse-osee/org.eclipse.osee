@@ -53,7 +53,7 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
          if (dirtyArts.isEmpty()) {
             return true;
          }
-         ArtifactDecorator artDecorator = new ArtifactDecorator();
+         ArtifactDecorator artDecorator = new ArtifactDecorator("save.handler");
          artDecorator.addActions(null, null);
          artDecorator.setShowArtBranch(true);
          artDecorator.setShowArtType(true);
