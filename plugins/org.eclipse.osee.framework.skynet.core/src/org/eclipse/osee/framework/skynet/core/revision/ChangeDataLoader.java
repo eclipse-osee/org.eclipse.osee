@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.data.ChangeReportResponse;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.RelationChangeItem;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.ChangeItemUtil;
@@ -89,15 +88,8 @@ public class ChangeDataLoader {
                toArtifact = ArtifactQuery.getArtifactFromId(item.getArtId(), branch, true);
             }
 
-            Artifact fromArtifact = null;
-
-            ChangeItem artChangeItem = artifactChanges.get(item.getArtId());
-            ModificationType modType = artChangeItem.getBaselineVersion().getModType();
-
-            if (modType != ModificationType.NEW && modType != ModificationType.INTRODUCED) {
-               fromArtifact =
-                     ArtifactCache.getHistorical(item.getArtId(), toTransactionFromTransactionPair.getSecond().getId());
-            }
+            Artifact fromArtifact =
+                  ArtifactCache.getHistorical(item.getArtId(), toTransactionFromTransactionPair.getSecond().getId());
 
             String wasValue = "";
 
