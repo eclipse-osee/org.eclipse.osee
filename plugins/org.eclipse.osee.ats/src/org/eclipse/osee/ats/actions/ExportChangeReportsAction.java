@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class ExportChangeReportsAction extends Action {
    private final WorldEditor worldEditor;
    private final List<TeamWorkFlowArtifact> workflows = new ArrayList<TeamWorkFlowArtifact>();
-   private final boolean reverse = true;
+   private final boolean reverse = false;
 
    public ExportChangeReportsAction(WorldEditor worldEditor) {
       setText("Export Change Report(s)");
@@ -58,11 +58,9 @@ public class ExportChangeReportsAction extends Action {
 
    public List<TeamWorkFlowArtifact> getWorkflows() throws OseeCoreException {
       Collection<String> legacyIds =
-            Arrays.asList(new String[] {"10703", "10705", "10706", "10720", "10737", "10738", "10739", "10741",
-                  "10748", "10754", "10759", "10762", "10764", "10765", "10767", "10770", "10771", "10773", "10774",
-                  "10775", "10777", "10781", "10783", "10792", "10794", "10796", "10800", "10801", "10802", "10803",
-                  "10804", "10842", "10847", "10854", "10865", "10868", "10871", "10872", "10873", "10899", "10900",
-                  "10901", "10902", "10903", "10904", "10905", "10907", "10908", "10916", "10917", "10918", "10921",
+            Arrays.asList(new String[] {"10792", "10794", "10796", "10800", "10801", "10802", "10803", "10804",
+                  "10842", "10847", "10854", "10865", "10868", "10871", "10872", "10873", "10899", "10900", "10901",
+                  "10902", "10903", "10904", "10905", "10907", "10908", "10916", "10917", "10918", "10921",
                   "10923", "10924", "10927", "10930", "10943", "10945", "10946", "10949", "10953", "10954", "10972",
                   "10973", "10974", "10975", "10976", "10978", "10979", "10980", "10982", "10983", "10984", "10985",
                   "10986", "10990", "11004", "11006", "11008", "11009", "11010", "11011", "11012", "11016", "11017",
