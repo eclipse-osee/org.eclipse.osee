@@ -100,15 +100,15 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
       public ReviewParticipationXViewerFactory(User user) {
          super(MASS_XVIEWER_CUSTOMIZE_NAMESPACE);
-         registerColumns(new XViewerArtifactTypeColumn("Type"));
-         registerColumns(new XViewerHridColumn("ID"));
+         registerColumns(new XViewerArtifactTypeColumn(true));
+         registerColumns(new XViewerHridColumn());
          registerColumns(WorldXViewerFactory.Legacy_PCR_Col);
          registerColumns(new XViewerSmaStateColumn());
          registerColumns(new XViewerSmaCompletedDateColumn("Completed"));
          registerColumns(new XViewerReviewRoleColumn(user));
          registerColumns(WorldXViewerFactory.Related_To_State_Col);
-         registerColumns(new XViewerArtifactNameColumn("Name"));
-         registerColumns(new XViewerGuidColumn("Guid"));
+         registerColumns(new XViewerArtifactNameColumn(true));
+         registerColumns(new XViewerGuidColumn(true));
          registerAllAttributeColumns();
       }
 

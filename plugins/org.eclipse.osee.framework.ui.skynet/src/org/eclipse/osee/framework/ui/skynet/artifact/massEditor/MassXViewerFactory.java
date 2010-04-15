@@ -18,6 +18,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewe
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerLastModifiedByColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerLastModifiedDateColumn;
 
 /**
  * @author Donald G. Dunne
@@ -25,15 +27,17 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewe
 public class MassXViewerFactory extends SkynetXViewerFactory {
 
    private static String NAMESPACE = "org.eclipse.osee.framework.ui.skynet.massEditor.ArtifactXViewer";
-   private static XViewerArtifactNameColumn nameCol = new XViewerArtifactNameColumn("Name", true);
+   private static XViewerArtifactNameColumn nameCol = new XViewerArtifactNameColumn(true);
 
    public MassXViewerFactory(Collection<? extends Artifact> artifacts) {
       super(NAMESPACE);
       registerColumns(nameCol);
       registerAllAttributeColumnsForArtifacts(artifacts, true, true);
-      registerColumns(new XViewerHridColumn("ID", true));
-      registerColumns(new XViewerGuidColumn("GUID", true));
-      registerColumns(new XViewerArtifactTypeColumn("Artifact Type", true));
+      registerColumns(new XViewerHridColumn(true));
+      registerColumns(new XViewerGuidColumn(true));
+      registerColumns(new XViewerArtifactTypeColumn(true));
+      registerColumns(new XViewerLastModifiedDateColumn(true));
+      registerColumns(new XViewerLastModifiedByColumn(true));
    }
 
    @Override

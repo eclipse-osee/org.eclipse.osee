@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
+import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.swt.SWT;
 
 /**
@@ -21,13 +25,12 @@ import org.eclipse.swt.SWT;
  */
 public class XViewerHridColumn extends XViewerValueColumn {
 
-   public XViewerHridColumn(String name) {
-      this("framework.hrid." + name, name, 75, SWT.LEFT, true, SortDataType.String, false, "Human Readable ID");
+   public XViewerHridColumn() {
+      this(false);
    }
 
-   public XViewerHridColumn(String name, boolean multiColumnEditable) {
-      this("framework.hrid." + name, name, 75, SWT.LEFT, true, SortDataType.String, multiColumnEditable,
-            "Human Readable ID");
+   public XViewerHridColumn(boolean show) {
+      this("framework.hrid", "HRID", 75, SWT.LEFT, show, SortDataType.String, false, "Human Readable ID");
    }
 
    public XViewerHridColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -48,8 +51,18 @@ public class XViewerHridColumn extends XViewerValueColumn {
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
-      if (element instanceof Artifact) {
-         return ((Artifact) element).getHumanReadableId();
+      try {
+         if (element instanceof Artifact) {
+            return ((Artifact) element).getHumanReadableId();
+         } else if (element instanceof ArtifactChange) {
+            return ((ArtifactChange) element).getToArtifact().getHumanReadableId();
+         } else if (element instanceof AttributeChange) {
+            return ((AttributeChange) element).getToArtifact().getHumanReadableId();
+         } else if (element instanceof RelationChange) {
+            return "";
+         }
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
       }
       return "";
    }

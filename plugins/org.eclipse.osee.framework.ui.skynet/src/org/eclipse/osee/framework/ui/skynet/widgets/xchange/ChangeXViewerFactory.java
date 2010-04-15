@@ -16,6 +16,11 @@ import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerLastModifiedByColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerLastModifiedDateColumn;
 import org.eclipse.swt.SWT;
 
 /**
@@ -41,14 +46,6 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn Was_Value =
          new XViewerColumn("framework.change.wasValue", "Was Value", 150, SWT.LEFT, true, SortDataType.String, false,
                null);
-   public static XViewerColumn Artifact_Type =
-         new XViewerColumn("framework.change.artifactType", "Artifact Type", 75, SWT.LEFT, true, SortDataType.String,
-               false, null);
-   public static XViewerColumn Hrid =
-         new XViewerColumn("framework.change.hrid", "HRID", 50, SWT.LEFT, false, SortDataType.String, false, null);
-   public static XViewerColumn lastModDate =
-         new XViewerColumn("attribute.Last Modified Date", "Last Modified Date", 50, SWT.LEFT, false,
-               SortDataType.Date, false, null);
    public static XViewerColumn paraNumber =
          new XViewerColumn("attribute.Imported Paragraph Number", CoreAttributeTypes.PARAGRAPH_NUMBER.getName(), 50,
                SWT.LEFT, false, SortDataType.Paragraph_Number, false, null);
@@ -57,8 +54,12 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
 
    public ChangeXViewerFactory() {
       super(NAMESPACE);
-      registerColumns(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, Artifact_Type, Hrid, paraNumber,
-            lastModDate);
+      registerColumns(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, paraNumber);
+      registerColumns(new XViewerHridColumn());
+      registerColumns(new XViewerGuidColumn(false));
+      registerColumns(new XViewerArtifactTypeColumn("framework.change.artifactType", "Artifact Type", true));
+      registerColumns(new XViewerLastModifiedDateColumn(false));
+      registerColumns(new XViewerLastModifiedByColumn(false));
       registerAllAttributeColumns();
    }
 

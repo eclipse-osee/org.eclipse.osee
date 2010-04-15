@@ -10,24 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
+import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
  */
-public class XViewerGuidColumn extends XViewerValueColumn {
+public class XViewerLastModifiedByColumn extends XViewerValueColumn {
 
-   public XViewerGuidColumn(boolean show) {
-      this("framework.guid", "Guid", 75, SWT.LEFT, show, SortDataType.String, false, "Globally Unique Identifier");
+   public XViewerLastModifiedByColumn(boolean show) {
+      this("framework.lastModBy", "Last Modified By", 50, SWT.LEFT, show, SortDataType.String, false, null);
    }
 
-   public XViewerGuidColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerLastModifiedByColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
@@ -38,19 +41,25 @@ public class XViewerGuidColumn extends XViewerValueColumn {
     * @param col
     */
    @Override
-   public XViewerGuidColumn copy() {
-      return new XViewerGuidColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
+   public XViewerLastModifiedByColumn copy() {
+      return new XViewerLastModifiedByColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
             isMultiColumnEditable(), getDescription());
    }
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
-      if (element instanceof Artifact) {
-         return ((Artifact) element).getGuid();
-      } else if (element instanceof ArtifactChange) {
-         return ((ArtifactChange) element).getToArtifact().getGuid();
-      } else if (element instanceof AttributeChange) {
-         return ((AttributeChange) element).getToArtifact().getGuid();
+      try {
+         if (element instanceof Artifact) {
+            return ((Artifact) element).getLastModifiedBy().toString();
+         } else if (element instanceof ArtifactChange) {
+            return ((ArtifactChange) element).getToArtifact().getLastModifiedBy().toString();
+         } else if (element instanceof AttributeChange) {
+            return ((AttributeChange) element).getToArtifact().getLastModifiedBy().toString();
+         } else if (element instanceof RelationChange) {
+            return "";
+         }
+      } catch (OseeCoreException ex) {
+         return XViewerCells.getCellExceptionString(ex);
       }
       return "";
    }

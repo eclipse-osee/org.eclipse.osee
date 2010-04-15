@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
 
 /**
  * @author Donald G. Dunne
@@ -36,7 +37,7 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
          Arrays.asList(WorldXViewerFactory.Goal_Order, WorldXViewerFactory.Goal_Order_Vote_Col,
                WorldXViewerFactory.Title_Col, WorldXViewerFactory.Type_Col, WorldXViewerFactory.State_Col,
                WorldXViewerFactory.Priority_Col, WorldXViewerFactory.Change_Type_Col,
-               WorldXViewerFactory.Assignees_Col, WorldXViewerFactory.ID_Col, WorldXViewerFactory.Created_Date_Col,
+               WorldXViewerFactory.Assignees_Col, new XViewerHridColumn(true), WorldXViewerFactory.Created_Date_Col,
                WorldXViewerFactory.Version_Target_Col, WorldXViewerFactory.Notes_Col);
    public static Integer[] widths = new Integer[] {75, 75, 250, 60, 60, 20, 20, 100, 50, 50, 50, 80};
 

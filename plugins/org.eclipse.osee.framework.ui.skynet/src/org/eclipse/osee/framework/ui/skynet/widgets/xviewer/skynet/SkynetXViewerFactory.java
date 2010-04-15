@@ -118,7 +118,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
       }
       Set<String> attrNames = new HashSet<String>();
       // Add Name first
-      columns.add(new XViewerArtifactNameColumn("Name"));
+      columns.add(new XViewerArtifactNameColumn(true));
       attrNames.add("Name");
       for (AttributeType attributeType : attributeTypes) {
          if (!attrNames.contains(attributeType.getName())) {

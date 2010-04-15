@@ -110,9 +110,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          IWorldViewArtifact wva = (IWorldViewArtifact) element;
          Artifact art = (Artifact) element;
          if (art.isDeleted()) {
-            if (xCol.equals(WorldXViewerFactory.ID_Col)) {
-               return art.getHumanReadableId();
-            } else if (xCol.equals(WorldXViewerFactory.Title_Col)) {
+            if (xCol.equals(WorldXViewerFactory.Title_Col)) {
                return art.getName();
             } else {
                return "<deleted>";
@@ -280,9 +278,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          }
          if (xCol.equals(WorldXViewerFactory.Review_Minor_Defects)) {
             return wva.getWorldViewNumberOfReviewMinorDefects();
-         }
-         if (xCol.equals(WorldXViewerFactory.Last_Modified_Col)) {
-            return wva.getWorldViewLastUpdated();
          }
          if (xCol.equals(WorldXViewerFactory.Last_Statused_Col)) {
             return wva.getWorldViewLastStatused();

@@ -25,7 +25,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerLastModifiedByColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerLastModifiedDateColumn;
 import org.eclipse.swt.SWT;
 
 /**
@@ -55,7 +59,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn User_Community_Col =
          new XViewerAtsAttributeColumn(ATSAttributes.USER_COMMUNITY_ATTRIBUTE, 60, SWT.LEFT, true, SortDataType.String,
                false);
-   public static final XViewerColumn ID_Col = new XViewerHridColumn("HRID");
    public static final XViewerColumn Parent_ID_Col =
          new XViewerColumn(WorldXViewerFactory.COLUMN_NAMESPACE + ".parenthrid", "Parent HRID", 75, SWT.LEFT, false,
                SortDataType.String, false, "Human Readable ID of Parent Action or Team Workflow");
@@ -244,9 +247,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Number_of_Tasks_Remining_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".numberOfTasksRemain", "Number of Tasks Remaining", 40, SWT.CENTER,
                false, SortDataType.Integer, false, null);
-   public static final XViewerColumn Last_Modified_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".lastModified", "Last Modified", 40, SWT.CENTER, false,
-               SortDataType.Date, false, "Retrieves timestamp of last database update of this artifact.");
+   public static final XViewerColumn Last_Modified_By_Col =
+         new XViewerColumn(COLUMN_NAMESPACE + ".lastModifiedBy", "Last Modified By", 40, SWT.CENTER, false,
+               SortDataType.String, false, "Retrieves user of last attribute update of this artifact.");
    public static final XViewerColumn Last_Statused_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".lastStatused", "Last Statused", 40, SWT.CENTER, false,
                SortDataType.Date, false, "Retrieves timestamp of status (percent completed or hours spent).");
@@ -263,9 +266,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Review_Issues =
          new XViewerColumn(COLUMN_NAMESPACE + ".reviewIssues", "Review Issues", 40, SWT.CENTER, false,
                SortDataType.Integer, false, "Number of Issues found in Review");
-   public static final XViewerColumn Artifact_Type_Col =
-         new XViewerColumn("ats.column.artType", "Artifact Type", 150, SWT.LEFT, false, SortDataType.String, false,
-               null);
    public static final XViewerColumn Originating_Workflow =
          new XViewerColumn("ats.column.origWf", "Originating Workflow", 150, SWT.LEFT, false, SortDataType.String,
                false,
@@ -273,22 +273,25 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Actions_Initiating_Workflow_Col =
          new XViewerColumn("ats.column.initWf", "Action's Initiating Workflow", 150, SWT.LEFT, false,
                SortDataType.String, false, "This is the first workflow(s) that created the initiation of the Action");
+   public static final XViewerColumn Artifact_Type_Col = new XViewerArtifactTypeColumn(true);
    public static final XViewerColumn[] WorldViewColumns =
          new XViewerColumn[] {Type_Col, State_Col, Priority_Col, Change_Type_Col, Assignees_Col, Title_Col,
-               Actionable_Items_Col, User_Community_Col, ID_Col, Created_Date_Col, Version_Target_Col, Team_Col,
-               Notes_Col, Deadline_Col, Annual_Cost_Avoidance_Col, Description_Col, Legacy_PCR_Col, Decision_Col,
-               Resolution_Col, Groups_Col, Goals_Col, Estimated_Release_Date_Col, Estimated_Completion_Date_Col,
-               Release_Date_Col, Work_Package_Col, Category_Col, Category2_Col, Category3_Col, Goal_Order,
-               Goal_Order_Vote_Col, Related_To_State_Col, Estimated_Hours_Col, Weekly_Benefit_Hrs_Col,
-               Remaining_Hours_Col, Percent_Complete_State_Col, Percent_Complete_State_Task_Col,
-               Percent_Complete_State_Review_Col, Percent_Complete_Total_Col, Hours_Spent_State_Col,
-               Hours_Spent_State_Task_Col, Hours_Spent_State_Review_Col, Hours_Spent_Total_Col, Total_Hours_Spent_Col,
-               Originator_Col, Implementor_Col, Review_Author_Col, Review_Moderator_Col, Review_Reviewer_Col,
-               Review_Decider_Col, Completed_Date_Col, Cancelled_Date_Col, Work_Days_Needed_Col, Percent_Rework_Col,
-               Branch_Status_Col, Number_of_Tasks_Col, Number_of_Tasks_Remining_Col, Last_Modified_Col,
-               Last_Statused_Col, Validation_Required_Col, Review_Major_Defects, Review_Minor_Defects, Review_Issues,
+               Actionable_Items_Col, User_Community_Col, new XViewerHridColumn(), Created_Date_Col, Version_Target_Col,
+               Team_Col, Notes_Col, Deadline_Col, Annual_Cost_Avoidance_Col, Description_Col, Legacy_PCR_Col,
+               Decision_Col, Resolution_Col, Groups_Col, Goals_Col, Estimated_Release_Date_Col,
+               Estimated_Completion_Date_Col, Release_Date_Col, Work_Package_Col, Category_Col, Category2_Col,
+               Category3_Col, Goal_Order, Goal_Order_Vote_Col, Related_To_State_Col, Estimated_Hours_Col,
+               Weekly_Benefit_Hrs_Col, Remaining_Hours_Col, Percent_Complete_State_Col,
+               Percent_Complete_State_Task_Col, Percent_Complete_State_Review_Col, Percent_Complete_Total_Col,
+               Hours_Spent_State_Col, Hours_Spent_State_Task_Col, Hours_Spent_State_Review_Col, Hours_Spent_Total_Col,
+               Total_Hours_Spent_Col, Originator_Col, Implementor_Col, Review_Author_Col, Review_Moderator_Col,
+               Review_Reviewer_Col, Review_Decider_Col, Completed_Date_Col, Cancelled_Date_Col, Work_Days_Needed_Col,
+               Percent_Rework_Col, Branch_Status_Col, Number_of_Tasks_Col, Number_of_Tasks_Remining_Col,
+               new XViewerLastModifiedByColumn(false), new XViewerLastModifiedDateColumn(false), Last_Statused_Col,
+               Validation_Required_Col, Review_Major_Defects, Review_Minor_Defects, Review_Issues,
                Actions_Initiating_Workflow_Col, Artifact_Type_Col, Originating_Workflow, Parent_ID_Col,
-               Days_In_Current_State, Parent_State_Col, Points_Col, Numeric1_Col, Numeric2_Col};
+               Days_In_Current_State, Parent_State_Col, Points_Col, Numeric1_Col, Numeric2_Col,
+               new XViewerGuidColumn(false)};
    private static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {
