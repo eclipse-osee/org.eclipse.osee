@@ -50,8 +50,10 @@ public class Artifact_getLastModified {
       Artifact artifact = ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName());
 
       // Test pre-persist
-      if (!debug) System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
-            artifact.getLastModifiedBy()));
+      if (!debug) {
+         System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
+               artifact.getLastModifiedBy()));
+      }
       Assert.assertNotNull(artifact.getLastModified());
       Assert.assertEquals(UserManager.getUser(SystemUser.OseeSystem), artifact.getLastModifiedBy());
       Date createdDate = artifact.getLastModified();
@@ -59,25 +61,31 @@ public class Artifact_getLastModified {
       artifact.persist();
 
       // Test post-persist
-      if (!debug) System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
-            artifact.getLastModifiedBy()));
-      Assert.assertNotSame(createdDate, artifact.getLastModified());
-      Assert.assertNotSame(UserManager.getUser(SystemUser.OseeSystem), artifact.getLastModifiedBy());
+      if (!debug) {
+         System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
+               artifact.getLastModifiedBy()));
+      }
+      Date lastModifyDate = artifact.getLastModified();
+      Assert.assertTrue(createdDate.before(lastModifyDate));
+      Assert.assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
 
       // Test post-modified
       StaticIdManager.setSingletonAttributeValue(artifact, "this");
       artifact.persist();
 
-      if (!debug) System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
-            artifact.getLastModifiedBy()));
-      Assert.assertNotSame(createdDate, artifact.getLastModified());
+      if (!debug) {
+         System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
+               artifact.getLastModifiedBy()));
+      }
+
+      Assert.assertTrue(lastModifyDate.before(artifact.getLastModified()));
       Assert.assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
-      Date modifiedDate = artifact.getLastModified();
+      lastModifyDate = artifact.getLastModified();
 
       // Test post deleted
       artifact.deleteAndPersist();
 
-      Assert.assertNotSame(modifiedDate, artifact.getLastModified());
+      Assert.assertTrue(lastModifyDate.before(artifact.getLastModified()));
       Assert.assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
    }
 
