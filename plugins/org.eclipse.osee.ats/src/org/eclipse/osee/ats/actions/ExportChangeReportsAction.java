@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class ExportChangeReportsAction extends Action {
    private final WorldEditor worldEditor;
    private final List<TeamWorkFlowArtifact> workflows = new ArrayList<TeamWorkFlowArtifact>();
-   private final boolean reverse = true;
+   private final boolean reverse = false;
 
    public ExportChangeReportsAction(WorldEditor worldEditor) {
       setText("Export Change Report(s)");
@@ -152,14 +152,19 @@ public class ExportChangeReportsAction extends Action {
          IProgressMonitor monitor = new NullProgressMonitor();
          Collection<Change> changes = null;
          if (atsBranchMgr.isCommittedBranchExists()) {
-            changes = ChangeManager.getChangesPerTransaction(pickTransaction(workflow), monitor);
+            TransactionRecord transactionRecord = pickTransaction(workflow);
+            if (!transactionRecord.getBranch().getBranchType().isBaselineBranch()) {
+               changes = ChangeManager.getChangesPerTransaction(transactionRecord, monitor);
+            }
          } else {
             Branch branch = atsBranchMgr.getWorkingBranch();
-            if (atsBranchMgr.isWorkingBranchInWork()) {
-               changes = ChangeManager.getChangesPerBranch(branch, monitor);
+            if (!branch.getBranchType().isBaselineBranch()) {
+               if (atsBranchMgr.isWorkingBranchInWork()) {
+                  changes = ChangeManager.getChangesPerBranch(branch, monitor);
+               }
             }
          }
-         if (changes != null) {
+         if (changes != null && changes.size() < 4000) {
             handler.viewWordChangeReport(changes, true, workflow.getSoleAttributeValueAsString(
                   AtsAttributeTypes.LegacyPCRId, null));
          }
