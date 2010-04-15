@@ -158,10 +158,8 @@ public class ExportChangeReportsAction extends Action {
             }
          } else {
             Branch branch = atsBranchMgr.getWorkingBranch();
-            if (!branch.getBranchType().isBaselineBranch()) {
-               if (atsBranchMgr.isWorkingBranchInWork()) {
-                  changes = ChangeManager.getChangesPerBranch(branch, monitor);
-               }
+            if (atsBranchMgr.isWorkingBranchInWork() && !branch.getBranchType().isBaselineBranch()) {
+               changes = ChangeManager.getChangesPerBranch(branch, monitor);
             }
          }
          if (changes != null && changes.size() < 4000) {
