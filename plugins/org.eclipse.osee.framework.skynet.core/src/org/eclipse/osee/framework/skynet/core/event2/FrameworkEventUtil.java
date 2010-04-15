@@ -5,6 +5,8 @@
  */
 package org.eclipse.osee.framework.skynet.core.event2;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAttributeChange1;
@@ -14,16 +16,38 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteChangeTypeArtif
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePurgedArtifactsEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.msgs.BasicModifiedGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.event.msgs.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 
 /**
  * @author Donald G. Dunne
  */
 public class FrameworkEventUtil {
+
+   public static boolean isEvent(Artifact artifact, Collection<EventBasicGuidArtifact> eventGuidArts, Collection<EventModType> eventModTypes) {
+      for (EventBasicGuidArtifact guidArt : eventGuidArts) {
+         if (eventModTypes.contains(guidArt.getModType())) {
+            if (artifact.equals(guidArt)) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
+   public static boolean isDeletedPurged(Artifact artifact, Collection<EventBasicGuidArtifact> eventGuidArts) {
+      return FrameworkEventUtil.isEvent(artifact, eventGuidArts, Arrays.asList(EventModType.Deleted,
+            EventModType.Purged));
+   }
+
+   public static boolean isModified(Artifact artifact, Collection<EventBasicGuidArtifact> eventGuidArts) {
+      return FrameworkEventUtil.isEvent(artifact, eventGuidArts, Arrays.asList(EventModType.Modified));
+   }
 
    public static RemoteTransactionEvent1 getRemoteTransactionEvent(TransactionEvent transEvent) {
       RemoteTransactionEvent1 event = new RemoteTransactionEvent1();
@@ -141,7 +165,7 @@ public class FrameworkEventUtil {
    public static NetworkSender getNetworkSender(RemoteNetworkSender1 remSender) {
       NetworkSender networkSender = new NetworkSender();
       networkSender.setSourceObject(remSender.getSourceObject());
-      networkSender.setSourceObject(remSender.getSessionId());
+      networkSender.setSessionId(remSender.getSessionId());
       networkSender.setMachineName(remSender.getMachineName());
       networkSender.setUserId(remSender.getUserId());
       networkSender.setMachineIp(remSender.getMachineIp());
@@ -153,7 +177,7 @@ public class FrameworkEventUtil {
    public static RemoteNetworkSender1 getRemoteNetworkSender(NetworkSender localSender) {
       RemoteNetworkSender1 networkSender = new RemoteNetworkSender1();
       networkSender.setSourceObject(localSender.getSourceObject());
-      networkSender.setSourceObject(localSender.getSessionId());
+      networkSender.setSessionId(localSender.getSessionId());
       networkSender.setMachineName(localSender.getMachineName());
       networkSender.setUserId(localSender.getUserId());
       networkSender.setMachineIp(localSender.getMachineIp());

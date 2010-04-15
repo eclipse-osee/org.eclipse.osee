@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.res;
 
-import java.io.Serializable;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IFrameworkEventListener extends Remote, Serializable {
+public interface IFrameworkEventListener {
 
-   public abstract void onEvent(RemoteEvent[] events) throws RemoteException;
+   public abstract void onEvent(RemoteEvent remoteEvent) throws RemoteException;
 
 }

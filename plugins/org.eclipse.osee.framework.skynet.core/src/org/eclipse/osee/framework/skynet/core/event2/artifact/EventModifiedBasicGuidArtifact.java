@@ -27,8 +27,8 @@ public class EventModifiedBasicGuidArtifact extends EventBasicGuidArtifact {
    }
 
    public String toString() {
-      return String.format("[%s - %s - %s]", EventModType.Modified.name(), getGuid(), getArtTypeGuid(),
-            attributeChanges);
+      return String.format("[%s - G:%s - B:%s - A:%s]", EventModType.Modified.name(), getGuid(), getBranchGuid(),
+            getArtTypeGuid(), attributeChanges);
    }
 
    public Collection<AttributeChange> getAttributeChanges() {

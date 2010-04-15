@@ -97,8 +97,8 @@ public class InternalEventManager2 {
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
                if (sender.isLocal()) {
-                  RemoteEventManager2.kick(FrameworkEventUtil.getRemotePurgedArtifactsEvent(sender.getNetworkSender2(),
-                        artifactChanges));
+                  RemoteEventManager2.getInstance().kick(
+                        FrameworkEventUtil.getRemotePurgedArtifactsEvent(sender.getNetworkSender2(), artifactChanges));
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -122,8 +122,9 @@ public class InternalEventManager2 {
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
                if (sender.isLocal()) {
-                  RemoteEventManager2.kick(FrameworkEventUtil.getRemoteChangeTypeArtifactsEvent(
-                        sender.getNetworkSender2(), toArtifactTypeGuid, artifactChanges));
+                  RemoteEventManager2.getInstance().kick(
+                        FrameworkEventUtil.getRemoteChangeTypeArtifactsEvent(sender.getNetworkSender2(),
+                              toArtifactTypeGuid, artifactChanges));
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -158,7 +159,7 @@ public class InternalEventManager2 {
 
                // Kick REMOTE (If source was Local and this was not a default branch changed event
                if (sender.isLocal()) {
-                  RemoteEventManager2.kick(FrameworkEventUtil.getRemoteTransactionEvent(transEvent));
+                  RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemoteTransactionEvent(transEvent));
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

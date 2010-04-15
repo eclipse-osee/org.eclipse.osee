@@ -1804,6 +1804,16 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
          }
          return result;
       }
+      if (obj instanceof IBasicGuidArtifact) {
+         IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
+         boolean result = getGuid().equals(other.getGuid());
+         if (result) {
+            if (getBranchGuid() != null && other.getBranchGuid() != null) {
+               result = getBranchGuid().equals(other.getBranchGuid());
+            }
+         }
+         return result;
+      }
       return false;
    }
 

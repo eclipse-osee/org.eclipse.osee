@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
 import org.eclipse.osee.ats.task.TaskComposite;
 import org.eclipse.osee.ats.task.TaskTabXWidgetActionPage;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
@@ -58,7 +59,15 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.ArtifactEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
+import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event2.filter.FilteredEventListener;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -102,7 +111,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Donald G. Dunne
  */
-public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArtifacts, IDirtiableEditor, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
+public class SMAEditor extends AbstractArtifactEditor implements IArtifactListener, ISelectedAtsArtifacts, IDirtiableEditor, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private StateMachineArtifact sma;
    private int workFlowPageIndex, metricsPageIndex, attributesPageIndex;
@@ -174,7 +183,40 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
       }
 
       enableGlobalPrint();
+      registerForEvents();
+   }
+   private ArtifactTypeEventFilter artifactTypeEventFilter;
+   private FilteredEventListener filteredEventListener;
+   private BranchGuidEventFilter branchGuidEventFilter;
 
+   private void registerForEvents() {
+      try {
+         if (filteredEventListener == null) {
+            filteredEventListener = new FilteredEventListener(this);
+            filteredEventListener.addFilter(createBranchGuidEventFilter());
+            filteredEventListener.addFilter(createArtifactTypeEventFilter());
+         }
+         ArtifactEventManager.addListener(filteredEventListener);
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   private BranchGuidEventFilter createBranchGuidEventFilter() throws OseeCoreException {
+      if (branchGuidEventFilter == null) {
+         branchGuidEventFilter = new BranchGuidEventFilter(AtsUtil.getAtsBranch());
+      }
+      return branchGuidEventFilter;
+   }
+
+   private ArtifactTypeEventFilter createArtifactTypeEventFilter() {
+      if (artifactTypeEventFilter == null) {
+         artifactTypeEventFilter =
+               new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action,
+                     AtsArtifactTypes.Task, AtsArtifactTypes.Goal, AtsArtifactTypes.PeerToPeerReview,
+                     AtsArtifactTypes.DecisionReview);
+      }
+      return artifactTypeEventFilter;
    }
 
    private void createTaskTab() throws OseeCoreException, PartInitException {
@@ -761,4 +803,59 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
       return this;
    }
 
+   @Override
+   public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Sender sender) {
+      System.out.println("SMAEditor: handleArtifactModified called " + sender);
+      if (RemoteEventManager2.getInstance().isConnected()) {
+         if (sma.isInTransition()) {
+            return;
+         }
+         if (FrameworkEventUtil.isDeletedPurged(sma, eventArtifacts)) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  closeEditor();
+               }
+            });
+         } else if (FrameworkEventUtil.isModified(sma, eventArtifacts)) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  try {
+                     refreshPages();
+                     onDirtied();
+                  } catch (Exception ex) {
+                     // do nothing
+                  }
+               }
+            });
+         } else if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
+            try {
+               // If related review has made a change, redraw
+               for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
+                  // TODO put this back in with relation changes
+                  //                  if (transData.isHasEvent(reviewArt)) {
+                  //                     Displays.ensureInDisplayThread(new Runnable() {
+                  //                        @Override
+                  //                        public void run() {
+                  //                           try {
+                  //                              refreshPages();
+                  //                              onDirtied();
+                  //                           } catch (Exception ex) {
+                  //                              // do nothing
+                  //                           }
+                  //                        }
+                  //                     });
+                  //                     // Only refresh editor for first review that has event
+                  //                     break;
+                  //                  }
+               }
+            } catch (Exception ex) {
+               // do nothings
+            }
+         }
+         onDirtied();
+
+      }
+   }
 }

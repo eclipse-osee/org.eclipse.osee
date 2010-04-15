@@ -28,6 +28,8 @@ import org.eclipse.osee.framework.plugin.core.IWorkbenchUserService;
 import org.eclipse.osee.framework.skynet.core.WorkbenchUserService;
 import org.eclipse.osee.framework.skynet.core.attribute.HttpAttributeTagger;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -42,15 +44,21 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
    private static Activator instance;
    private final Map<OseeServiceTrackerId, ServiceTracker> mappedTrackers;
    private final List<ServiceRegistration> services;
+   private BundleContext context;
 
    public Activator() {
       this.mappedTrackers = new HashMap<OseeServiceTrackerId, ServiceTracker>();
       this.services = new ArrayList<ServiceRegistration>();
    }
 
+   public Bundle getBundle() {
+      return instance.context.getBundle();
+   }
+
    @Override
    public void start(BundleContext context) throws Exception {
       instance = this;
+      this.context = context;
       ClientSessionManager.class.getCanonicalName();
       HttpAttributeTagger.getInstance();
 
@@ -63,6 +71,8 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
       createServiceTracker(context, IDataTranslationService.class, OseeServiceTrackerId.TRANSLATION_SERVICE);
       createServiceTracker(context, IOseeModelFactoryService.class, OseeServiceTrackerId.OSEE_FACTORY_SERVICE);
       createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
+
+      RemoteEventManager2.getInstance().registerForRemoteEvents();
    }
 
    @Override
@@ -114,7 +124,7 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
    public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
       return getTracker(OseeServiceTrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
    }
-   
+
    private <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz) {
       ServiceTracker tracker = mappedTrackers.get(trackerId);
       Object service = tracker.getService();
