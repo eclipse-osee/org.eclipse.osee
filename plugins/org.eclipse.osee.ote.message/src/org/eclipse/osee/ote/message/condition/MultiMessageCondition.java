@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
@@ -274,8 +275,4 @@ public class MultiMessageCondition {
       accessor.getLogger().methodEnded(accessor);
    }
 
-   public static void main(String[] args) {
-      MultiMessageCondition mmc = new MultiMessageCondition();
-
-   }
 }

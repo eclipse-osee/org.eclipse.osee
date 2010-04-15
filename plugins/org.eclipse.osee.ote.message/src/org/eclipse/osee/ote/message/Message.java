@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 
@@ -1223,22 +1224,21 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public void postCreateMessageSetup(IMessageManager messageManager, MessageData data) throws Exception {
       Map<MemType, Class<? extends Message>[]> o = getAssociatedMessages();
       messageRequestor = messageManager.createMessageRequestor(getName());
-      for (MemType type : o.keySet()) {
-         if (messageManager.isPhysicalTypeAvailable(type)) {
-            Class<? extends Message>[] classes = o.get(type);
-            for (Class<? extends Message> clazz : classes) {
-               Message message = null;
-                  if (data.isWriter()) {
-                     message = messageRequestor.getMessageWriter(clazz);
-                  } else {
-                     message = messageRequestor.getMessageReader(clazz);
-                  }
-               this.addMessageDataSource((T)message.getDefaultMessageData());
-               this.addMessageTypeAssociation(type, (U)message);
-               setMemSource(type);
-            }
-         }
-      }
+      for (Entry<MemType, Class<? extends Message>[]> entry : o.entrySet()) {
+          if (messageManager.isPhysicalTypeAvailable(entry.getKey())) {
+             for (Class<? extends Message> clazz : entry.getValue()) {
+                final Message message;
+                   if (data.isWriter()) {
+                      message = messageRequestor.getMessageWriter(clazz);
+                   } else {
+                      message = messageRequestor.getMessageReader(clazz);
+                   }
+                this.addMessageDataSource((T)message.getDefaultMessageData());
+                this.addMessageTypeAssociation(entry.getKey(), (U)message);
+                setMemSource(entry.getKey());
+             }
+          }
+       }
    }
    
    /**

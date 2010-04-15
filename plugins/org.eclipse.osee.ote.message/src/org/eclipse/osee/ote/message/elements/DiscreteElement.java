@@ -26,7 +26,7 @@ import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 
-public abstract class DiscreteElement<T extends Comparable<T>> extends Element {
+public abstract class DiscreteElement<T extends Comparable<T>> extends Element implements Comparable<DiscreteElement<T>>{
 
    private static final String FOR_2_PULSES = " FOR 2 PULSES";
 
@@ -1136,6 +1136,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element {
       return elementName + "=" + getValue().toString();
    }
 
+   @Override
    public int compareTo(DiscreteElement<T> o) {
       return getValue().compareTo(o.getValue());
    }
