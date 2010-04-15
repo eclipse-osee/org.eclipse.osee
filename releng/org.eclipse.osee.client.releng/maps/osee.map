@@ -7,6 +7,7 @@ plugin@org.eclipse.osee.framework.database.init=SVN,trunk,http://dev.eclipse.org
 plugin@org.eclipse.osee.framework.derby=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.derby
 plugin@org.eclipse.osee.framework.jdbcodbc=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.jdbcodbc
 plugin@org.eclipse.osee.framework.messaging.event.skynet=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.messaging.event.skynet
+plugin@org.eclipse.osee.framework.messaging.event.res=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.messaging.event.res
 plugin@org.eclipse.osee.framework.skynet.core=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.skynet.core
 plugin@org.eclipse.osee.framework.templates=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.templates
 plugin@org.eclipse.osee.framework.types=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.types
