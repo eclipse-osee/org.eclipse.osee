@@ -140,7 +140,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
     * ui. SessionId needs to be modified so this client doesn't think the events came from itself.
     */
    public void kick(final RemoteEvent remoteEvent) {
-      if (isConnected()) {
+      if (enabled && isConnected()) {
          Job job = new Job("Send Event2") {
             @Override
             protected IStatus run(IProgressMonitor monitor) {
@@ -175,5 +175,4 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
          thread.start();
       }
    }
-
 }
