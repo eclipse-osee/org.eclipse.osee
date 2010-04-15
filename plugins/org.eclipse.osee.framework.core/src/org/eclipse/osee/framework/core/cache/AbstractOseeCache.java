@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.StorageState;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -105,7 +107,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    /**
     * this method is intended for use by subclasses only. The calling method must synchronize the use of this view of
     * the views because it is not a copy. This method exists to improve performance for subclasses
-    *
+    * 
     * @return
     * @throws OseeCoreException
     */
@@ -280,6 +282,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
 
    public synchronized boolean reloadCache() throws OseeCoreException {
       getDataAccessor().load(this);
+      OseeLog.log(this.getClass(), Level.INFO, "Loaded " + getCacheId().toString().toLowerCase());
       setLastLoaded(System.currentTimeMillis());
       return true;
    }
