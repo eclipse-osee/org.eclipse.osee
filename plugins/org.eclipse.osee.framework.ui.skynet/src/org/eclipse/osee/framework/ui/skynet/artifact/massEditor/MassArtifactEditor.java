@@ -54,7 +54,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class MassArtifactEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable {
+public class MassArtifactEditor extends AbstractArtifactEditor implements IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor";
    private int artifactsPageIndex;
    private MassXViewer xViewer;
@@ -150,7 +150,8 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
          }
       });
 
-      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "Mass Artifact Editor");
+      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID,
+            "Mass Artifact Editor");
    }
 
    public static void editArtifacts(final MassArtifactEditorInput input) {
