@@ -120,7 +120,7 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
                         new StateListAndTitleDialog("Create Decision Review",
                               "Select state to that review will be associated with.",
                               teamArt.getWorkFlowDefinition().getPageNames());
-                  dialog.setInitialSelections(new Object[] {teamArt.getStateMgr().getCurrentStateName()});
+                  dialog.setInitialSelections(new Object[] {forStateName});
                   if (dialog.open() == 0) {
                      if (dialog.getReviewTitle() == null || dialog.getReviewTitle().equals("")) {
                         AWorkbench.popup("ERROR", "Must enter review title");
@@ -154,7 +154,7 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
                         new StateListAndTitleDialog("Add Peer to Peer Review",
                               "Select state to that review will be associated with.",
                               teamArt.getWorkFlowDefinition().getPageNames());
-                  dialog.setInitialSelections(new Object[] {teamArt.getStateMgr().getCurrentStateName()});
+                  dialog.setInitialSelections(new Object[] {forStateName});
                   dialog.setReviewTitle(PeerToPeerReviewArtifact.getDefaultReviewTitle(teamArt));
                   if (dialog.open() == 0) {
                      if (dialog.getReviewTitle() == null || dialog.getReviewTitle().equals("")) {

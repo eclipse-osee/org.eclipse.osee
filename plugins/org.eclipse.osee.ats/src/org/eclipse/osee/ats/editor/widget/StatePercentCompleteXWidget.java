@@ -33,15 +33,17 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
 
    private final StateMachineArtifact sma;
    private final AtsWorkPage page;
+   private boolean isCurrentState;
 
-   public StatePercentCompleteXWidget(IManagedForm managedForm, AtsWorkPage page, final StateMachineArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener) {
+   public StatePercentCompleteXWidget(IManagedForm managedForm, AtsWorkPage page, final StateMachineArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState) {
       super("\"" + page.getName() + "\"" + " State Percent Complete");
       this.page = page;
       this.sma = sma;
+      this.isCurrentState = isCurrentState;
       if (xModListener != null) {
          addXModifiedListener(xModListener);
       }
-      setEditable(!sma.isReadOnly());
+      setEditable(isCurrentState && !sma.isReadOnly());
       setFillHorizontally(true);
       setToolTip(TOOLTIP);
       super.createWidgets(managedForm, composite, horizontalSpan);
@@ -73,7 +75,7 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
          return "page == null";
       }
       try {
-         setEditable(!sma.isReadOnly());
+         setEditable(isCurrentState && !sma.isReadOnly());
          StringBuffer sb =
                new StringBuffer(String.format("        State Percent: %d", sma.getStateMgr().getPercentComplete(
                      page.getName())));

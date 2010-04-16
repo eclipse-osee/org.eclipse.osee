@@ -33,15 +33,17 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
 
    private final StateMachineArtifact sma;
    private final AtsWorkPage page;
+   private final boolean isCurrentState;
 
-   public StateHoursSpentXWidget(IManagedForm managedForm, AtsWorkPage page, final StateMachineArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener) {
+   public StateHoursSpentXWidget(IManagedForm managedForm, AtsWorkPage page, final StateMachineArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState) {
       super("\"" + page.getName() + "\"" + " State Hours Spent");
       this.page = page;
       this.sma = sma;
+      this.isCurrentState = isCurrentState;
       if (xModListener != null) {
          addXModifiedListener(xModListener);
       }
-      setEditable(!sma.isReadOnly());
+      setEditable(isCurrentState && !sma.isReadOnly());
       setFillHorizontally(true);
       setToolTip(TOOLTIP);
       super.createWidgets(managedForm, composite, horizontalSpan);
@@ -76,6 +78,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
          StringBuffer sb =
                new StringBuffer(String.format("        State Hours: %5.2f", sma.getStateMgr().getHoursSpent(
                      page.getName())));
+         setEditable(isCurrentState && !sma.isReadOnly());
          boolean breakoutNeeded = false;
          if (sma instanceof TaskableStateMachineArtifact) {
             if (((TaskableStateMachineArtifact) sma).hasTaskArtifacts()) {

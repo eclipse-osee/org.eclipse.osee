@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -31,6 +32,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public abstract class XHyperlinkLabelValueSelection extends XWidget {
 
    Hyperlink valueHyperlinkLabel;
+   Label valueLabel;
 
    public XHyperlinkLabelValueSelection(String label) {
       super(label);
@@ -61,39 +63,60 @@ public abstract class XHyperlinkLabelValueSelection extends XWidget {
          }
       }
 
-      if (toolkit == null) {
-         valueHyperlinkLabel = new Hyperlink(comp, SWT.NONE);
-      } else {
-         valueHyperlinkLabel = toolkit.createHyperlink(comp, " <edit>", SWT.NONE);
-      }
-      valueHyperlinkLabel.setToolTipText(Strings.isValid(getToolTip()) ? getToolTip() : "Select to Modify");
       GridData gd = new GridData();
       if (isFillHorizontally()) {
          gd.grabExcessHorizontalSpace = true;
       }
-      valueHyperlinkLabel.setLayoutData(gd);
-      valueHyperlinkLabel.addListener(SWT.MouseUp, new Listener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-          */
-         public void handleEvent(Event event) {
-            if (handleSelection()) {
-               refresh();
-               notifyXModifiedListeners();
-            }
+
+      if (isEditable()) {
+         if (toolkit == null) {
+            valueHyperlinkLabel = new Hyperlink(comp, SWT.NONE);
+         } else {
+            valueHyperlinkLabel = toolkit.createHyperlink(comp, " <edit>", SWT.NONE);
          }
-      });
+         valueHyperlinkLabel.setToolTipText(Strings.isValid(getToolTip()) ? getToolTip() : "Select to Modify");
+         valueHyperlinkLabel.setLayoutData(gd);
+         valueHyperlinkLabel.addListener(SWT.MouseUp, new Listener() {
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+             */
+            public void handleEvent(Event event) {
+               if (handleSelection()) {
+                  refresh();
+                  notifyXModifiedListeners();
+               }
+            }
+         });
+      } else {
+         if (toolkit == null) {
+            valueLabel = new Label(comp, SWT.NONE);
+         } else {
+            valueLabel = toolkit.createLabel(comp, " Not Set", SWT.NONE);
+         }
+         valueLabel.setToolTipText(getToolTip());
+         valueLabel.setLayoutData(gd);
+      }
+
       refresh();
    }
 
    @Override
    public void refresh() {
-      if (getControl() == null || getControl().isDisposed() || getCurrentValue().equals(valueHyperlinkLabel.getText())) return;
-      valueHyperlinkLabel.setText(getCurrentValue());
-      valueHyperlinkLabel.update();
-      valueHyperlinkLabel.getParent().update();
+      if (getControl() == null || getControl().isDisposed()) return;
+      if (Widgets.isAccessible(valueHyperlinkLabel)) {
+         if (getCurrentValue().equals(valueHyperlinkLabel.getText())) return;
+         valueHyperlinkLabel.setText(getCurrentValue());
+         valueHyperlinkLabel.update();
+         valueHyperlinkLabel.getParent().update();
+      } else if (Widgets.isAccessible(valueLabel)) {
+         if (getCurrentValue().equals(valueLabel.getText())) return;
+         valueLabel.setText(getCurrentValue());
+         valueLabel.update();
+         valueLabel.getParent().update();
+
+      }
       validate();
    }
 
@@ -103,14 +126,26 @@ public abstract class XHyperlinkLabelValueSelection extends XWidget {
 
    @Override
    public Control getControl() {
-      return valueHyperlinkLabel;
+      if (Widgets.isAccessible(valueHyperlinkLabel)) {
+         return valueHyperlinkLabel;
+      }
+      if (Widgets.isAccessible(valueLabel)) {
+         return valueLabel;
+      }
+      return null;
    }
 
    @Override
    public void adaptControls(FormToolkit toolkit) {
       super.adaptControls(toolkit);
-      toolkit.adapt(valueHyperlinkLabel, true, true);
-      valueHyperlinkLabel.update();
+      if (Widgets.isAccessible(valueHyperlinkLabel)) {
+         toolkit.adapt(valueHyperlinkLabel, true, true);
+         valueHyperlinkLabel.update();
+      }
+      if (Widgets.isAccessible(valueLabel)) {
+         toolkit.adapt(valueLabel, true, true);
+         valueLabel.update();
+      }
    }
 
    @Override

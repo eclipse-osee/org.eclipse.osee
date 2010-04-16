@@ -87,7 +87,7 @@ import org.eclipse.ui.dialogs.ListDialog;
 public final class AtsUtil {
 
    private static boolean emailEnabled = true;
-   public static Color ACTIVE_COLOR = new Color(null, 206, 212, 241);
+   public static Color ACTIVE_COLOR = new Color(null, 206, 212, 239);
    private static OseeGroup atsAdminGroup = null;
    private static final Date today = new Date();
    public static int MILLISECS_PER_DAY = 1000 * 60 * 60 * 24;

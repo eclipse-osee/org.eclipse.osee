@@ -101,6 +101,7 @@ public class SMAWorkFlowSection extends SectionPart {
    private Composite mainComp;
    private final List<XWidget> allXWidgets = new ArrayList<XWidget>();
    private boolean sectionCreated = false;
+   Section section;
 
    public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, StateMachineArtifact sma) throws OseeCoreException {
       super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
@@ -119,7 +120,7 @@ public class SMAWorkFlowSection extends SectionPart {
    public void initialize(final IManagedForm form) {
       super.initialize(form);
 
-      final Section section = getSection();
+      section = getSection();
       try {
          section.setText(getCurrentStateTitle());
          if (sma.isCurrentState(atsWorkPage.getName())) {
@@ -129,9 +130,9 @@ public class SMAWorkFlowSection extends SectionPart {
          section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          // section.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_MAGENTA));
 
-         boolean expanded = sma.isCurrentSectionExpanded(atsWorkPage.getName());
+         boolean isCurrentSectionExpanded = sma.isCurrentSectionExpanded(atsWorkPage.getName());
 
-         if (expanded) {
+         if (isCurrentSectionExpanded) {
             createSection(section);
          }
          // Only load when users selects section
@@ -147,7 +148,7 @@ public class SMAWorkFlowSection extends SectionPart {
          });
 
          section.layout();
-         section.setExpanded(expanded);
+         section.setExpanded(isCurrentSectionExpanded);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -158,12 +159,17 @@ public class SMAWorkFlowSection extends SectionPart {
 
       mainComp = toolkit.createClientContainer(section, 2);
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
+      mainComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
       mainComp.layout();
 
       SMAWorkFlowTab.createStateNotesHeader(mainComp, toolkit, sma, 2, atsWorkPage.getName());
 
       Composite workComp = createWorkArea(mainComp, atsWorkPage, toolkit);
+
+      if (isCurrentState) {
+         createCurrentPageTransitionLine(mainComp, atsWorkPage, toolkit);
+      }
 
       GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
       gridData.widthHint = 400;
@@ -222,8 +228,6 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       }
 
-      createCurrentPageTransitionLine(workComp, atsWorkPage, toolkit);
-
       return workComp;
    }
 
@@ -234,8 +238,10 @@ public class SMAWorkFlowSection extends SectionPart {
          layout.marginLeft = 2;
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), atsWorkPage, sma, comp, 2, xModListener));
-         allXWidgets.add(new StateHoursSpentXWidget(getManagedForm(), atsWorkPage, sma, comp, 2, xModListener));
+         allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), atsWorkPage, sma, comp, 2, xModListener,
+               isCurrentState));
+         allXWidgets.add(new StateHoursSpentXWidget(getManagedForm(), atsWorkPage, sma, comp, 2, xModListener,
+               isCurrentState));
       }
    }
 
@@ -436,8 +442,10 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    private void createCurrentPageTransitionLine(Composite parent, AtsWorkPage atsWorkPage, XFormToolkit toolkit) throws OseeCoreException {
-      Composite comp = toolkit.createContainer(parent, 5);
+      Composite comp = toolkit.createComposite(parent, SWT.NONE);
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      comp.setLayout(new GridLayout(5, false));
+      comp.setBackground(AtsUtil.ACTIVE_COLOR);
 
       transitionButton = toolkit.createButton(comp, "Transition", SWT.PUSH);
       transitionButton.addSelectionListener(new SelectionAdapter() {
@@ -446,8 +454,10 @@ public class SMAWorkFlowSection extends SectionPart {
             handleTransition();
          }
       });
+      transitionButton.setBackground(AtsUtil.ACTIVE_COLOR);
 
-      toolkit.createLabel(comp, "to");
+      Label label = toolkit.createLabel(comp, "to");
+      label.setBackground(AtsUtil.ACTIVE_COLOR);
 
       transitionToStateCombo = new XComboViewer("Transition To State Combo");
       transitionToStateCombo.setDisplayLabel(false);
@@ -489,7 +499,7 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       });
 
-      Hyperlink assigneesLabelLink = toolkit.createHyperlink(comp, "Assignee(s)", SWT.NONE);
+      Hyperlink assigneesLabelLink = toolkit.createHyperlink(comp, "Next State Assignee(s)", SWT.NONE);
       assigneesLabelLink.addHyperlinkListener(new IHyperlinkListener() {
 
          public void linkEntered(HyperlinkEvent e) {
@@ -507,8 +517,11 @@ public class SMAWorkFlowSection extends SectionPart {
          }
 
       });
+      assigneesLabelLink.setBackground(AtsUtil.ACTIVE_COLOR);
+
       transitionAssigneesLabel = toolkit.createLabel(comp, sma.getTransitionAssigneesStr());
       transitionAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      transitionAssigneesLabel.setBackground(AtsUtil.ACTIVE_COLOR);
 
    }
 
