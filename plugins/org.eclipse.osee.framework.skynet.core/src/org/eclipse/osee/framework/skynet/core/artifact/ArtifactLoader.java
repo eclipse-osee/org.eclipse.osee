@@ -199,7 +199,7 @@ public final class ArtifactLoader {
 
    /**
     * should only be used in tandem with with selectArtifacts()
-    *
+    * 
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     *           selectArtifacts
     */
@@ -209,7 +209,7 @@ public final class ArtifactLoader {
 
    /**
     * should only be used in tandem with with selectArtifacts()
-    *
+    * 
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     *           selectArtifacts
     */
@@ -390,14 +390,7 @@ public final class ArtifactLoader {
 
             // if a different artifact than the previous iteration
             if (branchId != previousBranchId || artifactId != previousArtifactId) {
-               if (artifact != null) { // exclude the first pass because there is no previous artifact
-                  // meet minimum attributes for the previous artifact since its existing attributes have already been loaded
-
-                  setLastAttributePersistTransaction(artifact, transactionNumbers);
-                  transactionNumbers.clear();
-                  artifact.meetMinimumAttributeCounts(false);
-                  ArtifactCache.cachePostAttributeLoad(artifact);
-               }
+               finishSetupOfPreviousArtifact(artifact, transactionNumbers);
 
                if (historical) {
                   artifact = ArtifactCache.getHistorical(artifactId, chStmt.getInt("stripe_transaction_id"));
@@ -446,8 +439,18 @@ public final class ArtifactLoader {
             previousGammaId = gammaId;
             previousModType = modType;
          }
+         finishSetupOfPreviousArtifact(artifact, transactionNumbers);
       } finally {
          chStmt.close();
+      }
+   }
+
+   private static void finishSetupOfPreviousArtifact(Artifact artifact, List<Integer> transactionNumbers) throws OseeCoreException {
+      if (artifact != null) { // exclude the first pass because there is no previous artifact
+         setLastAttributePersistTransaction(artifact, transactionNumbers);
+         transactionNumbers.clear();
+         artifact.meetMinimumAttributeCounts(false);
+         ArtifactCache.cachePostAttributeLoad(artifact);
       }
    }
 
