@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -118,9 +119,7 @@ public class GoalSearchItem extends WorldUISearchItem {
          teamDefinitionGuids.add(teamDef.getGuid());
       }
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
-      if (teamDefinitionGuids.isEmpty()) {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition));
-      } else {
+      if (!teamDefinitionGuids.isEmpty()) {
          criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition, teamDefinitionGuids));
       }
 
@@ -132,7 +131,8 @@ public class GoalSearchItem extends WorldUISearchItem {
                Operator.NOT_EQUAL));
       }
 
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);
+      List<Artifact> artifacts =
+            ArtifactQuery.getArtifactListFromTypeAnd(AtsArtifactTypes.Goal, AtsUtil.getAtsBranch(), 1000, criteria);
 
       Set<Artifact> resultGoalArtifacts = new HashSet<Artifact>();
       for (Artifact art : artifacts) {
