@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.message.elements;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.nonmapping.NonMappingRecordElement;
@@ -148,5 +149,7 @@ public abstract class RecordElement extends Element {
       return getName();
    }
    
-   
+   public int getIndex() {
+	   return index;
+   }
 }

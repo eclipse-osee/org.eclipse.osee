@@ -439,7 +439,10 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    public void getAllElements(Collection<Element> elements) {
       checkState();
-      elements.addAll(Arrays.asList(getActiveDataSource().getMsgHeader().getElements()));
+      IMessageHeader header = getActiveDataSource().getMsgHeader();
+      if (header != null) {
+    	  elements.addAll(Arrays.asList(header.getElements()));
+      }
       elements.addAll(elementMap.values());
       
    }
