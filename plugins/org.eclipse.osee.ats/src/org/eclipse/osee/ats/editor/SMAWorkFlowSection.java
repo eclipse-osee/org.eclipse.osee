@@ -32,11 +32,9 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
-import org.eclipse.osee.ats.editor.widget.CurrentAssigneesXWidget;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.editor.widget.StateHoursSpentXWidget;
 import org.eclipse.osee.ats.editor.widget.StatePercentCompleteXWidget;
-import org.eclipse.osee.ats.editor.widget.TargetVersionXWidget;
 import org.eclipse.osee.ats.editor.widget.TaskInfoXWidget;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -77,7 +75,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
@@ -100,13 +100,15 @@ public class SMAWorkFlowSection extends SectionPart {
    private final XFormToolkit toolkit;
    private Composite mainComp;
    private final List<XWidget> allXWidgets = new ArrayList<XWidget>();
+   private boolean sectionCreated = false;
 
    public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, StateMachineArtifact sma) throws OseeCoreException {
       super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
       this.toolkit = toolkit;
       this.atsWorkPage = page;
       this.sma = sma;
-      isEditable = isEditable(page);
+
+      isEditable = isEditable(sma, page);
       isGlobalEditable =
             !sma.isReadOnly() && sma.isAccessControlWrite() && sma.getEditor().isPriviledgedEditModeEnabled();
       isCurrentState = sma.isCurrentState(page.getName());
@@ -117,7 +119,7 @@ public class SMAWorkFlowSection extends SectionPart {
    public void initialize(final IManagedForm form) {
       super.initialize(form);
 
-      Section section = getSection();
+      final Section section = getSection();
       try {
          section.setText(getCurrentStateTitle());
          if (sma.isCurrentState(atsWorkPage.getName())) {
@@ -127,24 +129,46 @@ public class SMAWorkFlowSection extends SectionPart {
          section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          // section.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_MAGENTA));
 
-         mainComp = toolkit.createClientContainer(section, 2);
-         mainComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
-         // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
-         mainComp.layout();
+         boolean expanded = sma.isCurrentSectionExpanded(atsWorkPage.getName());
 
-         SMAWorkFlowTab.createStateNotesHeader(mainComp, toolkit, sma, 2, atsWorkPage.getName());
+         if (expanded) {
+            createSection(section);
+         }
+         // Only load when users selects section
+         section.addListener(SWT.Activate, new Listener() {
 
-         Composite workComp = createWorkArea(mainComp, atsWorkPage, toolkit);
-
-         GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
-         gridData.widthHint = 400;
-         workComp.setLayoutData(gridData);
+            public void handleEvent(Event e) {
+               try {
+                  createSection(section);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+               }
+            }
+         });
 
          section.layout();
-         section.setExpanded(sma.isCurrentSectionExpanded(atsWorkPage.getName()));
+         section.setExpanded(expanded);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   private synchronized void createSection(Section section) throws OseeCoreException {
+      if (sectionCreated) return;
+
+      mainComp = toolkit.createClientContainer(section, 2);
+      mainComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
+      // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
+      mainComp.layout();
+
+      SMAWorkFlowTab.createStateNotesHeader(mainComp, toolkit, sma, 2, atsWorkPage.getName());
+
+      Composite workComp = createWorkArea(mainComp, atsWorkPage, toolkit);
+
+      GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
+      gridData.widthHint = 400;
+      workComp.setLayoutData(gridData);
+      sectionCreated = true;
    }
 
    protected Composite createWorkArea(Composite comp, AtsWorkPage atsWorkPage, XFormToolkit toolkit) throws OseeCoreException {
@@ -156,7 +180,6 @@ public class SMAWorkFlowSection extends SectionPart {
       workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
       // workComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
 
-      createTargetVersionAndAssigneeHeader(workComp, atsWorkPage, toolkit);
       createMetricsHeader(workComp);
 
       // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
@@ -240,10 +263,6 @@ public class SMAWorkFlowSection extends SectionPart {
 
    protected boolean isShowTaskInfo() throws OseeCoreException {
       return sma.isTaskable();
-   }
-
-   protected boolean isShowTargetedVersion() throws OseeCoreException {
-      return sma.isTargetedVersionable();
    }
 
    protected boolean isShowReviewInfo() throws OseeCoreException {
@@ -385,29 +404,6 @@ public class SMAWorkFlowSection extends SectionPart {
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-   }
-
-   private void createTargetVersionAndAssigneeHeader(Composite parent, AtsWorkPage page, XFormToolkit toolkit) throws OseeCoreException {
-      Composite comp = toolkit.createContainer(parent, 6);
-      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-      // Create Privileged Edit label
-      if (sma.getEditor().isPriviledgedEditModeEnabled()) {
-         Label label = toolkit.createLabel(comp, "Priviledged Edit");
-         label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-         label.setToolTipText("Priviledged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
-      }
-
-      // Targeted Version
-      if (isShowTargetedVersion()) {
-         allXWidgets.add(new TargetVersionXWidget(getManagedForm(), sma, comp, 2, xModListener));
-      }
-
-      // Current Assignees
-      if (page.isCurrentNonCompleteCancelledState(sma)) {
-         allXWidgets.add(new CurrentAssigneesXWidget(getManagedForm(), sma, comp, 2, xModListener, isEditable));
-      }
-
    }
 
    private void handleChangeTransitionAssignees() throws OseeCoreException {
@@ -728,8 +724,6 @@ public class SMAWorkFlowSection extends SectionPart {
             result.popup();
             return;
          }
-         sma.setInTransition(false);
-         sma.getEditor().refreshPages();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
@@ -810,13 +804,13 @@ public class SMAWorkFlowSection extends SectionPart {
       return widgets;
    }
 
-   private boolean isEditable(AtsWorkPage page) throws OseeCoreException {
+   public static boolean isEditable(StateMachineArtifact sma, AtsWorkPage page) throws OseeCoreException {
       // must be writeable
       return !sma.isReadOnly() &&
       // and access control writeable
       sma.isAccessControlWrite() &&
       // and current state
-      sma.isCurrentState(page.getName()) &&
+      (page == null || sma.isCurrentState(page.getName())) &&
       // and one of these
       //
       // page is define to allow anyone to edit

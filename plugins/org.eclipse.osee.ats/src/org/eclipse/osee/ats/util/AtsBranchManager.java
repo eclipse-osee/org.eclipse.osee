@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,14 +31,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
-import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.commit.CommitStatus;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
@@ -70,9 +67,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitHandler;
 import org.eclipse.osee.framework.ui.skynet.util.TransactionIdLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
@@ -84,11 +79,11 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * BranchManager contains methods necessary for ATS objects to interact with creation, view and commit of branches.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class AtsBranchManager {
-   private static Set<Branch> branchesInCommit = new HashSet<Branch>();
+   public static Set<Branch> branchesInCommit = new HashSet<Branch>();
    private final TeamWorkFlowArtifact teamArt;
 
    public AtsBranchManager(TeamWorkFlowArtifact teamArt) {
@@ -123,7 +118,7 @@ public class AtsBranchManager {
 
    /**
     * Return true if merge branch exists in DB (whether archived or not)
-    *
+    * 
     * @param destinationBranch
     * @return true
     * @throws OseeCoreException
@@ -305,11 +300,6 @@ public class AtsBranchManager {
 
    /**
     * Either return a single commit transaction or user must choose from a list of valid commit transactions
-    *
-    * @param title
-    * @param showMergeManager
-    * @return TransactionRecord
-    * @throws OseeCoreException
     */
    public TransactionRecord getTransactionIdOrPopupChoose(String title, boolean showMergeManager) throws OseeCoreException {
       Collection<TransactionRecord> transactionIds = new HashSet<TransactionRecord>();
@@ -463,28 +453,34 @@ public class AtsBranchManager {
       }
    }
 
+   Branch workingBranchCache = null;
+   long workingBranchCacheUpdated = 0;
+
    /**
     * Return working branch associated with SMA whether it is committed or not; This data is cached across all workflows
     * with the cache being updated by local and remote events.
-    *
-    * @return Branch
     */
    public Branch getWorkingBranch() throws OseeCoreException {
-      return getWorkingBranchExcludeStates(BranchState.REBASELINED, BranchState.DELETED);
+      long now = new Date().getTime();
+      if (now - workingBranchCacheUpdated > 1000) {
+         workingBranchCache = getWorkingBranchExcludeStates(BranchState.REBASELINED, BranchState.DELETED);
+         workingBranchCacheUpdated = now;
+         //         System.out.println("updating cache");
+      } else {
+         //         System.out.println("returning cache");
+      }
+      return workingBranchCache;
    }
 
    /**
     * Return working branch associated with SMA, even if it's been archived; This data is cached across all workflows
     * with the cache being updated by local and remote events. Filters out rebaseline branches (which are working
     * branches also).
-    *
-    * @param includeDeleted
-    * @return Branch
     */
    public Branch getWorkingBranchExcludeStates(BranchState... negatedBranchStates) throws OseeCoreException {
       BranchFilter branchFilter = new BranchFilter(BranchArchivedState.ALL, BranchType.WORKING, BranchType.BASELINE);
-      branchFilter.setAssociatedArtifact(teamArt);
       branchFilter.setNegatedBranchStates(negatedBranchStates);
+      branchFilter.setAssociatedArtifact(teamArt);
 
       List<Branch> branches = BranchManager.getBranches(branchFilter);
 
@@ -510,9 +506,6 @@ public class AtsBranchManager {
    /**
     * Returns true if there was ever a commit of a working branch regardless of whether the working branch is archived
     * or not.
-    *
-    * @return result
-    * @throws OseeCoreException
     */
    public boolean isWorkingBranchEverCommitted() throws OseeCoreException {
       return getBranchesCommittedTo().size() > 0;
@@ -589,9 +582,6 @@ public class AtsBranchManager {
 
    /**
     * Return true if all commit destination branches are configured and have been committed to
-    *
-    * @return true
-    * @throws OseeCoreException
     */
    public boolean isBranchesAllCommitted() throws OseeCoreException {
       Collection<Branch> committedTo = getBranchesCommittedTo();
@@ -615,7 +605,7 @@ public class AtsBranchManager {
 
    /**
     * Perform error checks and popup confirmation dialogs associated with creating a working branch.
-    *
+    * 
     * @param pageId if specified, WorkPage gets callback to provide confirmation that branch can be created
     * @param popup if true, errors are popped up to user; otherwise sent silently in Results
     * @return Result return of status
@@ -732,103 +722,6 @@ public class AtsBranchManager {
       Jobs.runInJob("Create Branch", runnable, AtsPlugin.class, AtsPlugin.PLUGIN_ID);
    }
 
-   private final class AtsCommitJob extends Job {
-      private final boolean commitPopup;
-      private final boolean overrideStateValidation;
-      private final Branch destinationBranch;
-      private final boolean archiveWorkingBranch;
-
-      public AtsCommitJob(boolean commitPopup, boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch) {
-         super("Commit Branch");
-         this.commitPopup = commitPopup;
-         this.overrideStateValidation = overrideStateValidation;
-         this.destinationBranch = destinationBranch;
-         this.archiveWorkingBranch = archiveWorkingBranch;
-      }
-
-      private boolean adminOverride;
-
-      @Override
-      protected IStatus run(IProgressMonitor monitor) {
-         Branch workflowWorkingBranch = null;
-         try {
-            workflowWorkingBranch = getWorkingBranch();
-            branchesInCommit.add(workflowWorkingBranch);
-            if (workflowWorkingBranch == null) {
-               return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
-                     "Commit Branch Failed: Can not locate branch for workflow " + teamArt.getHumanReadableId());
-            }
-
-            // Confirm that all blocking reviews are completed
-            // Loop through this state's blocking reviews to confirm complete
-            if (teamArt.isTeamWorkflow()) {
-               for (ReviewSMArtifact reviewArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
-                  if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.isCancelledOrCompleted()) {
-                     return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
-                           "Blocking Review must be completed before commit.");
-                  }
-               }
-            }
-
-            if (!overrideStateValidation) {
-               adminOverride = false;
-               // Check extension points for valid commit
-               for (IAtsStateItem item : teamArt.getStateItems().getStateItems(teamArt.getWorkPageDefinition().getId())) {
-                  final Result tempResult = item.committing(teamArt);
-                  if (tempResult.isFalse()) {
-                     // Allow Admin to override state validation
-                     if (AtsUtil.isAtsAdmin()) {
-                        Displays.ensureInDisplayThread(new Runnable() {
-                           @Override
-                           public void run() {
-                              if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
-                                    "Override State Validation",
-                                    tempResult.getText() + "\n\nYou are set as Admin, OVERRIDE this?")) {
-                                 adminOverride = true;
-                              } else {
-                                 adminOverride = false;
-                              }
-                           }
-                        }, true);
-                     }
-                     if (!adminOverride) {
-                        return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, tempResult.getText());
-                     }
-                  }
-               }
-            }
-
-            commit(commitPopup, workflowWorkingBranch, destinationBranch, archiveWorkingBranch);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, ex.getLocalizedMessage(), ex);
-         } finally {
-            if (workflowWorkingBranch != null) {
-               branchesInCommit.remove(workflowWorkingBranch);
-            }
-         }
-         return Status.OK_STATUS;
-      }
-   }
-
-   private void commit(boolean commitPopup, Branch sourceBranch, Branch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
-      boolean branchCommitted = false;
-      ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, sourceBranch);
-
-      if (commitPopup) {
-         branchCommitted = CommitHandler.commitBranch(conflictManager, archiveWorkingBranch);
-      } else {
-         BranchManager.commitBranch(null, conflictManager, archiveWorkingBranch, true);
-         branchCommitted = true;
-      }
-      if (branchCommitted) {
-         // Create reviews as necessary
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Commit");
-         createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, transaction);
-         transaction.execute();
-      }
-   }
-
    public boolean isBranchInCommit() throws OseeCoreException {
       if (!isWorkingBranchInWork()) {
          return false;
@@ -849,7 +742,9 @@ public class AtsBranchManager {
       if (isBranchInCommit()) {
          throw new OseeCoreException("Branch is currently being committed.");
       }
-      Job job = new AtsCommitJob(commitPopup, overrideStateValidation, destinationBranch, archiveWorkingBranch);
+      Job job =
+            new AtsBranchCommitJob(teamArt, commitPopup, overrideStateValidation, destinationBranch,
+                  archiveWorkingBranch);
       Operations.scheduleJob(job, true, Job.LONG, null, forcePend);
    }
 
@@ -865,7 +760,7 @@ public class AtsBranchManager {
 
    /**
     * Return ChangeData represented by commit to commitConfigArt or earliest commit if commitConfigArt == null
-    *
+    * 
     * @param commitConfigArt that configures commit or null
     */
    public ChangeData getChangeData(ICommitConfigArtifact commitConfigArt) throws OseeCoreException {

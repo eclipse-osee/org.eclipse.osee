@@ -42,11 +42,16 @@ public class OseeDictionary implements IDictionary {
    private OseeDictionary() {
    }
 
-   public boolean isWord(String word) {
-      //       System.out.println("Lookup => \""+word+"\"");
+   public synchronized void ensureLoaded() {
       if (dictionaries == null) {
          getIDictionaries();
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.INFO, "Loading Osee Dictionary");
       }
+   }
+
+   public boolean isWord(String word) {
+      ensureLoaded();
+      //       System.out.println("Lookup => \""+word+"\"");
       String cleanWord = getCleanWord(word);
       if (cleanWord.equals("") || cleanWord.length() == 1) return true;
       for (IOseeDictionary dict : dictionaries) {

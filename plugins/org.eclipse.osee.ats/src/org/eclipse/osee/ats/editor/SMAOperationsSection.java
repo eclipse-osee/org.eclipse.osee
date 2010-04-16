@@ -28,9 +28,11 @@ import org.eclipse.osee.ats.actions.RefreshDirtyAction;
 import org.eclipse.osee.ats.actions.ReloadAction;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
+import org.eclipse.osee.ats.actions.WorkflowDebugAction;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -42,6 +44,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -54,6 +58,7 @@ public class SMAOperationsSection extends SectionPart {
 
    protected final SMAEditor editor;
    private ISMAOperationsSection advOperation = null;
+   private boolean sectionCreated = false;
 
    public SMAOperationsSection(SMAEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
@@ -80,11 +85,27 @@ public class SMAOperationsSection extends SectionPart {
       super.initialize(form);
       final FormToolkit toolkit = form.getToolkit();
 
-      Section section = getSection();
+      final Section section = getSection();
       section.setText("Operations");
 
       section.setLayout(new GridLayout());
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+      // Only load when users selects section
+      section.addListener(SWT.Activate, new Listener() {
+
+         public void handleEvent(Event e) {
+            try {
+               createSection(section, toolkit);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+            }
+         }
+      });
+   }
+
+   private synchronized void createSection(Section section, FormToolkit toolkit) throws OseeCoreException {
+      if (sectionCreated) return;
 
       final Composite sectionBody = toolkit.createComposite(section, SWT.NONE);
       sectionBody.setLayout(ALayout.getZeroMarginLayout(3, false));
@@ -100,12 +121,11 @@ public class SMAOperationsSection extends SectionPart {
          createAdvancedSection(sectionBody, toolkit);
       }
 
-      if (AtsUtil.isAtsAdmin()) {
-         createAdminSection(sectionBody, toolkit);
-      }
+      createAdminSection(sectionBody, toolkit);
 
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
+      sectionCreated = true;
 
    }
 
@@ -158,7 +178,7 @@ public class SMAOperationsSection extends SectionPart {
    }
 
    private void createAdminSection(Composite parent, FormToolkit toolkit) {
-      if (!editor.getSma().isTeamWorkflow()) {
+      if (!AtsUtil.isAtsAdmin()) {
          return;
       }
       Section section = toolkit.createSection(parent, Section.TITLE_BAR);
@@ -173,6 +193,7 @@ public class SMAOperationsSection extends SectionPart {
 
       new XButtonViaAction(new RefreshDirtyAction(editor.getSma())).createWidgets(sectionBody, 2);
       new XButtonViaAction(new DeletePurgeAtsArtifactsAction(editor)).createWidgets(sectionBody, 2);
+      new XButtonViaAction(new WorkflowDebugAction(editor.getSma())).createWidgets(sectionBody, 2);
 
       section.setClient(sectionBody);
    }

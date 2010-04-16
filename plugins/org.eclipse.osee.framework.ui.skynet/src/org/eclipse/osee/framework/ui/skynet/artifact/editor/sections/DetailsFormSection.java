@@ -18,6 +18,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -29,6 +31,8 @@ import org.eclipse.ui.forms.widgets.Section;
 public class DetailsFormSection extends ArtifactEditorFormSection {
 
    private FormText formText;
+   private boolean sectionCreated = false;
+   private Section section;
 
    public DetailsFormSection(ArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(editor, parent, toolkit, style);
@@ -37,16 +41,22 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
    @Override
    public void initialize(IManagedForm form) {
       super.initialize(form);
-      Section section = getSection();
+      section = getSection();
       section.setText("Details");
       section.setLayout(new GridLayout());
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      // Only load when users selects section
+      section.addListener(SWT.Activate, new Listener() {
 
-      updateText(true);
+         public void handleEvent(Event e) {
+            createSection();
+         }
+      });
+
    }
 
-   private void updateText(boolean isCreate) {
-      if (isCreate) {
+   private synchronized void createSection() {
+      if (!sectionCreated) {
          final FormToolkit toolkit = getManagedForm().getToolkit();
          Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
          composite.setLayout(new GridLayout());
@@ -59,6 +69,7 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
 
          getSection().setClient(composite);
          toolkit.paintBordersFor(composite);
+         sectionCreated = true;
       }
 
       if (Widgets.isAccessible(formText)) {
@@ -82,7 +93,7 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
    @Override
    public void refresh() {
       super.refresh();
-      updateText(false);
+      createSection();
    }
 
 }

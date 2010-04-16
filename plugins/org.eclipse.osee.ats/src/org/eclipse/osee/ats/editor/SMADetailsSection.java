@@ -17,6 +17,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormText;
@@ -30,6 +32,7 @@ public class SMADetailsSection extends SectionPart {
 
    private FormText formText;
    private final SMAEditor editor;
+   private boolean sectionCreated = false;
 
    public SMADetailsSection(SMAEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
@@ -44,11 +47,17 @@ public class SMADetailsSection extends SectionPart {
       section.setLayout(new GridLayout());
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      updateText(true);
+      // Only load when users selects section
+      section.addListener(SWT.Activate, new Listener() {
+
+         public void handleEvent(Event e) {
+            createSection();
+         }
+      });
    }
 
-   private void updateText(boolean isCreate) {
-      if (isCreate) {
+   private synchronized void createSection() {
+      if (!sectionCreated) {
          final FormToolkit toolkit = getManagedForm().getToolkit();
          Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
          composite.setLayout(new GridLayout());
@@ -61,6 +70,7 @@ public class SMADetailsSection extends SectionPart {
 
          getSection().setClient(composite);
          toolkit.paintBordersFor(composite);
+         sectionCreated = true;
       }
 
       if (Widgets.isAccessible(formText)) {
@@ -79,12 +89,6 @@ public class SMADetailsSection extends SectionPart {
          formText.dispose();
       }
       super.dispose();
-   }
-
-   @Override
-   public void refresh() {
-      super.refresh();
-      updateText(false);
    }
 
 }

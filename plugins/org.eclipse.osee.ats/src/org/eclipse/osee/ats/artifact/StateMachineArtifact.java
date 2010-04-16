@@ -1706,6 +1706,15 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return GoalArtifact.getGoalOrder(this);
    }
 
+   public AtsWorkPage getCurrentAtsWorkPage() throws OseeCoreException {
+      for (AtsWorkPage atsWorkPage : getAtsWorkPages()) {
+         if (isCurrentState(atsWorkPage.getName())) {
+            return atsWorkPage;
+         }
+      }
+      return null;
+   }
+
    public List<AtsWorkPage> getAtsWorkPages() throws OseeCoreException {
       List<AtsWorkPage> atsWorkPages = new ArrayList<AtsWorkPage>();
       for (WorkPageDefinition workPageDefinition : getWorkFlowDefinition().getPagesOrdered()) {

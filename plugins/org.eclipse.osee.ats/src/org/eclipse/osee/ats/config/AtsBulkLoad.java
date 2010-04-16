@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 
 /**
@@ -72,6 +73,7 @@ public class AtsBulkLoad extends org.eclipse.core.runtime.jobs.Job {
                CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version);
          // Load Work Definitions
          WorkItemDefinitionFactory.loadDefinitions();
+         OseeDictionary.getInstance().ensureLoaded();
       } catch (Exception ex) {
          return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
       } finally {

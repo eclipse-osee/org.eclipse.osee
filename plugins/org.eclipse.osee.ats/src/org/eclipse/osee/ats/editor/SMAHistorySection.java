@@ -35,6 +35,7 @@ import org.eclipse.ui.forms.widgets.Section;
 public class SMAHistorySection extends SectionPart {
 
    private final SMAEditor editor;
+   private boolean sectionCreated = false;
 
    public SMAHistorySection(SMAEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
@@ -49,53 +50,54 @@ public class SMAHistorySection extends SectionPart {
       section.setLayout(new GridLayout());
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      updateText(true);
+      // Only load when users selects section
+      section.addListener(SWT.Activate, new Listener() {
+
+         public void handleEvent(Event e) {
+            createSection();
+         }
+      });
    }
 
-   private void updateText(boolean isCreate) {
-      if (isCreate) {
-         StateMachineArtifact sma = editor.getSma();
-         final FormToolkit toolkit = getManagedForm().getToolkit();
-         Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
-         composite.setLayout(new GridLayout());
-         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+   private synchronized void createSection() {
+      if (sectionCreated) return;
 
-         XResultsComposite xResultsComp = new XResultsComposite(composite, SWT.BORDER);
-         xResultsComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
-         GridData gd = new GridData(GridData.FILL_BOTH);
-         gd.heightHint = 500;
-         xResultsComp.setLayoutData(gd);
-         try {
-            xResultsComp.setHtmlText(sma.getLog().getHtml(true), sma.getArtifactTypeName() + " History");
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-         }
+      StateMachineArtifact sma = editor.getSma();
+      final FormToolkit toolkit = getManagedForm().getToolkit();
+      Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
+      composite.setLayout(new GridLayout());
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-         Label button = toolkit.createLabel(composite, "   ", SWT.NONE);
-         button.setText("    ");
-         final StateMachineArtifact fSma = sma;
-         button.addListener(SWT.MouseDoubleClick, new Listener() {
-            @Override
-            public void handleEvent(Event event) {
-               ArtifactEditor.editArtifact(fSma);
-            }
-         });
-
-         getSection().setClient(composite);
-         toolkit.paintBordersFor(composite);
+      XResultsComposite xResultsComp = new XResultsComposite(composite, SWT.BORDER);
+      xResultsComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
+      GridData gd = new GridData(GridData.FILL_BOTH);
+      gd.heightHint = 500;
+      xResultsComp.setLayoutData(gd);
+      try {
+         xResultsComp.setHtmlText(sma.getLog().getHtml(true), sma.getArtifactTypeName() + " History");
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
+
+      Label button = toolkit.createLabel(composite, "   ", SWT.NONE);
+      button.setText("    ");
+      final StateMachineArtifact fSma = sma;
+      button.addListener(SWT.MouseDoubleClick, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            ArtifactEditor.editArtifact(fSma);
+         }
+      });
+
+      getSection().setClient(composite);
+      toolkit.paintBordersFor(composite);
+      sectionCreated = true;
 
    }
 
    @Override
    public void dispose() {
       super.dispose();
-   }
-
-   @Override
-   public void refresh() {
-      super.refresh();
-      updateText(false);
    }
 
 }

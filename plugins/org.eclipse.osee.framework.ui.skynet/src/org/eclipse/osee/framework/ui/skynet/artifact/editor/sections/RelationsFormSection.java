@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
@@ -25,7 +29,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -36,6 +42,7 @@ import org.eclipse.ui.forms.widgets.Section;
 public class RelationsFormSection extends ArtifactEditorFormSection {
 
    private RelationsComposite relationComposite;
+   private boolean sectionCreated = false;
 
    public RelationsFormSection(AbstractArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(editor, parent, toolkit, style);
@@ -46,12 +53,26 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
       super.initialize(form);
       final FormToolkit toolkit = form.getToolkit();
 
-      Section section = getSection();
+      final Section section = getSection();
       section.setText("Relations");
 
       section.setLayout(new GridLayout());
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      // Only load when users selects section
+      section.addListener(SWT.Activate, new Listener() {
 
+         public void handleEvent(Event e) {
+            try {
+               createSection(section, toolkit);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
+            }
+         }
+      });
+   }
+
+   private synchronized void createSection(Section section, FormToolkit toolkit) throws OseeCoreException {
+      if (sectionCreated) return;
       Composite sectionBody = toolkit.createComposite(section, toolkit.getBorderStyle());
       sectionBody.setLayout(ALayout.getZeroMarginLayout());
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -91,6 +112,7 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
             });
          }
       });
+      sectionCreated = true;
    }
 
    protected void handleExpandAndCollapse() {

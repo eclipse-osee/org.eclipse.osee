@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.actions.OpenParentAction;
 import org.eclipse.osee.ats.actions.OpenTeamDefinitionAction;
 import org.eclipse.osee.ats.actions.OpenVersionArtifactAction;
 import org.eclipse.osee.ats.actions.PrivilegedEditAction;
+import org.eclipse.osee.ats.actions.ReloadAction;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
@@ -44,7 +45,6 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -80,8 +80,6 @@ import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.events.IHyperlinkListener;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
@@ -91,8 +89,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private final StateMachineArtifact sma;
    private final ArrayList<SMAWorkFlowSection> sections = new ArrayList<SMAWorkFlowSection>();
    private final XFormToolkit toolkit;
-   private static String ORIGINATOR = "Originator:";
-   private Label origLabel;
    private final List<AtsWorkPage> atsWorkPages = new ArrayList<AtsWorkPage>();
    private ScrolledForm scrolledForm;
    private final Integer HEADER_COMP_COLUMNS = 4;
@@ -161,14 +157,13 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       atsBody.setLayoutData(new GridData(GridData.FILL_BOTH));
       atsBody.setLayout(new GridLayout(1, false));
 
-      createHeaderSection();
+      createHeaderSection(sma.getCurrentAtsWorkPage());
       createGoalSection();
       createPageSections();
       createHistorySection();
       createRelationsSection();
       createOperationsSection();
       createDetailsSection();
-      createDebugSection();
 
       atsBody.layout();
       atsBody.setFocus();
@@ -180,16 +175,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
 
       managedForm.refresh();
-   }
-
-   private void createDebugSection() {
-      try {
-         if (AtsUtil.isAtsAdmin()) {
-            managedForm.addPart(new SMAWorkFlowDebugSection(atsBody, toolkit, SWT.NONE, sma));
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-      }
    }
 
    private void createDetailsSection() {
@@ -264,7 +249,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   private void createHeaderSection() {
+   private void createHeaderSection(AtsWorkPage currentAtsWorkPage) {
       Composite headerComp = toolkit.createComposite(atsBody);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.widthHint = 100;
@@ -275,7 +260,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       // Display relations
       try {
          createCurrentStateAndTeamHeaders(headerComp, toolkit);
-         FormsUtil.createLabelText(toolkit, headerComp, "Assignee(s)", sma.getStateMgr().getAssigneesStr(150));
+         createTargetVersionAndAssigneeHeader(headerComp, currentAtsWorkPage, toolkit);
 
          createLatestHeader(headerComp, toolkit);
          if (sma.isTeamWorkflow()) {
@@ -295,6 +280,29 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   protected boolean isShowTargetedVersion() throws OseeCoreException {
+      return sma.isTargetedVersionable();
+   }
+
+   private void createTargetVersionAndAssigneeHeader(Composite parent, AtsWorkPage page, XFormToolkit toolkit) throws OseeCoreException {
+      Composite comp = toolkit.createContainer(parent, 6);
+      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      comp.setLayout(ALayout.getZeroMarginLayout(6, false));
+
+      // Targeted Version
+      if (isShowTargetedVersion()) {
+         new SMATargetedVersionHeader(comp, SWT.NONE, sma, toolkit);
+      }
+
+      toolkit.createLabel(comp, "    ");
+
+      // Current Assignees
+      if (page.isCurrentNonCompleteCancelledState(sma)) {
+         new SMAAssigneesHeader(comp, SWT.NONE, sma, toolkit, SMAWorkFlowSection.isEditable(sma, page),
+               sma.getEditor().isPriviledgedEditModeEnabled());
       }
    }
 
@@ -344,6 +352,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolBarMgr.add(new CopyActionDetailsAction(sma));
       toolBarMgr.add(new PrivilegedEditAction(sma));
       toolBarMgr.add(new ResourceHistoryAction(sma));
+      toolBarMgr.add(new ReloadAction(sma));
 
       OseeUiActions.addButtonToEditorToolBar(sma.getEditor(), this, AtsPlugin.getInstance(),
             scrolledForm.getToolBarManager(), SMAEditor.EDITOR_ID, "ATS Editor");
@@ -468,11 +477,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
 
-      try {
-         createOriginatorHeader(topLineComp, toolkit);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-      }
+      new SMAOriginatorHeader(topLineComp, SWT.NONE, sma, toolkit);
 
       try {
          if (sma.isTeamWorkflow()) {
@@ -529,56 +534,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             FormsUtil.createLabelOrHyperlink(comp, toolkit, horizontalSpan, noteItem.toString());
          }
       }
-   }
-
-   private void createOriginatorHeader(Composite comp, XFormToolkit toolkit) throws OseeCoreException {
-      Composite topLineComp = new Composite(comp, SWT.NONE);
-      topLineComp.setLayoutData(new GridData());
-      topLineComp.setLayout(ALayout.getZeroMarginLayout(2, false));
-      toolkit.adapt(topLineComp);
-
-      if (!sma.isCancelled() && !sma.isCompleted()) {
-         Hyperlink link = toolkit.createHyperlink(topLineComp, ORIGINATOR, SWT.NONE);
-         link.addHyperlinkListener(new IHyperlinkListener() {
-
-            public void linkEntered(HyperlinkEvent e) {
-            }
-
-            public void linkExited(HyperlinkEvent e) {
-            }
-
-            public void linkActivated(HyperlinkEvent e) {
-               try {
-                  if (PromptChangeUtil.promptChangeOriginator(sma)) {
-                     updateOrigLabel();
-                     sma.getEditor().onDirtied();
-                  }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         });
-         if (sma.getOriginator() == null) {
-            Label errorLabel = toolkit.createLabel(topLineComp, "Error: No originator identified.");
-            errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-         } else {
-            origLabel = toolkit.createLabel(topLineComp, sma.getOriginator().getName());
-            origLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         }
-      } else {
-         if (sma.getOriginator() == null) {
-            Label errorLabel = toolkit.createLabel(topLineComp, "Error: No originator identified.");
-            errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-         } else {
-            Label origLabel = toolkit.createLabel(topLineComp, ORIGINATOR + sma.getOriginator().getName());
-            origLabel.setLayoutData(new GridData());
-         }
-      }
-   }
-
-   public void updateOrigLabel() throws OseeCoreException {
-      origLabel.setText(sma.getOriginator().getName());
-      origLabel.getParent().layout();
    }
 
    public void refresh() throws OseeCoreException {
