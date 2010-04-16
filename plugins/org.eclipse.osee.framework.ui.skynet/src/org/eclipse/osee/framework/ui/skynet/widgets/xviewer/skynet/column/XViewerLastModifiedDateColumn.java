@@ -17,7 +17,6 @@ import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
-import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.swt.SWT;
 
@@ -53,8 +52,6 @@ public class XViewerLastModifiedDateColumn extends XViewerValueColumn {
             return XDate.getDateStr(((Artifact) element).getLastModified(), XDate.MMDDYYHHMM);
          } else if (element instanceof ArtifactChange) {
             return XDate.getDateStr(((ArtifactChange) element).getToArtifact().getLastModified(), XDate.MMDDYYHHMM);
-         } else if (element instanceof AttributeChange) {
-            return XDate.getDateStr(((AttributeChange) element).getToArtifact().getLastModified(), XDate.MMDDYYHHMM);
          }
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);
