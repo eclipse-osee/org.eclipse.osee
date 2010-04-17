@@ -13,14 +13,18 @@ package org.eclipse.osee.ote.ui.test.manager.core;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
-import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -34,11 +38,8 @@ public class TestManagerModel {
    final static String CONFIGURATION = "configuration";
    final static String CONTACT = "contact";
    final static String DESCRIPTION = "description";
-   final static String MACHINE = "machine";
    final static String OFP = "ofp";
-   final static String PORT = "port";
    final static String ROOTNAME = "testManager";
-   final static String TARGET = "target";
    public boolean finished = false;
    private String configuration = "";
    private String contact = "";
@@ -46,8 +47,8 @@ public class TestManagerModel {
    private String[] ofps = null;
    private List<String> parseExceptions = new ArrayList<String>();
    private String rawXml = "";
-   private String[] targets = null;
    protected String filename = "";
+   private Map<String, String> defaultOfpExe = new HashMap<String,String>();
 
    public TestManagerModel() {
    }
@@ -98,13 +99,6 @@ public class TestManagerModel {
       return rawXml;
    }
 
-   /**
-    * @return Returns the targets.
-    */
-   public String[] getTargets() {
-      return targets;
-   }
-
    public boolean hasParseExceptions() {
       return !parseExceptions.isEmpty();
    }
@@ -140,9 +134,10 @@ public class TestManagerModel {
          DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
          // Call this to catch parse errors
-         factory.newDocumentBuilder().parse(new InputSource(new StringReader(xmlString)));
-
-         parseDocument(xmlString);
+         
+         Document document = factory.newDocumentBuilder().parse(new InputSource(new StringReader(xmlString)));
+         
+         parseDocument(xmlString, document);
 
       }
       catch (ParserConfigurationException e) {
@@ -182,34 +177,35 @@ public class TestManagerModel {
       this.ofps = ofps;
    }
 
-   /**
-    * @param targets The targets to set.
-    */
-   public void setTargets(String[] targets) {
-      this.targets = targets;
-   }
-
-   private void parseDocument(String xmlString) {
-      description = AXml.getTagData(xmlString, DESCRIPTION);
-      contact = AXml.getTagData(xmlString, CONTACT);
-      ofps = AXml.getTagDataArray(xmlString, OFP);
-      String targetArray[] = AXml.getTagDataArray(xmlString, TARGET);
-      List<String> targetVector = new ArrayList<String>();
-      for (int i = 0; i < targetArray.length; i++) {
-         String machine = AXml.getTagData(targetArray[i], MACHINE);
-         String port = AXml.getTagData(targetArray[i], PORT);
-         if (machine != null && port != null)
-            targetVector.add(machine + "," + port);
+   private void parseDocument(String xmlString, Document document) {
+      NodeList nodeList = document.getFirstChild().getChildNodes();
+      List<String> ofpList = new ArrayList<String>();
+      defaultOfpExe.clear();
+      for(int i = 0; i < nodeList.getLength(); i++){
+         Node node = nodeList.item(i);
+         if(node.getNodeName().equals(DESCRIPTION)){
+            description = node.getTextContent();
+         } else if(node.getNodeName().equals(CONTACT)){
+            contact = node.getTextContent();
+         } else if(node.getNodeName().equals(OFP)){
+            Node defaultType = node.getAttributes().getNamedItem("default");
+            if(defaultType != null){
+               String defaultTypeAsString = defaultType.getNodeValue();
+               defaultOfpExe.put("default_" + defaultTypeAsString, node.getTextContent().trim());
+            }
+            ofpList.add(node.getTextContent().trim());
+         }
       }
-      targets = targetVector.toArray(new String[targetVector.size()]);
-
+      
+      ofps = ofpList.toArray(new String[ofpList.size()]);// AXml.getTagDataArray(xmlString, OFP);
       OseeLog.log(TestManagerPlugin.class, Level.INFO, "description *" + description + "*");
       OseeLog.log(TestManagerPlugin.class, Level.INFO, "contact *" + contact + "*");
       for (int i = 0; i < ofps.length; i++) {
          OseeLog.log(TestManagerPlugin.class, Level.INFO, "ofp *" + ofps[i] + "*");
       }
-      for (int i = 0; i < targets.length; i++) {
-         OseeLog.log(TestManagerPlugin.class, Level.INFO, "target *" + targets[i] + "*");
-      }
+   }
+
+   public Map<String, String> getOfpDefault() {
+      return defaultOfpExe;
    }
 }

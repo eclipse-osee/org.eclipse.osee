@@ -17,7 +17,6 @@ import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.data.MessageData;
 
 /**
- * TODO:ANDY: Many check functions in this class are wrong, should be using all doubles without casting to/from int's.
  * 
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
