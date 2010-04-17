@@ -33,6 +33,7 @@ public class MessageServiceProviderImpl implements MessageServiceProvider {
 
    public void stop() throws Exception {
       messageService.stop();
+      executor.shutdown();
    }
 
    @Override
