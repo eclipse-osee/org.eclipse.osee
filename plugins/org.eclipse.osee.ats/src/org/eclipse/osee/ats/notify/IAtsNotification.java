@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.notify;
 
 import java.util.Collection;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 
@@ -21,11 +22,9 @@ public interface IAtsNotification {
 
    /**
     * Descriptive name that admin can identify the group/notification that will get sent
-    * 
-    * @return name
     */
    public String getNotificationName();
 
-   public Collection<OseeNotificationEvent> getNotificationEvents() throws OseeCoreException;
+   public Collection<OseeNotificationEvent> getNotificationEvents(IProgressMonitor monitor) throws OseeCoreException;
 
 }

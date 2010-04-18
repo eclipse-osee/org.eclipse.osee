@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeNotifyUsersJob;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**
@@ -34,10 +35,6 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
  */
 public class AtsNotificationNavigateItem extends XNavigateItemAction {
 
-   /**
-    * @param parent
-    * @param name
-    */
    public AtsNotificationNavigateItem(XNavigateItem parent) {
       this(parent, false);
    }
@@ -81,11 +78,11 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
                rd.addRaw("Report Only - Notifications were NOT sent");
             }
             rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
-            rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id", "User(s)"}));
+            rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id", "User(s)", "URL"}));
             for (IAtsNotification notify : notifications) {
-               for (OseeNotificationEvent event : notify.getNotificationEvents()) {
+               for (OseeNotificationEvent event : notify.getNotificationEvents(monitor)) {
                   rd.addRaw(AHTML.addRowMultiColumnTable(event.getType(), event.getDescription(), event.getId(),
-                        Artifacts.semmicolonArts(event.getUsers())));
+                        Artifacts.semmicolonArts(event.getUsers()), OseeNotifyUsersJob.getHyperlink(event)));
                   if (sendNotifications) {
                      OseeNotificationManager.addNotificationEvent(event);
                   }

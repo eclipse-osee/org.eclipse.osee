@@ -18,16 +18,22 @@ import org.eclipse.osee.framework.skynet.core.User;
  */
 public class OseeNotificationEvent {
 
-   private final Collection<User> users;
+   private Collection<User> users;
    private final String id;
-   private final String type;
-   private final String description;
+   private String type;
+   private String description;
+   private String url;
 
    public OseeNotificationEvent(Collection<User> users, String id, String type, String description) {
       this.users = users;
       this.id = id;
       this.type = type;
       this.description = description;
+   }
+
+   public OseeNotificationEvent(Collection<User> users, String id, String type, String description, String url) {
+      this(users, id, type, description);
+      this.url = url;
    }
 
    public String toString() {
@@ -48,5 +54,25 @@ public class OseeNotificationEvent {
 
    public Collection<User> getUsers() {
       return users;
+   }
+
+   public void setUsers(Collection<User> users) {
+      this.users = users;
+   }
+
+   public void setDescription(String description) {
+      this.description = description;
+   }
+
+   public void setType(String type) {
+      this.type = type;
+   }
+
+   public String getUrl() {
+      return url;
+   }
+
+   public void setUrl(String url) {
+      this.url = url;
    }
 }

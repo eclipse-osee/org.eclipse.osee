@@ -85,13 +85,17 @@ public class OseeNotifyUsersJob extends Job {
    private String notificationEventsToHtml(List<OseeNotificationEvent> notificationEvents) {
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id"}));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id", "URL"}));
       for (OseeNotificationEvent notificationEvent : notificationEvents) {
          sb.append(AHTML.addRowMultiColumnTable(new String[] {notificationEvent.getType(),
-               notificationEvent.getDescription(), notificationEvent.getId()}));
+               notificationEvent.getDescription(), notificationEvent.getId(), getHyperlink(notificationEvent)}));
       }
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString().replaceAll("\n", "");
+   }
+
+   public static String getHyperlink(OseeNotificationEvent notificationEvent) {
+      return Strings.isValid(notificationEvent.getUrl()) ? AHTML.getHyperlink(notificationEvent.getUrl(), "More Info") : "";
    }
 
    private void notifyUser(User user, List<OseeNotificationEvent> notificationEvents, XResultData resultData) throws MessagingException, OseeCoreException {
