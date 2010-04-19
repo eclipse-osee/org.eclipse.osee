@@ -504,10 +504,21 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       if (elementPath.size() == 1) {
          el = elementMap.get(elementPath.get(0));
       } else {
-         el = this.elementMap.get((String) elementPath.get(1));
-         if (el instanceof RecordElement) {
-            rel = (RecordElement) el;
-         }
+    	 String string = (String) elementPath.get(1);
+    	 if (string.startsWith("HEADER(")) {
+	         Element[] elements = getActiveDataSource(currentMemType).getMsgHeader().getElements();
+	         for (Element element : elements) {
+	            if (element.getName().equals(elementPath.get(2))) {
+	               return element;
+	            }
+	         }
+	         return null;
+    	 } else {
+    		 el = this.elementMap.get(string);
+    		 if (el instanceof RecordElement) {
+    			 rel = (RecordElement) el;
+    		 } 
+    	 }
          for (int i = 2; i < elementPath.size(); i++) {
             if (elementPath.get(i) instanceof String) {
                String name = (String) elementPath.get(i);
@@ -1296,4 +1307,20 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return defaultOffset;
    }
    
+   public Element getElementByPath(ElementPath path) {
+	   return getElementByPath(path, currentMemType);
+   }
+   
+   public Element getElementByPath(ElementPath path, MemType type) {
+	   if (path.isHeaderElement()) {
+	         Element[] elements = getActiveDataSource(type).getMsgHeader().getElements();
+	         for (Element element : elements) {
+	            if (element.getName().equals(path.getElementName())) {
+	               return element;
+	            }
+	         }
+	         return null;
+	   }
+	   return getElement(path.getList(), type);
+   }
 }
