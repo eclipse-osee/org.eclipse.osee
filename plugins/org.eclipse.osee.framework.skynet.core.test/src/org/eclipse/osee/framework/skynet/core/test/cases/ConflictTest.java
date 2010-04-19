@@ -75,7 +75,7 @@ public class ConflictTest {
    /**
     * Test method for
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)} .
-    *
+    * 
     * @throws Exception
     */
    @org.junit.Test
@@ -96,7 +96,8 @@ public class ConflictTest {
       try {
          conflicts =
                ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(), new NullProgressMonitor());
+                     ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
+                     new NullProgressMonitor());
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
@@ -109,7 +110,7 @@ public class ConflictTest {
    /**
     * Test method for
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)} .
-    *
+    * 
     * @throws Exception
     */
    @org.junit.Test
@@ -124,7 +125,8 @@ public class ConflictTest {
       try {
          Collection<Conflict> conflicts =
                ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(), new NullProgressMonitor());
+                     ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
+                     new NullProgressMonitor());
          int whichChange = 1;
 
          for (Conflict conflict : conflicts) {
@@ -141,7 +143,8 @@ public class ConflictTest {
 
          conflicts =
                ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(), new NullProgressMonitor());
+                     ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
+                     new NullProgressMonitor());
 
          for (Conflict conflict : conflicts) {
             assertTrue(
@@ -246,8 +249,8 @@ public class ConflictTest {
       } catch (Exception ex) {
          fail(ex.getMessage());
       }
-      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
-            monitorLog.getAllLogs().size() == 0);
+      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
+            monitorLog.getSevereLogs().isEmpty());
    }
 
    private void runMergeBranchCreated() throws Exception {
