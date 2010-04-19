@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.notify;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -79,9 +80,12 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
             }
             rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
             rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id", "User(s)", "URL"}));
+            int numEvents = 0;
             for (IAtsNotification notify : notifications) {
                for (OseeNotificationEvent event : notify.getNotificationEvents(monitor)) {
-                  rd.addRaw(AHTML.addRowMultiColumnTable(event.getType(), event.getDescription(), event.getId(),
+                  numEvents++;
+                  rd.addRaw(AHTML.addRowMultiColumnTable(event.getType(), event.getDescription(),
+                        XResultData.getHyperlink(event.getId(), event.getId(), AtsUtil.getAtsBranch().getId()),
                         Artifacts.semmicolonArts(event.getUsers()), OseeNotifyUsersJob.getHyperlink(event)));
                   if (sendNotifications) {
                      OseeNotificationManager.addNotificationEvent(event);
@@ -89,10 +93,10 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
                }
             }
             rd.addRaw(AHTML.endMultiColumnTable());
-            rd.report(getName());
+            rd.report(getName() + " - (" + numEvents + " Events)");
             if (sendNotifications) {
                OseeNotificationManager.sendNotifications();
-               AWorkbench.popup("Complete", "Notifications Sent");
+               AWorkbench.popup("Complete", numEvents + " Notifications Sent");
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
