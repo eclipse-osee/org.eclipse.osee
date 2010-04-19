@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeSql;
@@ -32,7 +31,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
 
    private final Artifact artifact;
 
-   public ArtifactTransactionData(Artifact artifact) throws OseeDataStoreException {
+   public ArtifactTransactionData(Artifact artifact) {
       super(artifact.getArtId(), artifact.getModType());
       this.artifact = artifact;
    }
