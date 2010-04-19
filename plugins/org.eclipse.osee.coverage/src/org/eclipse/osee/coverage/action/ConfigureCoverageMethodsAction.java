@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -59,6 +60,11 @@ public class ConfigureCoverageMethodsAction extends Action {
             Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
             OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(coveragePackageArtifact);
             CoverageOptionManagerStore optionsStore = new CoverageOptionManagerStore(packageStore);
+            Result isSaveable = optionsStore.isSaveable();
+            if (isSaveable.isFalse()) {
+               isSaveable.popup();
+               return;
+            }
             String coverageOptions = null;
             StoreLocation storeLocation = optionsStore.getStoreLocation();
             if (storeLocation == StoreLocation.None) {
@@ -76,6 +82,16 @@ public class ConfigureCoverageMethodsAction extends Action {
                   return;
                }
                coverageOptions = CoverageOptionManagerDefault.instance().toXml();
+            } else {
+               coverageOptions = optionsStore.getCoverageOptions();
+            }
+
+            // Recheck save after option has been chosen
+            optionsStore = new CoverageOptionManagerStore(packageStore);
+            isSaveable = optionsStore.isSaveable();
+            if (isSaveable.isFalse()) {
+               isSaveable.popup();
+               return;
             }
 
             boolean successOrCancel = false;

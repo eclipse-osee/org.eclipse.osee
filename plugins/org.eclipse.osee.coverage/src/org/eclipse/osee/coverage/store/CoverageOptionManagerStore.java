@@ -5,13 +5,19 @@
  */
 package org.eclipse.osee.coverage.store;
 
+import java.util.logging.Level;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePreferences;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * @author Donald G. Dunne
@@ -45,6 +51,30 @@ public class CoverageOptionManagerStore {
 
    private String getGlobalCoverageOptions() throws OseeCoreException {
       return (new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch())).getCoverageOptions();
+   }
+
+   public Result isSaveable() throws OseeCoreException {
+      StoreLocation location = getStoreLocation();
+      if (location == StoreLocation.None)
+         return Result.TrueResult;
+      else if (location == StoreLocation.Local) {
+         if (!AccessControlManager.hasPermission(oseeCoveragePackageStore.getArtifact(true), PermissionEnum.WRITE)) {
+            return new Result(String.format("You do not have permissions to change coverage options on [%s]",
+                  oseeCoveragePackageStore.getArtifact(true)));
+         }
+         return Result.TrueResult;
+      } else if (location == StoreLocation.Global) {
+         CoveragePreferences prefs = (new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch()));
+         if (prefs.isSaveable().isFalse()) {
+            return new Result(String.format("You do not have permissions to change coverage options on [%s]",
+                  oseeCoveragePackageStore.getArtifact(true)));
+         }
+         return Result.TrueResult;
+      } else {
+         OseeLog.log(Activator.class, Level.SEVERE, "Unexpected StoreLocation " + location);
+         return new Result("Unexpected StoreLocation [" + location + "] write permission denied.");
+      }
+
    }
 
    public StoreLocation getStoreLocation() throws OseeCoreException {

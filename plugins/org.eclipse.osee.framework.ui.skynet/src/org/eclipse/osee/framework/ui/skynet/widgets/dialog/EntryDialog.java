@@ -93,7 +93,9 @@ public class EntryDialog extends MessageDialog {
       this.customAreaParent = parent;
       areaComposite = new Composite(parent, SWT.NONE);
       areaComposite.setLayout(new GridLayout(2, false));
-      areaComposite.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+      GridData gd = new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
+      gd.widthHint = 500;
+      areaComposite.setLayoutData(gd);
       areaComposite.addMouseMoveListener(compListener);
 
       createErrorLabel(areaComposite);
@@ -193,7 +195,7 @@ public class EntryDialog extends MessageDialog {
       }
       text.createWidgets(areaComposite, 2);
       text.setFocus();
-      if (!entryText.equals("")) {
+      if (Strings.isValid(entryText)) {
          text.set(entryText);
       }
 
