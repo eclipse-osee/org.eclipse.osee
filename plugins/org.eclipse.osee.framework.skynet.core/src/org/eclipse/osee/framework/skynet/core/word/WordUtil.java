@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
@@ -264,7 +265,13 @@ public class WordUtil {
          Pattern.compile("<w:proofErr w:type=\"spell(End|Start)\"/>", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
    public final static String stripSpellCheck(String content) {
+      String response = content;
+      
+      try{
       spellCheck.reset(content);
-      return spellCheck.replaceAll("");
+      response = spellCheck.replaceAll("");
+      }catch (Exception ex){
+      }
+      return response;
    }
 }
