@@ -10,12 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.type;
 
+import java.io.Serializable;
+
 /**
  * @author Charles Shaw
  */
-public class DoublePoint {
+public class DoublePoint implements Serializable{
 
-   protected double x;
+   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2417895993917844086L;
+protected double x;
    protected double y;
 
    /**
