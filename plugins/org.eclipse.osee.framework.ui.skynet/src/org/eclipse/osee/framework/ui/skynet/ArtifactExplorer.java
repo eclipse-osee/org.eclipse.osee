@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.RootArtifact;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -50,6 +51,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
@@ -155,7 +157,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    private TreeViewer treeViewer;
    private Action upAction;
-   private Artifact exploreRoot;
+   private Artifact explorerRoot;
    private MenuItem openMenuItem;
    private MenuItem massEditMenuItem;
    private MenuItem skywalkerMenuItem;
@@ -420,7 +422,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createFindOnDifferentBranchItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
-      createNewItemMenuItem(popupMenu);
+      createNewChildMenuItem(popupMenu);
       createGoIntoMenuItem(popupMenu);
       createMassEditMenuItem(popupMenu);
       createSkywalkerMenuItem(popupMenu);
@@ -473,7 +475,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          @Override
          public void run() {
             try {
-               Artifact parent = exploreRoot.getParent();
+               Artifact parent = explorerRoot.getParent();
 
                if (parent == null) {
                   return;
@@ -484,7 +486,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                for (int i = 0; i < expanded.length; i++) {
                   expandedPlus[i] = expanded[i];
                }
-               expandedPlus[expandedPlus.length - 1] = exploreRoot;
+               expandedPlus[expandedPlus.length - 1] = explorerRoot;
 
                explore(parent);
 
@@ -562,7 +564,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       parentMenu.addMenuListener(new OpenWithMenuListener(submenu, treeViewer, this));
    }
 
-   private void createNewItemMenuItem(Menu parentMenu) {
+   private void createNewChildMenuItem(Menu parentMenu) {
       createMenuItem = new MenuItem(parentMenu, SWT.PUSH);
       needProjectListener.add(createMenuItem);
       createMenuItem.setText("&New Child");
@@ -571,38 +573,16 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
             try {
-               Collection<ArtifactType> data = ArtifactTypeManager.getConcreteArtifactTypes(branchSelect.getData());
-               List<ArtifactType> descriptors = new ArrayList<ArtifactType>();
-               for (ArtifactType descriptor : new ArrayList<ArtifactType>(data)) {
-                  if (!descriptor.getName().equals("Root Artifact")) {
-                     descriptors.add(descriptor);
-                  }
-               }
-               ArtifactTypeFilteredTreeEntryDialog dialog =
-                     new ArtifactTypeFilteredTreeEntryDialog("New Child",
-                           "Enter name and select Artifact type to create", "Artifact Name");
-               dialog.setInput(descriptors);
+               ArtifactTypeFilteredTreeEntryDialog dialog = getDialog();
+               Artifact parent = getParent();
+               
                if (dialog.open() == Window.OK) {
-
-                  ArtifactType descriptor = dialog.getSelection();
+                  ArtifactType type = dialog.getSelection();
                   String name = dialog.getEntryValue();
 
-                  IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-                  Iterator<?> itemsIter = selection.iterator();
-                  // If nothing was selected, then the child belongs at the root
-                  IRelationSorterId sorterId = RelationOrderBaseTypes.USER_DEFINED;
-
-                  SkynetTransaction transaction = new SkynetTransaction(branch, "Create new item in artifact explorer");
-                  if (!itemsIter.hasNext()) {
-                     exploreRoot.addNewChild(sorterId, descriptor, name);
-                     exploreRoot.persist(transaction);
-                  } else {
-                     while (itemsIter.hasNext()) {
-                        Artifact parent = (Artifact) itemsIter.next();
-                        parent.addNewChild(sorterId, descriptor, name);
-                        parent.persist(transaction);
-                     }
-                  }
+                  SkynetTransaction transaction = new SkynetTransaction(branch, String.format("Created new %s \"%s\" in artifact explorer", type.getName(), name));
+                  parent.addNewChild(null, type, name);
+                  parent.persist(transaction);
                   transaction.execute();
 
                   treeViewer.refresh();
@@ -611,6 +591,36 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
+         }
+         
+         private ArtifactTypeFilteredTreeEntryDialog getDialog() throws OseeCoreException {
+             Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getConcreteArtifactTypes(branchSelect.getData());
+             ArtifactType rootArtifactType = ArtifactTypeManager.getType(RootArtifact);
+             artifactTypes.remove(rootArtifactType);
+
+             ArtifactTypeFilteredTreeEntryDialog dialog =
+                 new ArtifactTypeFilteredTreeEntryDialog("New Child",
+                       "Enter name and select Artifact type to create", "Artifact Name");
+             dialog.setInput(artifactTypes);
+             return dialog;
+         }
+         
+         private Artifact getParent() throws OseeCoreException {
+             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+             
+             if (selection.size() > 1) {
+            	 throw new OseeCoreException("Please select a single artifact to create a new child.");
+             }
+             
+             Iterator<?> itemsIter = selection.iterator();
+             Artifact parent;
+             if (!itemsIter.hasNext()) {
+            	 parent = explorerRoot;
+             } else {
+            	 parent = (Artifact) itemsIter.next();
+             }
+             
+             return parent;
          }
       });
    }
@@ -1034,14 +1044,14 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
       }
-      exploreRoot = artifact;
+      explorerRoot = artifact;
       branch = artifact.getBranch();
 
       initializeSelectionBox();
 
       if (treeViewer != null) {
          Object objects[] = treeViewer.getExpandedElements();
-         treeViewer.setInput(exploreRoot);
+         treeViewer.setInput(explorerRoot);
          setupPopupMenu();
          updateEnablementsEtAl();
          // Attempt to re-expand what was expanded
@@ -1059,7 +1069,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       // The upAction may be null if this viewpart has not been layed out yet
       if (upAction != null) {
          try {
-            upAction.setEnabled(exploreRoot != null && exploreRoot.hasParent());
+            upAction.setEnabled(explorerRoot != null && explorerRoot.hasParent());
          } catch (OseeCoreException ex) {
             upAction.setEnabled(false);
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -1134,9 +1144,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
     * Add the selection from the define explorer
     */
    private void addExploreSelection() {
-      if (exploreRoot != null) {
+      if (explorerRoot != null) {
          try {
-            treeViewer.setInput(exploreRoot);
+            treeViewer.setInput(explorerRoot);
             initializeSelectionBox();
          } catch (IllegalArgumentException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -1211,9 +1221,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);
-      if (exploreRoot != null) {
-         memento.putString(ROOT_GUID, exploreRoot.getGuid());
-         memento.putString(ROOT_BRANCH, String.valueOf(exploreRoot.getBranch().getId()));
+      if (explorerRoot != null) {
+         memento.putString(ROOT_GUID, explorerRoot.getGuid());
+         memento.putString(ROOT_BRANCH, String.valueOf(explorerRoot.getBranch().getId()));
       }
    }
 

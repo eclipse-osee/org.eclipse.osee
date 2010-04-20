@@ -111,7 +111,7 @@ public class ArtifactTypeManager {
       }
       ArtifactType artifactType = getCache().getByGuid(guid);
       if (artifactType == null) {
-         throw new OseeTypeDoesNotExist("Artifact type [" + guid + "] is not available.");
+         throw new OseeTypeDoesNotExist(String.format("Artifact type [%s] is not available.", guid));
       }
       return artifactType;
    }
