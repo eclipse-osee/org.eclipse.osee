@@ -31,7 +31,7 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
       //      checkNameUnique(cache, name);
       Conditions.checkNotNullOrEmpty(baseAttributeTypeId, "attribute base type id");
       Conditions.checkNotNullOrEmpty(attributeProviderNameId, "attribute provider id");
-      Conditions.checkExpressionFailOnTrue(minOccurrences > 0 && defaultValue == null,
+      Conditions.checkExpressionFailOnTrue(minOccurrences > 0 && !Strings.isValid(defaultValue),
             "DefaultValue must be set for attribute [%s] with minOccurrences ", name, minOccurrences);
 
       Conditions.checkExpressionFailOnTrue(minOccurrences < 0, "minOccurrences must be greater than or equal to zero");
