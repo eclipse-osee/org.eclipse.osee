@@ -25,7 +25,7 @@ public class OseeEnumerationValidation implements IOseeValidator {
 
    @Override
    public int getQualityOfService() {
-      return 0;
+      return SHORT;
    }
 
    @Override
