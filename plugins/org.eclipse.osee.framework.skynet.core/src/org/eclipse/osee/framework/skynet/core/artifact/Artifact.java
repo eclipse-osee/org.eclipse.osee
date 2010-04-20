@@ -1902,7 +1902,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * This method should never be called from outside the OSEE Application Framework
     */
-   void setTransactionId(int transactionId) {
+   public void setTransactionId(int transactionId) {
       this.transactionId = transactionId;
    }
 
