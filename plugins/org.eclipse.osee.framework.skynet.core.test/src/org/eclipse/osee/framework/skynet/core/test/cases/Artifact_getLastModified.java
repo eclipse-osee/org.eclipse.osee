@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Date;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -43,50 +43,42 @@ public class Artifact_getLastModified {
 
    @org.junit.Test
    public void testGetLastModified() throws Exception {
-      boolean debug = false;
+      Artifact artifact =
+            ArtifactTypeManager.addArtifact("General Document", BranchManager.getCommonBranch(),
+                  getClass().getSimpleName());
 
-      Branch branch = BranchManager.getCommonBranch();
-      Assert.assertNotNull(branch);
-      Artifact artifact = ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName());
-
-      // Test pre-persist
-      if (!debug) {
-         System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
-               artifact.getLastModifiedBy()));
-      }
       Assert.assertNotNull(artifact.getLastModified());
       Assert.assertEquals(UserManager.getUser(SystemUser.OseeSystem), artifact.getLastModifiedBy());
-      Date createdDate = artifact.getLastModified();
+      Date previousModifyDate = artifact.getLastModified();
 
+      Thread.sleep(1100); // just enough time to guarantee the date will be at least a second later
       artifact.persist();
 
-      // Test post-persist
-      if (!debug) {
-         System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
-               artifact.getLastModifiedBy()));
-      }
-      Date lastModifyDate = artifact.getLastModified();
-      Assert.assertTrue(createdDate.before(lastModifyDate));
+      assertBefore(previousModifyDate, artifact);
       Assert.assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
+      previousModifyDate = artifact.getLastModified();
 
       // Test post-modified
       StaticIdManager.setSingletonAttributeValue(artifact, "this");
+      Thread.sleep(1100); // just enough time to guarantee the date will be at least a second later
       artifact.persist();
 
-      if (!debug) {
-         System.out.println(String.format("Modified [%s] Author [%s]", artifact.getLastModified(),
-               artifact.getLastModifiedBy()));
-      }
-
-      Assert.assertTrue(lastModifyDate.before(artifact.getLastModified()));
+      assertBefore(previousModifyDate, artifact);
       Assert.assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
-      lastModifyDate = artifact.getLastModified();
+      previousModifyDate = artifact.getLastModified();
 
       // Test post deleted
+      Thread.sleep(1100); // just enough time to guarantee the date will be at least a second later
       artifact.deleteAndPersist();
 
-      Assert.assertTrue(lastModifyDate.before(artifact.getLastModified()));
+      assertBefore(previousModifyDate, artifact);
       Assert.assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
+   }
+
+   private void assertBefore(Date previousModifyDate, Artifact artifact) throws OseeCoreException {
+      Assert.assertTrue(
+            String.format("expected %tc to be before %tc", previousModifyDate, artifact.getLastModified()),
+            previousModifyDate.before(artifact.getLastModified()));
    }
 
    private static void cleanup() throws Exception {
