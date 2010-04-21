@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.core.exception;
 public final class OseeExceptions {
 
    private OseeExceptions() {
+      // private empty constructor is to prevent external instantiation
    }
 
    public static void wrapAndThrow(Throwable ex) throws OseeCoreException {
