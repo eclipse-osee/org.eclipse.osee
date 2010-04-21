@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -88,22 +87,20 @@ public final class WordChangeReportOperation extends AbstractOperation {
             try {
                //Remove tracked changes and display image diffs
                Pair<String, Boolean> originalValue = null;
-               Pair<String, Boolean> newAnnotationValue = null;
-               Pair<String, Boolean> oldAnnotationValue = null;
 
                //Check for tracked changes
                artifacts.clear();
                artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(entry.getFirst()));
                artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(entry.getSecond()));
 
-				if (!artifacts.isEmpty()) {
-					if (RenderingUtil.arePopupsAllowed()) {
-					WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
-									"Detected tracked changes for some artifacts. Please refer to the results HTML report.");
-					WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
-					}
-					continue;
-				}
+               if (!artifacts.isEmpty()) {
+                  if (RenderingUtil.arePopupsAllowed()) {
+                     WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
+                           "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
+                     WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
+                  }
+                  continue;
+               }
 
                Artifact baseArtifact = entry.getFirst();
                Artifact newerArtifact = entry.getSecond();
@@ -123,10 +120,7 @@ public final class WordChangeReportOperation extends AbstractOperation {
                IFile baseFile = renderFile(renderer, baseArtifact, branch);
                IFile newerFile = renderFile(renderer, newerArtifact, branch);
 
-               WordImageChecker.restoreOriginalValue(baseContent,
-                     oldAnnotationValue != null ? oldAnnotationValue : originalValue);
-
-               WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);
+               WordImageChecker.restoreOriginalValue(baseContent, originalValue);
 
                monitor.setTaskName("Adding to Diff Script: " + (newerArtifact == null ? "Unnamed Artifact" : newerArtifact.getName()));
 

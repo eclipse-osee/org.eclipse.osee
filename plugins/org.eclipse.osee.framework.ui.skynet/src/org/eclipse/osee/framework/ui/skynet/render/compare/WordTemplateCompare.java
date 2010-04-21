@@ -42,8 +42,6 @@ public class WordTemplateCompare implements IComparator {
    @Override
    public String compare(IProgressMonitor monitor, PresentationType presentationType, Artifact baseArtifact, Artifact newerArtifact, boolean show) throws OseeCoreException {
       Pair<String, Boolean> originalValue = null;
-      Pair<String, Boolean> newAnnotationValue = null;
-      Pair<String, Boolean> oldAnnotationValue = null;
 
       //Check for tracked changes
       Set<Artifact> artifacts = new HashSet<Artifact>();
@@ -74,9 +72,7 @@ public class WordTemplateCompare implements IComparator {
          IFile baseFile = renderFile(monitor, renderer, baseArtifact, branch, presentationType);
          IFile newerFile = renderFile(monitor, renderer, newerArtifact, branch, presentationType);
 
-         WordImageChecker.restoreOriginalValue(baseContent,
-               oldAnnotationValue != null ? oldAnnotationValue : originalValue);
-         WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);
+         WordImageChecker.restoreOriginalValue(baseContent, originalValue);
 
          return compare(baseArtifact, newerArtifact, baseFile, newerFile, presentationType, show);
       }
