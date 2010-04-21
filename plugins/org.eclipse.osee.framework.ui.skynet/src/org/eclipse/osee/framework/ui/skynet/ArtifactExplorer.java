@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.RootArtifact;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,11 +31,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.RootArtifact;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -51,7 +49,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
@@ -575,7 +572,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             try {
                ArtifactTypeFilteredTreeEntryDialog dialog = getDialog();
                Artifact parent = getParent();
-               
+
                if (dialog.open() == Window.OK) {
                   ArtifactType type = dialog.getSelection();
                   String name = dialog.getEntryValue();
@@ -592,7 +589,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
-         
+
          private ArtifactTypeFilteredTreeEntryDialog getDialog() throws OseeCoreException {
              Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getConcreteArtifactTypes(branchSelect.getData());
              ArtifactType rootArtifactType = ArtifactTypeManager.getType(RootArtifact);
@@ -604,14 +601,14 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
              dialog.setInput(artifactTypes);
              return dialog;
          }
-         
+
          private Artifact getParent() throws OseeCoreException {
              IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-             
+
              if (selection.size() > 1) {
             	 throw new OseeCoreException("Please select a single artifact to create a new child.");
              }
-             
+
              Iterator<?> itemsIter = selection.iterator();
              Artifact parent;
              if (!itemsIter.hasNext()) {
@@ -619,7 +616,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
              } else {
             	 parent = (Artifact) itemsIter.next();
              }
-             
+
              return parent;
          }
       });

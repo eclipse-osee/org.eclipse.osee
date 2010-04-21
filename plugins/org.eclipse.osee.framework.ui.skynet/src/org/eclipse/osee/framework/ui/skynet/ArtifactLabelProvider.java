@@ -24,11 +24,11 @@ import org.eclipse.swt.graphics.Image;
 
 public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProvider {
 
-   private final ArtifactDecorator artifactDecorator;
+   private final IArtifactDecoratorPreferences decorationProvider;
 
-   public ArtifactLabelProvider(ArtifactDecorator artifactDecorator) {
+   public ArtifactLabelProvider(IArtifactDecoratorPreferences decorationProvider) {
       super();
-      this.artifactDecorator = artifactDecorator;
+      this.decorationProvider = decorationProvider;
    }
 
    public ArtifactLabelProvider() {
@@ -65,26 +65,26 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
          if (artifact.isDeleted()) {
             extraInfo.add("<Deleted>");
          }
-         if (artifactDecorator != null) {
+         if (decorationProvider != null) {
 
-            if (artifactDecorator.showArtIds() && artifactDecorator.showArtVersion()) {
+            if (decorationProvider.showArtIds() && decorationProvider.showArtVersion()) {
                extraInfo.add(String.format("[%s rev.%s]", artifact.getArtId(), artifact.getGammaId()));
-            } else if (artifactDecorator.showArtIds() && !artifactDecorator.showArtVersion()) {
+            } else if (decorationProvider.showArtIds() && !decorationProvider.showArtVersion()) {
                extraInfo.add(String.format("[id %s]", artifact.getArtId()));
-            } else if (!artifactDecorator.showArtIds() && artifactDecorator.showArtVersion()) {
+            } else if (!decorationProvider.showArtIds() && decorationProvider.showArtVersion()) {
                extraInfo.add(String.format("[rev.%s]", artifact.getGammaId()));
             }
 
-            if (artifactDecorator.showArtType()) {
+            if (decorationProvider.showArtType()) {
                extraInfo.add("<" + artifact.getArtifactTypeName() + ">");
             }
 
-            if (artifactDecorator.showArtBranch()) {
+            if (decorationProvider.showArtBranch()) {
                extraInfo.add("[" + artifact.getBranch().getShortName() + "]");
             }
 
             try {
-               extraInfo.add(artifactDecorator.getSelectedAttributeData(artifact));
+               extraInfo.add(decorationProvider.getSelectedAttributeData(artifact));
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                extraInfo.add(ex.getLocalizedMessage());

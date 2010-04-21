@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactDecorator {
+public class ArtifactDecorator implements IArtifactDecoratorPreferences {
 
    private static final Collection<WeakReference<ArtifactDecorator>> DECORATOR_INSTANCES =
          new CopyOnWriteArrayList<WeakReference<ArtifactDecorator>>();

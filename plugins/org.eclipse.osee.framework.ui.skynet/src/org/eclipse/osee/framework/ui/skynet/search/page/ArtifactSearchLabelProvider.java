@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.IArtifactDecoratorPreferences;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchResult;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -79,7 +80,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
       int matchCount = getMatchCount(artifact);
       if (matchCount > 0) {
          StyledString artifactString = getColoredLabelWithCounts(artifact, matchCount, new StyledString(name));
-         return getArtifactText(artifact, artifactString);
+         return getArtifactText(artifactDecorator, artifact, artifactString);
       } else {
          return new StyledString(name, StyledString.DECORATIONS_STYLER);
       }
@@ -93,32 +94,32 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
       return result.getMatchCount(element);
    }
 
-   private StyledString getArtifactText(Artifact artifact, StyledString coloredName) {
+   private StyledString getArtifactText(IArtifactDecoratorPreferences decoration, Artifact artifact, StyledString coloredName) {
       if (artifact.isDeleted()) {
          coloredName.append(' ').append("<Deleted>", DELETED_ARTIFACT_STYLE);
       }
-      if (artifactDecorator != null) {
+      if (decoration != null) {
 
-         if (artifactDecorator.showArtIds() && artifactDecorator.showArtVersion()) {
+         if (decoration.showArtIds() && decoration.showArtVersion()) {
             coloredName.append(' ').append("[" + artifact.getArtId() + " rev." + artifact.getGammaId() + "]",
                   StyledString.DECORATIONS_STYLER);
-         } else if (artifactDecorator.showArtIds() && !artifactDecorator.showArtVersion()) {
+         } else if (decoration.showArtIds() && !decoration.showArtVersion()) {
             coloredName.append(' ').append("[id " + artifact.getArtId() + "]", StyledString.DECORATIONS_STYLER);
-         } else if (!artifactDecorator.showArtIds() && artifactDecorator.showArtVersion()) {
+         } else if (!decoration.showArtIds() && decoration.showArtVersion()) {
             coloredName.append(' ').append("[rev." + artifact.getGammaId() + "]", StyledString.DECORATIONS_STYLER);
          }
 
-         if (artifactDecorator.showArtType()) {
+         if (decoration.showArtType()) {
             coloredName.append(' ').append("<" + artifact.getArtifactTypeName() + ">", StyledString.DECORATIONS_STYLER);
          }
 
-         if (artifactDecorator.showArtBranch()) {
+         if (decoration.showArtBranch()) {
             coloredName.append(' ').append("[" + artifact.getBranch().getShortName() + "]",
                   StyledString.DECORATIONS_STYLER);
          }
 
          try {
-            String selectedAttributes = artifactDecorator.getSelectedAttributeData(artifact);
+            String selectedAttributes = decoration.getSelectedAttributeData(artifact);
             if (Strings.isValid(selectedAttributes)) {
                coloredName.append(' ').append(selectedAttributes, StyledString.DECORATIONS_STYLER);
             }

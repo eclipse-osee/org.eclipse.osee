@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
+import org.eclipse.osee.framework.ui.skynet.ArtifactDecoratorPreferences;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
@@ -98,8 +98,7 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
                      Displays.ensureInDisplayThread(new Runnable() {
                         @Override
                         public void run() {
-                           ArtifactDecorator artDecorator = new ArtifactDecorator("open.change.report");
-                           artDecorator.addActions(null, null);
+                           ArtifactDecoratorPreferences artDecorator = new ArtifactDecoratorPreferences();
                            artDecorator.setShowArtBranch(true);
                            artDecorator.setShowArtType(true);
                            SimpleCheckFilteredTreeDialog dialog =

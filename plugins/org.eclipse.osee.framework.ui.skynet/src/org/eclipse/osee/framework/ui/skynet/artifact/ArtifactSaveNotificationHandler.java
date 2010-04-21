@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
+import org.eclipse.osee.framework.ui.skynet.ArtifactDecoratorPreferences;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -53,15 +53,14 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
          if (dirtyArts.isEmpty()) {
             return true;
          }
-         ArtifactDecorator artDecorator = new ArtifactDecorator("save.handler");
-         artDecorator.addActions(null, null);
-         artDecorator.setShowArtBranch(true);
-         artDecorator.setShowArtType(true);
+         ArtifactDecoratorPreferences preferences = new ArtifactDecoratorPreferences();
+         preferences.setShowArtBranch(true);
+         preferences.setShowArtType(true);
          SimpleCheckFilteredTreeDialog dialog =
                new SimpleCheckFilteredTreeDialog(
                      "Unsaved Artifacts Detected",
                      "Some artifacts have not been saved.\n\nSelect any artifact to save (if any) and select Ok or Cancel to stop shutdown.",
-                     new ArrayTreeContentProvider(), new ArtifactLabelProvider(artDecorator),
+                     new ArrayTreeContentProvider(), new ArtifactLabelProvider(preferences),
                      new ArtifactViewerSorter(), 0, Integer.MAX_VALUE);
          dialog.setInput(dirtyArts);
          if (dialog.open() == 0) {
