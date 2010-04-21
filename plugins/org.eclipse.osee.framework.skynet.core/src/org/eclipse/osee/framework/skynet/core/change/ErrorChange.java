@@ -8,11 +8,9 @@ package org.eclipse.osee.framework.skynet.core.change;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -22,13 +20,12 @@ public class ErrorChange extends Change {
    final static String ERROR_STRING = "!Error - ";
    private String exception = "";
 
-   public ErrorChange(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      super(branch, artifactType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, isHistorical,
-            artifact, null);
+   public ErrorChange(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+      super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical, artifact, null);
    }
 
    public ErrorChange(IOseeBranch branch, int artId, String exception) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      this(branch, null, 0, artId, null, null, null, false, null);
+      this(branch, null, 0, artId, null, null, false, null);
       this.exception = exception;
    }
 
@@ -53,12 +50,12 @@ public class ErrorChange extends Change {
    }
 
    @Override
-   public String getItemTypeName() throws Exception {
+   public String getItemTypeName() {
       return ERROR_STRING + exception;
    }
 
    @Override
-   public String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public String getName() {
       return ERROR_STRING + "ArtID: " + getArtId() + " BranchGuid: " + (getBranch() == null ? null : getBranch().getGuid()) + ": " + exception;
    }
 

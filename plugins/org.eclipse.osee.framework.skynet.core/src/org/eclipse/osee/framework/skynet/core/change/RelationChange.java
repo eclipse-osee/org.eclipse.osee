@@ -12,16 +12,13 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.RelationType;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -57,8 +54,8 @@ public final class RelationChange extends Change {
     * @throws OseeDataStoreException
     * @throws ArtifactDoesNotExist
     */
-   public RelationChange(IOseeBranch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, Artifact toArtifact, Artifact bArtifact, Artifact fromArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      super(branch, aArtType, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, isHistorical, toArtifact, fromArtifact);
+   public RelationChange(IOseeBranch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionDelta txDelta, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, Artifact toArtifact, Artifact bArtifact, Artifact fromArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+      super(branch, aArtType, sourceGamma, aArtId, txDelta, modType, isHistorical, toArtifact, fromArtifact);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
       this.rationale = rationale;
@@ -76,8 +73,8 @@ public final class RelationChange extends Change {
       try {
          if (adapter.isInstance(getToArtifact())) {
             return getToArtifact();
-         } else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
-            return getToTransactionId();
+         } else if (adapter.isInstance(getTxDelta().getEndTx()) && isHistorical()) {
+            return getTxDelta().getEndTx();
          } else if (adapter.isInstance(this)) {
             return this;
          }
@@ -94,7 +91,7 @@ public final class RelationChange extends Change {
       return bArtId;
    }
 
-   public Artifact getBArtifact() throws ArtifactDoesNotExist {
+   public Artifact getBArtifact() {
       return bArtifact;
    }
 
@@ -148,7 +145,7 @@ public final class RelationChange extends Change {
    }
 
    @Override
-   public String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public String getName() {
       return getArtifactName() + " <-> " + getBArtifact().getName();
    }
 

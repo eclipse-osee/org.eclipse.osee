@@ -33,7 +33,8 @@ import org.eclipse.swt.widgets.MenuItem;
 public class ArtifactDiffMenu {
 
    public enum DiffTypes {
-      CONFLICT, PARENT
+      CONFLICT,
+      PARENT
    }
 
    private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
@@ -82,8 +83,7 @@ public class ArtifactDiffMenu {
       if (selections[1] instanceof Change && selections[0] instanceof Change) {
          try {
             valid =
-                  (RendererManager.getBestFileRenderer(PresentationType.DIFF,
-                        ((Change) selections[0]).getToArtifact()).supportsCompare());
+                  RendererManager.getBestFileRenderer(PresentationType.DIFF, ((Change) selections[0]).getToArtifact()).supportsCompare();
          } catch (OseeCoreException ex) {
          }
       }
@@ -103,20 +103,17 @@ public class ArtifactDiffMenu {
          if (firstSelection instanceof Change && secondSelection instanceof Change) {
 
             Change firstChange = (Change) firstSelection;
-            Change secondChange = (Change)secondSelection;
-            TransactionRecord firstTransactionId = firstChange.getFromTransactionId();
-            TransactionRecord secondTransactionId = secondChange.getFromTransactionId();
+            Change secondChange = (Change) secondSelection;
+            TransactionRecord firstTransactionId = firstChange.getTxDelta().getStartTx();
+            TransactionRecord secondTransactionId = secondChange.getTxDelta().getStartTx();
 
             if (firstTransactionId.getId() < secondTransactionId.getId()) {
-               firstTransactionId = secondChange.getFromTransactionId();
-               secondTransactionId = firstChange.getFromTransactionId();
+               firstTransactionId = secondChange.getTxDelta().getStartTx();
+               secondTransactionId = firstChange.getTxDelta().getStartTx();
             }
-            newerArtifact =
-                  ArtifactQuery.getHistoricalArtifactFromId(firstChange.getArtId(),
-                        firstTransactionId, true);
+            newerArtifact = ArtifactQuery.getHistoricalArtifactFromId(firstChange.getArtId(), firstTransactionId, true);
             baselineArtifact =
-                  ArtifactQuery.getHistoricalArtifactFromId(firstChange.getArtId(),
-                        secondTransactionId, true);
+                  ArtifactQuery.getHistoricalArtifactFromId(firstChange.getArtId(), secondTransactionId, true);
          }
       }
       RendererManager.diffInJob(baselineArtifact, newerArtifact);

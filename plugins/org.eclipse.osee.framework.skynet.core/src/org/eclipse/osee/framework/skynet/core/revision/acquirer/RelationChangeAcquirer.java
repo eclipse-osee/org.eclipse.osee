@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.RelationChangeBuilder;
+import org.eclipse.osee.framework.skynet.core.change.TransactionDelta;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -61,7 +62,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
                fromTransactionId = TransactionManager.getPriorTransaction(toTransactionId);
             }
          }
-
+         TransactionDelta txDelta = new TransactionDelta(fromTransactionId, toTransactionId);
          while (chStmt.next()) {
             int aArtId = chStmt.getInt("a_art_id");
             int bArtId = chStmt.getInt("b_art_id");
@@ -76,7 +77,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
                getChangeBuilders().add(
                      new RelationChangeBuilder(getSourceBranch(),
                            ArtifactTypeManager.getType(chStmt.getInt("art_type_id")), chStmt.getInt("gamma_id"),
-                           aArtId, toTransactionId, fromTransactionId, modificationType, bArtId, relLinkId, rationale,
+                           aArtId, txDelta, modificationType, bArtId, relLinkId, rationale,
                            RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")), !hasBranch));
             }
          }

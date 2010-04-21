@@ -12,18 +12,15 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -41,8 +38,8 @@ public final class AttributeChange extends Change {
    private AttributeType dynamicAttributeDescriptor;
    private final ModificationType artModType;
 
-   public AttributeChange(IOseeBranch branch, ArtifactType artType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical, Artifact toArtifact, Artifact fromArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      super(branch, artType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, isHistorical, toArtifact, fromArtifact);
+   public AttributeChange(IOseeBranch branch, ArtifactType artType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical, Artifact toArtifact, Artifact fromArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+      super(branch, artType, sourceGamma, artId, txDelta, modType, isHistorical, toArtifact, fromArtifact);
       this.isValue = isValue;
       this.wasValue = wasValue;
       this.attrId = attrId;
@@ -82,21 +79,17 @@ public final class AttributeChange extends Change {
       return attrTypeId;
    }
 
-   public AttributeType getDynamicAttributeDescriptor() throws Exception {
-      if (dynamicAttributeDescriptor == null) {
-         dynamicAttributeDescriptor = AttributeTypeManager.getType(attrTypeId);
-      }
-      return dynamicAttributeDescriptor;
-   }
-
    @Override
-   public String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public String getName() {
       return getArtifactName();
    }
 
    @Override
-   public String getItemTypeName() throws Exception {
-      return getDynamicAttributeDescriptor().getName();
+   public String getItemTypeName() throws OseeCoreException {
+      if (dynamicAttributeDescriptor == null) {
+         dynamicAttributeDescriptor = AttributeTypeManager.getType(attrTypeId);
+      }
+      return dynamicAttributeDescriptor.getName();
    }
 
    @Override
@@ -136,8 +129,8 @@ public final class AttributeChange extends Change {
       try {
          if (adapter.isInstance(getToArtifact())) {
             return getToArtifact();
-         } else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
-            return getToTransactionId();
+         } else if (adapter.isInstance(getTxDelta().getEndTx()) && isHistorical()) {
+            return getTxDelta().getEndTx();
          } else if (adapter.isInstance(this)) {
             return this;
          }

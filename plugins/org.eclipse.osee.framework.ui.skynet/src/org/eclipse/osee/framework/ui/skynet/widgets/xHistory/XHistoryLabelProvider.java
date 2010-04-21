@@ -44,7 +44,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          Change data = (Change) element;
 
          if (cCol.equals(HistoryXViewerFactory.transaction)) {
-            return String.valueOf(data.getToTransactionId().getId());
+            return String.valueOf(data.getTxDelta().getEndTx().getId());
          } else if (cCol.equals(HistoryXViewerFactory.gamma)) {
             return String.valueOf(data.getGamma());
          } else if (cCol.equals(HistoryXViewerFactory.itemType)) {
@@ -60,11 +60,11 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(HistoryXViewerFactory.is)) {
             return data.getIsValue();
          } else if (cCol.equals(HistoryXViewerFactory.timeStamp)) {
-            return new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(data.getToTransactionId().getTimeStamp());
+            return new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(data.getTxDelta().getEndTx().getTimeStamp());
          } else if (cCol.equals(HistoryXViewerFactory.author)) {
-            return UserManager.getUserNameById(data.getToTransactionId().getAuthor());
+            return UserManager.getUserNameById(data.getTxDelta().getEndTx().getAuthor());
          } else if (cCol.equals(HistoryXViewerFactory.comment)) {
-            return data.getToTransactionId().getComment();
+            return data.getTxDelta().getEndTx().getComment();
          }
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);

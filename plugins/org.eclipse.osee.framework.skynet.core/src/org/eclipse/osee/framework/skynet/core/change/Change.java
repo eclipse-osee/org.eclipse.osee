@@ -14,10 +14,8 @@ package org.eclipse.osee.framework.skynet.core.change;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -26,8 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public abstract class Change implements IAdaptable {
    private final int sourceGamma;
    private final int artId;
-   private final TransactionRecord toTransactionId;
-   private TransactionRecord fromTransactionId;
+   private final TransactionDelta txDelta;
    private final Artifact toArtifact;
    private final Artifact fromArtifact;
    private ModificationType modType;
@@ -35,13 +32,12 @@ public abstract class Change implements IAdaptable {
    private final ArtifactType artifactType;
    private final boolean isHistorical;
 
-   public Change(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, boolean isHistorical, Artifact toArtifact, Artifact fromArtifact) {
+   public Change(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact toArtifact, Artifact fromArtifact) {
       super();
       this.branch = branch;
       this.sourceGamma = sourceGamma;
       this.artId = artId;
-      this.toTransactionId = toTransactionId;
-      this.fromTransactionId = fromTransactionId;
+      this.txDelta = txDelta;
       this.modType = modType;
       this.artifactType = artifactType;
       this.isHistorical = isHistorical;
@@ -50,34 +46,85 @@ public abstract class Change implements IAdaptable {
    }
 
    @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof Change) {
-         Change change = (Change) obj;
-         return change.getArtId() == artId &&
-               //
-               change.getGamma() == sourceGamma &&
-               //
-               change.getBranch() == branch &&
-               //
-               change.getToTransactionId() == toTransactionId &&
-               //
-               change.getFromTransactionId() == fromTransactionId &&
-               //
-               change.getModificationType() == modType;
-      }
-      return false;
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + artId;
+      result = prime * result + (artifactType == null ? 0 : artifactType.hashCode());
+      result = prime * result + (branch == null ? 0 : branch.hashCode());
+      result = prime * result + (fromArtifact == null ? 0 : fromArtifact.hashCode());
+      result = prime * result + (isHistorical ? 1231 : 1237);
+      result = prime * result + (modType == null ? 0 : modType.hashCode());
+      result = prime * result + sourceGamma;
+      result = prime * result + (toArtifact == null ? 0 : toArtifact.hashCode());
+      result = prime * result + (txDelta == null ? 0 : txDelta.hashCode());
+      return result;
    }
 
    @Override
-   public int hashCode() {
-      int hashCode = 0;
-      hashCode += 13 * artId;
-      hashCode += 13 * sourceGamma;
-      hashCode += branch != null ? 13 * branch.hashCode() : 0;
-      hashCode += toTransactionId != null ? 13 * toTransactionId.hashCode() : 0;
-      hashCode += fromTransactionId != null ? 13 * fromTransactionId.hashCode() : 0;
-      hashCode += modType != null ? 13 * modType.hashCode() : 0;
-      return hashCode;
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      Change other = (Change) obj;
+      if (artId != other.artId) {
+         return false;
+      }
+      if (artifactType == null) {
+         if (other.artifactType != null) {
+            return false;
+         }
+      } else if (!artifactType.equals(other.artifactType)) {
+         return false;
+      }
+      if (branch == null) {
+         if (other.branch != null) {
+            return false;
+         }
+      } else if (!branch.equals(other.branch)) {
+         return false;
+      }
+      if (fromArtifact == null) {
+         if (other.fromArtifact != null) {
+            return false;
+         }
+      } else if (!fromArtifact.equals(other.fromArtifact)) {
+         return false;
+      }
+      if (isHistorical != other.isHistorical) {
+         return false;
+      }
+      if (modType == null) {
+         if (other.modType != null) {
+            return false;
+         }
+      } else if (!modType.equals(other.modType)) {
+         return false;
+      }
+      if (sourceGamma != other.sourceGamma) {
+         return false;
+      }
+      if (toArtifact == null) {
+         if (other.toArtifact != null) {
+            return false;
+         }
+      } else if (!toArtifact.equals(other.toArtifact)) {
+         return false;
+      }
+      if (txDelta == null) {
+         if (other.txDelta != null) {
+            return false;
+         }
+      } else if (!txDelta.equals(other.txDelta)) {
+         return false;
+      }
+      return true;
    }
 
    public boolean isHistorical() {
@@ -115,18 +162,14 @@ public abstract class Change implements IAdaptable {
       return artId;
    }
 
-   public TransactionRecord getToTransactionId() {
-      return toTransactionId;
-   }
-
-   public TransactionRecord getFromTransactionId() {
-      return fromTransactionId;
+   public TransactionDelta getTxDelta() {
+      return txDelta;
    }
 
    /**
     * For an artifact change this is the artifact type id. For an attribute this is the attribute type id. For a
     * relation this is the relation type id.
-    * 
+    *
     * @return typeId
     */
    public abstract int getItemTypeId();
@@ -139,17 +182,13 @@ public abstract class Change implements IAdaptable {
       return branch;
    }
 
-   public void setFromTransactionId(TransactionRecord fromTransactionId) {
-      this.fromTransactionId = fromTransactionId;
-   }
-
    public abstract String getIsValue();
 
    public abstract String getWasValue();
 
-   public abstract String getItemTypeName() throws Exception;
+   public abstract String getItemTypeName() throws OseeCoreException;
 
-   public abstract String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist;
+   public abstract String getName();
 
    public abstract String getItemKind();
 

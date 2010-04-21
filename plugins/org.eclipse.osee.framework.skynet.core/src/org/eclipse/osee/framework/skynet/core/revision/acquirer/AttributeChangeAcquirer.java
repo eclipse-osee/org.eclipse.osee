@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
+import org.eclipse.osee.framework.skynet.core.change.TransactionDelta;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -96,6 +97,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
       AttributeChangeBuilder attributeChangeBuilder;
 
       try {
+         TransactionDelta txDelta = new TransactionDelta(fromTransactionId, toTransactionId);
+
          int count = 0;
          while (chStmt.next()) {
             count++;
@@ -118,9 +121,10 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                // Want to add an artifact changed item once if any attribute was modified && artifact was not
                // NEW or DELETED and these changes are not for a specific artifact
                if (artModType == ModificationType.MODIFIED && !modifiedArtifacts.contains(artId)) {
+
                   ArtifactChangeBuilder artifactChangeBuilder =
                         new ArtifactChangeBuilder(sourceBranch, ArtifactTypeManager.getType(artTypeId), -1, artId,
-                              toTransactionId, fromTransactionId, ModificationType.MODIFIED, !hasBranch);
+                              txDelta, ModificationType.MODIFIED, !hasBranch);
 
                   changeBuilders.add(artifactChangeBuilder);
                   modifiedArtifacts.add(artId);
@@ -133,8 +137,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
 
                attributeChangeBuilder =
                      new AttributeChangeBuilder(sourceBranch, ArtifactTypeManager.getType(artTypeId), sourceGamma,
-                           artId, toTransactionId, fromTransactionId, modificationType, !hasBranch, isValue, "",
-                           attrId, attrTypeId, artModType);
+                           artId, txDelta, modificationType, !hasBranch, isValue, "", attrId, attrTypeId, artModType);
 
                changeBuilders.add(attributeChangeBuilder);
                attributesWasValueCache.put(attrId, attributeChangeBuilder);

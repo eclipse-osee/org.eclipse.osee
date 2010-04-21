@@ -67,7 +67,7 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * Displays persisted changes made to an artifact.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class HistoryView extends ViewPart implements IActionable, IBranchEventListener, IRebuildMenuListener {
@@ -199,7 +199,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
          @Override
          public void menuShown(MenuEvent e) {
             List<?> selections = ((IStructuredSelection) xHistoryWidget.getXViewer().getSelection()).toList();
-            changeReportMenuItem.setEnabled(selections.size() == 1 && ((Change) selections.iterator().next()).getFromTransactionId().getTxType() != TransactionDetailsType.Baselined);
+            changeReportMenuItem.setEnabled(selections.size() == 1 && ((Change) selections.iterator().next()).getTxDelta().getStartTx().getTxType() != TransactionDetailsType.Baselined);
          }
 
       });
@@ -217,7 +217,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
 
             if (selectedObject instanceof Change) {
                try {
-                  ChangeView.open(((Change) selectedObject).getFromTransactionId());
+                  ChangeView.open(((Change) selectedObject).getTxDelta().getStartTx());
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }

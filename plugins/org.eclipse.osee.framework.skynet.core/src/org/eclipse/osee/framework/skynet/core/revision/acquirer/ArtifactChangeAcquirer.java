@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
+import org.eclipse.osee.framework.skynet.core.change.TransactionDelta;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -62,6 +63,9 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
                fromTransactionId = TransactionManager.getPriorTransaction(toTransactionId);
             }
          }
+
+         TransactionDelta txDelta = new TransactionDelta(fromTransactionId, toTransactionId);
+
          int count = 0;
          while (chStmt.next()) {
             count++;
@@ -71,7 +75,7 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
             ArtifactChangeBuilder artifactChangeBuilder =
                   new ArtifactChangeBuilder(getSourceBranch(),
                         ArtifactTypeManager.getType(chStmt.getInt("art_type_id")), chStmt.getInt("gamma_id"), artId,
-                        toTransactionId, fromTransactionId, modificationType, !hasBranch);
+                        txDelta, modificationType, !hasBranch);
 
             getArtIds().add(artId);
             getChangeBuilders().add(artifactChangeBuilder);

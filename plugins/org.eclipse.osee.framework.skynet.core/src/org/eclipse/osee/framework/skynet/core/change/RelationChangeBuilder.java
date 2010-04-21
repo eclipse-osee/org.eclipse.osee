@@ -1,8 +1,13 @@
-/*
- * Created on Sep 11, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -12,7 +17,6 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationType;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 
@@ -25,8 +29,8 @@ public class RelationChangeBuilder extends ChangeBuilder {
    private final String rationale;
    private final RelationType relationType;
 
-   public RelationChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical) {
-      super(branch, artifactType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, isHistorical);
+   public RelationChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical) {
+      super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
       this.rationale = rationale;
@@ -38,13 +42,12 @@ public class RelationChangeBuilder extends ChangeBuilder {
       Artifact bArtifact;
 
       if (isHistorical()) {
-         bArtifact = ArtifactCache.getHistorical(bArtId, getToTransactionId().getId());
+         bArtifact = ArtifactCache.getHistorical(bArtId, getTxDelta().getEndTx().getId());
       } else {
          bArtifact = ArtifactCache.getActive(bArtId, branch);
       }
-      return new RelationChange(branch, getArtifactType(), getSourceGamma(), getArtId(), getToTransactionId(),
-            getFromTransactionId(), getModType(), bArtId, relLinkId, rationale, relationType, isHistorical(),
-            loadArtifact(), bArtifact, null);
+      return new RelationChange(branch, getArtifactType(), getSourceGamma(), getArtId(), getTxDelta(), getModType(),
+            bArtId, relLinkId, rationale, relationType, isHistorical(), loadArtifact(), bArtifact, null);
    }
 
 }
