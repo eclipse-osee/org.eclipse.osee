@@ -9,6 +9,7 @@ import java.util.Collection;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -35,6 +36,11 @@ public class NotSaveable implements ISaveable {
    @Override
    public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
       return new Result("Not Saveable");
+   }
+
+   @Override
+   public Branch getBranch() throws OseeCoreException {
+      return null;
    }
 
 }

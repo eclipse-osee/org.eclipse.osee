@@ -51,7 +51,7 @@ public class CreateTestCoverageUnits extends XNavigateItemAction {
          if (!CoverageUtil.getBranchFromUser(false)) return;
          CoveragePackageArtifactListDialog dialog =
                new CoveragePackageArtifactListDialog(getName(), "Select Coverage Package");
-         dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts());
+         dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(CoverageUtil.getBranch()));
          if (dialog.open() == 0) {
             Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
             OseeCoveragePackageStore store = new OseeCoveragePackageStore(coveragePackageArtifact);

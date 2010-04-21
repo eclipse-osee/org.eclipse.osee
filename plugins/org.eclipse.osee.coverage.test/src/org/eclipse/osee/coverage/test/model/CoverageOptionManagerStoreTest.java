@@ -65,11 +65,11 @@ public class CoverageOptionManagerStoreTest {
 
    @Test
    public void testCoverageOptionManagerStore() throws OseeCoreException {
-      CoverageUtil.setBranch(BranchManager.getCommonBranch());
+      CoverageUtil.setNavigatorSelectedBranch(BranchManager.getCommonBranch());
       CoveragePackage coveragePackage =
             new CoveragePackage(CoverageOptionManagerStoreTest.class.getSimpleName(),
                   CoverageOptionManagerDefault.instance());
-      OseeCoveragePackageStore store = new OseeCoveragePackageStore(coveragePackage);
+      OseeCoveragePackageStore store = new OseeCoveragePackageStore(coveragePackage, BranchManager.getCommonBranch());
       store.save();
 
       CoverageOptionManagerStore optionStore = new CoverageOptionManagerStore(store);

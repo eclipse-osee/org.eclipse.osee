@@ -30,12 +30,14 @@ import org.eclipse.osee.coverage.test.import5.CoverageImport5TestBlam;
 import org.eclipse.osee.coverage.test.import6.CoverageImport6TestBlam;
 import org.eclipse.osee.coverage.test.import7.CoverageImport7TestBlam;
 import org.eclipse.osee.coverage.test.import8.CoverageImport8TestBlam;
+import org.eclipse.osee.coverage.test.import9.CoverageImport9TestBlam;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -56,10 +58,12 @@ public class CoveragePackageImportTest {
    public static CoveragePackage coveragePackage = null;
    public static CoverageImport coverageImport = null;
    private static boolean testWithDb = true;
+   private static Branch commonBranch = null;
 
    @BeforeClass
    public static void setUp() throws OseeCoreException {
       CoverageUtil.setIsInTest(true);
+      commonBranch = BranchManager.getCommonBranch();
       testCleanup();
    }
 
@@ -71,7 +75,7 @@ public class CoveragePackageImportTest {
 
    public static void testCleanup() throws OseeCoreException {
       if (testWithDb) {
-         CoverageUtil.setBranch(BranchManager.getCommonBranch());
+         CoverageUtil.setNavigatorSelectedBranch(commonBranch);
          CoverageTestUtil.cleanupCoverageTests();
       } else
          System.err.println("Test with Db Disabled...re-inenable");
@@ -142,6 +146,11 @@ public class CoveragePackageImportTest {
             return Result.TrueResult;
          }
 
+         @Override
+         public Branch getBranch() throws OseeCoreException {
+            return commonBranch;
+         }
+
       }, mergeManager.getMergeItems());
       Assert.assertEquals(1, resultData.getNumErrors());
 
@@ -165,6 +174,11 @@ public class CoveragePackageImportTest {
          @Override
          public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
             return Result.TrueResult;
+         }
+
+         @Override
+         public Branch getBranch() throws OseeCoreException {
+            return commonBranch;
          }
 
       }, mergeManager.getMergeItems());
@@ -200,13 +214,13 @@ public class CoveragePackageImportTest {
       CoveragePackage loadedCp = null;
       if (testWithDb) {
          // Test Persist of CoveragePackage
-         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage);
-         SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Coverage Package Save");
+         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
+         SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
          store.save(transaction);
          transaction.execute();
 
          // Test Load of Coverage Package
-         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
          CoverageTestUtil.registerAsTestArtifact(artifact);
          OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch()).addChild(artifact);
          artifact.persist();
@@ -290,6 +304,11 @@ public class CoveragePackageImportTest {
             return Result.TrueResult;
          }
 
+         @Override
+         public Branch getBranch() throws OseeCoreException {
+            return commonBranch;
+         }
+
       }, mergeManager.getMergeItems());
       Assert.assertEquals(0, resultData.getNumErrors());
 
@@ -305,13 +324,13 @@ public class CoveragePackageImportTest {
       CoveragePackage loadedCp = null;
       if (testWithDb) {
          // Test Persist of CoveragePackage
-         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage);
-         SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Coverage Package Save");
+         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
+         SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
          store.save(transaction);
          transaction.execute();
 
          // Test Load of Coverage Package
-         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
          CoverageTestUtil.registerAsTestArtifact(artifact);
          artifact.persist();
 
@@ -341,7 +360,7 @@ public class CoveragePackageImportTest {
 
       if (testWithDb) {
          // Test Load of Coverage Package
-         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
          CoverageTestUtil.registerAsTestArtifact(artifact);
          artifact.persist();
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
@@ -386,6 +405,11 @@ public class CoveragePackageImportTest {
             return Result.TrueResult;
          }
 
+         @Override
+         public Branch getBranch() throws OseeCoreException {
+            return commonBranch;
+         }
+
       }, mergeManager.getMergeItems());
       Assert.assertEquals(0, resultData.getNumErrors());
 
@@ -409,13 +433,13 @@ public class CoveragePackageImportTest {
       CoveragePackage loadedCp = null;
       if (testWithDb) {
          // Test Persist of CoveragePackage
-         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage);
-         SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Coverage Package Save");
+         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
+         SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
          store.save(transaction);
          transaction.execute();
 
          // Test Load of Coverage Package
-         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
          CoverageTestUtil.registerAsTestArtifact(artifact);
          artifact.persist();
 
@@ -451,7 +475,7 @@ public class CoveragePackageImportTest {
 
       if (testWithDb) {
          // Test Load of Coverage Package
-         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
          CoverageTestUtil.registerAsTestArtifact(artifact);
          artifact.persist();
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
@@ -497,6 +521,11 @@ public class CoveragePackageImportTest {
             return Result.TrueResult;
          }
 
+         @Override
+         public Branch getBranch() throws OseeCoreException {
+            return commonBranch;
+         }
+
       }, mergeManager.getMergeItems());
       Assert.assertEquals(0, resultData.getNumErrors());
 
@@ -520,13 +549,13 @@ public class CoveragePackageImportTest {
       CoveragePackage loadedCp = null;
       if (testWithDb) {
          // Test Persist of CoveragePackage
-         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage);
-         SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Coverage Package Save");
+         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
+         SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
          store.save(transaction);
          transaction.execute();
 
          // Test Load of Coverage Package
-         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
          CoverageTestUtil.registerAsTestArtifact(artifact);
          artifact.persist();
 
@@ -563,7 +592,7 @@ public class CoveragePackageImportTest {
 
       if (testWithDb) {
          // Test Load of Coverage Package
-         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
          CoverageTestUtil.registerAsTestArtifact(artifact);
          artifact.persist();
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
@@ -615,6 +644,11 @@ public class CoveragePackageImportTest {
             return Result.TrueResult;
          }
 
+         @Override
+         public Branch getBranch() throws OseeCoreException {
+            return commonBranch;
+         }
+
       }, mergeManager.getMergeItems());
       Assert.assertEquals(0, resultData.getNumErrors());
 
@@ -630,13 +664,13 @@ public class CoveragePackageImportTest {
       CoveragePackage loadedCp = null;
       if (testWithDb) {
          // Test Persist of CoveragePackage
-         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage);
-         SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Coverage Package Save");
+         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
+         SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
          store.save(transaction);
          transaction.execute();
 
          // Test Load of Coverage Package
-         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
          CoverageTestUtil.registerAsTestArtifact(artifact);
          artifact.persist();
 
@@ -665,7 +699,7 @@ public class CoveragePackageImportTest {
 
       if (testWithDb) {
          // Test Load of Coverage Package
-         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
          CoverageTestUtil.registerAsTestArtifact(artifact);
          artifact.persist();
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
@@ -725,6 +759,11 @@ public class CoveragePackageImportTest {
             return Result.TrueResult;
          }
 
+         @Override
+         public Branch getBranch() throws OseeCoreException {
+            return commonBranch;
+         }
+
       }, mergeManager.getMergeItems());
       Assert.assertEquals(0, resultData.getNumErrors());
 
@@ -753,13 +792,13 @@ public class CoveragePackageImportTest {
       CoveragePackage loadedCp = null;
       if (testWithDb) {
          // Test Persist of CoveragePackage
-         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage);
-         SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Coverage Package Save");
+         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
+         SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
          store.save(transaction);
          transaction.execute();
 
          // Test Load of Coverage Package
-         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
          CoverageTestUtil.registerAsTestArtifact(artifact);
          artifact.persist();
 
@@ -779,8 +818,7 @@ public class CoveragePackageImportTest {
       Assert.assertEquals(67, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       // Make sure clear is not there anymore
-      powerUnit2CoverageUnit =
-            (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(coveragePackage, "PowerUnit2.java");
+      powerUnit2CoverageUnit = (CoverageUnit) CoverageTestUtil.getFirstCoverageByName(loadedCp, "PowerUnit2.java");
       Assert.assertNotNull(powerUnit2CoverageUnit);
       found = false;
       for (CoverageUnit childCoverageUnit : powerUnit2CoverageUnit.getCoverageUnits()) {
@@ -789,17 +827,16 @@ public class CoveragePackageImportTest {
             break;
          }
       }
-      Assert.assertFalse("clear CoverageUnit should have been deleted", found);
+      Assert.assertFalse("\"clear\" CoverageUnit should have been deleted", found);
 
       // Ensure that the artifact was deleted and not just relation deletion
       try {
-         ArtifactQuery.getArtifactFromId(clearCoverageUnitForDeletion.getGuid(), CoverageUtil.getBranch());
+         ArtifactQuery.getArtifactFromId(clearCoverageUnitForDeletion.getGuid(), commonBranch);
          Assert.fail("clear CoverageUnit should no longer exist");
       } catch (ArtifactDoesNotExist ex) {
          // do nothing, this exception should have been thrown
       }
-      Artifact clearArt =
-            ArtifactQuery.getArtifactFromId(clearCoverageUnitForDeletion.getGuid(), CoverageUtil.getBranch(), true);
+      Artifact clearArt = ArtifactQuery.getArtifactFromId(clearCoverageUnitForDeletion.getGuid(), commonBranch, true);
       Assert.assertNotNull("clear CoverageUnit should exist if search for deleted == true", clearArt);
 
    }
@@ -813,7 +850,7 @@ public class CoveragePackageImportTest {
 
       if (testWithDb) {
          // Test Load of Coverage Package
-         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
          CoverageTestUtil.registerAsTestArtifact(artifact);
          artifact.persist();
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
@@ -887,6 +924,11 @@ public class CoveragePackageImportTest {
             return Result.TrueResult;
          }
 
+         @Override
+         public Branch getBranch() throws OseeCoreException {
+            return commonBranch;
+         }
+
       }, mergeManager.getMergeItems());
       Assert.assertEquals(0, resultData.getNumErrors());
 
@@ -902,13 +944,13 @@ public class CoveragePackageImportTest {
       CoveragePackage loadedCp = null;
       if (testWithDb) {
          // Test Persist of CoveragePackage
-         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage);
-         SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Coverage Package Save");
+         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
+         SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
          store.save(transaction);
          transaction.execute();
 
          // Test Load of Coverage Package
-         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
          CoverageTestUtil.registerAsTestArtifact(artifact);
          artifact.persist();
 
@@ -960,7 +1002,7 @@ public class CoveragePackageImportTest {
 
       if (testWithDb) {
          // Test Load of Coverage Package
-         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
          CoverageTestUtil.registerAsTestArtifact(artifact);
          artifact.persist();
          OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
@@ -1032,6 +1074,11 @@ public class CoveragePackageImportTest {
             return Result.TrueResult;
          }
 
+         @Override
+         public Branch getBranch() throws OseeCoreException {
+            return commonBranch;
+         }
+
       }, mergeManager.getMergeItems());
       Assert.assertEquals(0, resultData.getNumErrors());
 
@@ -1047,13 +1094,13 @@ public class CoveragePackageImportTest {
       CoveragePackage loadedCp = null;
       if (testWithDb) {
          // Test Persist of CoveragePackage
-         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage);
-         SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Coverage Package Save");
+         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
+         SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
          store.save(transaction);
          transaction.execute();
 
          // Test Load of Coverage Package
-         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageUtil.getBranch());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
          CoverageTestUtil.registerAsTestArtifact(artifact);
          artifact.persist();
 
@@ -1090,6 +1137,111 @@ public class CoveragePackageImportTest {
       Assert.assertEquals("File Contents should be same pre and post save", postLoadFileContents, postFileContents);
       Assert.assertFalse("\"Navigate Here\" should NOT exist in loaded file contents",
             postLoadFileContents.contains("Navigate Here"));
+
+   }
+
+   @Test
+   // Re-import; Method update for NavigationButton2.getImage.line2 and line5
+   public void testImport9() throws Exception {
+      CoverageImport9TestBlam coverageImport9TestBlam = new CoverageImport9TestBlam();
+      coverageImport = coverageImport9TestBlam.run(null);
+      Assert.assertNotNull(coverageImport);
+
+      if (testWithDb) {
+         // Test Load of Coverage Package
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
+         CoverageTestUtil.registerAsTestArtifact(artifact);
+         artifact.persist();
+         OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
+         Assert.assertNotNull(packageStore.getArtifact(false));
+         coveragePackage = packageStore.getCoveragePackage();
+      }
+
+      // Test MergeManager
+      Assert.assertNotNull(coveragePackage);
+      MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
+      Assert.assertEquals(1, mergeManager.getMergeItems().size());
+      Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
+      int numRename = 0, numDeleted = 0;
+      for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems()) {
+         if (mergeItem.getMergeType() == MergeType.CI_Renamed)
+            numRename++;
+         else if (mergeItem.getMergeType() == MergeType.CI_Delete)
+            numDeleted++;
+         else
+            throw new OseeStateException(String.format("Unexpected merge type [%s] for CI_Changes group",
+                  mergeItem.getMergeType()));
+      }
+      Assert.assertEquals(2, numRename);
+      Assert.assertEquals(1, numDeleted);
+
+      MergeImportManager importManager = new MergeImportManager(mergeManager);
+      XResultData resultData = importManager.importItems(new ISaveable() {
+
+         @Override
+         public Result isEditable() {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result save() throws OseeCoreException {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Branch getBranch() throws OseeCoreException {
+            return commonBranch;
+         }
+
+      }, mergeManager.getMergeItems());
+      Assert.assertEquals(0, resultData.getNumErrors());
+
+      // CoveragePackage should now have imported results
+      Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered().size());
+      Assert.assertEquals(134, coveragePackage.getCoverageItems().size());
+      Assert.assertEquals(50, coveragePackage.getCoveragePercent());
+      Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
+      Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
+      Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
+      Assert.assertEquals(66, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+
+      CoveragePackage loadedCp = null;
+      if (testWithDb) {
+         // Test Persist of CoveragePackage
+         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
+         SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
+         store.save(transaction);
+         transaction.execute();
+
+         // Test Load of Coverage Package
+         Artifact artifact = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), commonBranch);
+         CoverageTestUtil.registerAsTestArtifact(artifact);
+         artifact.persist();
+
+         OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
+         Assert.assertNotNull(packageStore.getArtifact(false));
+         loadedCp = packageStore.getCoveragePackage();
+      } else {
+         loadedCp = coveragePackage;
+      }
+
+      Assert.assertEquals(68, loadedCp.getCoverageItemsCovered().size());
+      Assert.assertEquals(134, loadedCp.getCoverageItems().size());
+      Assert.assertEquals(50, loadedCp.getCoveragePercent());
+      Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
+      Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
+      Assert.assertEquals(68, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
+      Assert.assertEquals(66, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
    }
 }

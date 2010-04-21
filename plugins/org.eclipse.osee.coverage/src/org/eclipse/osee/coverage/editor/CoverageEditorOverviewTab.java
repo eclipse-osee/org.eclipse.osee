@@ -96,8 +96,16 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       }
 
       rd.addRaw(AHTML.endMultiColumnTable());
+      String branchName = null;
+      try {
+         branchName = coverageEditor.getBranch().getName();
+      } catch (Exception ex) {
+         branchName = "Exception: " + ex.getLocalizedMessage();
+      }
+      rd.addRaw(AHTML.newline());
+      rd.addRaw(AHTML.getLabelValueStr("\nEditor Branch", branchName));
       if (coveragePackageBase.getLog() != null) {
-         rd.log(AHTML.newline() + AHTML.bold("Log") + AHTML.newline());
+         rd.log(AHTML.newline() + AHTML.bold("Log:") + AHTML.newline());
          rd.addRaw(coveragePackageBase.getLog().getReport("").getManipulatedHtml());
       }
 

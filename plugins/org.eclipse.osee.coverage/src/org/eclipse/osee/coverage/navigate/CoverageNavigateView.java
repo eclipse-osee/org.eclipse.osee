@@ -81,7 +81,7 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
             try {
                Branch selectedBranch = xBranchSelectWidget.getData();
                if (selectedBranch != null) {
-                  CoverageUtil.setBranch(selectedBranch);
+                  CoverageUtil.setNavigatorSelectedBranch(selectedBranch);
                }
             } catch (Exception ex) {
                OseeLog.log(getClass(), Level.SEVERE, ex);

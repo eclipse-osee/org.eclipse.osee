@@ -18,6 +18,8 @@ public enum MergeType {
    Delete,
    // This will result in adding this and all children with all attributes
    CI_Add,
+   // This will result in changing existing coverage method to new one imported
+   CI_Method_Update,
    // This will result in deleting this child and re-ordering
    CI_Delete,
    // This will result in changing name of package to match import, clearing rationale and setting coverage method 

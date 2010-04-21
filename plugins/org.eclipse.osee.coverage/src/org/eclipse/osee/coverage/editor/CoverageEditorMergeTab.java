@@ -45,6 +45,7 @@ import org.eclipse.osee.coverage.util.NotSaveable;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -167,7 +168,12 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
             XResultData rd = new MergeImportManager(mergeManager).importItems(this, mergeItems);
             rd.report("Import");
             if (dialog.isChecked()) {
-               SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Save Import Record");
+               Branch branch = coverageEditor.getBranch();
+               if (branch == null) {
+                  AWorkbench.popup("Can't determine branch");
+                  return;
+               }
+               SkynetTransaction transaction = new SkynetTransaction(branch, "Save Import Record");
                saveImportRecord(transaction, coverageImport);
                transaction.execute();
             }
@@ -339,7 +345,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
          try {
             Artifact artifact = ((CoverageEditorInput) coverageEditor.getEditorInput()).getCoveragePackageArtifact();
             if (artifact != null) {
-               CoverageUtil.setBranch(artifact.getBranch());
+               CoverageUtil.setNavigatorSelectedBranch(artifact.getBranch());
             } else {
                if (!CoverageUtil.getBranchFromUser(true)) {
                   return;
@@ -399,7 +405,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
    @Override
    public Result save() throws OseeCoreException {
-      OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage);
+      OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, coverageEditor.getBranch());
       Result result = store.save();
       if (result.isFalse()) return result;
       Artifact artifact = store.getArtifact(false);
@@ -409,7 +415,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
    @Override
    public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
-      OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage);
+      OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, coverageEditor.getBranch());
       Result result = store.save(coverages);
       if (result.isFalse()) return result;
       Artifact artifact = store.getArtifact(false);
@@ -419,8 +425,13 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
    @Override
    public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
-      OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage);
+      OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, transaction.getBranch());
       Result result = store.saveImportRecord(transaction, coverageImport);
       return result;
+   }
+
+   @Override
+   public Branch getBranch() throws OseeCoreException {
+      return coverageEditor.getBranch();
    }
 }

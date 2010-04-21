@@ -55,7 +55,7 @@ public class CoverageUtil {
          if (dialog.open() != 0) {
             return false;
          }
-         CoverageUtil.setBranch(dialog.getSelected());
+         CoverageUtil.setNavigatorSelectedBranch(dialog.getSelected());
       }
       return true;
    }
@@ -138,7 +138,7 @@ public class CoverageUtil {
       return branch;
    }
 
-   public static void setBranch(Branch branch) {
+   public static void setNavigatorSelectedBranch(Branch branch) {
       CoverageUtil.branch = branch;
       for (Listener listener : branchChangeListeners) {
          listener.handleEvent(null);

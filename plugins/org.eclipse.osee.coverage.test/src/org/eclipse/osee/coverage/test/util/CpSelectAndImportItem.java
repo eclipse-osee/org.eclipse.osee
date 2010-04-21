@@ -39,7 +39,8 @@ public class CpSelectAndImportItem extends XNavigateItemAction {
       CoverageUtil.getBranchFromUser(false);
       CoveragePackageArtifactListDialog dialog =
             new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
-      dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts());
+      if (!CoverageUtil.getBranchFromUser(false)) return;
+      dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(CoverageUtil.getBranch()));
       if (dialog.open() != 0) return;
       Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
       CoveragePackage coveragePackage = OseeCoveragePackageStore.get(coveragePackageArtifact);

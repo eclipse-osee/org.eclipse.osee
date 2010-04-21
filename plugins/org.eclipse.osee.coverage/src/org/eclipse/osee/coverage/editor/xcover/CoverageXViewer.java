@@ -38,6 +38,7 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -289,6 +290,11 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    @Override
    public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
       return new Result(false, "Invalid for this.");
+   }
+
+   @Override
+   public Branch getBranch() throws OseeCoreException {
+      return xCoverageViewer.getSaveable().getBranch();
    }
 
 }

@@ -41,7 +41,7 @@ public class CoverageItemPersistTest {
 
    @BeforeClass
    public static void testSetup() throws OseeCoreException {
-      CoverageUtil.setBranch(BranchManager.getCommonBranch());
+      CoverageUtil.setNavigatorSelectedBranch(BranchManager.getCommonBranch());
       CoverageTestUtil.cleanupCoverageTests();
       // If this fails, cleanup didn't happen.  Must DbInit
       Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
@@ -64,33 +64,32 @@ public class CoverageItemPersistTest {
    @Test
    public void testGetArtifact() throws OseeCoreException {
       try {
-         ArtifactQuery.getArtifactFromId(parentGuid, CoverageUtil.getBranch());
+         ArtifactQuery.getArtifactFromId(parentGuid, BranchManager.getCommonBranch());
          Assert.fail("Artifact should not yet exist");
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
 
-      Artifact artifact = (new OseeCoverageUnitStore(parentCu)).getArtifact(false);
+      Artifact artifact = (new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch())).getArtifact(false);
       Assert.assertNull("Artifact should not have been created", artifact);
-      artifact = (new OseeCoverageUnitStore(parentCu)).getArtifact(true);
+      artifact = (new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch())).getArtifact(true);
       CoverageTestUtil.registerAsTestArtifact(artifact);
       artifact.persist();
       Assert.assertNotNull("Artifact should have been created", artifact);
    }
 
    /**
-    * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageItem#save()}
+    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#save(SkynetTransaction)}
     */
    @Test
    public void testSave() throws OseeCoreException {
       // Since test units are stored through provider, ensure they are same before and after save
       Assert.assertEquals(10, ci.getTestUnits().size());
 
-      Artifact artifact = (new OseeCoverageUnitStore(parentCu)).getArtifact(true);
+      Artifact artifact = (new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch())).getArtifact(true);
       Assert.assertNotNull(artifact);
-      SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Save CoverageItem");
-      (new OseeCoverageUnitStore(parentCu)).save(transaction);
+      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Save CoverageItem");
+      (new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch())).save(transaction);
       transaction.execute();
 
       Assert.assertEquals(10, ci.getTestUnits().size());
@@ -101,7 +100,7 @@ public class CoverageItemPersistTest {
     */
    @Test
    public void testGetArtifact2() throws OseeCoreException {
-      OseeCoverageUnitStore.get(parentCu).load(CoverageOptionManagerDefault.instance());
+      OseeCoverageUnitStore.get(parentCu, BranchManager.getCommonBranch()).load(CoverageOptionManagerDefault.instance());
       CoverageItem ci = parentCu.getCoverageItems().iterator().next();
       ci.setTestUnitProvider(DbTestUnitProvider.instance());
       Assert.assertEquals(guid, ci.getGuid());
@@ -120,12 +119,12 @@ public class CoverageItemPersistTest {
     */
    @Test
    public void testDelete() throws OseeCoreException {
-      Artifact artifact = (new OseeCoverageUnitStore(parentCu)).getArtifact(false);
+      Artifact artifact = (new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch())).getArtifact(false);
       Assert.assertNotNull(artifact);
-      SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Save CoverageItem");
-      (new OseeCoverageUnitStore(parentCu)).delete(transaction, false);
+      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Save CoverageItem");
+      (new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch())).delete(transaction, false);
       transaction.execute();
-      artifact = (new OseeCoverageUnitStore(parentCu)).getArtifact(false);
+      artifact = (new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch())).getArtifact(false);
       Assert.assertNull(artifact);
       Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
    }

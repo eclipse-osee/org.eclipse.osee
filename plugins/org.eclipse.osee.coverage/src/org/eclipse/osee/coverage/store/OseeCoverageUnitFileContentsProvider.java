@@ -10,6 +10,7 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverageUnitFileContentsProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -18,19 +19,24 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class OseeCoverageUnitFileContentsProvider implements ICoverageUnitFileContentsProvider {
 
-   private static OseeCoverageUnitFileContentsProvider instance = new OseeCoverageUnitFileContentsProvider();
+   private static OseeCoverageUnitFileContentsProvider instance;
+   private final Branch branch;
 
-   private OseeCoverageUnitFileContentsProvider() {
+   private OseeCoverageUnitFileContentsProvider(Branch branch) {
+      this.branch = branch;
    }
 
-   public static OseeCoverageUnitFileContentsProvider getInstance() {
+   public static OseeCoverageUnitFileContentsProvider getInstance(Branch branch) {
+      if (instance == null) {
+         instance = new OseeCoverageUnitFileContentsProvider(branch);
+      }
       return instance;
    }
 
    @Override
    public String getFileContents(CoverageUnit coverageUnit) {
       try {
-         OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit);
+         OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit, branch);
          Artifact artifact = store.getArtifact(false);
          if (artifact != null) {
             return artifact.getSoleAttributeValue(CoverageAttributes.FILE_CONTENTS.getStoreName(), "");
@@ -44,7 +50,7 @@ public class OseeCoverageUnitFileContentsProvider implements ICoverageUnitFileCo
    @Override
    public void setFileContents(CoverageUnit coverageUnit, String fileContents) {
       try {
-         OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit);
+         OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit, branch);
          Artifact artifact = store.getArtifact(false);
          if (artifact != null) {
             artifact.setSoleAttributeValue(CoverageAttributes.FILE_CONTENTS.getStoreName(), fileContents);

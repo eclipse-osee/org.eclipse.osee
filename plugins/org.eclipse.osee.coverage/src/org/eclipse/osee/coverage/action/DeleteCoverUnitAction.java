@@ -15,7 +15,6 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
-import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -68,13 +67,14 @@ public class DeleteCoverUnitAction extends Action {
             "Delete Coverage Units")) {
          try {
             SkynetTransaction transaction =
-                  new SkynetTransaction(CoverageUtil.getBranch(), "Coverage - Delete Coverage Unit");
+                  new SkynetTransaction(saveable.getBranch(), "Coverage - Delete Coverage Unit");
             List<ICoverage> deleteItems = new ArrayList<ICoverage>();
             for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
                if (coverageItem.getParent() instanceof ICoverageUnitProvider) {
                   ((ICoverageUnitProvider) coverageItem.getParent()).removeCoverageUnit((CoverageUnit) coverageItem);
                   deleteItems.add(coverageItem);
-                  new OseeCoverageUnitStore((CoverageUnit) coverageItem).delete(transaction, false);
+                  new OseeCoverageUnitStore((CoverageUnit) coverageItem, saveable.getBranch()).delete(transaction,
+                        false);
                }
             }
             transaction.execute();

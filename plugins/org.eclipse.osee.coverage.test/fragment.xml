@@ -55,5 +55,11 @@
             className="org.eclipse.osee.coverage.test.import8.CoverageImport8TestBlam">
       </Operation>
    </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.coverage.test.import9.CoverageImport9TestBlam">
+      </Operation>
+   </extension>
 
 </fragment>

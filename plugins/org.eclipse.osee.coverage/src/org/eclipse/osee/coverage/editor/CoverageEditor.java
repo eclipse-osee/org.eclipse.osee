@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -322,4 +323,11 @@ public class CoverageEditor extends FormEditor implements IActionable {
       return coverageEditorOverviewTab;
    }
 
+   public Branch getBranch() throws OseeCoreException {
+      Artifact artifact = getCoverageEditorInput().getCoveragePackageArtifact();
+      if (artifact != null) {
+         return artifact.getBranch();
+      }
+      return null;
+   }
 }

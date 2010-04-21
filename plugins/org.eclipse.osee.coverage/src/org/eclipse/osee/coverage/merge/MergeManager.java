@@ -59,7 +59,7 @@ public class MergeManager {
    }
 
    private void processImportCoverage(ICoverage importCoverage, List<IMergeItem> mergeItems, XResultData resultData) throws OseeCoreException {
-      boolean debug = false;
+      boolean debug = true;
       if (debug) {
          System.err.println("Merging check " + importCoverage);
       }
@@ -108,7 +108,10 @@ public class MergeManager {
             if (importCoverage.getGuid().equals("AAte3i2bH3L1MvsFMqAA")) {
                System.out.println("here");
             }
-            if (importCoverage.getName().equals("FILTER_FAILURES")) {
+            if (importCoverage.getName().equals("NavigationButton2.java")) {
+               System.out.println("here");
+            }
+            if (importCoverage.getName().equals("getImage")) {
                System.out.println("here");
             }
          }
@@ -242,6 +245,12 @@ public class MergeManager {
             unMatchedImportCoverageItems.remove(childICoverage);
          }
 
+         // Check for method change
+         else if (isCoverageItemMethodUpdate(childMatchItem)) {
+            groupMergeItems.add(new MergeItem(MergeType.CI_Method_Update, null, childICoverage, false));
+            unMatchedImportCoverageItems.remove(childICoverage);
+         }
+
       }
 
       // Check for moves in any items left unhandled by above renames and adds
@@ -280,6 +289,15 @@ public class MergeManager {
          mergeItems.add(new MergeItemGroup(MergeType.CI_Changes, importCoverage, groupMergeItems, !unMergeableExists));
       }
 
+   }
+
+   private boolean isCoverageItemMethodUpdate(MatchItem childMatchItem) {
+      ICoverage importItem = childMatchItem.getImportItem();
+      ICoverage packageItem = childMatchItem.getPackageItem();
+      // Only valid for coverage items
+      if (!(importItem instanceof CoverageItem)) return false;
+      System.err.println("MergeManager: implement this");
+      return false;
    }
 
    private boolean isCoverageItemAdded(Collection<? extends ICoverage> packageItemChildren, ICoverage importItemChild) {

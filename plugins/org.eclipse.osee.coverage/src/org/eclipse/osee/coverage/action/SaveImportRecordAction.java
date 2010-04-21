@@ -10,7 +10,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
-import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -50,7 +49,7 @@ public class SaveImportRecordAction extends Action {
             "Overwrite coverage import record with current import information?")) {
          try {
             SkynetTransaction transaction =
-                  new SkynetTransaction(CoverageUtil.getBranch(), "Coverage - Save Import Record");
+                  new SkynetTransaction(saveable.getBranch(), "Coverage - Save Import Record");
             saveable.saveImportRecord(transaction, coverageImport);
             transaction.execute();
          } catch (OseeCoreException ex) {

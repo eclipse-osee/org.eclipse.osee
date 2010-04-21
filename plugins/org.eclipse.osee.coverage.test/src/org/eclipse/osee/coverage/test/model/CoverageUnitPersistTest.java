@@ -35,6 +35,7 @@ import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -64,7 +65,7 @@ public class CoverageUnitPersistTest {
    @BeforeClass
    @AfterClass
    public static void testCleanup() throws OseeCoreException {
-      CoverageUtil.setBranch(BranchManager.getCommonBranch());
+      CoverageUtil.setNavigatorSelectedBranch(BranchManager.getCommonBranch());
       CoverageTestUtil.cleanupCoverageTests();
    }
 
@@ -115,7 +116,8 @@ public class CoverageUnitPersistTest {
 
          @Override
          public Result save() throws OseeCoreException {
-            OseeCoveragePackageStore store = OseeCoveragePackageStore.get(saveCoveragePackage);
+            OseeCoveragePackageStore store =
+                  OseeCoveragePackageStore.get(saveCoveragePackage, BranchManager.getCommonBranch());
             store.save();
             Artifact artifact = store.getArtifact(false);
             CoverageTestUtil.registerAsTestArtifact(artifact, true);
@@ -137,12 +139,17 @@ public class CoverageUnitPersistTest {
          public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) throws OseeCoreException {
             return null;
          }
+
+         @Override
+         public Branch getBranch() throws OseeCoreException {
+            return BranchManager.getCommonBranch();
+         }
       }, mergeItems);
 
       // TEST LOAD
       Artifact artifact =
             ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
-                  CoverageUtil.getBranch());
+                  BranchManager.getCommonBranch());
       loadCoveragePackage = OseeCoveragePackageStore.get(artifact);
       Assert.assertEquals(saveCoveragePackage.getName(), loadCoveragePackage.getName());
       Assert.assertEquals(saveCoveragePackage.getNamespace(), loadCoveragePackage.getNamespace());
@@ -154,14 +161,14 @@ public class CoverageUnitPersistTest {
       // TEST DELETE
       artifact =
             ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
-                  CoverageUtil.getBranch());
+                  BranchManager.getCommonBranch());
       Assert.assertNotNull(artifact);
       OseeCoveragePackageStore store = new OseeCoveragePackageStore(artifact);
       store.delete(false);
       try {
          artifact =
                ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoveragePackage, "CU Test",
-                     CoverageUtil.getBranch());
+                     BranchManager.getCommonBranch());
          Assert.assertNotNull("CU Test should not have been found", artifact);
       } catch (ArtifactDoesNotExist ex) {
          //do nothing
@@ -184,13 +191,13 @@ public class CoverageUnitPersistTest {
          item.addTestUnitName("Test Unit " + x);
       }
       Assert.assertEquals(10, item.getTestUnits().size());
-      OseeCoverageUnitStore store = new OseeCoverageUnitStore(unit);
+      OseeCoverageUnitStore store = new OseeCoverageUnitStore(unit, BranchManager.getCommonBranch());
       Result result = store.save();
       Assert.assertTrue(result.isTrue());
 
       Artifact artifact =
             ArtifactQuery.getArtifactFromTypeAndName(CoverageArtifactTypes.CoverageUnit, cuName,
-                  CoverageUtil.getBranch());
+                  BranchManager.getCommonBranch());
       Assert.assertNotNull(artifact);
       OseeCoverageUnitStore dbStore =
             new OseeCoverageUnitStore(null, artifact, CoverageOptionManagerDefault.instance());

@@ -55,7 +55,7 @@ public class ConfigureCoverageMethodsAction extends Action {
          }
          CoveragePackageArtifactListDialog dialog =
                new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
-         dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts());
+         dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(CoverageUtil.getBranch()));
          if (dialog.open() == 0) {
             Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
             OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(coveragePackageArtifact);
