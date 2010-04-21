@@ -205,8 +205,7 @@ public class ArtifactPasteOperationTest {
       handler.setConflictedArtifact(itemsToCopy.get(0));
 
       ArtifactPasteOperation op = new ArtifactPasteOperation(config, destination, itemsToCopy, handler);
-      Operations.executeWork(op, new NullProgressMonitor(), -1);
-      Operations.checkForErrorStatus(op.getStatus());
+      Operations.executeWorkAndCheckStatus(op, new NullProgressMonitor(), -1);
    }
 
    private final static class MockArtifactNameConflictHandler extends ArtifactNameConflictHandler {

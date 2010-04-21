@@ -79,8 +79,7 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
 
    private void executeCheck(SummaryTab data, DatabaseHealthOperation operation, File reportsDirectory) throws Exception {
       operation.setFixOperationEnabled(false);
-      Operations.executeWork(operation, new NullProgressMonitor(), -1);
-      Operations.checkForErrorStatus(operation.getStatus());
+      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1);
 
       List<String> summaryLinks = new ArrayList<String>();
       int count = operation.getItemsToFixCount();

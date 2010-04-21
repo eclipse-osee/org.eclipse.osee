@@ -32,8 +32,7 @@ public class ConsolidateRelations extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       IOperation operation = new ConsolidateRelationsTxOperation(SkynetGuiPlugin.getInstance());
-      Operations.executeWork(operation, monitor, -1);
-      Operations.checkForErrorStatus(operation.getStatus());
+      Operations.executeWorkAndCheckStatus(operation, monitor, -1);
    }
 
    @Override

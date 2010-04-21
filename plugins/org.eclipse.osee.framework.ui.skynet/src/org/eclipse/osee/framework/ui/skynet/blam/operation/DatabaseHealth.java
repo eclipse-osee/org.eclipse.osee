@@ -67,8 +67,7 @@ public class DatabaseHealth extends AbstractBlam {
             dbHealthOperation.addOperation(DatabaseHealthOpsExtensionManager.getVerifyOperationByName(taskName), false);
          }
       }
-      Operations.executeWork(dbHealthOperation, monitor, -1);
-      Operations.checkForErrorStatus(dbHealthOperation.getStatus());
+      Operations.executeWorkAndCheckStatus(dbHealthOperation, monitor, -1);
       println(dbHealthOperation.getStatus().getMessage());
    }
 
