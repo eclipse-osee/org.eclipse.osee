@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Level;
+
+import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.OteProperties;
@@ -52,6 +54,7 @@ public class Activator implements BundleActivator, RuntimeLibraryListener {
    private StandardShell stdShell;
    private ServiceRegistration consoleCommandRegistration;
    private ServiceRegistration commandDistributerRegistration;
+private ServiceDependencyTracker serviceDependencyTracker;
    
    public void start(BundleContext context) throws Exception {
       activator = this;
@@ -70,12 +73,13 @@ public class Activator implements BundleActivator, RuntimeLibraryListener {
       commandDistributer = new CommandDistributerImpl();
       commandDistributerRegistration = context.registerService(CommandDistributer.class.getName(), commandDistributer, new Hashtable());
       
-      
-      
+      serviceDependencyTracker = new ServiceDependencyTracker(bundleContext, new StatusBoardRegistrationHandler());
+      serviceDependencyTracker.open();
    }
 
    public void stop(BundleContext context) throws Exception {
-      commandDistributer.shutdown();
+	   serviceDependencyTracker.close();
+	   commandDistributer.shutdown();
       closeAllValidServiceTrackers();
       statusBoardRegistration.unregister();
       unregisterTestEnvironment();
