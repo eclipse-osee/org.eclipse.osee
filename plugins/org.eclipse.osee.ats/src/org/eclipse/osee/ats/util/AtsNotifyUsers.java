@@ -90,7 +90,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                   originator.getEmail(), originator.getName()));
          } else if (!UserManager.getUser().equals(originator)) OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                Arrays.asList(originator), getIdString(sma), NotifyType.Originator.name(), String.format(
-                     "You have been set as the originator of [%s] state [%s] titled ", sma.getArtifactTypeName(),
+                     "You have been set as the originator of [%s] state [%s] titled [%s]", sma.getArtifactTypeName(),
                      sma.getStateMgr().getCurrentStateName(), sma.getName())));
       }
       if (types.contains(NotifyType.Assigned)) {
