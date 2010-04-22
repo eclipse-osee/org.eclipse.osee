@@ -47,7 +47,7 @@ public final class ChangeManager {
    private final static RevisionChangeLoader revsionChangeLoader = new RevisionChangeLoader();
 
    private ChangeManager() {
-      // this constructor is defined to prevent the default constructor from allowing public construction
+      // this empty constructor exists to prevent the default constructor from allowing public construction
    }
 
    public static Collection<Pair<Artifact, Artifact>> getCompareArtifacts(Collection<Change> changes) {
