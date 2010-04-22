@@ -114,7 +114,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          items.add(coverageItem.toXml());
       }
       artifact.setAttributeValues(CoverageAttributes.COVERAGE_ITEM.getStoreName(), items);
-      if (coverageUnit.getNotes() != null) {
+      if (Strings.isValid(coverageUnit.getNotes())) {
          artifact.setSoleAttributeFromString(CoverageAttributes.NOTES.getStoreName(), coverageUnit.getNotes());
       }
       if (Strings.isValid(coverageUnit.getNamespace())) {

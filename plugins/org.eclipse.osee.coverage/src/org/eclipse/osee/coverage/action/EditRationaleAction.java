@@ -82,7 +82,7 @@ public class EditRationaleAction extends Action {
             }
          }
          try {
-            saveable.save();
+            saveable.save(coveragesToSave);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             return;

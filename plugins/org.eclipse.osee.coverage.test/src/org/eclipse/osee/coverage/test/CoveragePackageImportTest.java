@@ -1162,18 +1162,15 @@ public class CoveragePackageImportTest {
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
       Assert.assertEquals(1, mergeManager.getMergeItems().size());
       Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
-      int numRename = 0, numDeleted = 0;
+      int numUpdateMethod = 0;
       for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems()) {
-         if (mergeItem.getMergeType() == MergeType.CI_Renamed)
-            numRename++;
-         else if (mergeItem.getMergeType() == MergeType.CI_Delete)
-            numDeleted++;
+         if (mergeItem.getMergeType() == MergeType.CI_Method_Update)
+            numUpdateMethod++;
          else
             throw new OseeStateException(String.format("Unexpected merge type [%s] for CI_Changes group",
                   mergeItem.getMergeType()));
       }
-      Assert.assertEquals(2, numRename);
-      Assert.assertEquals(1, numDeleted);
+      Assert.assertEquals(2, numUpdateMethod);
 
       MergeImportManager importManager = new MergeImportManager(mergeManager);
       XResultData resultData = importManager.importItems(new ISaveable() {
@@ -1207,13 +1204,13 @@ public class CoveragePackageImportTest {
       Assert.assertEquals(0, resultData.getNumErrors());
 
       // CoveragePackage should now have imported results
-      Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered().size());
+      Assert.assertEquals(70, coveragePackage.getCoverageItemsCovered().size());
       Assert.assertEquals(134, coveragePackage.getCoverageItems().size());
-      Assert.assertEquals(50, coveragePackage.getCoveragePercent());
+      Assert.assertEquals(52, coveragePackage.getCoveragePercent());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
-      Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(66, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(70, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
+      Assert.assertEquals(64, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
       CoveragePackage loadedCp = null;
       if (testWithDb) {
@@ -1235,13 +1232,13 @@ public class CoveragePackageImportTest {
          loadedCp = coveragePackage;
       }
 
-      Assert.assertEquals(68, loadedCp.getCoverageItemsCovered().size());
+      Assert.assertEquals(70, loadedCp.getCoverageItemsCovered().size());
       Assert.assertEquals(134, loadedCp.getCoverageItems().size());
-      Assert.assertEquals(50, loadedCp.getCoveragePercent());
+      Assert.assertEquals(52, loadedCp.getCoveragePercent());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
-      Assert.assertEquals(68, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
-      Assert.assertEquals(66, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+      Assert.assertEquals(70, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
+      Assert.assertEquals(64, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
    }
 }

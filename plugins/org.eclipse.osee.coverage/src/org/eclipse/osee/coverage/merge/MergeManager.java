@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.coverage.model.CoverageImport;
@@ -59,7 +60,7 @@ public class MergeManager {
    }
 
    private void processImportCoverage(ICoverage importCoverage, List<IMergeItem> mergeItems, XResultData resultData) throws OseeCoreException {
-      boolean debug = true;
+      boolean debug = false;
       if (debug) {
          System.err.println("Merging check " + importCoverage);
       }
@@ -194,16 +195,19 @@ public class MergeManager {
       return;
    }
 
-   private List<ICoverage> getUnMatchedImportCoverageItems(Map<ICoverage, MatchItem> importItemToMatchItem) throws OseeCoreException {
+   private Entry<List<ICoverage>, List<ICoverage>> getMatchedAndUnMatchedImportCoverageItems(Map<ICoverage, MatchItem> importItemToMatchItem) throws OseeCoreException {
       List<ICoverage> unMatchedCoverageItems = new ArrayList<ICoverage>();
+      List<ICoverage> matchedCoverageItems = new ArrayList<ICoverage>();
       for (Entry<ICoverage, MatchItem> coverageToMatchItem : importItemToMatchItem.entrySet()) {
          MatchItem childMatchItem = coverageToMatchItem.getValue();
          ICoverage childICoverage = coverageToMatchItem.getKey();
          if (!childMatchItem.isMatch()) {
             unMatchedCoverageItems.add(childICoverage);
+         } else {
+            matchedCoverageItems.add(childICoverage);
          }
       }
-      return unMatchedCoverageItems;
+      return new SimpleEntry<List<ICoverage>, List<ICoverage>>(matchedCoverageItems, unMatchedCoverageItems);
    }
 
    private List<ICoverage> getMatchedPackageCoverageItems(Map<ICoverage, MatchItem> importItemToMatchItem) throws OseeCoreException {
@@ -220,8 +224,12 @@ public class MergeManager {
    private void handleChildrenCoverageItems(List<IMergeItem> mergeItems, Collection<? extends ICoverage> packageItemChildren, ICoverage importCoverage, Collection<? extends ICoverage> importItemChildren, Map<ICoverage, MatchItem> importItemToMatchItem, XResultData resultData) throws OseeCoreException {
       List<IMergeItem> groupMergeItems = new ArrayList<IMergeItem>();
       boolean unMergeableExists = false;
+      Entry<List<ICoverage>, List<ICoverage>> matchedUnMatchedEntry =
+            getMatchedAndUnMatchedImportCoverageItems(importItemToMatchItem);
       // Get all Import CoverageItems that do not match package CoverageItems
-      List<ICoverage> unMatchedImportCoverageItems = getUnMatchedImportCoverageItems(importItemToMatchItem);
+      List<ICoverage> unMatchedImportCoverageItems = matchedUnMatchedEntry.getValue();
+      // Get all Import CoverageItems that DO match package CoverageItems
+      List<ICoverage> matchedImportCoverageItems = matchedUnMatchedEntry.getKey();
       // List package coverageItems that have been processed; list should be empty at end
       List<ICoverage> packageItemsProcessed = getMatchedPackageCoverageItems(importItemToMatchItem);
 
@@ -244,13 +252,16 @@ public class MergeManager {
             groupMergeItems.add(new MergeItem(MergeType.CI_Add, null, childICoverage, false));
             unMatchedImportCoverageItems.remove(childICoverage);
          }
+      }
+      for (ICoverage childICoverage : new CopyOnWriteArrayList<ICoverage>(matchedImportCoverageItems)) {
+         MatchItem childMatchItem = importItemToMatchItem.get(childICoverage);
 
          // Check for method change
-         else if (isCoverageItemMethodUpdate(childMatchItem)) {
-            groupMergeItems.add(new MergeItem(MergeType.CI_Method_Update, null, childICoverage, false));
+         if (childMatchItem != null && isCoverageItemMethodUpdate(childMatchItem)) {
+            groupMergeItems.add(new MergeItem(MergeType.CI_Method_Update, childMatchItem.getPackageItem(),
+                  childICoverage, false));
             unMatchedImportCoverageItems.remove(childICoverage);
          }
-
       }
 
       // Check for moves in any items left unhandled by above renames and adds
@@ -296,7 +307,9 @@ public class MergeManager {
       ICoverage packageItem = childMatchItem.getPackageItem();
       // Only valid for coverage items
       if (!(importItem instanceof CoverageItem)) return false;
-      System.err.println("MergeManager: implement this");
+      if (!((CoverageItem) importItem).getCoverageMethod().equals(((CoverageItem) packageItem).getCoverageMethod())) {
+         return true;
+      }
       return false;
    }
 

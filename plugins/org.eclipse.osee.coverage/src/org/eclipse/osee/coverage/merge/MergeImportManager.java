@@ -56,6 +56,8 @@ public class MergeImportManager {
                      updateOrder(mergeItem, childMergeItem, rd);
                   } else if (childMergeItem instanceof MergeItem && ((MergeItem) childMergeItem).getMergeType() == MergeType.CI_Delete) {
                      deleteCoverageItem(mergeItem, childMergeItem, rd);
+                  } else if (childMergeItem instanceof MergeItem && ((MergeItem) childMergeItem).getMergeType() == MergeType.CI_Method_Update) {
+                     updateCoverageItemMethod(childMergeItem, rd);
                   } else {
                      rd.logError(String.format("Coverage_Item_Changes Group: Unsupported merge type [%s]",
                            childMergeItem.getMergeType()));
@@ -162,6 +164,13 @@ public class MergeImportManager {
       if (Strings.isValid(packageItem.getRationale())) {
          packageItem.setRationale("");
       }
+      packageItem.setCoverageMethod(importItem.getCoverageMethod());
+      updateFileContents(packageItem, importItem);
+   }
+
+   private void updateCoverageItemMethod(IMergeItem mergeItem, XResultData rd) throws OseeCoreException {
+      CoverageItem importItem = (CoverageItem) ((MergeItem) mergeItem).getImportItem();
+      CoverageItem packageItem = (CoverageItem) ((MergeItem) mergeItem).getPackageItem();
       packageItem.setCoverageMethod(importItem.getCoverageMethod());
       updateFileContents(packageItem, importItem);
    }
