@@ -1,10 +1,10 @@
-feature@org.eclipse.osee.client.feature.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.client.feature.test
+feature@org.eclipse.osee.client.feature.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/features/org.eclipse.osee.client.feature.test
 
-fragment@org.eclipse.osee.ats.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.ats.test
-fragment@org.eclipse.osee.coverage.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.coverage.test
-fragment@org.eclipse.osee.framework.skynet.core.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.skynet.core.test
-fragment@org.eclipse.osee.framework.ui.skynet.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.ui.skynet.test
-fragment@org.eclipse.osee.framework.core.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.core.test
-fragment@org.eclipse.osee.framework.jdk.core.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.jdk.core.test
-plugin@org.eclipse.osee.support.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.support.test
-plugin@org.eclipse.osee.support.test.util=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.support.test.util
+fragment@org.eclipse.osee.ats.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.ats.test
+fragment@org.eclipse.osee.coverage.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.coverage.test
+fragment@org.eclipse.osee.framework.skynet.core.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.skynet.core.test
+fragment@org.eclipse.osee.framework.ui.skynet.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.ui.skynet.test
+fragment@org.eclipse.osee.framework.core.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.core.test
+fragment@org.eclipse.osee.framework.jdk.core.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.jdk.core.test
+plugin@org.eclipse.osee.support.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.support.test
+plugin@org.eclipse.osee.support.test.util=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.support.test.util

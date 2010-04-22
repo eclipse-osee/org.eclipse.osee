@@ -1,16 +1,16 @@
 plugin@org.eclipse.test=v20080313,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,
 fragment@org.eclipse.ant.optional.junit=v20070202,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,
 
-feature@org.eclipse.osee.server.feature.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,features/org.eclipse.osee.server.feature.test
-fragment@org.eclipse.osee.framework.branch.management.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.branch.management.test
-fragment@org.eclipse.osee.framework.jdk.core.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.jdk.core.test
-fragment@org.eclipse.osee.framework.core.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.core.test
-fragment@org.eclipse.osee.framework.core.server.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.core.server.test
-fragment@org.eclipse.osee.framework.resource.locator.attribute.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.resource.locator.attribute.test
-fragment@org.eclipse.osee.framework.resource.management.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.resource.management.test
-fragment@org.eclipse.osee.framework.resource.provider.attribute.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.resource.provider.attribute.test
-fragment@org.eclipse.osee.framework.search.engine.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.search.engine.test
-fragment@org.eclipse.osee.framework.manager.servlet.test=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.manager.servlet.test
-fragment@org.eclipse.osee.framework.types.tests=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.types.tests 
+feature@org.eclipse.osee.server.feature.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/features/org.eclipse.osee.server.feature.test
+fragment@org.eclipse.osee.framework.branch.management.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.branch.management.test
+fragment@org.eclipse.osee.framework.jdk.core.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.jdk.core.test
+fragment@org.eclipse.osee.framework.core.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.core.test
+fragment@org.eclipse.osee.framework.core.server.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.core.server.test
+fragment@org.eclipse.osee.framework.resource.locator.attribute.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.resource.locator.attribute.test
+fragment@org.eclipse.osee.framework.resource.management.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.resource.management.test
+fragment@org.eclipse.osee.framework.resource.provider.attribute.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.resource.provider.attribute.test
+fragment@org.eclipse.osee.framework.search.engine.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.search.engine.test
+fragment@org.eclipse.osee.framework.manager.servlet.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.manager.servlet.test
+fragment@org.eclipse.osee.framework.types.tests=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.types.tests 
 
-plugin@org.eclipse.osee.framework.server.tests=SVN,trunk,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,plugins/org.eclipse.osee.framework.server.tests
+plugin@org.eclipse.osee.framework.server.tests=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,trunk/plugins/org.eclipse.osee.framework.server.tests
