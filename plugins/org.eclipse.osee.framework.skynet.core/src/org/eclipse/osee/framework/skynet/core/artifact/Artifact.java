@@ -793,6 +793,9 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
             return defaultReturnValue;
          }
          return value;
+      } else if (soleAttributes.size() > 1) {
+         throw new MultipleAttributesExist(
+               "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getGuid());
       } else {
          return defaultReturnValue;
       }
