@@ -74,7 +74,9 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
 
       if (Widgets.isAccessible(formText)) {
          try {
-            formText.setText(Artifacts.getDetailsFormText(getEditorInput().getArtifact()), true, true);
+            formText.setText(
+                  Artifacts.getDetailsFormText(Artifacts.getDetailsKeyValues(getEditorInput().getArtifact())), true,
+                  true);
          } catch (Exception ex) {
             formText.setText(Lib.exceptionToString(ex), false, false);
          }

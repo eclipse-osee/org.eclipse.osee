@@ -49,6 +49,7 @@ import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -295,9 +296,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       // Targeted Version
       if (isShowTargetedVersion()) {
          new SMATargetedVersionHeader(comp, SWT.NONE, sma, toolkit);
+         toolkit.createLabel(comp, "    ");
       }
-
-      toolkit.createLabel(comp, "    ");
 
       // Current Assignees
       if (page.isCurrentNonCompleteCancelledState(sma)) {
@@ -488,16 +488,16 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
 
       try {
-         if (!(sma instanceof GoalArtifact)) {
-            FormsUtil.createLabelText(toolkit, topLineComp, "Action Id: ",
-                  sma.getParentActionArtifact() == null ? "??" : sma.getParentActionArtifact().getHumanReadableId());
-         }
-         if (sma.getParentSMA() != null) {
-            FormsUtil.createLabelText(toolkit, topLineComp, "Parent Workflow Id: ",
-                  sma.getParentSMA() == null ? "??" : sma.getParentSMA().getHumanReadableId());
-         }
-         FormsUtil.createLabelText(toolkit, topLineComp, sma.getArtifactSuperTypeName() + " Id: ",
+         FormsUtil.createLabelText(toolkit, topLineComp, sma.getArtifactSuperTypeName() + "Id: ",
                sma.getHumanReadableId());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+
+      try {
+         if (Strings.isValid(sma.getPcrId())) {
+            FormsUtil.createLabelText(toolkit, topLineComp, " Id: ", sma.getPcrId());
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }

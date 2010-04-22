@@ -1730,4 +1730,22 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return atsWorkPages;
    }
 
+   /**
+    * Assigned or computed Id that will show at the top of the editor
+    */
+   public String getPcrId() throws OseeCoreException {
+      return "";
+   }
+
+   public Map<String, String> getSMADetails() throws OseeCoreException {
+      Map<String, String> details = Artifacts.getDetailsKeyValues(this);
+      details.put("Workflow Definition", getWorkFlowDefinition().getName());
+      if (getParentActionArtifact() != null) {
+         details.put("Action Id", getParentActionArtifact().getHumanReadableId());
+      }
+      if (!(this instanceof TeamWorkFlowArtifact) && getParentTeamWorkflow() != null) {
+         details.put("Parent Team Workflow Id", getParentTeamWorkflow().getHumanReadableId());
+      }
+      return details;
+   }
 }

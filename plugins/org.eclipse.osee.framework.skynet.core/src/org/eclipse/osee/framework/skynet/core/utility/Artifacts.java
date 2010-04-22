@@ -12,9 +12,12 @@
 package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -150,36 +153,50 @@ public final class Artifacts {
       return children;
    }
 
-   public static String getDetailsFormText(Artifact artifact) throws OseeCoreException {
+   public static Map<String, String> getDetailsKeyValues(Artifact artifact) throws OseeCoreException {
+      Map<String, String> details = new HashMap<String, String>();
+      if (artifact != null) {
+         details.put("GUID", String.valueOf(Xml.escape(artifact.getGuid())));
+         details.put("HRID", String.valueOf(Xml.escape(artifact.getHumanReadableId())));
+         details.put("Branch", String.valueOf(Xml.escape(artifact.getBranch().toString())));
+         details.put("Branch Id", String.valueOf(artifact.getBranch().getId()));
+         details.put("Artifact Id", String.valueOf(artifact.getArtId()));
+         details.put("Artifact Type Name", String.valueOf(Xml.escape(artifact.getArtifactTypeName())));
+         details.put("Artifact Type Id", String.valueOf(artifact.getArtTypeId()));
+         details.put("Gamma Id", String.valueOf(artifact.getGammaId()));
+         details.put("Historical", String.valueOf(artifact.isHistorical()));
+         details.put("Deleted", String.valueOf(artifact.isDeleted()));
+         details.put("Revision",
+               (String.valueOf(artifact.isInDb() ? String.valueOf(artifact.getTransactionNumber()) : "Not In Db")));
+         details.put("Read Only", String.valueOf(artifact.isReadOnly()));
+         details.put("Last Modified", (artifact.isInDb() ? String.valueOf(artifact.getLastModified()) : "Not In Db"));
+         try {
+            details.put("Last Modified By",
+                  (artifact.isInDb() ? String.valueOf(artifact.getLastModifiedBy()) : "Not In Db"));
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            details.put("Last Modified By", "Exception " + ex.getLocalizedMessage());
+         }
+      } else {
+         details.put("Artifact", "null");
+      }
+      return details;
+   }
+
+   public static String getDetailsFormText(Map<String, String> keyValues) throws OseeCoreException {
       String template = "<p><b>%s:</b> %s</p>";
       StringBuilder sb = new StringBuilder();
       sb.append("<form>");
-
-      if (artifact != null) {
-         sb.append(String.format(template, "GUID", Xml.escape(artifact.getGuid())));
-         sb.append(String.format(template, "HRID", Xml.escape(artifact.getHumanReadableId())));
-         sb.append(String.format(template, "Branch", Xml.escape(artifact.getBranch().toString())));
-         sb.append(String.format(template, "Branch Id", artifact.getBranch().getId()));
-         sb.append(String.format(template, "Artifact Id", artifact.getArtId()));
-         sb.append(String.format(template, "Artifact Type Name", Xml.escape(artifact.getArtifactTypeName())));
-         sb.append(String.format(template, "Artifact Type Id", artifact.getArtTypeId()));
-         sb.append(String.format(template, "Gamma Id", artifact.getGammaId()));
-         sb.append(String.format(template, "Historical", artifact.isHistorical()));
-         sb.append(String.format(template, "Deleted", artifact.isDeleted()));
-         sb.append(String.format(template, "Revision",
-               (artifact.isInDb() ? artifact.getTransactionNumber() : "Not In Db")));
-         sb.append(String.format(template, "Read Only", artifact.isReadOnly()));
-         sb.append(String.format(template, "Last Modified",
-               (artifact.isInDb() ? artifact.getLastModified() : "Not In Db")));
-         try {
-            sb.append(String.format(template, "Last Modified By",
-                  (artifact.isInDb() ? artifact.getLastModifiedBy() : "Not In Db")));
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-            sb.append(String.format(template, "Last Modified By", "Exception " + ex.getLocalizedMessage()));
+      if (keyValues != null) {
+         String[] keys = keyValues.keySet().toArray(new String[keyValues.keySet().size()]);
+         Arrays.sort(keys);
+         for (String key : keys) {
+            try {
+               sb.append(String.format(template, key, Xml.escape(keyValues.get(key))));
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
          }
-      } else {
-         sb.append(String.format(template, "Artifact", "null"));
       }
       sb.append("</form>");
       return sb.toString();

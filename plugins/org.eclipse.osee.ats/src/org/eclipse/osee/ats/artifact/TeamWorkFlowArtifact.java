@@ -380,28 +380,28 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       AICheckTreeDialog diag =
             new AICheckTreeDialog("Convert Impacted Actionable Items",
                   "NOTE: This should NOT be the normal path to changing actionable items.\n\nIf a team has " +
-                        //
-                        "determined " + "that there is NO impact and that another actionable items IS impacted:\n" +
-                        //
-                        "   1) Cancel this operation\n" + "   2) Select \"Edit Actionable Items\" to add/remove " +
-                        //
-                        "impacted items \n" + "      which will create new teams as needed.\n" +
-                        //
-                        "   3) Then cancel the team that has no impacts.\n   Doing this will show that the original " +
-                        //
-                        "team analyzed the impact\n" + "   and determined that there was no change.\n\n" + "However, " +
-                        //
-                        "there are some cases where an impacted item was incorrectly chosen\n" + "and the original team " +
-                        //
-                        "does not need to do anything, this dialog will purge the\n" + "team from the DB as if it was " +
-                        //
-                        "never chosen.\n\n" + "Current Actionable Item(s): " + getWorldViewActionableItems() + "\n" +
-                        //
-                        "Current Team: " + getTeamDefinition().getName() + "\n" +
-                        //
-                        "Select SINGLE Actionable Item below to convert this workflow to.\n\n" +
-                        //
-                        "You will be prompted to confirm this conversion.", Active.Both);
+                  //
+                  "determined " + "that there is NO impact and that another actionable items IS impacted:\n" +
+                  //
+                  "   1) Cancel this operation\n" + "   2) Select \"Edit Actionable Items\" to add/remove " +
+                  //
+                  "impacted items \n" + "      which will create new teams as needed.\n" +
+                  //
+                  "   3) Then cancel the team that has no impacts.\n   Doing this will show that the original " +
+                  //
+                  "team analyzed the impact\n" + "   and determined that there was no change.\n\n" + "However, " +
+                  //
+                  "there are some cases where an impacted item was incorrectly chosen\n" + "and the original team " +
+                  //
+                  "does not need to do anything, this dialog will purge the\n" + "team from the DB as if it was " +
+                  //
+                  "never chosen.\n\n" + "Current Actionable Item(s): " + getWorldViewActionableItems() + "\n" +
+                  //
+                  "Current Team: " + getTeamDefinition().getName() + "\n" +
+                  //
+                  "Select SINGLE Actionable Item below to convert this workflow to.\n\n" +
+                  //
+                  "You will be prompted to confirm this conversion.", Active.Both);
 
       diag.setInput(ActionableItemArtifact.getTopLevelActionableItems(Active.Both));
       if (diag.open() != 0) {
@@ -589,7 +589,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    public String getBranchName() {
-
       String smaTitle = getName();
       if (smaTitle.length() > 40) {
          smaTitle = smaTitle.substring(0, 39) + "...";
@@ -599,6 +598,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       } else {
          return String.format("%s - %s", getHumanReadableId(), smaTitle);
       }
-
    }
+
 }
