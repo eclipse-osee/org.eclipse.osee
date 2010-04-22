@@ -17,27 +17,18 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
  */
 public class RelationChangeItem extends ChangeItem {
    private final int bArtId;
-   private final int relTypeId;
    private final String rationale;
 
-   public RelationChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, int aArtId, int bArtId, int relLinkId, int relTypeId, String rationale) {
-      super(currentSourceGammaId, currentSourceModType);
+   public RelationChangeItem(int relLinkId, int relTypeId, long currentSourceGammaId, ModificationType currentSourceModType, int aArtId, int bArtId, String rationale) {
+      super(relLinkId, relTypeId, aArtId, currentSourceGammaId, currentSourceModType);
 
-      this.setItemId(relLinkId);
       this.getCurrentVersion().setValue(rationale);
-      this.setArtId(aArtId);
-
       this.bArtId = bArtId;
-      this.relTypeId = relTypeId;
       this.rationale = rationale;
    }
 
    public int getBArtId() {
       return bArtId;
-   }
-
-   public int getRelTypeId() {
-      return relTypeId;
    }
 
    public String getRationale() {

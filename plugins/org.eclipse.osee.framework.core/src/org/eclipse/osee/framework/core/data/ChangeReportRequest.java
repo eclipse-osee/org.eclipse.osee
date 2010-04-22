@@ -14,26 +14,20 @@ package org.eclipse.osee.framework.core.data;
  * @author Jeff C. Phillips
  */
 public class ChangeReportRequest {
-	private final int srcTx;
-	private final int destTx;
-	private final boolean isHistorical;
+   private final int srcTx;
+   private final int destTx;
 
-	public ChangeReportRequest(int srcTx, int destTx, boolean isHistorical) {
-		super();
-		this.srcTx = srcTx;
-		this.destTx = destTx;
-		this.isHistorical = isHistorical;
-	}
+   public ChangeReportRequest(int srcTx, int destTx) {
+      super();
+      this.srcTx = srcTx;
+      this.destTx = destTx;
+   }
 
-	public int getSourceTx() {
-		return srcTx;
-	}
+   public int getSourceTx() {
+      return srcTx;
+   }
 
-	public int getDestinationTx() {
-		return destTx;
-	}
-
-	public boolean isHistorical() {
-		return isHistorical;
-	}
+   public int getDestinationTx() {
+      return destTx;
+   }
 }

@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.FileUiUtil;
 import org.eclipse.swt.program.Program;
@@ -30,8 +31,11 @@ import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * @author Ryan D. Brooks
+ * @author Jeff C. Phillips
  */
 public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
+
+   private static final ArtifactFileMonitor FILE_MONITOR = new ArtifactFileMonitor();
 
    @Override
    public void open(List<Artifact> artifacts) throws OseeCoreException {
@@ -93,40 +97,74 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       return toReturn;
    }
 
-   public IFile renderForDiff(IProgressMonitor monitor, Branch branch) throws OseeCoreException {
-      IFolder baseFolder = RenderingUtil.getRenderFolder(branch, PresentationType.DIFF);
-      return renderToFileSystem(baseFolder, null, branch, PresentationType.DIFF);
-   }
-
-   public IFile renderForDiff(IProgressMonitor monitor, Artifact artifact, Branch branch) throws OseeCoreException {
-	   Artifact artifactToRender = artifact;
-	   if(artifactToRender == null || artifactToRender.isDeleted() ){
-		   artifactToRender = null;
-	   }
-      
-      IFolder baseFolder = RenderingUtil.getRenderFolder(branch, PresentationType.DIFF);
-      return renderToFileSystem(baseFolder, artifactToRender, branch, PresentationType.DIFF);
-   }
-
-   public IFile renderForMerge(IProgressMonitor monitor, Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException {
-      if (artifact == null) {
-         throw new IllegalArgumentException("Artifact can not be null.");
-      }
-      IFolder baseFolder;
-      if (presentationType == PresentationType.MERGE_EDIT) {
-         baseFolder = RenderingUtil.getRenderFolder(artifact.getBranch(), PresentationType.MERGE_EDIT);
+   public IFile renderToFileSystem(IFolder baseFolder, Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException {
+      String fileName = RenderingUtil.getFilenameFromArtifact(this, artifact, presentationType);
+      List<Artifact> artifacts;
+      if (artifact != null) {
+         artifacts = Collections.singletonList(artifact);
       } else {
-         baseFolder = RenderingUtil.getRenderFolder(artifact.getBranch(), PresentationType.DIFF);
+         artifacts = Collections.emptyList();
       }
-      return renderToFileSystem(baseFolder, artifact, artifact.getBranch(), presentationType);
+      InputStream inputStream = getRenderInputStream(presentationType, artifacts);
+      return renderToFile(baseFolder, fileName, branch, inputStream, presentationType);
    }
 
-   public abstract IFile renderToFileSystem(IFolder baseFolder, Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException;
+   public IFile renderToFileSystem(IFolder baseFolder, List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      Branch initialBranch = null;
+      for (Artifact artifact : artifacts) {
+         if (initialBranch == null) {
+            initialBranch = artifact.getBranch();
+         } else {
+            if (artifact.getBranch() != initialBranch) {
+               throw new IllegalArgumentException("All of the artifacts must be on the same branch to be mass edited");
+            }
+         }
+      }
 
-   public abstract IFile renderToFileSystem(IFolder baseFolder, List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException;
+      Artifact artifact = null;
+      if (artifacts.size() == 1) {
+         artifact = artifacts.iterator().next();
+      }
+      String fileName = RenderingUtil.getFilenameFromArtifact(this, artifact, presentationType);
+      InputStream inputStream = getRenderInputStream(presentationType, artifacts);
+      return renderToFile(baseFolder, fileName, initialBranch, inputStream, presentationType);
+   }
+
+   public IFile renderToFile(IFolder baseFolder, String fileName, Branch branch, InputStream renderInputStream, PresentationType presentationType) throws OseeCoreException {
+      IFile workingFile = baseFolder.getFile(fileName);
+      AIFile.writeToFile(workingFile, renderInputStream);
+
+      if (presentationType == PresentationType.SPECIALIZED_EDIT || presentationType == PresentationType.MERGE_EDIT) {
+         FILE_MONITOR.addFile(workingFile);
+      } else if (presentationType == PresentationType.PREVIEW) {
+         FILE_MONITOR.markAsReadOnly(workingFile);
+      }
+      return workingFile;
+   }
+
+   public void addFileToWatcher(IFolder baseFolder, String fileName) {
+      IFile workingFile = baseFolder.getFile(fileName);
+      FILE_MONITOR.addFile(workingFile);
+   }
+
+   public abstract InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException;
 
    public abstract Program getAssociatedProgram(Artifact artifact) throws OseeCoreException;
 
    public abstract String getAssociatedExtension(Artifact artifact) throws OseeCoreException;
+
+   /**
+    * @return the workbenchSavePopUpDisabled
+    */
+   public static boolean isWorkbenchSavePopUpDisabled() {
+      return FILE_MONITOR.isWorkbenchSavePopUpDisabled();
+   }
+
+   /**
+    * @param workbenchSavePopUpDisabled the workbenchSavePopUpDisabled to set
+    */
+   public static void setWorkbenchSavePopUpDisabled(boolean workbenchSavePopUpDisabled) {
+      FILE_MONITOR.setWorkbenchSavePopUpDisabled(workbenchSavePopUpDisabled);
+   }
 
 }

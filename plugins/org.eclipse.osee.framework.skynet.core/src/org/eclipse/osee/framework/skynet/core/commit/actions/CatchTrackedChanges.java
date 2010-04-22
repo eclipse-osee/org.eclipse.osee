@@ -10,14 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.commit.actions;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -41,8 +43,11 @@ public class CatchTrackedChanges implements CommitAction {
    @Override
    public void runCommitAction(IOseeBranch branch) throws OseeCoreException {
       Set<Artifact> changedArtifacts = new HashSet<Artifact>();
+      Collection<Change> changes = new ArrayList<Change>();
+      IOperation operation = ChangeManager.comparedToParent(branch, changes);
+      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), 1.0);
 
-      for (Change change : ChangeManager.getChangesPerBranch(branch, new NullProgressMonitor())) {
+      for (Change change : changes) {
          if (!change.getModificationType().isDeleted()) {
             if (change instanceof AttributeChange) {
                Attribute<?> attribute = ((AttributeChange) change).getAttribute();
@@ -55,12 +60,12 @@ public class CatchTrackedChanges implements CommitAction {
                   }
                }
             }
-            
-            Artifact artifactChanged = change.getToArtifact();
+
+            Artifact artifactChanged = change.getDelta().getEndArtifact();
             if (artifactChanged != null) {
                changedArtifacts.add(artifactChanged);
             }
-            
+
          }
       }
 

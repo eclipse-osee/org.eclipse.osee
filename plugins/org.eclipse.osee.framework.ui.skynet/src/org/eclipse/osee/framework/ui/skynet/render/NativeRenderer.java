@@ -24,7 +24,7 @@ import org.eclipse.swt.program.Program;
  * 
  * @author Ryan D. Brooks
  */
-public class NativeRenderer extends FileRenderer {
+public class NativeRenderer extends FileSystemRenderer {
    public static final String EXTENSION_ID = "org.eclipse.osee.framework.ui.skynet.render.NativeRenderer";
 
    @Override
@@ -82,12 +82,8 @@ public class NativeRenderer extends FileRenderer {
    }
 
    @Override
-   public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      return getRenderInputStream(artifacts.iterator().next(), presentationType);
-   }
-
-   @Override
-   public InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
+      Artifact artifact = artifacts.iterator().next();
       return artifact.getSoleAttributeValue(CoreAttributeTypes.NATIVE_CONTENT.getName());
    }
 

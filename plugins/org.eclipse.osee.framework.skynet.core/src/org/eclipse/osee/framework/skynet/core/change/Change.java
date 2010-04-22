@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -22,17 +23,16 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Jeff C. Phillips
  */
 public abstract class Change implements IAdaptable {
-   private final int sourceGamma;
+   private final long sourceGamma;
    private final int artId;
    private final TransactionDelta txDelta;
-   private final Artifact toArtifact;
-   private final Artifact fromArtifact;
+   private final ArtifactDelta artifactDelta;
    private ModificationType modType;
    private final IOseeBranch branch;
    private final ArtifactType artifactType;
    private final boolean isHistorical;
 
-   public Change(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact toArtifact, Artifact fromArtifact) {
+   public Change(IOseeBranch branch, ArtifactType artifactType, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, ArtifactDelta artifactDelta) {
       super();
       this.branch = branch;
       this.sourceGamma = sourceGamma;
@@ -41,90 +41,35 @@ public abstract class Change implements IAdaptable {
       this.modType = modType;
       this.artifactType = artifactType;
       this.isHistorical = isHistorical;
-      this.toArtifact = toArtifact;
-      this.fromArtifact = fromArtifact;
-   }
-
-   @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + artId;
-      result = prime * result + (artifactType == null ? 0 : artifactType.hashCode());
-      result = prime * result + (branch == null ? 0 : branch.hashCode());
-      result = prime * result + (fromArtifact == null ? 0 : fromArtifact.hashCode());
-      result = prime * result + (isHistorical ? 1231 : 1237);
-      result = prime * result + (modType == null ? 0 : modType.hashCode());
-      result = prime * result + sourceGamma;
-      result = prime * result + (toArtifact == null ? 0 : toArtifact.hashCode());
-      result = prime * result + (txDelta == null ? 0 : txDelta.hashCode());
-      return result;
+      this.artifactDelta = artifactDelta;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
+      if (obj instanceof Change) {
+         Change change = (Change) obj;
+         return change.getArtId() == getArtId() &&
+         //
+         change.getGamma() == getGamma() &&
+         //
+         change.getBranch() == getBranch() &&
+         //
+         change.getDelta().equals(getDelta()) &&
+         //
+         change.getModificationType() == getModificationType();
       }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      Change other = (Change) obj;
-      if (artId != other.artId) {
-         return false;
-      }
-      if (artifactType == null) {
-         if (other.artifactType != null) {
-            return false;
-         }
-      } else if (!artifactType.equals(other.artifactType)) {
-         return false;
-      }
-      if (branch == null) {
-         if (other.branch != null) {
-            return false;
-         }
-      } else if (!branch.equals(other.branch)) {
-         return false;
-      }
-      if (fromArtifact == null) {
-         if (other.fromArtifact != null) {
-            return false;
-         }
-      } else if (!fromArtifact.equals(other.fromArtifact)) {
-         return false;
-      }
-      if (isHistorical != other.isHistorical) {
-         return false;
-      }
-      if (modType == null) {
-         if (other.modType != null) {
-            return false;
-         }
-      } else if (!modType.equals(other.modType)) {
-         return false;
-      }
-      if (sourceGamma != other.sourceGamma) {
-         return false;
-      }
-      if (toArtifact == null) {
-         if (other.toArtifact != null) {
-            return false;
-         }
-      } else if (!toArtifact.equals(other.toArtifact)) {
-         return false;
-      }
-      if (txDelta == null) {
-         if (other.txDelta != null) {
-            return false;
-         }
-      } else if (!txDelta.equals(other.txDelta)) {
-         return false;
-      }
-      return true;
+      return false;
+   }
+
+   @Override
+   public int hashCode() {
+      int hashCode = 0;
+      hashCode += 13 * getArtId();
+      hashCode += 13 * getGamma();
+      hashCode += getBranch() != null ? 13 * getBranch().hashCode() : 0;
+      hashCode += getDelta() != null ? 13 * getDelta().hashCode() : 0;
+      hashCode += getModificationType() != null ? 13 * getModificationType().hashCode() : 0;
+      return hashCode;
    }
 
    public boolean isHistorical() {
@@ -142,19 +87,19 @@ public abstract class Change implements IAdaptable {
       return modType;
    }
 
-   public Artifact getToArtifact() {
-      return toArtifact;
+   public ArtifactDelta getDelta() {
+      return artifactDelta;
    }
 
-   public Artifact getFromArtifact() {
-      return fromArtifact;
+   protected Artifact getSourceArtifact() {
+      return artifactDelta.getStartArtifact();
    }
 
    public String getArtifactName() {
-      return getToArtifact().getName();
+      return getSourceArtifact().getName();
    }
 
-   public int getGamma() {
+   public long getGamma() {
       return sourceGamma;
    }
 
@@ -169,7 +114,7 @@ public abstract class Change implements IAdaptable {
    /**
     * For an artifact change this is the artifact type id. For an attribute this is the attribute type id. For a
     * relation this is the relation type id.
-    *
+    * 
     * @return typeId
     */
    public abstract int getItemTypeId();

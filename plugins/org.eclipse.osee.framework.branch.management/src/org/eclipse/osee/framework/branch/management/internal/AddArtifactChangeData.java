@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.AttributeChangeItem;
@@ -53,7 +52,7 @@ public class AddArtifactChangeData extends AbstractOperation {
             if (artifactChange == null) {
                artifactChange = syntheticArtifactChanges.get(artIdToCheck);
                if (artifactChange == null) {
-                  artifactChange = new ArtifactChangeItem(-1, null, artIdToCheck);
+                  artifactChange = new ArtifactChangeItem(artIdToCheck, -1, -1, null);
                   syntheticArtifactChanges.put(artIdToCheck, artifactChange);
                }
                attrItems.add(attributeChange);

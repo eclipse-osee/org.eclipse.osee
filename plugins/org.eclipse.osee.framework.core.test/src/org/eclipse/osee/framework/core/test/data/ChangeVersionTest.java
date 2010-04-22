@@ -17,7 +17,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link ChangeVersion}
- *
+ * 
  * @author Roberto E. Escobar
  */
 public class ChangeVersionTest {
@@ -32,14 +32,12 @@ public class ChangeVersionTest {
       expected.setValue(null);
       expected.setGammaId(45L);
       expected.setModType(ModificationType.NEW);
-      expected.setTransactionNumber(54);
       ChangeTestUtility.checkChange(expected, actual);
 
       actual = new ChangeVersion("hello", 47L, ModificationType.MERGED);
       expected.setValue("hello");
       expected.setGammaId(47L);
       expected.setModType(ModificationType.MERGED);
-      expected.setTransactionNumber(46);
       ChangeTestUtility.checkChange(expected, actual);
    }
 

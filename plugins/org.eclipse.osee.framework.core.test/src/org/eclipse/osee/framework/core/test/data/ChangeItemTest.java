@@ -11,10 +11,8 @@
 package org.eclipse.osee.framework.core.test.data;
 
 import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -79,9 +77,13 @@ public class ChangeItemTest {
    }
 
    @Test
-   public void testGetSetArtId() {
-      item.setArtId(Integer.MAX_VALUE);
-      assertEquals(Integer.MAX_VALUE, item.getArtId());
+   public void testGetItemTypeId() {
+      assertEquals(item.getItemId() * 10, item.getItemTypeId());
+   }
+
+   @Test
+   public void testGetArtId() {
+      assertEquals(item.getItemId() * 100, item.getArtId());
    }
 
    @Parameters

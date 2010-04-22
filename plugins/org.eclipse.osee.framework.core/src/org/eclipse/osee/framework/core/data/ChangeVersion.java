@@ -19,7 +19,6 @@ public final class ChangeVersion {
    private Long gammaId;
    private ModificationType modType;
    private String value;
-   private Integer transactionNumber;
 
    public ChangeVersion() {
       this(null, null, null);
@@ -46,10 +45,6 @@ public final class ChangeVersion {
 
    public String getValue() {
       return value;
-   }
-
-   public void setTransactionNumber(Integer transactionNumber) {
-      this.transactionNumber = transactionNumber;
    }
 
    public void setValue(String value) {
@@ -85,7 +80,6 @@ public final class ChangeVersion {
       int result = 1;
       result = prime * result + (gammaId == null ? 0 : gammaId.hashCode());
       result = prime * result + (modType == null ? 0 : modType.hashCode());
-      result = prime * result + (transactionNumber == null ? 0 : transactionNumber.hashCode());
       result = prime * result + (value == null ? 0 : value.hashCode());
       return result;
    }
@@ -114,13 +108,6 @@ public final class ChangeVersion {
             return false;
          }
       } else if (!modType.equals(other.modType)) {
-         return false;
-      }
-      if (transactionNumber == null) {
-         if (other.transactionNumber != null) {
-            return false;
-         }
-      } else if (!transactionNumber.equals(other.transactionNumber)) {
          return false;
       }
       if (value == null) {

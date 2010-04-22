@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.core.test.mocks;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
@@ -75,9 +74,9 @@ public final class MockDataFactory {
    public static ArtifactChangeItem createArtifactChangeItem() throws OseeArgumentException {
       int artId = (int) Math.random();
       Long gammaIdNumber = Long.valueOf((int) Math.random());
-
+      int artTypeId = artId * 10;
       ArtifactChangeItem changeItem =
-            new ArtifactChangeItem(gammaIdNumber, ModificationType.getMod(1), artId);
+            new ArtifactChangeItem(artId, artTypeId, gammaIdNumber, ModificationType.getMod(1));
       populateChangeVersion(changeItem.getDestinationVersion(), 22);
       populateChangeVersion(changeItem.getCurrentVersion(), 15);
       return changeItem;
@@ -92,7 +91,6 @@ public final class MockDataFactory {
       ModificationType modType = ModificationType.values()[index % ModificationType.values().length];
       changeVersion.setGammaId((long) (index * Integer.MAX_VALUE));
       changeVersion.setModType(modType);
-      changeVersion.setTransactionNumber(index * 37);
       changeVersion.setValue("change_version_value_" + index);
    }
 

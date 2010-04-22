@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.change;
+package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 
@@ -31,6 +31,10 @@ public final class TransactionDelta {
 
    public TransactionRecord getEndTx() {
       return endTx;
+   }
+
+   public boolean areOnTheSameBranch() {
+      return startTx.getBranchId() == endTx.getBranchId();
    }
 
    @Override

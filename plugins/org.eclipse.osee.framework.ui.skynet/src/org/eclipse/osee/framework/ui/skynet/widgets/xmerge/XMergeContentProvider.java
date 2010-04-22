@@ -15,12 +15,10 @@ import org.eclipse.jface.viewers.Viewer;
 
 public class XMergeContentProvider implements ITreeContentProvider {
 
-   private final MergeXViewer mergeXViewer;
    private static Object[] EMPTY_ARRAY = new Object[0];
 
-   public XMergeContentProvider(MergeXViewer commitXViewer) {
+   public XMergeContentProvider() {
       super();
-      this.mergeXViewer = commitXViewer;
    }
 
    public Object[] getChildren(Object parentElement) {
@@ -39,7 +37,9 @@ public class XMergeContentProvider implements ITreeContentProvider {
    }
 
    public Object[] getElements(Object inputElement) {
-      if (inputElement instanceof String) return new Object[] {inputElement};
+      if (inputElement instanceof String) {
+         return new Object[] {inputElement};
+      }
       return getChildren(inputElement);
    }
 

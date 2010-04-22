@@ -13,10 +13,8 @@ package org.eclipse.osee.framework.skynet.core.change;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,39 +26,18 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public final class RelationChange extends Change {
    private final int bArtId;
-   private String bArtName;
-   private final Artifact bArtifact;
+   private final Artifact endTxBArtifact;
    private final int relLinkId;
    private final String rationale;
-   private int aLinkOrder;
-   private int bLinkOrder;
    private final RelationType relationType;
 
-   /**
-    * @param aArtTypeId
-    * @param sourceGamma
-    * @param aArtId
-    * @param toTransactionId
-    * @param fromTransactionId
-    * @param modType
-    * @param changeType
-    * @param bArtId
-    * @param bArtifact
-    * @param relLinkId
-    * @param rationale
-    * @param aLinkOrder
-    * @param relationType
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeDataStoreException
-    * @throws ArtifactDoesNotExist
-    */
-   public RelationChange(IOseeBranch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionDelta txDelta, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, Artifact toArtifact, Artifact bArtifact, Artifact fromArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      super(branch, aArtType, sourceGamma, aArtId, txDelta, modType, isHistorical, toArtifact, fromArtifact);
+   public RelationChange(IOseeBranch branch, ArtifactType aArtType, long sourceGamma, int aArtId, TransactionDelta txDelta, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, ArtifactDelta artifactDelta, Artifact endTxBArtifact) {
+      super(branch, aArtType, sourceGamma, aArtId, txDelta, modType, isHistorical, artifactDelta);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
       this.rationale = rationale;
       this.relationType = relationType;
-      this.bArtifact = bArtifact;
+      this.endTxBArtifact = endTxBArtifact;
    }
 
    @SuppressWarnings("unchecked")
@@ -71,8 +48,8 @@ public final class RelationChange extends Change {
       }
 
       try {
-         if (adapter.isInstance(getToArtifact())) {
-            return getToArtifact();
+         if (adapter.isInstance(getSourceArtifact())) {
+            return getSourceArtifact();
          } else if (adapter.isInstance(getTxDelta().getEndTx()) && isHistorical()) {
             return getTxDelta().getEndTx();
          } else if (adapter.isInstance(this)) {
@@ -91,8 +68,8 @@ public final class RelationChange extends Change {
       return bArtId;
    }
 
-   public Artifact getBArtifact() {
-      return bArtifact;
+   public Artifact getEndTxBArtifact() {
+      return endTxBArtifact;
    }
 
    /**
@@ -110,43 +87,15 @@ public final class RelationChange extends Change {
    }
 
    /**
-    * @return the linkOrder
-    */
-   public int getLinkOrder() {
-      return aLinkOrder;
-   }
-
-   /**
     * @return the relationType
     */
    public RelationType getRelationType() {
       return relationType;
    }
 
-   /**
-    * @return the bArtName
-    */
-   public String getBArtName() {
-      return bArtName;
-   }
-
-   /**
-    * @param artName the bArtName to set
-    */
-   public void setBArtName(String artName) {
-      bArtName = artName;
-   }
-
-   /**
-    * @return the bLinkOrder
-    */
-   public int getBLinkOrder() {
-      return bLinkOrder;
-   }
-
    @Override
    public String getName() {
-      return getArtifactName() + " <-> " + getBArtifact().getName();
+      return getArtifactName() + " <-> " + getEndTxBArtifact().getName();
    }
 
    @Override

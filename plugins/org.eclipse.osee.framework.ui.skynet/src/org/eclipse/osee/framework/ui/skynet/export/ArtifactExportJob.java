@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.export;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -25,7 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
@@ -84,9 +85,10 @@ public class ArtifactExportJob extends Job {
          }
       } else {
          try {
-            FileRenderer fileRenderer = RendererManager.getBestFileRenderer(presentationType, artifact, null);
+            FileSystemRenderer fileRenderer = RendererManager.getBestFileRenderer(presentationType, artifact, null);
             String fileName = artifact.getSafeName() + "." + fileRenderer.getAssociatedExtension(artifact);
-            InputStream inputStream = fileRenderer.getRenderInputStream(artifact, presentationType);
+            InputStream inputStream =
+                  fileRenderer.getRenderInputStream(presentationType, Collections.singletonList(artifact));
             Lib.inputStreamToFile(inputStream, new File(exportPath, fileName));
          } catch (OseeArgumentException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

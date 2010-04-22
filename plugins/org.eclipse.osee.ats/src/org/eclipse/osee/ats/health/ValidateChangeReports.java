@@ -73,7 +73,7 @@ import org.eclipse.swt.widgets.Display;
  * <br>
  * This test also ensures that all change reports can return their historical artifacts by loading and accessing the
  * descriptive name for each artifact.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class ValidateChangeReports extends XNavigateItemAction {
@@ -173,7 +173,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
 
    /**
     * Return true if current change report is same as stored change report data
-    *
+    * 
     * @param teamArt
     * @return Result.TrueResult if same, else Result.FalseResult with comparison in resultData
     * @throws ParserConfigurationException
@@ -301,8 +301,6 @@ public class ValidateChangeReports extends XNavigateItemAction {
       sb.append(AXml.addTagData("bArtId", String.valueOf(change.getBArtId())));
       sb.append(AXml.addTagData("relId", String.valueOf(change.getRelLinkId())));
       sb.append(AXml.addTagData("rat", change.getRationale()));
-      sb.append(AXml.addTagData("aOrdr", String.valueOf(change.getLinkOrder())));
-      sb.append(AXml.addTagData("bOrdr", String.valueOf(change.getBLinkOrder())));
       sb.append(AXml.addTagData("relTId", String.valueOf(change.getRelationType().getId())));
       sb.append(AXml.addTagData("hist", String.valueOf(change.isHistorical())));
       return AXml.addTagData("RelChg", sb.toString());
@@ -332,7 +330,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       sb.append(AXml.addTagData("mType", String.valueOf(change.getModificationType().name())));
       sb.append(AXml.addTagData("aModType", String.valueOf(change.getArtModType().name())));
       sb.append(AXml.addTagData("attrId", String.valueOf(change.getAttrId())));
-      sb.append(AXml.addTagData("attrTId", String.valueOf(change.getTypeId())));
+      sb.append(AXml.addTagData("attrTId", String.valueOf(change.getAttributeType().getId())));
       sb.append(AXml.addTagData("hist", String.valueOf(change.isHistorical())));
       return AXml.addTagData("AttrChg", sb.toString());
    }

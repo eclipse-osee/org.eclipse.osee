@@ -66,12 +66,8 @@ public class WholeDocumentRenderer extends WordRenderer {
    }
 
    @Override
-   public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      return getRenderInputStream(artifacts.iterator().next(), presentationType);
-   }
-
-   @Override
-   public InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
+      Artifact artifact = artifacts.iterator().next();
       InputStream stream = null;
       try {
          if (artifact == null) {

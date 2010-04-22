@@ -16,8 +16,9 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
  * @author Roberto E. Escobar
  */
 public abstract class ChangeItem {
-   private int artId;
-   private int itemId;
+   private final int artId;
+   private final int itemId;
+   private final int itemTypeId;
 
    private final ChangeVersion baseEntry;
    private final ChangeVersion firstChange;
@@ -25,8 +26,12 @@ public abstract class ChangeItem {
    private final ChangeVersion destinationEntry;
    private final ChangeVersion netEntry;
 
-   protected ChangeItem(long currentSourceGammaId, ModificationType currentSourceModType) {
+   protected ChangeItem(int itemId, int itemTypeId, int artId, long currentSourceGammaId, ModificationType currentSourceModType) {
       super();
+      this.itemId = itemId;
+      this.itemTypeId = itemTypeId;
+      this.artId = artId;
+
       this.currentEntry = new ChangeVersion(currentSourceGammaId, currentSourceModType);
 
       this.baseEntry = new ChangeVersion();
@@ -39,16 +44,12 @@ public abstract class ChangeItem {
       return artId;
    }
 
-   public void setArtId(int artId) {
-      this.artId = artId;
-   }
-
    public int getItemId() {
       return itemId;
    }
 
-   protected void setItemId(int itemId) {
-      this.itemId = itemId;
+   public int getItemTypeId() {
+      return itemTypeId;
    }
 
    public ChangeVersion getBaselineVersion() {

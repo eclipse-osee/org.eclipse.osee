@@ -14,10 +14,8 @@ package org.eclipse.osee.framework.core.test.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -49,16 +47,14 @@ public class ChangeItemUtilTest {
       ChangeVersion net = ChangeTestUtility.createChange(5555L, ModificationType.DELETED);
 
       ChangeItem item = ChangeTestUtility.createItem(200, base, first, current, destination, net);
-      assertEquals(0, item.getArtId());
       assertEquals(200, item.getItemId());
+      assertEquals(2000, item.getItemTypeId());
+      assertEquals(20000, item.getArtId());
       ChangeTestUtility.checkChange(base, item.getBaselineVersion());
       ChangeTestUtility.checkChange(first, item.getFirstNonCurrentChange());
       ChangeTestUtility.checkChange(current, item.getCurrentVersion());
       ChangeTestUtility.checkChange(destination, item.getDestinationVersion());
       ChangeTestUtility.checkChange(net, item.getNetChange());
-
-      item.setArtId(400);
-      assertEquals(400, item.getArtId());
    }
 
    @Test
@@ -248,7 +244,8 @@ public class ChangeItemUtilTest {
          Assert.assertEquals(modType, object1.getModType());
          Assert.assertEquals(modType == ModificationType.NEW, ChangeItemUtil.isNew(object1));
          Assert.assertEquals(modType == ModificationType.INTRODUCED, ChangeItemUtil.isIntroduced(object1));
-         Assert.assertEquals(modType == ModificationType.DELETED || modType == ModificationType.ARTIFACT_DELETED, ChangeItemUtil.isDeleted(object1));
+         Assert.assertEquals(modType == ModificationType.DELETED || modType == ModificationType.ARTIFACT_DELETED,
+               ChangeItemUtil.isDeleted(object1));
       }
 
       Assert.assertEquals(false, ChangeItemUtil.isNew(null));
@@ -276,7 +273,8 @@ public class ChangeItemUtilTest {
 
    @Test
    public void testGammasEqual() {
-      List<Triplet<ChangeVersion, ChangeVersion, Boolean>> cases = new ArrayList<Triplet<ChangeVersion, ChangeVersion, Boolean>>();
+      List<Triplet<ChangeVersion, ChangeVersion, Boolean>> cases =
+            new ArrayList<Triplet<ChangeVersion, ChangeVersion, Boolean>>();
 
       cases.add(createTriplet(3000L, ModificationType.MODIFIED, 3000L, ModificationType.NEW, true));
       cases.add(createTriplet(null, ModificationType.MODIFIED, 3000L, ModificationType.NEW, false));
@@ -304,8 +302,7 @@ public class ChangeItemUtilTest {
       try {
          ChangeItemUtil.getStartingVersion(null);
          Assert.fail("This line should not be executed");
-      }
-      catch (OseeCoreException ex) {
+      } catch (OseeCoreException ex) {
          Assert.assertTrue(ex instanceof OseeArgumentException);
       }
 
@@ -322,8 +319,7 @@ public class ChangeItemUtilTest {
          item = ChangeTestUtility.createItem(3, invalid, invalid, invalid, null, null);
          ChangeItemUtil.getStartingVersion(item);
          Assert.fail("This line should not be executed");
-      }
-      catch (OseeCoreException ex) {
+      } catch (OseeCoreException ex) {
          Assert.assertTrue(ex instanceof OseeStateException);
       }
    }
@@ -340,26 +336,23 @@ public class ChangeItemUtilTest {
       try {
          ChangeItemUtil.copy(null, expected);
          Assert.fail("Should not be executed");
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
          Assert.assertTrue(ex instanceof OseeArgumentException);
       }
 
       try {
          ChangeItemUtil.copy(expected, null);
          Assert.fail("Should not be executed");
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
          Assert.assertTrue(ex instanceof OseeArgumentException);
       }
 
    }
 
-   private Triplet<ChangeVersion, ChangeVersion, Boolean> createTriplet(Long long1, ModificationType mod1, Long long2, ModificationType mod2,
-         boolean expected) {
+   private Triplet<ChangeVersion, ChangeVersion, Boolean> createTriplet(Long long1, ModificationType mod1, Long long2, ModificationType mod2, boolean expected) {
       return new Triplet<ChangeVersion, ChangeVersion, Boolean>(//
-                                                                ChangeTestUtility.createChange(long1, mod1), //
-                                                                ChangeTestUtility.createChange(long2, mod2), //
-                                                                expected);
+            ChangeTestUtility.createChange(long1, mod1), //
+            ChangeTestUtility.createChange(long2, mod2), //
+            expected);
    }
 }

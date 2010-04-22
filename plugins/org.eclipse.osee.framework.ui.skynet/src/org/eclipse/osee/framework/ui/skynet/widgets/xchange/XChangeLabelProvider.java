@@ -19,8 +19,8 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -56,9 +56,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
 
          if (change instanceof ErrorChange) {
             return "";
-         }
-
-         else if (cCol.equals(ChangeXViewerFactory.Change_Type)) {
+         } else if (cCol.equals(ChangeXViewerFactory.Change_Type)) {
             return change.getModificationType().getDisplayName();
          } else if (cCol.equals(ChangeXViewerFactory.Item_Kind)) {
             return change.getItemKind();
@@ -70,9 +68,9 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
             return change.getWasValue();
          } else if (cCol.equals(ChangeXViewerFactory.paraNumber)) {
             String paragraphNum = "";
-
-            if (change.getToArtifact().isAttributeTypeValid(CoreAttributeTypes.PARAGRAPH_NUMBER)) {
-               paragraphNum = change.getToArtifact().getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "");
+            Artifact artifact = change.getDelta().getStartArtifact();
+            if (artifact.isAttributeTypeValid(CoreAttributeTypes.PARAGRAPH_NUMBER)) {
+               paragraphNum = artifact.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "");
             }
             return paragraphNum;
          }
@@ -111,14 +109,10 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          }
          Change change = (Change) element;
          if (xCol.equals(ChangeXViewerFactory.Name)) {
-            try {
-               if (change instanceof ErrorChange) {
-                  return ImageManager.getImage(FrameworkImage.ERROR);
-               } else {
-                  return ArtifactImageManager.getChangeKindImage(change);
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            if (change instanceof ErrorChange) {
+               return ImageManager.getImage(FrameworkImage.ERROR);
+            } else {
+               return ArtifactImageManager.getChangeKindImage(change);
             }
          } else if (xCol.equals(ChangeXViewerFactory.Item_Type)) {
             return ArtifactImageManager.getChangeTypeImage(change);

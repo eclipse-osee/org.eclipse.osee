@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.branch.management.change;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
@@ -20,9 +19,9 @@ import org.eclipse.osee.framework.core.data.AttributeChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.data.RelationChangeItem;
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -49,8 +48,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private final HashMap<Integer, ChangeItem> artifactChangesByItemId = new HashMap<Integer, ChangeItem>();
    private final HashMap<Integer, ChangeItem> relationChangesByItemId = new HashMap<Integer, ChangeItem>();
    private final HashMap<Integer, ChangeItem> attributeChangesByItemId = new HashMap<Integer, ChangeItem>();
-   private final HashMap<Long, ModificationType> changeByGammaId =
-         new HashMap<Long, ModificationType>();
+   private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<Long, ModificationType>();
 
    private final Collection<ChangeItem> changeData;
    private final TransactionRecord sourceTransaction;
@@ -65,22 +63,20 @@ public class LoadChangeDataOperation extends AbstractOperation {
 
    private final LoadingMode loadChangesEnum;
 
-   public LoadChangeDataOperation(IOseeDatabaseServiceProvider oseeDatabaseProvider, TransactionRecord sourceTransaction, TransactionRecord destinationTransaction, Collection<ChangeItem> changeData) {
-      this(oseeDatabaseProvider, sourceTransaction, destinationTransaction, null, changeData,
-            LoadingMode.FROM_SINGLE_TRANSACTION);
+   public LoadChangeDataOperation(IOseeDatabaseServiceProvider oseeDatabaseProvider, TransactionDelta txDelta, Collection<ChangeItem> changeData) {
+      this(oseeDatabaseProvider, txDelta, null, changeData, LoadingMode.FROM_SINGLE_TRANSACTION);
    }
 
-   public LoadChangeDataOperation(IOseeDatabaseServiceProvider oseeDatabaseProvider, TransactionRecord sourceTransaction, TransactionRecord destinationTransaction, TransactionRecord mergeTransaction, Collection<ChangeItem> changeData) {
-      this(oseeDatabaseProvider, sourceTransaction, destinationTransaction, mergeTransaction, changeData,
-            LoadingMode.FROM_ALL_BRANCH_TRANSACTIONS);
+   public LoadChangeDataOperation(IOseeDatabaseServiceProvider oseeDatabaseProvider, TransactionDelta txDelta, TransactionRecord mergeTransaction, Collection<ChangeItem> changeData) {
+      this(oseeDatabaseProvider, txDelta, mergeTransaction, changeData, LoadingMode.FROM_ALL_BRANCH_TRANSACTIONS);
    }
 
-   private LoadChangeDataOperation(IOseeDatabaseServiceProvider oseeDatabaseProvider, TransactionRecord sourceTransaction, TransactionRecord destinationTransaction, TransactionRecord mergeTransaction, Collection<ChangeItem> changeData, LoadingMode loadMode) {
+   private LoadChangeDataOperation(IOseeDatabaseServiceProvider oseeDatabaseProvider, TransactionDelta txDelta, TransactionRecord mergeTransaction, Collection<ChangeItem> changeData, LoadingMode loadMode) {
       super("Load Change Data", Activator.PLUGIN_ID);
       this.oseeDatabaseProvider = oseeDatabaseProvider;
       this.mergeTransaction = mergeTransaction;
-      this.sourceTransaction = sourceTransaction;
-      this.destinationTransaction = destinationTransaction;
+      this.sourceTransaction = txDelta.getStartTx();
+      this.destinationTransaction = txDelta.getEndTx();
       this.changeData = changeData;
       this.loadChangesEnum = loadMode;
    }
@@ -140,16 +136,19 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private void loadArtifactItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
       IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       String query =
-            "select art_id, txj.gamma_id from osee_arts id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
+            "select art_id, art_type_id, txj.gamma_id from osee_arts id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
       try {
          chStmt.runPreparedQuery(10000, query, queryId);
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            ModificationType modType = changeByGammaId.get(chStmt.getLong("gamma_id"));
-            ArtifactChangeItem changeItem =
-                  new ArtifactChangeItem(chStmt.getLong("gamma_id"), modType,
-                        chStmt.getInt("art_id"));
+            int artId = chStmt.getInt("art_id");
+            int artTypeId = chStmt.getInt("art_type_id");
+
+            long gammaId = chStmt.getLong("gamma_id");
+            ModificationType modType = changeByGammaId.get(gammaId);
+
+            ArtifactChangeItem changeItem = new ArtifactChangeItem(artId, artTypeId, gammaId, modType);
             changesByItemId.put(changeItem.getItemId(), changeItem);
          }
       } finally {
@@ -160,16 +159,23 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private void loadAttributeItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
       IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       String query =
-            "select art_id, attr_id, value, txj.gamma_id from osee_attribute id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
+            "select art_id, attr_id, value, attr_type_id, txj.gamma_id from osee_attribute id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
       try {
          chStmt.runPreparedQuery(10000, query, queryId);
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            ModificationType modType = changeByGammaId.get(chStmt.getLong("gamma_id"));
+            int attrId = chStmt.getInt("attr_id");
+            int attrTypeId = chStmt.getInt("attr_type_id");
+            int artId = chStmt.getInt("art_id");
+
+            long gammaId = chStmt.getLong("gamma_id");
+            ModificationType modType = changeByGammaId.get(gammaId);
+
+            String value = chStmt.getString("value");
+
             AttributeChangeItem changeItem =
-                  new AttributeChangeItem(chStmt.getLong("gamma_id"), modType, chStmt.getInt("attr_id"), chStmt.getInt("art_id"),
-                        chStmt.getString("value"));
+                  new AttributeChangeItem(attrId, attrTypeId, artId, gammaId, modType, value);
 
             changesByItemId.put(changeItem.getItemId(), changeItem);
          }
@@ -187,11 +193,18 @@ public class LoadChangeDataOperation extends AbstractOperation {
          chStmt.runPreparedQuery(10000, query, queryId);
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            ModificationType modType = changeByGammaId.get(chStmt.getLong("gamma_id"));
+            int relLinkId = chStmt.getInt("rel_link_id");
+            int relTypeId = chStmt.getInt("rel_link_type_id");
+
+            long gammaId = chStmt.getLong("gamma_id");
+            ModificationType modType = changeByGammaId.get(gammaId);
+
+            int aArtId = chStmt.getInt("a_art_id");
+            int bArtId = chStmt.getInt("b_art_id");
+            String rationale = chStmt.getString("rationale");
+
             RelationChangeItem changeItem =
-                  new RelationChangeItem(chStmt.getLong("gamma_id"), modType,
-                        chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"), chStmt.getInt("rel_link_id"),
-                        chStmt.getInt("rel_link_type_id"), chStmt.getString("rationale"));
+                  new RelationChangeItem(relLinkId, relTypeId, gammaId, modType, aArtId, bArtId, rationale);
 
             changesByItemId.put(changeItem.getItemId(), changeItem);
          }
@@ -231,19 +244,17 @@ public class LoadChangeDataOperation extends AbstractOperation {
       try {
          switch (loadChangesEnum) {
             case FROM_ALL_BRANCH_TRANSACTIONS:
-               query =
-                     "select txs.transaction_id, txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
-                           + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
-                           " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
+               query = "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
+                     + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
+                     " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
                chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
                      transactionLimit.getBranchId(), transactionLimit.getId());
                break;
             case FROM_SINGLE_TRANSACTION:
-               query =
-                     "select txs.transaction_id, txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
-                           + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
-                           " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?";
+               query = "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
+                     + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
+                     " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?";
 
                chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), transactionLimit.getBranchId(),
                      transactionLimit.getId());
@@ -258,17 +269,14 @@ public class LoadChangeDataOperation extends AbstractOperation {
             int itemId = chStmt.getInt(columnName);
 
             Long gammaId = chStmt.getLong("gamma_id");
-            Integer transactionId = chStmt.getInt("transaction_id");
             ChangeItem change = changesByItemId.get(itemId);
 
             if (transactionLimit.getBranch().getBranchType().isMergeBranch()) {
-               change.getNetChange().setTransactionNumber(transactionId);
                change.getNetChange().setGammaId(gammaId);
                change.getNetChange().setModType(ModificationType.MERGED);
             } else {
                change.getDestinationVersion().setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
                change.getDestinationVersion().setGammaId(gammaId);
-               change.getDestinationVersion().setTransactionNumber(transactionId);
             }
          }
       } finally {
@@ -310,9 +318,9 @@ public class LoadChangeDataOperation extends AbstractOperation {
                isFirstSet = false;
             }
             if (baselineTransactionId == transactionId) {
-               loadVersionData(change.getBaselineVersion(), transactionId, gammaId, modType, value);
+               loadVersionData(change.getBaselineVersion(), gammaId, modType, value);
             } else if (!isFirstSet) {
-               loadVersionData(change.getFirstNonCurrentChange(), transactionId, gammaId, modType, value);
+               loadVersionData(change.getFirstNonCurrentChange(), gammaId, modType, value);
                isFirstSet = true;
             }
 
@@ -323,14 +331,13 @@ public class LoadChangeDataOperation extends AbstractOperation {
       }
    }
 
-   private void loadVersionData(ChangeVersion versionedChange, Integer transactionId, Long gammaId, ModificationType modType, String value) throws OseeArgumentException, OseeDataStoreException {
+   private void loadVersionData(ChangeVersion versionedChange, Long gammaId, ModificationType modType, String value) {
       // Tolerates the case of having more than one version of an item on a
       // baseline transaction by picking the most recent one
       if (versionedChange.getGammaId() == null || versionedChange.getGammaId().compareTo(gammaId) < 0) {
          versionedChange.setValue(value);
          versionedChange.setModType(modType);
          versionedChange.setGammaId(gammaId);
-         versionedChange.setTransactionNumber(transactionId);
       }
    }
 }

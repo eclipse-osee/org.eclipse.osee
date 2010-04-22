@@ -9,8 +9,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -36,7 +35,7 @@ public class WordChangeReportOperation extends AbstractOperation {
       variableMap.setValue("suppressWord", suppressWord);
       variableMap.setValue("diffReportFolderName", diffReportFolderName);
 
-      Collection<Pair<Artifact, Artifact>> compareArtifacts = ChangeManager.getCompareArtifacts(changes);
+      Collection<ArtifactDelta> compareArtifacts = ChangeManager.getCompareArtifacts(changes);
 
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       renderer.setOptions(variableMap);

@@ -32,6 +32,9 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -310,8 +313,8 @@ public class XChangeWidget extends XWidget implements IActionable {
       final Job uiJob = new UpdateChangeView(branch, transactionId, loadChangeReport, changeData);
 
       if (loadChangeReport) {
-         final Job loadJob = new LoadChangeJob(branch, transactionId, changeData);
-         Jobs.startJob(loadJob, new JobChangeAdapter() {
+         final IOperation operation = new LoadChangesOperation(branch, transactionId, changeData);
+         Operations.executeAsJob(operation, true, Job.LONG, new JobChangeAdapter() {
             @Override
             public void done(IJobChangeEvent event) {
                Jobs.startJob(uiJob);
@@ -379,7 +382,7 @@ public class XChangeWidget extends XWidget implements IActionable {
       return sb.toString();
    }
 
-   public TransactionRecord getTransactionId() throws OseeCoreException {
+   public TransactionRecord getTransactionId() {
       return transactionId;
    }
 
@@ -408,43 +411,41 @@ public class XChangeWidget extends XWidget implements IActionable {
       }
    }
 
-   private final static class LoadChangeJob extends Job {
+   private final static class LoadChangesOperation extends AbstractOperation {
       private final ChangeData changeData;
       private final Branch branch;
       private final TransactionRecord transactionId;
 
-      public LoadChangeJob(Branch branch, TransactionRecord transactionId, ChangeData changeData) {
-         super("Load Change Data");
+      public LoadChangesOperation(Branch branch, TransactionRecord transactionId, ChangeData changeData) {
+         super("Load Change Data", SkynetGuiPlugin.PLUGIN_ID);
          this.changeData = changeData;
          this.branch = branch;
          this.transactionId = transactionId;
       }
 
       @Override
-      protected IStatus run(IProgressMonitor monitor) {
-         IStatus toReturn = Status.OK_STATUS;
-         try {
-            boolean hasBranch = branch != null;
-            boolean isRebaselined = hasBranch ? branch.getBranchState().equals(BranchState.REBASELINED) : false;
-            if (!isRebaselined) {
-               Collection<Change> changes = changeData.getChanges();
-               if (hasBranch) {
-                  changes.addAll(ChangeManager.getChangesPerBranch(branch, monitor));
-               } else {
-                  changes.addAll(ChangeManager.getChangesPerTransaction(transactionId, monitor));
-               }
-            }
-            Artifact artifact = null;
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         boolean hasBranch = branch != null;
+         boolean isRebaselined = hasBranch ? branch.getBranchState().equals(BranchState.REBASELINED) : false;
+         if (!isRebaselined) {
+            Collection<Change> changes = changeData.getChanges();
+            changes.clear();
+            IOperation subOp;
             if (hasBranch) {
-               artifact = (Artifact) branch.getAssociatedArtifact().getFullArtifact();
-            } else if (transactionId != null && transactionId.getCommit() != 0) {
-               artifact = ArtifactQuery.getArtifactFromId(transactionId.getCommit(), BranchManager.getCommonBranch());
+               subOp = ChangeManager.comparedToParent(branch, changes);
+            } else {
+               subOp = ChangeManager.comparedToPreviousTx(transactionId, changes);
             }
-            changeData.setAssociatedArtifact(artifact);
-         } catch (OseeCoreException ex) {
-            toReturn = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error loading change data", ex);
+            doSubWork(subOp, monitor, 0.80);
          }
-         return toReturn;
+         Artifact artifact = null;
+         if (hasBranch) {
+            artifact = (Artifact) branch.getAssociatedArtifact().getFullArtifact();
+         } else if (transactionId != null && transactionId.getCommit() != 0) {
+            artifact = ArtifactQuery.getArtifactFromId(transactionId.getCommit(), BranchManager.getCommonBranch());
+         }
+         changeData.setAssociatedArtifact(artifact);
+         monitor.worked(calculateWork(0.20));
       }
    };
 

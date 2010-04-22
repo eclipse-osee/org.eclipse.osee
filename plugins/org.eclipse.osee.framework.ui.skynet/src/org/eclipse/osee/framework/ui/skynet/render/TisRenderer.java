@@ -64,9 +64,9 @@ public class TisRenderer extends WordTemplateRenderer {
    }
 
    @Override
-   public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
       if (PresentationType.GENERALIZED_EDIT == presentationType) {
-         return super.getRenderInputStream(artifacts, presentationType);
+         return super.getRenderInputStream(presentationType, artifacts);
       }
       final VariableMap variableMap = new VariableMap();
       String template;

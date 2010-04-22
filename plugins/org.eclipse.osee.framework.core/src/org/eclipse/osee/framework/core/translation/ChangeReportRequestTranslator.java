@@ -21,7 +21,6 @@ public class ChangeReportRequestTranslator implements ITranslator<ChangeReportRe
    private static enum Entry {
       SRC_TRANSACTION,
       DEST_TRANSACTION,
-      IS_HISTORY
    }
 
    @Override
@@ -29,15 +28,13 @@ public class ChangeReportRequestTranslator implements ITranslator<ChangeReportRe
       int srcTx = propertyStore.getInt(Entry.SRC_TRANSACTION.name());
       int destTx = propertyStore.getInt(Entry.DEST_TRANSACTION.name());
 
-      boolean isHistory = propertyStore.getBoolean(Entry.IS_HISTORY.name());
-      ChangeReportRequest data = new ChangeReportRequest(srcTx, destTx, isHistory);
+      ChangeReportRequest data = new ChangeReportRequest(srcTx, destTx);
       return data;
    }
 
    @Override
    public PropertyStore convert(ChangeReportRequest data) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
-      store.put(Entry.IS_HISTORY.name(), data.isHistorical());
       store.put(Entry.SRC_TRANSACTION.name(), data.getSourceTx());
       store.put(Entry.DEST_TRANSACTION.name(), data.getDestinationTx());
       return store;

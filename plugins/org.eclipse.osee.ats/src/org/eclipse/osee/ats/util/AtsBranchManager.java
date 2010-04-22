@@ -15,10 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -52,6 +50,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -79,7 +78,7 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * BranchManager contains methods necessary for ATS objects to interact with creation, view and commit of branches.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsBranchManager {
@@ -118,7 +117,7 @@ public class AtsBranchManager {
 
    /**
     * Return true if merge branch exists in DB (whether archived or not)
-    * 
+    *
     * @param destinationBranch
     * @return true
     * @throws OseeCoreException
@@ -605,7 +604,7 @@ public class AtsBranchManager {
 
    /**
     * Perform error checks and popup confirmation dialogs associated with creating a working branch.
-    * 
+    *
     * @param pageId if specified, WorkPage gets callback to provide confirmation that branch can be created
     * @param popup if true, errors are popped up to user; otherwise sent silently in Results
     * @return Result return of status
@@ -748,28 +747,24 @@ public class AtsBranchManager {
       Operations.scheduleJob(job, true, Job.LONG, null, forcePend);
    }
 
-   /**
-    * Since change data for a committed branch is not going to change, cache it per run instance of OSEE
-    */
-   private static final Map<TransactionRecord, ChangeData> changeDataCacheForCommittedBranch =
-         new HashMap<TransactionRecord, ChangeData>();
-
    public ChangeData getChangeDataFromEarliestTransactionId() throws OseeCoreException {
       return getChangeData(null);
    }
 
    /**
     * Return ChangeData represented by commit to commitConfigArt or earliest commit if commitConfigArt == null
-    * 
+    *
     * @param commitConfigArt that configures commit or null
     */
    public ChangeData getChangeData(ICommitConfigArtifact commitConfigArt) throws OseeCoreException {
       if (commitConfigArt != null && commitConfigArt.getParentBranch() == null) {
          throw new OseeArgumentException("Parent Branch not configured for " + commitConfigArt);
       }
-      ChangeData changeData = null;
+      Collection<Change> changes = new ArrayList<Change>();
+
+      IOperation operation = null;
       if (teamArt.getBranchMgr().isWorkingBranchInWork()) {
-         changeData = new ChangeData(ChangeManager.getChangesPerBranch(getWorkingBranch(), new NullProgressMonitor()));
+         operation = ChangeManager.comparedToParent(getWorkingBranch(), changes);
       } else if (teamArt.getBranchMgr().isCommittedBranchExists()) {
          TransactionRecord transactionId = null;
          if (commitConfigArt == null) {
@@ -781,15 +776,11 @@ public class AtsBranchManager {
                }
             }
          }
-         changeData = null;//shangeDataCacheForCommittedBranch.get(transactionId);
-         if (changeData == null) {
-            changeData =
-                  new ChangeData(ChangeManager.getChangesPerTransaction(transactionId, new NullProgressMonitor()));
-            changeDataCacheForCommittedBranch.put(transactionId, changeData);
-         }
-      } else {
-         changeData = new ChangeData(new ArrayList<Change>());
+         operation = ChangeManager.comparedToPreviousTx(transactionId, changes);
       }
-      return changeData;
+      if (operation != null) {
+         Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), 1.0);
+      }
+      return new ChangeData(changes);
    }
 }

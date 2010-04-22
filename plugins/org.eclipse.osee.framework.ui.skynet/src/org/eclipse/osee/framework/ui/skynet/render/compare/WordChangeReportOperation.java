@@ -1,6 +1,5 @@
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +10,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -22,9 +20,9 @@ import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
-import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
@@ -32,32 +30,23 @@ import org.eclipse.osee.framework.ui.skynet.render.WordImageChecker;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 
 public final class WordChangeReportOperation extends AbstractOperation {
-   private final Collection<Pair<Artifact, Artifact>> artifactsToCompare;
+   private final Collection<ArtifactDelta> artifactsToCompare;
 
    private final String reportDirName;
    private final boolean isSuppressWord;
-   private final FileRenderer renderer;
    private final IAttributeType attributeType;
-
-   private IFolder renderingFolder;
+   private final ArtifactDeltaToFileConverter converter;
    private IFolder changeReportFolder;
 
-   public WordChangeReportOperation(Collection<Pair<Artifact, Artifact>> artifactsToCompare, FileRenderer renderer, String reportDirName, boolean isSuppressWord) {
+   public WordChangeReportOperation(Collection<ArtifactDelta> artifactsToCompare, ArtifactDeltaToFileConverter converter, String reportDirName, boolean isSuppressWord) {
       super("Word Change Report", SkynetGuiPlugin.PLUGIN_ID);
-      this.renderer = renderer;
+      this.converter = converter;
       this.artifactsToCompare = artifactsToCompare;
 
       this.isSuppressWord = isSuppressWord;
       this.reportDirName = Strings.isValid(reportDirName) ? reportDirName : GUID.create();
 
       this.attributeType = CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
-   }
-
-   private IFolder getRenderingFolder(Branch branch, PresentationType presentationType) throws OseeCoreException {
-      if (renderingFolder == null) {
-         renderingFolder = RenderingUtil.getRenderFolder(branch, presentationType);
-      }
-      return renderingFolder;
    }
 
    private IFolder getChangeReportFolder() throws OseeCoreException {
@@ -81,17 +70,18 @@ public final class WordChangeReportOperation extends AbstractOperation {
          Set<Artifact> artifacts = new HashSet<Artifact>();
          int countSuccessful = 0;
 
-         for (Pair<Artifact, Artifact> entry : artifactsToCompare) {
+         for (ArtifactDelta delta : artifactsToCompare) {
             checkForCancelledStatus(monitor);
 
             try {
                //Remove tracked changes and display image diffs
                Pair<String, Boolean> originalValue = null;
+               Pair<String, Boolean> newAnnotationValue = null;
 
                //Check for tracked changes
                artifacts.clear();
-               artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(entry.getFirst()));
-               artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(entry.getSecond()));
+               artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(delta.getStartArtifact()));
+               artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(delta.getEndArtifact()));
 
                if (!artifacts.isEmpty()) {
                   if (RenderingUtil.arePopupsAllowed()) {
@@ -102,8 +92,8 @@ public final class WordChangeReportOperation extends AbstractOperation {
                   continue;
                }
 
-               Artifact baseArtifact = entry.getFirst();
-               Artifact newerArtifact = entry.getSecond();
+               Artifact baseArtifact = delta.getStartArtifact();
+               Artifact newerArtifact = delta.getEndArtifact();
 
                if (baseArtifact == null && newerArtifact == null) {
                   throw new OseeArgumentException("baseVersion and newerVersion can't both be null.");
@@ -115,17 +105,15 @@ public final class WordChangeReportOperation extends AbstractOperation {
                if (!UserManager.getUser().getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
                   originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
                }
-               Branch branch = baseArtifact != null ? baseArtifact.getBranch() : newerArtifact.getBranch();
-
-               IFile baseFile = renderFile(renderer, baseArtifact, branch);
-               IFile newerFile = renderFile(renderer, newerArtifact, branch);
+               Pair<IFile, IFile> fileDeltas = converter.convertToFile(PresentationType.DIFF, delta);
 
                WordImageChecker.restoreOriginalValue(baseContent, originalValue);
+               WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);
 
                monitor.setTaskName("Adding to Diff Script: " + (newerArtifact == null ? "Unnamed Artifact" : newerArtifact.getName()));
 
                String localFileName = baseFileStr + "/" + GUID.create() + ".xml";
-               generator.addComparison(baseFile, newerFile, localFileName, false);
+               generator.addComparison(fileDeltas.getFirst(), fileDeltas.getSecond(), localFileName, false);
 
                countSuccessful++;
             } catch (OseeCoreException ex) {
@@ -157,18 +145,9 @@ public final class WordChangeReportOperation extends AbstractOperation {
 
    private Attribute<String> getWordContent(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
       Attribute<String> toReturn = null;
-      if (artifact != null) {
+      if (artifact != null && !artifact.isDeleted()) {
          toReturn = artifact.getSoleAttribute(attributeType);
       }
       return toReturn;
    }
-
-   private IFile renderFile(FileRenderer renderer, Artifact artifact, Branch branch) throws OseeCoreException {
-      PresentationType presentationType = PresentationType.DIFF;
-      String fileName = RenderingUtil.getFilenameFromArtifact(renderer, null, presentationType);
-      InputStream inputStream = renderer.getRenderInputStream(artifact, presentationType);
-      IFolder renderingFolder = getRenderingFolder(branch, presentationType);
-      return renderer.renderToFile(renderingFolder, fileName, branch, inputStream, presentationType);
-   }
-
 }

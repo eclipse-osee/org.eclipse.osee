@@ -6,12 +6,9 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Megumi Telles
@@ -20,11 +17,11 @@ public class ErrorChange extends Change {
    final static String ERROR_STRING = "!Error - ";
    private String exception = "";
 
-   public ErrorChange(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical, artifact, null);
+   public ErrorChange(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, ArtifactDelta artifactDelta) {
+      super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical, artifactDelta);
    }
 
-   public ErrorChange(IOseeBranch branch, int artId, String exception) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+   public ErrorChange(IOseeBranch branch, int artId, String exception) {
       this(branch, null, 0, artId, null, null, false, null);
       this.exception = exception;
    }
@@ -64,6 +61,7 @@ public class ErrorChange extends Change {
       return ERROR_STRING + exception;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
       return null;

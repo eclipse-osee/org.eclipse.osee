@@ -15,9 +15,12 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -28,10 +31,10 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
-import org.eclipse.osee.framework.skynet.core.change.TransactionDelta;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -134,10 +137,11 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                if (modificationType == ModificationType.MODIFIED && artModType != ModificationType.INTRODUCED) {
                   modificationType = ModificationType.NEW;
                }
-
+               ArtifactType artifactType = ArtifactTypeManager.getType(artTypeId);
+               AttributeType attributeType = AttributeTypeManager.getType(attrTypeId);
                attributeChangeBuilder =
-                     new AttributeChangeBuilder(sourceBranch, ArtifactTypeManager.getType(artTypeId), sourceGamma,
-                           artId, txDelta, modificationType, !hasBranch, isValue, "", attrId, attrTypeId, artModType);
+                     new AttributeChangeBuilder(sourceBranch, artifactType, sourceGamma, artId, txDelta,
+                           modificationType, !hasBranch, isValue, "", attrId, attributeType, artModType);
 
                changeBuilders.add(attributeChangeBuilder);
                attributesWasValueCache.put(attrId, attributeChangeBuilder);

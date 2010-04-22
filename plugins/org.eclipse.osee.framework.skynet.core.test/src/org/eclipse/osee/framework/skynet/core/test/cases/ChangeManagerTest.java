@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.skynet.core.test.cases;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -21,6 +23,8 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -101,7 +105,11 @@ public class ChangeManagerTest {
 
    public static boolean checkArtifactModType(Artifact artifact, ModificationType modificationType) throws OseeCoreException {
       boolean pass = false;
-      for (Change change : ChangeManager.getChangesPerBranch(artifact.getBranch(), new NullProgressMonitor())) {
+      Collection<Change> changes = new ArrayList<Change>();
+      IOperation operation = ChangeManager.comparedToParent(artifact.getBranch(), changes);
+      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), 1.0);
+
+      for (Change change : changes) {
          if (change.getArtId() == artifact.getArtId()) {
             pass = change.getModificationType() == modificationType;
             break;

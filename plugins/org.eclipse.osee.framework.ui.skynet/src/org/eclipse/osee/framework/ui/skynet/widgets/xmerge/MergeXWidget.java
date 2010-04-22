@@ -143,7 +143,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       XMergeLabelProvider labelProvider = new XMergeLabelProvider(mergeXViewer);
       mergeXViewer.addLabelProvider(labelProvider);
       mergeXViewer.setSorter(new MergeXViewerSorter(mergeXViewer, labelProvider));
-      mergeXViewer.setContentProvider(new XMergeContentProvider(mergeXViewer));
+      mergeXViewer.setContentProvider(new XMergeContentProvider());
       mergeXViewer.setLabelProvider(new XMergeLabelProvider(mergeXViewer));
       mergeXViewer.addSelectionChangedListener(new ISelectionChangedListener() {
          public void selectionChanged(SelectionChangedEvent event) {
@@ -227,7 +227,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       });
    }
 
-   public void refreshTable() throws InterruptedException {
+   public void refreshTable() {
       Job job = new Job("Loading Merge Manager") {
          @Override
          protected IStatus run(IProgressMonitor monitor) {

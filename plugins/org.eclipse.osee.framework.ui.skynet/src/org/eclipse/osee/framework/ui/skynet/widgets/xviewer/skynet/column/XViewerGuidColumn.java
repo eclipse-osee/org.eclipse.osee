@@ -14,8 +14,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
-import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.swt.SWT;
 
 /**
@@ -34,7 +33,7 @@ public class XViewerGuidColumn extends XViewerValueColumn {
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
-    * 
+    *
     * @param col
     */
    @Override
@@ -47,10 +46,8 @@ public class XViewerGuidColumn extends XViewerValueColumn {
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       if (element instanceof Artifact) {
          return ((Artifact) element).getGuid();
-      } else if (element instanceof ArtifactChange) {
-         return ((ArtifactChange) element).getToArtifact().getGuid();
-      } else if (element instanceof AttributeChange) {
-         return ((AttributeChange) element).getToArtifact().getGuid();
+      } else if (element instanceof Change) {
+         return ((Change) element).getDelta().getStartArtifact().getGuid();
       }
       return "";
    }

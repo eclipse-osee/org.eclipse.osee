@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -162,7 +162,7 @@ public class PublishRequirements extends AbstractBlam {
          int transactionId = getBranchTransaction(date, branch.getId());
          ArrayList<Artifact> olderArtifacts = getOlderArtifacts(nonFolderChildren, transactionId, branch.getId());
 
-         Collection<Pair<Artifact, Artifact>> compareItems = new ArrayList<Pair<Artifact, Artifact>>();
+         Collection<ArtifactDelta> compareItems = new ArrayList<ArtifactDelta>();
          for (int index = 0; index < olderArtifacts.size() && index < nonFolderChildren.size(); index++) {
             Artifact base = olderArtifacts.get(index);
             Artifact newer = nonFolderChildren.get(index);
@@ -172,7 +172,7 @@ public class PublishRequirements extends AbstractBlam {
             if (isDeleted(newer)) {
                newer = null;
             }
-            compareItems.add(new Pair<Artifact, Artifact>(base, newer));
+            compareItems.add(new ArtifactDelta(base, newer));
          }
          RendererManager.diffInJob(compareItems, options);
       } else {

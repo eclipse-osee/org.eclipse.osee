@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeReportRequest;
 import org.eclipse.osee.framework.core.data.ChangeReportResponse;
 import org.eclipse.osee.framework.core.data.PurgeBranchRequest;
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -79,13 +80,15 @@ public class OseeBranchService implements IOseeBranchService {
 
       TransactionRecord sourceTx = transactionCache.getTransaction(sourceBranch, TransactionVersion.HEAD);
       TransactionRecord destinationTx = transactionCache.getTransaction(destinationBranch, TransactionVersion.HEAD);
+
+      TransactionDelta txDelta = new TransactionDelta(sourceTx, destinationTx);
       TransactionRecord mergeTx =
             mergeBranch != null ? transactionCache.getTransaction(mergeBranch, TransactionVersion.HEAD) : null;
 
       List<ChangeItem> changes = new ArrayList<ChangeItem>();
 
       List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, sourceTx, destinationTx, mergeTx, changes));
+      ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, txDelta, mergeTx, changes));
       ops.add(new ComputeNetChangeOperation(changes));
       ops.add(new CommitDbOperation(oseeDatabaseProvider, branchCache, userId, sourceBranch, destinationBranch,
             mergeBranch, changes, response, modelFactory));
@@ -117,12 +120,14 @@ public class OseeBranchService implements IOseeBranchService {
       TransactionRecord srcTx = txCache.getOrLoad(request.getSourceTx());
       TransactionRecord destTx = txCache.getOrLoad(request.getDestinationTx());
 
+      TransactionDelta txDelta = new TransactionDelta(srcTx, destTx);
+
       List<IOperation> ops = new ArrayList<IOperation>();
-      if (request.isHistorical()) {
-         ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, srcTx, destTx, response.getChangeItems()));
+      if (txDelta.areOnTheSameBranch()) {
+         ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, txDelta, response.getChangeItems()));
       } else {
          TransactionRecord mergeTx = getMergeTransaction(srcTx, destTx);
-         ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, srcTx, destTx, mergeTx, response.getChangeItems()));
+         ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, txDelta, mergeTx, response.getChangeItems()));
       }
       ops.add(new ComputeNetChangeOperation(response.getChangeItems()));
       ops.add(new AddArtifactChangeData(response.getChangeItems()));

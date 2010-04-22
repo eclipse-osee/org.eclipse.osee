@@ -19,9 +19,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import javax.xml.namespace.QName;
-
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -47,7 +45,7 @@ import org.w3c.dom.Element;
 
 /**
  * Renders WordML content.
- *
+ * 
  * @author Jeff C. Phillips
  */
 public class WordTemplateRenderer extends WordRenderer implements ITemplateRenderer {
@@ -103,7 +101,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    /**
     * Displays a list of artifacts in the Artifact Explorer that could not be multi edited because they contained
     * artifacts that had an OLEData attribute.
-    *
+    * 
     * @param artifacts
     */
    private void displayNotMultiEditArtifacts(final Collection<Artifact> artifacts, final String warningString) {
@@ -153,15 +151,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    @Override
-   public InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-      ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
-      if (artifact != null) {
-         artifacts.add(artifact);
-      }
-      return getRenderInputStream(artifacts, presentationType);
-   }
-
-   @Override
    public void renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
       String value = "";
       WordMLProducer wordMl = (WordMLProducer) producer;
@@ -202,7 +191,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    @Override
-   public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
       final List<Artifact> notMultiEditableArtifacts = new LinkedList<Artifact>();
       String template;
 
@@ -212,6 +201,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       } else {
          Artifact firstArtifact = artifacts.iterator().next();
          template = getTemplate(firstArtifact, presentationType);
+
          if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() > 1) {
             // currently we can't support the editing of multiple artifacts with OLE data
             for (Artifact artifact : artifacts) {
@@ -237,7 +227,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-	   Artifact templateArtifact = TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION));
+      Artifact templateArtifact =
+            TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION));
       return templateArtifact.getSoleAttributeValue(CoreAttributeTypes.WHOLE_WORD_CONTENT);
    }
 

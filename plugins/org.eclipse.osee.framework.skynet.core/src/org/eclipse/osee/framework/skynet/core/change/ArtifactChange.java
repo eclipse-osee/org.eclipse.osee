@@ -11,20 +11,17 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Jeff C. Phillips
  */
 public final class ArtifactChange extends Change {
 
-   public ArtifactChange(IOseeBranch branch, ArtifactType artType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact toArtifact, Artifact fromArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      super(branch, artType, sourceGamma, artId, txDelta, modType, isHistorical, toArtifact, fromArtifact);
+   public ArtifactChange(IOseeBranch branch, ArtifactType artType, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, ArtifactDelta artifactDelta) {
+      super(branch, artType, sourceGamma, artId, txDelta, modType, isHistorical, artifactDelta);
    }
 
    @Override
@@ -49,8 +46,8 @@ public final class ArtifactChange extends Change {
          throw new IllegalArgumentException("adapter can not be null");
       }
 
-      if (adapter.isInstance(getToArtifact())) {
-         return getToArtifact();
+      if (adapter.isInstance(getSourceArtifact())) {
+         return getSourceArtifact();
       } else if (adapter.isInstance(getTxDelta().getEndTx()) && isHistorical()) {
          return getTxDelta().getEndTx();
       } else if (adapter.isInstance(this)) {

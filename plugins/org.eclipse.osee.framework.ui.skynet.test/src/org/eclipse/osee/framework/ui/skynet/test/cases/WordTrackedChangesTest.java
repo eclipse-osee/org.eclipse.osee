@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.OseeTrackedChangesExcept
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
-import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -50,7 +50,7 @@ public class WordTrackedChangesTest {
 
    @org.junit.Test(expected = OseeTrackedChangesException.class)
    public void testWordSaveWithTrackChanges() throws Exception {
-      FileRenderer.setWorkbenchSavePopUpDisabled(true);
+      FileSystemRenderer.setWorkbenchSavePopUpDisabled(true);
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       Artifact newArt = ArtifactTypeManager.addArtifact(SOFTWARE_REQUIREMENT, branch, getClass().getSimpleName());
       try {
@@ -64,7 +64,7 @@ public class WordTrackedChangesTest {
    public void testWholeWordSaveWithTrackChanges() throws Exception {
       String content = getFileContent(TEST_WORD_EDIT_FILE_NAME);
       LinkType linkType = LinkType.OSEE_SERVER_LINK;
-      FileRenderer.setWorkbenchSavePopUpDisabled(true);
+      FileSystemRenderer.setWorkbenchSavePopUpDisabled(true);
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       Artifact newArt = ArtifactTypeManager.addArtifact("Test Procedure WML", branch, getClass().getSimpleName());
       String unlinkedContent = WordMlLinkHandler.unlink(linkType, newArt, content);

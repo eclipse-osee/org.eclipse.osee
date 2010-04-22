@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -31,12 +30,12 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
@@ -111,14 +110,14 @@ public class RendererManager {
       }
    }
 
-   public static FileRenderer getBestFileRenderer(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+   public static FileSystemRenderer getBestFileRenderer(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       return getBestFileRenderer(presentationType, artifact, null);
    }
 
-   public static FileRenderer getBestFileRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
+   public static FileSystemRenderer getBestFileRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
       IRenderer bestRenderer = getBestRenderer(presentationType, artifact, options);
-      if (bestRenderer instanceof FileRenderer) {
-         return (FileRenderer) bestRenderer;
+      if (bestRenderer instanceof FileSystemRenderer) {
+         return (FileSystemRenderer) bestRenderer;
       }
       throw new OseeArgumentException(
             "No FileRenderer found for " + artifact + " of type " + artifact.getArtifactTypeName());
@@ -278,7 +277,7 @@ public class RendererManager {
       VariableMap variableMap = new VariableMap("fileName", fileName);
       IRenderer renderer = getBestRenderer(PresentationType.MERGE, baseVersion, variableMap);
       IComparator comparator = renderer.getComparator();
-      return comparator.compare(monitor, PresentationType.MERGE, baseVersion, newerVersion, show);
+      return comparator.compare(monitor, PresentationType.MERGE, new ArtifactDelta(baseVersion, newerVersion), show);
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, boolean show) throws OseeCoreException {
@@ -288,51 +287,56 @@ public class RendererManager {
       return comparator.compare(baseVersion, newerVersion, baseFile, newerFile, PresentationType.MERGE_EDIT, show);
    }
 
-   public static void diffInJob(final Artifact baseVersion, final Artifact newerVersion) {
-      diffInJob(baseVersion, newerVersion, null);
+   public static void diffInJob(ArtifactDelta artifactDelta) {
+      diffInJob(artifactDelta, null);
    }
 
-   public static void diffInJob(final Artifact baseVersion, final Artifact newerVersion, final VariableMap options) {
+   public static void diffInJob(final ArtifactDelta artifactDelta, final VariableMap options) {
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
-            diff(baseVersion, newerVersion, true, options);
+            diff(artifactDelta, true, options);
             return Status.OK_STATUS;
          }
       };
 
+      Artifact startVersion = artifactDelta.getStartArtifact();
+      Artifact endVersion = artifactDelta.getEndArtifact();
+
       String jobName =
-            "Compare " + (baseVersion == null ? " new " : baseVersion.getName()) + " to " + (newerVersion == null ? " delete " : newerVersion.getName());
+            String.format("Compare %s to %s", startVersion == null ? " new " : startVersion.getName(),
+                  endVersion == null ? " delete " : endVersion.getName());
       Jobs.runInJob(jobName, runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
 
    }
 
-   public static String diff(final Artifact baseVersion, final Artifact newerVersion, IProgressMonitor monitor, boolean show) throws OseeCoreException {
-      return diff(baseVersion, newerVersion, monitor, show, null);
+   public static String diff(final ArtifactDelta delta, IProgressMonitor monitor, boolean show) throws OseeCoreException {
+      return diff(delta, monitor, show, null);
    }
 
-   public static String diff(final Artifact baseVersion, final Artifact newerVersion, IProgressMonitor monitor, boolean show, final VariableMap options) throws OseeCoreException {
+   public static String diff(final ArtifactDelta delta, IProgressMonitor monitor, boolean show, final VariableMap options) throws OseeCoreException {
       // To handle comparisons with new or deleted artifacts
-      Artifact artifactToSelectRender = baseVersion == null ? newerVersion : baseVersion;
-      IRenderer renderer = getBestRenderer(PresentationType.DIFF, artifactToSelectRender, options);
+      Artifact sampleArtifact = delta.getStartArtifact() != null ? delta.getStartArtifact() : delta.getEndArtifact();
+      IRenderer renderer = getBestRenderer(PresentationType.DIFF, sampleArtifact, options);
       IComparator comparator = renderer.getComparator();
-      return comparator.compare(monitor, PresentationType.DIFF, baseVersion, newerVersion, show);
+      return comparator.compare(monitor, PresentationType.DIFF, delta, show);
    }
 
-   public static String diff(final Artifact baseVersion, final Artifact newerVersion, boolean show) throws OseeCoreException {
-      return diff(baseVersion, newerVersion, show, null);
+   public static String diff(ArtifactDelta artifactDelta, boolean show) throws OseeCoreException {
+      return diff(artifactDelta, show, null);
    }
 
-   public static String diff(final Artifact baseVersion, final Artifact newerVersion, boolean show, final VariableMap options) throws OseeCoreException {
-      return diff(baseVersion, newerVersion, new NullProgressMonitor(), show, options);
+   public static String diff(ArtifactDelta artifactDelta, boolean show, final VariableMap options) throws OseeCoreException {
+      return diff(artifactDelta, new NullProgressMonitor(), show, options);
    }
 
-   public static void diffInJob(final Collection<Pair<Artifact, Artifact>> itemsToCompare, final VariableMap options) {
+   public static void diffInJob(final Collection<ArtifactDelta> itemsToCompare, final VariableMap options) {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
-            Pair<Artifact, Artifact> entry = itemsToCompare.iterator().next();
-            Artifact sampleArtifact = entry.getFirst() != null ? entry.getFirst() : entry.getSecond();
-            
+            ArtifactDelta entry = itemsToCompare.iterator().next();
+            Artifact sampleArtifact =
+                  entry.getStartArtifact() != null ? entry.getStartArtifact() : entry.getEndArtifact();
+
             IRenderer renderer = getBestRenderer(PresentationType.DIFF, sampleArtifact, options);
             IComparator comparator = renderer.getComparator();
             comparator.compareArtifacts(monitor, PresentationType.DIFF, itemsToCompare);

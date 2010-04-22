@@ -33,10 +33,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
-import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
@@ -102,9 +101,9 @@ public class WordEditTest {
 
    public static List<Artifact> getArtifactsToChange(Branch branch) throws OseeCoreException {
       List<Artifact> arts = new ArrayList<Artifact>();
-      Collection<Change> changes = ChangeManager.getChangesPerBranch(branch, new NullProgressMonitor());
+      Collection<Change> changes = ViewWordChangeAndDiffTest.getChanges(branch);
       for (Change change : changes) {
-         Artifact art = change.getToArtifact();
+         Artifact art = change.getDelta().getEndArtifact();
          if (art.isOfType(CoreArtifactTypes.AbstractSoftwareRequirement)) {
             arts.add(art);
          }
@@ -117,7 +116,7 @@ public class WordEditTest {
       return renderer;
    }
 
-   public static IFile makeChangesToArtifact(FileRenderer renderer, List<Artifact> artifacts) throws IOException, InterruptedException {
+   public static IFile makeChangesToArtifact(FileSystemRenderer renderer, List<Artifact> artifacts) throws IOException, InterruptedException {
       IFile renderedFile = null;
       try {
          renderedFile = renderer.getRenderedFile(artifacts, PresentationType.SPECIALIZED_EDIT);
@@ -136,11 +135,11 @@ public class WordEditTest {
       InputStream preStream = null;
       InputStream istream = null;
       WordTemplateRenderer postRenderer = null;
-      FileRenderer preRenderer = null;
+      FileSystemRenderer preRenderer = null;
       String postStreamStr = "";
       try {
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-         FileRenderer.setWorkbenchSavePopUpDisabled(true);
+         FileSystemRenderer.setWorkbenchSavePopUpDisabled(true);
          branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
          Artifact newArt = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch, className);
          newArt.persist();

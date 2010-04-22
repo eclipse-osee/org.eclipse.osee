@@ -25,13 +25,16 @@ import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 
 /**
  * Collection of changes from working branch or transactionId from committed branch.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class ChangeData {
 
    public static enum KindType {
-      Artifact, Relation, ArtifactOrRelation, RelationOnly
+      Artifact,
+      Relation,
+      ArtifactOrRelation,
+      RelationOnly
    };
 
    private final Collection<Change> changes;
@@ -60,7 +63,7 @@ public class ChangeData {
 
    /**
     * Return artifacts of kind and modType.
-    *
+    * 
     * @param kindType
     * @param modificationType
     * @return artifacts
@@ -80,14 +83,16 @@ public class ChangeData {
             for (Change change : changes) {
                if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && change instanceof ArtifactChange) {
                   if (modTypes.contains(change.getModificationType())) {
-                     artifacts.add(change.getToArtifact());
+                     artifacts.add(change.getDelta().getEndArtifact());
                   }
                }
                //
                else if ((kindType == KindType.Relation || kindType == KindType.ArtifactOrRelation) && change instanceof RelationChange) {
                   if (modTypes.contains(change.getModificationType())) {
-                     artifacts.add(((RelationChange) change).getToArtifact());
-                     artifacts.add(((RelationChange) change).getBArtifact());
+                     artifacts.add(change.getDelta().getEndArtifact());
+
+                     RelationChange relChange = (RelationChange) change;
+                     artifacts.add(relChange.getEndTxBArtifact());
                   }
                }
             }

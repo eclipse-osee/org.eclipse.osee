@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
@@ -139,7 +140,7 @@ public class MergeUtility {
       if (art1 == null || art2 == null) {
          return " ";
       }
-      return RendererManager.diff(art1, art2, true, new VariableMap("fileName", fileName));
+      return RendererManager.diff(new ArtifactDelta(art1, art2), true, new VariableMap("fileName", fileName));
    }
 
    /*

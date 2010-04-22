@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -145,7 +143,7 @@ public final class ArtifactImageManager {
       return getChangeImage(change, ChangeImageType.CHANGE_TYPE);
    }
 
-   public static Image getChangeKindImage(Change change) throws OseeArgumentException, OseeDataStoreException, OseeTypeDoesNotExist {
+   public static Image getChangeKindImage(Change change) {
       return getChangeImage(change, ChangeImageType.CHANGE_KIND);
    }
 
@@ -294,7 +292,7 @@ public final class ArtifactImageManager {
       return ImageManager.setupImage(baseImageEnum);
    }
 
-   public static void setArtifactTypeImageInDb(ArtifactType artifactType, ByteArrayInputStream byteInput) throws OseeDataStoreException, IOException {
+   public static void setArtifactTypeImageInDb(ArtifactType artifactType, ByteArrayInputStream byteInput) throws OseeDataStoreException {
       Object imageData = byteInput != null ? byteInput : SQL3DataType.BLOB;
       ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_TYPE_IMAGE, imageData, artifactType.getId());
       loadCache();

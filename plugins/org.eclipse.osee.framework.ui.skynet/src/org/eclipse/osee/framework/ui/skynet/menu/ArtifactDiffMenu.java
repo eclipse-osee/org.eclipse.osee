@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -83,7 +84,8 @@ public class ArtifactDiffMenu {
       if (selections[1] instanceof Change && selections[0] instanceof Change) {
          try {
             valid =
-                  RendererManager.getBestFileRenderer(PresentationType.DIFF, ((Change) selections[0]).getToArtifact()).supportsCompare();
+                  RendererManager.getBestFileRenderer(PresentationType.DIFF,
+                        ((Change) selections[0]).getDelta().getEndArtifact()).supportsCompare();
          } catch (OseeCoreException ex) {
          }
       }
@@ -114,8 +116,9 @@ public class ArtifactDiffMenu {
             newerArtifact = ArtifactQuery.getHistoricalArtifactFromId(firstChange.getArtId(), firstTransactionId, true);
             baselineArtifact =
                   ArtifactQuery.getHistoricalArtifactFromId(firstChange.getArtId(), secondTransactionId, true);
+            RendererManager.diffInJob(new ArtifactDelta(baselineArtifact, newerArtifact));
          }
       }
-      RendererManager.diffInJob(baselineArtifact, newerArtifact);
+
    }
 }

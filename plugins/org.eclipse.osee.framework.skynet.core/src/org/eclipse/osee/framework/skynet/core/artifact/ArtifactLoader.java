@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.SHALL
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -84,7 +83,12 @@ public final class ArtifactLoader {
    }
 
    public static List<Artifact> loadArtifactsFromQueryId(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
-      List<Artifact> artifacts = new ArrayList<Artifact>(fetchSize);
+      List<Artifact> loadedItems = new ArrayList<Artifact>(fetchSize);
+      loadArtifactsFromQueryId(loadedItems, queryId, loadLevel, confirmer, fetchSize, reload, historical, allowDeleted);
+      return loadedItems;
+   }
+
+   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
       try {
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          String sql = null;
@@ -106,7 +110,7 @@ public final class ArtifactLoader {
                if (previousArtId != artId || previousBranchId != branchId) {
                   // assumption: sql is returning unwanted deleted artifacts only in the historical case
                   if (!(historical && !allowDeleted && ModificationType.getMod(chStmt.getInt("mod_type")) == ModificationType.DELETED)) {
-                     artifacts.add(retrieveShallowArtifact(chStmt, reload, historical));
+                     loadedItems.add(retrieveShallowArtifact(chStmt, reload, historical));
                   }
                }
                previousArtId = artId;
@@ -119,17 +123,16 @@ public final class ArtifactLoader {
             chStmt.close();
          }
 
-         if (confirmer == null || confirmer.canProceed(artifacts.size())) {
-            loadArtifactsData(queryId, artifacts, loadLevel, reload, historical, allowDeleted);
+         if (confirmer == null || confirmer.canProceed(loadedItems.size())) {
+            loadArtifactsData(queryId, loadedItems, loadLevel, reload, historical, allowDeleted);
 
-            for (Artifact artifact : artifacts) {
+            for (Artifact artifact : loadedItems) {
                ArtifactCache.cacheByStaticId(artifact);
             }
          }
       } finally {
          clearQuery(queryId);
       }
-      return artifacts;
    }
 
    public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, ArtifactLoad loadLevel, boolean reload) throws OseeCoreException {
@@ -165,22 +168,24 @@ public final class ArtifactLoader {
     * loads or reloads artifacts based on artifact ids and branch ids in the insertParameters
     */
    public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
+      List<Artifact> loadedItems = new ArrayList<Artifact>(insertParameters.size());
+      loadArtifacts(loadedItems, queryId, loadLevel, confirmer, insertParameters, reload, historical, allowDeleted);
+      return loadedItems;
+   }
 
-      List<Artifact> artifacts = Collections.emptyList();
-      if (insertParameters.size() > 0) {
+   public static void loadArtifacts(Collection<Artifact> loadedItems, int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
+      if (!insertParameters.isEmpty()) {
          long time = System.currentTimeMillis();
          try {
             insertIntoArtifactJoin(insertParameters);
-            artifacts =
-                  loadArtifactsFromQueryId(queryId, loadLevel, confirmer, insertParameters.size(), reload, historical,
-                        allowDeleted);
+            loadArtifactsFromQueryId(loadedItems, queryId, loadLevel, confirmer, insertParameters.size(), reload,
+                  historical, allowDeleted);
          } finally {
             OseeLog.log(Activator.class, Level.FINE, String.format("Artifact Load Time [%s] for [%d] artifacts. ",
-                  Lib.getElapseString(time), artifacts.size()), new Exception("Artifact Load Time"));
+                  Lib.getElapseString(time), loadedItems.size()), new Exception("Artifact Load Time"));
             clearQuery(queryId);
          }
       }
-      return artifacts;
    }
 
    /**

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.change;
 
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -41,6 +42,6 @@ public class ArtifactChangeBuilder extends ChangeBuilder {
    @Override
    public Change build(Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       return new ArtifactChange(branch, getArtifactType(), getSourceGamma(), getArtId(), getTxDelta(), getModType(),
-            isHistorical(), loadArtifact(), null);
+            isHistorical(), new ArtifactDelta(loadArtifact(), null));
    }
 }

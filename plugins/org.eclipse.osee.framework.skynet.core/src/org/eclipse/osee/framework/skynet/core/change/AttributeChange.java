@@ -13,18 +13,14 @@ package org.eclipse.osee.framework.skynet.core.change;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -34,16 +30,15 @@ public final class AttributeChange extends Change {
    private final String isValue;
    private String wasValue;
    private final int attrId;
-   private final int attrTypeId;
-   private AttributeType dynamicAttributeDescriptor;
+   private final AttributeType attributeType;
    private final ModificationType artModType;
 
-   public AttributeChange(IOseeBranch branch, ArtifactType artType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical, Artifact toArtifact, Artifact fromArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      super(branch, artType, sourceGamma, artId, txDelta, modType, isHistorical, toArtifact, fromArtifact);
+   public AttributeChange(IOseeBranch branch, ArtifactType artType, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, int attrId, AttributeType attributeType, ModificationType artModType, boolean isHistorical, ArtifactDelta artifactDelta) {
+      super(branch, artType, sourceGamma, artId, txDelta, modType, isHistorical, artifactDelta);
       this.isValue = isValue;
       this.wasValue = wasValue;
       this.attrId = attrId;
-      this.attrTypeId = attrTypeId;
+      this.attributeType = attributeType;
       this.artModType = artModType;
    }
 
@@ -51,13 +46,10 @@ public final class AttributeChange extends Change {
    public boolean equals(Object obj) {
       if (obj instanceof AttributeChange) {
          AttributeChange change = (AttributeChange) obj;
-         return super.equals(obj) &&
-         //
-         change.getArtId() == attrTypeId &&
-         //
-         change.getArtModType() == artModType &&
-         //
-         change.getAttrId() == attrId;
+         return super.equals(obj) && //
+         change.getArtId() == getArtId() && //
+         change.getArtModType() == getArtModType() && //
+         change.getAttrId() == getAttrId();
       }
       return false;
    }
@@ -65,9 +57,9 @@ public final class AttributeChange extends Change {
    @Override
    public int hashCode() {
       int hashCode = 7 * super.hashCode();
-      hashCode += 7 * attrTypeId;
-      hashCode += artModType != null ? 7 * artModType.hashCode() : 0;
-      hashCode += 7 * attrId;
+      hashCode += getAttributeType() != null ? 7 * getAttributeType().hashCode() : 0;
+      hashCode += getArtModType() != null ? 7 * getArtModType().hashCode() : 0;
+      hashCode += 7 * getAttrId();
       return hashCode;
    }
 
@@ -75,8 +67,8 @@ public final class AttributeChange extends Change {
       return attrId;
    }
 
-   public int getTypeId() {
-      return attrTypeId;
+   public AttributeType getAttributeType() {
+      return attributeType;
    }
 
    @Override
@@ -85,11 +77,8 @@ public final class AttributeChange extends Change {
    }
 
    @Override
-   public String getItemTypeName() throws OseeCoreException {
-      if (dynamicAttributeDescriptor == null) {
-         dynamicAttributeDescriptor = AttributeTypeManager.getType(attrTypeId);
-      }
-      return dynamicAttributeDescriptor.getName();
+   public String getItemTypeName() {
+      return getAttributeType().getName();
    }
 
    @Override
@@ -112,7 +101,7 @@ public final class AttributeChange extends Change {
    }
 
    public Attribute<?> getAttribute() throws OseeCoreException {
-      for (Attribute<?> attribute : getToArtifact().getAllAttributesIncludingHardDeleted()) {
+      for (Attribute<?> attribute : getSourceArtifact().getAllAttributesIncludingHardDeleted()) {
          if (attribute.getId() == attrId) {
             return attribute;
          }
@@ -127,8 +116,8 @@ public final class AttributeChange extends Change {
       }
 
       try {
-         if (adapter.isInstance(getToArtifact())) {
-            return getToArtifact();
+         if (adapter.isInstance(getSourceArtifact())) {
+            return getSourceArtifact();
          } else if (adapter.isInstance(getTxDelta().getEndTx()) && isHistorical()) {
             return getTxDelta().getEndTx();
          } else if (adapter.isInstance(this)) {
@@ -153,7 +142,7 @@ public final class AttributeChange extends Change {
 
    @Override
    public int getItemTypeId() {
-      return attrTypeId;
+      return getAttributeType().getId();
    }
 
    @Override

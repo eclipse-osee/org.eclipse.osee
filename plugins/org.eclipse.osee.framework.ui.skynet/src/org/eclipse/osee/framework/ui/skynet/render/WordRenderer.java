@@ -22,7 +22,7 @@ import org.eclipse.swt.program.Program;
 /**
  * @author Ryan D. Brooks
  */
-public abstract class WordRenderer extends FileRenderer {
+public abstract class WordRenderer extends FileSystemRenderer {
 
    // We need MS Word, so look for the program that is for .doc files
    private static final Program wordApp = Program.findProgram("doc");

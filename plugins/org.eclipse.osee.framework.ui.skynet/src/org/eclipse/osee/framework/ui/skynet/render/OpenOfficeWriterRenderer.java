@@ -19,7 +19,7 @@ import org.eclipse.swt.program.Program;
 /**
  * @author Ryan D. Brooks
  */
-public class OpenOfficeWriterRenderer extends FileRenderer implements ITemplateRenderer {
+public class OpenOfficeWriterRenderer extends FileSystemRenderer implements ITemplateRenderer {
 
    @Override
    public OpenOfficeWriterRenderer newInstance() throws OseeCoreException {
@@ -32,12 +32,7 @@ public class OpenOfficeWriterRenderer extends FileRenderer implements ITemplateR
    }
 
    @Override
-   public InputStream getRenderInputStream(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public InputStream getRenderInputStream(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
       throw new UnsupportedOperationException();
    }
 

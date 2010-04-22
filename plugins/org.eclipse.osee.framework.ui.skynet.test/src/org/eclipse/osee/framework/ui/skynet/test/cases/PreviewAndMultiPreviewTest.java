@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewWithChildWordHandler;
-import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
@@ -56,7 +56,7 @@ public class PreviewAndMultiPreviewTest {
    private void init() throws Exception {
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1),
             PreviewAndMultiPreviewTest.class.getSimpleName());
-      FileRenderer.setWorkbenchSavePopUpDisabled(true);
+      FileSystemRenderer.setWorkbenchSavePopUpDisabled(true);
 
       RenderingUtil.setPopupsAllowed(false);
       branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);

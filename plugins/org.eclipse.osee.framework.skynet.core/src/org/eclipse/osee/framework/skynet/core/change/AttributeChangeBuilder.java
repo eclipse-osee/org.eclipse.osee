@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.change;
 
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 
 /**
@@ -24,15 +26,15 @@ public final class AttributeChangeBuilder extends ChangeBuilder {
    private final String isValue;
    private String wasValue;
    private final int attrId;
-   private final int attrTypeId;
+   private final AttributeType attributeType;
    private final ModificationType artModType;
 
-   public AttributeChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType) {
+   public AttributeChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, String isValue, String wasValue, int attrId, AttributeType attributeType, ModificationType artModType) {
       super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical);
       this.isValue = isValue;
       this.wasValue = wasValue;
       this.attrId = attrId;
-      this.attrTypeId = attrTypeId;
+      this.attributeType = attributeType;
       this.artModType = artModType;
    }
 
@@ -47,6 +49,7 @@ public final class AttributeChangeBuilder extends ChangeBuilder {
    @Override
    public Change build(Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       return new AttributeChange(branch, getArtifactType(), getSourceGamma(), getArtId(), getTxDelta(), getModType(),
-            isValue, wasValue, attrId, attrTypeId, artModType, isHistorical(), loadArtifact(), null);
+            isValue, wasValue, attrId, attributeType, artModType, isHistorical(), new ArtifactDelta(loadArtifact(),
+                  null));
    }
 }

@@ -51,10 +51,11 @@ public class RevertArtifactHandler extends AbstractHandler {
       for (Change change : changes) {
          List<Artifact> artifactList = new LinkedList<Artifact>();
 
-         if (!duplicateCheck.contains(change.getToArtifact())) {
-            artifactList.add(change.getToArtifact());
+         Artifact endArtifact = change.getDelta().getEndArtifact();
+         if (!duplicateCheck.contains(endArtifact)) {
+            artifactList.add(endArtifact);
             artifacts.add(artifactList);
-            duplicateCheck.add(change.getToArtifact());
+            duplicateCheck.add(endArtifact);
          }
 
       }
@@ -85,7 +86,8 @@ public class RevertArtifactHandler extends AbstractHandler {
             }
 
             for (Change change : changes) {
-               isEnabled = AccessControlManager.hasPermission(change.getToArtifact(), PermissionEnum.WRITE);
+               isEnabled =
+                     AccessControlManager.hasPermission(change.getDelta().getStartArtifact(), PermissionEnum.WRITE);
                if (!isEnabled) {
                   break;
                }

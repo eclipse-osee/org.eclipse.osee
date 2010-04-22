@@ -19,16 +19,17 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -60,12 +61,19 @@ public class ViewWordChangeAndDiffTest {
       return BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
    }
 
+   public static Collection<Change> getChanges(Branch testBranch) throws OseeCoreException {
+      Collection<Change> changes = new ArrayList<Change>();
+      IOperation operation = ChangeManager.comparedToParent(testBranch, changes);
+      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), 1.0);
+      return changes;
+   }
+
    @org.junit.Test
    public void testViewWordChangeReport() throws Exception {
-      Collection<Change> changes = ChangeManager.getChangesPerBranch(getTestBranch(), new NullProgressMonitor());
+      Collection<Change> changes = getChanges(getTestBranch());
       checkPermissions(asArtifacts(changes));
 
-      Collection<Pair<Artifact, Artifact>> itemsToCompare = ChangeManager.getCompareArtifacts(changes);
+      Collection<ArtifactDelta> itemsToCompare = ChangeManager.getCompareArtifacts(changes);
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       try {
          VariableMap variableMap = new VariableMap();
@@ -83,15 +91,15 @@ public class ViewWordChangeAndDiffTest {
 
    @org.junit.Test
    public void testSingleNativeDiff() throws Exception {
-      Collection<Change> changes = ChangeManager.getChangesPerBranch(getTestBranch(), new NullProgressMonitor());
-      Artifact artifact = changes.iterator().next().getToArtifact();
+      Collection<Change> changes = getChanges(getTestBranch());
+      Artifact artifact = changes.iterator().next().getDelta().getEndArtifact();
 
       checkPermissions(Collections.singletonList(artifact));
 
-      Collection<Pair<Artifact, Artifact>> itemsToCompare = ChangeManager.getCompareArtifacts(changes);
-      Pair<Artifact, Artifact> firstEntry = itemsToCompare.iterator().next();
+      Collection<ArtifactDelta> itemsToCompare = ChangeManager.getCompareArtifacts(changes);
+      ArtifactDelta delta = itemsToCompare.iterator().next();
       try {
-         RendererManager.diff(firstEntry.getFirst(), firstEntry.getSecond(), false);
+         RendererManager.diff(delta, false);
          assertTrue("Single Native Diff test passed", true);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -101,7 +109,7 @@ public class ViewWordChangeAndDiffTest {
 
    @org.junit.Test
    public void testCompareTwoArtifacts() throws Exception {
-      Collection<Change> changes = ChangeManager.getChangesPerBranch(getTestBranch(), new NullProgressMonitor());
+      Collection<Change> changes = getChanges(getTestBranch());
       ArrayList<Artifact> artifacts = asArtifacts(changes);
 
       checkPermissions(artifacts);
@@ -109,7 +117,7 @@ public class ViewWordChangeAndDiffTest {
          Artifact newerArtifact = loadHistorical(artifacts.get(0));
          Artifact baseArtifact = loadHistorical(artifacts.get(1));
 
-         RendererManager.diff(baseArtifact, newerArtifact, false);
+         RendererManager.diff(new ArtifactDelta(baseArtifact, newerArtifact), false);
 
          assertTrue("Compare Two Artifacts test passed", true);
       } catch (Exception ex) {
@@ -127,10 +135,10 @@ public class ViewWordChangeAndDiffTest {
       assertTrue("Valid object permissions", isReadable);
    }
 
-   private static ArrayList<Artifact> asArtifacts(Collection<Change> changes) throws ArtifactDoesNotExist {
+   private static ArrayList<Artifact> asArtifacts(Collection<Change> changes) {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
       for (Change artifactChange : changes) {
-         arts.add(artifactChange.getToArtifact());
+         arts.add(artifactChange.getDelta().getEndArtifact());
       }
       return arts;
    }

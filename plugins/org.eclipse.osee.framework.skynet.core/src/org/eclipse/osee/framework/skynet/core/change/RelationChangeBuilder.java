@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.change;
 
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -47,7 +48,8 @@ public class RelationChangeBuilder extends ChangeBuilder {
          bArtifact = ArtifactCache.getActive(bArtId, branch);
       }
       return new RelationChange(branch, getArtifactType(), getSourceGamma(), getArtId(), getTxDelta(), getModType(),
-            bArtId, relLinkId, rationale, relationType, isHistorical(), loadArtifact(), bArtifact, null);
+            bArtId, relLinkId, rationale, relationType, isHistorical(), new ArtifactDelta(loadArtifact(), null),
+            bArtifact);
    }
 
 }
