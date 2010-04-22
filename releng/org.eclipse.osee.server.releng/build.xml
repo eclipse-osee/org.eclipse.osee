@@ -102,7 +102,11 @@
 	</target>
 
 	<target name="build">
-		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+		<condition property="http.proxyHost">
+			<isset property="http.proxyHost">
+				<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+			</isset>
+		</condition>
 		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritrefs="true" inheritall="true" />
 	</target>
 
