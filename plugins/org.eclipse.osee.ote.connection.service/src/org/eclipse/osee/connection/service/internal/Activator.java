@@ -8,11 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.connection.service;
+package org.eclipse.osee.connection.service.internal;
 
 import java.util.List;
 import java.util.logging.Level;
 
+import org.eclipse.osee.connection.service.IConnectionService;
+import org.eclipse.osee.connection.service.IConnectorContributor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.osgi.framework.BundleActivator;

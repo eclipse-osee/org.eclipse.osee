@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.connection.service;
+package org.eclipse.osee.connection.service.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +16,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
+
+import org.eclipse.osee.connection.service.IConnectorListener;
+import org.eclipse.osee.connection.service.IServiceConnector;
 
 public class EventNotifier {
 

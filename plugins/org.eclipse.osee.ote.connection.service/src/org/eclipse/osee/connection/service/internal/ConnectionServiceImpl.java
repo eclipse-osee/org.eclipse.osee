@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.connection.service;
+package org.eclipse.osee.connection.service.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +16,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
+
+import org.eclipse.osee.connection.service.IConnectionService;
+import org.eclipse.osee.connection.service.IConnectorFilter;
+import org.eclipse.osee.connection.service.IConnectorListener;
+import org.eclipse.osee.connection.service.IServiceConnector;
 
 class ConnectionServiceImpl implements IConnectionService {
 	
