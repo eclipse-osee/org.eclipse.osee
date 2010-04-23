@@ -44,7 +44,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
    private static final Pattern guidPattern = Pattern.compile("(\\d*);(.*)");
 
    public String getDescription() {
-      return "Extract each row as an artifact header <Section #, Attribute 1, Attribute 2, ...>";
+      return "Extract each row as an artifact, with header format <Attribute Type 1, Attribute Type 2, ...>";
    }
 
    public FileFilter getFileFilter() {
@@ -180,7 +180,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       }
 
       private String getGuid(String string) {
-         if (GUID.isValid(string)) {//it may be real guid
+         if (GUID.isValid(string)) {
             return string;
          }
          guidMatcher.reset(string);
