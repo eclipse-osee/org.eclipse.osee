@@ -46,6 +46,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -305,8 +306,17 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       // Current Assignees
       if (isCurrentNonCompleteCanceledState) {
-         new SMAAssigneesHeader(comp, SWT.NONE, sma, toolkit, SMAWorkFlowSection.isEditable(sma, page),
-               sma.getEditor().isPriviledgedEditModeEnabled());
+         boolean editable = (!sma.isCancelledOrCompleted() && !sma.isReadOnly() &&
+         // and access control writeable
+         sma.isAccessControlWrite()) && //
+
+         (SMAWorkFlowSection.isEditable(sma, page) || //
+         // page is define to allow anyone to edit
+         sma.getWorkPageDefinition().hasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowAssigneeToAll.name()) ||
+         // team definition has allowed anyone to edit
+         sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowAssigneeToAll.name()));
+
+         new SMAAssigneesHeader(comp, SWT.NONE, sma, toolkit, editable, sma.getEditor().isPriviledgedEditModeEnabled());
       }
    }
 

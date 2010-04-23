@@ -71,7 +71,7 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
       });
    }
 
-   private synchronized void createSection(Section section, FormToolkit toolkit) throws OseeCoreException {
+   protected synchronized void createSection(Section section, FormToolkit toolkit) throws OseeCoreException {
       if (sectionCreated) return;
       Composite sectionBody = toolkit.createComposite(section, toolkit.getBorderStyle());
       sectionBody.setLayout(ALayout.getZeroMarginLayout());

@@ -76,7 +76,8 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       atsAllowPriviledgedEditToTeamMember("Work Page and Team Definition Option: Allow team member to priviledged edit workflow assigned to team."),
       atsAllowPriviledgedEditToTeamMemberAndOriginator("Work Page and Team Definition Option: Allow team member to priviledged edit workflow assigned to team if user is originator."),
       atsAllowPriviledgedEditToAll("Work Page and Team Definition Option: Allow anyone to priviledged edit workflow assigned to team."),
-      atsAllowEditToAll("Work Page and Team Definition Option: Allow anyone to edit workflow.");
+      atsAllowEditToAll("Work Page and Team Definition Option: Allow anyone to edit workflow without being assignee."),
+      atsAllowAssigneeToAll("Work Page and Team Definition Option: Allow anyone to change workflow assignee without being assignee.");
 
       public final String description;
 
@@ -108,6 +109,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()));
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowPriviledgedEditToAll.name()));
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowEditToAll.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowAssigneeToAll.name()));
       workItems.add(new AtsAddDecisionReviewRule());
       workItems.add(new AtsAddPeerToPeerReviewRule());
       workItems.add(new AtsStatePercentCompleteWeightRule());

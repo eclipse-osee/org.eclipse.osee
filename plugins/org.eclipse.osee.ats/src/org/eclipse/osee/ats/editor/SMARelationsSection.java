@@ -18,12 +18,12 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -48,8 +48,8 @@ public class SMARelationsSection extends RelationsFormSection {
    }
 
    @Override
-   public void initialize(final IManagedForm form) {
-      super.initialize(form);
+   protected synchronized void createSection(Section section, FormToolkit toolkit) throws OseeCoreException {
+      super.createSection(section, toolkit);
       // Don't allow users to see all relations
       if (!AtsUtil.isAtsAdmin()) {
          getRelationComposite().getTreeViewer().addFilter(userRelationsFilter);
@@ -79,9 +79,9 @@ public class SMARelationsSection extends RelationsFormSection {
    private static List<String> filteredRelationTypeNames =
          Arrays.asList(AtsRelationTypes.ActionToWorkflow_Action.getName(), AtsRelationTypes.SmaToTask_Sma.getName(),
                AtsRelationTypes.TeamActionableItem_ActionableItem.getName(),
-               AtsRelationTypes.TeamWorkflowTargetedForVersion_Version.getName(), AtsRelationTypes.TeamLead_Lead.getName(),
-               AtsRelationTypes.TeamMember_Member.getName(), AtsRelationTypes.TeamWorkflowToReview_Review.getName(),
-               CoreRelationTypes.WorkItem__Child.getName(), CoreRelationTypes.Default_Hierarchical__Child.getName(),
-               CoreRelationTypes.Users_Artifact.getName());
+               AtsRelationTypes.TeamWorkflowTargetedForVersion_Version.getName(),
+               AtsRelationTypes.TeamLead_Lead.getName(), AtsRelationTypes.TeamMember_Member.getName(),
+               AtsRelationTypes.TeamWorkflowToReview_Review.getName(), CoreRelationTypes.WorkItem__Child.getName(),
+               CoreRelationTypes.Default_Hierarchical__Child.getName(), CoreRelationTypes.Users_Artifact.getName());
 
 }

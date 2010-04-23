@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.search;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
@@ -116,7 +117,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          branchSelect.setDisplayLabel(false);
          branchSelect.setSelection(BranchManager.getLastBranch());
          branchSelect.createWidgets(mainComposite, 2);
-         
+
          addFilterControls(mainComposite);
          addTableControls(mainComposite);
          addSearchScope(mainComposite);
@@ -136,7 +137,18 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    }
 
    private Branch getSelectedBranch() {
-      return branchSelect.getData();
+      Branch branch = branchSelect.getData();
+      if (branch == null) {
+         branch = BranchManager.getLastBranch();
+      }
+      try {
+         if (branch == null) {
+            branch = BranchManager.getCommonBranch();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      return branch;
    }
 
    /**
