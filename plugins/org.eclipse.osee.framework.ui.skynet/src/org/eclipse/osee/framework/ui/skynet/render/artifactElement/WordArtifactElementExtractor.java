@@ -13,8 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.render.artifactElement;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -37,6 +39,7 @@ public class WordArtifactElementExtractor  implements IElementExtractor{
 	private static final String SUB_SECTION_TAG = "wx:sub-section";
 	private static final String BODY_TAG = "w:body";
 	private static final OseeLinkBuilder LINK_BUILDER = new OseeLinkBuilder();
+	private final Map<String, Element> pictureMap;
 	private Element oleDataElement;
 	private final Document document;
 	private int numberOfStartTags;
@@ -51,6 +54,7 @@ public class WordArtifactElementExtractor  implements IElementExtractor{
 		this.document = document;
 		this.numberOfEndTags = 0;
 		this.numberOfStartTags = 0;
+	    this.pictureMap = new HashMap<String, Element>();
 	}
 
 	public Element getOleDataElement() {
@@ -60,7 +64,7 @@ public class WordArtifactElementExtractor  implements IElementExtractor{
 	public List<Element> extractElements() throws DOMException, ParserConfigurationException, SAXException, IOException, OseeCoreException{
 		final List<Element> artifactElements = new LinkedList<Element>();
 		Element rootElement = document.getDocumentElement();
-
+		pictureMap.clear();
 		oleDataElement = null;
 		numberOfStartTags = 0;
 		numberOfEndTags = 0;
@@ -93,6 +97,7 @@ public class WordArtifactElementExtractor  implements IElementExtractor{
 					}
 				}
 			}else if(parseState == ParseState.LOOKING_FOR_END && properLevelChild(element)) {
+               handleImages(element);
 				newArtifactElement.appendChild(element.cloneNode(true));
 			}
 		}
@@ -215,6 +220,29 @@ public class WordArtifactElementExtractor  implements IElementExtractor{
 		return properLevelChildWord2003(element) || properLevelChildWord2007(element);
 	}
 
+	private void handleImages(Element element) {
+	   NodeList descendants = element.getElementsByTagName("*");
+	   for (int i = 0; i < descendants.getLength(); i++) {
+	      Node descendant = descendants.item(i);
+	      if (descendant.getNodeName().contains("w:pic")) {
+	         NodeList imageDataElement = ((Element) descendant).getElementsByTagName("v:imagedata");
+	         if (imageDataElement.getLength() > 0) {
+	            String imgKey = ((Element) imageDataElement.item(0)).getAttribute("src");
+	            Element storedPictureElement = pictureMap.get(imgKey);
+	            NodeList binDataElement = ((Element) descendant).getElementsByTagName("w:binData");
+               
+	            if(storedPictureElement!= null){
+                  if(binDataElement.getLength() == 0){
+                     descendant.appendChild(storedPictureElement);
+                  }
+	            }else{
+	               pictureMap.put(imgKey, (Element)binDataElement.item(0));
+	            }
+	         }
+	      }
+	   }
+	}
+	
 	private String getAncestorName(Element element, int level) {
 		String name = "";
 		
@@ -253,7 +281,6 @@ public class WordArtifactElementExtractor  implements IElementExtractor{
 	 * @return
 	 */
 	private boolean properLevelChildWord2007(Element element) {
-		String grandParentName = getAncestorName(element, 2);
 		String parentName = getAncestorName(element, 1);
 		String myName = element.getNodeName();
 
