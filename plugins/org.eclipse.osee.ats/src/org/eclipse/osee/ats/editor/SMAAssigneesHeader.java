@@ -62,8 +62,7 @@ public class SMAAssigneesHeader extends Composite {
                         return;
                      }
                      if (PromptChangeUtil.promptChangeAssignees(sma, false)) {
-                        updateLabel(sma);
-                        sma.getEditor().onDirtied();
+                        sma.getEditor().doSave(null);
                      }
                   } catch (Exception ex) {
                      OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

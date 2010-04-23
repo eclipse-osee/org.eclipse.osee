@@ -289,18 +289,22 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    private void createTargetVersionAndAssigneeHeader(Composite parent, AtsWorkPage page, XFormToolkit toolkit) throws OseeCoreException {
+      boolean isShowTargetedVersion = isShowTargetedVersion();
+      boolean isCurrentNonCompleteCanceledState = page.isCurrentNonCompleteCancelledState(sma);
+      if (!isShowTargetedVersion && !isCurrentNonCompleteCanceledState) return;
+
       Composite comp = toolkit.createContainer(parent, 6);
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       comp.setLayout(ALayout.getZeroMarginLayout(6, false));
 
       // Targeted Version
-      if (isShowTargetedVersion()) {
+      if (isShowTargetedVersion) {
          new SMATargetedVersionHeader(comp, SWT.NONE, sma, toolkit);
          toolkit.createLabel(comp, "    ");
       }
 
       // Current Assignees
-      if (page.isCurrentNonCompleteCancelledState(sma)) {
+      if (isCurrentNonCompleteCanceledState) {
          new SMAAssigneesHeader(comp, SWT.NONE, sma, toolkit, SMAWorkFlowSection.isEditable(sma, page),
                sma.getEditor().isPriviledgedEditModeEnabled());
       }
