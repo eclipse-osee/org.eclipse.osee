@@ -62,11 +62,14 @@
 		<!-- invoke a new Eclipse process and launch the build from the common.releng folder -->
 		<property name="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng" />
 
-		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+		<antcall target="setHttpProxy" />
 		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />
-
 	</target>
 
+	<target name="setHttpProxy" if="http.proxyHost">
+		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+	</target>
+	
 	<target name="cleanUp">
 		<!--<delete dir="${buildDir}/eclipse" failonerror="false" />-->
 		<delete dir="${buildDir}/testing" failonerror="false" />

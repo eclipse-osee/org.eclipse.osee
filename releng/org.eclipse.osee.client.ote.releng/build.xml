@@ -102,9 +102,14 @@
 	</target>
 
 	<target name="build">
-		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+		<antcall target="setHttpProxy" />
 		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritrefs="true" inheritall="true" />
 	</target>
+			
+	<target name="setHttpProxy" if="http.proxyHost">
+		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+	</target>
+
 
 	<target name="cleanUp">
 		<delete dir="${buildDir}/eclipse" failonerror="false" />

@@ -22,7 +22,7 @@
 
 		<delete dir="${buildDir}" failonerror="false" />
 
-		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+		<antcall target="setHttpProxy"/>
 
 		<!-- invoke a new Eclipse process and launch the build from the common.releng folder -->
 		<property name="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng" />
@@ -228,10 +228,14 @@
 	</target>
 
 	<target name="createBase" depends="init">
-		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+		<antcall target="setHttpProxy"/>
 		<ant antfile="${relengBuilderDir}/scripts/createEclipseTarget.xml" target="run" inheritall="true" inheritrefs="true" />
 	</target>
 
+	<target name="setHttpProxy" if="http.proxyHost">
+		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+	</target>
+	
 	<target name="cleanUp">
 		<!--	<delete dir="${buildDir}/testresults/html" failonerror="false" />
 		<delete>
