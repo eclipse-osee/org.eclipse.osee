@@ -98,7 +98,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                   artifact.persist(transaction);
                }
                transaction.execute();
-               OseeNotificationManager.sendNotifications();
+               OseeNotificationManager.getInstance().sendNotifications();
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }

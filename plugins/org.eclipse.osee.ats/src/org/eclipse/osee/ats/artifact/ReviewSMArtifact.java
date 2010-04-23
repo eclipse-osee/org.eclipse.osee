@@ -92,7 +92,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       if (!preSaveReviewRoleComplete.equals(userRoleManager.getRoleUsersReviewComplete())) {
          //all reviewers are complete; send notification to author/moderator
          if (userRoleManager.getUserRoles(Role.Reviewer).equals(userRoleManager.getRoleUsersReviewComplete())) {
-            AtsNotifyUsers.notify(this, AtsNotifyUsers.NotifyType.Reviewed);
+            AtsNotifyUsers.getInstance().notify(this, AtsNotifyUsers.NotifyType.Reviewed);
          }
       }
       preSaveReviewRoleComplete = userRoleManager.getRoleUsersReviewComplete();

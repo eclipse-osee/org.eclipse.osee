@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.notify.INotificationManager;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUtil;
@@ -45,64 +45,62 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  */
 public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
 
-   private static boolean testing = false; // Email goes to current user (set OseeNotifyUsersJob.testing also)
+   private static AtsNotifyUsers instance;
+   private INotificationManager notificationManager;
+   private boolean inTest = false;
    public static enum NotifyType {
       Subscribed, Cancelled, Completed, Assigned, Originator, Reviewed
    };
 
-   private static AtsNotifyUsers instance = new AtsNotifyUsers();
-
    public static AtsNotifyUsers getInstance() {
+      if (instance == null) {
+         instance = new AtsNotifyUsers(OseeNotificationManager.getInstance());
+      }
       return instance;
    }
 
-   private AtsNotifyUsers() {
+   private AtsNotifyUsers(INotificationManager notificationManager) {
       if (DbUtil.isDbInit()) return;
       OseeLog.log(AtsPlugin.class, Level.INFO, "Starting ATS Notification Handler");
       OseeEventManager.addListener(this);
+      this.notificationManager = notificationManager;
    }
 
    public void dispose() {
       OseeEventManager.removeListener(this);
    }
 
-   public static void notify(StateMachineArtifact sma, NotifyType... notifyTypes) throws OseeCoreException {
+   public void notify(StateMachineArtifact sma, NotifyType... notifyTypes) throws OseeCoreException {
       notify(sma, null, notifyTypes);
    }
 
-   public static void notify(StateMachineArtifact sma, Collection<User> notifyUsers, NotifyType... notifyTypes) throws OseeCoreException {
-      if (testing) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
-               "AtsNotifyUsers: testing is enabled....turn off for production.");
-      }
-      if (!testing && (!AtsUtil.isEmailEnabled() || !AtsUtil.isProductionDb() || sma.getName().startsWith("tt "))) {
+   /**
+    * @param notifyUsers only valid for assignees notifyType. if null or any other type, the users will be computed
+    */
+   public void notify(StateMachineArtifact sma, Collection<User> notifyUsers, NotifyType... notifyTypes) throws OseeCoreException {
+      if (!isInTest() && (!AtsUtil.isEmailEnabled() || !AtsUtil.isProductionDb() || sma.getName().startsWith("tt "))) {
          return;
       }
       List<NotifyType> types = Collections.getAggregate(notifyTypes);
 
       if (types.contains(NotifyType.Originator)) {
          User originator = sma.getOriginator();
-         if (testing) {
-            originator = UserManager.getUser();
-         }
          if (!EmailUtil.isEmailValid(originator)) {
             OseeLog.log(AtsPlugin.class, OseeLevel.INFO, String.format("Email [%s] invalid for user [%s]",
                   originator.getEmail(), originator.getName()));
-         } else if (!UserManager.getUser().equals(originator)) OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-               Arrays.asList(originator), getIdString(sma), NotifyType.Originator.name(), String.format(
-                     "You have been set as the originator of [%s] state [%s] titled [%s]", sma.getArtifactTypeName(),
-                     sma.getStateMgr().getCurrentStateName(), sma.getName())));
+         } else if (!UserManager.getUser().equals(originator)) {
+            notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
+                  getIdString(sma), NotifyType.Originator.name(), String.format(
+                        "You have been set as the originator of [%s] state [%s] titled [%s]",
+                        sma.getArtifactTypeName(), sma.getStateMgr().getCurrentStateName(), sma.getName())));
+         }
       }
       if (types.contains(NotifyType.Assigned)) {
          Collection<User> assignees = notifyUsers != null ? notifyUsers : sma.getStateMgr().getAssignees();
          assignees.remove(UserManager.getUser());
-         if (testing) {
-            assignees.clear();
-            assignees.add(UserManager.getUser());
-         }
          assignees = EmailUtil.getValidEmailUsers(assignees);
-         if (testing || assignees.size() > 0) {
-            OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(assignees, getIdString(sma),
+         if (assignees.size() > 0) {
+            notificationManager.addNotificationEvent(new OseeNotificationEvent(assignees, getIdString(sma),
                   NotifyType.Assigned.name(), String.format(
                         "You have been set as the assignee of [%s] in state [%s] titled [%s]",
                         sma.getArtifactTypeName(), sma.getStateMgr().getCurrentStateName(), sma.getName())));
@@ -110,13 +108,9 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
       }
       if (types.contains(NotifyType.Subscribed)) {
          Collection<User> subscribed = sma.getSubscribed();
-         if (testing) {
-            subscribed.clear();
-            subscribed.add(UserManager.getUser());
-         }
          subscribed = EmailUtil.getValidEmailUsers(subscribed);
          if (subscribed.size() > 0) {
-            OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(subscribed, getIdString(sma),
+            notificationManager.addNotificationEvent(new OseeNotificationEvent(subscribed, getIdString(sma),
                   NotifyType.Subscribed.name(), String.format(
                         "[%s] titled [%s] transitioned to [%s] and you subscribed for notification.",
                         sma.getArtifactTypeName(), sma.getName(), sma.getStateMgr().getCurrentStateName())));
@@ -125,21 +119,18 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
       if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed)) {
          if (((sma.isTeamWorkflow()) || (sma instanceof ReviewSMArtifact)) && (sma.isCompleted() || sma.isCancelled())) {
             User originator = sma.getOriginator();
-            if (testing) {
-               originator = UserManager.getUser();
-            }
             if (!EmailUtil.isEmailValid(originator)) {
                OseeLog.log(AtsPlugin.class, OseeLevel.INFO, String.format("Email [%s] invalid for user [%s]",
                      originator.getEmail(), originator.getName()));
             } else if (!UserManager.getUser().equals(originator)) {
                if (sma.isCompleted()) {
-                  OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
+                  notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
                         getIdString(sma), NotifyType.Completed.name(), String.format("[%s] titled [%s] is Completed",
                               sma.getArtifactTypeName(), sma.getName())));
                }
                if (sma.isCancelled()) {
                   LogItem cancelledItem = sma.getLog().getStateEvent(LogType.StateCancelled);
-                  OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
+                  notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
                         getIdString(sma), NotifyType.Cancelled.name(), String.format(
                               "[%s] titled [%s] was cancelled from the [%s] state on [%s].<br>Reason: [%s]",
                               sma.getArtifactTypeName(), sma.getName(), cancelledItem.getState(),
@@ -153,14 +144,10 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
             if (((ReviewSMArtifact) sma).getUserRoleManager() != null) {
                Collection<User> authorModerator =
                      ((ReviewSMArtifact) sma).getUserRoleManager().getRoleUsersAuthorModerator();
-               if (testing) {
-                  authorModerator.clear();
-                  authorModerator.add(UserManager.getUser());
-               }
                authorModerator = EmailUtil.getValidEmailUsers(authorModerator);
                if (authorModerator.size() > 0) {
                   for (UserRole role : ((ReviewSMArtifact) sma).getUserRoleManager().getRoleUsersReviewComplete()) {
-                     OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(authorModerator,
+                     notificationManager.addNotificationEvent(new OseeNotificationEvent(authorModerator,
                            getIdString(sma), NotifyType.Reviewed.name(), String.format(
                                  "[%s] titled [%s] has been Reviewed by [%s]", sma.getArtifactTypeName(),
                                  sma.getName(), role.getUser().getName())));
@@ -202,7 +189,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                            AtsRelationTypes.SubscribedUser_User));
                if (subscribedUsers.size() > 0) {
                   notificationAdded = true;
-                  OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
+                  notificationManager.addNotificationEvent(new OseeNotificationEvent(
                         subscribedUsers,
                         getIdString(teamArt),
                         "Workflow Creation",
@@ -214,7 +201,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                   subscribedUsers = Collections.castAll(aia.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User));
                   if (subscribedUsers.size() > 0) {
                      notificationAdded = true;
-                     OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
+                     notificationManager.addNotificationEvent(new OseeNotificationEvent(
                            subscribedUsers,
                            getIdString(teamArt),
                            "Workflow Creation",
@@ -225,8 +212,21 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
          }
       } finally {
          if (notificationAdded) {
-            OseeNotificationManager.sendNotifications();
+            notificationManager.sendNotifications();
          }
       }
    }
+
+   public void setNotificationManager(INotificationManager notificationManager) {
+      this.notificationManager = notificationManager;
+   }
+
+   public boolean isInTest() {
+      return inTest;
+   }
+
+   public void setInTest(boolean inTest) {
+      this.inTest = inTest;
+   }
+
 }

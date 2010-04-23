@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.test.cases.AtsImageTest;
 import org.eclipse.osee.ats.test.cases.AtsNavigateItemsToMassEditorTest;
 import org.eclipse.osee.ats.test.cases.AtsNavigateItemsToTaskEditorTest;
 import org.eclipse.osee.ats.test.cases.AtsNavigateItemsToWorldViewTest;
+import org.eclipse.osee.ats.test.cases.AtsNotifyUsersTest;
 import org.eclipse.osee.ats.test.cases.AtsPurgeTest;
 import org.eclipse.osee.ats.test.cases.AtsValidateAtsDatabaseTest;
 import org.eclipse.osee.ats.test.cases.SMAPrintTest;
@@ -28,7 +29,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {SMAPrintTest.class, AtsImageTest.class, SMAPromptChangeStatusTest.class,
-      AtsDeleteManagerTest.class, AtsPurgeTest.class, AtsBranchConfigurationTest.class,
+      AtsDeleteManagerTest.class, AtsPurgeTest.class, AtsNotifyUsersTest.class, AtsBranchConfigurationTest.class,
       AtsValidateAtsDatabaseTest.class, AtsNavigateItemsToMassEditorTest.class, AtsNavigateItemsToTaskEditorTest.class,
       AtsNavigateItemsToWorldViewTest.class})
 /**

@@ -146,7 +146,7 @@ public class ExcelAtsActionArtifactExtractor {
          AtsUtil.setEmailEnabled(true);
          if (emailPOCs) {
             for (TeamWorkFlowArtifact team : teamWfs) {
-               AtsNotifyUsers.notify(team, AtsNotifyUsers.NotifyType.Assigned);
+               AtsNotifyUsers.getInstance().notify(team, AtsNotifyUsers.NotifyType.Assigned);
             }
          }
       } catch (OseeCoreException ex) {
@@ -200,14 +200,7 @@ public class ExcelAtsActionArtifactExtractor {
    private final static class InternalRowProcessor implements RowProcessor {
 
       private static enum Columns {
-         Title,
-         Description,
-         ActionableItems,
-         Assignees,
-         Priority,
-         ChangeType,
-         UserCommunity,
-         Version
+         Title, Description, ActionableItems, Assignees, Priority, ChangeType, UserCommunity, Version
       };
 
       private String[] headerRow;

@@ -80,7 +80,7 @@ public class NewActionJob extends Job {
          // Thus, if multiple teams were selected to create, don't popup on openAction or dialog
          // will exception out when it is killed at the end of this job.
          AtsUtil.openATSAction(actionArt, AtsOpenOption.OpenAll);
-         OseeNotificationManager.sendNotifications();
+         OseeNotificationManager.getInstance().sendNotifications();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);

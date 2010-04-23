@@ -267,7 +267,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
       try {
          // These will be processed upon save
-         AtsNotifyUsers.notify(this, newAssignees, AtsNotifyUsers.NotifyType.Assigned);
+         AtsNotifyUsers.getInstance().notify(this, newAssignees, AtsNotifyUsers.NotifyType.Assigned);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -275,7 +275,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    public void notifyOriginatorAndReset() throws OseeCoreException {
       if (preSaveOriginator != null && getOriginator() != null && !getOriginator().equals(preSaveOriginator)) {
-         AtsNotifyUsers.notify(this, AtsNotifyUsers.NotifyType.Originator);
+         AtsNotifyUsers.getInstance().notify(this, AtsNotifyUsers.NotifyType.Originator);
       }
       preSaveOriginator = getOriginator();
    }
@@ -1622,7 +1622,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
          transitionHelper(toAssignees, persist, fromWorkPageDefinition, toWorkPageDefinition, toStateName,
                completeOrCancelReason, transaction);
          if (persist) {
-            OseeNotificationManager.sendNotifications();
+            OseeNotificationManager.getInstance().sendNotifications();
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -1647,8 +1647,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
          ReviewManager.createValidateReview((TeamWorkFlowArtifact) this, false, transaction);
       }
 
-      AtsNotifyUsers.notify(this, AtsNotifyUsers.NotifyType.Subscribed, AtsNotifyUsers.NotifyType.Completed,
-            AtsNotifyUsers.NotifyType.Completed);
+      AtsNotifyUsers.getInstance().notify(this, AtsNotifyUsers.NotifyType.Subscribed,
+            AtsNotifyUsers.NotifyType.Completed, AtsNotifyUsers.NotifyType.Completed);
 
       // Persist
       if (persist) {

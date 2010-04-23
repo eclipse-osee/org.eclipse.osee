@@ -27,23 +27,27 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  * 
  * @author Donald G. Dunne
  */
-public class OseeNotificationManager {
+public class OseeNotificationManager implements INotificationManager {
 
-   private static boolean emailEnabled = true;
+   private boolean emailEnabled = true;
+   private static OseeNotificationManager instance = new OseeNotificationManager();
+   private List<OseeNotificationEvent> notificationEvents = new ArrayList<OseeNotificationEvent>();
 
-   private static List<OseeNotificationEvent> notificationEvents = new ArrayList<OseeNotificationEvent>();
+   private OseeNotificationManager() {
+      instance = this;
+   }
 
-   public static void addNotificationEvent(OseeNotificationEvent notificationEvent) {
+   public void addNotificationEvent(OseeNotificationEvent notificationEvent) {
       notificationEvents.add(notificationEvent);
    }
 
-   public static void clear() {
+   public void clear() {
       notificationEvents.clear();
    }
 
-   public static void sendNotifications() throws OseeCoreException {
+   public void sendNotifications() throws OseeCoreException {
       if (!emailEnabled) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,  "Osee Notification Disabled");
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Osee Notification Disabled");
          return;
       }
       List<OseeNotificationEvent> sendEvents = new ArrayList<OseeNotificationEvent>();
@@ -54,11 +58,19 @@ public class OseeNotificationManager {
       job.schedule();
    }
 
-   public static boolean isEmailEnabled() {
+   public boolean isEmailEnabled() {
       return emailEnabled;
    }
 
-   public static void setEmailEnabled(boolean emailEnabled) {
-      OseeNotificationManager.emailEnabled = emailEnabled;
+   public void setEmailEnabled(boolean emailEnabled) {
+      this.emailEnabled = emailEnabled;
+   }
+
+   public List<OseeNotificationEvent> getNotificationEvents() {
+      return notificationEvents;
+   }
+
+   public static OseeNotificationManager getInstance() {
+      return instance;
    }
 }

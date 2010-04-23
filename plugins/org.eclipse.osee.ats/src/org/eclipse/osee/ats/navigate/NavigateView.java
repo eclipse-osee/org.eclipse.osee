@@ -89,7 +89,7 @@ public class NavigateView extends ViewPart implements IActionable {
    @Override
    public void dispose() {
       try {
-         OseeNotificationManager.sendNotifications();
+         OseeNotificationManager.getInstance().sendNotifications();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }

@@ -80,10 +80,6 @@ public class DemoTestUtil {
 
    /**
     * Creates an action with the name title and demo code workflow
-    * 
-    * @param title
-    * @param transaction
-    * @throws OseeCoreException
     */
    public static TeamWorkFlowArtifact createSimpleAction(String title, SkynetTransaction transaction) throws OseeCoreException {
       ActionArtifact actionArt =
@@ -103,12 +99,6 @@ public class DemoTestUtil {
 
    /**
     * Create tasks named title + <num>
-    * 
-    * @param teamArt
-    * @param title
-    * @param numTasks number to create
-    * @param transaction
-    * @throws Exception
     */
    public static Collection<TaskArtifact> createSimpleTasks(TeamWorkFlowArtifact teamArt, String title, int numTasks, SkynetTransaction transaction) throws Exception {
       List<String> names = new ArrayList<String>();
@@ -120,9 +110,6 @@ public class DemoTestUtil {
 
    /**
     * Deletes all artifacts with names that start with any title given
-    * 
-    * @param titles
-    * @throws Exception
     */
    public static void cleanupSimpleTest(Collection<String> titles) throws Exception {
       List<Artifact> artifacts = new ArrayList<Artifact>();
@@ -135,9 +122,6 @@ public class DemoTestUtil {
 
    /**
     * Deletes any artifact with name that starts with title
-    * 
-    * @param title
-    * @throws Exception
     */
    public static void cleanupSimpleTest(String title) throws Exception {
       cleanupSimpleTest(Arrays.asList(title));

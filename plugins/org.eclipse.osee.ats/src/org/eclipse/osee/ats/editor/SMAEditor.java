@@ -260,7 +260,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactListen
             onDirtied();
          }
 
-         OseeNotificationManager.sendNotifications();
+         OseeNotificationManager.getInstance().sendNotifications();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }

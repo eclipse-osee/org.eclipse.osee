@@ -245,8 +245,8 @@ public class ExcelAtsTaskArtifactExtractor {
                      try {
                         hours = new Double(str);
                      } catch (Exception ex) {
-                        throw new OseeArgumentException(String.format("Invalid Estimated Hours \"%s\" for row %d",
-                              str, rowNum));
+                        throw new OseeArgumentException(String.format("Invalid Estimated Hours \"%s\" for row %d", str,
+                              rowNum));
                      }
                      taskArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hours);
                   }
@@ -261,7 +261,7 @@ public class ExcelAtsTaskArtifactExtractor {
             // always persist
             taskArt.persist(transaction);
             if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
-               AtsNotifyUsers.notify(sma, AtsNotifyUsers.NotifyType.Assigned);
+               AtsNotifyUsers.getInstance().notify(sma, AtsNotifyUsers.NotifyType.Assigned);
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

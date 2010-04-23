@@ -88,14 +88,14 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
                         XResultData.getHyperlink(event.getId(), event.getId(), AtsUtil.getAtsBranch().getId()),
                         Artifacts.semmicolonArts(event.getUsers()), OseeNotifyUsersJob.getHyperlink(event)));
                   if (sendNotifications) {
-                     OseeNotificationManager.addNotificationEvent(event);
+                     OseeNotificationManager.getInstance().addNotificationEvent(event);
                   }
                }
             }
             rd.addRaw(AHTML.endMultiColumnTable());
             rd.report(getName() + " - (" + numEvents + " Events)");
             if (sendNotifications) {
-               OseeNotificationManager.sendNotifications();
+               OseeNotificationManager.getInstance().sendNotifications();
                AWorkbench.popup("Complete", numEvents + " Notifications Sent");
             }
          } catch (OseeCoreException ex) {
