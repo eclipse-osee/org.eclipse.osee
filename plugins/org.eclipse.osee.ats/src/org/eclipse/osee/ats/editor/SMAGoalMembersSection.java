@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.goal.GoalXViewerFactory;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -31,6 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -97,6 +99,7 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
    protected void addDropToAddLabel(FormToolkit toolkit, Composite sectionBody) {
       Label dropToAddLabel = new Label(sectionBody, SWT.BORDER);
       dropToAddLabel.setText(" Drop New Members Here");
+      dropToAddLabel.setBackgroundImage(ImageManager.getImage(AtsImage.DROP_HERE_TO_ADD_BACKGROUND));
       GridData gd = new GridData(GridData.FILL_BOTH);
       gd.heightHint = 25;
       dropToAddLabel.setLayoutData(gd);
@@ -127,6 +130,7 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
    protected void addDropToRemoveLabel(FormToolkit toolkit, Composite sectionBody) {
       Label dropToAddLabel = new Label(sectionBody, SWT.BORDER);
       dropToAddLabel.setText(" Drop Members to Remove");
+      dropToAddLabel.setBackgroundImage(ImageManager.getImage(AtsImage.DROP_HERE_TO_REMOVE_BACKGROUND));
       GridData gd = new GridData(GridData.FILL_BOTH);
       gd.heightHint = 25;
       dropToAddLabel.setLayoutData(gd);

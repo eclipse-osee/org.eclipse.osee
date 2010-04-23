@@ -29,6 +29,8 @@ public enum AtsImage implements KeyedImage {
    COPY_TO_CLIPBOARD("copyToClipboard.gif"),
    CUSTOMIZE("customize.gif"),
    DOWN_TRIANGLE("downTriangle.gif"),
+   DROP_HERE_TO_ADD_BACKGROUND("dropHereToAddBackground.gif"),
+   DROP_HERE_TO_REMOVE_BACKGROUND("dropHereToRemoveBackground.gif"),
    ELLIPSE_ICON("ellipse16.gif"),
    FAVORITE("star.gif"),
    FAVORITE_OVERLAY("favorite.gif"),
