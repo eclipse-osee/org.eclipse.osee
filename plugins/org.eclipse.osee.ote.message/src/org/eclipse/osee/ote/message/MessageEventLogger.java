@@ -85,7 +85,7 @@ public class MessageEventLogger implements UniversalMessageListener{
 
    public void isScheduledChanged(boolean isScheduled) {
       log(Level.INFO, String.format(
-            "schedule status for %s %s has changed to %s. Env time is %d", 
+            "schedule status for %s has changed to %s. Env time is %d", 
             message.getName(), 
             modeStatus,
             isScheduled ? "scheduled" :  "not scheduled"), showStackTrace ? new StackTrace() : null);
