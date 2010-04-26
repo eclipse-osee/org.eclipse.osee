@@ -166,7 +166,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	/**
 	 * stops this service
 	 */
-	public void stop() {
+	public synchronized void stop() {
 		connectionService.removeListener(this);
 		if (session != null) {
 			try {
