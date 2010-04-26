@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.actions.EmailActionAction;
 import org.eclipse.osee.ats.actions.FavoriteAction;
 import org.eclipse.osee.ats.actions.OpenInArtifactEditorAction;
 import org.eclipse.osee.ats.actions.OpenInAtsWorldAction;
-import org.eclipse.osee.ats.actions.OpenInSkyWalkerAction;
 import org.eclipse.osee.ats.actions.OpenParentAction;
 import org.eclipse.osee.ats.actions.OpenTeamDefinitionAction;
 import org.eclipse.osee.ats.actions.OpenVersionArtifactAction;
@@ -37,7 +36,6 @@ import org.eclipse.osee.ats.actions.ReloadAction;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
-import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.NoteItem;
@@ -359,10 +357,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       if (AtsUtil.isAtsAdmin()) {
          toolBarMgr.add(new OpenInArtifactEditorAction(sma.getEditor()));
       }
-      toolBarMgr.add(new OpenInSkyWalkerAction(sma));
       toolBarMgr.add(new OpenVersionArtifactAction(sma));
       toolBarMgr.add(new OpenTeamDefinitionAction(sma));
-      toolBarMgr.add(new SubscribedAction(sma.getEditor()));
       toolBarMgr.add(new CopyActionDetailsAction(sma));
       toolBarMgr.add(new PrivilegedEditAction(sma));
       toolBarMgr.add(new ResourceHistoryAction(sma));
