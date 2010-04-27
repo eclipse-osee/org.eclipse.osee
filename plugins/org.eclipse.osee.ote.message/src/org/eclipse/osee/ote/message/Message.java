@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.message;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -441,7 +440,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       checkState();
       IMessageHeader header = getActiveDataSource().getMsgHeader();
       if (header != null) {
-    	  elements.addAll(Arrays.asList(header.getElements()));
+    	  Collections.addAll(elements, header.getElements());
       }
       elements.addAll(elementMap.values());
       
