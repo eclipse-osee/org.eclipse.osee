@@ -11,15 +11,16 @@
 
 package org.eclipse.osee.framework.skynet.core.change;
 
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -28,13 +29,13 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public final class AttributeChange extends Change {
    private final String isValue;
-   private String wasValue;
+   private final String wasValue;
    private final int attrId;
    private final AttributeType attributeType;
    private final ModificationType artModType;
 
-   public AttributeChange(IOseeBranch branch, ArtifactType artType, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, int attrId, AttributeType attributeType, ModificationType artModType, boolean isHistorical, ArtifactDelta artifactDelta) {
-      super(branch, artType, sourceGamma, artId, txDelta, modType, isHistorical, artifactDelta);
+   public AttributeChange(IOseeBranch branch, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, int attrId, AttributeType attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+      super(branch, sourceGamma, artId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
       this.isValue = isValue;
       this.wasValue = wasValue;
       this.attrId = attrId;
@@ -96,12 +97,9 @@ public final class AttributeChange extends Change {
       return wasValue;
    }
 
-   public void setWasValue(String wasValue) {
-      this.wasValue = wasValue;
-   }
-
    public Attribute<?> getAttribute() throws OseeCoreException {
-      for (Attribute<?> attribute : getSourceArtifact().getAllAttributesIncludingHardDeleted()) {
+      List<Attribute<?>> attributes = getChangeArtifact().getAllAttributesIncludingHardDeleted();
+      for (Attribute<?> attribute : attributes) {
          if (attribute.getId() == attrId) {
             return attribute;
          }
@@ -110,30 +108,19 @@ public final class AttributeChange extends Change {
    }
 
    @SuppressWarnings("unchecked")
+   @Override
    public Object getAdapter(Class adapter) {
-      if (adapter == null) {
-         throw new IllegalArgumentException("adapter can not be null");
-      }
-
-      try {
-         if (adapter.isInstance(getSourceArtifact())) {
-            return getSourceArtifact();
-         } else if (adapter.isInstance(getTxDelta().getEndTx()) && isHistorical()) {
-            return getTxDelta().getEndTx();
-         } else if (adapter.isInstance(this)) {
-            return this;
-         }
+      Object toReturn = super.getAdapter(adapter);
+      if (toReturn == null) {
          try {
             if (adapter.isInstance(getAttribute())) {
-               return getAttribute();
+               toReturn = getAttribute();
             }
-         } catch (AttributeDoesNotExist ex) {
-            return null;
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      return null;
+      return toReturn;
    }
 
    public ModificationType getArtModType() {

@@ -68,7 +68,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
             Set<Artifact> artifacts = new HashSet<Artifact>();
             for (Change change : localChanges) {
-               Artifact artifact = change.getDelta().getStartArtifact();
+               Artifact artifact = change.getChangeArtifact();
                if (!artifacts.contains(artifact)) {
                   artifacts.add(artifact);
                   changes.add(change);

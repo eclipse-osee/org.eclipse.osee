@@ -47,7 +47,7 @@ public class XViewerGuidColumn extends XViewerValueColumn {
       if (element instanceof Artifact) {
          return ((Artifact) element).getGuid();
       } else if (element instanceof Change) {
-         return ((Change) element).getDelta().getStartArtifact().getGuid();
+         return ((Change) element).getChangeArtifact().getGuid();
       }
       return "";
    }

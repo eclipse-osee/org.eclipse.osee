@@ -17,9 +17,9 @@ import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IOseeBranchServiceProvider;
@@ -81,8 +81,7 @@ public class BranchManagerServlet extends OseeHttpServlet {
             default:
                throw new UnsupportedOperationException();
          }
-         Job job = Operations.executeAndPend(op, false);
-         Operations.checkForErrorStatus(job.getResult());
+         Operations.executeWorkAndCheckStatus(op, new LogProgressMonitor(), -1.0);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE,
                String.format("Branch servlet request error: [%s]", req.toString()), ex);

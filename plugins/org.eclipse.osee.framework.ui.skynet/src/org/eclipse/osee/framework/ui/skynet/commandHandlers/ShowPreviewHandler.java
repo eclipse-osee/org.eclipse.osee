@@ -41,9 +41,8 @@ public class ShowPreviewHandler extends AbstractHandler {
          List<Change> mySelectedArtifactChangeList =
                Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
          for (Change mySelectedArtifactChange : mySelectedArtifactChangeList) {
-            Artifact selectedArtifact;
             try {
-               selectedArtifact = mySelectedArtifactChange.getDelta().getEndArtifact();
+               Artifact selectedArtifact = mySelectedArtifactChange.getChangeArtifact();
                ArtifactEditor.editArtifact(selectedArtifact);
             } catch (Exception ex) {
                OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);

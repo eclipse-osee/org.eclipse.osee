@@ -7,7 +7,6 @@ package org.eclipse.osee.framework.ui.skynet.render.compare;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -55,25 +54,11 @@ public class ArtifactDeltaToFileConverter {
    }
 
    private Pair<IFile, IFile> asFiles(FileSystemRenderer renderer, PresentationType presentationType, ArtifactDelta delta) throws OseeCoreException {
-      Artifact artFile1;
-      Artifact artFile2;
-
-      ModificationType startModType = delta.getStartArtifact().getModType();
-      if (startModType.isDeleted()) {
-         artFile1 = delta.getStartArtifact();
-         artFile2 = null;
-      } else if ((startModType == ModificationType.INTRODUCED || startModType == ModificationType.NEW) && delta.getEndArtifact() == null) {
-         artFile1 = null;
-         artFile2 = delta.getStartArtifact();
-      } else {
-         artFile1 = delta.getStartArtifact();
-         artFile2 = delta.getEndArtifact();
-      }
+      Pair<Artifact, Artifact> renderInput = RenderingUtil.asRenderInput(delta);
       Branch branch = delta.getBranch();
       IFolder renderingFolder = RenderingUtil.getRenderFolder(branch, presentationType);
-
-      IFile baseFile = renderer.renderToFileSystem(renderingFolder, artFile1, branch, presentationType);
-      IFile newerFile = renderer.renderToFileSystem(renderingFolder, artFile2, branch, presentationType);
+      IFile baseFile = renderer.renderToFileSystem(renderingFolder, renderInput.getFirst(), branch, presentationType);
+      IFile newerFile = renderer.renderToFileSystem(renderingFolder, renderInput.getSecond(), branch, presentationType);
       return new Pair<IFile, IFile>(baseFile, newerFile);
    }
 }

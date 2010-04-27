@@ -107,7 +107,7 @@ public class ChangeManagerTest {
       boolean pass = false;
       Collection<Change> changes = new ArrayList<Change>();
       IOperation operation = ChangeManager.comparedToParent(artifact.getBranch(), changes);
-      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), 1.0);
+      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1.0);
 
       for (Change change : changes) {
          if (change.getArtId() == artifact.getArtId()) {

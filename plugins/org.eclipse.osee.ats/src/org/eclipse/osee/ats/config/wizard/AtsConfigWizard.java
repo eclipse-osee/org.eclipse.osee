@@ -16,6 +16,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.config.AtsConfigManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.ui.INewWizard;
@@ -49,7 +51,11 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
          Collection<String> aias = page1.getActionableItems();
          Collection<String> versionNames = page1.getVersions();
          String workflowId = page1.getWorkflowId();
-         AtsConfigManager.configureAtsForDefaultTeam(namespace, teamDefName, versionNames, aias, workflowId);
+
+         IOperation operation =
+               AtsConfigManager.createAtsConfigOperation(namespace, teamDefName, versionNames, aias, workflowId);
+         Operations.executeAsJob(operation, true);
+
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return false;

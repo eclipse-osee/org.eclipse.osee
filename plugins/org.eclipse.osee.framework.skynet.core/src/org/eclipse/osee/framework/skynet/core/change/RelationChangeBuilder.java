@@ -41,15 +41,14 @@ public class RelationChangeBuilder extends ChangeBuilder {
    @Override
    public Change build(Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       Artifact bArtifact;
-
       if (isHistorical()) {
          bArtifact = ArtifactCache.getHistorical(bArtId, getTxDelta().getEndTx().getId());
       } else {
          bArtifact = ArtifactCache.getActive(bArtId, branch);
       }
-      return new RelationChange(branch, getArtifactType(), getSourceGamma(), getArtId(), getTxDelta(), getModType(),
-            bArtId, relLinkId, rationale, relationType, isHistorical(), new ArtifactDelta(loadArtifact(), null),
-            bArtifact);
+      return new RelationChange(branch, getSourceGamma(), getArtId(), getTxDelta(), getModType(), bArtId, relLinkId,
+            rationale, relationType, isHistorical(), loadArtifact(), new ArtifactDelta(getTxDelta(), loadArtifact(),
+                  null), bArtifact);
    }
 
 }

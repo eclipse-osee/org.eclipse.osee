@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.change;
 
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -20,11 +21,17 @@ public class ArtifactDelta {
 
    private final Artifact startArt;
    private final Artifact endArt;
+   private final TransactionDelta txDelta;
 
-   public ArtifactDelta(Artifact startArt, Artifact endArt) {
+   public ArtifactDelta(TransactionDelta txDelta, Artifact startArt, Artifact endArt) {
       super();
       this.startArt = startArt;
       this.endArt = endArt;
+      this.txDelta = txDelta;
+   }
+
+   public TransactionDelta getTxDelta() {
+      return txDelta;
    }
 
    public Artifact getStartArtifact() {

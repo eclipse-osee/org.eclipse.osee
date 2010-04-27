@@ -140,7 +140,7 @@ public class MergeUtility {
       if (art1 == null || art2 == null) {
          return " ";
       }
-      return RendererManager.diff(new ArtifactDelta(art1, art2), true, new VariableMap("fileName", fileName));
+      return RendererManager.diff(new ArtifactDelta(null, art1, art2), true, new VariableMap("fileName", fileName));
    }
 
    /*

@@ -45,7 +45,7 @@ public class CatchTrackedChanges implements CommitAction {
       Set<Artifact> changedArtifacts = new HashSet<Artifact>();
       Collection<Change> changes = new ArrayList<Change>();
       IOperation operation = ChangeManager.comparedToParent(branch, changes);
-      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), 1.0);
+      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1.0);
 
       for (Change change : changes) {
          if (!change.getModificationType().isDeleted()) {
@@ -61,7 +61,7 @@ public class CatchTrackedChanges implements CommitAction {
                }
             }
 
-            Artifact artifactChanged = change.getDelta().getEndArtifact();
+            Artifact artifactChanged = change.getChangeArtifact();
             if (artifactChanged != null) {
                changedArtifacts.add(artifactChanged);
             }

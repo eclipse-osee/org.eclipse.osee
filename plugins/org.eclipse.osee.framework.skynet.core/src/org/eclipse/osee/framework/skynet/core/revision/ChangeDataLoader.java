@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -45,7 +44,6 @@ import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
@@ -80,14 +78,15 @@ public class ChangeDataLoader extends AbstractOperation {
       Collection<ChangeItem> changeItems = response.getChangeItems();
       monitor.worked(calculateWork(0.20));
 
-      monitor.subTask("Bulk load changed artifacts");
-      Collection<Artifact> bulkLoaded = new ArrayList<Artifact>();
-      bulkLoadArtifacts(monitor, bulkLoaded, changeItems);
-      monitor.worked(calculateWork(0.20));
-
       if (changeItems.isEmpty()) {
-         monitor.worked(calculateWork(0.60));
+         monitor.worked(calculateWork(0.80));
       } else {
+         monitor.setTaskName("Bulk load changed artifacts");
+         Collection<Artifact> bulkLoaded = new ArrayList<Artifact>();
+         bulkLoadArtifactDeltas(monitor, bulkLoaded, changeItems);
+         monitor.worked(calculateWork(0.20));
+
+         monitor.setTaskName("Compute artifact deltas");
          double workAmount = 0.60 / changeItems.size();
          IOseeBranch startTxBranch = txDelta.getStartTx().getBranch();
          for (ChangeItem item : changeItems) {
@@ -102,7 +101,7 @@ public class ChangeDataLoader extends AbstractOperation {
    private Artifact getArtifactAtTx(int artId, TransactionRecord transaction) throws OseeCoreException {
       Artifact artifactAtTransaction = null;
       if (txDelta.areOnTheSameBranch()) {
-         artifactAtTransaction = ArtifactCache.getHistorical(artId, transaction.getId());
+         artifactAtTransaction = ArtifactQuery.checkHistoricalArtifactFromId(artId, transaction, true);
       } else {
          artifactAtTransaction = ArtifactQuery.checkArtifactFromId(artId, transaction.getBranch(), true);
       }
@@ -112,10 +111,11 @@ public class ChangeDataLoader extends AbstractOperation {
    private Change computeChange(IOseeBranch startTxBranch, ChangeItem item) {
       Change change = null;
       try {
-         Artifact startTxArtifact = getArtifactAtTx(item.getArtId(), txDelta.getStartTx());
-         Artifact endTxArtifact = getArtifactAtTx(item.getArtId(), txDelta.getEndTx());
+         int artId = item.getArtId();
+         Artifact startTxArtifact = getArtifactAtTx(artId, txDelta.getStartTx());
+         Artifact endTxArtifact = getArtifactAtTx(artId, txDelta.getEndTx());
 
-         ArtifactDelta artifactDelta = new ArtifactDelta(startTxArtifact, endTxArtifact);
+         ArtifactDelta artifactDelta = new ArtifactDelta(txDelta, startTxArtifact, endTxArtifact);
          change = createChangeObject(item, txDelta, startTxBranch, artifactDelta);
 
       } catch (Exception ex) {
@@ -128,21 +128,25 @@ public class ChangeDataLoader extends AbstractOperation {
    private Change createChangeObject(ChangeItem item, TransactionDelta txDelta, IOseeBranch startTxBranch, ArtifactDelta artifactDelta) throws OseeCoreException {
       Change change = null;
 
-      boolean isHistorical = txDelta.areOnTheSameBranch();
-
       int itemId = item.getItemId();
       long itemGammaId = item.getNetChange().getGammaId();
       ModificationType netModType = item.getNetChange().getModType();
       int artId = item.getArtId();
 
-      Artifact startArtifact = artifactDelta.getStartArtifact();
-
-      ArtifactType artifactType = startArtifact.getArtifactType();
+      // The change artifact is the artifact that is displayed by the GUI.
+      // When we are comparing two different branches, the displayed artifact should be the start artifact or the artifact from the
+      // source branch. When we are comparing items from the same branch, the displayed artifact should be the artifact in the end transaction
+      // since that is the resulting change artifact.
+      Artifact changeArtifact = artifactDelta.getStartArtifact();
+      if (txDelta.areOnTheSameBranch()) {
+         changeArtifact = artifactDelta.getEndArtifact();
+      }
+      boolean isHistorical = txDelta.areOnTheSameBranch();
 
       if (item instanceof ArtifactChangeItem) {
          change =
-               new ArtifactChange(startTxBranch, artifactType, itemGammaId, itemId, txDelta, netModType, isHistorical,
-                     artifactDelta);
+               new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType, isHistorical,
+                     changeArtifact, artifactDelta);
       } else if (item instanceof AttributeChangeItem) {
          String isValue = item.getCurrentVersion().getValue();
          AttributeType attributeType = AttributeTypeManager.getType(item.getItemTypeId());
@@ -156,33 +160,36 @@ public class ChangeDataLoader extends AbstractOperation {
             }
          }
          change =
-               new AttributeChange(startTxBranch, artifactType, itemGammaId, artId, txDelta, netModType, isValue,
-                     wasValue, itemId, attributeType, netModType, isHistorical, artifactDelta);
+               new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, isValue, wasValue, itemId,
+                     attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
 
       } else if (item instanceof RelationChangeItem) {
          RelationChangeItem relationItem = (RelationChangeItem) item;
          RelationType relationType = RelationTypeManager.getType(relationItem.getItemTypeId());
-         Artifact endTxBArtifact = getArtifactAtTx(relationItem.getBArtId(), txDelta.getStartTx());
+
+         TransactionRecord transaction = txDelta.getStartTx();
+         if (txDelta.areOnTheSameBranch()) {
+            transaction = txDelta.getEndTx();
+         }
+         Artifact endTxBArtifact = getArtifactAtTx(relationItem.getBArtId(), transaction);
 
          change =
-               new RelationChange(startTxBranch, artifactType, itemGammaId, artId, txDelta, netModType,
-                     endTxBArtifact.getArtId(), itemId, relationItem.getRationale(), relationType, isHistorical,
-                     artifactDelta, endTxBArtifact);
+               new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact.getArtId(),
+                     itemId, relationItem.getRationale(), relationType, isHistorical, changeArtifact, artifactDelta,
+                     endTxBArtifact);
       } else {
          throw new OseeCoreException("The change item must map to either an artifact, attribute or relation change");
       }
       return change;
    }
 
-   private void bulkLoadArtifacts(IProgressMonitor monitor, Collection<Artifact> bulkLoaded, Collection<ChangeItem> changeItems) throws OseeCoreException {
-      //This is to keep the weak reference from being collected before they can be used.
-      if (!changeItems.isEmpty()) {
-         checkForCancelledStatus(monitor);
-         Set<Integer> artIds = asArtIds(changeItems);
-         preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx(), txDelta.areOnTheSameBranch());
-
-         checkForCancelledStatus(monitor);
-         preloadArtifacts(bulkLoaded, artIds, txDelta.getEndTx(), txDelta.areOnTheSameBranch());
+   private void bulkLoadArtifactDeltas(IProgressMonitor monitor, Collection<Artifact> bulkLoaded, Collection<ChangeItem> changeItems) throws OseeCoreException {
+      checkForCancelledStatus(monitor);
+      Set<Integer> artIds = asArtIds(changeItems);
+      if (!txDelta.areOnTheSameBranch()) {
+         // Load current artifacts by id for each branch
+         preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx(), false);
+         preloadArtifacts(bulkLoaded, artIds, txDelta.getEndTx(), false);
       }
    }
 
@@ -191,9 +198,10 @@ public class ChangeDataLoader extends AbstractOperation {
       Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
       Integer branchId = tx.getBranchId();
+      Object txId = isHistorical ? tx.getId() : SQL3DataType.INTEGER;
+
       List<Object[]> insertParameters = new LinkedList<Object[]>();
       for (Integer artId : artIds) {
-         Object txId = isHistorical ? tx.getId() : SQL3DataType.INTEGER;
          insertParameters.add(new Object[] {queryId, insertTime, artId, branchId, txId});
       }
       ArtifactLoader.loadArtifacts(bulkLoaded, queryId, ArtifactLoad.ALL_CURRENT, null, insertParameters, true,
@@ -204,7 +212,6 @@ public class ChangeDataLoader extends AbstractOperation {
       Set<Integer> artIds = new HashSet<Integer>();
       for (ChangeItem item : changeItems) {
          artIds.add(item.getArtId());
-
          if (item instanceof RelationChangeItem) {
             artIds.add(((RelationChangeItem) item).getBArtId());
          }

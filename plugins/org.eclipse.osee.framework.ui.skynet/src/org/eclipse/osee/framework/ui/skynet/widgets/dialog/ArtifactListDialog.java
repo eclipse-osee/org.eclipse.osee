@@ -45,10 +45,6 @@ public class ArtifactListDialog extends ListDialog {
    }
 
    public ArtifactListDialog(Shell parent) {
-      this(parent, null);
-   }
-
-   public ArtifactListDialog(Shell parent, Collection<? extends Artifact> artifacts) {
       super(parent);
       setContentProvider(new ArrayContentProvider());
       setLabelProvider(new ArtifactDescriptiveLabelProvider());
@@ -75,7 +71,7 @@ public class ArtifactListDialog extends ListDialog {
    public void setArtifacts(Collection<? extends Artifact> artifacts) {
       setInput(artifacts);
    }
-   
+
    public void updateArtifacts(Collection<? extends Artifact> artifacts) {
       getTableViewer().setInput(artifacts);
       getTableViewer().refresh();

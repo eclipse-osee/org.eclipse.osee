@@ -35,7 +35,7 @@ public class CreateBranchFunction extends AbstractOperation {
    private final IOseeDataTranslationProvider dataTransalatorProvider;
 
    public CreateBranchFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchServiceProvider branchServiceProvider, IOseeDataTranslationProvider dataTransalatorProvider) {
-      super("Commit Branch", Activator.PLUGIN_ID);
+      super("Create Branch", Activator.PLUGIN_ID);
       this.req = req;
       this.resp = resp;
       this.branchServiceProvider = branchServiceProvider;

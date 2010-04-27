@@ -34,7 +34,7 @@ public class ChangeReportFunction extends AbstractOperation {
    private final IOseeDataTranslationProvider dataTransalatorProvider;
 
    public ChangeReportFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchServiceProvider branchServiceProvider, IOseeDataTranslationProvider dataTransalatorProvider) {
-      super("Commit Branch", Activator.PLUGIN_ID);
+      super("Branch Change Report", Activator.PLUGIN_ID);
       this.req = req;
       this.resp = resp;
       this.branchServiceProvider = branchServiceProvider;

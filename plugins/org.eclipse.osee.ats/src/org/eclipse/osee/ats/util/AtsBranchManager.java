@@ -251,10 +251,11 @@ public class AtsBranchManager {
       }
    }
 
-   public Collection<TransactionRecord> getTransactionIdsForBaslineBranches() throws OseeCoreException {
-      Collection<TransactionRecord> transactionIds = new ArrayList<TransactionRecord>();
+   public Collection<TransactionRecord> getFirstCommitTransaction() throws OseeCoreException {
       Collection<TransactionRecord> committedTransactions =
             TransactionManager.getCommittedArtifactTransactionIds(teamArt);
+
+      Collection<TransactionRecord> transactionIds = new ArrayList<TransactionRecord>();
       for (TransactionRecord transactionId : committedTransactions) {
          // exclude working branches including branch states that are re-baselined
          if (transactionId.getBranch().getBranchType().isBaselineBranch()) {
@@ -272,14 +273,14 @@ public class AtsBranchManager {
          Branch workingBranch = getWorkingBranch();
          // grab only the transaction that had merge conflicts
          Collection<TransactionRecord> transactionIds = new ArrayList<TransactionRecord>();
-         for (TransactionRecord transactionId : getTransactionIdsForBaslineBranches()) {
+         for (TransactionRecord transactionId : getFirstCommitTransaction()) {
             if (isMergeBranchExists(workingBranch, transactionId.getBranch())) {
                transactionIds.add(transactionId);
             }
          }
          return transactionIds;
       } else {
-         return getTransactionIdsForBaslineBranches();
+         return getFirstCommitTransaction();
       }
    }
 
@@ -733,18 +734,15 @@ public class AtsBranchManager {
     * @param overrideStateValidation if true, don't do checks to see if commit can be performed. This should only be
     *           used for developmental testing or automation
     */
-   public void commitWorkingBranch(final boolean commitPopup, final boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
-      commitWorkingBranch(commitPopup, overrideStateValidation, destinationBranch, archiveWorkingBranch, false);
-   }
-
-   public void commitWorkingBranch(final boolean commitPopup, final boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch, boolean forcePend) throws OseeCoreException {
+   public Job commitWorkingBranch(final boolean commitPopup, final boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
       if (isBranchInCommit()) {
          throw new OseeCoreException("Branch is currently being committed.");
       }
       Job job =
             new AtsBranchCommitJob(teamArt, commitPopup, overrideStateValidation, destinationBranch,
                   archiveWorkingBranch);
-      Operations.scheduleJob(job, true, Job.LONG, null, forcePend);
+      Operations.scheduleJob(job, true, Job.LONG, null);
+      return job;
    }
 
    public ChangeData getChangeDataFromEarliestTransactionId() throws OseeCoreException {
@@ -765,6 +763,7 @@ public class AtsBranchManager {
       IOperation operation = null;
       if (teamArt.getBranchMgr().isWorkingBranchInWork()) {
          operation = ChangeManager.comparedToParent(getWorkingBranch(), changes);
+         Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1.0);
       } else if (teamArt.getBranchMgr().isCommittedBranchExists()) {
          TransactionRecord transactionId = null;
          if (commitConfigArt == null) {
@@ -777,9 +776,7 @@ public class AtsBranchManager {
             }
          }
          operation = ChangeManager.comparedToPreviousTx(transactionId, changes);
-      }
-      if (operation != null) {
-         Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), 1.0);
+         Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1.0);
       }
       return new ChangeData(changes);
    }

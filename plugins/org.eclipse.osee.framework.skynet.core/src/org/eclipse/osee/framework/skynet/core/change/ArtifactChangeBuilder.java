@@ -41,7 +41,7 @@ public class ArtifactChangeBuilder extends ChangeBuilder {
 
    @Override
    public Change build(Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      return new ArtifactChange(branch, getArtifactType(), getSourceGamma(), getArtId(), getTxDelta(), getModType(),
-            isHistorical(), new ArtifactDelta(loadArtifact(), null));
+      return new ArtifactChange(branch, getSourceGamma(), getArtId(), getTxDelta(), getModType(), isHistorical(),
+            loadArtifact(), new ArtifactDelta(getTxDelta(), loadArtifact(), null));
    }
 }

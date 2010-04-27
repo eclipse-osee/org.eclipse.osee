@@ -45,7 +45,7 @@ public class ActionManager {
          monitor.subTask("Creating WorkFlows");
       }
       Collection<TeamDefinitionArtifact> teams = TeamDefinitionArtifact.getImpactedTeamDefs(actionableItems);
-      if (teams == null || teams.size() == 0) {
+      if (teams.isEmpty()) {
          StringBuffer sb = new StringBuffer("No teams returned for Action's selected Actionable Items\n");
          for (ActionableItemArtifact aia : actionableItems) {
             sb.append("Selected AI \"" + aia + "\" " + aia.getHumanReadableId() + "\n");

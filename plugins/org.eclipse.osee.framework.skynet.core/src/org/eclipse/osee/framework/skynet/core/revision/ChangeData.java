@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
@@ -43,19 +42,25 @@ public class ChangeData {
       this.changes = changes;
    }
 
+   public boolean isEmpty() {
+      return getChanges() == null || getChanges().isEmpty();
+   }
+
    public Collection<Change> getChanges() {
       return changes;
    }
 
-   public Collection<Change> getChangesByName(String name) throws OseeCoreException {
+   public Collection<Change> getArtifactChangesByName(String name) throws OseeCoreException {
+      Collection<Change> changes = new HashSet<Change>();
       try {
-         List<Change> matches = new ArrayList<Change>();
          for (Change change : changes) {
-            if (change.getArtifactName().equals(name)) {
-               matches.add(change);
+            if (change instanceof ArtifactChange) {
+               if (change.getArtifactName().equals(name)) {
+                  changes.add(change);
+               }
             }
          }
-         return matches;
+         return changes;
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }
@@ -73,24 +78,24 @@ public class ChangeData {
       if (kindType == KindType.RelationOnly) {
          return getArtifactsRelationOnly(modificationType);
       }
-      Set<Artifact> artifacts = new HashSet<Artifact>();
-      Collection<ModificationType> modTypes = Collections.getAggregate(modificationType);
-      if (modTypes.size() == 0) {
-         throw new OseeCoreException("ModificationType must be specified");
-      }
-      if (kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation || kindType == KindType.Relation) {
-         if (changes != null) {
-            for (Change change : changes) {
-               if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && change instanceof ArtifactChange) {
-                  if (modTypes.contains(change.getModificationType())) {
-                     artifacts.add(change.getDelta().getEndArtifact());
-                  }
-               }
-               //
-               else if ((kindType == KindType.Relation || kindType == KindType.ArtifactOrRelation) && change instanceof RelationChange) {
-                  if (modTypes.contains(change.getModificationType())) {
-                     artifacts.add(change.getDelta().getEndArtifact());
 
+      Collection<ModificationType> modTypes = Collections.getAggregate(modificationType);
+      Conditions.checkExpressionFailOnTrue(modTypes.isEmpty(), "ModificationType must be specified");
+
+      Set<Artifact> artifacts = new HashSet<Artifact>();
+      if (kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation || kindType == KindType.Relation) {
+         if (!isEmpty()) {
+            for (Change change : changes) {
+               Artifact artifact = change.getChangeArtifact();
+
+               ModificationType modType = change.getModificationType();
+               if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && change instanceof ArtifactChange) {
+                  if (modTypes.contains(modType)) {
+                     artifacts.add(artifact);
+                  }
+               } else if ((kindType == KindType.Relation || kindType == KindType.ArtifactOrRelation) && change instanceof RelationChange) {
+                  if (modTypes.contains(modType)) {
+                     artifacts.add(artifact);
                      RelationChange relChange = (RelationChange) change;
                      artifacts.add(relChange.getEndTxBArtifact());
                   }
@@ -113,13 +118,14 @@ public class ChangeData {
          StringBuilder sb = new StringBuilder();
          for (KindType kindType : KindType.values()) {
             for (ModificationType modificationType : ModificationType.values()) {
-               sb.append("Kind: " + kindType + " ModType: " + modificationType.getDisplayName() + " Num: " + getArtifacts(
-                     kindType, modificationType).size() + "\n");
+               Collection<Artifact> artifacts = getArtifacts(kindType, modificationType);
+               sb.append(String.format("Kind: %s ModType: %s Num: %s\n", kindType, modificationType.getDisplayName(),
+                     artifacts.size()));
             }
          }
          return sb.toString();
       } catch (OseeCoreException ex) {
-         return ex.getLocalizedMessage();
+         return ex.toString();
       }
    }
 }

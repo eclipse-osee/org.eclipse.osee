@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -27,6 +30,7 @@ import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -61,6 +65,9 @@ public final class TransactionManager {
 
    private static final String SELECT_TRANSACTION_COMMENTS =
          "SELECT transaction_id FROM osee_tx_details WHERE osee_comment LIKE ?";
+
+   private static final String SELECT_BRANCH_TRANSACTION_BY_DATE =
+         "SELECT * FROM osee_tx_details WHERE branch_id = ? AND time < ? ORDER BY time DESC";
 
    private static final HashMap<IArtifact, List<TransactionRecord>> commitArtifactMap =
          new HashMap<IArtifact, List<TransactionRecord>>();
@@ -133,7 +140,7 @@ public final class TransactionManager {
     * the next time it's accessed. This is provided for remote event commits. All other updates to cache should be
     * performed through cacheCommittedArtifactTransaction.
     */
-   public static void clearCommitArtifactCacheForAssociatedArtifact(IArtifact associatedArtifact) throws OseeCoreException {
+   public static void clearCommitArtifactCacheForAssociatedArtifact(IArtifact associatedArtifact) {
       if (associatedArtifact != null) {
          commitArtifactMap.remove(associatedArtifact);
       }
@@ -219,6 +226,33 @@ public final class TransactionManager {
          chStmt.close();
       }
       return priorTransactionId;
+   }
+
+   public static TransactionRecord getTransactionAtDate(IOseeBranch branch, Date maxDateExclusive) throws OseeCoreException {
+      Conditions.checkNotNull(branch, "branch");
+      Conditions.checkNotNull(maxDateExclusive, "max date exclusive");
+      int branchId = BranchManager.getBranchId(branch);
+
+      TransactionRecord txRecord = null;
+
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         chStmt.runPreparedQuery(SELECT_BRANCH_TRANSACTION_BY_DATE, branchId, new Timestamp(maxDateExclusive.getTime()));
+         if (chStmt.next()) {
+            int transactionId = chStmt.getInt("transaction_id");
+            if (chStmt.wasNull()) {
+               DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
+               String message =
+                     String.format("Cannot find transaction for [%s] - the transation id was null",
+                           dateFormat.format(maxDateExclusive));
+               throw new TransactionDoesNotExist(message);
+            }
+            txRecord = getTransactionId(transactionId, chStmt);
+         }
+      } finally {
+         chStmt.close();
+      }
+      return txRecord;
    }
 
    public static TransactionRecord getTransactionId(int transactionNumber) throws OseeCoreException {

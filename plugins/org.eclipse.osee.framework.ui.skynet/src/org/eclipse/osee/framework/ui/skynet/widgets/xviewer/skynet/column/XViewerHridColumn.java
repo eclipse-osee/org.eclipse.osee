@@ -53,7 +53,7 @@ public class XViewerHridColumn extends XViewerValueColumn {
          if (element instanceof Artifact) {
             return ((Artifact) element).getHumanReadableId();
          } else if (element instanceof Change) {
-            return ((Change) element).getDelta().getStartArtifact().getHumanReadableId();
+            return ((Change) element).getChangeArtifact().getHumanReadableId();
          }
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);

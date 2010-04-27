@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -61,10 +62,10 @@ public class ViewWordChangeAndDiffTest {
       return BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
    }
 
-   public static Collection<Change> getChanges(Branch testBranch) throws OseeCoreException {
+   private static Collection<Change> getChanges(Branch testBranch) throws OseeCoreException {
       Collection<Change> changes = new ArrayList<Change>();
       IOperation operation = ChangeManager.comparedToParent(testBranch, changes);
-      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), 1.0);
+      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1.0);
       return changes;
    }
 
@@ -92,7 +93,7 @@ public class ViewWordChangeAndDiffTest {
    @org.junit.Test
    public void testSingleNativeDiff() throws Exception {
       Collection<Change> changes = getChanges(getTestBranch());
-      Artifact artifact = changes.iterator().next().getDelta().getEndArtifact();
+      Artifact artifact = changes.iterator().next().getChangeArtifact();
 
       checkPermissions(Collections.singletonList(artifact));
 
@@ -114,10 +115,11 @@ public class ViewWordChangeAndDiffTest {
 
       checkPermissions(artifacts);
       try {
+         TransactionDelta txDelta = changes.iterator().next().getTxDelta();
          Artifact newerArtifact = loadHistorical(artifacts.get(0));
          Artifact baseArtifact = loadHistorical(artifacts.get(1));
 
-         RendererManager.diff(new ArtifactDelta(baseArtifact, newerArtifact), false);
+         RendererManager.diff(new ArtifactDelta(txDelta, baseArtifact, newerArtifact), false);
 
          assertTrue("Compare Two Artifacts test passed", true);
       } catch (Exception ex) {
@@ -138,7 +140,7 @@ public class ViewWordChangeAndDiffTest {
    private static ArrayList<Artifact> asArtifacts(Collection<Change> changes) {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
       for (Change artifactChange : changes) {
-         arts.add(artifactChange.getDelta().getEndArtifact());
+         arts.add(artifactChange.getChangeArtifact());
       }
       return arts;
    }

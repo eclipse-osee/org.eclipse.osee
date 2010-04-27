@@ -67,7 +67,7 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * Displays persisted changes made to an artifact.
- *
+ * 
  * @author Jeff C. Phillips
  */
 public class HistoryView extends ViewPart implements IActionable, IBranchEventListener, IRebuildMenuListener {
@@ -168,7 +168,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       Menu popupMenu = new Menu(xHistoryWidget.getXViewer().getTree().getParent());
       createOpenWithMenuItem(popupMenu);
       createChangeReportMenuItem(popupMenu);
-      ArtifactDiffMenu.createDiffMenuItem(popupMenu, xHistoryWidget.getXViewer(), "Compare two Artifacts", null);
+      ArtifactDiffMenu.createDiffMenuItem(popupMenu, xHistoryWidget.getXViewer(), "Compare two Artifacts");
 
       // Setup generic xviewer menu items
       XViewerCustomMenu xMenu = new XViewerCustomMenu(xHistoryWidget.getXViewer());

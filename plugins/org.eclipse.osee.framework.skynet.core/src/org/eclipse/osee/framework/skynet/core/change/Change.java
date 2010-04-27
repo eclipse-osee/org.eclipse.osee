@@ -27,34 +27,40 @@ public abstract class Change implements IAdaptable {
    private final int artId;
    private final TransactionDelta txDelta;
    private final ArtifactDelta artifactDelta;
-   private ModificationType modType;
+   private final ModificationType modType;
    private final IOseeBranch branch;
-   private final ArtifactType artifactType;
    private final boolean isHistorical;
+   private final Artifact changeArtifact;
 
-   public Change(IOseeBranch branch, ArtifactType artifactType, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, ArtifactDelta artifactDelta) {
+   public Change(IOseeBranch branch, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       super();
       this.branch = branch;
       this.sourceGamma = sourceGamma;
       this.artId = artId;
       this.txDelta = txDelta;
       this.modType = modType;
-      this.artifactType = artifactType;
       this.isHistorical = isHistorical;
       this.artifactDelta = artifactDelta;
+      this.changeArtifact = changeArtifact;
    }
 
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof Change) {
          Change change = (Change) obj;
-         return change.getArtId() == getArtId() &&
+         boolean areDeltasEqual = false;
+         if (change.getDelta() != null && getDelta() != null) {
+            areDeltasEqual = change.getDelta().equals(getDelta());
+         } else if (change.getDelta() == null && getDelta() == null) {
+            areDeltasEqual = true;
+         }
+         return areDeltasEqual && change.getArtId() == getArtId() &&
          //
          change.getGamma() == getGamma() &&
          //
          change.getBranch() == getBranch() &&
          //
-         change.getDelta().equals(getDelta()) &&
+         change.getChangeArtifact().equals(getChangeArtifact()) &&
          //
          change.getModificationType() == getModificationType();
       }
@@ -67,6 +73,7 @@ public abstract class Change implements IAdaptable {
       hashCode += 13 * getArtId();
       hashCode += 13 * getGamma();
       hashCode += getBranch() != null ? 13 * getBranch().hashCode() : 0;
+      hashCode += getChangeArtifact() != null ? 13 * getChangeArtifact().hashCode() : 0;
       hashCode += getDelta() != null ? 13 * getDelta().hashCode() : 0;
       hashCode += getModificationType() != null ? 13 * getModificationType().hashCode() : 0;
       return hashCode;
@@ -76,13 +83,6 @@ public abstract class Change implements IAdaptable {
       return isHistorical;
    }
 
-   public void setModType(ModificationType modType) {
-      this.modType = modType;
-   }
-
-   /**
-    * @return the modification type (New, Modified, Deleted)
-    */
    public ModificationType getModificationType() {
       return modType;
    }
@@ -91,12 +91,12 @@ public abstract class Change implements IAdaptable {
       return artifactDelta;
    }
 
-   protected Artifact getSourceArtifact() {
-      return artifactDelta.getStartArtifact();
+   public Artifact getChangeArtifact() {
+      return changeArtifact;
    }
 
    public String getArtifactName() {
-      return getSourceArtifact().getName();
+      return getChangeArtifact().getName();
    }
 
    public long getGamma() {
@@ -111,16 +111,10 @@ public abstract class Change implements IAdaptable {
       return txDelta;
    }
 
-   /**
-    * For an artifact change this is the artifact type id. For an attribute this is the attribute type id. For a
-    * relation this is the relation type id.
-    * 
-    * @return typeId
-    */
    public abstract int getItemTypeId();
 
    public ArtifactType getArtifactType() {
-      return artifactType;
+      return getChangeArtifact().getArtifactType();
    }
 
    public IOseeBranch getBranch() {
@@ -138,4 +132,20 @@ public abstract class Change implements IAdaptable {
    public abstract String getItemKind();
 
    public abstract int getItemId();
+
+   @SuppressWarnings("unchecked")
+   public Object getAdapter(Class adapter) {
+      if (adapter == null) {
+         throw new IllegalArgumentException("adapter can not be null");
+      }
+
+      if (adapter.isInstance(getChangeArtifact())) {
+         return getChangeArtifact();
+      } else if (isHistorical() && adapter.isInstance(getTxDelta().getEndTx())) {
+         return getTxDelta().getEndTx();
+      } else if (adapter.isInstance(this)) {
+         return this;
+      }
+      return null;
+   }
 }

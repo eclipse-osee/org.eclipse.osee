@@ -13,15 +13,15 @@ package org.eclipse.osee.framework.skynet.core.change;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Jeff C. Phillips
  */
 public final class ArtifactChange extends Change {
 
-   public ArtifactChange(IOseeBranch branch, ArtifactType artType, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, ArtifactDelta artifactDelta) {
-      super(branch, artType, sourceGamma, artId, txDelta, modType, isHistorical, artifactDelta);
+   public ArtifactChange(IOseeBranch branch, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+      super(branch, sourceGamma, artId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
    }
 
    @Override
@@ -37,23 +37,6 @@ public final class ArtifactChange extends Change {
    @Override
    public String getIsValue() {
       return "";
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public Object getAdapter(Class adapter) {
-      if (adapter == null) {
-         throw new IllegalArgumentException("adapter can not be null");
-      }
-
-      if (adapter.isInstance(getSourceArtifact())) {
-         return getSourceArtifact();
-      } else if (adapter.isInstance(getTxDelta().getEndTx()) && isHistorical()) {
-         return getTxDelta().getEndTx();
-      } else if (adapter.isInstance(this)) {
-         return this;
-      }
-      return null;
    }
 
    @Override

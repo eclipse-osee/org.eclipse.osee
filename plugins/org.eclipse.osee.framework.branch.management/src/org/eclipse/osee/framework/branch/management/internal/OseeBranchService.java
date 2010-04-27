@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.change.ComputeNetChangeOperation;
-import org.eclipse.osee.framework.branch.management.change.LoadChangeDataOperation;
+import org.eclipse.osee.framework.branch.management.change.LoadDeltasBetweenBranches;
+import org.eclipse.osee.framework.branch.management.change.LoadDeltasBetweenTxsOnTheSameBranch;
 import org.eclipse.osee.framework.branch.management.commit.CommitDbOperation;
 import org.eclipse.osee.framework.branch.management.creation.CreateBranchOperation;
 import org.eclipse.osee.framework.branch.management.purge.PurgeBranchOperation;
@@ -88,7 +89,7 @@ public class OseeBranchService implements IOseeBranchService {
       List<ChangeItem> changes = new ArrayList<ChangeItem>();
 
       List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, txDelta, mergeTx, changes));
+      ops.add(new LoadDeltasBetweenBranches(oseeDatabaseProvider, txDelta, mergeTx, changes));
       ops.add(new ComputeNetChangeOperation(changes));
       ops.add(new CommitDbOperation(oseeDatabaseProvider, branchCache, userId, sourceBranch, destinationBranch,
             mergeBranch, changes, response, modelFactory));
@@ -124,10 +125,10 @@ public class OseeBranchService implements IOseeBranchService {
 
       List<IOperation> ops = new ArrayList<IOperation>();
       if (txDelta.areOnTheSameBranch()) {
-         ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, txDelta, response.getChangeItems()));
+         ops.add(new LoadDeltasBetweenTxsOnTheSameBranch(oseeDatabaseProvider, txDelta, response.getChangeItems()));
       } else {
          TransactionRecord mergeTx = getMergeTransaction(srcTx, destTx);
-         ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, txDelta, mergeTx, response.getChangeItems()));
+         ops.add(new LoadDeltasBetweenBranches(oseeDatabaseProvider, txDelta, mergeTx, response.getChangeItems()));
       }
       ops.add(new ComputeNetChangeOperation(response.getChangeItems()));
       ops.add(new AddArtifactChangeData(response.getChangeItems()));

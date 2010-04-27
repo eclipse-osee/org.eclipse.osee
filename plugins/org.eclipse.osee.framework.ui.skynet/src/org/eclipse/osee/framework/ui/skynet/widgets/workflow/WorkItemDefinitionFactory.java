@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -164,7 +165,7 @@ public class WorkItemDefinitionFactory {
 
    public static WorkItemDefinition getWorkItemDefinition(String id) throws OseeCoreException {
       if (id == null) {
-         throw new IllegalStateException("WorkItemDefinition id can't be null");
+         throw new OseeStateException("WorkItemDefinition id can't be null");
       }
       loadDefinitions();
       WorkItemDefinition wid = itemIdToDefinition.get(id);
@@ -178,7 +179,7 @@ public class WorkItemDefinitionFactory {
 
    public static Artifact getWorkItemDefinitionArtifact(String id) throws OseeCoreException {
       if (id == null) {
-         throw new IllegalStateException("WorkItemDefinition id can't be null");
+         throw new OseeStateException("WorkItemDefinition id can't be null");
       }
       loadDefinitions();
       Artifact art = itemIdToWidArtifact.get(id);

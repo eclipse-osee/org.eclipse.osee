@@ -100,6 +100,7 @@ public final class ChangeManager {
     */
    public static IOperation comparedToParent(IOseeBranch sourceBranch, Collection<Change> changes) throws OseeCoreException {
       Branch branch = BranchManager.getBranch(sourceBranch);
+
       TransactionRecord startTx = TransactionManager.getHeadTransaction(branch);
       TransactionRecord endTx = TransactionManager.getHeadTransaction(branch.getParentBranch());
 

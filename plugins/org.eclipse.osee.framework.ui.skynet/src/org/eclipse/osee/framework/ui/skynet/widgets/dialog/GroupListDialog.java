@@ -38,7 +38,7 @@ public class GroupListDialog extends ArtifactListDialog {
    BranchSelectComposite branchSelect;
 
    public GroupListDialog(Shell parent) {
-      super(parent, null);
+      super(parent);
       setTitle("Select group");
       setMessage("Select group");
       setLabelProvider(new GroupsDescriptiveLabelProvider());

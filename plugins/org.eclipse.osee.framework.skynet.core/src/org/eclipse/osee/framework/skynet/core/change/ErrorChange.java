@@ -6,29 +6,27 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TransactionDelta;
-import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.ArtifactType;
 
 /**
  * @author Megumi Telles
  */
-public class ErrorChange extends Change {
-   final static String ERROR_STRING = "!Error - ";
-   private String exception = "";
+public final class ErrorChange extends Change {
+   private static final String ERROR_STRING = "!Error -";
 
-   public ErrorChange(IOseeBranch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, ArtifactDelta artifactDelta) {
-      super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical, artifactDelta);
-   }
+   private final String errorMessage;
+   private final String name;
 
    public ErrorChange(IOseeBranch branch, int artId, String exception) {
-      this(branch, null, 0, artId, null, null, false, null);
-      this.exception = exception;
+      super(branch, 0, artId, null, null, false, null, null);
+      this.errorMessage = String.format("%s %s", ERROR_STRING, exception);
+      this.name =
+            String.format("%s ArtID: %s BranchGuid: %s - %s", ERROR_STRING, getArtId(),
+                  (branch == null ? null : branch.getGuid()), exception);
    }
 
    @Override
    public String getIsValue() {
-      return ERROR_STRING + exception;
+      return errorMessage;
    }
 
    @Override
@@ -38,7 +36,7 @@ public class ErrorChange extends Change {
 
    @Override
    public String getItemKind() {
-      return ERROR_STRING + exception;
+      return errorMessage;
    }
 
    @Override
@@ -48,17 +46,17 @@ public class ErrorChange extends Change {
 
    @Override
    public String getItemTypeName() {
-      return ERROR_STRING + exception;
+      return errorMessage;
    }
 
    @Override
    public String getName() {
-      return ERROR_STRING + "ArtID: " + getArtId() + " BranchGuid: " + (getBranch() == null ? null : getBranch().getGuid()) + ": " + exception;
+      return name;
    }
 
    @Override
    public String getWasValue() {
-      return ERROR_STRING + exception;
+      return errorMessage;
    }
 
    @SuppressWarnings("unchecked")

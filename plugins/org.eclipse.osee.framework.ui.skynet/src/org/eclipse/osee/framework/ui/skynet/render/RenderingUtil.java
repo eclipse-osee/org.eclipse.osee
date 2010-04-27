@@ -12,15 +12,18 @@ import java.util.Set;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 
@@ -42,6 +45,37 @@ public final class RenderingUtil {
 
    public static boolean arePopupsAllowed() {
       return arePopupsAllowed;
+   }
+
+   public static Pair<Artifact, Artifact> asRenderInput(ArtifactDelta delta) {
+      Artifact artFile1;
+      Artifact artFile2;
+
+      if (delta.getTxDelta() == null || !delta.getTxDelta().areOnTheSameBranch()) {
+         // Assumptions - when comparing data between transactions on different branches, the start artifact will never be null;
+         ModificationType startModType = delta.getStartArtifact().getModType();
+         if (startModType.isDeleted()) {
+            artFile1 = delta.getStartArtifact();
+            artFile2 = null;
+         } else if ((startModType == ModificationType.INTRODUCED || startModType == ModificationType.NEW) && delta.getEndArtifact() == null) {
+            artFile1 = null;
+            artFile2 = delta.getStartArtifact();
+         } else {
+            artFile1 = delta.getStartArtifact();
+            artFile2 = delta.getEndArtifact();
+         }
+      } else {
+         // Assumptions - when comparing data between transactions on the same branch, the end artifact will never be null;
+         ModificationType modType = delta.getEndArtifact().getModType();
+         if (modType.isDeleted()) {
+            artFile1 = delta.getStartArtifact();
+            artFile2 = null;
+         } else {
+            artFile1 = delta.getStartArtifact();
+            artFile2 = delta.getEndArtifact();
+         }
+      }
+      return new Pair<Artifact, Artifact>(artFile1, artFile2);
    }
 
    public static String getFilenameFromArtifact(FileSystemRenderer renderer, Artifact artifact, PresentationType presentationType) throws OseeCoreException {

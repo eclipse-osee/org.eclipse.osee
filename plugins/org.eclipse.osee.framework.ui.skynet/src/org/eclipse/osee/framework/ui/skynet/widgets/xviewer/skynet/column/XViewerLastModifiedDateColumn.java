@@ -52,7 +52,7 @@ public class XViewerLastModifiedDateColumn extends XViewerValueColumn {
          if (element instanceof Artifact) {
             return XDate.getDateStr(((Artifact) element).getLastModified(), XDate.MMDDYYHHMM);
          } else if (element instanceof Change) {
-            Date date = ((Change) element).getDelta().getStartArtifact().getLastModified();
+            Date date = ((Change) element).getChangeArtifact().getLastModified();
             return XDate.getDateStr(date, XDate.MMDDYYHHMM);
          }
       } catch (OseeCoreException ex) {

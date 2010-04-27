@@ -56,8 +56,7 @@ public class SingleNativeDiffHandler extends CommandHandler {
             changes = new ArrayList<Change>(Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
 
             if (changes.size() == 1) {
-               ArtifactDelta delta = changes.iterator().next().getDelta();
-               Artifact sampleArtifact = delta.getStartArtifact();
+               Artifact sampleArtifact = changes.iterator().next().getChangeArtifact();
                enabled = AccessControlManager.hasPermission(sampleArtifact, PermissionEnum.READ);
             }
          }

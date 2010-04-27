@@ -49,7 +49,7 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
             return ((Artifact) element).getAttributesToString(attributeTypeName);
          }
          if (element instanceof Change) {
-            return ((Change) element).getDelta().getEndArtifact().getAttributesToString(attributeTypeName);
+            return ((Change) element).getChangeArtifact().getAttributesToString(attributeTypeName);
          }
          if (element instanceof Conflict) {
             return ((Conflict) element).getArtifact().getAttributesToString(attributeTypeName);

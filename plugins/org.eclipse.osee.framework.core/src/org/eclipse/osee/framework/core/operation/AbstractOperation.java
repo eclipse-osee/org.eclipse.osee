@@ -160,20 +160,7 @@ public abstract class AbstractOperation implements IOperation {
     * @throws OperationCanceledException
     */
    protected void checkForCancelledStatus(IProgressMonitor monitor) throws OperationCanceledException {
-      if (monitor.isCanceled()) {
-         boolean wasCancelled = false;
-         IStatus[] children = this.status.getChildren();
-         for (int i = 0; i < children.length; i++) {
-            Throwable exception = children[i].getException();
-            if (exception instanceof OperationCanceledException) {
-               wasCancelled = true;
-               break;
-            }
-         }
-         if (!wasCancelled) {
-            throw new OperationCanceledException("Cancelled");
-         }
-      }
+      Operations.checkForCancelledStatus(monitor, getStatus());
    }
 
    @Override

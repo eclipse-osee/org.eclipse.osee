@@ -11,15 +11,11 @@
 
 package org.eclipse.osee.framework.skynet.core.change;
 
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.RelationType;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Jeff C. Phillips
@@ -31,34 +27,13 @@ public final class RelationChange extends Change {
    private final String rationale;
    private final RelationType relationType;
 
-   public RelationChange(IOseeBranch branch, ArtifactType aArtType, long sourceGamma, int aArtId, TransactionDelta txDelta, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, ArtifactDelta artifactDelta, Artifact endTxBArtifact) {
-      super(branch, aArtType, sourceGamma, aArtId, txDelta, modType, isHistorical, artifactDelta);
+   public RelationChange(IOseeBranch branch, long sourceGamma, int aArtId, TransactionDelta txDelta, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta, Artifact endTxBArtifact) {
+      super(branch, sourceGamma, aArtId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
       this.rationale = rationale;
       this.relationType = relationType;
       this.endTxBArtifact = endTxBArtifact;
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public Object getAdapter(Class adapter) {
-      if (adapter == null) {
-         throw new IllegalArgumentException("adapter can not be null");
-      }
-
-      try {
-         if (adapter.isInstance(getSourceArtifact())) {
-            return getSourceArtifact();
-         } else if (adapter.isInstance(getTxDelta().getEndTx()) && isHistorical()) {
-            return getTxDelta().getEndTx();
-         } else if (adapter.isInstance(this)) {
-            return this;
-         }
-      } catch (IllegalArgumentException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return null;
    }
 
    /**

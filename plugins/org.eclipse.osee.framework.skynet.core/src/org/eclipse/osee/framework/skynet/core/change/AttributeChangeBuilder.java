@@ -48,8 +48,8 @@ public final class AttributeChangeBuilder extends ChangeBuilder {
 
    @Override
    public Change build(Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      return new AttributeChange(branch, getArtifactType(), getSourceGamma(), getArtId(), getTxDelta(), getModType(),
-            isValue, wasValue, attrId, attributeType, artModType, isHistorical(), new ArtifactDelta(loadArtifact(),
-                  null));
+      return new AttributeChange(branch, getSourceGamma(), getArtId(), getTxDelta(), getModType(), isValue, wasValue,
+            attrId, attributeType, artModType, isHistorical(), loadArtifact(), new ArtifactDelta(getTxDelta(),
+                  loadArtifact(), null));
    }
 }

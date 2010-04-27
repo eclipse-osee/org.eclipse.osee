@@ -270,14 +270,11 @@ public class RendererManager {
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, String fileName, boolean show) throws OseeStateException, OseeCoreException {
-      return merge(baseVersion, newerVersion, null, fileName, show);
-   }
-
-   public static String merge(Artifact baseVersion, Artifact newerVersion, IProgressMonitor monitor, String fileName, boolean show) throws OseeStateException, OseeCoreException {
       VariableMap variableMap = new VariableMap("fileName", fileName);
       IRenderer renderer = getBestRenderer(PresentationType.MERGE, baseVersion, variableMap);
       IComparator comparator = renderer.getComparator();
-      return comparator.compare(monitor, PresentationType.MERGE, new ArtifactDelta(baseVersion, newerVersion), show);
+      ArtifactDelta delta = new ArtifactDelta(null, baseVersion, newerVersion);
+      return comparator.compare(new NullProgressMonitor(), PresentationType.MERGE, delta, show);
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, boolean show) throws OseeCoreException {

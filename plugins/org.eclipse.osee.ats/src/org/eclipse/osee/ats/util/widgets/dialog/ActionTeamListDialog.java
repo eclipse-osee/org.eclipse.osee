@@ -41,13 +41,14 @@ public class ActionTeamListDialog extends ArtifactListDialog {
    boolean showAction = false;
 
    public ActionTeamListDialog(Active active) {
-      super(Display.getCurrent().getActiveShell(), null);
+      super(Display.getCurrent().getActiveShell());
       setTitle("Select Team(s)");
       setMessage("Select Team(s)");
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
       try {
-         for (Artifact prod : TeamDefinitionArtifact.getTeamDefinitions(active))
+         for (Artifact prod : TeamDefinitionArtifact.getTeamDefinitions(active)) {
             arts.add(prod);
+         }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't Load product list.");
       }

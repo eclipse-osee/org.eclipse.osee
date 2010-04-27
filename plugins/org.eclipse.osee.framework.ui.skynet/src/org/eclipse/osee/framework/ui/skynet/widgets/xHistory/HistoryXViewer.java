@@ -44,7 +44,9 @@ public class HistoryXViewer extends XViewer {
    @Override
    public void handleDoubleClick() {
       try {
-         if (getSelectedChanges().size() == 0) return;
+         if (getSelectedChanges().size() == 0) {
+            return;
+         }
 
          Artifact artifact = getSelectedChanges().iterator().next();
 
@@ -71,10 +73,10 @@ public class HistoryXViewer extends XViewer {
       if (items.length > 0) {
          for (TreeItem item : items) {
             Artifact artifact = null;
-            if(item.getData() instanceof IAdaptable){
-               artifact = (Artifact)((IAdaptable)item.getData()).getAdapter(Artifact.class);
-               
-               if(artifact != null){
+            if (item.getData() instanceof IAdaptable) {
+               artifact = (Artifact) ((IAdaptable) item.getData()).getAdapter(Artifact.class);
+
+               if (artifact != null) {
                   arts.add(artifact);
                }
             }
@@ -99,6 +101,7 @@ public class HistoryXViewer extends XViewer {
       });
    }
 
+   @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
       mm.insertBefore(MENU_GROUP_PRE, new Separator());

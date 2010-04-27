@@ -67,7 +67,7 @@ public class XChangeTextFilter extends XViewerTextFilter {
       for (Object object : changes) {
          if (object instanceof ArtifactChange) {
             ArtifactChange artifactChanged = (ArtifactChange) object;
-            Artifact artifact = artifactChanged.getDelta().getEndArtifact();
+            Artifact artifact = artifactChanged.getChangeArtifact();
             if (artifact != null) {
                artifacts.add(artifact);
                artifactToChangeMap.put(artifact, artifactChanged);

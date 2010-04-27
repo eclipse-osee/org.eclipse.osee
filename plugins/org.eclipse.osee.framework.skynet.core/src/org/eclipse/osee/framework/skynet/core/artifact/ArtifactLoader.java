@@ -90,15 +90,20 @@ public final class ArtifactLoader {
 
    private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
       try {
+         OseeSql sqlKey;
+         if (historical) {
+            sqlKey = OseeSql.LOAD_HISTORICAL_ARTIFACTS;
+         } else if (allowDeleted) {
+            sqlKey = OseeSql.LOAD_CURRENT_ARTIFACTS_WITH_DELETED;
+         } else {
+            sqlKey = OseeSql.LOAD_CURRENT_ARTIFACTS;
+         }
+
          IOseeStatement chStmt = ConnectionHandler.getStatement();
+
          String sql = null;
          try {
-            if (historical) {
-               sql = ClientSessionManager.getSql(OseeSql.LOAD_HISTORICAL_ARTIFACTS);
-            } else {
-               sql =
-                     allowDeleted ? ClientSessionManager.getSql(OseeSql.LOAD_CURRENT_ARTIFACTS_WITH_DELETED) : ClientSessionManager.getSql(OseeSql.LOAD_CURRENT_ARTIFACTS);
-            }
+            sql = ClientSessionManager.getSql(sqlKey);
             chStmt.runPreparedQuery(fetchSize, sql, queryId);
 
             int previousArtId = -1;
@@ -117,7 +122,8 @@ public final class ArtifactLoader {
                previousBranchId = branchId;
             }
          } catch (OseeDataStoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, sql == null ? "SQL unknown" : sql, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, String.format("%s - %s", sqlKey,
+                  sql == null ? "SQL unknown" : sql), ex);
             throw ex;
          } finally {
             chStmt.close();
@@ -361,21 +367,19 @@ public final class ArtifactLoader {
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
+         OseeSql sqlKey;
          if (historical) {
-            chStmt.runPreparedQuery(artifacts.size() * 8,
-                  ClientSessionManager.getSql(OseeSql.LOAD_HISTORICAL_ATTRIBUTES), queryId);
+            sqlKey = OseeSql.LOAD_HISTORICAL_ATTRIBUTES;
+         } else if (loadLevel == ArtifactLoad.ALL_CURRENT) {
+            sqlKey = OseeSql.LOAD_ALL_CURRENT_ATTRIBUTES;
+         } else if (allowDeletedArtifacts) {
+            sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES_WITH_DELETED;
          } else {
-            String sql;
-
-            if (loadLevel == ArtifactLoad.ALL_CURRENT) {
-               sql = ClientSessionManager.getSql(OseeSql.LOAD_ALL_CURRENT_ATTRIBUTES);
-            } else {
-               sql =
-                     allowDeletedArtifacts ? ClientSessionManager.getSql(OseeSql.LOAD_CURRENT_ATTRIBUTES_WITH_DELETED) : ClientSessionManager.getSql(OseeSql.LOAD_CURRENT_ATTRIBUTES);
-            }
-
-            chStmt.runPreparedQuery(artifacts.size() * 8, sql, queryId);
+            sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES;
          }
+
+         String sql = ClientSessionManager.getSql(sqlKey);
+         chStmt.runPreparedQuery(artifacts.size() * 8, sql, queryId);
 
          Artifact artifact = null;
          int previousArtifactId = -1;
@@ -460,11 +464,9 @@ public final class ArtifactLoader {
    }
 
    private static void setLastAttributePersistTransaction(Artifact artifact, List<Integer> transactionNumbers) {
-      int maxTransactionId = -1;
+      int maxTransactionId = Integer.MIN_VALUE;
       for (Integer transactionId : transactionNumbers) {
-         if (transactionId > maxTransactionId) {
-            maxTransactionId = transactionId;
-         }
+         maxTransactionId = Math.max(maxTransactionId, transactionId);
       }
       artifact.setTransactionId(maxTransactionId);
    }

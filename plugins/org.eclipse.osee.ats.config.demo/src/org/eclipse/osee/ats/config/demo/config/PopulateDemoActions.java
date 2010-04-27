@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -284,9 +285,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       DemoDbUtil.sleep(2000L);
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Committing branch");
-      reqTeam.getBranchMgr().commitWorkingBranch(false, true, reqTeam.getTargetedForVersion().getParentBranch(), true,
-            true);
-
+      Job job =
+            reqTeam.getBranchMgr().commitWorkingBranch(false, true, reqTeam.getTargetedForVersion().getParentBranch(),
+                  true);
+      try {
+         job.join();
+      } catch (InterruptedException ex) {
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Completing Action");
+      }
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Completing Action");
    }
 

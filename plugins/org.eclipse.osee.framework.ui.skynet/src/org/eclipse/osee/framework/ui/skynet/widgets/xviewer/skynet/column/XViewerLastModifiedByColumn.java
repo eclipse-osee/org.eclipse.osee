@@ -51,7 +51,7 @@ public class XViewerLastModifiedByColumn extends XViewerValueColumn {
          if (element instanceof Artifact) {
             return ((Artifact) element).getLastModifiedBy().toString();
          } else if (element instanceof Change) {
-            User user = ((Change) element).getDelta().getStartArtifact().getLastModifiedBy();
+            User user = ((Change) element).getChangeArtifact().getLastModifiedBy();
             return user.toString();
          }
       } catch (OseeCoreException ex) {

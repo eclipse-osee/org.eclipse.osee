@@ -16,7 +16,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.config.AtsConfigManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
@@ -30,12 +30,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition.TransitionType;
@@ -82,7 +79,8 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          if (startingWorkflow.contains("Simple")) {
             workflow = generateSimpleWorkflow(namespace, transaction, null).getWorkDefinition();
          } else {
-            workflow = generateDefaultWorkflow(namespace, transaction, null).getWorkDefinition();
+            WorkflowData workflowData = AtsConfigManager.generateDefaultWorkflow(namespace, transaction, null);
+            workflow = workflowData.getWorkDefinition();
          }
          transaction.execute();
 
@@ -116,46 +114,6 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
       public Artifact getWorkFlowArtifact() {
          return workFlowArtifact;
       }
-   }
-
-   public static WorkflowData generateDefaultWorkflow(String namespace, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
-      // Duplicate default workflow artifact w/ namespace changes
-      Artifact defaultWorkflow = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact("osee.ats.teamWorkflow");
-      Artifact newWorkflowArt = defaultWorkflow.duplicate(AtsUtil.getAtsBranch());
-      for (Attribute<?> attr : newWorkflowArt.getAttributes()) {
-         if (attr instanceof StringAttribute) {
-            attr.setFromString(attr.getDisplayableString().replaceAll("osee.ats.teamWorkflow", namespace));
-         }
-      }
-
-      AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(newWorkflowArt, transaction);
-      newWorkflowArt.persist(transaction);
-
-      // Duplicate work pages w/ namespace changes
-      for (DefaultTeamState state : DefaultTeamState.values()) {
-         Artifact defaultStateArt =
-               WorkItemDefinitionFactory.getWorkItemDefinitionArtifact("osee.ats.teamWorkflow." + state.name());
-         Artifact newStateArt = defaultStateArt.duplicate(AtsUtil.getAtsBranch());
-         for (Attribute<?> attr : newStateArt.getAttributes()) {
-            if (attr instanceof StringAttribute) {
-               attr.setFromString(attr.getDisplayableString().replaceAll("osee.ats.teamWorkflow", namespace));
-            }
-         }
-         if (state == DefaultTeamState.Completed || state == DefaultTeamState.Cancelled) {
-            newStateArt.setSoleAttributeFromString(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(),
-                  "osee.ats.teamWorkflow." + state.name());
-         }
-
-         // Add same relations as default work pages to new work pages (widgets and rules)
-         for (Artifact art : defaultStateArt.getRelatedArtifacts(CoreRelationTypes.WorkItem__Child)) {
-            newStateArt.addRelation(CoreRelationTypes.WorkItem__Child, art);
-         }
-
-         AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(newStateArt, transaction);
-         newStateArt.persist(transaction);
-      }
-      return new WorkflowData(new WorkFlowDefinition(newWorkflowArt), newWorkflowArt);
-
    }
 
    public static WorkflowData generateSimpleWorkflow(String namespace, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {

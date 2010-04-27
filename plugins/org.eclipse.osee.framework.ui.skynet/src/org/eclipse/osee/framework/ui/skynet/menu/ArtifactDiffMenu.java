@@ -12,12 +12,15 @@ package org.eclipse.osee.framework.ui.skynet.menu;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.swt.SWT;
@@ -31,93 +34,117 @@ import org.eclipse.swt.widgets.MenuItem;
 /**
  * @author Jeff C. Phillips
  */
-public class ArtifactDiffMenu {
+public final class ArtifactDiffMenu {
 
-   public enum DiffTypes {
-      CONFLICT,
-      PARENT
+   private ArtifactDiffMenu() {
    }
 
-   private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
-   private static boolean validSelection;
-   private static Object firstSelection;
-   private static Object secondSelection;
-
-   public static void createDiffMenuItem(Menu parentMenu, final Viewer viewer, String subMenuText, final DiffTypes diffType) {
-      final MenuItem diffMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
+   public static void createDiffMenuItem(Menu parentMenu, Viewer viewer, String subMenuText) {
+      MenuItem diffMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
       diffMenuItem.setText(subMenuText);
-      diffMenuItem.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(SelectionEvent ev) {
-            try {
-               processSelectedArtifacts(DIFF_ARTIFACT, viewer, diffType);
-            } catch (Exception ex) {
-            }
-         }
-      });
-
-      parentMenu.addMenuListener(new MenuListener() {
-
-         public void menuHidden(MenuEvent e) {
-         }
-
-         public void menuShown(MenuEvent e) {
-            validSelection = false;
-
-            IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-
-            if (!selection.isEmpty()) {
-               if (selection.size() == 2) {
-                  validSelection = validateTransactionData(viewer, selection);
-               }
-            }
-            diffMenuItem.setEnabled(validSelection);
-         }
-      });
+      diffMenuItem.addSelectionListener(new SelectionListener(viewer));
+      parentMenu.addMenuListener(new CompareMenuListener(viewer, diffMenuItem));
    }
 
-   private static boolean validateTransactionData(Viewer viewer, IStructuredSelection selection) {
-      boolean valid = false;
-      Object[] selections = selection.toArray();
+   private static final class CompareMenuListener implements MenuListener {
+      private final Viewer viewer;
+      private final MenuItem diffMenuItem;
 
-      if (selections[1] instanceof Change && selections[0] instanceof Change) {
+      public CompareMenuListener(Viewer viewer, MenuItem diffMenuItem) {
+         super();
+         this.diffMenuItem = diffMenuItem;
+         this.viewer = viewer;
+      }
+
+      public void menuHidden(MenuEvent e) {
+      }
+
+      public void menuShown(MenuEvent e) {
+         boolean isValidSelection = false;
+
+         IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+         if (selection.size() == 2) {
+            isValidSelection = true;
+            for (Object object : selection.toArray()) {
+               isValidSelection &= isComparable(object);
+            }
+         }
+         diffMenuItem.setEnabled(isValidSelection);
+      }
+
+      private boolean isComparable(Object object) {
+         boolean isValidSelection = false;
+         if (object instanceof Change) {
+            Change change = (Change) object;
+            try {
+               Artifact toCheck = change.getChangeArtifact();
+               if (toCheck != null) {
+                  FileSystemRenderer renderer = RendererManager.getBestFileRenderer(PresentationType.DIFF, toCheck);
+                  isValidSelection = renderer.supportsCompare();
+               }
+            } catch (OseeCoreException ex) {
+            }
+         }
+         return isValidSelection;
+      }
+   }
+
+   private static final class SelectionListener extends SelectionAdapter {
+      private final Viewer viewer;
+
+      public SelectionListener(Viewer viewer) {
+         super();
+         this.viewer = viewer;
+      }
+
+      @Override
+      public void widgetSelected(SelectionEvent ev) {
          try {
-            valid =
-                  RendererManager.getBestFileRenderer(PresentationType.DIFF,
-                        ((Change) selections[0]).getDelta().getEndArtifact()).supportsCompare();
-         } catch (OseeCoreException ex) {
+            processSelectedArtifacts();
+         } catch (Exception ex) {
          }
       }
-      return valid;
-   }
 
-   private static void processSelectedArtifacts(String option, Viewer viewer, DiffTypes type) throws Exception {
-      IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-      Artifact newerArtifact = null;
-      Artifact baselineArtifact = null;
-
-      if (selection.size() == 2) {
-         Object[] selections = selection.toArray();
-         firstSelection = selections[0];
-         secondSelection = selections[1];
-
-         if (firstSelection instanceof Change && secondSelection instanceof Change) {
-
-            Change firstChange = (Change) firstSelection;
-            Change secondChange = (Change) secondSelection;
-            TransactionRecord firstTransactionId = firstChange.getTxDelta().getStartTx();
-            TransactionRecord secondTransactionId = secondChange.getTxDelta().getStartTx();
-
-            if (firstTransactionId.getId() < secondTransactionId.getId()) {
-               firstTransactionId = secondChange.getTxDelta().getStartTx();
-               secondTransactionId = firstChange.getTxDelta().getStartTx();
+      private void processSelectedArtifacts() throws Exception {
+         IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+         if (selection.size() == 2) {
+            Object[] selections = selection.toArray();
+            Object firstSelection = selections[0];
+            Object secondSelection = selections[1];
+            ArtifactDelta artifactDelta = asArtifactDelta(firstSelection, secondSelection);
+            if (artifactDelta != null) {
+               RendererManager.diffInJob(artifactDelta);
             }
-            newerArtifact = ArtifactQuery.getHistoricalArtifactFromId(firstChange.getArtId(), firstTransactionId, true);
-            baselineArtifact =
-                  ArtifactQuery.getHistoricalArtifactFromId(firstChange.getArtId(), secondTransactionId, true);
-            RendererManager.diffInJob(new ArtifactDelta(baselineArtifact, newerArtifact));
          }
+      }
+
+      private ArtifactDelta asArtifactDelta(Object first, Object second) throws OseeCoreException {
+         ArtifactDelta toReturn = null;
+         if (first instanceof Change && second instanceof Change) {
+            Change firstChange = (Change) first;
+            Change secondChange = (Change) second;
+
+            Conditions.checkExpressionFailOnTrue(firstChange.getArtId() != secondChange.getArtId(),
+                  "Change art ids don't match [%s:%s]", firstChange.getArtId(), secondChange.getArtId());
+
+            int artId = firstChange.getArtId();
+            TransactionDelta txDelta = asTxDelta(firstChange, secondChange);
+
+            Artifact startArtifact = ArtifactQuery.getHistoricalArtifactFromId(artId, txDelta.getStartTx(), true);
+            Artifact endArtifact = ArtifactQuery.getHistoricalArtifactFromId(artId, txDelta.getEndTx(), true);
+            toReturn = new ArtifactDelta(txDelta, startArtifact, endArtifact);
+         }
+         return toReturn;
+      }
+
+      private TransactionDelta asTxDelta(Change first, Change second) {
+         TransactionRecord startTx = first.getTxDelta().getStartTx();
+         TransactionRecord endTx = second.getTxDelta().getStartTx();
+         if (startTx.getId() < endTx.getId()) {
+            startTx = second.getTxDelta().getStartTx();
+            endTx = first.getTxDelta().getStartTx();
+         }
+         return new TransactionDelta(startTx, endTx);
       }
 
    }

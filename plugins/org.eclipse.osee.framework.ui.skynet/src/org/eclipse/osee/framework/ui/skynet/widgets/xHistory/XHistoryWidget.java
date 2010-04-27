@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -68,9 +67,6 @@ public class XHistoryWidget extends XWidget implements IActionable {
    private ToolBar toolBar;
    private Composite rightComp;
 
-   /**
-    * @param label
-    */
    public XHistoryWidget() {
       super("History");
    }
@@ -93,11 +89,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
          toolkit.paintBordersFor(mainComp);
       }
 
-      try {
-         createTaskActionBar(mainComp);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
+      createTaskActionBar(mainComp);
 
       xHistoryViewer = new HistoryXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
       xHistoryViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -105,11 +97,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
       xHistoryViewer.setContentProvider(new XHistoryContentProvider(xHistoryViewer));
       xHistoryViewer.setLabelProvider(new XHistoryLabelProvider(xHistoryViewer));
 
-      try {
-         createToolBar();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
+      createToolBar();
 
       if (toolkit != null) {
          toolkit.adapt(xHistoryViewer.getStatusLabel(), false, false);
@@ -126,7 +114,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
       new HistoryDragAndDrop(tree, HistoryXViewerFactory.NAMESPACE);
    }
 
-   public void createTaskActionBar(Composite parent) throws OseeCoreException {
+   public void createTaskActionBar(Composite parent) {
 
       // Button composite for state transitions, etc
       Composite bComp = new Composite(parent, SWT.NONE);
@@ -147,7 +135,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
       rightComp.setLayoutData(new GridData(GridData.END));
    }
 
-   public void createToolBar() throws OseeCoreException {
+   public void createToolBar() {
 
       toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -164,7 +152,8 @@ public class XHistoryWidget extends XWidget implements IActionable {
          }
       });
 
-      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, HistoryView.VIEW_ID, "Hisotry");
+      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, HistoryView.VIEW_ID,
+            "Hisotry");
 
       new ActionContributionItem(xHistoryViewer.getCustomizeAction()).fill(toolBar, -1);
 

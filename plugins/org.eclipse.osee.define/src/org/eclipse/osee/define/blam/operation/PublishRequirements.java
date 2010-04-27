@@ -22,13 +22,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
@@ -51,9 +52,6 @@ import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
  * @author Theron Virgin
  */
 public class PublishRequirements extends AbstractBlam {
-   private static final String SELECT_BRANCH_TRANSACTION =
-         "SELECT transaction_id FROM osee_tx_details WHERE branch_id = ? AND time < ? ORDER BY time DESC";
-
    private boolean includeAttributes;
    private boolean publishAsDiff;
    //private boolean removeTrackedChanges;
@@ -106,9 +104,12 @@ public class PublishRequirements extends AbstractBlam {
             new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber,
                   ITemplateRenderer.TEMPLATE_OPTION, templateOption, ITemplateRenderer.TRANSACTION_OPTION, transaction,
                   "linkType", linkType, "inPublishMode", true);
+      TransactionRecord endTx = TransactionManager.getTransactionAtDate(branch, date);
+      TransactionDelta txDelta = new TransactionDelta(branch.getBaseTransaction(), endTx);
+
       for (Artifact artifact : artifacts) {
          try {
-            publish(monitor, artifact, options);
+            publish(monitor, artifact, options, txDelta);
          } catch (OseeStateException ex) {
             OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
          }
@@ -116,26 +117,7 @@ public class PublishRequirements extends AbstractBlam {
       transaction.execute();
    }
 
-   private static int getBranchTransaction(Date date, int branchId) throws OseeCoreException {
-      int transactionId = -1;
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
-
-      if (date == null) {
-         throw new OseeCoreException("Must select a valid Date");
-      }
-      try {
-         chStmt.runPreparedQuery(SELECT_BRANCH_TRANSACTION, branchId, new Timestamp(date.getTime()));
-
-         if (chStmt.next()) {
-            transactionId = chStmt.getInt("transaction_id");
-         }
-      } finally {
-         chStmt.close();
-      }
-      return transactionId;
-   }
-
-   private void publish(IProgressMonitor monitor, Artifact artifact, VariableMap options) throws OseeCoreException {
+   private void publish(IProgressMonitor monitor, Artifact artifact, VariableMap options, TransactionDelta txDelta) throws OseeCoreException {
       if (monitor.isCanceled()) {
          return;
       }
@@ -144,7 +126,7 @@ public class PublishRequirements extends AbstractBlam {
       if (artifact.isOfType("Folder")) {
          for (Artifact child : artifact.getChildren(publishAsDiff)) {
             if (child.isOfType("Folder")) {
-               publish(monitor, child, options);
+               publish(monitor, child, options, txDelta);
             } else {
                nonFolderChildren.add(child);
             }
@@ -159,8 +141,8 @@ public class PublishRequirements extends AbstractBlam {
                   "Must Select a " + branch == null ? "Branch" : "Date" + " to diff against when publishing as Diff");
          }
          nonFolderChildren = buildRecursiveList(nonFolderChildren);
-         int transactionId = getBranchTransaction(date, branch.getId());
-         ArrayList<Artifact> olderArtifacts = getOlderArtifacts(nonFolderChildren, transactionId, branch.getId());
+         ArrayList<Artifact> olderArtifacts =
+               getOlderArtifacts(nonFolderChildren, txDelta.getEndTx().getId(), branch.getId());
 
          Collection<ArtifactDelta> compareItems = new ArrayList<ArtifactDelta>();
          for (int index = 0; index < olderArtifacts.size() && index < nonFolderChildren.size(); index++) {
@@ -172,7 +154,7 @@ public class PublishRequirements extends AbstractBlam {
             if (isDeleted(newer)) {
                newer = null;
             }
-            compareItems.add(new ArtifactDelta(base, newer));
+            compareItems.add(new ArtifactDelta(txDelta, base, newer));
          }
          RendererManager.diffInJob(compareItems, options);
       } else {
