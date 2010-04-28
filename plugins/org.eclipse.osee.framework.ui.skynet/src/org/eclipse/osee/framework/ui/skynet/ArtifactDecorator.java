@@ -186,9 +186,9 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
 
       if (manager != null) {
          manager.add(attributesAction);
+         manager.add(new Separator());
+         manager.add(saveSettingsAction);
       }
-      manager.add(new Separator());
-      manager.add(saveSettingsAction);
 
       loadState();
    }
