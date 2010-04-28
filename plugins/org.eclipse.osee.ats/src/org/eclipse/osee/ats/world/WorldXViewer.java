@@ -234,8 +234,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       OseeEventManager.addListener(this);
    }
 
-   Action editStatusAction, editNotesAction, editEstimateAction, editChangeTypeAction, editPriorityAction,
-         editTargetVersionAction, editAssigneeAction, editActionableItemsAction;
+   Action editStatusAction, editNotesAction, editResolutionAction, editEstimateAction, editChangeTypeAction,
+         editPriorityAction, editTargetVersionAction, editAssigneeAction, editActionableItemsAction;
    ConvertActionableItemsAction convertActionableItemsAction;
    Action openInAtsWorldEditorAction, openInAtsTaskEditorAction;
    OpenInAtsWorkflowEditor openInAtsWorkflowEditorAction;
@@ -264,6 +264,20 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             try {
                if (PromptChangeUtil.promptChangeAttribute(getSelectedSMAArtifacts(), ATSAttributes.SMA_NOTE_ATTRIBUTE,
                      true, true)) {
+                  update(getSelectedSMAArtifacts().toArray(), null);
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      };
+
+      editResolutionAction = new Action("Edit Resolution", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            try {
+               if (PromptChangeUtil.promptChangeAttribute(getSelectedSMAArtifacts(),
+                     ATSAttributes.RESOLUTION_ATTRIBUTE, true, true)) {
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
             } catch (OseeCoreException ex) {
@@ -638,6 +652,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       mm.insertBefore(MENU_GROUP_PRE, editEstimateAction);
       editEstimateAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
 
+      mm.insertBefore(MENU_GROUP_PRE, editResolutionAction);
+      editResolutionAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
+
       mm.insertBefore(MENU_GROUP_PRE, editNotesAction);
       editNotesAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
 
@@ -994,6 +1011,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
                   PromptChangeUtil.promptChangeAttribute(sma, ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Category_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, ATSAttributes.CATEGORY_ATTRIBUTE, persist, true);
+         } else if (xCol.equals(WorldXViewerFactory.Resolution_Col)) {
+            modified = PromptChangeUtil.promptChangeAttribute(sma, ATSAttributes.RESOLUTION_ATTRIBUTE, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Category2_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, ATSAttributes.CATEGORY2_ATTRIBUTE, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Category3_Col)) {

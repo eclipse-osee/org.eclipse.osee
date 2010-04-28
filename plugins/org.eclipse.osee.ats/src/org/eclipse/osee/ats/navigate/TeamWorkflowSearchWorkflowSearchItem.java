@@ -103,6 +103,10 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       Collection<Artifact> artifacts =
             new TeamWorldSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCancelledCheckbox(), false,
                   false, getSelectedVersionArtifact(), getSelectedUser(), getSelectedReleased()).performSearchGetResults(false);
+      return filterShowFlat(artifacts);
+   }
+
+   protected Collection<? extends Artifact> filterShowFlat(Collection<Artifact> artifacts) throws OseeCoreException {
       if (!isShowFlatCheckbox()) {
          return artifacts;
       }
@@ -138,7 +142,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       if (isIncludeCompletedCancelledCheckbox()) {
          sb.append(" - Include Completed/Cancelled");
       }
-      return Strings.truncate("Team Workflows" + sb.toString(), WorldEditor.TITLE_MAX_LENGTH, true);
+      return Strings.truncate(getName() + sb.toString(), WorldEditor.TITLE_MAX_LENGTH, true);
    }
 
    @Override
@@ -194,7 +198,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   private User getSelectedUser() {
+   protected User getSelectedUser() {
       if (assigneeCombo == null) return null;
       return assigneeCombo.getUser();
    }
@@ -203,7 +207,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       if (assigneeCombo != null) assigneeCombo.set(user);
    }
 
-   private boolean isIncludeCompletedCancelledCheckbox() {
+   protected boolean isIncludeCompletedCancelledCheckbox() {
       if (includeCompletedCancelledCheckbox == null) return false;
       return includeCompletedCancelledCheckbox.isSelected();
    }
@@ -212,7 +216,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       if (includeCompletedCancelledCheckbox != null) includeCompletedCancelledCheckbox.set(selected);
    }
 
-   private boolean isShowFlatCheckbox() {
+   protected boolean isShowFlatCheckbox() {
       if (showFlatCheckbox == null) return false;
       return showFlatCheckbox.isSelected();
    }
@@ -221,7 +225,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       if (showFlatCheckbox != null) showFlatCheckbox.set(selected);
    }
 
-   private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
+   protected VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) return null;
       String versionStr = versionCombo.get();
       if (versionStr == null || versionStr.equals("")) return null;
@@ -259,7 +263,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   private ReleasedOption getSelectedReleased() throws OseeCoreException {
+   protected ReleasedOption getSelectedReleased() throws OseeCoreException {
       if (releasedCombo == null || releasedCombo.get() == null || releasedCombo.get().equals("")) {
          return ReleasedOption.Both;
       }

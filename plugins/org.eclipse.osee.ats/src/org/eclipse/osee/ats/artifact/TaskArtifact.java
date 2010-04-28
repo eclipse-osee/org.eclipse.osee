@@ -359,4 +359,9 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    public boolean hasAtsWorldChildren() throws OseeCoreException {
       return false;
    }
+
+   @Override
+   public String getPcrId() throws OseeCoreException {
+      return getParentTeamWorkflow().getPcrId();
+   }
 }
