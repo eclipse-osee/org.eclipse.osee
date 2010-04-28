@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
@@ -42,7 +41,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Donald G. Dunne
  */
-public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable {
+public class ResultsEditor extends AbstractArtifactEditor implements IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.results.ResultsEditor";
    private Integer startPage = null;
 
@@ -56,7 +55,7 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
          List<IResultsEditorTab> tabs = provider.getResultsEditorTabs();
          if (tabs.isEmpty()) {
             tabs.add(new ResultsEditorHtmlTab("Error", "Error",
-                  AHTML.simplePage("Error: Pages creation error for \"" + provider.getEditorName() + "\"")));
+                  AHTML.simplePage("Error: No tabs were defined for \"" + provider.getEditorName() + "\"")));
          }
          for (IResultsEditorTab tab : provider.getResultsEditorTabs()) {
             addResultsTab(tab);
@@ -191,11 +190,11 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
             IWorkbenchPage page = AWorkbench.getActivePage();
             try {
                ResultsEditorInput input = new ResultsEditorInput(provider);
-//               try {
-//                  Thread.sleep(5000);
-//               } catch (InterruptedException ex) {
-//                  ex.printStackTrace();
-//               }
+               //               try {
+               //                  Thread.sleep(5000);
+               //               } catch (InterruptedException ex) {
+               //                  ex.printStackTrace();
+               //               }
                page.openEditor(input, EDITOR_ID);
             } catch (PartInitException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
