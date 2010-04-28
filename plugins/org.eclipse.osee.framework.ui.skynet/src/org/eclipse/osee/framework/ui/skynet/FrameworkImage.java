@@ -138,6 +138,7 @@ public enum FrameworkImage implements KeyedImage {
    RECTANGLE_24("rectangle24.gif"),
    RELATION("relate.gif"),
    RELOAD("reload.gif"),
+   RES("res.gif"),
    REMOVE("remove.gif"),
    REMOVE_ALL("removeAll.gif"),
    REPORT("report.gif"),

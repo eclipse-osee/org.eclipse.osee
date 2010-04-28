@@ -80,8 +80,7 @@
     <xsd:element name="modTypeGuid" type="xsd:string"/>
     <xsd:element name="attributeId" type="xsd:int"/>
     <xsd:element name="gammaId" type="xsd:int"/>
-    <xsd:element name="was" type="xsd:string"/>
-    <xsd:element name="is" type="xsd:string"/>
+    <xsd:element name="data" type="xsd:string" maxOccurs="unbounded" minOccurs="1"/>
   </xsd:sequence>
 </xsd:complexType>
 

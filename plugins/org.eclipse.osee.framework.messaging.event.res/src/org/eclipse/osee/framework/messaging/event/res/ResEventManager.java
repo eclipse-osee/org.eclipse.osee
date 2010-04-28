@@ -75,7 +75,8 @@ public class ResEventManager implements OseeMessagingStatusCallback {
    }
 
    public void sendRemoteEvent(ResMessages resMessage, RemoteEvent remoteEvent) throws Exception {
-      System.out.println(String.format(getClass().getSimpleName() + " - sending [%s]", remoteEvent));
+      System.out.println(String.format(getClass().getSimpleName() + " - sending [%s]",
+            remoteEvent.getClass().getSimpleName()));
       if (connectionNode != null) {
          connectionNode.send(resMessage, remoteEvent, instance);
       }

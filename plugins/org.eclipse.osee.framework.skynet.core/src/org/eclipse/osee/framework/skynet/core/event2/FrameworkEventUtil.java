@@ -129,6 +129,18 @@ public class FrameworkEventUtil {
       return guidArt;
    }
 
+   public static AttributeChange getAttributeChange(RemoteAttributeChange1 remAttrChg) {
+      AttributeChange attrChg = new AttributeChange();
+      attrChg.setAttributeId(remAttrChg.getAttributeId());
+      attrChg.setGammaId(remAttrChg.getGammaId());
+      attrChg.setAttrTypeGuid(remAttrChg.getAttrTypeGuid());
+      attrChg.setModTypeGuid(remAttrChg.getModTypeGuid());
+      for (String data : remAttrChg.getData()) {
+         attrChg.getData().add(data);
+      }
+      return attrChg;
+   }
+
    public static RemoteBasicModifiedGuidArtifact1 getBasicModifiedGuidArtifact(BasicModifiedGuidArtifact guidArt) {
       RemoteBasicModifiedGuidArtifact1 remoteGuidArt = new RemoteBasicModifiedGuidArtifact1();
       remoteGuidArt.setArtGuid(guidArt.getArtGuid());
@@ -140,25 +152,15 @@ public class FrameworkEventUtil {
       return remoteGuidArt;
    }
 
-   public static AttributeChange getAttributeChange(RemoteAttributeChange1 remAttrChg) {
-      AttributeChange attrChg = new AttributeChange();
-      attrChg.setAttributeId(remAttrChg.getAttributeId());
-      attrChg.setGammaId(remAttrChg.getGammaId());
-      attrChg.setAttrTypeGuid(remAttrChg.getAttrTypeGuid());
-      attrChg.setModTypeGuid(remAttrChg.getModTypeGuid());
-      attrChg.setIs(remAttrChg.getIs());
-      attrChg.setWas(remAttrChg.getWas());
-      return attrChg;
-   }
-
    public static RemoteAttributeChange1 getRemoteAttributeChange(AttributeChange attrChg) {
       RemoteAttributeChange1 remAttrChg = new RemoteAttributeChange1();
       remAttrChg.setAttributeId(attrChg.getAttributeId());
       remAttrChg.setGammaId(attrChg.getGammaId());
       remAttrChg.setAttrTypeGuid(attrChg.getAttrTypeGuid());
       remAttrChg.setModTypeGuid(attrChg.getModTypeGuid());
-      remAttrChg.setIs(attrChg.getIs());
-      remAttrChg.setWas(attrChg.getWas());
+      for (String data : attrChg.getData()) {
+         remAttrChg.getData().add(data);
+      }
       return remAttrChg;
    }
 

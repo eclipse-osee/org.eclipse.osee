@@ -71,6 +71,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
@@ -1637,8 +1638,17 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
             change.setGammaId(attribute.getGammaId());
             change.setAttributeId(attribute.getId());
             change.setModTypeGuid(AttributeEventModificationType.getType(attribute.getModificationType()).getGuid());
-            change.setIs(attribute.getAttributeDataProvider().getData().toString());
-            // TODO change.setWas()
+            for (Object obj : attribute.getAttributeDataProvider().getData()) {
+               if (obj == null) {
+                  change.getData().add((String) "");
+               } else if (obj instanceof String) {
+                  change.getData().add((String) obj);
+               } else {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE,
+                        "Unhandled data type " + obj.getClass().getSimpleName());
+               }
+            }
+            dirtyAttributes.add(change);
          }
       }
       return dirtyAttributes;

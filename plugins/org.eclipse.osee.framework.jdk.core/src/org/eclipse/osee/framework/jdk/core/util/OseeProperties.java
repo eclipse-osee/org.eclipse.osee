@@ -25,7 +25,6 @@ public class OseeProperties {
    private static final String OSEE_LOG_DEFAULT = "osee.log.default";
    private static final String OSEE_JINI_SERVICE_GROUPS = "osee.jini.lookup.groups";
    private static final String OSEE_JINI_FORCED_REGGIE_SEARCH = "osee.jini.forced.reggie.search";
-   private static final String OSEE_IS_IN_TEST = "osee.isInTest";
    private static final String OSEE_PORT_SCAN_START_PORT = "osee.port.scanner.start.port";
 
    public static final String OSEE_DB_CONNECTION_ID = "osee.db.connection.id";
@@ -127,6 +126,14 @@ public class OseeProperties {
     */
    public static void setIsInTest(boolean isInTest) {
       System.setProperty("osee.isInTest", String.valueOf(isInTest));
+   }
+
+   public static boolean isNewEvents() {
+      return Boolean.valueOf(System.getProperty("osee.isNewEvents"));
+   }
+
+   public static void setNewEvents(boolean enabled) {
+      System.setProperty("osee.isNewEvents", String.valueOf(enabled));
    }
 
    private void toStringHelper(List<String> list, Class<?> clazz) {
