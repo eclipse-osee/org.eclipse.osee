@@ -11,12 +11,17 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
@@ -51,6 +56,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    private XCombo versionCombo = null;
    private XMembersCombo assigneeCombo;
    private XCheckBox includeCompletedCancelledCheckbox;
+   private XCheckBox showFlatCheckbox;
 
    public TeamWorkflowSearchWorkflowSearchItem(String name) throws OseeArgumentException {
       super(name, AtsImage.TEAM_WORKFLOW);
@@ -79,7 +85,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       //
       "<XWidget xwidgetType=\"XHyperlabelTeamDefinitionSelection\" displayName=\"Team Definitions(s)\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget xwidgetType=\"XCombo()\" beginComposite=\"8\" displayName=\"Version\" horizontalLabel=\"true\"/>" +
+      "<XWidget xwidgetType=\"XCombo()\" beginComposite=\"10\" displayName=\"Version\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget xwidgetType=\"XCombo(Both,Released,UnReleased)\" displayName=\"Released\" horizontalLabel=\"true\"/>" +
       //
@@ -87,13 +93,29 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       //
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
+      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Show Flat\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\" toolTip=\"Show Tasks/Reviews flattened instead of hierarchcial\"/>" +
+      //
       "</xWidgets>";
    }
 
    @Override
    public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
-      return new TeamWorldSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCancelledCheckbox(), false,
-            false, getSelectedVersionArtifact(), getSelectedUser(), getSelectedReleased()).performSearchGetResults(false);
+      Collection<Artifact> artifacts =
+            new TeamWorldSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCancelledCheckbox(), false,
+                  false, getSelectedVersionArtifact(), getSelectedUser(), getSelectedReleased()).performSearchGetResults(false);
+      if (!isShowFlatCheckbox()) {
+         return artifacts;
+      }
+      Set<Artifact> results = new HashSet<Artifact>(artifacts);
+      for (Artifact artifact : artifacts) {
+         if (artifact instanceof TaskableStateMachineArtifact) {
+            results.addAll(((TaskableStateMachineArtifact) artifact).getTaskArtifacts());
+         }
+         if (artifact instanceof TeamWorkFlowArtifact) {
+            results.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) artifact));
+         }
+      }
+      return results;
    }
 
    @Override
@@ -126,6 +148,9 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
       if (widget.getLabel().equals("Include Completed/Cancelled")) {
          includeCompletedCancelledCheckbox = (XCheckBox) widget;
+      }
+      if (widget.getLabel().equals("Show Flat")) {
+         showFlatCheckbox = (XCheckBox) widget;
       }
       if (widget.getLabel().equals("Version")) {
          versionCombo = (XCombo) widget;
@@ -185,6 +210,15 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
 
    public void includeCompletedCancelledCheckbox(boolean selected) {
       if (includeCompletedCancelledCheckbox != null) includeCompletedCancelledCheckbox.set(selected);
+   }
+
+   private boolean isShowFlatCheckbox() {
+      if (showFlatCheckbox == null) return false;
+      return showFlatCheckbox.isSelected();
+   }
+
+   public void includeShowFlatCheckbox(boolean selected) {
+      if (showFlatCheckbox != null) showFlatCheckbox.set(selected);
    }
 
    private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
