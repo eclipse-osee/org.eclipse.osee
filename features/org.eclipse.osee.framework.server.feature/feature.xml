@@ -25,7 +25,7 @@
       <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.jobs" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="com.lowagie.text" version="1.5.4" match="greaterOrEqual"/>
+      <import plugin="com.lowagie.text" version="2.1.7" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.eclipse.equinox.app"/>
       <import plugin="javax.servlet"/>

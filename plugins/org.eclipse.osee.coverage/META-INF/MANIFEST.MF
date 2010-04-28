@@ -27,8 +27,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.core;bundle-version="0.9.1",
  org.eclipse.osee.framework.messaging;bundle-version="0.9.4"
 Bundle-ActivationPolicy: lazy
-Import-Package: com.lowagie.text;version="1.5.4",
- com.lowagie.text.pdf;version="1.5.4",
+Import-Package: com.lowagie.text;version="2.1.7",
+ com.lowagie.text.pdf;version="2.1.7",
  org.apache.commons.lang;version="2.4.0",
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.data,

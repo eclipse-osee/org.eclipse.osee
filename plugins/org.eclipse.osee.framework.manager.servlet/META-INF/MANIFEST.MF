@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.manager.servlet;singleton:=true
 Bundle-Version: 0.9.4.qualifier
 Bundle-Activator: org.eclipse.osee.framework.manager.servlet.internal.Activator
 Bundle-ActivationPolicy: lazy
-Import-Package: com.lowagie.text,
+Import-Package: com.lowagie.text;version="2.1.7",
  javax.servlet,
  javax.servlet.http,
  org.eclipse.core.runtime,

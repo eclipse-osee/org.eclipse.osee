@@ -49,7 +49,7 @@
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.update.core"/>
       <import plugin="org.eclipse.zest.core"/>
-      <import plugin="com.lowagie.text"/>
+      <import plugin="com.lowagie.text" version="2.1.7" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.lang"/>
       <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.nebula.widgets.calendarcombo"/>

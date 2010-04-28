@@ -24,7 +24,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.Table;
 import com.lowagie.text.html.HtmlWriter;
-import com.lowagie.text.markup.WebColors;
+import com.lowagie.text.html.WebColors;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.rtf.RtfWriter2;

@@ -6,11 +6,10 @@ Bundle-Version: 0.9.4.qualifier
 Bundle-Activator: org.eclipse.osee.framework.core.internal.Activator
 Bundle-Vendor: Eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.lowagie.text,
- com.lowagie.text.html,
- com.lowagie.text.markup,
- com.lowagie.text.pdf,
- com.lowagie.text.rtf,
+Import-Package: com.lowagie.text;version="2.1.7",
+ com.lowagie.text.html;version="2.1.7",
+ com.lowagie.text.pdf;version="2.1.7",
+ com.lowagie.text.rtf;version="2.1.7",
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
  org.eclipse.osee.framework.jdk.core.type,

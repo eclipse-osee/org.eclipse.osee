@@ -1,7 +1,7 @@
 feature@org.eclipse.osee.external.feature=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,features/org.eclipse.osee.external.feature
 
 plugin@net.jini=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/net.jini
-plugin@com.lowagie.text,1.5.4=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/com.lowagie.text_1.5.4.v200908052355.jar
+plugin@com.lowagie.text,2.1.7=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20100427010814/bundles/com.lowagie.text_2.1.7.v201004222200.jar
 plugin@javax.activation,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/javax.activation_1.1.0.v200905021805.jar
 plugin@javax.mail.glassfish,1.4.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/javax.mail.glassfish_1.4.1.v200808130215.jar
 plugin@javax.servlet,2.5.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/javax.servlet_2.5.0.v200806031605.jar

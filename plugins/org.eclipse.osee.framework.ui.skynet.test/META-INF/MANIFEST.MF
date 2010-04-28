@@ -7,8 +7,8 @@ Fragment-Host: org.eclipse.osee.framework.ui.skynet
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.framework.ui.skynet.test,
  org.eclipse.osee.framework.ui.skynet.test.cases
-Import-Package: com.lowagie.text.pdf,
- com.lowagie.text.rtf,
+Import-Package: com.lowagie.text.pdf;version="2.1.7",
+ com.lowagie.text.rtf;version="2.1.7",
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.test.mocks,
  org.eclipse.osee.framework.jdk.core.util.windows,

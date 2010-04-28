@@ -32,7 +32,7 @@ Export-Package: org.eclipse.osee.ote.ui.define,
  org.eclipse.osee.ote.ui.define.views
 Bundle-Vendor: Eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.lowagie.text,
+Import-Package: com.lowagie.text;version="2.1.7",
  org.apache.commons.lang;version="2.4.0",
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server,
