@@ -30,6 +30,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.StringDataSource;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -337,7 +338,7 @@ public class OseeEmail extends MimeMessage {
    private static Session getSession() throws OseeCoreException {
       Properties props = System.getProperties();
       props.put(emailType, OseeSystemArtifacts.getGlobalPreferenceArtifact().getSoleAttributeValue(
-            "osee.config.Default Mail Server"));
+            CoreAttributeTypes.DEFAULT_MAIL_SERVER));
 
       return Session.getDefaultInstance(props, null);
    }
