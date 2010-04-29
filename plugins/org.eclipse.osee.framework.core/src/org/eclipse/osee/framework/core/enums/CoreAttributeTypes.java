@@ -19,6 +19,8 @@ import org.eclipse.osee.framework.core.data.NamedIdentity;
 public class CoreAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final CoreAttributeTypes Active = new CoreAttributeTypes("AAMFEbImQyR38BY8A5QA", "Active");
    public static final CoreAttributeTypes Annotation = new CoreAttributeTypes("AAMFEcWy0xc4e3tcemQA", "Annotation");
+   public static final CoreAttributeTypes DEFAULT_MAIL_SERVER =
+         new CoreAttributeTypes("ABMuIC3FejpGilonfAgA", "osee.config.Default Mail Server");
    public static final CoreAttributeTypes EMAIL = new CoreAttributeTypes("AAMFEbaZjEVoecDFCCQA", "Email");
    public static final CoreAttributeTypes FAVORITE_BRANCH =
          new CoreAttributeTypes("AAMFEbMnzS7P92knZKAA", "Favorite Branch");
@@ -47,8 +49,7 @@ public class CoreAttributeTypes extends NamedIdentity implements IAttributeType 
    public static final CoreAttributeTypes USER_ID = new CoreAttributeTypes("AAMFEbKl8RCQr17bDAQA", "User Id");
    public static final CoreAttributeTypes VERIFICATION_LEVEL =
          new CoreAttributeTypes("AAMFEXRTkyKVIFqcMwQA", "Verification Level");
-   public static final CoreAttributeTypes STATIC_ID =
-      new CoreAttributeTypes("AAMFEcY5DUbWyuIpZVwA", "Static Id");
+   public static final CoreAttributeTypes STATIC_ID = new CoreAttributeTypes("AAMFEcY5DUbWyuIpZVwA", "Static Id");
 
    private CoreAttributeTypes(String guid, String name) {
       super(guid, name);
