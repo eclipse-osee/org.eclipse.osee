@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
@@ -73,10 +74,11 @@ public class AttributeDataStore {
          for (int index = 0; index < numberOfTags; index++) {
             codedTag.append(String.format("osee_search_tags ost%d, \n", index));
          }
+         codedTag.append("osee_attribute attr1,");
          if (useAttrTypeJoin) {
             codedTag.append(" osee_join_id idj,");
          }
-         codedTag.append(" osee_attribute attr1, osee_txs txs1 WHERE \n");
+         codedTag.append(" osee_txs txs1 WHERE \n");
 
          for (int index = 0; index < numberOfTags; index++) {
             codedTag.append(String.format("ost%d.coded_tag_id = ? and\n", index));
