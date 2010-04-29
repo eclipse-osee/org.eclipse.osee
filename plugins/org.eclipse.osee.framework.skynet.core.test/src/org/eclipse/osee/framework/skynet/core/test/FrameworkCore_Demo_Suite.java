@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.skynet.core.test.branch.BranchManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.branch.BranchTestSuite;
+import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactLoaderTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactPurgeTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactQueryTestDemo;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactTypeInheritanceTest;
@@ -42,7 +43,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {ArtifactEventManagerTest.class, ArtifactEventManagerLoopbackTest.class,
+@Suite.SuiteClasses( {ArtifactLoaderTest.class, ArtifactEventManagerTest.class, ArtifactEventManagerLoopbackTest.class,
       ArtifactQueryTestDemo.class, TransactionManagerTest.class, BranchTestSuite.class, BranchManagerTest.class,
       RelationTestSuite.class, OseeCacheTestSuite.class, ArtifactTypeInheritanceTest.class, ArtifactPurgeTest.class,
       BranchPurgeTest.class, PurgeTransactionTest.class, Artifact_setAttributeValues.class,
