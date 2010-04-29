@@ -61,8 +61,8 @@ public final class RenderingUtil {
             artFile1 = null;
             artFile2 = delta.getStartArtifact();
          } else {
-            artFile1 = delta.getStartArtifact();
-            artFile2 = delta.getEndArtifact();
+            artFile1 = delta.getEndArtifact();
+            artFile2 = delta.getStartArtifact();
          }
       } else {
          // Assumptions - when comparing data between transactions on the same branch, the end artifact will never be null;
@@ -71,8 +71,8 @@ public final class RenderingUtil {
             artFile1 = delta.getStartArtifact();
             artFile2 = null;
          } else {
-            artFile1 = delta.getStartArtifact();
-            artFile2 = delta.getEndArtifact();
+            artFile1 = delta.getEndArtifact();
+            artFile2 = delta.getStartArtifact();
          }
       }
       return new Pair<Artifact, Artifact>(artFile1, artFile2);
