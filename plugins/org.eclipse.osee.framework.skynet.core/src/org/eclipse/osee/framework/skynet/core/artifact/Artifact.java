@@ -152,7 +152,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       return historical;
    }
 
-   public Set<ArtifactAnnotation> getAnnotations() throws OseeCoreException {
+   public Set<ArtifactAnnotation> getAnnotations() {
       Set<ArtifactAnnotation> annotations = new HashSet<ArtifactAnnotation>();
       for (IArtifactAnnotation annotation : getAnnotationExtensions()) {
          annotation.getAnnotations(this, annotations);

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.annotation;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -51,29 +50,24 @@ public class AnnotationComposite extends Composite {
       setLayout(ALayout.getZeroMarginLayout(2, false));
 
       for (ArtifactAnnotation.Type type : ArtifactAnnotation.Type.getOrderedTypes()) {
-         try {
-            for (ArtifactAnnotation notify : artifact.getAnnotations()) {
-               if (notify.getType() != type) {
-                  continue;
-               }
-               if (notify.getType() == ArtifactAnnotation.Type.None) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, new OseeStateException(
-                        "None is an invalid annotation type - " + artifact.getGuid()));
-                  continue;
-               }
-               Label iconLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);
-               iconLabel.setImage(ArtifactImageManager.getAnnotationImage(notify.getType()));
-
-               Label alertLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);
-               alertLabel.setText(notify.getType().name() + ": " + notify.getContent());
+         for (ArtifactAnnotation notify : artifact.getAnnotations()) {
+            if (notify.getType() != type) {
+               continue;
             }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            if (notify.getType() == ArtifactAnnotation.Type.None) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, new OseeStateException(
+                        "None is an invalid annotation type - " + artifact.getGuid()));
+               continue;
+            }
+            Label iconLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);
+            iconLabel.setImage(ArtifactImageManager.getAnnotationImage(notify.getType()));
+
+            Label alertLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);
+            alertLabel.setText(notify.getType().name() + ": " + notify.getContent());
          }
       }
       if (toolkit != null) {
          toolkit.adapt(this);
       }
-
    }
 }
