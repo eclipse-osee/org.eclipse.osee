@@ -109,7 +109,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
                removeProducerFromCache(topic);
                sendInternal(topic, body, properties, statusCallback);
             }
-            OseeLog.log(Activator.class, Level.FINE, String.format("Sending message %s - %s", topic.getName(), topic.getGuid()));
+         //   OseeLog.log(Activator.class, Level.FINE, String.format("Sending message %s - %s", topic.getName(), topic.getGuid()));
             statusCallback.success();
          }
       } catch (JMSException ex) {
@@ -152,7 +152,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
 		   }
 		}
 		producer.send(msg);
-		OseeLog.log(Activator.class, Level.FINE, String.format("Sending message %s - %s", topic.getName(), topic.getGuid()));
+//		OseeLog.log(Activator.class, Level.FINE, String.format("Sending message %s - %s", topic.getName(), topic.getGuid()));
 		statusCallback.success();
 	}
 
