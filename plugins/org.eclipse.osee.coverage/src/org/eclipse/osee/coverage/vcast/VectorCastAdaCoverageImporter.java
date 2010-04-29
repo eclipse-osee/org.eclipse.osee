@@ -33,7 +33,9 @@ import org.eclipse.osee.coverage.vcast.VcpResultsFile.ResultsValue;
 import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -77,7 +79,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
       }
       try {
          coverageImport.addImportRecordFile(new File(
-               vectorCastCoverageImportProvider.getVCastDirectory() + "\\build_info.xml"));
+               vectorCastCoverageImportProvider.getVCastDirectory() + "\\vcast\\build_info.xml"));
       } catch (Exception ex) {
          coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
       }
@@ -242,29 +244,48 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
       }
 
       // Validate VectorCast covered/total from <unit>.xml files with imported results files above
+      coverageImport.getLog().log(
+            "\nVerifying number results files reported in vcast.vcp with vcast/results/*.dat files");
+      int numVcastVcpDatFiles = vCastVcp.getResultsFiles().size();
+      List<String> filenames =
+            Lib.readListFromDir(new File(vectorCastCoverageImportProvider.getVCastDirectory() + "\\vcast\\results\\"),
+                  new MatchFilter(".*\\.DAT"), false);
+      if (numVcastVcpDatFiles != filenames.size()) {
+         coverageImport.getLog().logError(
+               String.format("Vcast.vcp num results files [%d] doesn't match number of vcast/results/*.dat files [%d]",
+                     numVcastVcpDatFiles, filenames.size()));
+      } else {
+         coverageImport.getLog().log("Ok");
+      }
+
+      // Validate VectorCast covered/total from <unit>.xml files with imported results files above
+      coverageImport.getLog().log(
+            "\nVerifying VectorCast covered/total items from vcast/<unit>.xml with data imported from results read from vcast.vcp and results dir");
+      boolean error = false;
       for (Entry<CoverageUnit, CoverageDataSubProgram> entry : methodCoverageUnitToCoverageDataSubProgram.entrySet()) {
          CoverageUnit methodCoverageUnit = entry.getKey();
          CoverageDataSubProgram coverageDataSubProgram = entry.getValue();
-         if (methodCoverageUnit.getCoverageItems(false).size() != coverageDataSubProgram.getTotal()) {
+         int totalCoverageItems = methodCoverageUnit.getCoverageItems(false).size();
+         int coveredCoverageItems =
+               methodCoverageUnit.getCoverageItemsCovered(false, CoverageOptionManager.Test_Unit).size();
+         if (totalCoverageItems != coverageDataSubProgram.getTotal() || coveredCoverageItems != coverageDataSubProgram.getCovered()) {
             coverageImport.getLog().logError(
                   String.format(
-                        "Imported number of lines [%s] doesn't match VectorCast number of lines [%s] for coverage unit [%s]",
-                        methodCoverageUnit.getCoverageItems(false).size(), coverageDataSubProgram.getTotal(),
-                        methodCoverageUnit));
+                        "Imported covered/total items [%d/%d] doesn't match VectorCast [%d/%d] reported in .xml file for coverage unit [%s]",
+                        coveredCoverageItems, totalCoverageItems, coverageDataSubProgram.getCovered(),
+                        coverageDataSubProgram.getTotal(), methodCoverageUnit));
+            error = true;
          }
-         if (methodCoverageUnit.getCoverageItemsCovered(false, CoverageOptionManager.Test_Unit).size() != coverageDataSubProgram.getCovered()) {
-            coverageImport.getLog().logError(
-                  String.format(
-                        "Imported covered items [%s] doesn't match VectorCast covered items [%s] for coverage unit [%s]",
-                        methodCoverageUnit.getCoverageItems(false).size(), coverageDataSubProgram.getCovered(),
-                        methodCoverageUnit));
-         }
+      }
+      if (!error) {
+         coverageImport.getLog().log("Ok");
       }
 
       try {
-         coverageImport.getLog().log("\nPerforming Aggregate <-> Import Verification");
+         coverageImport.getLog().log("\nVerifying aggregate.html report with Imported results");
          // Retrieve and process Aggregate file compared with import results
          VCastAggregateReport report = new VCastAggregateReport(vectorCastCoverageImportProvider.getVCastDirectory());
+         error = false;
          for (AggregateCoverageUnitResult result : report.getResults()) {
             //            System.out.println(result);
             CoverageUnit coverageUnit = coverageNameToCoverageUnit.get(result.getName());
@@ -272,27 +293,41 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                coverageImport.getLog().logError(
                      String.format("Aggregate Check: Can't locate Coverage Unit for Aggregate unit [%s]",
                            result.getName()));
+               error = true;
             } else {
                int importCuItems = coverageUnit.getCoverageItems(true).size();
                int importCuCovered =
                      coverageUnit.getCoverageItemsCovered(true, CoverageOptionManagerDefault.Test_Unit).size();
                if ((result.getNumLines() == null || result.getNumLines() != importCuItems) || (result.getNumCovered() == null || result.getNumCovered() != importCuCovered)) {
-                  coverageImport.getLog().logError(
-                        String.format(
-                              "Aggregate Check: Unit [%s] Import [%d] of [%d] doesn't match Aggregate [%d] of [%d] [%s]",
-                              result.getName(), importCuCovered, importCuItems, result.getNumCovered(),
-                              result.getNumLines(), Strings.isValid(result.getNotes()) ? " - " + result.getNotes() : ""));
+                  // Don't display error if this is the known ignore case
+                  if (!isVectorCastIgnoreCase(result.getNotes(), importCuCovered, result.getNumCovered())) {
+                     coverageImport.getLog().logError(
+                           String.format(
+                                 "Aggregate Check: Unit [%s] Import [%d] of [%d] doesn't match Aggregate [%d] of [%d] [%s]",
+                                 result.getName(), importCuCovered, importCuItems, result.getNumCovered(),
+                                 result.getNumLines(),
+                                 Strings.isValid(result.getNotes()) ? " - " + result.getNotes() : ""));
+                     error = true;
+                  }
                }
             }
          }
-         coverageImport.getLog().log("Completed Aggregate <-> Import Verification");
-
+         if (!error) {
+            coverageImport.getLog().log("Ok");
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          coverageImport.getLog().logError("\nError Processing Aggregate File: " + ex.getLocalizedMessage());
       }
-
       return coverageImport;
+   }
+
+   /**
+    * VectorCast does not put breakout information for coverage units that have no coverage. Check for this case so we
+    * don't show lots of errors.
+    */
+   private boolean isVectorCastIgnoreCase(String notes, Integer importCuCovered, Integer aggregateNumCovered) {
+      return notes.equals("No Coverage Data Exists") && importCuCovered == 0 && aggregateNumCovered == null;
    }
 
    @Override
