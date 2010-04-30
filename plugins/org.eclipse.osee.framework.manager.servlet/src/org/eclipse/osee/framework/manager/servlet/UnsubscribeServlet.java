@@ -12,13 +12,18 @@ package org.eclipse.osee.framework.manager.servlet;
 
 import java.io.IOException;
 import java.util.logging.Level;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
@@ -28,27 +33,78 @@ import org.eclipse.osee.framework.manager.servlet.internal.Activator;
  */
 public class UnsubscribeServlet extends OseeHttpServlet {
 
-	private static final long serialVersionUID = -1515762009004235783L;
+   private static final long serialVersionUID = -1515762009004235783L;
+   private final IOseeDatabaseServiceProvider provider;
 
-	public UnsubscribeServlet(Activator activator) {
-	}
+   public UnsubscribeServlet(IOseeDatabaseServiceProvider p) {
+      provider = p;
+   }
 
-	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-	}
+   @Override
+   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      String uri = request.getRequestURI();
+      response.getWriter().append(confirmationPage(uri + "/confirm"));
+   }
 
-	private void handleError(HttpServletResponse response, int status,
-			String message, Throwable ex) throws IOException {
-		response.setStatus(status);
-		response.setContentType("text/plain");
-		OseeLog.log(Activator.class, Level.SEVERE, message, ex);
-		response.getWriter().write(Lib.exceptionToString(ex));
-	}
+   private void handleError(HttpServletResponse response, int status, String message, Throwable ex) throws IOException {
+      response.setStatus(status);
+      response.setContentType("text/plain");
+      OseeLog.log(Activator.class, Level.SEVERE, message, ex);
+      response.getWriter().write(Lib.exceptionToString(ex));
+   }
 
-	@Override
-	protected void checkAccessControl(HttpServletRequest request)
-			throws OseeCoreException {
-	}
+   @Override
+   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
+   }
 
+   private static String confirmationPage(String confirmUri) {
+      StringBuilder sb = new StringBuilder();
+      sb.append("<HTML>");
+      sb.append("<HEAD><TITLE>Unsubscribe confirmation</TITLE></HEAD>");
+      sb.append("<BODY>");
+      sb.append("<P>Are you sure you want to unsubscribe from this group?</P>");
+      sb.append("<FORM>");
+      sb.append("<BUTTON onclick=\"\">");
+      sb.append("Confirm");
+      sb.append("</BUTTON>");
+      sb.append("</FORM>");
+      sb.append("</BODY>");
+      sb.append("</HTML>");
+      return sb.toString();
+   }
+
+   @Override
+   protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+      IOperation del = new DeleteRelationTransaction(provider, "operationName", Activator.PLUGIN_ID);
+      try {
+         Operations.executeWorkAndCheckStatus(del, new LogProgressMonitor(), -1);
+         resp.getWriter().write(deleteResponse());
+      } catch (OseeCoreException ex) {
+         handleError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error unsubscribing", ex);
+      }
+   }
+
+   private static String deleteResponse() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("<HTML>");
+      sb.append("<HEAD><TITLE>Confirmed unsubscribe</TITLE></HEAD>");
+      sb.append("<BODY>");
+      sb.append("<P></P>");
+      sb.append("</BODY>");
+      sb.append("</HTML>");
+      return sb.toString();
+   }
+
+   class DeleteRelationTransaction extends AbstractDbTxOperation {
+
+      public DeleteRelationTransaction(IOseeDatabaseServiceProvider provider, String operationName, String pluginId) {
+         super(provider, operationName, pluginId);
+      }
+
+      @Override
+      protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
+         // SQL goes here
+      }
+
+   }
 }
