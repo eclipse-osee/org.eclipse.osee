@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
@@ -48,7 +48,7 @@ public class ArtifactPurgeTest {
    private Map<String, Integer> postPurgeCount;
 
    private static final List<String> tables =
-      Arrays.asList("osee_attribute", "osee_arts", "osee_relation_link", "osee_tx_details", "osee_txs");
+         Arrays.asList("osee_attribute", "osee_arts", "osee_relation_link", "osee_tx_details", "osee_txs");
 
    @BeforeClass
    public static void testInitialize() throws Exception {
@@ -100,8 +100,9 @@ public class ArtifactPurgeTest {
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2.getName());
       SkynetTransaction transaction = new SkynetTransaction(branch, "Test purge artifacts");
       Collection<Artifact> softArts =
-         FrameworkTestUtil.createSimpleArtifacts(Requirements.SOFTWARE_REQUIREMENT, 10, getClass().getSimpleName(),
-               branch);
+            FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10,
+                  getClass().getSimpleName(),
+                  branch);
       for (Artifact softArt : softArts) {
          softArt.persist(transaction);
       }

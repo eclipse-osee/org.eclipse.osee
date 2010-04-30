@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.relation;
 
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -35,8 +36,8 @@ public class CrossBranchRelationLinkTest {
    public void setUp() throws OseeCoreException {
       branch1 = BranchManager.getBranch("SAW_Bld_1");
       branch2 = BranchManager.getBranch("SAW_Bld_2");
-      left = FrameworkTestUtil.createSimpleArtifact("Requirement", "Left", branch1);
-      right = FrameworkTestUtil.createSimpleArtifact("Requirement", "Right", branch2);
+      left = FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Left", branch1);
+      right = FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", branch2);
       left.persist();
       right.persist();
    }

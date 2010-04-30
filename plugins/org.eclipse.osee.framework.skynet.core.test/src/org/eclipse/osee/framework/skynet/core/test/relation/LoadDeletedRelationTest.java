@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.test.relation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationType;
@@ -38,8 +39,8 @@ public class LoadDeletedRelationTest {
    @Before
    public void setUp() throws OseeCoreException {
       branch = BranchManager.getBranch("SAW_Bld_2");
-      left = FrameworkTestUtil.createSimpleArtifact("Requirement", "Left", branch);
-      right = FrameworkTestUtil.createSimpleArtifact("Requirement", "Right", branch);
+      left = FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Left", branch);
+      right = FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", branch);
       left.persist();
       right.persist();
       type = RelationTypeManager.getType("Requirement Trace");

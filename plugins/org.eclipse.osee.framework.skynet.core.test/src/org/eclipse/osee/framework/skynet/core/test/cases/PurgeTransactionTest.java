@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -80,7 +80,8 @@ public class PurgeTransactionTest {
       DbUtil.getTableRowCounts(preCreateCount, tables);
       createTransaction = new SkynetTransaction(branch, "Purge Transaction Test");
       softArts =
-            FrameworkTestUtil.createSimpleArtifacts(Requirements.SOFTWARE_REQUIREMENT, 10, getClass().getSimpleName(),
+            FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10,
+                  getClass().getSimpleName(),
                   branch);
       for (Artifact softArt : softArts) {
          softArt.persist(createTransaction);

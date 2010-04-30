@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -49,19 +50,19 @@ public class FrameworkTestUtil {
     * @throws OseeCoreException
     * @throws Exception
     */
-   public static Artifact createSimpleArtifact(String artifactTypeName, String name, Branch branch) throws OseeCoreException {
-      Artifact softArt = ArtifactTypeManager.addArtifact(artifactTypeName, branch);
+   public static Artifact createSimpleArtifact(IArtifactType artifactType, String name, Branch branch) throws OseeCoreException {
+      Artifact softArt = ArtifactTypeManager.addArtifact(artifactType, branch);
       softArt.setName(name);
-      softArt.addAttribute("Subsystem", DemoSubsystems.Electrical.name());
+      softArt.addAttribute("Subsystem", DemoSubsystems.Electrical);
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
       rootArtifact.addRelation(CoreRelationTypes.Default_Hierarchical__Child, softArt);
       return softArt;
    }
 
-   public static Collection<Artifact> createSimpleArtifacts(String artifactTypeName, int numArts, String name, Branch branch) throws Exception {
+   public static Collection<Artifact> createSimpleArtifacts(IArtifactType artifactType, int numArts, String name, Branch branch) throws Exception {
       List<Artifact> arts = new ArrayList<Artifact>();
       for (int x = 1; x < numArts + 1; x++) {
-         arts.add(createSimpleArtifact(artifactTypeName, name + " " + x, branch));
+         arts.add(createSimpleArtifact(artifactType, name + " " + x, branch));
       }
       return arts;
    }

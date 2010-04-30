@@ -34,7 +34,7 @@ import org.junit.BeforeClass;
 public class ArtifactLoaderTest {
 
    private static SevereLoggingMonitor monitorLog;
-   private static Integer numThreadsCompleted = 0;
+   private static int numThreadsCompleted = 0;
    private static int NUM_ARTIFACTS = 100;
    private static String ATTRIBUTE_VALUE = "now is the time";
 
@@ -74,7 +74,7 @@ public class ArtifactLoaderTest {
       // Create some software artifacts
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "ArtifactLoaderTest");
       Collection<Artifact> artifacts =
-            FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.GlobalPreferences.getName(), NUM_ARTIFACTS,
+            FrameworkTestUtil.createSimpleArtifacts(CoreArtifactTypes.GlobalPreferences, NUM_ARTIFACTS,
                   "ArtifactLoaderTest", BranchManager.getCommonBranch());
       for (Artifact artifact : artifacts) {
          artifact.setName("ArtifactLoaderTest");
