@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.OseeURLClassLoader;
 import org.eclipse.osee.ote.core.ReturnStatus;
+import org.eclipse.osee.ote.core.environment.BundleConfigurationReport;
 import org.eclipse.osee.ote.core.environment.BundleDescription;
 import org.eclipse.osee.ote.core.environment.BundleResolveException;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -123,41 +124,81 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
 //TODO MAKE SURE TO CHECK BUNDLE STATE IS RESOLVED OR ACTIVE
    @Override
    public boolean isBundleAvailable(String symbolicName, String version, byte[] md5Digest) {
-      Bundle[] bundles = Platform.getBundles(symbolicName, version);
-      if (bundles == null) {
-         return false;
-      }
-      for (Bundle bundle : bundles) {
-         String bundleSymbolicName = bundle.getSymbolicName();
-         if (bundleSymbolicName.equals(symbolicName) && bundle.getHeaders().get("Bundle-Version").equals(version)) {
-            if (bundleNameToMd5Map.containsKey(bundleSymbolicName)) {
-               // check for bundle binary equality
-               if (Arrays.equals(bundleNameToMd5Map.get(bundleSymbolicName), md5Digest)) {
-                  return true;
-               }
-            } else {
-               // we do not have a md5 hash for this bundle so we need to create one
-               try {
-                  InputStream in = new FileInputStream(FileLocator.getBundleFile(bundle));
-                  try {
-                     byte[] digest = ChecksumUtil.createChecksum(in, "MD5");
-                     if (Arrays.equals(digest, md5Digest)) {
-                        bundleNameToMd5Map.put(bundle.getSymbolicName(), digest);
-                        return true;
-                     }
-                  } finally {
-                     in.close();
-                  }
-               } catch (Exception e) {
-                  OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE,
-                        "could not determine binary equality of bundles", e);
-               }
-            }
-         }
-      }
+	  Bundle installedBundle = Platform.getBundle(symbolicName);
+	  if(installedBundle != null && !installedBundles.contains(installedBundle)){
+		  return true;
+	  } else {
+	      Bundle[] bundles = Platform.getBundles(symbolicName, version);
+	      if (bundles == null) {
+	         return false;
+	      }
+	      for (Bundle bundle : bundles) {
+	         String bundleSymbolicName = bundle.getSymbolicName();
+	         if (bundleSymbolicName.equals(symbolicName) && bundle.getHeaders().get("Bundle-Version").equals(version)) {
+	            if (bundleNameToMd5Map.containsKey(bundleSymbolicName)) {
+	               // check for bundle binary equality
+	               if (Arrays.equals(bundleNameToMd5Map.get(bundleSymbolicName), md5Digest)) {
+	                  return true;
+	               }
+	            } else {
+	               // we do not have a md5 hash for this bundle so we need to create one
+	               try {
+	                  InputStream in = new FileInputStream(FileLocator.getBundleFile(bundle));
+	                  try {
+	                     byte[] digest = ChecksumUtil.createChecksum(in, "MD5");
+	                     if (Arrays.equals(digest, md5Digest)) {
+	                        bundleNameToMd5Map.put(bundle.getSymbolicName(), digest);
+	                        return true;
+	                     }
+	                  } finally {
+	                     in.close();
+	                  }
+	               } catch (Exception e) {
+	                  OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE,
+	                        "could not determine binary equality of bundles", e);
+	               }
+	            }
+	         }
+	      }
+	  }
       return false;
    }
 
+   @Override
+   public BundleConfigurationReport checkBundleConfiguration(Collection<BundleDescription> bundles) throws Exception {
+	   List<BundleDescription> missing = new ArrayList<BundleDescription>();
+	   List<BundleDescription> versionMismatch = new ArrayList<BundleDescription>();
+	   List<BundleDescription> partOfInstallation = new ArrayList<BundleDescription>();
+	   for (BundleDescription bundleDescription : bundles) {
+		   boolean exists = false;
+		   for (Bundle bundle : runningBundles) {
+			   String bundleSymbolicName = bundle.getSymbolicName();
+			   if (bundleSymbolicName.equals(bundleDescription.getSymbolicName())){
+				   exists = true;
+				   if(bundleNameToMd5Map.containsKey(bundleSymbolicName)){
+					   if(bundle.getHeaders().get("Bundle-Version").equals(bundleDescription.getVersion()) &&
+							   Arrays.equals(bundleNameToMd5Map.get(bundleSymbolicName), bundleDescription.getMd5Digest())) {
+
+					   } else {
+						   versionMismatch.add(bundleDescription);	
+					   }
+				   } else {
+					   versionMismatch.add(bundleDescription);
+				   }
+			   }
+		   }
+		   if (!exists) {
+			   Bundle bundle = Platform.getBundle(bundleDescription.getSymbolicName());
+			   if (bundle == null) {
+				   missing.add(bundleDescription);
+			   } else {
+				   partOfInstallation.add(bundleDescription);
+			   }
+		   }
+	   }
+	   return new BundleConfigurationReport(missing, versionMismatch, partOfInstallation);
+   }
+   
    @Override
    public void loadBundles(Collection<BundleDescription> bundles) throws Exception {
       cleanUpNeeded = true;
