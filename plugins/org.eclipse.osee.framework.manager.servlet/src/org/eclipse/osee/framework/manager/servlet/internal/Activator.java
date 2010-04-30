@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
@@ -46,6 +47,7 @@ import org.eclipse.osee.framework.manager.servlet.ServerLookupServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionClientLoopbackServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionManagementServlet;
 import org.eclipse.osee.framework.manager.servlet.SystemManagerServlet;
+import org.eclipse.osee.framework.manager.servlet.UnsubscribeServlet;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
@@ -101,6 +103,7 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
       createHttpServiceTracker(context, new ClientInstallInfoServlet(), "osee/install/info");
       createHttpServiceTracker(context, new OseeCacheServlet(this), OseeServerContext.CACHE_CONTEXT);
       createHttpServiceTracker(context, new OseeModelServlet(this), OseeServerContext.OSEE_MODEL_CONTEXT);
+      createHttpServiceTracker(context, new UnsubscribeServlet(this), "osee/unsubscribe");
 
       createHttpServiceTracker(context, new AtsServlet(), "osee/ats");
    }
