@@ -18,6 +18,7 @@ import org.eclipse.osee.ote.core.ConnectionRequestResult;
 import org.eclipse.osee.ote.core.IRemoteUserSession;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.ReturnStatus;
+import org.eclipse.osee.ote.core.environment.BundleConfigurationReport;
 import org.eclipse.osee.ote.core.environment.BundleDescription;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
@@ -84,14 +85,7 @@ public class OteService implements IHostTestEnvironment, IService {
 			if (!isEnvironmentAvailable()){
 				createEnvironment();
 
-			} else {
-				ReturnStatus status = currentEnvironment.getRuntimeManager().isRunningJarVersions(config.getJarVersions());
-				if (!status.getStatus()) {
-					return new ConnectionRequestResult(null, null,
-							new ReturnStatus(String.format("Unable to connect to environment because users already connected are using different runtime jars.  Connected users [%s].  %s",
-									currentEnvironment.getUserList().toString(), status.getMessage()), false));
-				}
-			}
+			} 
 			UserTestSessionKey key = currentEnvironment.addUser(session);
 			updateDynamicInfo();
 			return new ConnectionRequestResult(remoteEnvironment, key, new ReturnStatus("Success", true));
@@ -189,6 +183,17 @@ public class OteService implements IHostTestEnvironment, IService {
 	public void disconnectAll() throws RemoteException {
 		remoteEnvironment.disconnectAll();
 		updateDynamicInfo();		
+	}
+
+	@Override
+	public BundleConfigurationReport checkBundleConfiguration(
+			Collection<BundleDescription> bundles) throws RemoteException {
+		try {
+			return runtimeLibraryManager.checkBundleConfiguration(bundles);
+		} catch (Exception ex) {
+			OseeLog.log(OteService.class, Level.SEVERE, ex);
+			throw new RemoteException(ex.getMessage());
+		}
 	}
 	
 	

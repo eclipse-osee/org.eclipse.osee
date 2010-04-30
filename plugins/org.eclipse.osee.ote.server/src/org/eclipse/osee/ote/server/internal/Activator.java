@@ -59,8 +59,12 @@ public class Activator implements BundleActivator {
          }
          String title = System.getProperty("osee.ote.server.title");
          String name = System.getProperty("user.name");
-         
-         TestEnvironmentServiceConfigImpl config = new TestEnvironmentServiceConfigImpl(true, title, name, outfileLocation, null);
+         String keepEnvAliveWithNoUsersStr = System.getProperty("osee.ote.server.keepAlive");
+         boolean keepEnvAliveWithNoUsers = true;
+         if(keepEnvAliveWithNoUsersStr != null){
+        	 keepEnvAliveWithNoUsers = Boolean.parseBoolean(keepEnvAliveWithNoUsersStr);
+         }
+         TestEnvironmentServiceConfigImpl config = new TestEnvironmentServiceConfigImpl(keepEnvAliveWithNoUsers, title, name, outfileLocation, null);
         
          String version = context.getBundle().getHeaders().get("Bundle-Version").toString();
          String comment = context.getBundle().getHeaders().get("Bundle-Description").toString();

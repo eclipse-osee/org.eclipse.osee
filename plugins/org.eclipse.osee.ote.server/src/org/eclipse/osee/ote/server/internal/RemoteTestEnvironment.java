@@ -51,10 +51,12 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    private RemoteModelManager modelManager;
    private final MessageToolServiceTracker messageToolServiceTracker;
    private final HashMap<IRemoteCommandConsole, RemoteShell> exportedConsoles = new HashMap<IRemoteCommandConsole, RemoteShell>(32);
+private boolean keepEnvAliveWithNoUsers;
    
-   public RemoteTestEnvironment(MessageSystemTestEnvironment currentEnvironment, IServiceConnector serviceConnector) {
+   public RemoteTestEnvironment(MessageSystemTestEnvironment currentEnvironment, IServiceConnector serviceConnector, boolean keepEnvAliveWithNoUsers) {
       this.env = currentEnvironment;
       this.serviceConnector = serviceConnector;
+      this.keepEnvAliveWithNoUsers = keepEnvAliveWithNoUsers;
       messageToolServiceTracker = new MessageToolServiceTracker(new MessageToolExportCustomizer(serviceConnector));
       messageToolServiceTracker.open(true);
    }
@@ -191,7 +193,7 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    //TODO
    public boolean disconnect(UserTestSessionKey user) throws RemoteException {
        env.disconnect(user);
-       if (env.getSessionKeys().isEmpty()) {
+       if (!keepEnvAliveWithNoUsers && env.getSessionKeys().isEmpty()) {
           try {
              messageToolServiceTracker.close();
              for (IRemoteCommandConsole console : exportedConsoles.keySet()) {
@@ -210,11 +212,13 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
 	   for (Serializable session : env.getSessionKeys()) {
 		   env.disconnect((UserTestSessionKey) session);
 	   }
-       messageToolServiceTracker.close();
-       for (IRemoteCommandConsole console : exportedConsoles.keySet()) {
-          closeCommandConsole(console);
-       }
-       env.shutdown();
+	   if(!keepEnvAliveWithNoUsers){
+	       messageToolServiceTracker.close();
+	       for (IRemoteCommandConsole console : exportedConsoles.keySet()) {
+	          closeCommandConsole(console);
+	       }
+	       env.shutdown();
+	   }
    }
    
    public boolean equals(ITestEnvironment testEnvironment) throws RemoteException {

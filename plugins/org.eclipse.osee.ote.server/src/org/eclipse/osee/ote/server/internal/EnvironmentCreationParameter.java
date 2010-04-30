@@ -74,7 +74,7 @@ class EnvironmentCreationParameter {
    }
 
    public ITestEnvironment createRemoteTestEnvironment(MessageSystemTestEnvironment currentEnvironment) throws ExportException {
-      remoteTestEnvironment = new RemoteTestEnvironment(currentEnvironment, serviceConnector);
+      remoteTestEnvironment = new RemoteTestEnvironment(currentEnvironment, serviceConnector, config.keepEnvAliveWithNoUsers());
       exportedRemoteTestEnvironment = (ITestEnvironment)serviceConnector.export(remoteTestEnvironment);
       return exportedRemoteTestEnvironment;
    }
