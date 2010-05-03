@@ -87,8 +87,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    public static String HELP_CONTEXT_ID = "Merge_Manager_View";
    private MergeXWidget mergeXWidget;
    private Conflict[] conflicts;
-   private static final boolean DEBUG =
-         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
    private IHandlerService handlerService;
    private Branch sourceBranch;
    private Branch destBranch;
@@ -100,19 +98,12 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       if (sourceBranch == null && destBranch == null && tranId == null) {
          throw new IllegalArgumentException("Branch's and Transaction ID can't be null");
       }
-      if (DEBUG && sourceBranch != null && destBranch != null) {
-         System.out.println(String.format("Openeing Merge View with Source Branch: %s and Destination Branch: %s",
-               sourceBranch.getName(), destBranch.getName()));
-      }
       openViewUpon(sourceBranch, destBranch, tranId, null, true);
    }
 
    public static void openView(final TransactionRecord commitTrans) {
       if (commitTrans == null) {
          throw new IllegalArgumentException("Commit Transaction ID can't be null");
-      }
-      if (DEBUG) {
-         System.out.println(String.format("Openeing Merge View with Transaction ID: %d ", commitTrans.getId()));
       }
       openViewUpon(null, null, null, commitTrans, true);
    }
