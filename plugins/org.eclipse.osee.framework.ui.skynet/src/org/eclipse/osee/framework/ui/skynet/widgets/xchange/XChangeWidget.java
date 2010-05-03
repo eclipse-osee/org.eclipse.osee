@@ -123,9 +123,10 @@ public class XChangeWidget extends XWidget implements IActionable {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
-      xChangeViewer = new ChangeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+      xChangeViewer =
+            new ChangeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, new ChangeXViewerFactory());
       xChangeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-      contentProvider = new XChangeContentProvider(xChangeViewer);
+      contentProvider = new XChangeContentProvider();
       xChangeViewer.setContentProvider(contentProvider);
       xChangeViewer.setLabelProvider(new XChangeLabelProvider(xChangeViewer));
       new ActionContributionItem(xChangeViewer.getCustomizeAction()).fill(toolBar, -1);

@@ -57,8 +57,8 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -605,13 +605,13 @@ public class MergeXWidget extends XWidget implements IAdaptable {
          if (conflicts.length != 0) {
             if (conflicts[0].getSourceBranch() != null) {
                try {
-                  ChangeView.open(conflicts[0].getSourceBranch());
+                  ChangeUiUtil.open(conflicts[0].getSourceBranch());
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             } else {
                try {
-                  ChangeView.open(conflicts[0].getCommitTransactionId());
+                  ChangeUiUtil.open(conflicts[0].getCommitTransactionId());
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -632,7 +632,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       public void run() {
          if (conflicts.length != 0) {
             try {
-               ChangeView.open(conflicts[0].getDestBranch());
+               ChangeUiUtil.open(conflicts[0].getDestBranch());
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }

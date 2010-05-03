@@ -34,7 +34,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -80,6 +79,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
+import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.dialogs.ArtifactPasteSpecialDialog;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
@@ -98,7 +98,6 @@ import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeEntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
-import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.MenuItems;
 import org.eclipse.osee.framework.ui.swt.TreeViewerUtility;
@@ -183,7 +182,8 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private Composite stackComposite;
    private Control branchUnreadableWarning;
    private StackLayout stackLayout;
-   private final ArtifactDecorator artifactDecorator = new ArtifactDecorator(SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
+   private final ArtifactDecorator artifactDecorator =
+         new ArtifactDecorator(SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
 
    public ArtifactExplorer() {
    }
@@ -368,7 +368,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    /**
     * Reveal an artifact in the viewer and select it.
-    *
+    * 
     * @param artifact
     */
    public static void revealArtifact(Artifact artifact) {
@@ -396,7 +396,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    /**
     * Reveal an artifact in the viewer and select it.
-    *
+    * 
     * @param artifact
     */
    public static void exploreBranch(Branch branch) {
@@ -528,8 +528,8 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          @Override
          public void run() {
             try {
-               ChangeView.open(branch);
-            } catch (OseeArgumentException ex) {
+               ChangeUiUtil.open(branch);
+            } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
             }
          }
@@ -577,7 +577,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   ArtifactType type = dialog.getSelection();
                   String name = dialog.getEntryValue();
 
-                  SkynetTransaction transaction = new SkynetTransaction(branch, String.format("Created new %s \"%s\" in artifact explorer", type.getName(), name));
+                  SkynetTransaction transaction =
+                        new SkynetTransaction(branch, String.format("Created new %s \"%s\" in artifact explorer",
+                              type.getName(), name));
                   parent.addNewChild(null, type, name);
                   parent.persist(transaction);
                   transaction.execute();
@@ -591,33 +593,34 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          }
 
          private ArtifactTypeFilteredTreeEntryDialog getDialog() throws OseeCoreException {
-             Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getConcreteArtifactTypes(branchSelect.getData());
-             ArtifactType rootArtifactType = ArtifactTypeManager.getType(RootArtifact);
-             artifactTypes.remove(rootArtifactType);
+            Collection<ArtifactType> artifactTypes =
+                  ArtifactTypeManager.getConcreteArtifactTypes(branchSelect.getData());
+            ArtifactType rootArtifactType = ArtifactTypeManager.getType(RootArtifact);
+            artifactTypes.remove(rootArtifactType);
 
-             ArtifactTypeFilteredTreeEntryDialog dialog =
-                 new ArtifactTypeFilteredTreeEntryDialog("New Child",
-                       "Enter name and select Artifact type to create", "Artifact Name");
-             dialog.setInput(artifactTypes);
-             return dialog;
+            ArtifactTypeFilteredTreeEntryDialog dialog =
+                  new ArtifactTypeFilteredTreeEntryDialog("New Child", "Enter name and select Artifact type to create",
+                        "Artifact Name");
+            dialog.setInput(artifactTypes);
+            return dialog;
          }
 
          private Artifact getParent() throws OseeCoreException {
-             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 
-             if (selection.size() > 1) {
-            	 throw new OseeCoreException("Please select a single artifact to create a new child.");
-             }
+            if (selection.size() > 1) {
+               throw new OseeCoreException("Please select a single artifact to create a new child.");
+            }
 
-             Iterator<?> itemsIter = selection.iterator();
-             Artifact parent;
-             if (!itemsIter.hasNext()) {
-            	 parent = explorerRoot;
-             } else {
-            	 parent = (Artifact) itemsIter.next();
-             }
+            Iterator<?> itemsIter = selection.iterator();
+            Artifact parent;
+            if (!itemsIter.hasNext()) {
+               parent = explorerRoot;
+            } else {
+               parent = (Artifact) itemsIter.next();
+            }
 
-             return parent;
+            return parent;
          }
       });
    }

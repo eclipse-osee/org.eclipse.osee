@@ -75,7 +75,7 @@ public class XChangeTextFilter extends XViewerTextFilter {
          }
       }
 
-      DefaultHierSorter sorter = new DefaultHierSorter();
+      DefaultHierarchySorter sorter = new DefaultHierarchySorter();
 
       for (Artifact artifact : sorter.sort(artifacts)) {
          docOrderedChanges.add(artifactToChangeMap.get(artifact));

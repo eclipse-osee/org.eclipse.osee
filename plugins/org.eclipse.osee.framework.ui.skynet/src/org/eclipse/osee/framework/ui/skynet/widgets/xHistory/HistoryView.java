@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -43,10 +44,10 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenWithMenuListener;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactDiffMenu;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
-import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuEvent;
@@ -217,8 +218,8 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
 
             if (selectedObject instanceof Change) {
                try {
-                  ChangeView.open(((Change) selectedObject).getTxDelta().getStartTx());
-               } catch (Exception ex) {
+                  ChangeUiUtil.open(((Change) selectedObject).getTxDelta().getStartTx());
+               } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }

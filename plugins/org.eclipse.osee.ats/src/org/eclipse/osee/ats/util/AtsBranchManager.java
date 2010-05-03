@@ -67,11 +67,11 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.util.TransactionIdLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
-import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -423,13 +423,13 @@ public class AtsBranchManager {
    public void showChangeReport() {
       try {
          if (isWorkingBranchInWork()) {
-            ChangeView.open(getWorkingBranch());
+            ChangeUiUtil.open(getWorkingBranch());
          } else if (isCommittedBranchExists()) {
             TransactionRecord transactionId = getTransactionIdOrPopupChoose("Show Change Report", false);
             if (transactionId == null) {
                return;
             }
-            ChangeView.open(transactionId);
+            ChangeUiUtil.open(transactionId);
          } else {
             AWorkbench.popup("ERROR", "No Branch or Committed Transaction Found.");
          }
@@ -445,7 +445,7 @@ public class AtsBranchManager {
       try {
          for (TransactionRecord transactionId : getTransactionIds(false)) {
             if (transactionId.getBranch() == destinationBranch) {
-               ChangeView.open(transactionId);
+               ChangeUiUtil.open(transactionId);
             }
          }
       } catch (Exception ex) {

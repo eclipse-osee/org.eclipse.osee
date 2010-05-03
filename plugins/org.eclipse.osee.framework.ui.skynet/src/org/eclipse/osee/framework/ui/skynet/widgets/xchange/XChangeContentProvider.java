@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.Viewer;
 public class XChangeContentProvider implements ITreeContentProvider {
    private static Object[] EMPTY_ARRAY = new Object[0];
 
-   public XChangeContentProvider(ChangeXViewer commitXViewer) {
+   public XChangeContentProvider() {
       super();
    }
 
@@ -34,7 +34,9 @@ public class XChangeContentProvider implements ITreeContentProvider {
    }
 
    public boolean hasChildren(Object element) {
-      if (element instanceof Collection<?>) return true;
+      if (element instanceof Collection<?>) {
+         return true;
+      }
       return false;
    }
 

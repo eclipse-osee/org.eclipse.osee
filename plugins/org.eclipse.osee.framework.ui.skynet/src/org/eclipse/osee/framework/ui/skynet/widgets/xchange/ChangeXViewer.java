@@ -12,23 +12,20 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.util.ArrayList;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -42,29 +39,20 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class ChangeXViewer extends XViewer {
 
-   private static final boolean CHANGE_DEBUG =
-         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Change"));
-   private final XChangeWidget xChangeViewer;
    private XChangeTextFilter xChangeTextFilter;
 
-   public ChangeXViewer(Composite parent, int style, XChangeWidget xRoleViewer) {
-      super(parent, style, new ChangeXViewerFactory());
-      this.xChangeViewer = xRoleViewer;
+   public ChangeXViewer(Composite parent, int style, IXViewerFactory factory) {
+      super(parent, style, factory);
    }
 
    @Override
    public void handleDoubleClick() {
       try {
-         if (getSelectedChanges().size() == 0) {
+         if (getSelectedChanges().isEmpty()) {
             return;
          }
 
          Change change = getSelectedChanges().iterator().next();
-         if (CHANGE_DEBUG) {
-            System.out.println(String.format(
-                  "Handling a Double Click in the Change Report Table for a %s Change on Artifact %s ",
-                  change.getItemKind(), change.getArtId()));
-         }
          Artifact artifact = (Artifact) ((IAdaptable) change).getAdapter(Artifact.class);
 
          if (artifact != null) {
@@ -101,8 +89,6 @@ public class ChangeXViewer extends XViewer {
       createMenuActions();
    }
 
-   Action openMergeViewAction;
-
    public void createMenuActions() {
       MenuManager mm = getMenuManager();
       mm.createContextMenu(getControl());
@@ -111,30 +97,11 @@ public class ChangeXViewer extends XViewer {
             updateMenuActionsForTable();
          }
       });
-
-      openMergeViewAction = new Action("Open Merge View", Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            AWorkbench.popup("ERROR", "Not implemented yet");
-         }
-      };
-   }
-
-   public void updateEditMenuActions() {
-      MenuManager mm = getMenuManager();
-
-      // EDIT MENU BLOCK
-      mm.insertBefore(MENU_GROUP_PRE, openMergeViewAction);
-      openMergeViewAction.setEnabled(getSelectedBranches().size() == 1 && getSelectedBranches().iterator().next().getBranchType().isBaselineBranch());
-
    }
 
    @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
-
-      updateEditMenuActions();
-
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
@@ -144,24 +111,6 @@ public class ChangeXViewer extends XViewer {
    @Override
    public void dispose() {
       getLabelProvider().dispose();
-   }
-
-   public ArrayList<Branch> getSelectedBranches() {
-      ArrayList<Branch> arts = new ArrayList<Branch>();
-      TreeItem items[] = getTree().getSelection();
-      if (items.length > 0) {
-         for (TreeItem item : items) {
-            arts.add((Branch) item.getData());
-         }
-      }
-      return arts;
-   }
-
-   /**
-    * @return the xChangeViewer
-    */
-   public XChangeWidget getXChangeViewer() {
-      return xChangeViewer;
    }
 
    @Override

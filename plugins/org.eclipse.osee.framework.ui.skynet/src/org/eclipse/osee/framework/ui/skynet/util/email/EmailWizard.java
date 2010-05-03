@@ -37,10 +37,10 @@ public class EmailWizard extends Wizard {
     * @param emailableFields
     * @param initialAddress - User, AtsEmailGroup or String
     */
-   public EmailWizard(String htmlMessage, String subject, ArrayList<EmailGroup> emailableFields, ArrayList<Object> initialAddress) {
+   public EmailWizard(String htmlMessage, String subject, ArrayList<EmailGroup> emailableGroups, ArrayList<Object> initialAddress) {
       this.htmlMessage = htmlMessage;
       this.subject = subject;
-      this.emailableGroups = emailableFields;
+      this.emailableGroups = emailableGroups;
       this.initialAddress = initialAddress;
    }
 

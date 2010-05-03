@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Jeff C. Phillips
  */
-public class DefaultHierSorter {
+public class DefaultHierarchySorter {
    private Map<Artifact, Set<Artifact>> childrenMap;
    private ArrayList<Artifact> orderedList;
    private Set<Artifact> orginalList;
