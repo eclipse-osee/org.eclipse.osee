@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: org.eclipse.osee.framework.help.ui
+Bundle-Name: OSEE Framework Help
 Bundle-SymbolicName: org.eclipse.osee.framework.help.ui;singleton:=true
 Bundle-Version: 0.9.4.qualifier
-Bundle-Vendor: %Bundle-Vendor
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.apache.ant;bundle-version="1.7.1"

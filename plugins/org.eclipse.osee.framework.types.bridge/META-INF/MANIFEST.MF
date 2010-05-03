@@ -36,6 +36,6 @@ Import-Package: org.eclipse.osee.framework.core.cache,
  org.eclipse.osee.framework.jdk.core.util.xml,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.ui.swt
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.eclipse.osee.framework.types.bridge.internal.InternalTypesBridgeActivator

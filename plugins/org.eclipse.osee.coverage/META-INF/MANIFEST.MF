@@ -4,7 +4,7 @@ Bundle-Name: OSEE Coverage Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.coverage;singleton:=true
 Bundle-Version: 0.9.4.qualifier
 Bundle-Activator: org.eclipse.osee.coverage.internal.Activator
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Eclipse-ExtensibleAPI: true
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

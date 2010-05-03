@@ -8,7 +8,7 @@ Export-Package: org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.database.operation
 Bundle-ActivationPolicy: lazy
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
  org.eclipse.equinox.app,

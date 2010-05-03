@@ -16,5 +16,5 @@ Import-Package:
 Export-Package: org.eclipse.osee.framework.derby
 Service-Component: OSGI-INF/derby.client.connection.driver.provider.xml,
  OSGI-INF/derby.embed.connection.driver.provider.xml
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

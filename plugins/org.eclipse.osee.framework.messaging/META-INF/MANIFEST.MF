@@ -4,7 +4,7 @@ Bundle-Name: OSEE Messaging Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.messaging;singleton:=true
 Bundle-Version: 0.9.4.qualifier
 Bundle-Activator: org.eclipse.osee.framework.messaging.internal.Activator
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.jms,
  javax.management,

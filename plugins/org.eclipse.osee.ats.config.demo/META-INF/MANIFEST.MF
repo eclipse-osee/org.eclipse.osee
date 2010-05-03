@@ -4,7 +4,7 @@ Bundle-Name: Demo Plug-in
 Bundle-SymbolicName: org.eclipse.osee.ats.config.demo;singleton:=true
 Bundle-Version: 0.9.4.qualifier
 Bundle-Activator: org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator
-Bundle-Vendor: Boeing
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.plugin.core,

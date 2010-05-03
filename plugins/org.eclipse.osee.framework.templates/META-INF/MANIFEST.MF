@@ -4,4 +4,4 @@ Bundle-Name: Java Code Content Assist Templates Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.templates;singleton:=true
 Bundle-Version: 0.9.4.qualifier
 Bundle-Localization: plugin
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment

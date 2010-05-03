@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Core Server Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.core.server;singleton:=true
 Bundle-Version: 0.9.4.qualifier
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.servlet,
  javax.servlet.http,

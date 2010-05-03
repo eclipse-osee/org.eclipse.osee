@@ -4,7 +4,7 @@ Bundle-Name: OSEE Svn Integration (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.svn
 Bundle-Version: 0.9.4.qualifier
 Bundle-Activator: org.eclipse.osee.framework.svn.internal.Activator
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.svn,
  org.eclipse.osee.framework.svn.entry

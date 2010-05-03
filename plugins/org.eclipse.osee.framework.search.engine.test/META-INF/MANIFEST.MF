@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Search Engine Test Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.search.engine.test;singleton:=true
 Bundle-Version: 0.9.4.qualifier
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.framework.search.engine;bundle-version="0.4.0"
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,

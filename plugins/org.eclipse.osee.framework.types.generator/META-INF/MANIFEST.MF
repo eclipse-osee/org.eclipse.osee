@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Types Generator
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-Version: 0.9.4.qualifier
 Bundle-SymbolicName: org.eclipse.osee.framework.types.generator; singleton:=true
 Eclipse-RegisterBuddy: org.eclipse.xtext.log4j

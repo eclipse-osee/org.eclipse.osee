@@ -4,7 +4,7 @@ Bundle-Name: Framework Server Tests
 Bundle-SymbolicName: org.eclipse.osee.framework.server.tests
 Bundle-Version: 0.9.4.qualifier
 Bundle-Activator: org.eclipse.osee.framework.server.tests.Activator
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.branch.management.test,
  org.eclipse.osee.framework.core.server.test,

@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.ui.admin;singleton:=true
 Bundle-Version: 0.9.4.qualifier
 Bundle-ClassPath: admin.jar
 Bundle-Activator: org.eclipse.osee.framework.ui.admin.AdminPlugin
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.ui.ws

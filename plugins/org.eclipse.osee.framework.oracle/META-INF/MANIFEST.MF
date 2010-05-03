@@ -4,7 +4,7 @@ Bundle-Name: Oracle Db Connector Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.oracle
 Bundle-Version: 0.9.4.qualifier
 Bundle-Activator: org.eclipse.osee.framework.oracle.Activator
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/oracle.connection.driver.provider.xml
 Import-Package: oracle.jdbc,
  org.eclipse.osee.framework.database.core,

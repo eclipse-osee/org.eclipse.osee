@@ -8,5 +8,5 @@ Require-Bundle: org.junit4;bundle-version="4.5.0",
  org.eclipse.osee.framework.jdk.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.eclipse.osee.framework.jdk.core.util

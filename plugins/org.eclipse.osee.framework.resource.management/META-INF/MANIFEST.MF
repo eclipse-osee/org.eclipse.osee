@@ -14,7 +14,7 @@ Import-Package: org.eclipse.core.runtime,
  org.osgi.service.log,
  org.osgi.util.tracker
 Bundle-ActivationPolicy: lazy
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/resource.provider.consumer.xml, OSGI-INF/resource.locator.consumer.xml
 Export-Package: org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.exception,
