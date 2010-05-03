@@ -34,7 +34,7 @@ Require-Bundle: javax.mail.glassfish,
  org.eclipse.osee.framework.ui.ws,
  org.eclipse.osee.framework.help.ui;bundle-version="0.9.4";resolution:=optional
 Bundle-ActivationPolicy: lazy
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: com.lowagie.text;version="2.1.7",
  org.apache.commons.lang;version="2.4.0",
  org.apache.xml.serialize;version="2.9.0",

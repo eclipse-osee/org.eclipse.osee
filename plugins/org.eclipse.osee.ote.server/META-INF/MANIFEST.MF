@@ -39,4 +39,4 @@ Import-Package: net.jini.core.lookup,
  org.osgi.util.tracker;version="1.4.0"
 Bundle-Activator: org.eclipse.osee.ote.server.internal.Activator
 Export-Package: org.eclipse.osee.ote.server
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment

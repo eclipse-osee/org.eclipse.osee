@@ -18,4 +18,4 @@ Import-Package: org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.ui.ws,
  org.eclipse.osee.ote.core.framework.saxparse,
  org.eclipse.osee.ote.core.framework.saxparse.elements
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment

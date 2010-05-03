@@ -16,7 +16,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.ote.connection.service,
  org.eclipse.help
 Bundle-ActivationPolicy: lazy
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.ui.plugin.xnavigate

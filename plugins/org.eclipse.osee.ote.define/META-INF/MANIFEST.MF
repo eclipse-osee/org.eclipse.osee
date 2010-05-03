@@ -22,7 +22,7 @@ Export-Package: org.eclipse.osee.ote.define,
  org.eclipse.osee.ote.define.parser,
  org.eclipse.osee.ote.define.parser.handlers,
  org.eclipse.osee.ote.define.utilities
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.commons.lang;version="2.4.0",
  org.eclipse.osee.framework.core.data,

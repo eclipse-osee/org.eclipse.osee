@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OTE Message Test
 Bundle-SymbolicName: org.eclipse.osee.ote.message.test
 Bundle-Version: 0.9.4.qualifier
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.ote.message;bundle-version="0.9.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit4;bundle-version="4.5.0"

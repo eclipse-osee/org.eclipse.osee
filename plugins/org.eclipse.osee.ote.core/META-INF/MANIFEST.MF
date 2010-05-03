@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Test Core Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.core;singleton:=true
 Bundle-Version: 0.9.4.qualifier
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.ote.core,
  org.eclipse.osee.ote.core.cmd,
  org.eclipse.osee.ote.core.enums,

@@ -28,4 +28,4 @@ Export-Package: org.eclipse.osee.ote.runtimemanager
 Require-Bundle: org.eclipse.osgi,
  org.eclipse.ui;bundle-version="3.4.2"
 Bundle-ActivationPolicy: lazy
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment

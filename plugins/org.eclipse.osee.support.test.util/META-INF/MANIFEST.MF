@@ -15,4 +15,4 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.logging,
  org.osgi.framework
 Require-Bundle: org.junit4;bundle-version="4.3.1"
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment

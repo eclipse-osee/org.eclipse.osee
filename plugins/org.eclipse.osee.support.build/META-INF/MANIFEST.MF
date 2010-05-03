@@ -3,5 +3,5 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Build Plug-in
 Bundle-SymbolicName: org.eclipse.osee.support.build
 Bundle-Version: 0.9.4.qualifier
-Bundle-Vendor: Eclpse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

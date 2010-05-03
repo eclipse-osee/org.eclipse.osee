@@ -4,7 +4,7 @@ Bundle-Name: Service Plug-in  (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.connection.service;singleton:=true
 Bundle-Version: 0.9.4.qualifier
 Bundle-Activator: org.eclipse.osee.connection.service.internal.Activator
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.logging,

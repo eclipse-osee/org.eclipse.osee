@@ -4,7 +4,7 @@ Bundle-Name: Test Core Gui Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.ui;singleton:=true
 Bundle-Version: 0.9.4.qualifier
 Bundle-Activator: org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ote.ui,
  org.eclipse.osee.ote.ui.navigate,
