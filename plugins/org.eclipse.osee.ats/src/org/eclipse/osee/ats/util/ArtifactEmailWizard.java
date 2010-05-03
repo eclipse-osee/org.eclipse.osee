@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroup;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailWizard;
 
 public class ArtifactEmailWizard extends EmailWizard {
@@ -24,14 +23,7 @@ public class ArtifactEmailWizard extends EmailWizard {
    }
 
    public ArtifactEmailWizard(StateMachineArtifact sma, ArrayList<Object> toAddress) throws OseeCoreException {
-      super();
-      setInitialAddress(toAddress);
-      setHtmlMessage(sma.getPreviewHtml(PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE));
-      setSubject(" Regarding " + sma.getArtifactTypeName() + " - " + sma.getName());
-      setEmailableGroups(getEmailableGroups(sma));
-   }
-
-   private ArrayList<EmailGroup> getEmailableGroups(StateMachineArtifact sma) throws OseeCoreException {
-      return sma.getEmailableGroups();
+      super(sma.getPreviewHtml(PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE),
+            " Regarding " + sma.getArtifactTypeName() + " - " + sma.getName(), sma.getEmailableGroups(), toAddress);
    }
 }
