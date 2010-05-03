@@ -92,7 +92,7 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               extraInfo.add(ex.getLocalizedMessage());
+               extraInfo.add(ex.toString());
             }
          }
          return Collections.toString(extraInfo, " ");
