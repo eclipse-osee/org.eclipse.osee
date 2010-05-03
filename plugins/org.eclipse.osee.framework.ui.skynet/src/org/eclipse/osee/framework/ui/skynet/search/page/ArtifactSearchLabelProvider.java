@@ -125,6 +125,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
             }
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            coloredName.append(' ').append(ex.getLocalizedMessage());
          }
       }
       return coloredName;

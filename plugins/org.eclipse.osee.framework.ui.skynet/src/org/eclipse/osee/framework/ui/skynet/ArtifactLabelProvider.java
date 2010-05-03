@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -61,7 +62,8 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
          Artifact artifact = (Artifact) element;
 
          List<String> extraInfo = new ArrayList<String>();
-         extraInfo.add(artifact.getName());
+         String name = artifact.getName();
+         extraInfo.add(name != null ? name : "");
          if (artifact.isDeleted()) {
             extraInfo.add("<Deleted>");
          }
@@ -84,7 +86,10 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
             }
 
             try {
-               extraInfo.add(decorationProvider.getSelectedAttributeData(artifact));
+               String selectedAttributes = decorationProvider.getSelectedAttributeData(artifact);
+               if (Strings.isValid(selectedAttributes)) {
+                  extraInfo.add(selectedAttributes);
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                extraInfo.add(ex.getLocalizedMessage());

@@ -28,7 +28,7 @@ public class ArtifactDecoratorPreferences implements IArtifactDecoratorPreferenc
    }
 
    public String getSelectedAttributeData(Artifact artifact) throws OseeCoreException {
-      return null;
+      return "";
    }
 
    public void setShowArtIds(boolean isShowArtIdsAllowed) {
