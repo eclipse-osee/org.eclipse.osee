@@ -59,7 +59,8 @@ public class SearchEngineServlet extends OseeHttpServlet {
    private void executeSearch(boolean isCompatible, HttpSearchInfo searchInfo, HttpServletResponse response, boolean wasFromGet) throws IOException {
       try {
          ISearchEngine searchEngine = Activator.getInstance().getSearchEngine();
-         AttributeTypeCache attributeTypeCache = Activator.getInstance().getOseeCache().getAttributeTypeCache();
+         AttributeTypeCache attributeTypeCache =
+               Activator.getInstance().getOseeCachingService().getAttributeTypeCache();
 
          String[] attributeTypeGuids = searchInfo.getAttributeTypeGuids();
          AttributeType[] attributeTypes = new AttributeType[attributeTypeGuids.length];
@@ -116,7 +117,7 @@ public class SearchEngineServlet extends OseeHttpServlet {
 
    /**
     * <match artId="" branchId=""> <attr gammaId=""><location start="" end="" /></attr> </match>
-    * 
+    *
     * @throws Exception
     */
    private void sendAsXml(HttpServletResponse response, SearchResult results) throws Exception {
