@@ -116,8 +116,8 @@ public class UnsubscribeServlet extends OseeHttpServlet {
       private int transactionId;
       private Branch commonBranch;
       private int gammaId;
-      private Integer userId;
-      private Integer groupId;
+      private final Integer userId;
+      private final Integer groupId;
 
       public DeleteRelationTransaction(IOseeDatabaseServiceProvider provider, String operationName, String pluginId, int groupId, int userId) {
          super(provider, operationName, pluginId);
@@ -161,8 +161,8 @@ public class UnsubscribeServlet extends OseeHttpServlet {
          String comment = String.format("User %s requested unsubscribe from group %s", userId, groupId);
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
          int txType = TransactionDetailsType.NonBaselined.getId();
-         IOseeStatement stmt = Activator.getInstance().getOseeDatabaseService().getStatement();
-         stmt.runCallableStatement(
+         Activator.getInstance().getOseeDatabaseService().runPreparedUpdate(
+               connection,
                "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) VALUES (?,?,?,?,?,?)",
                branchId, transactionId, comment, timestamp, userId, txType);
       }
@@ -174,8 +174,8 @@ public class UnsubscribeServlet extends OseeHttpServlet {
       }
 
       private void addTxsData() throws OseeDataStoreException {
-         IOseeStatement stmt = Activator.getInstance().getOseeDatabaseService().getStatement();
-         stmt.runCallableStatement(
+         Activator.getInstance().getOseeDatabaseService().runPreparedUpdate(
+               connection,
                "insert into osee_txs (mod_type, tx_current, transaction_id, gamma_id, branch_id) values (?, ?, ?, ?, ?)",
                ModificationType.DELETED.getValue(), TxChange.DELETED.getValue(), transactionId, gammaId,
                commonBranch.getId());
