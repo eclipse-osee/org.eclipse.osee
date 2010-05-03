@@ -31,10 +31,6 @@ public class EmailWizard extends Wizard {
    private ArrayList<EmailGroup> emailableGroups;
    private ArrayList<Object> initialAddress = null;
 
-   public EmailWizard() {
-      super();
-   }
-
    /**
     * @param htmlMessage
     * @param subject
@@ -73,7 +69,9 @@ public class EmailWizard extends Wizard {
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());
          emailMessage.setRecipients(Message.RecipientType.BCC, wizardPage.getBccAddresses());
          String otherText = wizardPage.getText();
-         if (!otherText.equals("")) emailMessage.setHTMLBody("<p>" + AHTML.textToHtml(wizardPage.getText()) + "</p><p>--------------------------------------------------------</p>");
+         if (!otherText.equals("")) {
+            emailMessage.setHTMLBody("<p>" + AHTML.textToHtml(wizardPage.getText()) + "</p><p>--------------------------------------------------------</p>");
+         }
          // Remove hyperlinks cause they won't work in email.
          emailMessage.addHTMLBody(htmlMessage);
          emailMessage.send();
@@ -81,7 +79,6 @@ public class EmailWizard extends Wizard {
          MessageDialog.openInformation(null, "Message Could Not Be Sent",
                "Your Email Message could not be sent.\n\n" + e.getLocalizedMessage());
 
-         // e.printStackTrace();
          return false;
       }
 
