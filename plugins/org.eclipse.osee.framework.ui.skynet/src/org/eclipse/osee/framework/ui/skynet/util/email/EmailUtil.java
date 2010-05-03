@@ -28,10 +28,10 @@ import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
  */
 public class EmailUtil {
 
-   private static Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
+   private static Pattern addressPattern = Pattern.compile(".+?@.+?\\.[a-z]+");
 
    public static boolean isEmailValid(String email) {
-      return p.matcher(email).matches();
+      return addressPattern.matcher(email).matches();
    }
 
    public static boolean isEmailValid(User user) throws OseeCoreException {
