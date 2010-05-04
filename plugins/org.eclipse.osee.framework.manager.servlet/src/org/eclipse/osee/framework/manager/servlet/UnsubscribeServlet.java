@@ -171,7 +171,7 @@ public class UnsubscribeServlet extends OseeHttpServlet {
 
    private static final class DeleteRelationTransaction extends AbstractDbTxOperation {
       private final static String SELECT_RELATION_LINK =
-            "select txs.gamma_id, rel.rel_link_id from osee_relation_link rel, osee_txs txs where rel.a_art_id = ? and rel.b_art_id = ? and rel.rel_link_type_id = ? and rel.gamma_id=txs.gamma_id and txs.branch_id = ? and txs.tx_current = ?";
+            "select txs.gamma_id, rel.rel_link_id, txs.mod_type from osee_relation_link rel, osee_txs txs where rel.a_art_id = ? and rel.b_art_id = ? and rel.rel_link_type_id = ? and rel.gamma_id=txs.gamma_id and txs.branch_id = ? and txs.tx_current = ?";
       private final static String INSERT_INTO_TX_DETAILS =
             "insert into osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) values (?,?,?,?,?,?)";
       private final static String INSERT_INTO_TXS =
@@ -212,12 +212,20 @@ public class UnsubscribeServlet extends OseeHttpServlet {
             if (chStmt.next()) {
                currentGammaId = chStmt.getInt("gamma_id");
                relationId = chStmt.getInt("rel_link_id");
+               int modType = chStmt.getInt("mod_type");
+               ensureNotAlreadyDeleted(modType);
             } else {
                throw new OseeCoreException(String.format("No relation link found for group %s and user %s",
                      unsubscribeData.getGroupId(), unsubscribeData.getUserId()));
             }
          } finally {
             Lib.close(chStmt);
+         }
+      }
+
+      private void ensureNotAlreadyDeleted(int modType) throws OseeCoreException {
+         if (modType == ModificationType.ARTIFACT_DELETED.getValue() || modType == ModificationType.DELETED.getValue()) {
+            throw new OseeCoreException("Relation already deleted");
          }
       }
 
