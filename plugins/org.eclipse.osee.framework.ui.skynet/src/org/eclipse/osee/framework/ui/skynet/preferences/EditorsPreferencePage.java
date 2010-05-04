@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -30,20 +31,31 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
 
    public static String PreviewOnDoubleClickForWordArtifacts = "PreviewOnDoubleClickForWordArtifacts";
    private Button previewOnDoubleClickForWordArtifacts;
+   private Button changeReportAsEditor;
 
    @Override
    protected Control createContents(Composite parent) {
-
-      //Page Composite
-      Composite composite = createComposite(parent, 3);
+      Composite composite = new Composite(parent, SWT.NULL);
+      composite.setLayout(new GridLayout());
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       // TODO Temporary until editor opening can be configured by users
       previewOnDoubleClickForWordArtifacts = new Button(composite, SWT.CHECK);
-      previewOnDoubleClickForWordArtifacts.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, true));
+      previewOnDoubleClickForWordArtifacts.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
       previewOnDoubleClickForWordArtifacts.setText("Open MS Word preview on double-click of MS Word Artifact");
       try {
          previewOnDoubleClickForWordArtifacts.setSelection(StaticIdManager.hasValue(UserManager.getUser(),
                PreviewOnDoubleClickForWordArtifacts));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+
+      changeReportAsEditor = new Button(composite, SWT.CHECK);
+      changeReportAsEditor.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
+      changeReportAsEditor.setText("Open Change Reports in an Editor");
+      try {
+         boolean value = UserManager.getUser().getBooleanSetting("change.report.as.editor");
+         changeReportAsEditor.setSelection(value);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -68,40 +80,20 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
    @Override
    public boolean performOk() {
       try {
+         User user = UserManager.getUser();
          if (previewOnDoubleClickForWordArtifacts.getSelection()) {
-            StaticIdManager.setSingletonAttributeValue(UserManager.getUser(), PreviewOnDoubleClickForWordArtifacts);
+            StaticIdManager.setSingletonAttributeValue(user, PreviewOnDoubleClickForWordArtifacts);
          } else {
-            UserManager.getUser().deleteAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE,
-                  PreviewOnDoubleClickForWordArtifacts);
+            user.deleteAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, PreviewOnDoubleClickForWordArtifacts);
          }
-         UserManager.getUser().persist();
+
+         boolean result = changeReportAsEditor.getSelection();
+         user.setSetting("change.report.as.editor", String.valueOf(result));
+
+         user.persist();
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return super.performOk();
    }
-
-   /**
-    * Creates composite control and sets the default layout data.
-    * 
-    * @param parent the parent of the new composite
-    * @param numColumns the number of columns for the new composite
-    * @return the newly-created composite
-    */
-   private Composite createComposite(Composite parent, int numColumns) {
-      Composite composite = new Composite(parent, SWT.NULL);
-
-      //GridLayout
-      GridLayout layout = new GridLayout();
-      layout.numColumns = numColumns;
-      composite.setLayout(layout);
-
-      //GridData
-      GridData data = new GridData();
-      data.verticalAlignment = GridData.FILL;
-      data.horizontalAlignment = GridData.FILL;
-      composite.setLayoutData(data);
-      return composite;
-   }
-
 }

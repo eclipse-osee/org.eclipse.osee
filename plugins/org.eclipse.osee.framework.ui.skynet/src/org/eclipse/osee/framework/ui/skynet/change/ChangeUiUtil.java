@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
@@ -28,22 +29,35 @@ public final class ChangeUiUtil {
 
    public static void open(Branch branch) throws OseeCoreException {
       Conditions.checkNotNull(branch, "Branch");
-
-      ChangeView.open(branch); // Legacy Change Report
-
-      ChangeUiData uiData = new ChangeUiData();
-      uiData.setBranch(branch);
-      open(new ChangeReportEditorInput(uiData), true);
+      if (isEditorAllowed()) {
+         ChangeUiData uiData = new ChangeUiData();
+         uiData.setBranch(branch);
+         open(new ChangeReportEditorInput(uiData), true);
+      } else {
+         ChangeView.open(branch); // Legacy Change Report
+      }
    }
 
    public static void open(TransactionRecord transactionId) throws OseeCoreException {
       Conditions.checkNotNull(transactionId, "TransactionId");
 
-      ChangeView.open(transactionId); // Legacy Change Report
+      if (isEditorAllowed()) {
+         ChangeUiData uiData = new ChangeUiData();
+         uiData.setTransaction(transactionId);
+         open(new ChangeReportEditorInput(uiData), true);
+      } else {
+         ChangeView.open(transactionId); // Legacy Change Report
+      }
+   }
 
-      ChangeUiData uiData = new ChangeUiData();
-      uiData.setTransaction(transactionId);
-      open(new ChangeReportEditorInput(uiData), true);
+   public static boolean isEditorAllowed() {
+      boolean result = false;
+      try {
+         result = UserManager.getUser().getBooleanSetting("change.report.as.editor");
+      } catch (Exception ex) {
+         // Do Nothing;
+      }
+      return result;
    }
 
    private static void open(final ChangeReportEditorInput editorInput, final boolean loadChanges) {
