@@ -24,6 +24,7 @@ public class ValidateChangeReportParser {
    private static final String REL = "(<RelChg>.*?</RelChg>)";
 
    /**
+    * @param changeReportString 
     * @return Returns Three ArrayLists. 0 index for artifact changes, 1 index for attribute changes and 2 index for
     *         relation changes.
     */
