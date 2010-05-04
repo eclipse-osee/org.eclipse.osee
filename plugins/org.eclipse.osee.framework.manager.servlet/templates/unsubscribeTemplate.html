@@ -1,7 +1,7 @@
 <html>
 <head>
 <title>OSEE Unsubscribe</title>
-<script>
+<script type="text/javascript">
 	function getHTTPObject() {
 		if (typeof XMLHttpRequest != 'undefined') {
 			return new XMLHttpRequest();
@@ -14,41 +14,31 @@
 			} catch (e) {
 			}
 		}
+		if (window.createRequest) {
+		try {
+			return window.createRequest();
+		} catch (e) {
+		}
+	}
+		
 		return false;
 	}
 	
 	function unsubscribe(elementId, url, groupId, userId) {
-		var deleteMessage = "<request><groupId>" + groupId + "</groupId><userId>"+userId+"</userId></request>";
-	
-		var element = document.getElementById(elementId);
-		element.innerHTML = "<p><em>Sending unsubscribe request...</em></p>";
-
+		document.getElementById(elementId).innerHTML = "<p><em>Sending unsubscribe request...</em></p>";
 		var xmlhttp = getHTTPObject();
-		xmlhttp.open("DELETE", url, true);
-		xmlhttp.onreadystatechange = function() {
-			if (xmlhttp.readyState == 4) {
-				var response = xmlhttp.responseText;
-				var status = xmlhttp.status;
-				if (status == 200 || status == 202) {
-					element.innerHTML = "<p>" + response + "</p>";
-					alert("Got it");
-				} else {
-					element.innerHTML = "<p><em>Error sending request: " + response + "</em></p>";
-				}
-			}
-		}
+		xmlhttp.open("DELETE", url, false);
 		xmlhttp.setRequestHeader("Content-Type", "application/xml;charset=utf-8");
-		alert("Sending");
-		xmlhttp.send(deleteMessage);
+
+		xmlhttp.send("<request><groupId>" + groupId + "</groupId><userId>"+userId+"</userId></request>");
+		
+		document.getElementById(elementId).innerHTML = "<p><em>Status: " +  xmlhttp.status  +" " + xmlhttp.responseText + "</em></p>";
 	}
 </script>
 </head>
+
 <body>
-<form id="unsubscribe" onsubmit="unsubscribe('deleteStatus','%s','%s','%s');">
-  <label>Are you sure you want to unsubscribe?</label>
-  <input type="submit" value="Confirm"/>
-</form>
-<br />
+<a href="javascript:unsubscribe('deleteStatus','%s','%s','%s');">Click here to confirm unsubscribe.</a>
 <p><span id="deleteStatus"></span></p>
 </body>
 </html>
