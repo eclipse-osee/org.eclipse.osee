@@ -35,7 +35,7 @@ import org.eclipse.ui.forms.widgets.Section;
 /**
  * @author Ryan D. Brooks
  */
-public class ChangeReportPage extends FormPage {
+public class ChangeReportPage extends FormPage implements IChangeReportPreferences.Listener {
    private static String HELP_CONTEXT_ID = "ChangeView";
 
    private ChangeReportTable changeReportTable;
@@ -91,6 +91,8 @@ public class ChangeReportPage extends FormPage {
       PlatformUI.getWorkbench().getHelpSystem().setHelp(form.getBody(),
             "org.eclipse.osee.framework.help.ui." + HELP_CONTEXT_ID);
       bindMenu();
+
+      getEditor().getPreferences().addListener(this);
    }
 
    private void bindMenu() {
@@ -174,5 +176,13 @@ public class ChangeReportPage extends FormPage {
       sForm.getBody().layout(true);
       sForm.reflow(true);
       getManagedForm().refresh();
+   }
+
+   @Override
+   public void onDocumentOrderChange(boolean value) {
+      if (changeReportTable != null) {
+         changeReportTable.getXViewer().setShowDocumentOrderFilter(value);
+         changeReportTable.getXViewer().refresh();
+      }
    }
 }

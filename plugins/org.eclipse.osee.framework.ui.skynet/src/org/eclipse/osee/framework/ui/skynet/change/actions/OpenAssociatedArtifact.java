@@ -24,6 +24,7 @@ public class OpenAssociatedArtifact extends Action {
    public OpenAssociatedArtifact(ChangeUiData changeData) {
       super("Open Associated Artifact", Action.AS_PUSH_BUTTON);
       this.changeData = changeData;
+      setId("open.associated.artifact.change.report");
       setToolTipText("Open Associated Artifact");
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EDIT));
    }

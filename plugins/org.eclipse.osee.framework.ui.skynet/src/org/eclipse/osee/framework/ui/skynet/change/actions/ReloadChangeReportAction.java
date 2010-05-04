@@ -11,6 +11,7 @@ public class ReloadChangeReportAction extends Action {
 
    public ReloadChangeReportAction(IChangeReportView view) {
       super("Reload Change Report", Action.AS_PUSH_BUTTON);
+      setId("reload.change.report");
       setToolTipText("Reloads the change report");
       setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
       this.view = view;

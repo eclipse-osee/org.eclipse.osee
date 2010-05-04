@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
 import org.eclipse.osee.framework.ui.skynet.change.actions.OpenAssociatedArtifact;
 import org.eclipse.osee.framework.ui.skynet.change.actions.OpenQuickSearchAction;
 import org.eclipse.osee.framework.ui.skynet.change.actions.ReloadChangeReportAction;
+import org.eclipse.osee.framework.ui.skynet.change.actions.ShowDocumentOrderAction;
 import org.eclipse.ui.IEditorSite;
 
 /**
@@ -39,6 +40,7 @@ public class ChangeReportActionBarContributor implements IActionContributor {
    public void contributeToToolBar(IToolBarManager manager) {
       ChangeUiData uiData = editor.getEditorInput().getChangeData();
       manager.add(getReloadAction());
+      manager.add(new ShowDocumentOrderAction(editor.getPreferences()));
       manager.add(getOpenAssociatedArtifactAction());
       manager.add(new OpenQuickSearchAction(uiData));
       manager.add(getAtsBugAction());

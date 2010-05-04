@@ -32,8 +32,6 @@ import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.operations.LoadAssociatedArtifactOperation;
 import org.eclipse.osee.framework.ui.skynet.change.operations.LoadChangesOperation;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.progress.UIJob;
@@ -44,10 +42,16 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    private ChangeReportPage changeReportPage;
    private ChangeReportActionBarContributor actionBarContributor;
    private final EventRelay eventRelay;
+   private final ChangeReportEditorPreferences preferences;
 
    public ChangeReportEditor() {
       super();
       this.eventRelay = new EventRelay();
+      this.preferences = new ChangeReportEditorPreferences(EDITOR_ID);
+   }
+
+   public IChangeReportPreferences getPreferences() {
+      return preferences;
    }
 
    public ChangeReportActionBarContributor getActionBarContributor() {
@@ -60,11 +64,6 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    @Override
    public ChangeReportEditorInput getEditorInput() {
       return (ChangeReportEditorInput) super.getEditorInput();
-   }
-
-   @Override
-   public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-      super.init(site, input);
    }
 
    @Override
@@ -86,7 +85,6 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       } catch (PartInitException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-
       OseeContributionItem.addTo(this, true);
       OseeEventManager.addListener(eventRelay);
    }
@@ -134,6 +132,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    @Override
    public void dispose() {
       OseeEventManager.removeListener(eventRelay);
+      getPreferences().saveState();
       super.dispose();
    }
 

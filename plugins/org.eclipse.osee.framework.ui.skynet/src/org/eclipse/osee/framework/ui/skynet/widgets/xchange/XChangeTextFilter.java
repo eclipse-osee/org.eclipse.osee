@@ -13,9 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
@@ -23,7 +22,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
-import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -31,55 +29,14 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  */
 public class XChangeTextFilter extends XViewerTextFilter {
 
-   private final Map<Artifact, ArtifactChange> artifactToChangeMap;
-   private ArrayList<ArtifactChange> docOrderedChanges;
-   private boolean showDocumentOrderFilter = false;
+   private final List<ArtifactChange> orderedChanges;
+   private boolean showDocumentOrderFilter;
+   private int lastSize;
 
    public XChangeTextFilter(ChangeXViewer changeXViewer) {
       super(changeXViewer);
-      this.artifactToChangeMap = new HashMap<Artifact, ArtifactChange>();
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public boolean select(Viewer viewer, Object parentElement, Object element) {
-      if (isShowDocumentOrderFilter()) {
-         try {
-            computeDocOrderedChanges((Collection<Change>) parentElement);
-            if (docOrderedChanges != null) {
-               return docOrderedChanges.contains(element);
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-      }
-      return super.select(viewer, parentElement, element);
-   }
-
-   private void computeDocOrderedChanges(Collection<Change> changes) throws OseeCoreException {
-      if (docOrderedChanges != null) {
-         return;
-      }
-      Set<Artifact> artifacts = new HashSet<Artifact>();
-      if (this.docOrderedChanges == null) {
-         this.docOrderedChanges = new ArrayList<ArtifactChange>();
-      }
-      for (Object object : changes) {
-         if (object instanceof ArtifactChange) {
-            ArtifactChange artifactChanged = (ArtifactChange) object;
-            Artifact artifact = artifactChanged.getChangeArtifact();
-            if (artifact != null) {
-               artifacts.add(artifact);
-               artifactToChangeMap.put(artifact, artifactChanged);
-            }
-         }
-      }
-
-      DefaultHierarchySorter sorter = new DefaultHierarchySorter();
-
-      for (Artifact artifact : sorter.sort(artifacts)) {
-         docOrderedChanges.add(artifactToChangeMap.get(artifact));
-      }
+      this.orderedChanges = new ArrayList<ArtifactChange>();
+      lastSize = -1;
    }
 
    public boolean isShowDocumentOrderFilter() {
@@ -88,8 +45,55 @@ public class XChangeTextFilter extends XViewerTextFilter {
 
    public void setShowDocumentOrderFilter(boolean showDocumentOrderFilter) {
       this.showDocumentOrderFilter = showDocumentOrderFilter;
-      // Reset cache so it re-computes
-      docOrderedChanges = null;
+      lastSize = -1;
    }
 
+   @Override
+   public boolean select(Viewer viewer, Object parentElement, Object element) {
+      boolean accept = false;
+      if (isShowDocumentOrderFilter()) {
+         if (parentElement instanceof Collection<?>) {
+            Collection<?> data = (Collection<?>) parentElement;
+            if (data.size() == 1 && data.iterator().next() instanceof String) {
+               accept = super.select(viewer, parentElement, element);
+            } else {
+               if (lastSize != data.size()) {
+                  try {
+                     computeDocOrder(data);
+                     lastSize = data.size();
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  }
+               }
+               accept = orderedChanges.contains(element);
+            }
+         }
+      } else {
+         accept = super.select(viewer, parentElement, element);
+      }
+      return accept;
+   }
+
+   private boolean selectInDocOrder(Viewer viewer, Object parentElement, Object element) {
+      return false;
+   }
+
+   private void computeDocOrder(Collection<?> data) throws OseeCoreException {
+      Map<Artifact, ArtifactChange> artChangeMap = new HashMap<Artifact, ArtifactChange>();
+      for (Object object : data) {
+         if (object instanceof ArtifactChange) {
+            ArtifactChange artifactChanged = (ArtifactChange) object;
+            Artifact artifact = artifactChanged.getChangeArtifact();
+            if (artifact != null) {
+               artChangeMap.put(artifact, artifactChanged);
+            }
+         }
+      }
+      orderedChanges.clear();
+      DefaultHierarchySorter sorter = new DefaultHierarchySorter();
+      List<Artifact> sortedArtifacts = sorter.sort(artChangeMap.keySet());
+      for (Artifact artifact : sortedArtifacts) {
+         orderedChanges.add(artChangeMap.get(artifact));
+      }
+   }
 }

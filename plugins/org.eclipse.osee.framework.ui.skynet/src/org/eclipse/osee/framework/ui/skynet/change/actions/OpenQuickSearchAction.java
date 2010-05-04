@@ -22,6 +22,7 @@ public class OpenQuickSearchAction extends Action {
    public OpenQuickSearchAction(ChangeUiData changeData) {
       super("Open Quick Search", Action.AS_PUSH_BUTTON);
       this.changeData = changeData;
+      setId("open.quick.search.change.report");
       setToolTipText("Open Quick Search");
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH));
    }

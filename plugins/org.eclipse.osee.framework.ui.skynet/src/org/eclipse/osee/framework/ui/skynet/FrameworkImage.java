@@ -65,6 +65,7 @@ public enum FrameworkImage implements KeyedImage {
    DELETE("delete.png"),
    DELETE_EDIT("delete_edit.gif"),
    DIRTY("dirty.gif"),
+   DOCUMENT("docOrder.gif"),
    DOT_RED("red_light.gif"),
    DOT_YELLOW("yellow_light.gif"),
    DOT_GREEN("green_light.gif"),
