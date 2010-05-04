@@ -26,9 +26,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
@@ -327,9 +331,10 @@ public class RendererManager {
       return diff(artifactDelta, new NullProgressMonitor(), show, options);
    }
 
-   public static void diffInJob(final Collection<ArtifactDelta> itemsToCompare, final VariableMap options) {
-      IExceptionableRunnable runnable = new IExceptionableRunnable() {
-         public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
+   public static Job diffInJob(final Collection<ArtifactDelta> itemsToCompare, final VariableMap options) {
+      IOperation operation = new AbstractOperation("Combined Diff", SkynetGuiPlugin.PLUGIN_ID) {
+         @Override
+         protected void doWork(IProgressMonitor monitor) throws Exception {
             ArtifactDelta entry = itemsToCompare.iterator().next();
             Artifact sampleArtifact =
                   entry.getStartArtifact() != null ? entry.getStartArtifact() : entry.getEndArtifact();
@@ -337,9 +342,8 @@ public class RendererManager {
             IRenderer renderer = getBestRenderer(PresentationType.DIFF, sampleArtifact, options);
             IComparator comparator = renderer.getComparator();
             comparator.compareArtifacts(monitor, PresentationType.DIFF, itemsToCompare);
-            return Status.OK_STATUS;
          }
       };
-      Jobs.runInJob("Combined Diff", runnable, SkynetGuiPlugin.class, SkynetGuiPlugin.PLUGIN_ID);
+      return Operations.executeAsJob(operation, false);
    }
 }
