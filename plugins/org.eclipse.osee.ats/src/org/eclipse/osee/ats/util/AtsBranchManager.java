@@ -78,7 +78,7 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * BranchManager contains methods necessary for ATS objects to interact with creation, view and commit of branches.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class AtsBranchManager {
@@ -117,7 +117,7 @@ public class AtsBranchManager {
 
    /**
     * Return true if merge branch exists in DB (whether archived or not)
-    *
+    * 
     * @param destinationBranch
     * @return true
     * @throws OseeCoreException
@@ -258,7 +258,8 @@ public class AtsBranchManager {
       Collection<TransactionRecord> transactionIds = new ArrayList<TransactionRecord>();
       for (TransactionRecord transactionId : committedTransactions) {
          // exclude working branches including branch states that are re-baselined
-         if (transactionId.getBranch().getBranchType().isBaselineBranch()) {
+         Branch branch = transactionId.getBranch();
+         if (branch.getBranchType().isBaselineBranch() && branch.getArchiveState().isUnArchived()) {
             transactionIds.add(transactionId);
          }
       }
@@ -605,7 +606,7 @@ public class AtsBranchManager {
 
    /**
     * Perform error checks and popup confirmation dialogs associated with creating a working branch.
-    *
+    * 
     * @param pageId if specified, WorkPage gets callback to provide confirmation that branch can be created
     * @param popup if true, errors are popped up to user; otherwise sent silently in Results
     * @return Result return of status
@@ -751,7 +752,7 @@ public class AtsBranchManager {
 
    /**
     * Return ChangeData represented by commit to commitConfigArt or earliest commit if commitConfigArt == null
-    *
+    * 
     * @param commitConfigArt that configures commit or null
     */
    public ChangeData getChangeData(ICommitConfigArtifact commitConfigArt) throws OseeCoreException {
