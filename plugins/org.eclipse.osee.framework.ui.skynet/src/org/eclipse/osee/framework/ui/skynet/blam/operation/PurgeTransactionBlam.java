@@ -27,7 +27,7 @@ public class PurgeTransactionBlam extends AbstractBlam {
 
    @Override
    public String getName() {
-      return "Delete Transaction";
+      return "Purge Transaction";
    }
 
    @Override
