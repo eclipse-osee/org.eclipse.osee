@@ -171,13 +171,15 @@ public class UnsubscribeServlet extends OseeHttpServlet {
 
    private static final class DeleteRelationTransaction extends AbstractDbTxOperation {
       private final static String SELECT_RELATION_LINK =
-            "SELECT txs.gamma_id, rel.rel_link_id FROM osee_relation_link rel, osee_txs txs WHERE rel.a_art_id = ? AND rel.b_art_id = ? AND rel.rel_link_type_id = ? AND rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current = ?";
+            "select txs.gamma_id, rel.rel_link_id from osee_relation_link rel, osee_txs txs where rel.a_art_id = ? and rel.b_art_id = ? and rel.rel_link_type_id = ? and rel.gamma_id=txs.gamma_id and txs.branch_id = ? and txs.tx_current = ?";
       private final static String INSERT_INTO_TX_DETAILS =
-            "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) VALUES (?,?,?,?,?,?)";
+            "insert into osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) values (?,?,?,?,?,?)";
       private final static String INSERT_INTO_TXS =
-            "INSERT INTO osee_txs (mod_type, tx_current, transaction_id, gamma_id, branch_id) VALUES (?, ?, ?, ?, ?)";
+            "insert into osee_txs (mod_type, tx_current, transaction_id, gamma_id, branch_id) values (?, ?, ?, ?, ?)";
 
+      private Branch common;
       private int relationId;
+      private int currentGammaId;
       private final UnsubscribeRequest unsubscribeData;
       private final IOseeCachingServiceProvider cacheProvider;
 
@@ -189,23 +191,30 @@ public class UnsubscribeServlet extends OseeHttpServlet {
 
       @Override
       protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
-         IOseeCachingService cacheService = cacheProvider.getOseeCachingService();
-         Branch branch = cacheService.getBranchCache().getCommonBranch();
+         getRelationTxData();
 
+         UpdatePreviousTxCurrent txc = new UpdatePreviousTxCurrent(common, connection);
+         txc.addRelation(relationId);
+         txc.updateTxNotCurrents();
+
+         createNewTxAddressing(connection);
+      }
+
+      private void getRelationTxData() throws OseeCoreException {
+         IOseeCachingService cacheService = cacheProvider.getOseeCachingService();
+         common = cacheService.getBranchCache().getCommonBranch();
          RelationType relationType = cacheService.getRelationTypeCache().get(CoreRelationTypes.Users_Artifact);
          IOseeStatement chStmt = getDatabaseService().getStatement();
+
          try {
             chStmt.runPreparedQuery(1, SELECT_RELATION_LINK, unsubscribeData.getGroupId(), unsubscribeData.getUserId(),
-                  relationType.getId(), branch.getId(), TxChange.CURRENT.getValue());
+                  relationType.getId(), common.getId(), TxChange.CURRENT.getValue());
             if (chStmt.next()) {
-               Integer lastGammaId = chStmt.getInt("gamma_id");
-               int relationId = chStmt.getInt("rel_link_id");
-
-               UpdatePreviousTxCurrent txc = new UpdatePreviousTxCurrent(branch, connection);
-               txc.addRelation(relationId);
-               txc.updateTxNotCurrents();
-
-               createAddressing(connection, branch, lastGammaId);
+               currentGammaId = chStmt.getInt("gamma_id");
+               relationId = chStmt.getInt("rel_link_id");
+            } else {
+               throw new OseeCoreException(String.format("No relation link found for group %s and user %s",
+                     unsubscribeData.getGroupId(), unsubscribeData.getUserId()));
             }
          } finally {
             Lib.close(chStmt);
@@ -213,18 +222,18 @@ public class UnsubscribeServlet extends OseeHttpServlet {
       }
 
       @SuppressWarnings("unchecked")
-      private void createAddressing(OseeConnection connection, Branch branch, Integer lastGammaId) throws OseeDataStoreException {
+      private void createNewTxAddressing(OseeConnection connection) throws OseeDataStoreException {
          int transactionId = getDatabaseService().getSequence().getNextTransactionId();
          String comment =
                String.format("User %s requested unsubscribe from group %s", unsubscribeData.getUserId(),
                      unsubscribeData.getGroupId());
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
          int txType = TransactionDetailsType.NonBaselined.getId();
-         getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TX_DETAILS, branch.getId(), transactionId,
-               comment, timestamp, unsubscribeData.getUserId(), txType);
 
+         getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TX_DETAILS, common.getId(), transactionId,
+               comment, timestamp, unsubscribeData.getUserId(), txType);
          getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TXS, ModificationType.DELETED.getValue(),
-               TxChange.DELETED.getValue(), transactionId, lastGammaId, branch.getId());
+               TxChange.DELETED.getValue(), transactionId, currentGammaId, common.getId());
       }
    }
 }
