@@ -30,6 +30,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationType;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
@@ -69,6 +72,7 @@ public class UnsubscribeServlet extends OseeHttpServlet {
 
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      System.out.println("doGet");
       try {
          String requestUri = request.getRequestURL().toString();
          requestUri = requestUri.replace(request.getPathInfo(), "");
@@ -109,8 +113,8 @@ public class UnsubscribeServlet extends OseeHttpServlet {
    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
          UnsubscribeRequest data = UnsubscribeRequest.createFromXML(request);
-         //         IOperation del = new DeleteRelationTransaction(dbProvider, cacheProvider, data);
-         //         Operations.executeWorkAndCheckStatus(del, new LogProgressMonitor(), -1);
+         IOperation del = new DeleteRelationTransaction(dbProvider, cacheProvider, data);
+         Operations.executeWorkAndCheckStatus(del, new LogProgressMonitor(), -1);
 
          String message =
                String.format("Unsubscribed user [%s] from group [%s] - Success", data.getUserId(), data.getGroupId());
@@ -134,12 +138,12 @@ public class UnsubscribeServlet extends OseeHttpServlet {
          this.userId = userId;
       }
 
-      public String getGroupId() {
-         return groupId;
+      public int getGroupId() {
+         return Integer.parseInt(groupId);
       }
 
-      public String getUserId() {
-         return userId;
+      public int getUserId() {
+         return Integer.parseInt(userId);
       }
 
       public static UnsubscribeRequest createFromXML(HttpServletRequest request) throws IOException, Exception {

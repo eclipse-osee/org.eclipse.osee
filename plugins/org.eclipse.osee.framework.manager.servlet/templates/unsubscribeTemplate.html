@@ -2,44 +2,45 @@
 <head>
 <title>OSEE Unsubscribe</title>
 <script>
-function getHTTPObject() {
-	if (typeof XMLHttpRequest != 'undefined') {
-		return new XMLHttpRequest();
-	}
-	try {
-		return new ActiveXObject("Msxml2.XMLHTTP");
-	} catch (e) {
-		try {
-			return new ActiveXObject("Microsoft.XMLHTTP");
-		} catch (e) {
+	function getHTTPObject() {
+		if (typeof XMLHttpRequest != 'undefined') {
+			return new XMLHttpRequest();
 		}
+		try {
+			return new ActiveXObject("Msxml2.XMLHTTP");
+		} catch (e) {
+			try {
+				return new ActiveXObject("Microsoft.XMLHTTP");
+			} catch (e) {
+			}
+		}
+		return false;
 	}
-	return false;
-}
+	
+	function unsubscribe(elementId, url, groupId, userId) {
+		var deleteMessage = "<request><groupId>" + groupId + "</groupId><userId>"+userId+"</userId></request>";
+	
+		var element = document.getElementById(elementId);
+		element.innerHTML = "<p><em>Sending unsubscribe request...</em></p>";
 
-function unsubscribe(elementId, url, groupId, userId) {
-   var deleteMessage = "<request><groupId>"+ groupId +"</groupId><userId>"+userId+"</userId></request>";
-
-   var element = document.getElementById(elementId);
-   element.innerHTML = "<p><em>Sending unsubscribe request...</em></p>";
-
-   var xmlhttp =  getHTTPObject()
-   xmlhttp.open("DELETE", url, true);
-   xmlhttp.onreadystatechange = function(){
-       if (xmlhttp.readyState == 4){
-          var response = xmlhttp.responseText;       
-          if(xmlhttp.status == 200 || xmlhttp.status == 202) {
-             element.innerHTML = "<p>" + xmlhttp.responseText + "</p>";
-   			 alert("Got it");
-   		  } else {
-             element.innerHTML = "<p><em>Error sending request</em></p>";
- 			 }
-	   }
-  }
-   xmlhttp.setRequestHeader("Content-Type", "application/xml;charset=utf-8");
-    alert("Sending");
-   xmlhttp.send(deleteMessage);
-}
+		var xmlhttp = getHTTPObject();
+		xmlhttp.open("DELETE", url, true);
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4) {
+				while (xmlhttp.status == 0) {}
+				var response = xmlhttp.responseText;
+				if (xmlhttp.status == 200 || xmlhttp.status == 202) {
+					element.innerHTML = "<p>" + xmlhttp.responseText + "</p>";
+					alert("Got it");
+				} else {
+					element.innerHTML = "<p><em>Error sending request" + xmlhttp.status + "</em></p>";
+				}
+			}
+		}
+		xmlhttp.setRequestHeader("Content-Type", "application/xml;charset=utf-8");
+//		alert("Sending");
+		xmlhttp.send(deleteMessage);
+	}
 </script>
 </head>
 <body>
