@@ -74,8 +74,8 @@ public final class RenderingUtil {
             artFile1 = null;
             artFile2 = delta.getEndArtifact();
          } else {
-            artFile1 = delta.getEndArtifact();
-            artFile2 = delta.getStartArtifact();
+            artFile1 = delta.getStartArtifact();
+            artFile2 = delta.getEndArtifact();
          }
       }
       return new Pair<Artifact, Artifact>(artFile1, artFile2);

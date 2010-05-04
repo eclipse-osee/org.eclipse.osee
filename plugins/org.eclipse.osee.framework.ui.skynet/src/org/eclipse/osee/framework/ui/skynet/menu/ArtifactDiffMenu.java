@@ -109,26 +109,26 @@ public final class ArtifactDiffMenu {
          IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
          if (selection.size() == 2) {
             Object[] selections = selection.toArray();
-            Object firstSelection = selections[0];
-            Object secondSelection = selections[1];
-            ArtifactDelta artifactDelta = asArtifactDelta(firstSelection, secondSelection);
+            Object selectionA = selections[0];
+            Object selectionB = selections[1];
+            ArtifactDelta artifactDelta = asArtifactDelta(selectionA, selectionB);
             if (artifactDelta != null) {
                RendererManager.diffInJob(artifactDelta);
             }
          }
       }
 
-      private ArtifactDelta asArtifactDelta(Object first, Object second) throws OseeCoreException {
+      private ArtifactDelta asArtifactDelta(Object selectionA, Object selectionB) throws OseeCoreException {
          ArtifactDelta toReturn = null;
-         if (first instanceof Change && second instanceof Change) {
-            Change firstChange = (Change) first;
-            Change secondChange = (Change) second;
+         if (selectionA instanceof Change && selectionB instanceof Change) {
+            Change changeA = (Change) selectionA;
+            Change changeB = (Change) selectionB;
 
-            Conditions.checkExpressionFailOnTrue(firstChange.getArtId() != secondChange.getArtId(),
-                  "Change art ids don't match [%s:%s]", firstChange.getArtId(), secondChange.getArtId());
+            Conditions.checkExpressionFailOnTrue(changeA.getArtId() != changeB.getArtId(),
+                  "Change art ids don't match [%s:%s]", changeA.getArtId(), changeB.getArtId());
 
-            int artId = firstChange.getArtId();
-            TransactionDelta txDelta = asTxDelta(firstChange, secondChange);
+            int artId = changeA.getArtId();
+            TransactionDelta txDelta = asTxDelta(changeA, changeB);
 
             Artifact startArtifact = ArtifactQuery.getHistoricalArtifactFromId(artId, txDelta.getStartTx(), true);
             Artifact endArtifact = ArtifactQuery.getHistoricalArtifactFromId(artId, txDelta.getEndTx(), true);
@@ -137,12 +137,12 @@ public final class ArtifactDiffMenu {
          return toReturn;
       }
 
-      private TransactionDelta asTxDelta(Change first, Change second) {
-         TransactionRecord startTx = first.getTxDelta().getStartTx();
-         TransactionRecord endTx = second.getTxDelta().getStartTx();
-         if (startTx.getId() < endTx.getId()) {
-            startTx = second.getTxDelta().getStartTx();
-            endTx = first.getTxDelta().getStartTx();
+      private TransactionDelta asTxDelta(Change first, Change second) throws OseeCoreException {
+         TransactionRecord startTx = first.getChangeArtifact().getTransactionRecord();
+         TransactionRecord endTx = second.getChangeArtifact().getTransactionRecord();
+         if (startTx.getId() > endTx.getId()) {
+            startTx = second.getChangeArtifact().getTransactionRecord();
+            endTx =  first.getChangeArtifact().getTransactionRecord();
          }
          return new TransactionDelta(startTx, endTx);
       }
