@@ -22,6 +22,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -35,14 +41,19 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -140,6 +151,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ExportResourcesAction;
 import org.eclipse.ui.actions.ImportResourcesAction;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author Ryan D. Brooks
@@ -368,35 +380,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    /**
     * Reveal an artifact in the viewer and select it.
-    * 
-    * @param artifact
-    */
-   public static void revealArtifact(Artifact artifact) {
-      try {
-         if (artifact.isDeleted()) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
-                  "The artifact " + artifact.getName() + " has been deleted.");
-         } else {
-            if (artifact.isHistorical()) {
-               artifact = ArtifactQuery.getArtifactFromId(artifact.getArtId(), artifact.getBranch(), false);
-            }
-            if (artifact.isOrphan()) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP,
-                     "The artifact " + artifact.getName() + " does not have a parent (orphan).");
-            } else {
-               IWorkbenchPage page = AWorkbench.getActivePage();
-               ArtifactExplorer artifactExplorer = findView(artifact.getBranch(), page);
-               artifactExplorer.treeViewer.setSelection(new StructuredSelection(artifact), true);
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
-   /**
-    * Reveal an artifact in the viewer and select it.
-    * 
+    *
     * @param artifact
     */
    public static void exploreBranch(Branch branch) {
@@ -1491,4 +1475,79 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       return branch;
    }
 
+   /**
+    * Reveal an artifact in the viewer and select it.
+    *
+    * @param artifact
+    */
+   public static void revealArtifact(Artifact artifact) {
+      final ArtifactData data = new ArtifactData(artifact);
+      IOperation operation = new CheckArtifactBeforeReveal(data);
+      Operations.executeAsJob(operation, true, Job.SHORT, new JobChangeAdapter() {
+
+         @Override
+         public void done(IJobChangeEvent event) {
+            IStatus status = event.getResult();
+            if (status.isOK()) {
+               Job uiJob = new UIJob("Reveal in Artifact Explorer") {
+
+                  @Override
+                  public IStatus runInUIThread(IProgressMonitor monitor) {
+                     Artifact artifact = data.getArtifact();
+                     IWorkbenchPage page = AWorkbench.getActivePage();
+                     ArtifactExplorer artifactExplorer = findView(artifact.getBranch(), page);
+                     artifactExplorer.treeViewer.setSelection(new StructuredSelection(artifact), true);
+                     return Status.OK_STATUS;
+                  }
+               };
+               Jobs.startJob(uiJob);
+            }
+         }
+      });
+   }
+
+   private static final class ArtifactData {
+      private Artifact artifact;
+
+      ArtifactData(Artifact artifact) {
+         this.artifact = artifact;
+      }
+
+      Artifact getArtifact() {
+         return artifact;
+      }
+
+      void setArtifact(Artifact artifact) {
+         this.artifact = artifact;
+      }
+   }
+
+   private static final class CheckArtifactBeforeReveal extends AbstractOperation {
+
+      private final ArtifactData artifactData;
+
+      public CheckArtifactBeforeReveal(ArtifactData artifactData) {
+         super("Check Artifact Before Reveal", SkynetGuiPlugin.PLUGIN_ID);
+         this.artifactData = artifactData;
+      }
+
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         Conditions.checkNotNull(artifactData, "artifact data");
+
+         Artifact artifact = artifactData.getArtifact();
+         Conditions.checkNotNull(artifactData, "artifact");
+         if (artifact.isDeleted()) {
+            throw new OseeStateException("The artifact " + artifact.getName() + " has been deleted.");
+         } else {
+            if (artifact.isHistorical()) {
+               artifactData.setArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), artifact.getBranch(),
+                     false));
+            }
+            if (artifact.isOrphan()) {
+               throw new OseeStateException("The artifact " + artifact.getName() + " does not have a parent (orphan).");
+            }
+         }
+      }
+   }
 }
