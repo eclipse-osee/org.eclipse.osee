@@ -384,7 +384,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     * @throws MultipleArtifactsExist if this artifact has more than one parent
     */
    public boolean hasParent() throws OseeCoreException {
-      int parentCount = getRelatedArtifactsCount(CoreRelationTypes.Default_Hierarchical__Parent);
+      int parentCount = getRelatedArtifactsUnSorted(CoreRelationTypes.Default_Hierarchical__Parent).size();
       if (parentCount > 1) {
          throw new MultipleArtifactsExist(humanReadableId + " has " + parentCount + " parents");
       }
@@ -1640,7 +1640,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
             change.setModTypeGuid(AttributeEventModificationType.getType(attribute.getModificationType()).getGuid());
             for (Object obj : attribute.getAttributeDataProvider().getData()) {
                if (obj == null) {
-                  change.getData().add((String) "");
+                  change.getData().add("");
                } else if (obj instanceof String) {
                   change.getData().add((String) obj);
                } else {
