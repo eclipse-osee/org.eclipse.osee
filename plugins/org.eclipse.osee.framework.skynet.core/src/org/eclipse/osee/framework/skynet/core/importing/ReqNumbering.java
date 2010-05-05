@@ -79,6 +79,11 @@ public class ReqNumbering implements Comparable<ReqNumbering> {
       return this.compareTo((ReqNumbering) o) == 0;
    }
 
+   @Override
+   public int hashCode() {
+      return number.hashCode();
+   }
+
    private int getValue(int index) {
       if (index <= values.length - 1) {
          return Integer.parseInt(values[index]);

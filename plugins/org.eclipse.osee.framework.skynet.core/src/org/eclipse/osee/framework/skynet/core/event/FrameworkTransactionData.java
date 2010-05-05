@@ -270,7 +270,7 @@ public class FrameworkTransactionData {
                } else {
                   unloadedAddedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
                   if (branchId == -1) {
-                     branchId = xArtifactModifiedEvent.unloadedArtifact.getId();
+                     branchId = xArtifactModifiedEvent.unloadedArtifact.getBranchId();
                   }
                }
             }
@@ -283,7 +283,7 @@ public class FrameworkTransactionData {
                } else {
                   unloadedDeletedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
                   if (branchId == -1) {
-                     branchId = xArtifactModifiedEvent.unloadedArtifact.getId();
+                     branchId = xArtifactModifiedEvent.unloadedArtifact.getBranchId();
                   }
                }
             }
@@ -296,7 +296,7 @@ public class FrameworkTransactionData {
                } else {
                   unloadedChangedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
                   if (branchId == -1) {
-                     branchId = xArtifactModifiedEvent.unloadedArtifact.getId();
+                     branchId = xArtifactModifiedEvent.unloadedArtifact.getBranchId();
                   }
                }
             }

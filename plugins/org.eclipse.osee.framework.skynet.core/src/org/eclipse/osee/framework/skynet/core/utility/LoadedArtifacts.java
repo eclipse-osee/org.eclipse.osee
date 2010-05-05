@@ -135,7 +135,7 @@ public class LoadedArtifacts {
             for (UnloadedArtifact unloadedArtifact : new CopyOnWriteArrayList<UnloadedArtifact>(unloadedArtifacts)) {
                Artifact art =
                      ArtifactCache.getActive(unloadedArtifact.getArtifactId(),
-                           BranchManager.getBranch(unloadedArtifact.getId()));
+                           BranchManager.getBranch(unloadedArtifact.getBranchId()));
                if (art != null) {
                   unloadedArtifacts.remove(unloadedArtifact);
                   artifacts.add(art);

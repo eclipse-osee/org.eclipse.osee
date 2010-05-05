@@ -228,7 +228,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, Level.INFO, String.format(
                            "Exception updating %s's attribute change for attributeTypeId %d.", artifact.getSafeName(),
-                           attributeType), ex);
+                           attributeType.getId()), ex);
                   }
                }
             }

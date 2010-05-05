@@ -635,7 +635,7 @@ public class InternalEventManager {
                } else {
                   transData.unloadedAddedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
                   if (transData.branchId == -1) {
-                     transData.branchId = xArtifactModifiedEvent.unloadedArtifact.getId();
+                     transData.branchId = xArtifactModifiedEvent.unloadedArtifact.getBranchId();
                   }
                }
             }
@@ -648,7 +648,7 @@ public class InternalEventManager {
                } else {
                   transData.unloadedDeletedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
                   if (transData.branchId == -1) {
-                     transData.branchId = xArtifactModifiedEvent.unloadedArtifact.getId();
+                     transData.branchId = xArtifactModifiedEvent.unloadedArtifact.getBranchId();
                   }
                }
             }
@@ -661,7 +661,7 @@ public class InternalEventManager {
                } else {
                   transData.unloadedChangedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
                   if (transData.branchId == -1) {
-                     transData.branchId = xArtifactModifiedEvent.artifact.getBranch().getId();
+                     transData.branchId = xArtifactModifiedEvent.unloadedArtifact.getBranchId();
                   }
                }
             }

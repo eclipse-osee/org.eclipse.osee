@@ -28,9 +28,6 @@ public class UnloadedArtifact {
       this.artifactTypeId = artifactTypeId;
    }
 
-   /**
-    * @return the artifactId
-    */
    public int getArtifactId() {
       return artifactId;
    }
@@ -43,37 +40,22 @@ public class UnloadedArtifact {
       return BranchManager.getBranch(branchId).getGuid();
    }
 
-   /**
-    * @param artifactId the artifactId to set
-    */
    public void setArtifactId(int artifactId) {
       this.artifactId = artifactId;
    }
 
-   /**
-    * @return the branchId
-    */
-   public int getId() {
+   public int getBranchId() {
       return branchId;
    }
 
-   /**
-    * @param branchId the branchId to set
-    */
    public void setBranchId(int branchId) {
       this.branchId = branchId;
    }
 
-   /**
-    * @return the artifactTypeId
-    */
    public int getArtifactTypeId() {
       return artifactTypeId;
    }
 
-   /**
-    * @param artifactTypeId the artifactTypeId to set
-    */
    public void setArtifactTypeId(int artifactTypeId) {
       this.artifactTypeId = artifactTypeId;
    }

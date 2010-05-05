@@ -39,8 +39,8 @@ public class Sender {
 
    public Sender(RemoteNetworkSender1 networkSender) {
       this(networkSender.getSourceObject(), new OseeClientSession(networkSender.getSessionId(),
-            networkSender.getMachineName(), networkSender.getUserId(), networkSender.getMachineIp(), new Integer(
-                  networkSender.getPort()).intValue(), networkSender.getClientVersion(), "n/a"));
+            networkSender.getMachineName(), networkSender.getUserId(), networkSender.getMachineIp(),
+                  networkSender.getPort(), networkSender.getClientVersion(), "n/a"));
    }
 
    public Sender(Object sourceObject) throws OseeAuthenticationRequiredException {

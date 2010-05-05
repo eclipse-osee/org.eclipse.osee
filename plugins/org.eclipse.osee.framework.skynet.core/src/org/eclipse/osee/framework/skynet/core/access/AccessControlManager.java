@@ -94,14 +94,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    private static final AccessControlManager instance = new AccessControlManager();
 
    private AccessControlManager() {
-      accessControlListCache = new DoubleKeyHashMap<Integer, AccessObject, PermissionEnum>();
-      objectToSubjectCache = new HashCollection<AccessObject, Integer>();
-      subjectToGroupCache = new HashCollection<Integer, Integer>();
-      groupToSubjectsCache = new HashCollection<Integer, Integer>();
-      objectToBranchLockCache = new HashMap<Integer, Integer>();
-      lockedObjectToSubject = new HashMap<Integer, Integer>();
-      subjectToPermissionCache = new HashCollection<Integer, PermissionEnum>();
-
+      initializeCaches();
       try {
          populateAccessControlLists();
       } catch (Exception ex) {
@@ -109,6 +102,16 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
 
       OseeEventManager.addListener(this);
+   }
+
+   private static void initializeCaches() {
+      accessControlListCache = new DoubleKeyHashMap<Integer, AccessObject, PermissionEnum>();
+      objectToSubjectCache = new HashCollection<AccessObject, Integer>();
+      subjectToGroupCache = new HashCollection<Integer, Integer>();
+      groupToSubjectsCache = new HashCollection<Integer, Integer>();
+      objectToBranchLockCache = new HashMap<Integer, Integer>();
+      lockedObjectToSubject = new HashMap<Integer, Integer>();
+      subjectToPermissionCache = new HashCollection<Integer, PermissionEnum>();
    }
 
    private static void populateAccessControlLists() throws OseeCoreException {
