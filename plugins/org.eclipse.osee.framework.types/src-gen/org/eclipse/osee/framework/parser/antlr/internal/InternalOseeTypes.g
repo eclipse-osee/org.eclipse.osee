@@ -91,7 +91,7 @@ entryRuleOseeTypeModel returns [EObject current=null]
 
 // Rule OseeTypeModel
 ruleOseeTypeModel returns [EObject current=null] 
-    @init { @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -262,7 +262,7 @@ entryRuleImport returns [EObject current=null]
 
 // Rule Import
 ruleImport returns [EObject current=null] 
-    @init { @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -388,7 +388,7 @@ entryRuleOseeType returns [EObject current=null]
 
 // Rule OseeType
 ruleOseeType returns [EObject current=null] 
-    @init { @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -462,7 +462,7 @@ entryRuleXArtifactType returns [EObject current=null]
 
 // Rule XArtifactType
 ruleXArtifactType returns [EObject current=null] 
-    @init { @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -640,7 +640,7 @@ entryRuleXAttributeTypeRef returns [EObject current=null]
 
 // Rule XAttributeTypeRef
 ruleXAttributeTypeRef returns [EObject current=null] 
-    @init { @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -714,7 +714,7 @@ entryRuleXAttributeType returns [EObject current=null]
 
 // Rule XAttributeType
 ruleXAttributeType returns [EObject current=null] 
-    @init { @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -1249,7 +1249,7 @@ entryRuleXOseeEnumType returns [EObject current=null]
 
 // Rule XOseeEnumType
 ruleXOseeEnumType returns [EObject current=null] 
-    @init { @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -1360,7 +1360,7 @@ entryRuleXOseeEnumEntry returns [EObject current=null]
 
 // Rule XOseeEnumEntry
 ruleXOseeEnumEntry returns [EObject current=null] 
-    @init { @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -1463,7 +1463,7 @@ entryRuleXOseeEnumOverride returns [EObject current=null]
 
 // Rule XOseeEnumOverride
 ruleXOseeEnumOverride returns [EObject current=null] 
-    @init { @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -1562,7 +1562,7 @@ entryRuleOverrideOption returns [EObject current=null]
 
 // Rule OverrideOption
 ruleOverrideOption returns [EObject current=null] 
-    @init { @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -1610,7 +1610,7 @@ entryRuleAddEnum returns [EObject current=null]
 
 // Rule AddEnum
 ruleAddEnum returns [EObject current=null] 
-    @init { @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -1713,7 +1713,7 @@ entryRuleRemoveEnum returns [EObject current=null]
 
 // Rule RemoveEnum
 ruleRemoveEnum returns [EObject current=null] 
-    @init { @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
@@ -1759,7 +1759,7 @@ entryRuleXRelationType returns [EObject current=null]
 
 // Rule XRelationType
 ruleXRelationType returns [EObject current=null] 
-    @init { @SuppressWarnings("unused") EObject temp=null; setCurrentLookahead(); resetLookahead(); 
+    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
     }
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;

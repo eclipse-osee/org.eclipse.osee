@@ -10,6 +10,7 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 
+@SuppressWarnings("all")
 public class InternalOseeTypesLexer extends Lexer {
     public static final int RULE_ID=6;
     public static final int RULE_ANY_OTHER=11;
@@ -1127,10 +1128,10 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_WHOLE_NUM_STR() throws RecognitionException {
         try {
             int _type = RULE_WHOLE_NUM_STR;
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3847:20: ( ( '0' .. '9' )+ )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3847:22: ( '0' .. '9' )+
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5003:20: ( ( '0' .. '9' )+ )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5003:22: ( '0' .. '9' )+
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3847:22: ( '0' .. '9' )+
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5003:22: ( '0' .. '9' )+
             int cnt1=0;
             loop1:
             do {
@@ -1144,7 +1145,7 @@ public class InternalOseeTypesLexer extends Lexer {
 
                 switch (alt1) {
             	case 1 :
-            	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3847:23: '0' .. '9'
+            	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5003:23: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -1174,10 +1175,10 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_ID() throws RecognitionException {
         try {
             int _type = RULE_ID;
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3849:9: ( ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )* )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3849:11: ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5005:9: ( ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )* )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5005:11: ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3849:11: ( '^' )?
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5005:11: ( '^' )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -1186,7 +1187,7 @@ public class InternalOseeTypesLexer extends Lexer {
             }
             switch (alt2) {
                 case 1 :
-                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3849:11: '^'
+                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5005:11: '^'
                     {
                     match('^'); 
 
@@ -1205,7 +1206,7 @@ public class InternalOseeTypesLexer extends Lexer {
                 recover(mse);    throw mse;
             }
 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3849:40: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5005:40: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
             loop3:
             do {
                 int alt3=2;
@@ -1253,10 +1254,10 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_INT() throws RecognitionException {
         try {
             int _type = RULE_INT;
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3851:10: ( ( '0' .. '9' )+ )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3851:12: ( '0' .. '9' )+
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5007:10: ( ( '0' .. '9' )+ )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5007:12: ( '0' .. '9' )+
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3851:12: ( '0' .. '9' )+
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5007:12: ( '0' .. '9' )+
             int cnt4=0;
             loop4:
             do {
@@ -1270,7 +1271,7 @@ public class InternalOseeTypesLexer extends Lexer {
 
                 switch (alt4) {
             	case 1 :
-            	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3851:13: '0' .. '9'
+            	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5007:13: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -1300,10 +1301,10 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_STRING() throws RecognitionException {
         try {
             int _type = RULE_STRING;
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3853:13: ( ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3853:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5009:13: ( ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5009:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3853:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5009:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -1315,16 +1316,16 @@ public class InternalOseeTypesLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("3853:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )", 7, 0, input);
+                    new NoViableAltException("5009:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )", 7, 0, input);
 
                 throw nvae;
             }
             switch (alt7) {
                 case 1 :
-                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3853:16: '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"'
+                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5009:16: '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"'
                     {
                     match('\"'); 
-                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3853:20: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )*
+                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5009:20: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )*
                     loop5:
                     do {
                         int alt5=3;
@@ -1340,7 +1341,7 @@ public class InternalOseeTypesLexer extends Lexer {
 
                         switch (alt5) {
                     	case 1 :
-                    	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3853:21: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
+                    	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5009:21: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
                     	    {
                     	    match('\\'); 
                     	    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -1357,7 +1358,7 @@ public class InternalOseeTypesLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3853:62: ~ ( ( '\\\\' | '\"' ) )
+                    	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5009:62: ~ ( ( '\\\\' | '\"' ) )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -1383,10 +1384,10 @@ public class InternalOseeTypesLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3853:82: '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\''
+                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5009:82: '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\''
                     {
                     match('\''); 
-                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3853:87: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )*
+                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5009:87: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )*
                     loop6:
                     do {
                         int alt6=3;
@@ -1402,7 +1403,7 @@ public class InternalOseeTypesLexer extends Lexer {
 
                         switch (alt6) {
                     	case 1 :
-                    	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3853:88: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
+                    	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5009:88: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
                     	    {
                     	    match('\\'); 
                     	    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -1419,7 +1420,7 @@ public class InternalOseeTypesLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3853:129: ~ ( ( '\\\\' | '\\'' ) )
+                    	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5009:129: ~ ( ( '\\\\' | '\\'' ) )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -1461,12 +1462,12 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_ML_COMMENT() throws RecognitionException {
         try {
             int _type = RULE_ML_COMMENT;
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3855:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3855:19: '/*' ( options {greedy=false; } : . )* '*/'
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5011:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5011:19: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3855:24: ( options {greedy=false; } : . )*
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5011:24: ( options {greedy=false; } : . )*
             loop8:
             do {
                 int alt8=2;
@@ -1491,7 +1492,7 @@ public class InternalOseeTypesLexer extends Lexer {
 
                 switch (alt8) {
             	case 1 :
-            	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3855:52: .
+            	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5011:52: .
             	    {
             	    matchAny(); 
 
@@ -1519,12 +1520,12 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_SL_COMMENT() throws RecognitionException {
         try {
             int _type = RULE_SL_COMMENT;
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3857:17: ( '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )? )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3857:19: '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )?
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5013:17: ( '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )? )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5013:19: '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )?
             {
             match("//"); 
 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3857:24: (~ ( ( '\\n' | '\\r' ) ) )*
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5013:24: (~ ( ( '\\n' | '\\r' ) ) )*
             loop9:
             do {
                 int alt9=2;
@@ -1537,7 +1538,7 @@ public class InternalOseeTypesLexer extends Lexer {
 
                 switch (alt9) {
             	case 1 :
-            	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3857:24: ~ ( ( '\\n' | '\\r' ) )
+            	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5013:24: ~ ( ( '\\n' | '\\r' ) )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFE') ) {
             	        input.consume();
@@ -1558,7 +1559,7 @@ public class InternalOseeTypesLexer extends Lexer {
                 }
             } while (true);
 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3857:40: ( ( '\\r' )? '\\n' )?
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5013:40: ( ( '\\r' )? '\\n' )?
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -1567,9 +1568,9 @@ public class InternalOseeTypesLexer extends Lexer {
             }
             switch (alt11) {
                 case 1 :
-                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3857:41: ( '\\r' )? '\\n'
+                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5013:41: ( '\\r' )? '\\n'
                     {
-                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3857:41: ( '\\r' )?
+                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5013:41: ( '\\r' )?
                     int alt10=2;
                     int LA10_0 = input.LA(1);
 
@@ -1578,7 +1579,7 @@ public class InternalOseeTypesLexer extends Lexer {
                     }
                     switch (alt10) {
                         case 1 :
-                            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3857:41: '\\r'
+                            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5013:41: '\\r'
                             {
                             match('\r'); 
 
@@ -1608,10 +1609,10 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_WS() throws RecognitionException {
         try {
             int _type = RULE_WS;
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3859:9: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3859:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5015:9: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5015:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3859:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5015:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
             int cnt12=0;
             loop12:
             do {
@@ -1664,8 +1665,8 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_ANY_OTHER() throws RecognitionException {
         try {
             int _type = RULE_ANY_OTHER;
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3861:16: ( . )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:3861:18: .
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5017:16: ( . )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g:5017:18: .
             {
             matchAny(); 
 

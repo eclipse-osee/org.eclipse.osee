@@ -36,13 +36,13 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//OseeTypeModel:
 		//  imports+=Import* (artifactTypes+=XArtifactType|relationTypes+=XRelationType|
-		//  attributeTypes+=XAttributeType|enumTypes+=XOseeEnumType|enumOverrides+=
-		//  XOseeEnumOverride)*;
+		//  attributeTypes+=XAttributeType|enumTypes+=XOseeEnumType|
+		//  enumOverrides+=XOseeEnumOverride)*;
 		public ParserRule getRule() { return rule; }
 
 		//imports+=Import* (artifactTypes+=XArtifactType|relationTypes+=XRelationType|
-		//attributeTypes+=XAttributeType|enumTypes+=XOseeEnumType|enumOverrides+=
-		//XOseeEnumOverride)*
+		//attributeTypes+=XAttributeType|enumTypes+=XOseeEnumType|
+		//enumOverrides+=XOseeEnumOverride)*
 		public Group getGroup() { return cGroup; }
 
 		//imports+=Import*
@@ -51,8 +51,9 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 		//Import
 		public RuleCall getImportsImportParserRuleCall_0_0() { return cImportsImportParserRuleCall_0_0; }
 
-		//(artifactTypes+=XArtifactType|relationTypes+=XRelationType|attributeTypes+=
-		//XAttributeType|enumTypes+=XOseeEnumType|enumOverrides+=XOseeEnumOverride)*
+		//(artifactTypes+=XArtifactType|relationTypes+=XRelationType|
+		//attributeTypes+=XAttributeType|enumTypes+=XOseeEnumType|
+		//enumOverrides+=XOseeEnumOverride)*
 		public Alternatives getAlternatives_1() { return cAlternatives_1; }
 
 		//artifactTypes+=XArtifactType
@@ -227,14 +228,14 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 		//XArtifactType:
 		//  abstract?="abstract"? "artifactType" name=NAME_REFERENCE ("extends"
 		//  superArtifactTypes+=[XArtifactType|NAME_REFERENCE] ("," superArtifactTypes+=[
-		//  XArtifactType|NAME_REFERENCE])*)? "{" "guid" typeGuid=STRING validAttributeTypes+=
-		//  XAttributeTypeRef* "}";
+		//  XArtifactType|NAME_REFERENCE])*)? "{" "guid" typeGuid=STRING
+		//  validAttributeTypes+=XAttributeTypeRef* "}";
 		public ParserRule getRule() { return rule; }
 
 		//abstract?="abstract"? "artifactType" name=NAME_REFERENCE ("extends"
 		//superArtifactTypes+=[XArtifactType|NAME_REFERENCE] ("," superArtifactTypes+=[
-		//XArtifactType|NAME_REFERENCE])*)? "{" "guid" typeGuid=STRING validAttributeTypes+=
-		//XAttributeTypeRef* "}"
+		//XArtifactType|NAME_REFERENCE])*)? "{" "guid" typeGuid=STRING
+		//validAttributeTypes+=XAttributeTypeRef* "}"
 		public Group getGroup() { return cGroup; }
 
 		//abstract?="abstract"?
@@ -410,24 +411,26 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_18 = (Keyword)cGroup.eContents().get(18);
 		
 		//XAttributeType:
-		//  "attributeType" name=NAME_REFERENCE ("extends" baseAttributeType=AttributeBaseType)
-		//  ("overrides" override=[XAttributeType|NAME_REFERENCE])? "{" "guid" typeGuid=STRING
-		//  "dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
-		//  "UriAttributeDataProvider" | QUALIFIED_NAME ) "min" min=WHOLE_NUM_STR "max" max=(
-		//  WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=( "DefaultAttributeTaggerProvider" |
-		//  QUALIFIED_NAME ))? ("enumType" enumType=[XOseeEnumType|NAME_REFERENCE])? (
-		//  "description" description=STRING)? ("defaultValue" defaultValue=STRING)? (
-		//  "fileExtension" fileExtension=STRING)? "}";
+		//  "attributeType" name=NAME_REFERENCE ("extends"
+		//  baseAttributeType=AttributeBaseType) ("overrides" override=[XAttributeType|
+		//  NAME_REFERENCE])? "{" "guid" typeGuid=STRING "dataProvider" dataProvider=(
+		//  "DefaultAttributeDataProvider" | "UriAttributeDataProvider" | QUALIFIED_NAME
+		//  ) "min" min=WHOLE_NUM_STR "max" max=( WHOLE_NUM_STR | "unlimited" ) (
+		//  "taggerId" taggerId=( "DefaultAttributeTaggerProvider" | QUALIFIED_NAME ))? (
+		//  "enumType" enumType=[XOseeEnumType|NAME_REFERENCE])? ("description"
+		//  description=STRING)? ("defaultValue" defaultValue=STRING)? ("fileExtension"
+		//  fileExtension=STRING)? "}";
 		public ParserRule getRule() { return rule; }
 
-		//"attributeType" name=NAME_REFERENCE ("extends" baseAttributeType=AttributeBaseType)
-		//("overrides" override=[XAttributeType|NAME_REFERENCE])? "{" "guid" typeGuid=STRING
-		//"dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
-		//"UriAttributeDataProvider" | QUALIFIED_NAME ) "min" min=WHOLE_NUM_STR "max" max=(
-		//WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=( "DefaultAttributeTaggerProvider" |
-		//QUALIFIED_NAME ))? ("enumType" enumType=[XOseeEnumType|NAME_REFERENCE])? (
-		//"description" description=STRING)? ("defaultValue" defaultValue=STRING)? (
-		//"fileExtension" fileExtension=STRING)? "}"
+		//"attributeType" name=NAME_REFERENCE ("extends"
+		//baseAttributeType=AttributeBaseType) ("overrides" override=[XAttributeType|
+		//NAME_REFERENCE])? "{" "guid" typeGuid=STRING "dataProvider" dataProvider=(
+		//"DefaultAttributeDataProvider" | "UriAttributeDataProvider" | QUALIFIED_NAME )
+		//"min" min=WHOLE_NUM_STR "max" max=( WHOLE_NUM_STR | "unlimited" ) ("taggerId"
+		//taggerId=( "DefaultAttributeTaggerProvider" | QUALIFIED_NAME ))? ("enumType"
+		//enumType=[XOseeEnumType|NAME_REFERENCE])? ("description" description=STRING)? (
+		//"defaultValue" defaultValue=STRING)? ("fileExtension" fileExtension=STRING)?
+		//"}"
 		public Group getGroup() { return cGroup; }
 
 		//"attributeType"
@@ -665,12 +668,12 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		
 		//XOseeEnumType:
-		//  "oseeEnumType" name=NAME_REFERENCE "{" "guid" typeGuid=STRING enumEntries+=
-		//  XOseeEnumEntry* "}";
+		//  "oseeEnumType" name=NAME_REFERENCE "{" "guid" typeGuid=STRING
+		//  enumEntries+=XOseeEnumEntry* "}";
 		public ParserRule getRule() { return rule; }
 
-		//"oseeEnumType" name=NAME_REFERENCE "{" "guid" typeGuid=STRING enumEntries+=
-		//XOseeEnumEntry* "}"
+		//"oseeEnumType" name=NAME_REFERENCE "{" "guid" typeGuid=STRING
+		//enumEntries+=XOseeEnumEntry* "}"
 		public Group getGroup() { return cGroup; }
 
 		//"oseeEnumType"
@@ -718,10 +721,12 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cEntryGuidSTRINGTerminalRuleCall_3_1_0 = (RuleCall)cEntryGuidAssignment_3_1.eContents().get(0);
 		
 		//XOseeEnumEntry:
-		//  "entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
+		//  "entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid"
+		//  entryGuid=STRING)?;
 		public ParserRule getRule() { return rule; }
 
-		//"entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?
+		//"entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING
+		//)?
 		public Group getGroup() { return cGroup; }
 
 		//"entry"
@@ -767,12 +772,12 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
 		
 		//XOseeEnumOverride:
-		//  "overrides enum" overridenEnumType=[XOseeEnumType|NAME_REFERENCE] "{" inheritAll?=
-		//  "inheritAll"? overrideOptions+=OverrideOption* "}";
+		//  "overrides enum" overridenEnumType=[XOseeEnumType|NAME_REFERENCE] "{"
+		//  inheritAll?="inheritAll"? overrideOptions+=OverrideOption* "}";
 		public ParserRule getRule() { return rule; }
 
-		//"overrides enum" overridenEnumType=[XOseeEnumType|NAME_REFERENCE] "{" inheritAll?=
-		//"inheritAll"? overrideOptions+=OverrideOption* "}"
+		//"overrides enum" overridenEnumType=[XOseeEnumType|NAME_REFERENCE] "{"
+		//inheritAll?="inheritAll"? overrideOptions+=OverrideOption* "}"
 		public Group getGroup() { return cGroup; }
 
 		//"overrides enum"
@@ -840,12 +845,12 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cEntryGuidSTRINGTerminalRuleCall_3_1_0 = (RuleCall)cEntryGuidAssignment_3_1.eContents().get(0);
 		
 		//AddEnum:
-		//  "add" enumEntry=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)
-		//  ?;
+		//  "add" enumEntry=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid"
+		//  entryGuid=STRING)?;
 		public ParserRule getRule() { return rule; }
 
-		//"add" enumEntry=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)
-		//?
+		//"add" enumEntry=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid"
+		//entryGuid=STRING)?
 		public Group getGroup() { return cGroup; }
 
 		//"add"
@@ -937,18 +942,20 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_17 = (Keyword)cGroup.eContents().get(17);
 		
 		//XRelationType:
-		//  "relationType" name=NAME_REFERENCE "{" "guid" typeGuid=STRING "sideAName" sideAName=
-		//  STRING "sideAArtifactType" sideAArtifactType=[XArtifactType|NAME_REFERENCE]
-		//  "sideBName" sideBName=STRING "sideBArtifactType" sideBArtifactType=[XArtifactType|
-		//  NAME_REFERENCE] "defaultOrderType" defaultOrderType=RelationOrderType
-		//  "multiplicity" multiplicity=RelationMultiplicityEnum "}";
+		//  "relationType" name=NAME_REFERENCE "{" "guid" typeGuid=STRING "sideAName"
+		//  sideAName=STRING "sideAArtifactType" sideAArtifactType=[XArtifactType|
+		//  NAME_REFERENCE] "sideBName" sideBName=STRING "sideBArtifactType"
+		//  sideBArtifactType=[XArtifactType|NAME_REFERENCE] "defaultOrderType"
+		//  defaultOrderType=RelationOrderType "multiplicity"
+		//  multiplicity=RelationMultiplicityEnum "}";
 		public ParserRule getRule() { return rule; }
 
-		//"relationType" name=NAME_REFERENCE "{" "guid" typeGuid=STRING "sideAName" sideAName=
-		//STRING "sideAArtifactType" sideAArtifactType=[XArtifactType|NAME_REFERENCE]
-		//"sideBName" sideBName=STRING "sideBArtifactType" sideBArtifactType=[XArtifactType|
-		//NAME_REFERENCE] "defaultOrderType" defaultOrderType=RelationOrderType
-		//"multiplicity" multiplicity=RelationMultiplicityEnum "}"
+		//"relationType" name=NAME_REFERENCE "{" "guid" typeGuid=STRING "sideAName"
+		//sideAName=STRING "sideAArtifactType" sideAArtifactType=[XArtifactType|
+		//NAME_REFERENCE] "sideBName" sideBName=STRING "sideBArtifactType"
+		//sideBArtifactType=[XArtifactType|NAME_REFERENCE] "defaultOrderType"
+		//defaultOrderType=RelationOrderType "multiplicity"
+		//multiplicity=RelationMultiplicityEnum "}"
 		public Group getGroup() { return cGroup; }
 
 		//"relationType"
@@ -1153,8 +1160,8 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//OseeTypeModel:
 	//  imports+=Import* (artifactTypes+=XArtifactType|relationTypes+=XRelationType|
-	//  attributeTypes+=XAttributeType|enumTypes+=XOseeEnumType|enumOverrides+=
-	//  XOseeEnumOverride)*;
+	//  attributeTypes+=XAttributeType|enumTypes+=XOseeEnumType|
+	//  enumOverrides+=XOseeEnumOverride)*;
 	public OseeTypeModelElements getOseeTypeModelAccess() {
 		return (pOseeTypeModel != null) ? pOseeTypeModel : (pOseeTypeModel = new OseeTypeModelElements());
 	}
@@ -1222,8 +1229,8 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 	//XArtifactType:
 	//  abstract?="abstract"? "artifactType" name=NAME_REFERENCE ("extends"
 	//  superArtifactTypes+=[XArtifactType|NAME_REFERENCE] ("," superArtifactTypes+=[
-	//  XArtifactType|NAME_REFERENCE])*)? "{" "guid" typeGuid=STRING validAttributeTypes+=
-	//  XAttributeTypeRef* "}";
+	//  XArtifactType|NAME_REFERENCE])*)? "{" "guid" typeGuid=STRING
+	//  validAttributeTypes+=XAttributeTypeRef* "}";
 	public XArtifactTypeElements getXArtifactTypeAccess() {
 		return (pXArtifactType != null) ? pXArtifactType : (pXArtifactType = new XArtifactTypeElements());
 	}
@@ -1244,14 +1251,15 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XAttributeType:
-	//  "attributeType" name=NAME_REFERENCE ("extends" baseAttributeType=AttributeBaseType)
-	//  ("overrides" override=[XAttributeType|NAME_REFERENCE])? "{" "guid" typeGuid=STRING
-	//  "dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
-	//  "UriAttributeDataProvider" | QUALIFIED_NAME ) "min" min=WHOLE_NUM_STR "max" max=(
-	//  WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=( "DefaultAttributeTaggerProvider" |
-	//  QUALIFIED_NAME ))? ("enumType" enumType=[XOseeEnumType|NAME_REFERENCE])? (
-	//  "description" description=STRING)? ("defaultValue" defaultValue=STRING)? (
-	//  "fileExtension" fileExtension=STRING)? "}";
+	//  "attributeType" name=NAME_REFERENCE ("extends"
+	//  baseAttributeType=AttributeBaseType) ("overrides" override=[XAttributeType|
+	//  NAME_REFERENCE])? "{" "guid" typeGuid=STRING "dataProvider" dataProvider=(
+	//  "DefaultAttributeDataProvider" | "UriAttributeDataProvider" | QUALIFIED_NAME
+	//  ) "min" min=WHOLE_NUM_STR "max" max=( WHOLE_NUM_STR | "unlimited" ) (
+	//  "taggerId" taggerId=( "DefaultAttributeTaggerProvider" | QUALIFIED_NAME ))? (
+	//  "enumType" enumType=[XOseeEnumType|NAME_REFERENCE])? ("description"
+	//  description=STRING)? ("defaultValue" defaultValue=STRING)? ("fileExtension"
+	//  fileExtension=STRING)? "}";
 	public XAttributeTypeElements getXAttributeTypeAccess() {
 		return (pXAttributeType != null) ? pXAttributeType : (pXAttributeType = new XAttributeTypeElements());
 	}
@@ -1273,8 +1281,8 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XOseeEnumType:
-	//  "oseeEnumType" name=NAME_REFERENCE "{" "guid" typeGuid=STRING enumEntries+=
-	//  XOseeEnumEntry* "}";
+	//  "oseeEnumType" name=NAME_REFERENCE "{" "guid" typeGuid=STRING
+	//  enumEntries+=XOseeEnumEntry* "}";
 	public XOseeEnumTypeElements getXOseeEnumTypeAccess() {
 		return (pXOseeEnumType != null) ? pXOseeEnumType : (pXOseeEnumType = new XOseeEnumTypeElements());
 	}
@@ -1284,7 +1292,8 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XOseeEnumEntry:
-	//  "entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
+	//  "entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid"
+	//  entryGuid=STRING)?;
 	public XOseeEnumEntryElements getXOseeEnumEntryAccess() {
 		return (pXOseeEnumEntry != null) ? pXOseeEnumEntry : (pXOseeEnumEntry = new XOseeEnumEntryElements());
 	}
@@ -1294,8 +1303,8 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XOseeEnumOverride:
-	//  "overrides enum" overridenEnumType=[XOseeEnumType|NAME_REFERENCE] "{" inheritAll?=
-	//  "inheritAll"? overrideOptions+=OverrideOption* "}";
+	//  "overrides enum" overridenEnumType=[XOseeEnumType|NAME_REFERENCE] "{"
+	//  inheritAll?="inheritAll"? overrideOptions+=OverrideOption* "}";
 	public XOseeEnumOverrideElements getXOseeEnumOverrideAccess() {
 		return (pXOseeEnumOverride != null) ? pXOseeEnumOverride : (pXOseeEnumOverride = new XOseeEnumOverrideElements());
 	}
@@ -1315,8 +1324,8 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//AddEnum:
-	//  "add" enumEntry=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)
-	//  ?;
+	//  "add" enumEntry=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid"
+	//  entryGuid=STRING)?;
 	public AddEnumElements getAddEnumAccess() {
 		return (pAddEnum != null) ? pAddEnum : (pAddEnum = new AddEnumElements());
 	}
@@ -1336,11 +1345,12 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XRelationType:
-	//  "relationType" name=NAME_REFERENCE "{" "guid" typeGuid=STRING "sideAName" sideAName=
-	//  STRING "sideAArtifactType" sideAArtifactType=[XArtifactType|NAME_REFERENCE]
-	//  "sideBName" sideBName=STRING "sideBArtifactType" sideBArtifactType=[XArtifactType|
-	//  NAME_REFERENCE] "defaultOrderType" defaultOrderType=RelationOrderType
-	//  "multiplicity" multiplicity=RelationMultiplicityEnum "}";
+	//  "relationType" name=NAME_REFERENCE "{" "guid" typeGuid=STRING "sideAName"
+	//  sideAName=STRING "sideAArtifactType" sideAArtifactType=[XArtifactType|
+	//  NAME_REFERENCE] "sideBName" sideBName=STRING "sideBArtifactType"
+	//  sideBArtifactType=[XArtifactType|NAME_REFERENCE] "defaultOrderType"
+	//  defaultOrderType=RelationOrderType "multiplicity"
+	//  multiplicity=RelationMultiplicityEnum "}";
 	public XRelationTypeElements getXRelationTypeAccess() {
 		return (pXRelationType != null) ? pXRelationType : (pXRelationType = new XRelationTypeElements());
 	}
@@ -1382,8 +1392,9 @@ public class OseeTypesGrammarAccess extends AbstractGrammarElementFinder {
 	} 
 
 	//terminal STRING:
-	//  "\"" ("\\" ("b" | "t" | "n" | "f" | "r" | "\"" | "\'" | "\\") | !("\\" | "\""))* "\"" | "\'" ("\\" ("b" |
-	//  "t" | "n" | "f" | "r" | "\"" | "\'" | "\\") | !("\\" | "\'"))* "\'";
+	//  "\"" ("\\" ("b" | "t" | "n" | "f" | "r" | "\"" | "\'" | "\\") | !("\\" | "\""
+	//  ))* "\"" | "\'" ("\\" ("b" | "t" | "n" | "f" | "r" | "\"" | "\'" | "\\") | !(
+	//  "\\" | "\'"))* "\'";
 	public TerminalRule getSTRINGRule() {
 		return gaTerminals.getSTRINGRule();
 	} 

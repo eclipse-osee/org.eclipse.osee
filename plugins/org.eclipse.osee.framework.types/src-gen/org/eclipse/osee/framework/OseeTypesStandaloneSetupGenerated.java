@@ -1,3 +1,4 @@
+
 package org.eclipse.osee.framework;
 
 import org.eclipse.emf.ecore.EPackage;
@@ -10,11 +11,7 @@ import com.google.inject.Injector;
 /**
  * Generated from StandaloneSetup.xpt!
  */
-public class OseeTypesStandaloneSetup implements ISetup {
-
-	public static void doSetup() {
-		new OseeTypesStandaloneSetup().createInjectorAndDoEMFRegistration();
-	}
+public class OseeTypesStandaloneSetupGenerated implements ISetup {
 
 	public Injector createInjectorAndDoEMFRegistration() {
 		org.eclipse.xtext.common.TerminalsStandaloneSetup.doSetup();

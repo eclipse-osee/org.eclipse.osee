@@ -5,10 +5,8 @@
     editDirectory="/org.eclipse.osee.framework.types.edit/src-gen" editorDirectory="/org.eclipse.osee.framework.types.editor/src"
     modelPluginID="org.eclipse.osee.framework.types" forceOverwrite="true" modelName="OseeTypes"
     updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
-    testsDirectory="/org.eclipse.osee.framework.types.tests/src-gen" importerID="org.eclipse.emf.importer.ecore"
-    complianceLevel="5.0" copyrightFields="false" editPluginID="org.eclipse.osee.framework.types.edit"
-    editorPluginID="org.eclipse.osee.framework.types.editor">
-  <foreignModel>OseeTypes.ecore</foreignModel>
+    testsDirectory="/org.eclipse.osee.framework.types.tests/src-gen" complianceLevel="5.0"
+    copyrightFields="false" editPluginID="org.eclipse.osee.framework.types.edit" editorPluginID="org.eclipse.osee.framework.types.editor">
   <genPackages prefix="OseeTypes" basePackage="org.eclipse.osee.framework" disposableProviderFactory="true"
       ecorePackage="OseeTypes.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="OseeTypes.ecore#//RelationMultiplicityEnum">

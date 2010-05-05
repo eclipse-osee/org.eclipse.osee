@@ -18,6 +18,15 @@
    </license>
 
    <requires>
+      <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.common" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.apache.oro" version="2.0.8" match="equivalent"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="javax.xml" version="1.3.4" match="compatible"/>
+      <import plugin="org.apache.xml.resolver" version="1.2.0" match="compatible"/>
+      <import plugin="org.apache.xml.serializer" version="2.7.1" match="compatible"/>
       <import feature="org.eclipse.team.svn" version="0.7.8.I20091023-1300" match="greaterOrEqual"/>
       <import feature="org.polarion.eclipse.team.svn.connector" version="2.2.1.I20091009-1900" match="greaterOrEqual"/>
       <import feature="org.polarion.eclipse.team.svn.connector.svnkit16" version="2.2.1.I20091009-1900" match="greaterOrEqual"/>
@@ -174,6 +183,20 @@
 
    <plugin
          id="com.jcraft.jsch"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.inject"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.aopalliance"
          download-size="0"
          install-size="0"
          version="0.0.0"

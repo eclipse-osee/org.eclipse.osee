@@ -8,11 +8,11 @@ import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
 
 public class AbstractOseeTypesJavaValidator extends AbstractDeclarativeValidator {
 
-    @Override
-    protected List<EPackage> getEPackages() {
-        List<EPackage> result = new ArrayList<EPackage>();
-        result.add(org.eclipse.osee.framework.oseeTypes.OseeTypesPackage.eINSTANCE);
-        return result;
-    }
+@Override
+	protected List<EPackage> getEPackages() {
+	    List<EPackage> result = new ArrayList<EPackage>();
+	    result.add(org.eclipse.osee.framework.oseeTypes.OseeTypesPackage.eINSTANCE);
+		return result;
+	}
 
 }

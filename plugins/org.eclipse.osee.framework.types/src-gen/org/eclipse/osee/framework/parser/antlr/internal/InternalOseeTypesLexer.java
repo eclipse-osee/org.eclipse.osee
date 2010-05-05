@@ -10,6 +10,7 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 
+@SuppressWarnings("all")
 public class InternalOseeTypesLexer extends Lexer {
     public static final int RULE_ID=5;
     public static final int RULE_ANY_OTHER=11;

@@ -26,7 +26,6 @@
       <import plugin="org.apache.commons.httpclient"/>
       <import plugin="org.apache.xerces"/>
       <import plugin="jms.libraries"/>
-      <import plugin="javax.xml"/>
       <import plugin="org.apache.commons.logging"/>
       <import plugin="net.jini"/>
       <import plugin="org.eclipse.core.resources"/>

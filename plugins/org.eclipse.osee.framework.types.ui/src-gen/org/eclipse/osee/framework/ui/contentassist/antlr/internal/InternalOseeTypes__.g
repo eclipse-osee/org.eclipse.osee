@@ -63,28 +63,28 @@ T64 : 'multiplicity' ;
 T65 : 'abstract' ;
 T66 : 'inheritAll' ;
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 3847
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 5003
 RULE_WHOLE_NUM_STR : ('0'..'9')+;
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 3849
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 5005
 RULE_ID : '^'? ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 3851
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 5007
 RULE_INT : ('0'..'9')+;
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 3853
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 5009
 RULE_STRING : ('"' ('\\' ('b'|'t'|'n'|'f'|'r'|'"'|'\''|'\\')|~(('\\'|'"')))* '"'|'\'' ('\\' ('b'|'t'|'n'|'f'|'r'|'"'|'\''|'\\')|~(('\\'|'\'')))* '\'');
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 3855
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 5011
 RULE_ML_COMMENT : '/*' ( options {greedy=false;} : . )*'*/';
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 3857
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 5013
 RULE_SL_COMMENT : '//' ~(('\n'|'\r'))* ('\r'? '\n')?;
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 3859
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 5015
 RULE_WS : (' '|'\t'|'\r'|'\n')+;
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 3861
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/ui/contentassist/antlr/internal/InternalOseeTypes.g" 5017
 RULE_ANY_OTHER : .;
 
 
