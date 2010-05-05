@@ -55,7 +55,9 @@ public class ChangeReportTable implements EditorSection.IWidget {
       layout.marginHeight = 0;
       layout.marginWidth = 0;
       composite.setLayout(layout);
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gd.widthHint = 300;
+      composite.setLayoutData(gd);
 
       int viewerStyle = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
       xChangeViewer = new ChangeXViewer(composite, viewerStyle, new ChangeXViewerFactory());

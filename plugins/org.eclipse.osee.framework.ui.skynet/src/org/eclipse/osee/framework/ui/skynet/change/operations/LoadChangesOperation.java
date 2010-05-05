@@ -1,6 +1,7 @@
 package org.eclipse.osee.framework.ui.skynet.change.operations;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -24,14 +25,14 @@ public class LoadChangesOperation extends AbstractOperation {
       boolean isRebaselined =
             hasBranch ? changeData.getBranch().getBranchState().equals(BranchState.REBASELINED) : false;
       if (!isRebaselined) {
-         Collection<Change> changes = changeData.getChanges();
-         changes.clear();
+         List<Change> changes = new ArrayList<Change>();
          IOperation subOp;
          if (hasBranch) {
             subOp = ChangeManager.comparedToParent(changeData.getBranch(), changes);
          } else {
             subOp = ChangeManager.comparedToPreviousTx(changeData.getTransaction(), changes);
          }
+         changeData.setChanges(changes);
          doSubWork(subOp, monitor, 0.80);
       } else {
          monitor.worked(calculateWork(0.80));

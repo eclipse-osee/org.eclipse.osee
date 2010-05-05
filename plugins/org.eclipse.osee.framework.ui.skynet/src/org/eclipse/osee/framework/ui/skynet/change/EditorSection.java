@@ -43,7 +43,7 @@ public class EditorSection extends SectionPart {
       Section section = getSection();
       section.setText(sectionTitle);
       section.setLayout(new GridLayout());
-      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, spanVertically));
+      section.setLayoutData(new GridData(SWT.FILL, spanVertically ? SWT.FILL : SWT.TOP, true, spanVertically));
       updateDataPart(true);
    }
 
@@ -59,7 +59,7 @@ public class EditorSection extends SectionPart {
          }
          Composite sectionBody = toolkit.createComposite(section, toolkit.getBorderStyle());
          sectionBody.setLayout(new GridLayout());
-         sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+         sectionBody.setLayoutData(new GridData(SWT.FILL, spanVertically ? SWT.FILL : SWT.TOP, true, spanVertically));
 
          widget.onCreate(getManagedForm(), sectionBody);
 

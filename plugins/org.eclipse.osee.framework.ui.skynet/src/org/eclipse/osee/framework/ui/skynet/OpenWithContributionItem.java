@@ -143,7 +143,11 @@ public class OpenWithContributionItem extends CompoundContributionItem {
 
    @Override
    public void fill(Menu parent, int index) {
-      final MenuItem item = new MenuItem(parent, SWT.CASCADE);
+      /**
+       * hard coded to show as the 2nd menu option; necessary for Xviewer menu options to work with Change View
+       * command/handlers and this dynamic menu option
+       */
+      final MenuItem item = new MenuItem(parent, SWT.CASCADE, 1);
       item.setText("Open With");
 
       Menu subMenu = new Menu(parent);

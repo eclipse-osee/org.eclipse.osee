@@ -42,6 +42,7 @@ public class ChangeReportInfo implements EditorSection.IWidget {
 
    private FormText formText;
    private Label label;
+   private ScrolledForm form;
 
    public ChangeReportInfo(ChangeUiData changeData) {
       this.changeData = changeData;
@@ -50,24 +51,24 @@ public class ChangeReportInfo implements EditorSection.IWidget {
    @Override
    public void onCreate(IManagedForm managedForm, Composite parent) {
       FormToolkit toolkit = managedForm.getToolkit();
-      ScrolledForm form = managedForm.getForm();
+      form = managedForm.getForm();
       form.getBody().setLayout(new GridLayout());
       form.getBody().setBackground(parent.getBackground());
 
       Composite composite = toolkit.createComposite(parent, SWT.NONE);
       composite.setLayout(ALayout.getZeroMarginLayout(2, false));
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
       label = toolkit.createLabel(composite, "", SWT.NONE);
       label.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
 
       formText = toolkit.createFormText(composite, true);
-      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
       gd.widthHint = 200;
       formText.setLayoutData(gd);
+      formText.layout();
 
       updateInfo(false);
-
       toolkit.paintBordersFor(form.getBody());
    }
 
@@ -97,13 +98,21 @@ public class ChangeReportInfo implements EditorSection.IWidget {
       } catch (Exception ex) {
          formText.setText(Lib.exceptionToString(ex), false, false);
       }
+      // FormText doesn't size correctly, so determine it's height
+      GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+      gridData.heightHint = 8 * (2 + sb.toString().split("<br/>").length);
+      formText.setLayoutData(gridData);
    }
 
    public void createInfoPage(StringBuilder sb, boolean changeReportWasLoaded) {
       sb.append("<form>");
-      sb.append("<p vspace='false'>");
+      sb.append("<p>");
       boolean isRebaselined = changeData.isRebaseline();
-      if (changeReportWasLoaded && !isRebaselined) {
+      if (!changeData.isLoaded()) {
+         addSimpleBranchInfo(sb);
+         sb.append(String.format("<br/><b>%s</b><br/>", "Cleared on shut down"));
+         sb.append(String.format("<b>%s</b>", "Press refresh to reload"));
+      } else if (changeReportWasLoaded && !isRebaselined) {
          if (changeData.getChanges().isEmpty()) {
             addSimpleBranchInfo(sb);
             sb.append(NO_CHANGES_FOUND);
@@ -112,12 +121,9 @@ public class ChangeReportInfo implements EditorSection.IWidget {
          }
       } else if (isRebaselined) {
          addSimpleBranchInfo(sb);
-         sb.append(String.format("<p><b>%s</b></p>", "The branch has been updated from parent and cannot be refreshed."));
-         sb.append(String.format("<p><b>%s</b></p>", "Please close down and re-open this change report"));
-      } else {
-         addSimpleBranchInfo(sb);
-         sb.append(String.format("<p><b>%s</b></p>", "Cleared on shut down"));
-         sb.append(String.format("<p><b>%s</b></p>", "Press refresh to reload"));
+         sb.append(String.format("<br/><b>%s</b><br/>",
+               "The branch has been updated from parent and cannot be refreshed."));
+         sb.append(String.format("<b>%s</b>", "Please close down and re-open this change report"));
       }
       sb.append("</p>");
       sb.append("</form>");
@@ -144,7 +150,7 @@ public class ChangeReportInfo implements EditorSection.IWidget {
       } else {
          message = "Unkown";
       }
-      return String.format("<b>Associated With: </b> %s<br/>", message);
+      return String.format("<b>Associated With: </b> %s", message);
    }
 
    private void addChangesInfo(StringBuilder sb) {
@@ -172,9 +178,7 @@ public class ChangeReportInfo implements EditorSection.IWidget {
             sb.append("<br/>");
             sb.append(String.format("<b>Tx: </b> %s", formatter.format(tx2.getId())));
          }
-         sb.append("</p>");
-
-         sb.append("<p>");
+         sb.append("<br/><br/>");
          sb.append(getAssociated());
 
          TransactionRecord transaction = changeData.getTransaction();

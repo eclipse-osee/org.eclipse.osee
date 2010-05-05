@@ -20,9 +20,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -54,8 +52,7 @@ public class HistoryXViewer extends XViewer {
             ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
             artifacts.add(artifact);
 
-            if (StaticIdManager.hasValue(UserManager.getUser(),
-                  EditorsPreferencePage.PreviewOnDoubleClickForWordArtifacts)) {
+            if (EditorsPreferencePage.isPreviewOnDoubleClickForWordArtifacts()) {
                RendererManager.previewInJob(artifacts);
             } else {
                RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);

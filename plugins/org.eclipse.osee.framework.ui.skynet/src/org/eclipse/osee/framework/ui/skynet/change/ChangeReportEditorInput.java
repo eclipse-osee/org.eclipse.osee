@@ -12,12 +12,14 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
 
-public class ChangeReportEditorInput implements IEditorInput {
+public class ChangeReportEditorInput implements IEditorInput, IPersistableElement {
 
    private final ChangeUiData changeData;
 
@@ -27,7 +29,7 @@ public class ChangeReportEditorInput implements IEditorInput {
 
    @Override
    public boolean exists() {
-      return false;
+      return true;
    }
 
    public Image getImage() {
@@ -56,11 +58,20 @@ public class ChangeReportEditorInput implements IEditorInput {
             comment = String.format(" - %s", transactionId.getComment());
          }
       }
-      return String.format("%s%s", branchName, comment);
+      return String.format("Change Report: %s%s", branchName, comment);
    }
 
    @Override
    public IPersistableElement getPersistable() {
+      try {
+         if (EditorsPreferencePage.isCloseChangeReportEditorsOnShutdown()) {
+            return null;
+         } else {
+            return this;
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+      }
       return null;
    }
 
@@ -78,4 +89,23 @@ public class ChangeReportEditorInput implements IEditorInput {
    public ChangeUiData getChangeData() {
       return changeData;
    }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof ChangeReportEditorInput) {
+         return changeData.equals(((ChangeReportEditorInput) obj).getChangeData());
+      }
+      return false;
+   }
+
+   @Override
+   public String getFactoryId() {
+      return ChangeReportEditorInputFactory.ID;
+   }
+
+   @Override
+   public void saveState(IMemento memento) {
+      ChangeReportEditorInputFactory.saveState(memento, this);
+   }
+
 }

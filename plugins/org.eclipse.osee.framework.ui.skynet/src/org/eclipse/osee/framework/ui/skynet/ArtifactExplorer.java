@@ -62,7 +62,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -380,7 +379,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    /**
     * Reveal an artifact in the viewer and select it.
-    *
+    * 
     * @param artifact
     */
    public static void exploreBranch(Branch branch) {
@@ -650,8 +649,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
             TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
             try {
-               if (StaticIdManager.hasValue(UserManager.getUser(),
-                     EditorsPreferencePage.PreviewOnDoubleClickForWordArtifacts)) {
+               if (EditorsPreferencePage.isPreviewOnDoubleClickForWordArtifacts()) {
                   RendererManager.previewInJob(selectedItems);
                } else {
                   RendererManager.openInJob(selectedItems, PresentationType.GENERALIZED_EDIT);

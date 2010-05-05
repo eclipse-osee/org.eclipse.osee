@@ -66,7 +66,7 @@ public class ChangeReportPage extends FormPage implements IChangeReportPreferenc
       layout.marginWidth = 6;
       layout.horizontalSpacing = 20;
       form.getBody().setLayout(layout);
-      form.getBody().setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+      form.getBody().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       updateTitle(form);
       updateImage(form);
@@ -78,15 +78,23 @@ public class ChangeReportPage extends FormPage implements IChangeReportPreferenc
       this.infoWidget = new ChangeReportInfo(uiData);
 
       int sectionStyle = Section.TITLE_BAR | Section.EXPANDED | Section.TWISTIE;
+
+      //      Composite sectionBody = toolkit.createComposite(form.getBody(), toolkit.getBorderStyle());
+      //      sectionBody.setLayout(ALayout.getZeroMarginLayout());
+      //      sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
       managedForm.addPart(new EditorSection(infoWidget, "Info", form.getBody(), managedForm.getToolkit(), sectionStyle,
             false));
 
+      //      managedForm.addPart(new InfoSection(form.getBody(), managedForm.getToolkit(), sectionStyle));
+
+      //      Composite sectionBody2 = toolkit.createComposite(form.getBody(), toolkit.getBorderStyle());
+      //      sectionBody2.setLayout(ALayout.getZeroMarginLayout());
+      //      sectionBody2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       managedForm.addPart(new EditorSection(changeReportTable, "Changes", form.getBody(), managedForm.getToolkit(),
             sectionStyle, true));
 
       addToolBar(toolkit, form, true);
-      managedForm.refresh();
-      form.layout();
+      form.reflow(true);
 
       PlatformUI.getWorkbench().getHelpSystem().setHelp(form.getBody(),
             "org.eclipse.osee.framework.help.ui." + HELP_CONTEXT_ID);

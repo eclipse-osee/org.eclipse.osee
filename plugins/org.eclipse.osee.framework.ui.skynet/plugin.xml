@@ -1780,4 +1780,11 @@
             className="org.eclipse.osee.framework.ui.skynet.blam.operation.RenameFiles">
       </Operation>
    </extension>
+   <extension
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInputFactory"
+            id="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInputFactory">
+      </factory>
+   </extension>
 </plugin>

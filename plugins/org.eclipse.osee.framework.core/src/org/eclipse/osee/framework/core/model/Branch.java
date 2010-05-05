@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class Branch extends AbstractOseeType implements Comparable<Branch>, IAdaptable, IOseeBranch {
 
-   private static final int SHORT_NAME_LIMIT = 25;
+   private static final int SHORT_NAME_LIMIT = 35;
 
    private final Collection<Branch> childBranches = new HashSet<Branch>();
 

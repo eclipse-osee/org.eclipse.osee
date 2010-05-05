@@ -12,19 +12,13 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.util.ArrayList;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
@@ -59,8 +53,7 @@ public class ChangeXViewer extends XViewer {
             ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
             artifacts.add(artifact);
 
-            if (StaticIdManager.hasValue(UserManager.getUser(),
-                  EditorsPreferencePage.PreviewOnDoubleClickForWordArtifacts)) {
+            if (EditorsPreferencePage.isPreviewOnDoubleClickForWordArtifacts()) {
                RendererManager.previewInJob(artifacts);
             } else {
                RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
@@ -83,31 +76,6 @@ public class ChangeXViewer extends XViewer {
       return arts;
    }
 
-   @Override
-   protected void createSupportWidgets(Composite parent) {
-      super.createSupportWidgets(parent);
-      createMenuActions();
-   }
-
-   public void createMenuActions() {
-      MenuManager mm = getMenuManager();
-      mm.createContextMenu(getControl());
-      mm.addMenuListener(new IMenuListener() {
-         public void menuAboutToShow(IMenuManager manager) {
-            updateMenuActionsForTable();
-         }
-      });
-   }
-
-   @Override
-   public void updateMenuActionsForTable() {
-      MenuManager mm = getMenuManager();
-      mm.insertBefore(MENU_GROUP_PRE, new Separator());
-   }
-
-   /**
-    * Release resources
-    */
    @Override
    public void dispose() {
       getLabelProvider().dispose();
@@ -141,6 +109,11 @@ public class ChangeXViewer extends XViewer {
          xChangeTextFilter = new XChangeTextFilter(this);
       }
       xChangeTextFilter.setShowDocumentOrderFilter(showDocumentOrderFilter);
+   }
+
+   @Override
+   public boolean isRemoveItemsMenuOptionEnabled() {
+      return false;
    }
 
 }
