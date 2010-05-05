@@ -10,13 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.internal.parser;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Properties;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DbConnectionData {
+public class DbConnectionData implements Serializable {
+
+   private static final long serialVersionUID = -7153773982095739831L;
 
    public enum DescriptionFields {
       id;
@@ -73,13 +76,14 @@ public class DbConnectionData {
    }
 
    public String getAttributes() {
-      String toReturn = "";
+      StringBuilder toReturn = new StringBuilder();
       for (String temp : attributesList) {
-         toReturn += temp + ";";
+         toReturn.append(String.format("%s;", temp));
       }
-      return toReturn;
+      return toReturn.toString();
    }
 
+   @Override
    public String toString() {
       return "DbConnection: " + id + "\n" + " Driver: " + databaseDriver + "\n" + " RawUrl: " + databaseUrl + "\n" + "Attributes: " + getAttributes() + "\n";
    }

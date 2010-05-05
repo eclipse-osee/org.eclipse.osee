@@ -57,7 +57,8 @@ public class JoinUtility {
    private static final String DELETE_FROM_JOIN = "DELETE FROM osee_join_cleanup WHERE query_id =?";
    private static final String DELETE_FROM_JOIN_CHAR_ID = "DELETE FROM osee_join_char_id WHERE query_id =?";
    private static final String SELECT_TAG_GAMMA_QUEUE_QUERIES = "select DISTINCT query_id from osee_tag_gamma_queue";
-
+   private static final Random random = new Random();
+   
    public enum JoinItem {
       TRANSACTION(INSERT_INTO_JOIN_TRANSACTION, DELETE_FROM_JOIN_TRANSACTION),
       ARTIFACT(INSERT_INTO_JOIN_ARTIFACT, DELETE_FROM_JOIN_ARTIFACT),
@@ -89,7 +90,7 @@ public class JoinUtility {
    }
 
    public static int getNewQueryId() {
-      return new Random().nextInt();
+      return random.nextInt();
    }
 
    public static TransactionJoinQuery createTransactionJoinQuery() {
@@ -237,7 +238,7 @@ public class JoinUtility {
    public static final class IdJoinQuery extends JoinQueryEntry {
 
       private final class TempIdEntry implements IJoinRow {
-         private final Integer id;
+         private final int id;
 
          private TempIdEntry(Integer id) {
             this.id = id;
@@ -261,7 +262,7 @@ public class JoinUtility {
 
          @Override
          public int hashCode() {
-            return 37 * id.hashCode();
+            return 37 * id;
          }
 
          @Override
@@ -278,10 +279,6 @@ public class JoinUtility {
          entries.add(new TempIdEntry(id));
       }
 
-      /*
-       * (non-Javadoc)
-       * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
-       */
       @Override
       public String getJoinTableName() {
          return "osee_join_id";
@@ -291,8 +288,8 @@ public class JoinUtility {
    public static final class TransactionJoinQuery extends JoinQueryEntry {
 
       private final class TempTransactionEntry implements IJoinRow {
-         private final Long gammaId;
-         private final Integer transactionId;
+         private final long gammaId;
+         private final int transactionId;
 
          private TempTransactionEntry(Long gammaId, Integer transactionId) {
             this.gammaId = gammaId;
@@ -317,7 +314,7 @@ public class JoinUtility {
 
          @Override
          public int hashCode() {
-            return 37 * gammaId.hashCode() * transactionId.hashCode();
+            return Long.valueOf(37 * gammaId * transactionId).hashCode();
          }
 
          @Override
@@ -334,10 +331,6 @@ public class JoinUtility {
          entries.add(new TempTransactionEntry(gammaId, transactionId));
       }
 
-      /*
-       * (non-Javadoc)
-       * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
-       */
       @Override
       public String getJoinTableName() {
          return "osee_join_transaction";
@@ -347,8 +340,8 @@ public class JoinUtility {
    public static final class ArtifactJoinQuery extends JoinQueryEntry {
 
       private final class Entry implements IJoinRow {
-         private final Integer artId;
-         private final Integer branchId;
+         private final int artId;
+         private final int branchId;
 
          private Entry(Integer artId, Integer branchId) {
             this.artId = artId;
@@ -378,7 +371,7 @@ public class JoinUtility {
 
          @Override
          public int hashCode() {
-            return 37 * artId.hashCode() * branchId.hashCode();
+            return 37 * artId * branchId;
          }
       }
 
@@ -399,7 +392,7 @@ public class JoinUtility {
    public static final class SearchTagJoinQuery extends JoinQueryEntry {
 
       private final class TagEntry implements IJoinRow {
-         private final Long value;
+         private final long value;
 
          private TagEntry(Long value) {
             this.value = value;
@@ -423,7 +416,7 @@ public class JoinUtility {
 
          @Override
          public int hashCode() {
-            return 37 * value.hashCode();
+            return Long.valueOf(37 * value).hashCode();
          }
 
          @Override
@@ -449,7 +442,7 @@ public class JoinUtility {
    public static final class TagQueueJoinQuery extends JoinQueryEntry {
 
       private final class GammaEntry implements IJoinRow {
-         private final Long gammaId;
+         private final long gammaId;
 
          private GammaEntry(Long gammaId) {
             this.gammaId = gammaId;
@@ -473,7 +466,7 @@ public class JoinUtility {
 
          @Override
          public int hashCode() {
-            return 37 * gammaId.hashCode();
+            return Long.valueOf(37 * gammaId).hashCode();
          }
 
          @Override
@@ -490,10 +483,6 @@ public class JoinUtility {
          entries.add(new GammaEntry(gammaId));
       }
 
-      /*
-       * (non-Javadoc)
-       * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
-       */
       @Override
       public String getJoinTableName() {
          return "osee_tag_gamma_queue";
@@ -503,8 +492,8 @@ public class JoinUtility {
    public static final class ExportImportJoinQuery extends JoinQueryEntry {
 
       private final class ExportImportEntry implements IJoinRow {
-         private final Long id1;
-         private final Long id2;
+         private final long id1;
+         private final long id2;
 
          private ExportImportEntry(Long id1, Long id2) {
             this.id1 = id1;
@@ -529,7 +518,7 @@ public class JoinUtility {
 
          @Override
          public int hashCode() {
-            return 37 * id1.hashCode() * id2.hashCode();
+            return Long.valueOf(37 * id1 * id2).hashCode();
          }
 
          @Override
@@ -546,10 +535,6 @@ public class JoinUtility {
          entries.add(new ExportImportEntry(id1, id2));
       }
 
-      /*
-       * (non-Javadoc)
-       * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
-       */
       @Override
       public String getJoinTableName() {
          return null;

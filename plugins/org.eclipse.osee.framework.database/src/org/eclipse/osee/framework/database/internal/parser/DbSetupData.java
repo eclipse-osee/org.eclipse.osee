@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.internal.parser;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -17,7 +18,9 @@ import java.util.Set;
 /**
  * @author Roberto E. Escobar
  */
-public class DbSetupData {
+public class DbSetupData implements Serializable {
+
+   private static final long serialVersionUID = -7195682073850593321L;
 
    public enum ServicesFields {
       Server;
@@ -52,14 +55,15 @@ public class DbSetupData {
       return serverFieldMap.get(ServerInfoFields.dbInfo);
    }
 
+   @Override
    public String toString() {
-      String toReturn = "Service: \n";
+      StringBuilder toReturn = new StringBuilder("Service: \n");
       Set<ServerInfoFields> keys = serverFieldMap.keySet();
       for (ServerInfoFields field : keys) {
          String value = serverFieldMap.get(field);
-         toReturn += field + ": " + value + " ";
+         toReturn.append(String.format("%s: %s ", field, value));
       }
-      return toReturn;
+      return toReturn.toString();
    }
 
    public Map<ServerInfoFields, String> getServerFieldMap() {

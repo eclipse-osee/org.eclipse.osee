@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.internal.parser;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +20,9 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 /**
  * @author Roberto E. Escobar
  */
-public class DbDetailData {
+public class DbDetailData implements Serializable {
+
+   private static final long serialVersionUID = 4610179141542353247L;
 
    public enum ConfigPairField {
       key, value;
@@ -69,20 +72,21 @@ public class DbDetailData {
 
    @Override
    public String toString() {
-      String toReturn = "DatabaseInfo: \n";
+      StringBuilder toReturn = new StringBuilder("DatabaseInfo: \n");
       Set<DescriptionField> descriptionMapkeys = descriptionMap.keySet();
       for (DescriptionField field : descriptionMapkeys) {
          String value = descriptionMap.get(field);
-         toReturn += field + ": " + "[" + value + "]\n";
+         toReturn.append(String.format("%s: [%s]\n", field, value));
       }
 
-      toReturn += "Fields: \n";
+      toReturn.append("Fields: \n");
       Set<ConfigField> keys = configFieldMap.keySet();
       for (ConfigField field : keys) {
          Pair<String, String> pair = configFieldMap.get(field);
-         toReturn += field + ": " + "[" + pair.getFirst() + "],[" + pair.getSecond() + "]\n";
+         toReturn.append(field + ": " + "[" + pair.getFirst() + "],[" + pair.getSecond() + "]\n");
       }
-      return toReturn + "\n";
+      toReturn.append("\n");
+      return toReturn.toString();
    }
 
    public Map<ConfigField, Pair<String, String>> getConfigMap() {
