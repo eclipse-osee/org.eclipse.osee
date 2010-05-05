@@ -134,7 +134,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          bodyComp = managedForm.getForm().getBody();
          GridLayout gridLayout = new GridLayout(1, false);
          bodyComp.setLayout(gridLayout);
-         bodyComp.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, true, false));
+         GridData gd = new GridData(SWT.LEFT, SWT.LEFT, true, false);
+         gd.widthHint = 300;
+         bodyComp.setLayoutData(gd);
 
          createAtsBody();
 

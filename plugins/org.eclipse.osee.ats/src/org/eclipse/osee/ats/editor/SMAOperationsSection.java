@@ -43,7 +43,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
@@ -246,15 +245,6 @@ public class SMAOperationsSection extends SectionPart {
       }
 
       section.setClient(sectionBody);
-   }
-
-   @Override
-   public void refresh() {
-      super.refresh();
-      Display.getDefault().asyncExec(new Runnable() {
-         public void run() {
-         }
-      });
    }
 
    @Override
