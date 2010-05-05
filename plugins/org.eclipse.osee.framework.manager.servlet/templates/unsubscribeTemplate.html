@@ -25,7 +25,6 @@
 	}
 	
 	function unsubscribe(elementId, url, groupId, userId) {
-		document.getElementById("hyperlink").innerHTML = "Click here to confirm unsubscribe.";
 		document.getElementById(elementId).innerHTML = "<p><em>Sending unsubscribe request...</em></p>";
 		var xmlhttp = getHTTPObject();
 		xmlhttp.open("DELETE", url, false);
@@ -34,14 +33,14 @@
 		xmlhttp.send("<request><groupId>" + groupId + "</groupId><userId>"+userId+"</userId></request>");
 		
 		document.getElementById(elementId).innerHTML = "<p><em>Status: " +  xmlhttp.status  +" " + xmlhttp.responseText + "</em></p>";
+		var link = document.getElementById("unsubscribeLink");
+		link.parentNode.removeChild(link);
 	}
 </script>
 </head>
 
 <body>
-<span id="hyperlink">
-<a href="javascript:unsubscribe('deleteStatus','%s','%s','%s');">Click here to confirm unsubscribe.</a>
-</span>
+<a id="unsubscribeLink" href="javascript:unsubscribe('deleteStatus','%s','%s','%s');">Click here to confirm unsubscribe.</a>
 <p><span id="deleteStatus"></span></p>
 </body>
 </html>
