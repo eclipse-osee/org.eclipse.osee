@@ -74,7 +74,7 @@
 		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" contributorClass="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorContributor" default="false" icon="images/artifact_editor.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" name="Artifact Editor"/>
 		<editor class="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" default="false" icon="images/blam.gif" id="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" name="Blam Editor"/>
 		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor" default="false" icon="images/artifact_editor.gif" id="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor" name="Mass Artifact Editor"/>
-  		<editor
+  <editor
           class="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor"
           default="false"
           icon="images/branch_change.gif"
@@ -177,7 +177,7 @@
   </view>
   <view
         allowMultiple="true"
-        category="osee.jdk.core.category"        
+        category="osee.jdk.core.category"
         class="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView"
         icon="images/DBiconBlueEdit.GIF"
         id="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView"
@@ -393,7 +393,7 @@
        name="The new change view"
        point="org.eclipse.ui.menus">
     <menuContribution
-              locationURI="menu:org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView">
+          locationURI="menu:org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView">
        <command
              commandId="org.eclipse.osee.framework.ui.skynet.change.ChangeView.showDocOrder"
              style="toggle">
@@ -1786,5 +1786,11 @@
             class="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInputFactory"
             id="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInputFactory">
       </factory>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.EmailGroupsBlam">
+      </Operation>
    </extension>
 </plugin>

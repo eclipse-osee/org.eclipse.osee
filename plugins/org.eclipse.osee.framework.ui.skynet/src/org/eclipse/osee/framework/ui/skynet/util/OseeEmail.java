@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.StringDataSource;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -101,14 +102,14 @@ public class OseeEmail extends MimeMessage {
    /**
     * Constructs an AEmail with the given arguments
     * 
-    * @param fromToReplyEmail - recipient email, from email and replyTo email address
     * @param subject - the subject of the message
     * @param body - the text/html of the body
     * @param bodyType - Html or Text
     * @throws OseeCoreException
     */
-   public OseeEmail(String fromToReplyEmail, String subject, String body, BodyType bodyType) throws OseeCoreException {
-      this(Arrays.asList(fromToReplyEmail), fromToReplyEmail, fromToReplyEmail, subject, body, bodyType);
+   public OseeEmail(String toAddress, String subject, String body, BodyType bodyType) throws OseeCoreException {
+      this(Arrays.asList(toAddress), UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject, body,
+            bodyType);
    }
 
    /**
@@ -291,7 +292,6 @@ public class OseeEmail extends MimeMessage {
 
       @Override
       public void run() {
-         super.run();
          email.sendLocalThread();
       }
    }
