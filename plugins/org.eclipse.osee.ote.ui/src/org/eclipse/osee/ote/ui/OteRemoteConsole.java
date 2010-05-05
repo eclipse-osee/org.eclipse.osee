@@ -55,7 +55,6 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
    }
 
    public void close() {
-	   clientService.removeConnectionListener(this);
       if (env != null) {
          try {
             env.closeCommandConsole(remoteConsole);
