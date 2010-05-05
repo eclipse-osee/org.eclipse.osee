@@ -78,7 +78,7 @@ public class AtsServlet extends OseeHttpServlet {
       atsService.performOperation(new ServletResourceBridge(request, locator), response);
    }
 
-   private final class ResourceProvider implements AtsService.IResourceProvider {
+   private static final class ResourceProvider implements AtsService.IResourceProvider {
       public IResource getResource(String path) throws OseeCoreException {
          IResourceLocatorManager locatorManager = Activator.getInstance().getResourceLocatorManager();
          IResourceManager resourceManager = Activator.getInstance().getResourceManager();

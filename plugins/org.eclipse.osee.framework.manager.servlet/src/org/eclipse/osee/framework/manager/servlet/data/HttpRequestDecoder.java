@@ -77,7 +77,7 @@ public class HttpRequestDecoder {
    }
 
    protected static boolean isDataCompressed(HttpServletRequest request) {
-      return new Boolean(request.getParameter(IS_COMPRESSED));
+      return Boolean.valueOf(request.getParameter(IS_COMPRESSED));
    }
 
    public static String fromDeleteRequest(HttpServletRequest request) {
