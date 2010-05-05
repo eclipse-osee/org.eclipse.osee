@@ -43,6 +43,10 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) throws OseeCoreException {
       try {
+         if (element instanceof String && columnIndex == 0) {
+            return String.valueOf(element);
+         }
+
          if (!(element instanceof Change)) {
             return "";
          }

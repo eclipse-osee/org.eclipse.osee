@@ -1,7 +1,7 @@
 package org.eclipse.osee.framework.ui.skynet.change;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -9,22 +9,24 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 
 public class ChangeUiData {
-   private Collection<Change> changes = Collections.emptyList();
+   private final Collection<Change> changes = new ArrayList<Change>();
    private Artifact associatedArtifact;
    private Branch branch;
    private TransactionRecord transaction;
-   private boolean loaded = false;
+   private boolean isLoaded;
+   private boolean loadOnOpen;
 
    public ChangeUiData() {
    }
 
    public void reset() {
       changes.clear();
-      associatedArtifact = null;
+      setAssociatedArtifact(null);
+      setIsLoaded(false);
    }
 
    public boolean isLoaded() {
-      return loaded;
+      return isLoaded;
    }
 
    public Collection<Change> getChanges() {
@@ -91,9 +93,15 @@ public class ChangeUiData {
       return true;
    }
 
-   public void setChanges(Collection<Change> changes) {
-      this.changes = changes;
-      this.loaded = true;
+   public void setIsLoaded(boolean isLoaded) {
+      this.isLoaded = isLoaded;
    }
 
+   public void setLoadOnOpen(boolean loadOnOpen) {
+      this.loadOnOpen = loadOnOpen;
+   }
+
+   public boolean isLoadOnOpenEnabled() {
+      return loadOnOpen;
+   }
 }

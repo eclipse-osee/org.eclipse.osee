@@ -7,6 +7,7 @@ package org.eclipse.osee.framework.ui.skynet.change;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -76,6 +77,7 @@ public class ChangeReportTable implements EditorSection.IWidget {
       toolkit.adapt(label, false, false);
 
       new ChangeDragAndDrop(tree, ChangeXViewerFactory.NAMESPACE);
+      onUpdate();
    }
 
    @Override
@@ -85,7 +87,13 @@ public class ChangeReportTable implements EditorSection.IWidget {
 
    @Override
    public void onUpdate() {
-      xChangeViewer.setInput(changeData.getChanges());
+      Collection<?> input;
+      if (changeData.isLoaded()) {
+         input = changeData.getChanges();
+      } else {
+         input = Arrays.asList("Not Loaded");
+      }
+      xChangeViewer.setInput(input);
    }
 
    private final class ChangeDragAndDrop extends SkynetDragAndDrop {

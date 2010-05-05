@@ -58,7 +58,7 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
             comment = String.format(" - %s", transactionId.getComment());
          }
       }
-      return String.format("Change Report: %s%s", branchName, comment);
+      return String.format("Change Report - %s%s", branchName, comment);
    }
 
    @Override

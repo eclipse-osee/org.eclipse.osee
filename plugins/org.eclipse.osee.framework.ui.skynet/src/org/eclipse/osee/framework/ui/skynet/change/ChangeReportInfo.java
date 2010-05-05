@@ -109,9 +109,11 @@ public class ChangeReportInfo implements EditorSection.IWidget {
       sb.append("<p>");
       boolean isRebaselined = changeData.isRebaseline();
       if (!changeData.isLoaded()) {
+         sb.append(String.format("<b>%s</b><br/>", "Cleared on shut down. Press refresh to reload"));
+         sb.append("<br/>");
          addSimpleBranchInfo(sb);
-         sb.append(String.format("<br/><b>%s</b><br/>", "Cleared on shut down"));
-         sb.append(String.format("<b>%s</b>", "Press refresh to reload"));
+         sb.append("<br/>");
+         addExtraInfo(sb);
       } else if (changeReportWasLoaded && !isRebaselined) {
          if (changeData.getChanges().isEmpty()) {
             addSimpleBranchInfo(sb);
@@ -119,6 +121,8 @@ public class ChangeReportInfo implements EditorSection.IWidget {
          } else {
             addChangesInfo(sb);
          }
+         sb.append("<br/><br/>");
+         addExtraInfo(sb);
       } else if (isRebaselined) {
          addSimpleBranchInfo(sb);
          sb.append(String.format("<br/><b>%s</b><br/>",
@@ -150,7 +154,7 @@ public class ChangeReportInfo implements EditorSection.IWidget {
       } else {
          message = "Unkown";
       }
-      return String.format("<b>Associated With: </b> %s", message);
+      return String.format("<b>Associated With: </b> %s<br/>", message);
    }
 
    private void addChangesInfo(StringBuilder sb) {
@@ -178,30 +182,32 @@ public class ChangeReportInfo implements EditorSection.IWidget {
             sb.append("<br/>");
             sb.append(String.format("<b>Tx: </b> %s", formatter.format(tx2.getId())));
          }
-         sb.append("<br/><br/>");
-         sb.append(getAssociated());
-
-         TransactionRecord transaction = changeData.getTransaction();
-         boolean isNotCommitted =
-               changeData.isBranchValid() || (changeData.isTransactionValid() && transaction.getComment() == null);
-
-         if (isNotCommitted) {
-
-         } else {
-            DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
-            sb.append(String.format("<b>Committed On: </b> %s<br/>", dateFormat.format(transaction.getTimeStamp())));
-            String author = "Unknown";
-            try {
-               User user = UserManager.getUserByArtId(transaction.getAuthor());
-               author = user.toString();
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-            sb.append(String.format("<b>Committed By: </b> %s<br/>", author));
-            sb.append(String.format("<b>Comment: </b> %s", transaction.getComment()));
-         }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   private void addExtraInfo(StringBuilder sb) {
+      sb.append(getAssociated());
+
+      TransactionRecord transaction = changeData.getTransaction();
+      boolean isNotCommitted =
+            changeData.isBranchValid() || (changeData.isTransactionValid() && transaction.getComment() == null);
+
+      if (isNotCommitted) {
+
+      } else {
+         DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
+         sb.append(String.format("<b>Committed On: </b> %s<br/>", dateFormat.format(transaction.getTimeStamp())));
+         String author = "Unknown";
+         try {
+            User user = UserManager.getUserByArtId(transaction.getAuthor());
+            author = user.toString();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+         sb.append(String.format("<b>Committed By: </b> %s<br/>", author));
+         sb.append(String.format("<b>Comment: </b> %s", transaction.getComment()));
       }
    }
 

@@ -79,17 +79,8 @@ public class ChangeReportPage extends FormPage implements IChangeReportPreferenc
 
       int sectionStyle = Section.TITLE_BAR | Section.EXPANDED | Section.TWISTIE;
 
-      //      Composite sectionBody = toolkit.createComposite(form.getBody(), toolkit.getBorderStyle());
-      //      sectionBody.setLayout(ALayout.getZeroMarginLayout());
-      //      sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
       managedForm.addPart(new EditorSection(infoWidget, "Info", form.getBody(), managedForm.getToolkit(), sectionStyle,
             false));
-
-      //      managedForm.addPart(new InfoSection(form.getBody(), managedForm.getToolkit(), sectionStyle));
-
-      //      Composite sectionBody2 = toolkit.createComposite(form.getBody(), toolkit.getBorderStyle());
-      //      sectionBody2.setLayout(ALayout.getZeroMarginLayout());
-      //      sectionBody2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       managedForm.addPart(new EditorSection(changeReportTable, "Changes", form.getBody(), managedForm.getToolkit(),
             sectionStyle, true));
 
@@ -101,6 +92,7 @@ public class ChangeReportPage extends FormPage implements IChangeReportPreferenc
       bindMenu();
 
       getEditor().getPreferences().addListener(this);
+      getEditor().refreshData(uiData.isLoadOnOpenEnabled());
    }
 
    private void bindMenu() {
@@ -123,19 +115,6 @@ public class ChangeReportPage extends FormPage implements IChangeReportPreferenc
       public void menuAboutToShow(IMenuManager manager) {
          MenuManager menuManager = (MenuManager) manager;
          menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-         //         IContributionItem[] items = menuManager.getItems();
-         //         int lookingForItemsAt = items.length - 4;
-         //         for (int index = 0; index < items.length; index++) {
-         //            IContributionItem item = items[index];
-         //            if (index > lookingForItemsAt && !XViewer.MENU_GROUP_POST.equals(item.getId())) {
-         //               System.out.println(item.getId() + " " + item.getClass().getSimpleName());
-         //               menuManager.remove(item);
-         //            }
-         //         }
-         //            menuManager.add(new Separator());
-         //            menuManager.add(new TableCustomizationAction(xviewer));
-         //            menuManager.add(new ViewTableReportAction(xviewer));
-         //            menuManager.add(new ViewSelectedCellDataAction(xviewer));
       }
    }
 

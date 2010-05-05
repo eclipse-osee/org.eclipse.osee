@@ -24,10 +24,8 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
    public ChangeReportEditorInputFactory() {
    }
 
-   /*
-    * @see org.eclipse.ui.IElementFactory#createElement(org.eclipse.ui.IMemento)
-    */
    public IAdaptable createElement(IMemento memento) {
+      ChangeReportEditorInput toReturn = null;
       try {
          Integer branchId = null;
          if (memento != null) {
@@ -36,17 +34,13 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
                if (branchId != null && branchId > -1) {
                   Branch branch = BranchManager.getBranch(branchId);
                   if (branch != null) {
-                     ChangeUiData changeUiData = new ChangeUiData();
-                     changeUiData.setBranch(branch);
-                     return new ChangeReportEditorInput(changeUiData);
+                     toReturn = ChangeUiUtil.createInput(branch, false);
                   }
                } else {
                   Integer transactionNumber = memento.getInteger(TRANSACTION_ID_KEY);
                   if (transactionNumber != null && transactionNumber > -1) {
                      TransactionRecord transaction = TransactionManager.getTransactionId(transactionNumber);
-                     ChangeUiData changeUiData = new ChangeUiData();
-                     changeUiData.setTransaction(transaction);
-                     return new ChangeReportEditorInput(changeUiData);
+                     toReturn = ChangeUiUtil.createInput(transaction, false);
                   }
                }
             }
@@ -54,7 +48,7 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Change report error on init", ex);
       }
-      return null;
+      return toReturn;
    }
 
    /**

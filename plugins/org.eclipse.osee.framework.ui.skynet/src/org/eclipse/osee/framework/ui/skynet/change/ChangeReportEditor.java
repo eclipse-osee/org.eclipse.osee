@@ -136,7 +136,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       super.dispose();
    }
 
-   private void refreshData(boolean isReloadAllowed) {
+   public void refreshData(boolean isReloadAllowed) {
       List<IOperation> ops = new ArrayList<IOperation>();
       ChangeUiData changeData = getEditorInput().getChangeData();
       if (isReloadAllowed) {

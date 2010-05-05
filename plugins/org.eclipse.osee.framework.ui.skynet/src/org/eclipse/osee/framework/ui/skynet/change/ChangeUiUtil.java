@@ -32,9 +32,7 @@ public final class ChangeUiUtil {
       if (EditorsPreferencePage.isUseLegacyChangeReportView()) {
          ChangeView.open(branch); // Legacy Change Report
       } else {
-         ChangeUiData uiData = new ChangeUiData();
-         uiData.setBranch(branch);
-         open(new ChangeReportEditorInput(uiData), true);
+         open(createInput(branch, true));
       }
    }
 
@@ -43,13 +41,25 @@ public final class ChangeUiUtil {
       if (EditorsPreferencePage.isUseLegacyChangeReportView()) {
          ChangeView.open(transactionId); // Legacy Change Report
       } else {
-         ChangeUiData uiData = new ChangeUiData();
-         uiData.setTransaction(transactionId);
-         open(new ChangeReportEditorInput(uiData), true);
+         open(createInput(transactionId, true));
       }
    }
 
-   private static void open(final ChangeReportEditorInput editorInput, final boolean loadChanges) {
+   public static ChangeReportEditorInput createInput(TransactionRecord transactionId, boolean loadOnOpen) {
+      ChangeUiData uiData = new ChangeUiData();
+      uiData.setTransaction(transactionId);
+      uiData.setLoadOnOpen(loadOnOpen);
+      return new ChangeReportEditorInput(uiData);
+   }
+
+   public static ChangeReportEditorInput createInput(Branch branch, boolean loadOnOpen) {
+      ChangeUiData uiData = new ChangeUiData();
+      uiData.setBranch(branch);
+      uiData.setLoadOnOpen(loadOnOpen);
+      return new ChangeReportEditorInput(uiData);
+   }
+
+   private static void open(final ChangeReportEditorInput editorInput) {
       Job job = new UIJob("Open Change Report") {
 
          @Override
@@ -57,10 +67,6 @@ public final class ChangeUiUtil {
             IStatus status = Status.OK_STATUS;
             try {
                IEditorPart part = AWorkbench.getActivePage().openEditor(editorInput, ChangeReportEditor.EDITOR_ID);
-               if (loadChanges) {
-                  ChangeReportEditor editor = (ChangeReportEditor) part;
-                  editor.recomputeChangeReport();
-               }
             } catch (PartInitException ex) {
                status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error opening change report", ex);
             }
