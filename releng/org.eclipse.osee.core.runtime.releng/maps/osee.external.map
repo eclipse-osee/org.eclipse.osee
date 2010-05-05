@@ -1,5 +1,8 @@
 feature@org.eclipse.osee.external.feature=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,features/org.eclipse.osee.external.feature
 
+plugin@org.aopalliance,1.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20100427010814/bundles/org.aopalliance_1.0.0.v200905130917.jar
+plugin@com.google.inject,2.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20100427010814/bundles/com.google.inject_2.0.0.v201003051000.jar
+
 plugin@net.jini=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/net.jini
 plugin@com.lowagie.text,2.1.7=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20100427010814/bundles/com.lowagie.text_2.1.7.v201004222200.jar
 plugin@javax.activation,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/javax.activation_1.1.0.v200905021805.jar
