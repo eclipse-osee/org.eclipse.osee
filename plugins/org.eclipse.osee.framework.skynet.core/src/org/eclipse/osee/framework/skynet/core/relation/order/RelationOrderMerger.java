@@ -12,94 +12,88 @@ package org.eclipse.osee.framework.skynet.core.relation.order;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import org.eclipse.core.runtime.Assert;
 
 public class RelationOrderMerger<T> {
-   private List<T> starredList;
+	private List<T> starredList;
 
-   public RelationOrderMerger() {
-      starredList = new ArrayList<T>();
-   }
+	public RelationOrderMerger() {
+		starredList = new ArrayList<T>();
+	}
 
-   public void computeMergedOrder(List<T> leftOrder, List<T> rightOrder, Collection<T> mergedSet) {
-      // 1) Cross out anything not found in mergedSet
-      makeSubset(leftOrder, mergedSet);
-      makeSubset(rightOrder, mergedSet);
+	public List<T> computeMergedOrder(List<T> leftOrder, List<T> rightOrder,
+			Collection<T> mergedSet) {
+		makeSubset(leftOrder, mergedSet);
+		makeSubset(rightOrder, mergedSet);
 
-      // 2) Star anything not in both lists
-      starUnionComplement(leftOrder, rightOrder);
+		starUnionComplement(leftOrder, rightOrder);
 
-      // 3) Perform cursor algorithm to either
-      //    a) generate a merged order, or
-      //    b) fail
-   }
+		return cursorAlgorithm(leftOrder, rightOrder, mergedSet);
+	}
 
-   private void makeSubset(List<T> subset, Collection<T> superset) {
-      for (int i = 0; i < subset.size(); i++) {
-         T current = subset.get(i);
-         if (!superset.contains(current)) {
-            subset.remove(i);
-            i--;
-         }
-      }
-   }
+	private void makeSubset(List<T> subset, Collection<T> superset) {
+		for (int i = 0; i < subset.size(); i++) {
+			T current = subset.get(i);
+			if (!superset.contains(current)) {
+				subset.remove(i);
+				i--;
+			}
+		}
+	}
 
-   private void starUnionComplement(List<T> setA, List<T> setB) {
-      for (T element : setA) {
-         if (!setB.contains(element)) {
-            addStar(element);
-         }
-      }
+	private void starUnionComplement(Collection<T> setA, Collection<T> setB) {
+		for (T element : setA) {
+			if (!setB.contains(element)) {
+				addStar(element);
+			}
+		}
 
-      for (T element : setB) {
-         if (!setA.contains(element)) {
-            addStar(element);
-         }
-      }
-   }
+		for (T element : setB) {
+			if (!setA.contains(element)) {
+				addStar(element);
+			}
+		}
+	}
 
-   private void addStar(T element) {
-      starredList.add(element);
-   }
+	private List<T> cursorAlgorithm(List<T> left, List<T> right,
+			Collection<T> mergedSet) {
+		List<T> mergedOrder = new ArrayList<T>();
+		int leftIndex = 0;
+		int rightIndex = 0;
+		while (leftIndex < left.size() && rightIndex < right.size()) {
+			T leftElement = left.get(leftIndex);
+			T rightElement = right.get(rightIndex);
+			boolean resolved = false;
+			if (leftElement.equals(rightElement)) {
+				mergedOrder.add(leftElement);
+				leftIndex++;
+				rightIndex++;
+				resolved = true;
+			}
+			if (hasStar(leftElement)) {
+				mergedOrder.add(leftElement);
+				leftIndex++;
+				resolved = true;
+			}
+			if (hasStar(rightElement)) {
+				mergedOrder.add(rightElement);
+				rightIndex++;
+				resolved = true;
+			}
+			if (!resolved)
+				return null;
+		}
 
-   private boolean hasStar(T element) {
-      return starredList.contains(element);
-   }
+		return mergedOrder;
+	}
 
-   public static void main(String[] args) {
-      test();
-   }
+	private void addStar(T element) {
+		starredList.add(element);
+	}
 
-   private static void test() {
-      RelationOrderMerger<String> merger = new RelationOrderMerger<String>();
-      Collection<String> mergedSet = new HashSet<String>();
-      mergedSet.add("Sig");
-      mergedSet.add("HK");
-      mergedSet.add("Wilson");
-      mergedSet.add("SA");
-      mergedSet.add("Browning");
+	private boolean hasStar(T element) {
+		return starredList.contains(element);
+	}
 
-      List<String> subset = new ArrayList<String>();
-      subset.add("Glock");
-      subset.add("Sig");
-      subset.add("HK");
-      subset.add("Wilson");
-      subset.add("Browning");
 
-      merger.makeSubset(subset, mergedSet);
-      Assert.isTrue(subset.size() == 4);
-      Assert.isTrue(!subset.contains("Glock"));
-
-      List<String> subset2 = new ArrayList<String>(subset);
-      subset2.add("SA");
-
-      merger.starUnionComplement(subset, subset2);
-      Assert.isTrue(!merger.hasStar("Wilson"));
-      Assert.isTrue(merger.hasStar("SA"));
-
-      merger.starredList = new ArrayList<String>();
-      merger.starUnionComplement(subset2, subset);
-   }
 }
