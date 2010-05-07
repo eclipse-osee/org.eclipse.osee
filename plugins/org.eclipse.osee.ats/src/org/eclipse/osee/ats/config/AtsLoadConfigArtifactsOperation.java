@@ -33,6 +33,7 @@ public class AtsLoadConfigArtifactsOperation extends AbstractOperation {
 
    public synchronized void ensureLoaded() throws OseeCoreException {
       if (!loaded) {
+         loaded = true;
          OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Loading ATS Configuration");
          Artifact headingArt = AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
          // Loading artifacts will cache them in ArtifactCache

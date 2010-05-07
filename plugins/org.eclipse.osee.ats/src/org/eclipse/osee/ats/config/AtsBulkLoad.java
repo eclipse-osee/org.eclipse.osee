@@ -39,9 +39,9 @@ public class AtsBulkLoad {
    public static void loadConfig(boolean pend) {
       if (AtsLoadConfigArtifactsOperation.isLoaded()) return;
       if (pend) {
-         Operations.executeAndPend(new AtsLoadConfigArtifactsOperation(), true);
+         Operations.executeAndPend(new AtsLoadConfigArtifactsOperation(), false);
       } else {
-         Operations.executeAsJob(new AtsLoadConfigArtifactsOperation(), true);
+         Operations.executeAsJob(new AtsLoadConfigArtifactsOperation(), false);
       }
    }
 

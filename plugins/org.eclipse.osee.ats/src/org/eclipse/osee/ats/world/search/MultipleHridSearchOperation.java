@@ -245,7 +245,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IO
    }
 
    public class EntryJob implements Runnable {
-      boolean valid;
+      boolean valid = false;
 
       @Override
       public void run() {
@@ -270,16 +270,15 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IO
             }
             if (!Strings.isValid(enteredIds)) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Must Enter Valid Id");
-               valid = false;
-            }
-            if (enteredIds.equals("oseerocks") || enteredIds.equals("osee rocks")) {
-               AWorkbench.popup("Confirmation", "Confirmed!  Osee Rocks!");
-               valid = false;
-            }
-            if (enteredIds.equals("purple icons")) {
-               AWorkbench.popup("Confirmation", "Yeehaw, Purple Icons Rule!!");
-               ArtifactImageManager.setOverrideImageEnum(FrameworkImage.PURPLE);
-               valid = false;
+            } else {
+               if (enteredIds.equals("oseerocks") || enteredIds.equals("osee rocks")) {
+                  AWorkbench.popup("Confirmation", "Confirmed!  Osee Rocks!");
+               } else if (enteredIds.equals("purple icons")) {
+                  AWorkbench.popup("Confirmation", "Yeehaw, Purple Icons Rule!!");
+                  ArtifactImageManager.setOverrideImageEnum(FrameworkImage.PURPLE);
+               } else {
+                  valid = true;
+               }
             }
          }
       }
