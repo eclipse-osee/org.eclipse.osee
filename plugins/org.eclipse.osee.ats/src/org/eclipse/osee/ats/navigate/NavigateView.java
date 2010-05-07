@@ -10,12 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IRegistryEventListener;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -32,21 +40,25 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -66,6 +78,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author Donald G. Dunne
@@ -75,69 +88,109 @@ public class NavigateView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.ats.navigate.NavigateView";
    public static final String HELP_CONTEXT_ID = "atsNavigator";
    private AtsNavigateComposite xNavComp;
-   public Text searchArea;
-   public XCheckBox completeCancelledCheck;
+   private Text searchArea;
    private boolean includeCompleteCancelled = false;
+   private Composite parent;
+   private LoadingComposite loadingComposite;
 
    public NavigateView() {
    }
 
    @Override
-   public void setFocus() {
-   }
+   public void createPartControl(Composite parent) {
+      this.parent = parent;
+      loadingComposite = new LoadingComposite(parent);
 
-   @Override
-   public void dispose() {
       try {
-         OseeNotificationManager.getInstance().sendNotifications();
+         refreshData();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
-      super.dispose();
    }
 
-   @Override
-   public void createPartControl(Composite parent) {
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
-         return;
+   public void refreshData() throws OseeCoreException {
+      List<IOperation> ops = new ArrayList<IOperation>();
+      ops.add(AtsBulkLoad.getConfigLoadingOperation());
+      ops.add(new AtsNavigateViewItemsOperation());
+      IOperation operation = new CompositeOperation("Load ATS Navigator", SkynetGuiPlugin.PLUGIN_ID, ops);
+      Operations.executeAsJob(operation, true, Job.LONG, new ReloadJobChangeAdapter(this));
+   }
+
+   private final class ReloadJobChangeAdapter extends JobChangeAdapter {
+
+      private final NavigateView navView;
+
+      private ReloadJobChangeAdapter(NavigateView navView) {
+         this.navView = navView;
       }
 
-      OseeContributionItem.addTo(this, false);
-
-      xNavComp = new AtsNavigateComposite(new AtsNavigateViewItems(), parent, SWT.NONE);
-
-      AtsPlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
-      createToolBar();
-
-      // add search text box      
-      createSearchInputPart(xNavComp);
-
-      if (savedFilterStr != null) {
-         xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
+      @Override
+      public void scheduled(IJobChangeEvent event) {
+         super.scheduled(event);
       }
-      xNavComp.refresh();
-      xNavComp.getFilteredTree().getFilterControl().setFocus();
 
-      Label label = new Label(xNavComp, SWT.None);
-      String str = getWhoAmI();
-      if (AtsUtil.isAtsAdmin()) {
-         str += " - Admin";
+      @Override
+      public void aboutToRun(IJobChangeEvent event) {
+         super.aboutToRun(event);
       }
-      if (!str.equals("")) {
-         if (AtsUtil.isAtsAdmin()) {
-            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-         } else {
-            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
-         }
-      }
-      label.setText(str);
-      label.setToolTipText(str);
-      GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_CENTER);
-      gridData.heightHint = 15;
-      label.setLayoutData(gridData);
 
-      AtsBulkLoad.run(false);
-      addExtensionPointListenerBecauseOfWorkspaceLoading();
+      @Override
+      public void done(IJobChangeEvent event) {
+         super.done(event);
+         Job job = new UIJob("Draw ATS Navigator") {
+
+            @Override
+            public IStatus runInUIThread(IProgressMonitor monitor) {
+               showBusy(false);
+               if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
+                  return Status.OK_STATUS;
+               }
+
+               if (Widgets.isAccessible(loadingComposite)) {
+                  loadingComposite.dispose();
+               }
+               xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE);
+
+               AtsPlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+               createToolBar();
+
+               // add search text box      
+               createSearchInputPart(xNavComp);
+
+               if (savedFilterStr != null) {
+                  xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
+               }
+               xNavComp.refresh();
+               xNavComp.getFilteredTree().getFilterControl().setFocus();
+
+               Label label = new Label(xNavComp, SWT.None);
+               String str = getWhoAmI();
+               if (AtsUtil.isAtsAdmin()) {
+                  str += " - Admin";
+               }
+               if (!str.equals("")) {
+                  if (AtsUtil.isAtsAdmin()) {
+                     label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+                  } else {
+                     label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+                  }
+               }
+               label.setText(str);
+               label.setToolTipText(str);
+               GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_CENTER);
+               gridData.heightHint = 15;
+               label.setLayoutData(gridData);
+
+               OseeContributionItem.addTo(navView, false);
+               xNavComp.layout();
+
+               addExtensionPointListenerBecauseOfWorkspaceLoading();
+
+               return Status.OK_STATUS;
+            }
+         };
+         Operations.scheduleJob(job, false, Job.SHORT, null);
+      }
    }
 
    private void addExtensionPointListenerBecauseOfWorkspaceLoading() {
@@ -203,9 +256,9 @@ public class NavigateView extends ViewPart implements IActionable {
          }
       });
       this.searchArea.setToolTipText("ATS Quick Search - Type in a search string.");
-      this.completeCancelledCheck = new XCheckBox("IC");
-      this.completeCancelledCheck.createWidgets(comp, 2);
-      this.completeCancelledCheck.setToolTip("Include completed/cancelled ATS Artifacts");
+      final XCheckBox completeCancelledCheck = new XCheckBox("IC");
+      completeCancelledCheck.createWidgets(comp, 2);
+      completeCancelledCheck.setToolTip("Include completed/cancelled ATS Artifacts");
       completeCancelledCheck.addSelectionListener(new SelectionListener() {
          public void widgetDefaultSelected(SelectionEvent e) {
          }
@@ -248,15 +301,6 @@ public class NavigateView extends ViewPart implements IActionable {
       mm.add(new NewAction());
       mm.add(new NewGoal());
       mm.add(OseeUiActions.createBugAction(AtsPlugin.getInstance(), this, VIEW_ID, "ATS Navigator"));
-   }
-
-   /**
-    * Provided for tests to be able to simulate a double-click
-    */
-   public void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      OseeLog.log(AtsPlugin.class, Level.INFO,
-            "===> Simulating NavigateView Double-Click for \"" + item.getName() + "\"...");
-      xNavComp.handleDoubleClick(item, tableLoadOptions);
    }
 
    public static NavigateView getNavigateView() {
@@ -307,4 +351,19 @@ public class NavigateView extends ViewPart implements IActionable {
          OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "NavigateView error on init", ex);
       }
    }
+
+   @Override
+   public void setFocus() {
+   }
+
+   @Override
+   public void dispose() {
+      try {
+         OseeNotificationManager.getInstance().sendNotifications();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+      super.dispose();
+   }
+
 }

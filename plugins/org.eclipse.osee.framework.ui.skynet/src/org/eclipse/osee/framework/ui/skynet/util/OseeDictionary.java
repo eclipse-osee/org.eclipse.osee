@@ -18,7 +18,10 @@ import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -30,27 +33,34 @@ import org.osgi.framework.Bundle;
  * 
  * @author Donald G. Dunne
  */
-public class OseeDictionary implements IDictionary {
+public class OseeDictionary extends AbstractOperation implements IDictionary {
 
-   private static Set<IOseeDictionary> dictionaries;
+   private static Set<IOseeDictionary> dictionaries = new HashSet<IOseeDictionary>();
    private static OseeDictionary instance = new OseeDictionary();
+   private static boolean isLoadingDictionary = false;
+   private static boolean loaded = false;
 
    public static OseeDictionary getInstance() {
       return instance;
    }
 
-   private OseeDictionary() {
+   public static void load() {
+      if (loaded || isLoadingDictionary) return;
+      Operations.executeAsJob(new OseeDictionary(), false);
    }
 
-   public synchronized void ensureLoaded() {
-      if (dictionaries == null) {
-         getIDictionaries();
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.INFO, "Loading Osee Dictionary");
-      }
+   public OseeDictionary() {
+      super("Loading Osee Dictionary", SkynetGuiPlugin.PLUGIN_ID);
    }
 
    public boolean isWord(String word) {
-      ensureLoaded();
+      // Just return true till dictionary loaded
+      if (!loaded && isLoadingDictionary) return true;
+      // If not loaded, kickoff operation to load and return true
+      if (!loaded) {
+         Operations.executeAsJob(new OseeDictionary(), false);
+         return true;
+      }
       //       System.out.println("Lookup => \""+word+"\"");
       String cleanWord = getCleanWord(word);
       if (cleanWord.equals("") || cleanWord.length() == 1) return true;
@@ -59,7 +69,6 @@ public class OseeDictionary implements IDictionary {
       }
       return false;
    }
-
    // Remove any junky characters and check for acronyms and other known
    // non-word type stuff. Return valid word to check in dictionary OR
    // "" if there is no word in this string
@@ -87,8 +96,16 @@ public class OseeDictionary implements IDictionary {
       return w.toLowerCase();
    }
 
+   private synchronized void ensureLoaded() {
+      if (!loaded && !isLoadingDictionary) {
+         getIDictionaries();
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.INFO, "Loading Osee Dictionary");
+      }
+   }
+
    private static void getIDictionaries() {
-      dictionaries = new HashSet<IOseeDictionary>();
+      if (loaded) return;
+      isLoadingDictionary = true;
       if (!Platform.isRunning()) return;
       IExtensionPoint point = null;
       try {
@@ -126,6 +143,11 @@ public class OseeDictionary implements IDictionary {
             }
          }
       }
+      loaded = true;
    }
 
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      ensureLoaded();
+   }
 }

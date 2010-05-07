@@ -12,12 +12,9 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.navigate.OpenChangeReportByIdItem;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.ats.util.AtsEditor;
+import org.eclipse.osee.ats.world.search.MultipleHridSearchOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -27,7 +24,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class OpenChangeReportByIdAction extends Action {
 
    public OpenChangeReportByIdAction() {
-      this("Open Change Report by Id");
+      this("Open Change Report by ID(s)");
    }
 
    public OpenChangeReportByIdAction(String name) {
@@ -37,11 +34,7 @@ public class OpenChangeReportByIdAction extends Action {
 
    @Override
    public void run() {
-      try {
-         new OpenChangeReportByIdItem(null).run(TableLoadOption.None);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      Operations.executeAsJob(new MultipleHridSearchOperation(getText(), AtsEditor.ChangeReport), true);
    }
 
    @Override

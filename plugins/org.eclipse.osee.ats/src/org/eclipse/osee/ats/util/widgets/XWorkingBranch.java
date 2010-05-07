@@ -16,8 +16,6 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -48,6 +46,7 @@ import org.eclipse.swt.widgets.Listener;
 
 /**
  * @author Megumi Telles
+ * @author Donald G. Dunne
  */
 public class XWorkingBranch extends XWidget implements IArtifactWidget, IFrameworkTransactionEventListener, IBranchEventListener {
 
@@ -55,7 +54,9 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    private Button createBranchButton;
    private Button showArtifactExplorer;
    private Button showChangeReport;
-   private Button purgeBranchButton;
+   private Button deleteBranchButton;
+   private XWorkingBranchEnablement enablement;
+
    public static enum BranchStatus {
       Not_Started, Changes_InProgress, Changes_NotPermitted
    }
@@ -73,10 +74,6 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       }
       if (!getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
-         labelWidget.setText(getLabel() + ": " + getWorkingBranchShortName() + " " + getStatus());
-         if (getToolTip() != null) {
-            labelWidget.setToolTipText(getToolTip());
-         }
       }
 
       Composite bComp = new Composite(parent, SWT.NONE);
@@ -86,12 +83,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
          toolkit.adapt(bComp);
       }
 
-      if (toolkit != null) {
-         createBranchButton = toolkit.createButton(bComp, null, SWT.PUSH);
-      } else {
-         createBranchButton = new Button(bComp, SWT.PUSH);
-      }
-      createBranchButton.setEnabled(getWorkingBranch() == null);
+      createBranchButton = createNewButton(bComp);
       createBranchButton.setToolTipText("Create Working Branch");
       createBranchButton.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
@@ -99,28 +91,19 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
          }
       });
 
-      if (toolkit != null) {
-         showArtifactExplorer = toolkit.createButton(bComp, null, SWT.PUSH);
-      } else {
-         showArtifactExplorer = new Button(bComp, SWT.PUSH);
-      }
-
-      showArtifactExplorer.setEnabled(isWorkingBranchInWork());
+      showArtifactExplorer = createNewButton(bComp);
       showArtifactExplorer.setToolTipText("Show Artifact Explorer");
       showArtifactExplorer.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
-            ArtifactExplorer.exploreBranch(getWorkingBranch());
+            try {
+               ArtifactExplorer.exploreBranch(teamArt.getWorkingBranch());
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       });
 
-      if (toolkit != null) {
-         showChangeReport = toolkit.createButton(bComp, null, SWT.PUSH);
-      } else {
-         showChangeReport = new Button(bComp, SWT.PUSH);
-      }
-      if (getWorkingBranch() == null) {
-         showChangeReport.setEnabled(false);
-      }
+      showChangeReport = createNewButton(bComp);
       showChangeReport.setToolTipText("Show Change Report");
       showChangeReport.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
@@ -128,14 +111,9 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
          }
       });
 
-      if (toolkit != null) {
-         purgeBranchButton = toolkit.createButton(bComp, null, SWT.PUSH);
-      } else {
-         purgeBranchButton = new Button(bComp, SWT.PUSH);
-      }
-      purgeBranchButton.setEnabled(isWorkingBranchInWork());
-      purgeBranchButton.setToolTipText("Delete Working Branch");
-      purgeBranchButton.addListener(SWT.Selection, new Listener() {
+      deleteBranchButton = createNewButton(bComp);
+      deleteBranchButton.setToolTipText("Delete Working Branch");
+      deleteBranchButton.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
             teamArt.getBranchMgr().deleteWorkingBranch(true);
             refresh();
@@ -144,54 +122,45 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
       if (AtsPlugin.getInstance() != null) {
          createBranchButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH));
-         purgeBranchButton.setImage(ImageManager.getImage(FrameworkImage.TRASH));
+         deleteBranchButton.setImage(ImageManager.getImage(FrameworkImage.TRASH));
       }
       if (SkynetGuiPlugin.getInstance() != null) {
          showArtifactExplorer.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EXPLORER));
          showChangeReport.setImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE));
       }
-      refresh();
+      refreshLabel();
+      refreshEnablement();
    }
 
-   private boolean isWorkingBranchInWork() {
-      try {
-         return teamArt.getBranchMgr().isWorkingBranchInWork();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+   public Button createNewButton(Composite comp) {
+      if (toolkit != null) {
+         return toolkit.createButton(comp, null, SWT.PUSH);
       }
-      return false;
+      return new Button(comp, SWT.PUSH);
    }
 
-   private Branch getWorkingBranch() {
-      try {
-         return teamArt.getWorkingBranch();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-         return null;
-      }
-   }
-
-   private String getWorkingBranchShortName() {
-      Branch branch = getWorkingBranch();
-      if (branch != null) {
-         return branch.getShortName();
-      }
-      return "";
-   }
-
-   public String getStatus() {
-      try {
-         if (teamArt != null && teamArt.getBranchMgr().isWorkingBranchEverCommitted()) {
-            return BranchStatus.Changes_NotPermitted.name();
-         } else if (teamArt != null && teamArt.getBranchMgr().isWorkingBranchInWork()) {
-            return BranchStatus.Changes_InProgress.name();
-         } else {
-            return BranchStatus.Not_Started.name();
+   public void refreshLabel() {
+      if (!getLabel().equals("")) {
+         try {
+            labelWidget.setText(getLabel() + ": " + (enablement.getWorkingBranch() != null ? enablement.getWorkingBranch().getShortName() : "") + " " + enablement.getStatus().name());
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-         return "";
+         if (getToolTip() != null) {
+            labelWidget.setToolTipText(getToolTip());
+         }
       }
+   }
+
+   public void refreshEnablement() {
+      createBranchButton.setEnabled(enablement.isCreateBranchButtonEnabled());
+      showArtifactExplorer.setEnabled(enablement.isShowArtifactExplorerButtonEnabled());
+      showChangeReport.setEnabled(enablement.isShowChangeReportButtonEnabled());
+      deleteBranchButton.setEnabled(enablement.isDeleteBranchButtonEnabled());
+   }
+
+   public static boolean isPurgeBranchButtonEnabled(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      return teamArt.getBranchMgr().isWorkingBranchInWork();
    }
 
    @Override
@@ -234,53 +203,26 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       // don't do anything here cause to expensive to check for branch conditions during every refresh
    }
 
-   // only refresh on branch event; this may bust some tests
    public void refreshOnBranchEvent() {
       if (teamArt == null || teamArt.getBranchMgr() == null || labelWidget == null || labelWidget.isDisposed()) {
          return;
       }
-      final boolean forcePend = OseeProperties.isInTest();
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
-            try {
-               final boolean workingBranchInWork = teamArt.getBranchMgr().isWorkingBranchInWork();
-               final boolean committedBranchExists = teamArt.getBranchMgr().isCommittedBranchExists();
-               final Branch workingBranch = teamArt.getWorkingBranch();
-               final String status = getStatus();
-               final boolean changesNotPermitted = status.equals(BranchStatus.Changes_NotPermitted.name());
-               final String labelStr =
-                     getLabel() + ": " + (workingBranch == null ? "" : workingBranch.getShortName()) + " " + status;
-               Displays.ensureInDisplayThread(new Runnable() {
-                  public void run() {
-                     if (Widgets.isAccessible(labelWidget)) {
-                        labelWidget.setText(labelStr);
-                        if (Widgets.isAccessible(createBranchButton)) {
-                           createBranchButton.setEnabled(!workingBranchInWork && !committedBranchExists);
-                        }
-                        if (Widgets.isAccessible(showArtifactExplorer)) {
-                           showArtifactExplorer.setEnabled(workingBranch != null && !changesNotPermitted);
-                        }
-                        if (Widgets.isAccessible(showChangeReport)) {
-                           showChangeReport.setEnabled(workingBranchInWork || committedBranchExists);
-                        }
-                        if (Widgets.isAccessible(purgeBranchButton)) {
-                           purgeBranchButton.setEnabled(workingBranchInWork && !committedBranchExists);
-                        }
-                     }
+            enablement.refresh();
+            Displays.ensureInDisplayThread(new Runnable() {
+               public void run() {
+                  if (Widgets.isAccessible(createBranchButton)) {
+                     refreshLabel();
+                     refreshEnablement();
                   }
-               }, forcePend);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-            }
+               }
+            });
          }
       };
-      if (forcePend) {
-         runnable.run();
-      } else {
-         Thread thread = new Thread(runnable);
-         thread.start();
-      }
+      Thread thread = new Thread(runnable);
+      thread.start();
    }
 
    @Override
@@ -308,6 +250,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    @Override
    public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException {
       this.teamArt = (TeamWorkFlowArtifact) artifact;
+      enablement = new XWorkingBranchEnablement(teamArt);
    }
 
    @Override
@@ -337,7 +280,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    }
 
    public Button getDeleteBranchButton() {
-      return purgeBranchButton;
+      return deleteBranchButton;
    }
 
 }

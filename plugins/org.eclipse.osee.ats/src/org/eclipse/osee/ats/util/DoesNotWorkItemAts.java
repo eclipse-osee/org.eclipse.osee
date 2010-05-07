@@ -120,7 +120,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    @SuppressWarnings("unused")
    private void myWorldTimeTest() throws OseeCoreException {
-      AtsBulkLoad.run(true);
+      AtsBulkLoad.loadConfig(true);
       //      ElapsedTime time = new ElapsedTime("My World via Relations");
       //      Set<Artifact> assigned =
       //            RelationManager.getRelatedArtifacts(Arrays.asList(UserManager.getUser()), 1,

@@ -78,7 +78,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          PlatformUI.getWorkbench().getActiveWorkbenchWindow().removePerspectiveListener(this);
          return;
       }
-      AtsBulkLoad.run(false);
+      AtsBulkLoad.loadConfig(false);
       super.createPartControl(top);
       OseeUiActions.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "SkyWalker");
       AtsPlugin.getInstance().setHelp(top, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");

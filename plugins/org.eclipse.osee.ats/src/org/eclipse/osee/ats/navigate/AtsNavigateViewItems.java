@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.notify.AtsNotificationNavigateItem;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
@@ -39,7 +40,7 @@ import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
 import org.eclipse.osee.ats.world.search.GoalSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
-import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
+import org.eclipse.osee.ats.world.search.MultipleHridSearchOperation;
 import org.eclipse.osee.ats.world.search.MyFavoritesGoalsSearchItem;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.ats.world.search.MyGoalWorkflowItem;
@@ -86,6 +87,7 @@ import org.osgi.framework.Bundle;
  */
 public class AtsNavigateViewItems extends XNavigateViewItems {
    private static AtsNavigateViewItems navigateItems = new AtsNavigateViewItems();
+   private List<XNavigateItem> items;
 
    public AtsNavigateViewItems() {
       super();
@@ -97,6 +99,13 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
    @Override
    public List<XNavigateItem> getSearchNavigateItems() {
+      if (items == null) {
+         items = getItems();
+      }
+      return items;
+   }
+
+   private List<XNavigateItem> getItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
       if (AtsPlugin.areOSEEServicesAvailable().isFalse()) {
@@ -134,8 +143,12 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(stateItems);
 
          // Search Items
-         items.add(new OpenChangeReportByIdItem(null));
-         items.add(new SearchNavigateItem(null, new MultipleHridSearchItem()));
+         items.add(new XNavigateItemOperation(null, FrameworkImage.BRANCH_CHANGE, "Open Change Report(s) by ID(s)",
+               new MultipleHridSearchOperation("", AtsEditor.ChangeReport)));
+         items.add(new XNavigateItemOperation(null, AtsImage.OPEN_BY_ID, "Search by ID(s) - Open World Editor",
+               new MultipleHridSearchOperation("", AtsEditor.WorldEditor)));
+         items.add(new XNavigateItemOperation(null, AtsImage.WORKFLOW_CONFIG, "Search by ID(s) - Open Workflow Editor",
+               new MultipleHridSearchOperation("", AtsEditor.WorkflowEditor)));
          items.add(new ArtifactImpactToActionSearchItem(null));
 
          XNavigateItem reportItems = new XNavigateItem(null, "Reports", AtsImage.REPORT);

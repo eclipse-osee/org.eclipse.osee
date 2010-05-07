@@ -45,7 +45,7 @@ public class NewAction extends Action {
    @Override
    public void run() {
       super.run();
-      AtsBulkLoad.run(true);
+      AtsBulkLoad.loadConfig(true);
       NewActionWizard wizard = new NewActionWizard();
       try {
          if (actionableItem != null) {

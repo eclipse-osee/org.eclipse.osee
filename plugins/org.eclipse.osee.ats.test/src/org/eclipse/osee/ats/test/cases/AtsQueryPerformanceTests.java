@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class AtsQueryPerformanceTests {
 
    public AtsQueryPerformanceTests() {
-      AtsBulkLoad.run(true);
+      AtsBulkLoad.loadConfig(true);
    }
 
    @org.junit.Test

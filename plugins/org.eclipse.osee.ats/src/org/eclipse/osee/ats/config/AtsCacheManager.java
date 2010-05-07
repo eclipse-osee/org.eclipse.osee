@@ -85,27 +85,27 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
    }
 
    public static List<Artifact> getArtifactsByName(IArtifactType artifactType, String name) throws OseeCoreException {
-      AtsBulkLoad.run(true);
+      AtsBulkLoad.loadConfig(true);
       return ArtifactCache.getArtifactsByName(artifactType, name);
    }
 
    public static ActionableItemArtifact getActionableItemByGuid(String guid) throws OseeCoreException {
-      AtsBulkLoad.run(true);
+      AtsBulkLoad.loadConfig(true);
       return (ActionableItemArtifact) ArtifactCache.getActive(guid, AtsUtil.getAtsBranch().getId());
    }
 
    public static TeamDefinitionArtifact getTeamDefinitionArtifact(String guid) throws OseeCoreException {
-      AtsBulkLoad.run(true);
+      AtsBulkLoad.loadConfig(true);
       return (TeamDefinitionArtifact) ArtifactCache.getActive(guid, AtsUtil.getAtsBranch().getId());
    }
 
    public static List<Artifact> getArtifactsByActive(ArtifactType artifactType, Active active) throws OseeCoreException {
-      AtsBulkLoad.run(true);
+      AtsBulkLoad.loadConfig(true);
       return AtsUtil.getActive(ArtifactCache.getArtifactsByType(artifactType), active, null);
    }
 
    public static Artifact getSoleArtifactByName(IArtifactType artifactType, String name) throws OseeCoreException {
-      AtsBulkLoad.run(true);
+      AtsBulkLoad.loadConfig(true);
       List<Artifact> arts = ArtifactCache.getArtifactsByName(artifactType, name);
       if (arts.size() == 1) {
          return arts.iterator().next();

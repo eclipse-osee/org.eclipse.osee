@@ -130,9 +130,9 @@ public class AtsNotifyUsersTest {
       event = notifyManager.getNotificationEvents().get(0);
       Assert.assertEquals(NotifyType.Cancelled.name(), event.getType());
       Assert.assertEquals(kay_ValidEmail, event.getUsers().iterator().next());
-      Assert.assertEquals(
-            "[Demo Code Team Workflow] titled [AtsNotifyUsersTest] was cancelled from the [Endorse] state on [04/23/2010 09:18 AM].<br>Reason: [this is the reason]",
-            event.getDescription());
+      Assert.assertTrue(event.getDescription().startsWith(
+            "[Demo Code Team Workflow] titled [AtsNotifyUsersTest] was cancelled from the [Endorse] state on"));
+      Assert.assertTrue(event.getDescription().endsWith(".<br>Reason: [this is the reason]"));
 
    }
 

@@ -79,7 +79,7 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
    public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style, ToolBar toolBar) throws OseeCoreException {
       super(parent, style);
       this.iXTaskViewer = iXTaskViewer;
-      AtsBulkLoad.run(false);
+      AtsBulkLoad.loadConfig(false);
 
       setLayout(ALayout.getZeroMarginLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));

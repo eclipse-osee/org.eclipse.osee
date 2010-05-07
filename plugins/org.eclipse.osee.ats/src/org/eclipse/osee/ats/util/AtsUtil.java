@@ -241,7 +241,7 @@ public final class AtsUtil {
     * @param guid
     */
    public static void openArtifact(String guid, OseeEditor view) {
-      AtsBulkLoad.run(false);
+      AtsBulkLoad.loadConfig(false);
       Artifact artifact = null;
       try {
          artifact = ArtifactQuery.getArtifactFromId(guid, getAtsBranch());

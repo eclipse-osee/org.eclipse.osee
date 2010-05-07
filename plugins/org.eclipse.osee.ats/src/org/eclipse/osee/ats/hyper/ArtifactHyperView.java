@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.hyper;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -24,11 +24,12 @@ import org.eclipse.osee.ats.actions.wizard.ArtifactSelectWizard;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
@@ -260,9 +262,12 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
 
          @Override
          public void run() {
-            MultipleHridSearchItem gsi = new MultipleHridSearchItem();
+            EntryDialog ed = new EntryDialog("Open by Id", "Enter HRID/Guid for Artifact");
+            if (ed.open() != 0) return;
+            String hridGuid = ed.getEntry().trim();
             try {
-               Collection<Artifact> arts = gsi.performSearchGetResults(true);
+               Collection<Artifact> arts =
+                     ArtifactQuery.getArtifactListFromIds(Arrays.asList(hridGuid), BranchManager.getCommonBranch());
                if (arts.size() == 0) {
                   AWorkbench.popup("ERROR", "No Artifacts Found");
                   return;
@@ -274,15 +279,12 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
          }
       };
       openByIdAction.setToolTipText("Open by Id");
-
-      IMenuManager mm = getViewSite().getActionBars().getMenuManager();
-      mm.add(new Separator());
-      mm.add(openByIdAction);
+      openArtAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ART_VIEW));
 
       IActionBars bars = getViewSite().getActionBars();
       IToolBarManager tbm = bars.getToolBarManager();
       tbm.add(new Separator());
-      // tbm.add(homeAction);
+      tbm.add(openByIdAction);
       tbm.add(openArtAction);
       tbm.add(pinAction);
    }

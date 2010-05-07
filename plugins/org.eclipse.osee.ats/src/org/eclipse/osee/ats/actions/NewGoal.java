@@ -35,7 +35,7 @@ public class NewGoal extends Action {
    @Override
    public void run() {
       super.run();
-      AtsBulkLoad.run(true);
+      AtsBulkLoad.loadConfig(true);
       try {
          EntryDialog ed = new EntryDialog("New Goal", "Enter Title");
          if (ed.open() == 0) {

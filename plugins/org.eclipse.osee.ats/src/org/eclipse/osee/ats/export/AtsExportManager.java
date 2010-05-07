@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAPrint;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -131,12 +130,9 @@ public class AtsExportManager extends Action {
                StringBuffer singleSb = new StringBuffer();
                for (Artifact artifact : artifacts) {
                   if (artifact instanceof StateMachineArtifact) {
-                     SMAEditor.editArtifact((StateMachineArtifact) artifact, true);
-                     SMAEditor editor = SMAEditor.getSmaEditor((StateMachineArtifact) artifact);
                      SMAPrint smaPrint = new SMAPrint(((StateMachineArtifact) artifact));
                      smaPrint.setIncludeTaskList(includeTaskList);
                      String html = smaPrint.getResultData().getReport("").getManipulatedHtml();
-                     editor.closeEditor();
                      if (multipleFile) {
                         try {
                            if (asHtmlToFile) {

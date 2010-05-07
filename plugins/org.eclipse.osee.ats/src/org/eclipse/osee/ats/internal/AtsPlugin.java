@@ -35,7 +35,7 @@ public class AtsPlugin extends OseeUiActivator {
    public AtsPlugin() {
       super();
       pluginInstance = this;
-      AtsPreSaveCacheRemoteEventHandler.getInstance();
+      AtsPreSaveCacheRemoteEventHandler.start();
       AtsCacheManager.start();
       AtsNotifyUsers.getInstance();
    }

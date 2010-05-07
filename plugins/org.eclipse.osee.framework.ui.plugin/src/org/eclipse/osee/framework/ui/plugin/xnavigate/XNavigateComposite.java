@@ -155,7 +155,7 @@ public class XNavigateComposite extends Composite {
    Shell tip = null;
    Label label = null;
 
-   private void disposeTooltip() {
+   protected void disposeTooltip() {
       if (tip == null) {
          return;
       }

@@ -12,7 +12,6 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,9 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.actions.AddNoteAction;
 import org.eclipse.osee.ats.actions.CopyActionDetailsAction;
@@ -41,6 +42,7 @@ import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -48,6 +50,9 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -60,10 +65,13 @@ import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
+import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
+import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.DisposeEvent;
@@ -81,6 +89,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author Donald G. Dunne
@@ -104,6 +113,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private SMAOperationsSection smaOperationsSection;
    private SMAGoalMembersSection smaGoalMembersSection;
    private SMAHistorySection smaHistorySection;
+   private LoadingComposite loadingComposite;
 
    public SMAWorkFlowTab(StateMachineArtifact sma) {
       super(sma.getEditor(), "overview", "Workflow");
@@ -127,9 +137,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                }
             }
          });
-
-         scrolledForm.setText(sma.getEditor().getTitleStr());
-         scrolledForm.setImage(ArtifactImageManager.getImage(sma));
+         updateTitleBar();
 
          bodyComp = managedForm.getForm().getBody();
          GridLayout gridLayout = new GridLayout(1, false);
@@ -138,23 +146,112 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          gd.widthHint = 300;
          bodyComp.setLayoutData(gd);
 
-         createAtsBody();
-
-         addMessageDecoration(scrolledForm);
-         FormsUtil.addHeadingGradient(toolkit, scrolledForm, true);
-
-         refreshToolbar();
-
+         setLoading(true);
          if (sma.getHelpContext() != null) AtsPlugin.getInstance().setHelp(scrolledForm, sma.getHelpContext(),
                "org.eclipse.osee.ats.help.ui");
 
+         try {
+            refreshData();
+         } catch (OseeCoreException ex) {
+            handleException(ex);
+         }
+
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         handleException(ex);
       }
    }
 
-   private void createAtsBody() throws OseeCoreException {
+   private void updateTitleBar() throws OseeCoreException {
+      scrolledForm.setText(sma.getEditor().getTitleStr());
+      scrolledForm.setImage(ArtifactImageManager.getImage(sma));
+   }
 
+   @Override
+   public void showBusy(boolean busy) {
+      super.showBusy(busy);
+      if (Widgets.isAccessible(getManagedForm().getForm())) {
+         getManagedForm().getForm().getForm().setBusy(busy);
+      }
+   }
+
+   public void refreshData() throws OseeCoreException {
+      List<IOperation> ops = new ArrayList<IOperation>();
+      ops.add(AtsBulkLoad.getConfigLoadingOperation());
+      IOperation operation = new CompositeOperation("Load SMA Workflow Tab", AtsPlugin.PLUGIN_ID, ops);
+      Operations.executeAsJob(operation, true, Job.LONG, new ReloadJobChangeAdapter());
+
+      // Don't put in operation cause doesn't have to be loaded before editor displays
+      OseeDictionary.load();
+   }
+
+   private final class ReloadJobChangeAdapter extends JobChangeAdapter {
+
+      private ReloadJobChangeAdapter() {
+         showBusy(true);
+      }
+
+      @Override
+      public void scheduled(IJobChangeEvent event) {
+         super.scheduled(event);
+      }
+
+      @Override
+      public void aboutToRun(IJobChangeEvent event) {
+         super.aboutToRun(event);
+      }
+
+      @Override
+      public void done(IJobChangeEvent event) {
+         super.done(event);
+         Job job = new UIJob("Draw Workflow Tab") {
+
+            @Override
+            public IStatus runInUIThread(IProgressMonitor monitor) {
+               try {
+                  setLoading(false);
+                  createAtsBody();
+                  addMessageDecoration(scrolledForm);
+                  FormsUtil.addHeadingGradient(toolkit, scrolledForm, true);
+                  refreshToolbar();
+                  updateTitleBar();
+               } catch (OseeCoreException ex) {
+                  handleException(ex);
+               } finally {
+                  showBusy(false);
+               }
+               return Status.OK_STATUS;
+            }
+         };
+         Operations.scheduleJob(job, false, Job.SHORT, null);
+      }
+   }
+
+   private void handleException(Exception ex) {
+      setLoading(false);
+      if (Widgets.isAccessible(atsBody)) {
+         atsBody.dispose();
+      }
+      OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      new ExceptionComposite(bodyComp, ex);
+      bodyComp.layout();
+   }
+
+   private void setLoading(boolean set) {
+      if (set) {
+         loadingComposite = new LoadingComposite(bodyComp);
+         bodyComp.layout();
+      } else {
+         if (Widgets.isAccessible(loadingComposite)) {
+            loadingComposite.dispose();
+         }
+      }
+      showBusy(set);
+   }
+
+   private void createAtsBody() throws OseeCoreException {
+      if (Widgets.isAccessible(atsBody)) {
+         atsBody.dispose();
+      }
       atsBody = toolkit.createComposite(bodyComp);
       atsBody.setLayoutData(new GridData(GridData.FILL_BOTH));
       atsBody.setLayout(new GridLayout(1, false));
@@ -176,7 +273,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          job.schedule(500);
       }
 
-      managedForm.refresh();
    }
 
    private void createDetailsSection() {
@@ -554,11 +650,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          for (SMAWorkFlowSection section : sections) {
             section.dispose();
          }
-         atsBody.dispose();
-         createAtsBody();
-         scrolledForm.setText(sma.getEditor().getTitleStr());
-         scrolledForm.setImage(ArtifactImageManager.getImage(sma));
-         refreshToolbar();
+         refreshData();
       }
    }
 
@@ -573,15 +665,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    public SMAWorkFlowSection getSectionForCurrentState() {
 
       return null;
-   }
-
-   public List<XWidget> getXWidgetsFromState(String stateName, Class<?> clazz) {
-      for (SMAWorkFlowSection section : sections) {
-         if (section.getPage().getName().equals(stateName)) {
-            return section.getXWidgets(clazz);
-         }
-      }
-      return Collections.emptyList();
    }
 
 }

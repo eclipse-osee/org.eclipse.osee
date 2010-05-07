@@ -32,7 +32,7 @@ public class AtsPreSaveCacheRemoteEventHandler implements IFrameworkTransactionE
 
    private static AtsPreSaveCacheRemoteEventHandler instance = new AtsPreSaveCacheRemoteEventHandler();
 
-   public static AtsPreSaveCacheRemoteEventHandler getInstance() {
+   public static AtsPreSaveCacheRemoteEventHandler start() {
       return instance;
    }
 

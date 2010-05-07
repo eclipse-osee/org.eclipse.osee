@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.navigate.NavigateView;
+import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.navigate.TeamWorkflowSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.navigate.UserSearchWorkflowSearchItem;
@@ -107,7 +107,7 @@ public class AtsNavigateItemsToWorldViewTest {
       WorldEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("User Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof UserSearchWorkflowSearchItem);
-      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
+      AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
       return item;
    }
 
@@ -322,7 +322,7 @@ public class AtsNavigateItemsToWorldViewTest {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Group Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof GroupWorldSearchItem);
       ((GroupWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedGroup(groupArt);
-      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
+      AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
       WorldEditor worldEditor = getSingleEditorOrFail();
       Collection<Artifact> arts = worldEditor.getLoadedArtifacts();
 
@@ -338,7 +338,7 @@ public class AtsNavigateItemsToWorldViewTest {
       WorldEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Workflow Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TeamWorkflowSearchWorkflowSearchItem);
-      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
+      AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
       runGeneralTeamWorkflowSearchOnTeamTest(item, selectedTeamDefs, 1);
       runGeneralTeamWorkflowSearchOnCompletedCancelledTest(item, true, 2);
       runGeneralTeamWorkflowSearchOnCompletedCancelledTest(item, false, 1);
@@ -506,8 +506,8 @@ public class AtsNavigateItemsToWorldViewTest {
          }
       }
       // Simulate double-click of navigate item
-      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI,
-            tableLoadOption);
+      AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI, tableLoadOption);
+
       WorldEditor worldEditor = getSingleEditorOrFail();
       Collection<Artifact> arts = worldEditor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, clazz, numOfType);

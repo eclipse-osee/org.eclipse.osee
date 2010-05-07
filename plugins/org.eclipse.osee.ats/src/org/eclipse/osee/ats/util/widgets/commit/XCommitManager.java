@@ -74,9 +74,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    public final static String WIDGET_ID = ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName();
    private ToolBar toolBar;
 
-   /**
-    * @param label
-    */
    public XCommitManager() {
       super("Commit Manager");
       OseeEventManager.addListener(this);
@@ -142,8 +139,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
             }
 
             setXviewerTree();
-            //            new ActionContributionItem(xCommitManager.getCustomizeAction()).fill(toolBar, -1);
-
             loadTable();
          }
       } catch (OseeCoreException ex) {

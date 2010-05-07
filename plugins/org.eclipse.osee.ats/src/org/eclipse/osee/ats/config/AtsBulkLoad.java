@@ -11,76 +11,38 @@
 package org.eclipse.osee.ats.config;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
-import java.util.logging.Level;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
-import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.core.operation.EmptyOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsBulkLoad extends org.eclipse.core.runtime.jobs.Job {
+public class AtsBulkLoad {
 
-   private AtsBulkLoad() {
-      super("Bulk Loading ATS Config Artifacts");
-   }
-
-   private static AtsBulkLoad bulkLoadAtsCacheJob;
    private static boolean atsTypeDataLoadedStarted = false;
 
-   private synchronized static void ensureBulkLoading() {
-      if (atsTypeDataLoadedStarted) return;
-      atsTypeDataLoadedStarted = true;
-      bulkLoadAtsCacheJob = new AtsBulkLoad();
-      bulkLoadAtsCacheJob.setPriority(Job.SHORT);
-      bulkLoadAtsCacheJob.setSystem(true);
-      bulkLoadAtsCacheJob.schedule();
+   public synchronized static IOperation getConfigLoadingOperation() throws OseeCoreException {
+      if (atsTypeDataLoadedStarted == false) {
+         atsTypeDataLoadedStarted = true;
+         return new AtsLoadConfigArtifactsOperation();
+      }
+      return new EmptyOperation("ATS Bulk Loading", AtsPlugin.PLUGIN_ID);
    }
 
-   public static void run(boolean forcePend) {
-      ensureBulkLoading();
-      try {
-         if (forcePend) {
-            bulkLoadAtsCacheJob.join();
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+   public static void loadConfig(boolean pend) {
+      if (AtsLoadConfigArtifactsOperation.isLoaded()) return;
+      if (pend) {
+         Operations.executeAndPend(new AtsLoadConfigArtifactsOperation(), true);
+      } else {
+         Operations.executeAsJob(new AtsLoadConfigArtifactsOperation(), true);
       }
-
-   }
-
-   @Override
-   protected IStatus run(IProgressMonitor monitor) {
-      OseeLog.log(AtsPlugin.class, Level.INFO, getName());
-      try {
-         Artifact headingArt = AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
-         // Loading artifacts will cache them in ArtifactCache
-         RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,
-               CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version);
-         // Load Work Definitions
-         WorkItemDefinitionFactory.loadDefinitions();
-         OseeDictionary.getInstance().ensureLoaded();
-      } catch (Exception ex) {
-         return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
-      } finally {
-         monitor.done();
-      }
-
-      return Status.OK_STATUS;
    }
 
    public static Set<Artifact> loadFromActions(Collection<? extends Artifact> actions) throws OseeCoreException {

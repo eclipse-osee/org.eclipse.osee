@@ -27,7 +27,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
 public class AtsValidateAtsDatabaseTest {
 
    public AtsValidateAtsDatabaseTest() {
-      AtsBulkLoad.run(true);
+      AtsBulkLoad.loadConfig(true);
    }
 
    @org.junit.Test

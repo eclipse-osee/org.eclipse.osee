@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.navigate.NavigateView;
+import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskXViewer;
@@ -127,8 +127,7 @@ public class AtsNavigateItemsToTaskEditorTest {
    }
 
    public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType, TableLoadOption tableLoadOption) throws OseeCoreException {
-      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI,
-            tableLoadOption);
+      AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI, tableLoadOption);
       TaskEditor taskEditor = getSingleEditorOrFail();
       assertTrue(taskEditor != null);
       Collection<Artifact> arts = taskEditor.getLoadedArtifacts();

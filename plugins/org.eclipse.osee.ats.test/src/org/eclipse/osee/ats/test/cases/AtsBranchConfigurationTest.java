@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,8 +34,6 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
-import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
-import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -46,7 +42,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -62,7 +57,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -73,7 +67,7 @@ import org.junit.Before;
 
 /**
  * Run from the ATS Navigator after the DB is configured for either ATS - Dev or Demo
- *
+ * 
  * @author Donald G. Dunne
  */
 public class AtsBranchConfigurationTest {
@@ -108,7 +102,7 @@ public class AtsBranchConfigurationTest {
       if (AtsUtil.isProductionDb()) {
          throw new IllegalStateException("BranchConfigThroughTeamDefTest should not be run on production DB");
       }
-      AtsBulkLoad.run(true);
+      AtsBulkLoad.loadConfig(true);
    }
 
    @org.junit.Test
@@ -185,15 +179,7 @@ public class AtsBranchConfigurationTest {
       teamWf.persist(transaction);
       transaction.execute();
 
-      TestUtil.sleep(2000);
-      SMAEditor.editArtifact(teamWf, true);
-      // Verify XWorkingBranch and XCommitManger widgets exist in editor
-      try {
-         verifyXWidgetsExistInEditor(teamWf);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         fail(ex.getLocalizedMessage());
-      }
+      SMAEditor.editArtifact(teamWf);
 
       // create branch
       createBranch(namespace, teamWf);
@@ -289,16 +275,6 @@ public class AtsBranchConfigurationTest {
       dtwm.transitionTo(DefaultTeamState.Implement, null, false, transaction);
       teamWf.persist(transaction);
       transaction.execute();
-
-      TestUtil.sleep(4000);
-      SMAEditor.editArtifact(teamWf, true);
-      // Verify XWorkingBranch and XCommitManger widgets exist in editor
-      try {
-         verifyXWidgetsExistInEditor(teamWf);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         fail(ex.getLocalizedMessage());
-      }
 
       // create branch
       createBranch(namespace, teamWf);
@@ -439,21 +415,6 @@ public class AtsBranchConfigurationTest {
          return;
       }
       TestUtil.sleep(4000);
-   }
-
-   private void verifyXWidgetsExistInEditor(TeamWorkFlowArtifact teamWf) throws Exception {
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Verify XWorkingBranch and XCommitManger widgets exist in editor");
-      SMAEditor smaEditor = SMAEditor.getSmaEditor(teamWf);
-      TestUtil.sleep(4000);
-
-      assertNotNull("Can't retrieve SMAEditor for workflow " + teamWf, smaEditor);
-
-      Collection<XWidget> xWidgets =
-            smaEditor.getXWidgetsFromState(smaEditor.getSma().getStateMgr().getCurrentStateName(), XWorkingBranch.class);
-      assertTrue("Should be 1 XWorkingBranch widget in current state, found " + xWidgets.size(), xWidgets.size() == 1);
-      xWidgets =
-            smaEditor.getXWidgetsFromState(smaEditor.getSma().getStateMgr().getCurrentStateName(), XCommitManager.class);
-      assertTrue("Should be 1 XCommitManager widget in current state, found " + xWidgets.size(), xWidgets.size() == 1);
    }
 
    private void setupWorkflowPageToHaveCreateCommitBranchWidgets(String namespace) throws Exception {

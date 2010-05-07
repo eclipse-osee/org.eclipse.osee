@@ -18,8 +18,15 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorIn
  */
 public class SMAEditorInput extends BaseArtifactEditorInput {
 
+   private final boolean pend;
+
    public SMAEditorInput(Artifact artifact) {
+      this(artifact, false);
+   }
+
+   public SMAEditorInput(Artifact artifact, boolean pend) {
       super(artifact);
+      this.pend = pend;
    }
 
    @Override
@@ -33,5 +40,9 @@ public class SMAEditorInput extends BaseArtifactEditorInput {
    @Override
    public int hashCode() {
       return getArtifact().hashCode();
+   }
+
+   public boolean isPend() {
+      return pend;
    }
 }
