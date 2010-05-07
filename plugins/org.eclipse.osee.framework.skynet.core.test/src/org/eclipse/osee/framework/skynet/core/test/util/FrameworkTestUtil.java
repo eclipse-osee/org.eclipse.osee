@@ -43,17 +43,11 @@ public class FrameworkTestUtil {
 
    /**
     * Creates a simple artifact and adds it to the root artifact default hierarchical relation
-    * 
-    * @param artifactTypeName
-    * @param name
-    * @param branch
-    * @throws OseeCoreException
-    * @throws Exception
     */
    public static Artifact createSimpleArtifact(IArtifactType artifactType, String name, Branch branch) throws OseeCoreException {
       Artifact softArt = ArtifactTypeManager.addArtifact(artifactType, branch);
       softArt.setName(name);
-      softArt.addAttribute("Subsystem", DemoSubsystems.Electrical);
+      softArt.addAttribute("Subsystem", DemoSubsystems.Electrical.name());
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
       rootArtifact.addRelation(CoreRelationTypes.Default_Hierarchical__Child, softArt);
       return softArt;
@@ -94,9 +88,6 @@ public class FrameworkTestUtil {
 
    /**
     * Deletes all artifacts with names that start with any title given
-    * 
-    * @param titles
-    * @throws Exception
     */
    public static void cleanupSimpleTest(Branch branch, Collection<String> titles) throws Exception {
       List<Artifact> artifacts = new ArrayList<Artifact>();
@@ -109,9 +100,6 @@ public class FrameworkTestUtil {
 
    /**
     * Deletes any artifact with name that starts with title
-    * 
-    * @param title
-    * @throws Exception
     */
    public static void cleanupSimpleTest(Branch branch, String title) throws Exception {
       cleanupSimpleTest(branch, Arrays.asList(title));
