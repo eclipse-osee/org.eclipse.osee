@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.test.relation;
 
 import org.eclipse.osee.framework.skynet.core.test.relation.order.RelationOrderDataTest;
+import org.eclipse.osee.framework.skynet.core.test.relation.order.RelationOrderMergerTest;
 import org.eclipse.osee.framework.skynet.core.test.relation.order.RelationOrderParserTest;
 import org.eclipse.osee.framework.skynet.core.test.relation.order.RelationSorterProviderTest;
 import org.eclipse.osee.framework.skynet.core.test.relation.sorters.RelationSorterTest;
@@ -19,7 +20,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {RelationOrderParserTest.class, RelationSorterProviderTest.class, RelationOrderDataTest.class,
-      RelationSorterTest.class})
+      RelationSorterTest.class, RelationOrderMergerTest.class})
 /**
  * @author Roberto E. Escobar
  */
