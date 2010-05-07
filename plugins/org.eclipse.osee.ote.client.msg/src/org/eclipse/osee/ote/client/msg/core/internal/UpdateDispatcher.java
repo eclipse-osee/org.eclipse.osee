@@ -20,6 +20,7 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.message.enums.MemType;
 
@@ -30,6 +31,11 @@ import org.eclipse.osee.ote.message.enums.MemType;
  * @author Ken J. Aguilar
  */
 public final class UpdateDispatcher {
+	/**
+	 * 
+	 */
+	private static final int RECEIVE_BUFFER_SIZE = 1024 * 128;
+
 	/** * Class Instance Fields ** */
 	private final EnumMap<MemType, DatagramChannel> channelMap = new EnumMap<MemType, DatagramChannel>(MemType.class);
 
@@ -125,6 +131,9 @@ public final class UpdateDispatcher {
 		final DatagramChannel channel = DatagramChannel.open();
 		channel.configureBlocking(false);
 		channel.socket().bind(new InetSocketAddress(localAddress, port));
+		if (channel.socket().getReceiveBufferSize() < RECEIVE_BUFFER_SIZE) {
+			channel.socket().setReceiveBufferSize(RECEIVE_BUFFER_SIZE);
+		}
 		channel.connect(remoteAddress);
 		if (channelMap.put(type, channel) != null) {
 			OseeLog.log(MessageSubscriptionService.class, Level.WARNING, "A previous channel was replaced");
