@@ -22,6 +22,7 @@ import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -530,13 +531,27 @@ public final class Widgets {
       return layout;
    }
 
-   public static void setRowLayout(final Composite item, final int style, final boolean wrap, final boolean pack) {
+   public static RowLayout setRowLayout(final Composite item, final int style, final boolean wrap, final boolean pack) {
       final RowLayout layout = new RowLayout(style);
       layout.wrap = wrap;
       layout.pack = pack;
       item.setLayout(layout);
+      return layout;
    }
 
+   public static RowLayout setRowLayout(final Composite item, final int style, final boolean wrap, final boolean pack, boolean fill) {
+	   final RowLayout layout = setRowLayout(item, style, wrap, pack);
+	   layout.fill = fill;
+	   layout.center = true;
+	   return layout;
+	}
+   
+   public static FillLayout setFillLayout(Composite item, int style) {
+	   FillLayout layout = new FillLayout(style);
+	   item.setLayout(layout);
+	   return layout;
+   }
+   
    public static void setGridLayout(Composite item, int numColumns, int columnSpacing, boolean equal, int hpad) {
       final GridLayout layout = new GridLayout();
       layout.numColumns = numColumns;
@@ -559,6 +574,21 @@ public final class Widgets {
       item.setLayout(layout);
       return layout;
    }
+   
+   public static GridLayout setGridLayout(Composite item, int numColumns, int columnSpacing, int verticalSpacing, boolean equal, int hpad, int vpad) {
+	      final GridLayout layout = new GridLayout();
+	      layout.numColumns = numColumns;
+	      layout.horizontalSpacing = columnSpacing;
+	      layout.makeColumnsEqualWidth = equal;
+	      layout.marginLeft = hpad;
+	      layout.marginRight = hpad;
+	      layout.marginTop = vpad;
+	      layout.marginBottom = vpad;
+	      layout.verticalSpacing = verticalSpacing;
+	      layout.marginHeight = 0;
+	      item.setLayout(layout);
+	      return layout;
+	   }
 
    public static Combo createCombo(int style, Object[] list) {
       final Combo cbx = new Combo(targetContainer, style);
