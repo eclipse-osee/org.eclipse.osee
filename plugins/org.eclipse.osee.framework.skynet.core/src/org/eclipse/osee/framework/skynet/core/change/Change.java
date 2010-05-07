@@ -58,11 +58,11 @@ public abstract class Change implements IAdaptable {
          //
          change.getGamma() == getGamma() &&
          //
-         change.getBranch() == getBranch() &&
-         //
          change.getChangeArtifact().equals(getChangeArtifact()) &&
          //
-         change.getModificationType() == getModificationType();
+         change.getModificationType() == getModificationType() &&
+         //
+         change.getTxDelta().equals(getTxDelta());
       }
       return false;
    }
@@ -72,10 +72,10 @@ public abstract class Change implements IAdaptable {
       int hashCode = 0;
       hashCode += 13 * getArtId();
       hashCode += 13 * getGamma();
-      hashCode += getBranch() != null ? 13 * getBranch().hashCode() : 0;
       hashCode += getChangeArtifact() != null ? 13 * getChangeArtifact().hashCode() : 0;
       hashCode += getDelta() != null ? 13 * getDelta().hashCode() : 0;
       hashCode += getModificationType() != null ? 13 * getModificationType().hashCode() : 0;
+      hashCode += getTxDelta() != null ? 13 * getTxDelta().hashCode() : 0;
       return hashCode;
    }
 
