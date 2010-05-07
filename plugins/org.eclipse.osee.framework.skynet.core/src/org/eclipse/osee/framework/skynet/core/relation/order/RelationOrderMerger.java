@@ -14,11 +14,26 @@ import java.util.Collection;
 import java.util.List;
 
 public class RelationOrderMerger {
-	public /*<T>*/ void computeMergedOrder(List<String> leftOrder, List<String> rightOrder, Collection<String> mergedSet) {
-		// 1) Cross out anything not found in mergedSet
-		// 2) Star not anything in both lists
-		// 3) Perform cursor algorithm to either
-		//    a) generate a merged order, or
-		//    b) fail
-	}
+   public/* <T> */void computeMergedOrder(List<String> leftOrder, List<String> rightOrder, Collection<String> mergedSet) {
+      // 1) Cross out anything not found in mergedSet
+      makeSubset(leftOrder, mergedSet);
+      makeSubset(rightOrder, mergedSet);
+
+      // 2) Star anything not in both lists
+
+      // 3) Perform cursor algorithm to either
+      //    a) generate a merged order, or
+      //    b) fail
+   }
+
+   private <T> void makeSubset(List<T> subset, Collection<T> superset) {
+      for (int i = 0; i < subset.size(); i++) {
+         T current = subset.get(i);
+         if (!superset.contains(current)) {
+            subset.remove(i);
+            i--;
+         }
+      }
+   }
+
 }
