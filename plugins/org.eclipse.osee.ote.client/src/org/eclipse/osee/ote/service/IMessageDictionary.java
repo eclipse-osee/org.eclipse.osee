@@ -21,6 +21,8 @@ import org.eclipse.osee.ote.message.Message;
  */
 public interface IMessageDictionary {
 
+	String getMessageLibraryVersion() throws IOException;
+
    /**
     * Generates a listing of all messages and associated elements defined in the message jar. The intent is to provide a
     * method for searching the message jar for certain messages
@@ -30,6 +32,13 @@ public interface IMessageDictionary {
     */
    void generateMessageIndex(final MessageSink sink) throws Exception;
 
+   /**
+    * Finds the class definition of a message of the given name
+    * 
+    * @param messageName
+    * @return Returns values reference.
+    * @throws ClassNotFoundException if no class definition was found with the given name
+    */
    Class<? extends Message> lookupMessage(String messageName) throws ClassNotFoundException;
 
    void dispose();
