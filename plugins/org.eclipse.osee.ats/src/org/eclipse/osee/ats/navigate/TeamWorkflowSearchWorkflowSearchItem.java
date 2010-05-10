@@ -51,12 +51,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSearchItem {
 
-   private XHyperlabelTeamDefinitionSelection teamCombo = null;
-   private XCombo releasedCombo = null;
-   private XCombo versionCombo = null;
-   private XMembersCombo assigneeCombo;
-   private XCheckBox includeCompletedCancelledCheckbox;
-   private XCheckBox showFlatCheckbox;
+   protected XHyperlabelTeamDefinitionSelection teamCombo = null;
+   protected XCombo releasedCombo = null;
+   protected XCombo versionCombo = null;
+   protected XMembersCombo assigneeCombo;
+   protected XCheckBox includeCompletedCancelledCheckbox;
+   protected XCheckBox showFlatCheckbox;
 
    public TeamWorkflowSearchWorkflowSearchItem(String name) throws OseeArgumentException {
       super(name, AtsImage.TEAM_WORKFLOW);

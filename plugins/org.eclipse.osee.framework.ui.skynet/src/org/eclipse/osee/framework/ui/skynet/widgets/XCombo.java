@@ -295,7 +295,11 @@ public class XCombo extends XWidget {
          } else {
             dataCombo.select(0);
          }
-         if (displayDataStrings.size() < 15) dataCombo.setVisibleItemCount(displayDataStrings.size());
+         if (displayDataStrings.size() < 15)
+            dataCombo.setVisibleItemCount(displayDataStrings.size());
+         else
+            dataCombo.setVisibleItemCount(15);
+         dataCombo.getParent().layout(true);
       }
       validate();
    }

@@ -40,6 +40,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -95,20 +96,43 @@ public class DynamicXWidgetLayout {
          toolkit.adapt(attrComp);
       }
 
-      boolean inChildComposite = false;
+      boolean inChildComposite = false, inGroupComposite = false;
       Composite childComp = null;
+      Group groupComp = null;
       // Create Attributes
       for (DynamicXWidgetLayoutData xWidgetLayoutData : getLayoutDatas()) {
          Composite useComp = attrComp;
 
+         if (xWidgetLayoutData.getBeginGroupComposite() > 0) {
+            groupComp = new Group(attrComp, SWT.None);
+            if (Strings.isValid(xWidgetLayoutData.getName())) {
+               groupComp.setText(xWidgetLayoutData.getName());
+            }
+            groupComp.setLayout(ALayout.getZeroMarginLayout(xWidgetLayoutData.getBeginGroupComposite(), false));
+            groupComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            if (toolkit != null) {
+               toolkit.adapt(groupComp);
+            }
+            inGroupComposite = true;
+            // No XWidget associated, so go to next one
+            continue;
+         }
          if (xWidgetLayoutData.getBeginComposite() > 0) {
-            childComp = createComposite(attrComp, toolkit);
+            childComp = createComposite((inGroupComposite ? groupComp : attrComp), toolkit);
             childComp.setLayout(ALayout.getZeroMarginLayout(xWidgetLayoutData.getBeginComposite(), false));
             childComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             if (toolkit != null) {
                toolkit.adapt(childComp);
             }
             inChildComposite = true;
+         }
+         if (inGroupComposite) {
+            useComp = groupComp;
+            if (xWidgetLayoutData.isEndGroupComposite()) {
+               inGroupComposite = false;
+               // No XWidget associated, so go to next one
+               continue;
+            }
          }
          if (inChildComposite) {
             useComp = childComp;

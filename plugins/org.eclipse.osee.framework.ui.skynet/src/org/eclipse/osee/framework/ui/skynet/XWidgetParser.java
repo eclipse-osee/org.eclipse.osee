@@ -87,6 +87,14 @@ public class XWidgetParser {
             element.setAttribute("beginComposite", "8");
          else if (xOption == XOption.BEGIN_COMPOSITE_10)
             element.setAttribute("beginComposite", "10");
+         else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_4)
+            element.setAttribute("beginGroupComposite", "4");
+         else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_6)
+            element.setAttribute("beginGroupComposite", "6");
+         else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_8)
+            element.setAttribute("beginGroupComposite", "8");
+         else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_10)
+            element.setAttribute("beginGroupComposite", "10");
          else if (xOption == XOption.END_COMPOSITE)
             element.setAttribute("endComposite", "true");
          else if (xOption == XOption.NOT_EDITABLE)
@@ -155,6 +163,10 @@ public class XWidgetParser {
                   Boolean.parseBoolean(node.getNodeValue()) ? XOption.SORTED : XOption.NONE);
          else if (nodeName.equals("beginComposite"))
             dynamicXWidgetLayoutData.setBeginComposite(Integer.parseInt(node.getNodeValue()));
+         else if (nodeName.equals("beginGroupComposite"))
+            dynamicXWidgetLayoutData.setBeginGroupComposite(Integer.parseInt(node.getNodeValue()));
+         else if (nodeName.equals("endGroupComposite"))
+            dynamicXWidgetLayoutData.setEndGroupComposite(Boolean.parseBoolean((node.getNodeValue())));
          else if (nodeName.equals("endComposite"))
             dynamicXWidgetLayoutData.setEndComposite(Boolean.parseBoolean((node.getNodeValue())));
          else if (nodeName.equals("editable"))
