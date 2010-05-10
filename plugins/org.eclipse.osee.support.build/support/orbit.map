@@ -1,4 +1,4 @@
-plugin@com.lowagie.text,2.1.7=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20100427010814/bundles/com.lowagie.text_2.1.7.v201004222200.jar
+plugin@com.lowagie.text,2.1.7=GET,http://download.eclipse.org/tools/orbit/downloads/drops/S20100508202910/bundles/com.lowagie.text_2.1.7.v201004222200.jar
 plugin@javax.activation,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/javax.activation_1.1.0.v200905021805.jar
 plugin@javax.mail.glassfish,1.4.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/javax.mail.glassfish_1.4.1.v200808130215.jar
 plugin@javax.servlet,2.5.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/javax.servlet_2.5.0.v200806031605.jar
