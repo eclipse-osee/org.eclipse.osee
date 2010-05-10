@@ -7,9 +7,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.IViewPart;
@@ -17,11 +17,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
 
 public class OpenQuickSearchAction extends Action {
-   private final ChangeUiData changeData;
 
-   public OpenQuickSearchAction(ChangeUiData changeData) {
+   private final IBranchProvider branchProvider;
+
+   public OpenQuickSearchAction(IBranchProvider branchProvider) {
       super("Open Quick Search", Action.AS_PUSH_BUTTON);
-      this.changeData = changeData;
+      this.branchProvider = branchProvider;
       setId("open.quick.search.change.report");
       setToolTipText("Open Quick Search");
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH));
@@ -35,12 +36,7 @@ public class OpenQuickSearchAction extends Action {
          public IStatus runInUIThread(IProgressMonitor monitor) {
             IStatus status = Status.OK_STATUS;
             try {
-               Branch branch = null;
-               if (changeData.isBranchValid()) {
-                  branch = changeData.getBranch();
-               } else if (changeData.isTransactionValid()) {
-                  branch = changeData.getTransaction().getBranch();
-               }
+               Branch branch = branchProvider.getBranch(monitor);
                if (branch != null) {
                   IViewPart viewPart =
                         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(

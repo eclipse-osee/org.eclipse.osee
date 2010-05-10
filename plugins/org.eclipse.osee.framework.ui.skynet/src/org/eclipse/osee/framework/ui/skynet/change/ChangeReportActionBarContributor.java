@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.change;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
@@ -20,6 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.change.actions.OpenAssociatedArtifac
 import org.eclipse.osee.framework.ui.skynet.change.actions.OpenQuickSearchAction;
 import org.eclipse.osee.framework.ui.skynet.change.actions.ReloadChangeReportAction;
 import org.eclipse.osee.framework.ui.skynet.change.actions.ShowDocumentOrderAction;
+import org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor;
 import org.eclipse.ui.IEditorSite;
 
 /**
@@ -40,11 +42,28 @@ public class ChangeReportActionBarContributor implements IActionContributor {
    public void contributeToToolBar(IToolBarManager manager) {
       ChangeUiData uiData = editor.getEditorInput().getChangeData();
       manager.add(getReloadAction());
+      manager.add(new Separator());
+      //      manager.add(createCompareMenu());
       manager.add(new ShowDocumentOrderAction(editor.getPreferences()));
+      manager.add(new Separator());
       manager.add(getOpenAssociatedArtifactAction());
-      manager.add(new OpenQuickSearchAction(uiData));
+      manager.add(new OpenQuickSearchAction(new UiSelectBetweenDeltasBranchProvider(uiData)));
+      manager.add(new Separator());
       manager.add(getAtsBugAction());
    }
+
+   //   public Action createCompareMenu() {
+   //      if (compareMenu == null) {
+   //         ChangeUiData uiData = editor.getEditorInput().getChangeData();
+   //
+   //         compareMenu = new CompareDropDown();
+   //         compareMenu.add(new CompareAction(CompareType.COMPARE_BASE_TO_HEAD, editor, uiData));
+   //         compareMenu.add(new CompareAction(CompareType.COMPARE_CURRENTS_AGAINST_PARENT, editor, uiData));
+   //         // TODO FUTURE -- Not Supported at this time on the server side
+   //         // compareMenu.add(new CompareAction(CompareType.COMPARE_CURRENTS_AGAINST_OTHER_BRANCH, editor, uiData));
+   //      }
+   //      return compareMenu;
+   //   }
 
    public OpenAssociatedArtifact getOpenAssociatedArtifactAction() {
       if (openAssocAction == null) {

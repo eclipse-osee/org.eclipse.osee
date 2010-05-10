@@ -50,34 +50,35 @@ public final class RenderingUtil {
       Artifact artFile1;
       Artifact artFile2;
 
-      if (delta.getTxDelta() == null || !delta.getTxDelta().areOnTheSameBranch()) {
-         // Assumptions - when comparing data between transactions on
-         // different branches, the start artifact will never be null;
-         if (delta.getStartArtifact().getModType().isDeleted()) {
-            artFile1 = delta.getStartArtifact();
-            artFile2 = null;
-         } else if (delta.getEndArtifact() == null) {
-            artFile1 = null;
-            artFile2 = delta.getStartArtifact();
-         } else { // case where there are new, modified, or deleted attributes (are artifact is not new or deleted)
-            // also could be introduced in both branches
-            artFile1 = delta.getEndArtifact();
-            artFile2 = delta.getStartArtifact();
-         }
+      //    if (delta.getTxDelta() == null
+      //          || !delta.getTxDelta().areOnTheSameBranch()) {
+      //       // Assumptions - when comparing data between transactions on
+      //       // different branches, the start artifact will never be null;
+      //       if (delta.getStartArtifact().getModType().isDeleted()) {
+      //          artFile1 = delta.getStartArtifact();
+      //          artFile2 = null;
+      //       } else if (delta.getEndArtifact() == null) {
+      //          artFile1 = null;
+      //          artFile2 = delta.getStartArtifact();
+      //       } else { // case where there are new, modified, or deleted attributes (are artifact is not new or deleted)
+      //          // also could be introduced in both branches
+      //          artFile1 = delta.getEndArtifact();
+      //          artFile2 = delta.getStartArtifact();
+      //       }
+      //    } else {
+      // Assumptions - when comparing data between transactions on the
+      // same branch, the end artifact will never be null;
+      if (delta.getEndArtifact().getModType().isDeleted()) {
+         artFile1 = delta.getStartArtifact();
+         artFile2 = null;
+      } else if (delta.getStartArtifact() == null) {
+         artFile1 = null;
+         artFile2 = delta.getEndArtifact();
       } else {
-         // Assumptions - when comparing data between transactions on the
-         // same branch, the end artifact will never be null;
-         if (delta.getEndArtifact().getModType().isDeleted()) {
-            artFile1 = delta.getStartArtifact();
-            artFile2 = null;
-         } else if (delta.getStartArtifact() == null) {
-            artFile1 = null;
-            artFile2 = delta.getEndArtifact();
-         } else {
-            artFile1 = delta.getStartArtifact();
-            artFile2 = delta.getEndArtifact();
-         }
+         artFile1 = delta.getStartArtifact();
+         artFile2 = delta.getEndArtifact();
       }
+      //    }
       return new Pair<Artifact, Artifact>(artFile1, artFile2);
    }
 

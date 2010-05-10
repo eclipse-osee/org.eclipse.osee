@@ -112,8 +112,20 @@ public class ChangeDataLoader extends AbstractOperation {
       Change change = null;
       try {
          int artId = item.getArtId();
-         Artifact startTxArtifact = getArtifactAtTx(artId, txDelta.getStartTx());
-         Artifact endTxArtifact = getArtifactAtTx(artId, txDelta.getEndTx());
+         Artifact startTxArtifact;
+         if (txDelta.areOnTheSameBranch()) {
+            startTxArtifact = getArtifactAtTx(artId, txDelta.getStartTx());
+         } else {
+            startTxArtifact =
+                  ArtifactQuery.checkHistoricalArtifactFromId(artId,
+                        txDelta.getStartTx().getBranch().getBaseTransaction(), true);
+         }
+         Artifact endTxArtifact;
+         if (txDelta.areOnTheSameBranch()) {
+            endTxArtifact = getArtifactAtTx(artId, txDelta.getEndTx());
+         } else {
+            endTxArtifact = getArtifactAtTx(artId, txDelta.getStartTx());
+         }
 
          ArtifactDelta artifactDelta = new ArtifactDelta(txDelta, startTxArtifact, endTxArtifact);
          change = createChangeObject(item, txDelta, startTxBranch, artifactDelta);
@@ -137,10 +149,7 @@ public class ChangeDataLoader extends AbstractOperation {
       // When we are comparing two different branches, the displayed artifact should be the start artifact or the artifact from the
       // source branch. When we are comparing items from the same branch, the displayed artifact should be the artifact in the end transaction
       // since that is the resulting change artifact.
-      Artifact changeArtifact = artifactDelta.getStartArtifact();
-      if (txDelta.areOnTheSameBranch()) {
-         changeArtifact = artifactDelta.getEndArtifact();
-      }
+      Artifact changeArtifact = artifactDelta.getEndArtifact();
       boolean isHistorical = txDelta.areOnTheSameBranch();
 
       if (item instanceof ArtifactChangeItem) {
@@ -167,10 +176,7 @@ public class ChangeDataLoader extends AbstractOperation {
          RelationChangeItem relationItem = (RelationChangeItem) item;
          RelationType relationType = RelationTypeManager.getType(relationItem.getItemTypeId());
 
-         TransactionRecord transaction = txDelta.getStartTx();
-         if (txDelta.areOnTheSameBranch()) {
-            transaction = txDelta.getEndTx();
-         }
+         TransactionRecord transaction = txDelta.getEndTx();
          Artifact endTxBArtifact = getArtifactAtTx(relationItem.getBArtId(), transaction);
 
          change =
@@ -186,7 +192,9 @@ public class ChangeDataLoader extends AbstractOperation {
    private void bulkLoadArtifactDeltas(IProgressMonitor monitor, Collection<Artifact> bulkLoaded, Collection<ChangeItem> changeItems) throws OseeCoreException {
       checkForCancelledStatus(monitor);
       Set<Integer> artIds = asArtIds(changeItems);
-      if (!txDelta.areOnTheSameBranch()) {
+      if (txDelta.areOnTheSameBranch()) {
+         preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx(), false);
+      } else {
          // Load current artifacts by id for each branch
          preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx(), false);
          preloadArtifacts(bulkLoaded, artIds, txDelta.getEndTx(), false);

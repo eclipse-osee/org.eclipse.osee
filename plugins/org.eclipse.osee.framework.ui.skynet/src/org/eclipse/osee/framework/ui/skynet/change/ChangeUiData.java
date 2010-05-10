@@ -2,21 +2,37 @@ package org.eclipse.osee.framework.ui.skynet.change;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 
 public class ChangeUiData {
    private final Collection<Change> changes = new ArrayList<Change>();
    private Artifact associatedArtifact;
-   private Branch branch;
-   private TransactionRecord transaction;
    private boolean isLoaded;
    private boolean loadOnOpen;
+   private boolean areBranchesValid;
+   private CompareType compareType;
 
-   public ChangeUiData() {
+   private TransactionDelta txDelta;
+   private Branch mergeBranch;
+
+   public ChangeUiData(CompareType compareType, TransactionDelta txDelta) {
+      this.compareType = compareType;
+      this.txDelta = txDelta;
+   }
+
+   public void setCompareType(CompareType compareType) {
+      this.compareType = compareType;
+   }
+
+   public CompareType getCompareType() {
+      return compareType;
+   }
+
+   public void setTxDelta(TransactionDelta txDelta) {
+      this.txDelta = txDelta;
    }
 
    public void reset() {
@@ -25,8 +41,28 @@ public class ChangeUiData {
       setIsLoaded(false);
    }
 
+   public boolean isMergeBranchValid() {
+      return mergeBranch != null;
+   }
+
+   public void setMergeBranch(Branch mergeBranch) {
+      this.mergeBranch = mergeBranch;
+   }
+
    public boolean isLoaded() {
       return isLoaded;
+   }
+
+   public void setIsLoaded(boolean isLoaded) {
+      this.isLoaded = isLoaded;
+   }
+
+   public void setLoadOnOpen(boolean loadOnOpen) {
+      this.loadOnOpen = loadOnOpen;
+   }
+
+   public boolean isLoadOnOpenEnabled() {
+      return loadOnOpen;
    }
 
    public Collection<Change> getChanges() {
@@ -41,67 +77,53 @@ public class ChangeUiData {
       return associatedArtifact;
    }
 
-   public Branch getBranch() {
-      return branch;
+   public TransactionDelta getTxDelta() {
+      return txDelta;
    }
 
-   public boolean isBranchValid() {
-      return branch != null;
+   public boolean areBranchesValid() {
+      return areBranchesValid;
    }
 
-   public boolean isTransactionValid() {
-      return transaction != null;
-   }
-
-   public void setBranch(Branch branch) {
-      this.branch = branch;
-   }
-
-   public TransactionRecord getTransaction() {
-      return transaction;
-   }
-
-   public void setTransaction(TransactionRecord transaction) {
-      this.transaction = transaction;
-   }
-
-   public boolean isRebaseline() {
-      return isBranchValid() ? getBranch().getBranchState().equals(BranchState.REBASELINED) : false;
+   public void setAreBranchesValid(boolean areBranchesValid) {
+      this.areBranchesValid = areBranchesValid;
    }
 
    @Override
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((branch == null) ? 0 : branch.hashCode());
-      result = prime * result + ((transaction == null) ? 0 : transaction.hashCode());
+      result = prime * result + ((compareType == null) ? 0 : compareType.hashCode());
+      result = prime * result + ((txDelta == null) ? 0 : txDelta.hashCode());
       return result;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (obj == null) return false;
-      if (getClass() != obj.getClass()) return false;
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
       ChangeUiData other = (ChangeUiData) obj;
-      if (branch == null) {
-         if (other.branch != null) return false;
-      } else if (!branch.equals(other.branch)) return false;
-      if (transaction == null) {
-         if (other.transaction != null) return false;
-      } else if (!transaction.equals(other.transaction)) return false;
+      if (compareType == null) {
+         if (other.compareType != null) {
+            return false;
+         }
+      } else if (!compareType.equals(other.compareType)) {
+         return false;
+      }
+      if (txDelta == null) {
+         if (other.txDelta != null) {
+            return false;
+         }
+      } else if (!txDelta.equals(other.txDelta)) {
+         return false;
+      }
       return true;
-   }
-
-   public void setIsLoaded(boolean isLoaded) {
-      this.isLoaded = isLoaded;
-   }
-
-   public void setLoadOnOpen(boolean loadOnOpen) {
-      this.loadOnOpen = loadOnOpen;
-   }
-
-   public boolean isLoadOnOpenEnabled() {
-      return loadOnOpen;
    }
 }

@@ -75,7 +75,7 @@
 		<editor class="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" default="false" icon="images/blam.gif" id="org.eclipse.osee.framework.ui.skynet.blam.BlamEditor" name="Blam Editor"/>
 		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor" default="false" icon="images/artifact_editor.gif" id="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor" name="Mass Artifact Editor"/>
   <editor
-          class="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor"
+          class="org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor"
           default="false"
           icon="images/branch_change.gif"
           id="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor"

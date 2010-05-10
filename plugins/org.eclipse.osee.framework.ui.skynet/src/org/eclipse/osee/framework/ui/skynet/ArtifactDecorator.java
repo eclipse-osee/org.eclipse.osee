@@ -19,6 +19,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -34,6 +38,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -43,6 +48,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
+import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author Roberto E. Escobar
@@ -305,36 +311,47 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       @Override
       public void run() {
          if (branchProvider != null) {
-            try {
-               Branch branch = branchProvider.getBranch();
-               Collection<AttributeType> selectableTypes = AttributeTypeManager.getValidAttributeTypes(branch);
-               AttributeTypeCheckTreeDialog dialog = new AttributeTypeCheckTreeDialog(selectableTypes);
-               dialog.setTitle("Select Attribute Types");
-               dialog.setMessage("Select attribute types to display.");
+            Job job = new UIJob("Select Attribute Types") {
 
-               List<IAttributeType> initSelection = new ArrayList<IAttributeType>();
-               for (String entry : selectedTypes) {
-                  for (AttributeType type : selectableTypes) {
-                     if (type.getGuid().equals(entry)) {
-                        initSelection.add(type);
-                     }
-                  }
-               }
-               dialog.setInitialElementSelections(initSelection);
+               @Override
+               public IStatus runInUIThread(IProgressMonitor monitor) {
+                  IStatus status = Status.OK_STATUS;
+                  try {
+                     Branch branch = branchProvider.getBranch(monitor);
+                     Collection<AttributeType> selectableTypes = AttributeTypeManager.getValidAttributeTypes(branch);
+                     AttributeTypeCheckTreeDialog dialog = new AttributeTypeCheckTreeDialog(selectableTypes);
+                     dialog.setTitle("Select Attribute Types");
+                     dialog.setMessage("Select attribute types to display.");
 
-               int result = dialog.open();
-               if (result == Window.OK) {
-                  selectedTypes.clear();
-                  for (Object object : dialog.getResult()) {
-                     if (object instanceof IAttributeType) {
-                        selectedTypes.add(((IAttributeType) object).getGuid());
+                     List<IAttributeType> initSelection = new ArrayList<IAttributeType>();
+                     for (String entry : selectedTypes) {
+                        for (AttributeType type : selectableTypes) {
+                           if (type.getGuid().equals(entry)) {
+                              initSelection.add(type);
+                           }
+                        }
                      }
+                     dialog.setInitialElementSelections(initSelection);
+
+                     int result = dialog.open();
+                     if (result == Window.OK) {
+                        selectedTypes.clear();
+                        for (Object object : dialog.getResult()) {
+                           if (object instanceof IAttributeType) {
+                              selectedTypes.add(((IAttributeType) object).getGuid());
+                           }
+                        }
+                        refreshView();
+                     }
+                  } catch (OseeCoreException ex) {
+                     status =
+                           new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error opening attribute types dialog",
+                                 ex);
                   }
-                  refreshView();
+                  return status;
                }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
+            };
+            Jobs.startJob(job);
          }
       }
 

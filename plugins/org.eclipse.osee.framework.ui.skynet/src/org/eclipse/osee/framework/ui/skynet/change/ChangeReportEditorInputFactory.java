@@ -2,10 +2,9 @@ package org.eclipse.osee.framework.ui.skynet.change;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
@@ -18,8 +17,9 @@ import org.eclipse.ui.IMemento;
 public class ChangeReportEditorInputFactory implements IElementFactory {
 
    public final static String ID = "org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInputFactory"; //$NON-NLS-1$
-   private final static String TRANSACTION_ID_KEY = "org.eclipse.osee.framework.ui.skynet.change.TransactionId"; //$NON-NLS-1$
-   private final static String BRANCH_ID_KEY = "org.eclipse.osee.framework.ui.skynet.change.BranchId"; //$NON-NLS-1$
+   private final static String START_TX_KEY = "org.eclipse.osee.framework.ui.skynet.change.transaction.start"; //$NON-NLS-1$
+   private final static String END_TX_KEY = "org.eclipse.osee.framework.ui.skynet.change.transaction.end"; //$NON-NLS-1$
+   private final static String COMPARE_TYPE = "org.eclipse.osee.framework.ui.skynet.change.compareType"; //$NON-NLS-1$
 
    public ChangeReportEditorInputFactory() {
    }
@@ -27,22 +27,17 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
    public IAdaptable createElement(IMemento memento) {
       ChangeReportEditorInput toReturn = null;
       try {
-         Integer branchId = null;
          if (memento != null) {
             if (SkynetViews.isSourceValid(memento)) {
-               branchId = memento.getInteger(BRANCH_ID_KEY);
-               if (branchId != null && branchId > -1) {
-                  Branch branch = BranchManager.getBranch(branchId);
-                  if (branch != null) {
-                     toReturn = ChangeUiUtil.createInput(branch, false);
-                  }
-               } else {
-                  Integer transactionNumber = memento.getInteger(TRANSACTION_ID_KEY);
-                  if (transactionNumber != null && transactionNumber > -1) {
-                     TransactionRecord transaction = TransactionManager.getTransactionId(transactionNumber);
-                     toReturn = ChangeUiUtil.createInput(transaction, false);
-                  }
-               }
+               CompareType compareType = CompareType.valueOf(memento.getString(COMPARE_TYPE));
+
+               int startTxId = memento.getInteger(START_TX_KEY);
+               int endTxId = memento.getInteger(END_TX_KEY);
+
+               TransactionRecord startTx = TransactionManager.getTransactionId(startTxId);
+               TransactionRecord endTx = TransactionManager.getTransactionId(endTxId);
+               TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
+               toReturn = ChangeUiUtil.createInput(compareType, txDelta, false);
             }
          }
       } catch (Exception ex) {
@@ -51,14 +46,11 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
       return toReturn;
    }
 
-   /**
-    * save transaction id or -1 and branch guid or ""
-    */
    public static void saveState(IMemento memento, ChangeReportEditorInput input) {
-      memento.putInteger(TRANSACTION_ID_KEY,
-            input.getChangeData().getTransaction() != null ? input.getChangeData().getTransaction().getId() : -1);
-      memento.putInteger(BRANCH_ID_KEY,
-            input.getChangeData().getBranch() != null ? input.getChangeData().getBranch().getId() : -1);
+      TransactionDelta txDelta = input.getChangeData().getTxDelta();
+      memento.putInteger(START_TX_KEY, txDelta.getStartTx().getId());
+      memento.putInteger(END_TX_KEY, txDelta.getEndTx().getId());
+      memento.putString(COMPARE_TYPE, input.getChangeData().getCompareType().name());
       SkynetViews.addDatabaseSourceId(memento);
    }
 }

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
@@ -497,7 +498,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       }
    }
 
-   public Branch getBranch() {
+   public Branch getBranch(IProgressMonitor monitor) {
       if (getInput() != null && getInput().getArtifactResults() != null && !getInput().getArtifactResults().isEmpty()) {
          return getInput().getArtifactResults().get(0).getBranch();
       }

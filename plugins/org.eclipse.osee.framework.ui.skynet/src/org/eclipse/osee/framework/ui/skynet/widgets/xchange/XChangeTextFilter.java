@@ -74,10 +74,6 @@ public class XChangeTextFilter extends XViewerTextFilter {
       return accept;
    }
 
-   private boolean selectInDocOrder(Viewer viewer, Object parentElement, Object element) {
-      return false;
-   }
-
    private void computeDocOrder(Collection<?> data) throws OseeCoreException {
       Map<Artifact, ArtifactChange> artChangeMap = new HashMap<Artifact, ArtifactChange>();
       for (Object object : data) {

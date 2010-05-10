@@ -431,19 +431,29 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             new Action("Quick Search", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH)) {
                @Override
                public void run() {
-                  try {
-                     IViewPart viewPart =
-                           PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                                 QuickSearchView.VIEW_ID);
-                     if (viewPart != null) {
-                        Branch branch = getBranch();
-                        if (branch != null) {
-                           ((QuickSearchView) viewPart).setBranch(branch);
+                  Job job = new UIJob("Open Quick Search") {
+
+                     @Override
+                     public IStatus runInUIThread(IProgressMonitor monitor) {
+                        IStatus status = Status.OK_STATUS;
+                        try {
+                           IViewPart viewPart =
+                                 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                                       QuickSearchView.VIEW_ID);
+                           if (viewPart != null) {
+                              Branch branch = getBranch(monitor);
+                              if (branch != null) {
+                                 ((QuickSearchView) viewPart).setBranch(branch);
+                              }
+                           }
+                        } catch (Exception ex) {
+                           status =
+                                 new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Error opening quick search", ex);
                         }
+                        return status;
                      }
-                  } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                  }
+                  };
+                  Jobs.startJob(job);
                }
             };
       openQuickSearch.setToolTipText("Open Quick Search View");
@@ -1469,7 +1479,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    }
 
-   public Branch getBranch() {
+   public Branch getBranch(IProgressMonitor monitor) {
       return branch;
    }
 

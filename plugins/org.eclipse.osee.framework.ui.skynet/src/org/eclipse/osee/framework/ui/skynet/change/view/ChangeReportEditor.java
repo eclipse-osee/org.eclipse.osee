@@ -3,23 +3,13 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.ui.skynet.change;
+package org.eclipse.osee.framework.ui.skynet.change.view;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -30,11 +20,14 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.change.operations.LoadAssociatedArtifactOperation;
-import org.eclipse.osee.framework.ui.skynet.change.operations.LoadChangesOperation;
+import org.eclipse.osee.framework.ui.skynet.change.ChangeReportActionBarContributor;
+import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
+import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorPreferences;
+import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
+import org.eclipse.osee.framework.ui.skynet.change.IChangeReportPreferences;
+import org.eclipse.osee.framework.ui.skynet.change.IChangeReportView;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
-import org.eclipse.ui.progress.UIJob;
 
 public class ChangeReportEditor extends FormEditor implements IChangeReportView {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor";
@@ -77,8 +70,6 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    @Override
    protected void addPages() {
       OseeContributionItem.addTo(this, true);
-      setPartName(getEditorInput().getName());
-      setTitleImage(getEditorInput().getImage());
       try {
          changeReportPage = new ChangeReportPage(this);
          addPage(changeReportPage);
@@ -98,11 +89,21 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
             public String getActionDescription() {
                StringBuilder sb = new StringBuilder();
                ChangeUiData changeData = getEditorInput().getChangeData();
-               if (changeData.isBranchValid()) {
-                  sb.append(String.format("\nBranch: [%s]", changeData.getBranch()));
+               TransactionDelta txDelta = changeData.getTxDelta();
+               Branch branch1 = null;
+               Branch branch2 = null;
+               try {
+                  branch1 = txDelta.getStartTx().getBranch();
+                  branch2 = txDelta.getEndTx().getBranch();
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
                }
-               if (changeData.isTransactionValid()) {
-                  sb.append(String.format("\nTransaction Id: [%s]", changeData.getTransaction().getId()));
+               if (txDelta.areOnTheSameBranch()) {
+                  sb.append(String.format("\nBranch - %s", branch1));
+                  sb.append(String.format("\nTransactions - %s", txDelta.toString()));
+               } else {
+                  sb.append(String.format("\nBranch %s - %s Tx:[%s]", 1, branch1, txDelta.getStartTx().getId()));
+                  sb.append(String.format("\nBranch %s - %s Tx:[%s]", 2, branch2, txDelta.getEndTx().getId()));
                }
                return sb.toString();
             }
@@ -125,64 +126,24 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    }
 
    @Override
-   public void recomputeChangeReport() {
-      refreshData(true);
-   }
-
-   @Override
    public void dispose() {
       OseeEventManager.removeListener(eventRelay);
       getPreferences().saveState();
       super.dispose();
    }
 
-   public void refreshData(boolean isReloadAllowed) {
-      List<IOperation> ops = new ArrayList<IOperation>();
-      ChangeUiData changeData = getEditorInput().getChangeData();
-      if (isReloadAllowed) {
-         changeData.reset();
-         changeReportPage.onLoad();
-         ops.add(new LoadChangesOperation(changeData));
+   @Override
+   public void recomputeChangeReport() {
+      if (changeReportPage != null && changeReportPage.isActive()) {
+         changeReportPage.recomputeChangeReport(true);
       }
-      ops.add(new LoadAssociatedArtifactOperation(changeData));
-      IOperation operation = new CompositeOperation("Load Change Report Data", SkynetGuiPlugin.PLUGIN_ID, ops);
-      Operations.executeAsJob(operation, true, Job.LONG, new ReloadJobChangeAdapter());
    }
 
-   private final class ReloadJobChangeAdapter extends JobChangeAdapter {
-      private long startTime = 0;
-
-      @Override
-      public void scheduled(IJobChangeEvent event) {
-         super.scheduled(event);
-         getActionBarContributor().getReloadAction().setEnabled(false);
-         showBusy(true);
-      }
-
-      @Override
-      public void aboutToRun(IJobChangeEvent event) {
-         super.aboutToRun(event);
-         startTime = System.currentTimeMillis();
-      }
-
-      @Override
-      public void done(IJobChangeEvent event) {
-         super.done(event);
-         String message = String.format("Change Report Load completed in [%s]", Lib.getElapseString(startTime));
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, message);
-
-         Job job = new UIJob("Refresh Change Report") {
-
-            @Override
-            public IStatus runInUIThread(IProgressMonitor monitor) {
-               changeReportPage.refresh();
-               showBusy(false);
-               getActionBarContributor().getReloadAction().setEnabled(true);
-               getActionBarContributor().getOpenAssociatedArtifactAction().updateEnablement();
-               return Status.OK_STATUS;
-            }
-         };
-         Operations.scheduleJob(job, false, Job.SHORT, null);
+   public void refresh() {
+      setPartName(getEditorInput().getName());
+      setTitleImage(getEditorInput().getImage());
+      if (changeReportPage != null) {
+         changeReportPage.refresh();
       }
    }
 
@@ -195,9 +156,16 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       @Override
       public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
          ChangeUiData changeUiData = getEditorInput().getChangeData();
-         if (changeUiData.isBranchValid()) {
-            Branch branch = changeUiData.getBranch();
-            if (branch.getId() == branchId) {
+         Branch[] branches = new Branch[2];
+         try {
+            branches[0] = changeUiData.getTxDelta().getStartTx().getBranch();
+            branches[1] = changeUiData.getTxDelta().getEndTx().getBranch();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error obtaining change report branches for branch event",
+                  ex);
+         }
+         for (Branch branch : branches) {
+            if (branch != null && branch.getId() == branchId) {
                if (branchModType == BranchEventType.Deleted && branchModType == BranchEventType.Purged) {
                   close(false);
                } else if (branchModType == BranchEventType.Committed) {
@@ -210,8 +178,10 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       @Override
       public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
          ChangeUiData changeUiData = getEditorInput().getChangeData();
-         if (changeUiData.isTransactionValid()) {
-            int transactionIdToMatch = changeUiData.getTransaction().getId();
+         int[] txDeltas = new int[2];
+         txDeltas[0] = changeUiData.getTxDelta().getStartTx().getId();
+         txDeltas[1] = changeUiData.getTxDelta().getEndTx().getId();
+         for (int transactionIdToMatch : txDeltas) {
             for (int txId : transactionIds) {
                if (transactionIdToMatch == txId) {
                   close(false);

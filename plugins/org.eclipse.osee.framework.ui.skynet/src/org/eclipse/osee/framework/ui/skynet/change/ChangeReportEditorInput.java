@@ -8,9 +8,7 @@ package org.eclipse.osee.framework.ui.skynet.change;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -33,32 +31,17 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
    }
 
    public Image getImage() {
-      return ImageManager.getImage(FrameworkImage.BRANCH_CHANGE);
+      return ImageManager.getImage(changeData.getCompareType().getHandler().getActionImage());
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE);
+      return ImageManager.getImageDescriptor(changeData.getCompareType().getHandler().getActionImage());
    }
 
    @Override
    public String getName() {
-      String branchName = "Unknown";
-      String comment = "";
-      if (changeData.isBranchValid()) {
-         branchName = changeData.getBranch().getShortName();
-      } else if (changeData.isTransactionValid()) {
-         TransactionRecord transactionId = changeData.getTransaction();
-         try {
-            branchName = transactionId.getBranch().getShortName();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
-         }
-         if (transactionId.getComment() != null) {
-            comment = String.format(" - %s", transactionId.getComment());
-         }
-      }
-      return String.format("Change Report - %s%s", branchName, comment);
+      return String.format("Change Report: " + changeData.getCompareType().getHandler().getName(changeData.getTxDelta()));
    }
 
    @Override
@@ -91,11 +74,18 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
    }
 
    @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof ChangeReportEditorInput) {
-         return changeData.equals(((ChangeReportEditorInput) obj).getChangeData());
+   public boolean equals(Object object) {
+      boolean result = false;
+      if (object instanceof ChangeReportEditorInput) {
+         ChangeReportEditorInput other = (ChangeReportEditorInput) object;
+         result = this.getChangeData().equals(other.getChangeData());
       }
-      return false;
+      return result;
+   }
+
+   @Override
+   public int hashCode() {
+      return changeData.hashCode();
    }
 
    @Override

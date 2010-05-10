@@ -111,7 +111,6 @@ public class ChangeXViewer extends XViewer {
       xChangeTextFilter.setShowDocumentOrderFilter(showDocumentOrderFilter);
    }
 
-   @Override
    public boolean isRemoveItemsMenuOptionEnabled() {
       return false;
    }
