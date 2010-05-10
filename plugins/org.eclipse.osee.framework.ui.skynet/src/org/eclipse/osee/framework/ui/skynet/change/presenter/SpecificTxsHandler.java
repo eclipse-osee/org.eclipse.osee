@@ -42,7 +42,7 @@ public final class SpecificTxsHandler implements IChangeReportUiHandler {
 
    @Override
    public KeyedImage getActionImage() {
-      return FrameworkImage.ACCEPT;
+      return FrameworkImage.BRANCH_CHANGE;
    }
 
    @Override
