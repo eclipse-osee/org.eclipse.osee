@@ -47,6 +47,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
 
    public void setSelectedTeamDefs(Collection<TeamDefinitionArtifact> selectedTeamDefs) {
       this.selectedTeamDefs = selectedTeamDefs;
+      refresh();
       notifyXModifiedListeners();
    }
 

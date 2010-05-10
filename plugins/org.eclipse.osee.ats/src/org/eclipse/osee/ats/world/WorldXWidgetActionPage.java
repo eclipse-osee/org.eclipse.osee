@@ -591,4 +591,27 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
             (filterMyAssigneeAction.isChecked() ? "[My Assignee Filter]" : ""));
    }
 
+   @Override
+   public void handleSaveButtonPressed() {
+      try {
+         if (isSaveButtonAvailable() && (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider)) {
+            ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).handleSaveButtonPressed();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   @Override
+   public boolean isSaveButtonAvailable() {
+      try {
+         if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
+            return ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).isSaveButtonAvailable();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return false;
+   }
+
 }

@@ -29,4 +29,9 @@ public interface IWorldEditorParameterProvider extends IWorldEditorProvider {
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener();
 
    public String[] getWidgetOptions(DynamicXWidgetLayoutData xWidgetData);
+
+   public boolean isSaveButtonAvailable();
+
+   public void handleSaveButtonPressed();
+
 }

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.world;
 
 import java.util.List;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -114,19 +115,16 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       parameterSection.setExpanded(true);
 
       Composite mainComp = toolkit.createComposite(parametersContainer, SWT.NONE);
-      mainComp.setLayout(ALayout.getZeroMarginLayout(2, false));
+      mainComp.setLayout(ALayout.getZeroMarginLayout(3, false));
       mainComp.setLayoutData(new GridData(SWT.NONE, SWT.FILL, false, true));
 
-      Button runButton = toolkit.createButton(mainComp, "Search", SWT.PUSH);
-      GridData gridData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-      runButton.setLayoutData(gridData);
-      runButton.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleSearchButtonPressed();
-         }
-      });
+      createButtonCompositeOnLeft(mainComp);
+      createSearchParametersOnRight(managedForm, mainComp);
 
+      return parameterSection;
+   }
+
+   public void createSearchParametersOnRight(IManagedForm managedForm, Composite mainComp) throws OseeCoreException {
       Composite paramComp = new Composite(mainComp, SWT.NONE);
       paramComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       paramComp.setLayoutData(new GridData(SWT.NONE, SWT.FILL, false, true));
@@ -145,8 +143,39 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
+   }
 
-      return parameterSection;
+   public void createButtonCompositeOnLeft(Composite mainComp) {
+      Composite buttonComp = toolkit.createComposite(mainComp, SWT.NONE);
+      buttonComp.setLayout(ALayout.getZeroMarginLayout(1, false));
+      buttonComp.setLayoutData(new GridData(SWT.NONE, SWT.FILL, false, true));
+
+      Button runButton = toolkit.createButton(buttonComp, "Search", SWT.PUSH);
+      GridData gridData = new GridData(SWT.FILL, SWT.TOP, true, false);
+      runButton.setLayoutData(gridData);
+      runButton.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            handleSearchButtonPressed();
+         }
+      });
+
+      if (isSaveButtonAvailable()) {
+         Button saveButton = toolkit.createButton(buttonComp, "Save", SWT.PUSH);
+         saveButton.setToolTipText("Save search selections as default");
+         gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, true);
+         saveButton.setLayoutData(gridData);
+         saveButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Save Default Parameters",
+                     "Save current parameters as default?")) {
+                  handleSaveButtonPressed();
+               }
+            }
+         });
+      }
+      buttonComp.layout();
    }
 
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() throws OseeCoreException {
@@ -158,6 +187,10 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    }
 
    public abstract void handleSearchButtonPressed();
+
+   public abstract boolean isSaveButtonAvailable();
+
+   public abstract void handleSaveButtonPressed();
 
    public void setTableTitle(final String title, final boolean warning) {
       this.title = title;

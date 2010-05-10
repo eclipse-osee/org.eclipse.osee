@@ -207,4 +207,16 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
 
    }
 
+   @Override
+   public void handleSaveButtonPressed() {
+      if (isSaveButtonAvailable()) {
+         worldParameterSearchItem.handleSaveButtonPressed();
+      }
+   }
+
+   @Override
+   public boolean isSaveButtonAvailable() {
+      return worldParameterSearchItem.isSaveButtonAvailable();
+   }
+
 }
