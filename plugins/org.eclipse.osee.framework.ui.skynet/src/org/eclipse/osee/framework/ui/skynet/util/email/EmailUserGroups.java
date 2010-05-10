@@ -11,9 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.util.email;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -26,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -41,51 +38,31 @@ import org.eclipse.swt.program.Program;
 /**
  * @author Donald G. Dunne
  */
-public class EmailGroupsAndUserGroups extends XNavigateItemAction {
-
-   private final GroupType[] groupType;
-   public static enum GroupType {
-      Groups, UserGroups, Both
-   };
+public class EmailUserGroups extends XNavigateItemAction {
 
    /**
-    * @param parent
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
-   public EmailGroupsAndUserGroups(XNavigateItem parent, GroupType... groupType) {
-      super(parent,
-            "Email " + (Arrays.asList(groupType).contains(GroupType.Both) ? "Groups / User Groups" : (Arrays.asList(
-                  groupType).contains(GroupType.Groups) ? "Groups" : "User Groups")), FrameworkImage.EMAIL);
-      this.groupType = groupType;
+   public EmailUserGroups(XNavigateItem parent) {
+      super(parent, "Email User Groups", FrameworkImage.EMAIL);
    }
 
-   public static Set<Artifact> getEmailGroupsAndUserGroups(User user, GroupType... groupType) throws OseeCoreException {
-      List<GroupType> groupTypes = Arrays.asList(groupType);
-      Set<Artifact> groupOptions = new HashSet<Artifact>();
-      if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.Groups)) {
-         for (Artifact art : UniversalGroup.getGroups(BranchManager.getCommonBranch())) {
-            // Only add group if have read permissions
-            if (!art.getName().equals("Root Artifact") && AccessControlManager.hasPermission(art, PermissionEnum.READ)) {
-               groupOptions.add(art);
-            }
+   public static Set<Artifact> getEmailGroupsAndUserGroups(User user) throws OseeCoreException {
+      Set<Artifact> artifacts = new HashSet<Artifact>();
+      for (Artifact art : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup,
+            BranchManager.getCommonBranch())) {
+         // Only add group if have read permissions
+         if (!art.getName().equals("Root Artifact") && AccessControlManager.hasPermission(art, PermissionEnum.READ)) {
+            artifacts.add(art);
          }
       }
-      if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.UserGroups)) {
-         for (Artifact art : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup,
-               BranchManager.getCommonBranch())) {
-            // Only add group if have read permissions
-            if (!art.getName().equals("Root Artifact") && AccessControlManager.hasPermission(art, PermissionEnum.READ)) {
-               groupOptions.add(art);
-            }
-         }
-      }
-      return groupOptions;
+      return artifacts;
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       try {
-         Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(UserManager.getUser(), groupType);
+         Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(UserManager.getUser());
          UserGroupsCheckTreeDialog dialog = new UserGroupsCheckTreeDialog(groupOptions);
          dialog.setTitle("Select Groups to Email");
          if (dialog.open() == 0) {

@@ -78,8 +78,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XViewerExample;
-import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroupsAndUserGroups;
-import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroupsAndUserGroups.GroupType;
+import org.eclipse.osee.framework.ui.skynet.util.email.EmailUserGroups;
 import org.osgi.framework.Bundle;
 
 /**
@@ -165,7 +164,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new EmailTeamsItem(emailItems, null, MemberType.Both);
          new EmailTeamsItem(emailItems, null, MemberType.Leads);
          new EmailTeamsItem(emailItems, null, MemberType.Members);
-         new EmailGroupsAndUserGroups(emailItems, GroupType.Both);
+         new EmailUserGroups(emailItems);
          new SubscribeByActionableItem(emailItems);
          new SubscribeByTeamDefinition(emailItems);
          items.add(emailItems);

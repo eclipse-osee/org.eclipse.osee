@@ -30,8 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroupsAndUserGroups;
-import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroupsAndUserGroups.GroupType;
+import org.eclipse.osee.framework.ui.skynet.util.email.EmailUserGroups;
 import org.eclipse.osee.framework.ui.skynet.widgets.XList.XListItem;
 
 /**
@@ -53,7 +52,8 @@ public class CreateNewUser extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Create New User", IProgressMonitor.UNKNOWN);
 
-      User user = (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User.getName(), BranchManager.getCommonBranch());
+      User user =
+            (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User.getName(), BranchManager.getCommonBranch());
 
       String name = variableMap.getString("Name (Last, First)");
       if (name.equals("")) {
@@ -135,7 +135,7 @@ public class CreateNewUser extends AbstractBlam {
       }
       // Add groups to belong to
       try {
-         groupArts = EmailGroupsAndUserGroups.getEmailGroupsAndUserGroups(UserManager.getUser(), GroupType.Both);
+         groupArts = EmailUserGroups.getEmailGroupsAndUserGroups(UserManager.getUser());
          String groupStr = "";
          for (Artifact art : groupArts) {
             groupStr += art.getName() + ",";
