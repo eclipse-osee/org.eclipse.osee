@@ -72,7 +72,9 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
 
       Composite sectionBody = toolkit.createComposite(section, toolkit.getBorderStyle());
       sectionBody.setLayout(ALayout.getZeroMarginLayout(2, true));
-      sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gd.widthHint = 300;
+      sectionBody.setLayoutData(gd);
 
       addDropToAddLabel(toolkit, sectionBody);
       addDropToRemoveLabel(toolkit, sectionBody);
@@ -81,15 +83,16 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
             new WorldComposite(this, new GoalXViewerFactory((GoalArtifact) editor.getSma()), sectionBody, SWT.BORDER);
       try {
          CustomizeData customizeData = worldComposite.getCustomizeDataCopy();
+         ((WorldLabelProvider) worldComposite.getXViewer().getLabelProvider()).setParentGoal((GoalArtifact) editor.getSma());
          worldComposite.load("Members", editor.getSma().getRelatedArtifacts(AtsRelationTypes.Goal_Member),
                customizeData, TableLoadOption.None);
-         ((WorldLabelProvider) worldComposite.getXViewer().getLabelProvider()).setParentGoal((GoalArtifact) editor.getSma());
 
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
-      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gd = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd.horizontalSpan = 2;
+      gd.widthHint = 300;
       worldComposite.setLayoutData(gd);
 
       section.setClient(sectionBody);
