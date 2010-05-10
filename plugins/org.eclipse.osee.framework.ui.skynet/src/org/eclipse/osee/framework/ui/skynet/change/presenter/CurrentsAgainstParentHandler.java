@@ -60,7 +60,7 @@ public final class CurrentsAgainstParentHandler implements IChangeReportUiHandle
                      txDelta.getStartTx().getBranch(), " its parent", txDelta.getEndTx().getBranch());
       } else {
          data =
-               String.format("Shows all changes made to [%s] compared to%s branch [%s].",
+               String.format("Shows all changes made to [<b>%s</b>] compared to%s branch [<b>%s</b>].",
                      txDelta.getStartTx().getBranch(), " its parent", txDelta.getEndTx().getBranch());
       }
       return data;

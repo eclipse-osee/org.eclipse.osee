@@ -176,7 +176,10 @@ public class ChangeDataLoader extends AbstractOperation {
          RelationChangeItem relationItem = (RelationChangeItem) item;
          RelationType relationType = RelationTypeManager.getType(relationItem.getItemTypeId());
 
-         TransactionRecord transaction = txDelta.getEndTx();
+         TransactionRecord transaction = txDelta.getStartTx();
+         if (txDelta.areOnTheSameBranch()) {
+            transaction = txDelta.getEndTx();
+         }
          Artifact endTxBArtifact = getArtifactAtTx(relationItem.getBArtId(), transaction);
 
          change =
