@@ -91,6 +91,9 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    public void createPartControl(Composite parent) {
       super.createPartControl(parent);
       scrolledForm.setImage(ImageManager.getImage(AtsImage.GLOBE));
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gd.widthHint = 200;
+      parent.setLayoutData(gd);
 
       Result result = AtsPlugin.areOSEEServicesAvailable();
       if (result.isFalse()) {
@@ -128,6 +131,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
 
    @Override
    public Section createResultsSection(Composite body) {
+
       resultsSection = toolkit.createSection(body, Section.NO_TITLE);
       resultsSection.setText("Results");
       resultsSection.setLayoutData(new GridData(GridData.FILL_BOTH));
