@@ -301,6 +301,8 @@ public class NavigateView extends ViewPart implements IActionable {
       mm.add(new NewAction());
       mm.add(new NewGoal());
       mm.add(OseeUiActions.createBugAction(AtsPlugin.getInstance(), this, VIEW_ID, "ATS Navigator"));
+
+      toolbarManager.update(true);
    }
 
    public static NavigateView getNavigateView() {
