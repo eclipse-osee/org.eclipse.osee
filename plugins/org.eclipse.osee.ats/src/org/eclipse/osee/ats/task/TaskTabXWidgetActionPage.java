@@ -300,4 +300,13 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
       filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.USER));
    }
 
+   @Override
+   public void handleSaveButtonPressed() {
+   }
+
+   @Override
+   public boolean isSaveButtonAvailable() {
+      return false;
+   }
+
 }

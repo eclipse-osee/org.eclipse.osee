@@ -367,4 +367,13 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
       filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.USER));
    }
 
+   @Override
+   public void handleSaveButtonPressed() {
+   }
+
+   @Override
+   public boolean isSaveButtonAvailable() {
+      return false;
+   }
+
 }
