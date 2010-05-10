@@ -260,7 +260,7 @@ public class RelationManager {
       addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, insertMap, selectedRelations,
             relationSide);
 
-      // This is for bulk loading so we do not lose are references
+      // This is for bulk loading so we do not lose our references
       @SuppressWarnings("unused")
       Collection<Artifact> bulkLoadedArtifacts;
       if (insertParameters.size() > 0) {

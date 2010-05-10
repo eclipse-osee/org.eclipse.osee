@@ -146,6 +146,10 @@ public class RelationOrderData {
       return String.format("Relation Order Data for artifact:%s", getIArtifact());
    }
 
+   public List<Pair<String, String>> getAvailableTypeSides() {
+      return lists.getEnumeratedKeys();
+   }
+
    private final static class EntryComparator implements Serializable, Comparator<Entry<Pair<String, String>, Pair<String, List<String>>>> {
       private static final long serialVersionUID = 5242452476694174988L;
 

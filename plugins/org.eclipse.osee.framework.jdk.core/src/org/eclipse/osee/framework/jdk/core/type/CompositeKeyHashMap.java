@@ -126,6 +126,16 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       return map.get(threadLocalKey.get().set(key1, key2));
    }
 
+   public List<Pair<KeyOne, KeyTwo>> getEnumeratedKeys() {
+      List<Pair<KeyOne, KeyTwo>> toReturn = new ArrayList<Pair<KeyOne, KeyTwo>>();
+      for (KeyOne firstKey : singleKeyMap.keySet()) {
+         for (KeyTwo secondKey : singleKeyMap.getValues(firstKey)) {
+            toReturn.add(new Pair<KeyOne, KeyTwo>(firstKey, secondKey));
+         }
+      }
+      return toReturn;
+   }
+
    public boolean isEmpty() {
       return map.isEmpty();
    }
