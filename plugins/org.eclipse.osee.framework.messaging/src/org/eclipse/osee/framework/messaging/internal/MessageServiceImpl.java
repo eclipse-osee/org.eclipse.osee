@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.messaging.MessageService;
 import org.eclipse.osee.framework.messaging.NodeInfo;
 
 /**
- * @author b1122182
+ * @author Roberto E. Escobar
  */
 public class MessageServiceImpl implements MessageService {
    private static final String VM_URI = "vm://localhost?broker.persistent=false";

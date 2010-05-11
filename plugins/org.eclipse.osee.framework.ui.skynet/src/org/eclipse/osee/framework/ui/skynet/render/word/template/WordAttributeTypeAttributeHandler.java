@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
 /**
- * @author Finkbeiner M. Andrew
+ * @author Andrew M. Finkbeiner
  */
 public final class WordAttributeTypeAttributeHandler implements ITemplateAttributeHandler {
 

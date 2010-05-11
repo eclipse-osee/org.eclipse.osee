@@ -11,7 +11,7 @@ import javax.jms.JMSException;
 import org.eclipse.osee.framework.messaging.internal.FailoverConnectionNode;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class OseeExceptionListener implements ExceptionListener {

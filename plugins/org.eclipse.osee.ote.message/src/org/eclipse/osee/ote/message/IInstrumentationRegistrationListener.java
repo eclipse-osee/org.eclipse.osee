@@ -15,8 +15,7 @@ import java.rmi.RemoteException;
 import org.eclipse.osee.ote.message.instrumentation.IOInstrumentation;
 
 /**
- * @author author Ken J. Aguilar
- *
+ * @author Ken J. Aguilar
  */
 public interface IInstrumentationRegistrationListener extends Remote {
    void onRegistered(String name, IOInstrumentation instrumentation) throws RemoteException;

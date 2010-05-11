@@ -6,7 +6,7 @@
 package org.eclipse.osee.ote.server;
 
 /**
- * @author  Andrew M. Finkbeiner
+ * @author Andrew M. Finkbeiner
  */
 public class PropertyParamter {
    private final String type;
@@ -15,7 +15,7 @@ public class PropertyParamter {
    private final String station;
    private final boolean useJiniLookup;
    private final boolean isLocalConnector;
-   
+
    public PropertyParamter(String version, String comment, String station, String type, boolean useJiniLookup, boolean isLocalConnector) {
       this.version = version;
       this.comment = comment;

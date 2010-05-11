@@ -13,7 +13,7 @@ import org.eclipse.osee.framework.messaging.MessageServiceProvider;
 import org.eclipse.osee.framework.messaging.internal.activemq.ConnectionNodeFactoryImpl;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class MessageServiceProviderImpl implements MessageServiceProvider {
 

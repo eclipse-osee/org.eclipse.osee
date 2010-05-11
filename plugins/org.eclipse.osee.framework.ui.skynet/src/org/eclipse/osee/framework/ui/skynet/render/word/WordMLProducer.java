@@ -168,6 +168,14 @@ public class WordMLProducer extends Producer {
       append("<w:p>");
    }
 
+   public void startSection() throws OseeCoreException {
+      append("<wx:sect>");
+   }
+
+   public void endSection() throws OseeCoreException {
+      append("</wx:sect>");
+   }
+
    public void createSubDoc(String fileName) throws OseeCoreException {
       if (fileName == null || fileName.length() == 0) {
          throw new IllegalArgumentException("The file name can not be null or empty.");
@@ -256,6 +264,7 @@ public class WordMLProducer extends Producer {
 
    /**
     * This method will escape the provided text.
+    * 
     * @param text
     * @throws OseeWrappedException
     */
@@ -324,7 +333,7 @@ public class WordMLProducer extends Producer {
     * Sets the page layout to either portrait/landscape depending on the artifacts pageType attribute value. Note: This
     * call should be done after processing each artifact so if a previous artifact was landscaped the following artifact
     * would be set back to portrait.
-    *
+    * 
     * @throws OseeCoreException
     */
    public void setPageLayout(Artifact artifact) throws OseeCoreException {

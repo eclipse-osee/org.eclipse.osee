@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.osgi.framework.BundleException;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public interface WorkspaceLoader {

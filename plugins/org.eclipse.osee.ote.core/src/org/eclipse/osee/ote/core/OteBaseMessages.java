@@ -8,7 +8,7 @@ package org.eclipse.osee.ote.core;
 import org.eclipse.osee.framework.messaging.MessageID;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public enum OteBaseMessages implements MessageID {

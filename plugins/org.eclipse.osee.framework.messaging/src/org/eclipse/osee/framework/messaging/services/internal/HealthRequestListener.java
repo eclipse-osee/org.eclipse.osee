@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceHealthRequest;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  * 
  */
 public class HealthRequestListener extends OseeMessagingListener {

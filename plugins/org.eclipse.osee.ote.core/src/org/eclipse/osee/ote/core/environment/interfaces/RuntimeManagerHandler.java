@@ -12,7 +12,7 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class RuntimeManagerHandler extends AbstractTrackingHandler {

@@ -6,7 +6,7 @@
 package org.eclipse.osee.framework.messaging.services;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public interface RegisteredServiceReference {

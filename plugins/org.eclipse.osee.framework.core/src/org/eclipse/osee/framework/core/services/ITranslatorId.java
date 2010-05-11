@@ -6,7 +6,7 @@
 package org.eclipse.osee.framework.core.services;
 
 /**
- * @author b1122182
+ * @author Roberto E. Escobar
  */
 public interface ITranslatorId {
 

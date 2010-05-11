@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.messaging.internal.Activator;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 class ActiveMqMessageListenerWrapper implements MessageListener {
 

@@ -7,7 +7,7 @@ package org.eclipse.osee.framework.messaging;
 
 
 /**
- * @author b1122182
+ * @author Roberto E. Escobar
  */
 public interface ConnectionNodeFactory {
 

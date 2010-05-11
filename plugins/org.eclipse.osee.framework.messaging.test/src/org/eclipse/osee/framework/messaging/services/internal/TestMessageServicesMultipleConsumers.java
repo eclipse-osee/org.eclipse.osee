@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.messaging.internal.TestMessages;
 import org.eclipse.osee.framework.messaging.test.msg.TestMessage;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class TestMessageServicesMultipleConsumers extends BaseBrokerTesting implements OseeMessagingStatusCallback {

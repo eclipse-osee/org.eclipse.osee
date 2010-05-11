@@ -11,7 +11,7 @@ import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.messaging.test.msg.TestMessage;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class BasicListener extends OseeMessagingListener {

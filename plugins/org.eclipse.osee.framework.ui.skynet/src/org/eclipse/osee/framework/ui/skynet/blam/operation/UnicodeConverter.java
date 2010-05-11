@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author fw314c
+ * @author Theron Virgin
  */
 public class UnicodeConverter {
 

@@ -23,7 +23,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  * 
  */
 public class OteClasspathContainer implements IClasspathContainer {

@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Jeff C. Phillips
- * @author Paul Waldfogel
+ * @author Paul K. Waldfogel
  */
 public class RenameBranchHandler extends CommandHandler {
 

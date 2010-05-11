@@ -16,8 +16,9 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentServiceC
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 import org.eclipse.osee.ote.server.TestEnvironmentFactory;
 import org.osgi.service.packageadmin.PackageAdmin;
+
 /**
- * @author  Andrew M. Finkbeiner
+ * @author Andrew M. Finkbeiner
  */
 class EnvironmentCreationParameter {
    private final NodeInfo oteEmbeddedBroker;
@@ -29,14 +30,14 @@ class EnvironmentCreationParameter {
    private TestEnvironmentFactory factory;
    private final PackageAdmin packageAdmin;
    private final String environmentFactoryClass;
-   
+
    /**
     * @param runtimeLibraryManager2
     * @param nodeInfo
     * @param serviceSideConnector
     * @param config2
     * @param factory
-    * @param environmentFactoryClass 
+    * @param environmentFactoryClass
     */
    public EnvironmentCreationParameter(IRuntimeLibraryManager runtimeLibraryManager, NodeInfo oteEmbeddedBroker, IServiceConnector serviceConnector, ITestEnvironmentServiceConfig config, TestEnvironmentFactory factory, String environmentFactoryClass, PackageAdmin packageAdmin) {
       this.oteEmbeddedBroker = oteEmbeddedBroker;
@@ -46,7 +47,7 @@ class EnvironmentCreationParameter {
       this.factory = factory;
       this.packageAdmin = packageAdmin;
       this.environmentFactoryClass = environmentFactoryClass;
-      
+
    }
 
    public Serializable getServerTitle() {
@@ -56,15 +57,16 @@ class EnvironmentCreationParameter {
    public int getMaxUsersPerEnvironment() {
       return config.getMaxUsersPerEnvironment();
    }
-   
-   public String getOutfileLocation(){
+
+   public String getOutfileLocation() {
       return config.getOutfileLocation();
    }
-   
+
    public MessageSystemTestEnvironment createEnvironment() throws Throwable {
-      if(factory == null){
+      if (factory == null) {
          ExportClassLoader exportClassLoader = new ExportClassLoader(packageAdmin);
-         Class<? extends TestEnvironmentFactory> clazz = exportClassLoader.loadClass(environmentFactoryClass).asSubclass(TestEnvironmentFactory.class);
+         Class<? extends TestEnvironmentFactory> clazz =
+               exportClassLoader.loadClass(environmentFactoryClass).asSubclass(TestEnvironmentFactory.class);
          factory = clazz.newInstance();
       }
       MessageSystemTestEnvironment testEnvironment = factory.createEnvironment(runtimeLibraryManager);
@@ -74,8 +76,9 @@ class EnvironmentCreationParameter {
    }
 
    public ITestEnvironment createRemoteTestEnvironment(MessageSystemTestEnvironment currentEnvironment) throws ExportException {
-      remoteTestEnvironment = new RemoteTestEnvironment(currentEnvironment, serviceConnector, config.keepEnvAliveWithNoUsers());
-      exportedRemoteTestEnvironment = (ITestEnvironment)serviceConnector.export(remoteTestEnvironment);
+      remoteTestEnvironment =
+            new RemoteTestEnvironment(currentEnvironment, serviceConnector, config.keepEnvAliveWithNoUsers());
+      exportedRemoteTestEnvironment = (ITestEnvironment) serviceConnector.export(remoteTestEnvironment);
       return exportedRemoteTestEnvironment;
    }
 

@@ -10,7 +10,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
- * @author b1122182
+ * @author Roberto E. Escobar
  */
 public interface MessageService {
 

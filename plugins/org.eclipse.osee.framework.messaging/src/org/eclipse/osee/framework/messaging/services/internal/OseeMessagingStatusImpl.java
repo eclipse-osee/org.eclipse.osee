@@ -11,7 +11,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class OseeMessagingStatusImpl implements OseeMessagingStatusCallback {

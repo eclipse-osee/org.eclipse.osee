@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,8 +30,8 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -105,7 +104,7 @@ public class WordTemplateProcessor {
    private boolean outlining;
    private boolean recurseChildren;
    private String outlineNumber;
-   private String headingAttributeName;
+   private IAttributeType headingAttributeType;
    private final List<AttributeElement> attributeElements = new LinkedList<AttributeElement>();
    final List<Artifact> nonTemplateArtifacts = new LinkedList<Artifact>();
    private final Set<String> ignoreAttributeExtensions = new HashSet<String>();
@@ -120,7 +119,7 @@ public class WordTemplateProcessor {
    /**
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts Only used by Publish SRS
-    *
+    * 
     * @throws IOException
     */
    public void publishWithExtensionTemplates(VariableMap variableMap, Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
@@ -138,7 +137,7 @@ public class WordTemplateProcessor {
    /**
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts. Only used by Publish SRS
-    *
+    * 
     * @param variableMap = will be filled with artifacts when specified in the template
     * @param artifacts = null if the template defines the artifacts to be used in the publishing
     * @param template
@@ -319,7 +318,7 @@ public class WordTemplateProcessor {
       variableMap.setValue("srsProducer.objects", artifacts);
    }
 
-   private void extractOutliningOptions(String artifactElement) {
+   private void extractOutliningOptions(String artifactElement) throws OseeCoreException {
       Matcher matcher = outlineElementsPattern.matcher(artifactElement);
       if (matcher.find()) {
          matcher = internalOutlineElementsPattern.matcher(matcher.group(4));
@@ -333,7 +332,7 @@ public class WordTemplateProcessor {
             String value = WordUtil.textOnly(matcher.group(4));
 
             if (elementType.equals("HeadingAttribute")) {
-               headingAttributeName = value;
+               headingAttributeType = AttributeTypeManager.getType(value);
             } else if (elementType.equals("RecurseChildren")) {
                recurseChildren = Boolean.parseBoolean(value);
             } else if (elementType.equals("Number")) {
@@ -343,7 +342,7 @@ public class WordTemplateProcessor {
       } else {
          outlining = false;
          recurseChildren = false;
-         headingAttributeName = null;
+         headingAttributeType = null;
       }
    }
 
@@ -352,7 +351,7 @@ public class WordTemplateProcessor {
          //If the artifact has not been processed
          if (!processedArtifacts.contains(artifact)) {
             if (outlining) {
-               String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
+               String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
                CharSequence paragraphNumber =
                      wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
 
@@ -385,31 +384,32 @@ public class WordTemplateProcessor {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
 
-         if (attributeElement.getAttributeName().equals("*")) {
-            for (String attributeTypeName : orderAttributeNames(artifact.getAttributeTypes())) {
-               if (!outlining || !attributeTypeName.equals(headingAttributeName)) {
-                  processAttribute(variableMap, artifact, wordMl, attributeElement, attributeTypeName, true,
+         if (attributeName.equals("*")) {
+            for (AttributeType attributeType : orderAttributeNames(artifact.getAttributeTypes())) {
+               if (!outlining || !attributeType.equals(headingAttributeType)) {
+                  processAttribute(variableMap, artifact, wordMl, attributeElement, attributeType, true,
                         presentationType, multipleArtifacts);
                }
             }
          } else {
-
             if (artifact.isAttributeTypeValid(attributeName)) {
-               processAttribute(variableMap, artifact, wordMl, attributeElement, attributeName, false,
+               AttributeType attributeType = AttributeTypeManager.getType(attributeName);
+               processAttribute(variableMap, artifact, wordMl, attributeElement, attributeType, false,
                      presentationType, multipleArtifacts);
             }
-
          }
       }
+      //wordMl.startParagraph();
+      //wordMl.endParagraph();
 
       wordMl.setPageLayout(artifact);
    }
 
-   private void processAttribute(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
+   private void processAttribute(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, IAttributeType attributeType, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
       // This is for SRS Publishing. Do not publish unspecified attributes
-      if (!allAttrs && (attributeTypeName.equals(Requirements.PARTITION) || attributeTypeName.equals("Safety Criticality"))) {
-         if (artifact.isAttributeTypeValid(Requirements.PARTITION)) {
-            for (Attribute<?> partition : artifact.getAttributes(Requirements.PARTITION)) {
+      if (!allAttrs && (attributeType.equals(CoreAttributeTypes.PARTITION) || attributeType.equals(CoreAttributeTypes.SAFETY_CRITICALITY))) {
+         if (artifact.isAttributeTypeValid(CoreAttributeTypes.PARTITION)) {
+            for (Attribute<?> partition : artifact.getAttributes(CoreAttributeTypes.PARTITION)) {
                if (partition == null || partition.getValue() == null || partition.getValue().equals("Unspecified")) {
                   return;
                }
@@ -417,26 +417,14 @@ public class WordTemplateProcessor {
          }
       }
 
-      if (attributeTypeName.equals("TIS Traceability")) {
-         for (Artifact requirement : artifact.getRelatedArtifacts(CoreRelationTypes.Verification__Requirement)) {
-            wordMl.addParagraph(requirement.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER) + "\t" + requirement.getName());
-         }
-         return;
-      }
-
-      attributeTypeName = AttributeTypeManager.getType(attributeTypeName).getName();
-
       //create wordTemplateContent for new guys
-      if (attributeTypeName.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT.getName())) {
-         artifact.getOrInitializeSoleAttributeValue(attributeTypeName);
+      if (attributeType.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
+         artifact.getOrInitializeSoleAttributeValue(attributeType);
       }
 
-      Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeTypeName);
+      Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeType);
 
       if (!attributes.isEmpty()) {
-         Attribute<Object> attribute = attributes.iterator().next();
-         AttributeType attributeType = attribute.getAttributeType();
-
          // check if the attribute descriptor name is in the ignore list.
          if (ignoreAttributeExtensions.contains(attributeType.getName())) {
             return;
@@ -452,7 +440,7 @@ public class WordTemplateProcessor {
             }
          }
 
-         RendererManager.renderAttribute(attributeTypeName, presentationType, artifact, variableMap, wordMl,
+         RendererManager.renderAttribute(attributeType.getName(), presentationType, artifact, variableMap, wordMl,
                attributeElement);
       }
    }
@@ -512,22 +500,22 @@ public class WordTemplateProcessor {
       }
    }
 
-   private Collection<String> orderAttributeNames(Collection<AttributeType> attributeTypes) {
-      ArrayList<String> orderedNames = new ArrayList<String>(attributeTypes.size());
-      String contentName = null;
+   private List<AttributeType> orderAttributeNames(Collection<AttributeType> attributeTypes) {
+      ArrayList<AttributeType> orderedAttributeTypes = new ArrayList<AttributeType>(attributeTypes.size());
+      AttributeType contentType = null;
 
       for (AttributeType attributeType : attributeTypes) {
          if (attributeType.equals(CoreAttributeTypes.WHOLE_WORD_CONTENT) || attributeType.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
-            contentName = attributeType.getName();
+            contentType = attributeType;
          } else {
-            orderedNames.add(attributeType.getName());
+            orderedAttributeTypes.add(attributeType);
          }
       }
-      Arrays.sort(orderedNames.toArray(new String[0]));
-      if (contentName != null) {
-         orderedNames.add(contentName);
+      Collections.sort(orderedAttributeTypes);
+      if (contentType != null) {
+         orderedAttributeTypes.add(contentType);
       }
-      return orderedNames;
+      return orderedAttributeTypes;
    }
 
    private void displayNonTemplateArtifacts(final Collection<Artifact> artifacts, final String warningString) {

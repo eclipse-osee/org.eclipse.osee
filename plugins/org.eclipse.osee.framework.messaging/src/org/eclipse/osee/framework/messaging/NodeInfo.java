@@ -10,7 +10,7 @@ import java.net.URI;
 
 
 /**
- * @author b1122182
+ * @author Roberto E. Escobar
  */
 public class NodeInfo implements Serializable {
 

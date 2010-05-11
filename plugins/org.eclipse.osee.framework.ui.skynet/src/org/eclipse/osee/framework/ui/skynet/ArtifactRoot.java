@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class ArtifactRoot {

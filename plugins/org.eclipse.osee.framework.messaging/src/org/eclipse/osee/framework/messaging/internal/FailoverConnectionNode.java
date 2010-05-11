@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.internal.activemq.OseeExceptionListener;
 
 /**
- * @author b1528444 This is written using ActiveMQ as the use case. So it will only retry connection and it will keep
+ * @author Andrew M. Finkbeiner This is written using ActiveMQ as the use case. So it will only retry connection and it will keep
  *         all subscribes so that when a valid connection is made it will do all of the requested subscriptions.
  */
 public class FailoverConnectionNode implements ConnectionNode, Runnable {

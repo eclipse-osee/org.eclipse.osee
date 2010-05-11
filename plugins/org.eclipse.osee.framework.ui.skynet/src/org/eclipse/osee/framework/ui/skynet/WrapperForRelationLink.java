@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 class WrapperForRelationLink implements IAdaptable{

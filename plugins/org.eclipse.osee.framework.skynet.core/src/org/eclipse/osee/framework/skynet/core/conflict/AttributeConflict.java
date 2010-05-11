@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
-/*
+/**
  * @author Jeff C. Phillips
  * @author Theron Virgin
  */

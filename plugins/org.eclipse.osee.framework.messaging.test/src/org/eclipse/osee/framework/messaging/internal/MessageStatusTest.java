@@ -8,7 +8,7 @@ package org.eclipse.osee.framework.messaging.internal;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  * 
  */
 public class MessageStatusTest implements OseeMessagingStatusCallback {

@@ -16,10 +16,10 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
- * @author fw314c
+ * @author Theron Virgin
  */
 public class RevertWizard extends Wizard {
-   private List<List<Artifact>> artifacts;
+   private final List<List<Artifact>> artifacts;
    private RevertWizardPage revertWizardPage;
 
    public RevertWizard(List<List<Artifact>> artifacts) {

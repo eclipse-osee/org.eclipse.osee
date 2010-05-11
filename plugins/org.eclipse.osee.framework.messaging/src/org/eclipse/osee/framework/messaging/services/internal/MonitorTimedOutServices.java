@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.messaging.services.ServiceNotification;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 class MonitorTimedOutServices implements Runnable {

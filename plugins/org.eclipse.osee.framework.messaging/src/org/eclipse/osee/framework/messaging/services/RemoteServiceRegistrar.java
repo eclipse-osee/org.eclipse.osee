@@ -8,7 +8,7 @@ package org.eclipse.osee.framework.messaging.services;
 import java.net.URI;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public interface RemoteServiceRegistrar {

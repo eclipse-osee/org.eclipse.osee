@@ -14,38 +14,37 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * @author author Ken J. Aguilar
- *
+ * @author Ken J. Aguilar
  */
-public class CustomTextCellEditor extends TextCellEditor{
+public class CustomTextCellEditor extends TextCellEditor {
 
-	/**
+   /**
 	 * 
 	 */
-	public CustomTextCellEditor() {
-		super();
-	}
+   public CustomTextCellEditor() {
+      super();
+   }
 
-	/**
-	 * @param parent
-	 * @param style
-	 */
-	public CustomTextCellEditor(Composite parent, int style) {
-		super(parent, style);
-	}
+   /**
+    * @param parent
+    * @param style
+    */
+   public CustomTextCellEditor(Composite parent, int style) {
+      super(parent, style);
+   }
 
-	/**
-	 * @param parent
-	 */
-	public CustomTextCellEditor(Composite parent) {
-		super(parent);
-	}
+   /**
+    * @param parent
+    */
+   public CustomTextCellEditor(Composite parent) {
+      super(parent);
+   }
 
-	@Override
-	public LayoutData getLayoutData() {
-		LayoutData data = super.getLayoutData();
-		data.minimumWidth = 20;
-		return data;
-	}
+   @Override
+   public LayoutData getLayoutData() {
+      LayoutData data = super.getLayoutData();
+      data.minimumWidth = 20;
+      return data;
+   }
 
 }

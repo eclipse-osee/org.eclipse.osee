@@ -16,7 +16,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class JAXBUtil {

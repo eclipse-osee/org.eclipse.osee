@@ -11,7 +11,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  *
  */
 public class MessageIoManagementService implements IMessageIoManagementService{

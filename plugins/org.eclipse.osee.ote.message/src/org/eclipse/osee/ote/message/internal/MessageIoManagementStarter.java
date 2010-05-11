@@ -14,7 +14,7 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  *
  */
 public class MessageIoManagementStarter extends ServiceTracker{

@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class JmsToJiniBridgeConnector implements IServiceConnector {
    public static final String TYPE = "jmstojini";

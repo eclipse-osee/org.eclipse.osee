@@ -11,7 +11,7 @@ import org.eclipse.osee.framework.messaging.services.messages.ServiceHealthReque
 import org.eclipse.osee.framework.messaging.services.messages.Synch;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public enum BaseMessages implements MessageID {

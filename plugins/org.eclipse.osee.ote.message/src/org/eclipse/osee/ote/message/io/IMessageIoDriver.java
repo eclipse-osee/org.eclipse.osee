@@ -6,7 +6,7 @@
 package org.eclipse.osee.ote.message.io;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  *
  */
 public interface IMessageIoDriver {

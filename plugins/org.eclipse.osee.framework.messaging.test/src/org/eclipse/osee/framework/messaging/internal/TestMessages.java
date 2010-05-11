@@ -9,7 +9,7 @@ import org.eclipse.osee.framework.messaging.MessageID;
 import org.eclipse.osee.framework.messaging.test.msg.TestMessage;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public enum TestMessages implements MessageID {

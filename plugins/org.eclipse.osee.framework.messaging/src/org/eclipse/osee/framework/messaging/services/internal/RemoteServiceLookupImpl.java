@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.messaging.services.ServiceNotification;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceHealthRequest;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  * 
  */
 public class RemoteServiceLookupImpl implements RemoteServiceLookup {

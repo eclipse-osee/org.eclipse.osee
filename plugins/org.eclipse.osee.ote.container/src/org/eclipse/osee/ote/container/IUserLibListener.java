@@ -6,7 +6,7 @@
 package org.eclipse.osee.ote.container;
 
 /**
- * @author b1541174
+ * @author Michael P. Masterson
  */
 public interface IUserLibListener {
    

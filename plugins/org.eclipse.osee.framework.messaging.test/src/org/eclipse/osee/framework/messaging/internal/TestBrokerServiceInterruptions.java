@@ -12,7 +12,7 @@ import org.eclipse.osee.framework.messaging.ConnectionNode;
 
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class TestBrokerServiceInterruptions extends BaseBrokerTesting {
 

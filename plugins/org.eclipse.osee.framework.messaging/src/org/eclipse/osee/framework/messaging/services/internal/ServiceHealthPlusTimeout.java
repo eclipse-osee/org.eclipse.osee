@@ -8,7 +8,7 @@ package org.eclipse.osee.framework.messaging.services.internal;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class ServiceHealthPlusTimeout {

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.messaging.services.ServiceInfoPopulator;
 import org.eclipse.osee.framework.messaging.services.RegisteredServiceReference;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class RemoteServiceRegistrarImpl implements RemoteServiceRegistrar {
 

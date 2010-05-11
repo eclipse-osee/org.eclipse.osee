@@ -12,13 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -123,10 +121,11 @@ public class DefaultArtifactRenderer implements IRenderer {
       boolean allAttrs = map.getBoolean("allAttrs");
 
       wordMl.startParagraph();
-      // assumption: the label is of the form <w:r><w:t> text </w:t></w:r>
+
       if (allAttrs) {
          wordMl.addWordMl("<w:r><w:t> " + Xml.escape(attributeTypeName) + ": </w:t></w:r>");
       } else {
+         // assumption: the label is of the form <w:r><w:t> text </w:t></w:r>
          wordMl.addWordMl(attributeElement.getLabel());
       }
 
@@ -143,23 +142,18 @@ public class DefaultArtifactRenderer implements IRenderer {
          }
          wordMl.endParagraph();
       }
-
    }
 
    private String renderRelationOrder(Artifact artifact) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
-      try {
-         ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
-         RelationOrderRenderer renderer =
+      ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
+      RelationOrderRenderer renderer =
                new RelationOrderRenderer(SkynetGuiPlugin.getInstance().getOseeCacheService().getRelationTypeCache(),
                      guidResolver, RelationManager.getSorterProvider());
 
-         WordMLProducer producer = new WordMLProducer(builder);
-         RelationOrderData relationOrderData = RelationManager.createRelationOrderData(artifact);
-         renderer.toWordML(producer, artifact.getBranch(), relationOrderData);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
+      WordMLProducer producer = new WordMLProducer(builder);
+      RelationOrderData relationOrderData = RelationManager.createRelationOrderData(artifact);
+      renderer.toWordML(producer, artifact.getBranch(), relationOrderData);
       return builder.toString();
    }
 

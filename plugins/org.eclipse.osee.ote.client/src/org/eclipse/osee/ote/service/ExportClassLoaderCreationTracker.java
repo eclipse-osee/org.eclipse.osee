@@ -12,7 +12,7 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 class ExportClassLoaderCreationTracker extends ServiceTracker {

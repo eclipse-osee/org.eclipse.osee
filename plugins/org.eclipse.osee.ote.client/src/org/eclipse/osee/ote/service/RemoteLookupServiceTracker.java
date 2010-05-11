@@ -14,7 +14,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 class RemoteLookupServiceTracker extends ServiceTracker {

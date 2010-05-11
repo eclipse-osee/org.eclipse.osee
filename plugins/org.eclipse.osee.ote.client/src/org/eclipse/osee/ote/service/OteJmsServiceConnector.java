@@ -31,7 +31,7 @@ import org.eclipse.osee.ote.core.OteBaseMessages;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatusCallback {

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.messaging.internal.Activator;
 
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 class ReplyConnectionActiveMqImpl implements ReplyConnection {

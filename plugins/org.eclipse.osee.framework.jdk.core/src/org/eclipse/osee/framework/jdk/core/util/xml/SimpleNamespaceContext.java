@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.jdk.core.util.xml;
 
 /**
- * @author Paul Waldfogel
+ * @author Paul K. Waldfogel
  */
 
 import java.util.Collections;

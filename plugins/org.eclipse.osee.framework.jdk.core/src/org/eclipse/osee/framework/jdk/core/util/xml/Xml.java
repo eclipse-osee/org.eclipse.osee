@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author David Diepenbrock
- * @author Paul Waldfogel
+ * @author Paul K. Waldfogel
  */
 public class Xml {
    private static final String[] XML_CHARS = new String[] {"[&]", "[<]", "[>]", "[\"]"};

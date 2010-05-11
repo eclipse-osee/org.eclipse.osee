@@ -8,7 +8,7 @@ package org.eclipse.osee.framework.messaging;
 import java.util.Map;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public abstract class OseeMessagingListener {
 

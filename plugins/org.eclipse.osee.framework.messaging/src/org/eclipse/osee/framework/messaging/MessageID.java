@@ -9,7 +9,7 @@ import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.Named;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public interface MessageID extends Named, Identity{

@@ -10,7 +10,7 @@ import org.eclipse.osee.framework.messaging.internal.Activator;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class MessagingTracker extends ServiceTracker {

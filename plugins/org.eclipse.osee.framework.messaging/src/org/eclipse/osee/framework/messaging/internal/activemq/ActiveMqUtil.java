@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.messaging.internal.JAXBUtil;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 class ActiveMqUtil {
 

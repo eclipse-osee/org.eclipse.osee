@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.messaging.services.ServiceNotification;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 class HealthServiceListener extends OseeMessagingListener {

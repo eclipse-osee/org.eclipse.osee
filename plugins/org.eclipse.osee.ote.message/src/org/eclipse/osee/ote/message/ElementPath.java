@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  *
  */
 public class ElementPath implements Serializable{

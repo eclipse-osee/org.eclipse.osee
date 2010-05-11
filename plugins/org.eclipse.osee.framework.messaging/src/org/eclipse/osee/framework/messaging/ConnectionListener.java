@@ -7,7 +7,7 @@ package org.eclipse.osee.framework.messaging;
 
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public interface ConnectionListener {

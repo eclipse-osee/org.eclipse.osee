@@ -10,7 +10,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public enum OteMuxImage implements KeyedImage {
    MUX("1553.gif");

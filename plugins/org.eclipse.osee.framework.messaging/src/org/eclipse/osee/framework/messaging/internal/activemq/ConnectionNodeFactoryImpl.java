@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.messaging.internal.Activator;
 import org.eclipse.osee.framework.messaging.internal.FailoverConnectionNode;
 
 /**
- * @author b1122182
+ * @author Roberto E. Escobar
  */
 public class ConnectionNodeFactoryImpl implements ConnectionNodeFactory {
 
