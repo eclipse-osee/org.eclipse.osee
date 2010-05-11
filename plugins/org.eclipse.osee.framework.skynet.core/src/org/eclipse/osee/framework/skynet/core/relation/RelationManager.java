@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -64,7 +65,9 @@ public class RelationManager {
          new CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>>(1024, true);
 
    private static final String GET_DELETED_ARTIFACT =
-         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) (SELECT DISTINCT ?, sysdate, %s_art_id, txs.branch_id, ? FROM osee_txs txs, osee_relation_link rel WHERE txs.branch_id = ? AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND %s_art_id = ? AND txs.tx_current in (" + ModificationType.MODIFIED.getValue() + "," + ModificationType.DELETED.getValue() + "))";
+         "SELECT DISTINCT %s_art_id, txs.branch_id FROM osee_txs txs, osee_relation_link rel WHERE txs.branch_id = ? AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND %s_art_id = ? AND txs.tx_current in (2,3)";
+   private static final String JOIN_TABLE_INSERT =
+         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) VALUES (?, ?, ?, ?, ?)";
 
    private static RelationSorterProvider relationSorterProvider = new RelationSorterProvider();
    private static RelationOrderFactory relationOrderFactory = new RelationOrderFactory();
@@ -374,8 +377,15 @@ public class RelationManager {
          Object[] formatArgs = relationEnum.getSide().isSideA() ? new Object[] {"a", "b"} : new Object[] {"b", "a"};
          String sql = String.format(GET_DELETED_ARTIFACT, formatArgs);
 
-         ConnectionHandler.runPreparedUpdate(sql, queryId, SQL3DataType.INTEGER, artifact.getBranch().getId(),
-               relationType.getId(), artifact.getArtId());
+         IOseeStatement chStmt = ConnectionHandler.getStatement();
+         chStmt.runPreparedQuery(sql, artifact.getBranch().getId(), relationType.getId(), artifact.getArtId());
+
+         while (chStmt.next()) {
+            int artId = chStmt.getInt(formatArgs[0] + "_art_id");
+            int branchId = chStmt.getInt("branch_id");
+            ConnectionHandler.runPreparedUpdate(JOIN_TABLE_INSERT, queryId, GlobalTime.GreenwichMeanTimestamp(), artId,
+                  branchId, SQL3DataType.INTEGER);
+         }
 
          List<Artifact> deletedArtifacts =
                ArtifactLoader.loadArtifactsFromQueryId(queryId, ArtifactLoad.FULL, null, 4, false, false, true);
