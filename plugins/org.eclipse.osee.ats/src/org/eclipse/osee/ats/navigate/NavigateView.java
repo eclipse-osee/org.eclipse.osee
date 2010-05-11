@@ -113,7 +113,7 @@ public class NavigateView extends ViewPart implements IActionable {
       ops.add(AtsBulkLoad.getConfigLoadingOperation());
       ops.add(new AtsNavigateViewItemsOperation());
       IOperation operation = new CompositeOperation("Load ATS Navigator", SkynetGuiPlugin.PLUGIN_ID, ops);
-      Operations.executeAsJob(operation, true, Job.LONG, new ReloadJobChangeAdapter(this));
+      Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(this));
    }
 
    private final class ReloadJobChangeAdapter extends JobChangeAdapter {
