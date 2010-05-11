@@ -24,10 +24,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * A simple TableViewer to demonstrate usage of an ILazyContentProvider. You can compare this snippet to the
- * Snippet029VirtualTableViewer to see the small but needed difference.
- * 
- * @author Tom Schindl <tom.schindl@bestsolution.at>
+ * @author Ken J. Aguilar
  */
 public abstract class HexTable extends Composite {
 
