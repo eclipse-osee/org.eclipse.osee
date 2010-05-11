@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.test.relation.order;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -56,10 +57,11 @@ public class RelationOrderMergeUtilityTest {
 
    @Test
    public void testOrderMerge() throws OseeCoreException {
-      Branch common = BranchManager.getCommonBranch();
-      Artifact parent = FrameworkTestUtil.createSimpleArtifact(Artifact, "Parent", common);
+      Branch parentBranch =
+            BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), "RO test branch", null);
+      Artifact parent = FrameworkTestUtil.createSimpleArtifact(Artifact, "Parent", parentBranch);
       Artifact[] children =
-            FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", common).toArray(new Artifact[0]);
+            FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", parentBranch).toArray(new Artifact[0]);
 
       CoreRelationTypes defaultHierarchy = CoreRelationTypes.Default_Hierarchical__Child;
       IRelationSorterId userDefinedOrder = RelationOrderBaseTypes.USER_DEFINED;
@@ -71,10 +73,10 @@ public class RelationOrderMergeUtilityTest {
       }
 
       parent.persist();
-      Branch common2 = BranchManager.createWorkingBranch(common, "Common2", null);
-      Artifact branchParent = ArtifactQuery.getArtifactFromId(parent.getGuid(), common2);
-      for (int i = 0; i < 5; i++) {
-         Artifact relative = ArtifactQuery.getArtifactFromId(children[i].getGuid(), common2);
+      Branch childBranch = BranchManager.createWorkingBranch(parentBranch, "Common2", null);
+      Artifact branchParent = ArtifactQuery.getArtifactFromId(parent.getGuid(), childBranch);
+      for (int i = 4; i < 5; i++) {
+         Artifact relative = ArtifactQuery.getArtifactFromId(children[i].getGuid(), childBranch);
          relative.deleteRelations(CoreRelationTypes.Default_Hierarchical__Child);
          relative.deleteRelations(CoreRelationTypes.Default_Hierarchical__Parent);
          branchParent.addRelation(userDefinedOrder, defaultHierarchy, relative);
@@ -84,8 +86,15 @@ public class RelationOrderMergeUtilityTest {
 
       RelationOrderData mergedOrder = RelationOrderMergeUtility.mergeRelationOrder(parent, branchParent);
       Assert.assertNotNull(mergedOrder);
+      List<String> orderList =
+            mergedOrder.getOrderList(RelationTypeManager.getType(CoreRelationTypes.Default_Hierarchical__Child),
+                  CoreRelationTypes.Default_Hierarchical__Child.getSide());
+      Assert.assertTrue(orderList.size() == 4);
+      for (int i = 1; i < 5; i++) {
+         Assert.assertTrue(orderList.get(i - 1).equals(children[i].getGuid()));
+      }
 
-      BranchManager.purgeBranch(common2);
+      BranchManager.purgeBranch(childBranch);
       parent.deleteAndPersist();
       for (int i = 0; i < 5; i++) {
          children[i].deleteAndPersist();
