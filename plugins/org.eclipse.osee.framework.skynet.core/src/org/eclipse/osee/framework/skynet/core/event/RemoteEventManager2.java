@@ -124,6 +124,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   }
+                  monitor.done();
                   return Status.OK_STATUS;
                }
             };
