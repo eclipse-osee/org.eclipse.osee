@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderMergeUtility;
@@ -55,7 +56,40 @@ public class RelationOrderMergeUtilityTest {
 
    @Test
    public void testOrderMerge() throws OseeCoreException {
-      Assert.fail("Test not yet implemented");
+      Branch common = BranchManager.getCommonBranch();
+      Artifact parent = FrameworkTestUtil.createSimpleArtifact(Artifact, "Parent", common);
+      Artifact[] children =
+            FrameworkTestUtil.createSimpleArtifacts(Artifact, 5, "Relative", common).toArray(new Artifact[0]);
+
+      CoreRelationTypes defaultHierarchy = CoreRelationTypes.Default_Hierarchical__Child;
+      IRelationSorterId userDefinedOrder = RelationOrderBaseTypes.USER_DEFINED;
+
+      for (int i = 0; i < 4; i++) {
+         children[i].deleteRelations(CoreRelationTypes.Default_Hierarchical__Child);
+         children[i].deleteRelations(CoreRelationTypes.Default_Hierarchical__Parent);
+         parent.addRelation(userDefinedOrder, defaultHierarchy, children[i]);
+      }
+
+      parent.persist();
+      Branch common2 = BranchManager.createWorkingBranch(common, "Common2", null);
+      Artifact branchParent = ArtifactQuery.getArtifactFromId(parent.getGuid(), common2);
+      for (int i = 0; i < 5; i++) {
+         Artifact relative = ArtifactQuery.getArtifactFromId(children[i].getGuid(), common2);
+         relative.deleteRelations(CoreRelationTypes.Default_Hierarchical__Child);
+         relative.deleteRelations(CoreRelationTypes.Default_Hierarchical__Parent);
+         branchParent.addRelation(userDefinedOrder, defaultHierarchy, relative);
+         branchParent.persist();
+      }
+      children[0].deleteAndPersist();
+
+      RelationOrderData mergedOrder = RelationOrderMergeUtility.mergeRelationOrder(parent, branchParent);
+      Assert.assertNotNull(mergedOrder);
+
+      BranchManager.purgeBranch(common2);
+      parent.deleteAndPersist();
+      for (int i = 0; i < 5; i++) {
+         children[i].deleteAndPersist();
+      }
    }
 
    @Test
