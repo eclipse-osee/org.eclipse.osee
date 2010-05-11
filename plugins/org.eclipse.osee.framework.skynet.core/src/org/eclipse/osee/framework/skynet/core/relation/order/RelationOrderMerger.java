@@ -40,15 +40,15 @@ public class RelationOrderMerger<T> {
       }
    }
 
-   private void starUnionComplement(Collection<T> setA, Collection<T> setB) {
-      for (T element : setA) {
-         if (!setB.contains(element)) {
+   private void starUnionComplement(Collection<T> left, Collection<T> right) {
+      for (T element : left) {
+         if (!right.contains(element)) {
             addStar(element);
          }
       }
 
-      for (T element : setB) {
-         if (!setA.contains(element)) {
+      for (T element : right) {
+         if (!left.contains(element)) {
             addStar(element);
          }
       }

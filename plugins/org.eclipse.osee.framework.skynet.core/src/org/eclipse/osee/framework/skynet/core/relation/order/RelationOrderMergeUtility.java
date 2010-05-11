@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
+import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.USER_DEFINED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -36,14 +37,16 @@ public class RelationOrderMergeUtility {
       return merger.computeMergedOrder(leftRelatives, rightRelatives, mergedSet);
    }
 
-   private static Collection<String> getMergedSet(Artifact left, Artifact right, IRelationEnumeration rts) throws OseeCoreException {
-      boolean includeDeleted = false;
-      List<String> leftRelatives = getGuidList(left.getRelatedArtifacts(rts, includeDeleted));
-      List<String> rightRelatives = getGuidList(right.getRelatedArtifacts(rts, includeDeleted));
-
-      Collection<String> deleted = getDeleted(left, rts);
-      deleted.addAll(getDeleted(right, rts));
+   private static Collection<String> getMergedSet(Artifact left, Artifact right, IRelationEnumeration relationTypeSide) throws OseeCoreException {
       Collection<String> mergedSet = new HashSet<String>();
+      Collection<String> deleted = new HashSet<String>();
+      boolean includeDeleted = false;
+      List<String> leftRelatives = getGuidList(left.getRelatedArtifacts(relationTypeSide, includeDeleted));
+      List<String> rightRelatives = getGuidList(right.getRelatedArtifacts(relationTypeSide, includeDeleted));
+
+      deleted.addAll(getDeleted(left, relationTypeSide));
+      deleted.addAll(getDeleted(right, relationTypeSide));
+
       mergedSet.addAll(leftRelatives);
       mergedSet.addAll(rightRelatives);
       mergedSet.removeAll(deleted);
@@ -82,18 +85,15 @@ public class RelationOrderMergeUtility {
          RelationTypeSide rts = new RelationTypeSide(type, side);
          IRelationSorterId leftSorter = RelationOrderBaseTypes.getFromGuid(leftData.getCurrentSorterGuid(type, side));
          IRelationSorterId rightSorter = RelationOrderBaseTypes.getFromGuid(rightData.getCurrentSorterGuid(type, side));
-         if (!leftSorter.equals(rightSorter)) {
-            return null;
-         } else if (rightSorter.equals(RelationOrderBaseTypes.USER_DEFINED)) {
-            List<String> order = mergeTypeSideOrder(left, right, rts);
-            if (order == null) {
-               return null;
-            } else {
-               mergedData.addOrderList(type, side, leftSorter, order);
-            }
-         } else {
-            mergedData.addOrderList(type, side, leftSorter, null);
+
+         List<String> order = null;
+         if (rightSorter.equals(USER_DEFINED) && leftSorter.equals(USER_DEFINED)) {
+            order = mergeTypeSideOrder(left, right, rts);
          }
+         if (order == null) {
+            return null;
+         }
+         mergedData.addOrderList(type, side, leftSorter, order);
       }
 
       return mergedData;
