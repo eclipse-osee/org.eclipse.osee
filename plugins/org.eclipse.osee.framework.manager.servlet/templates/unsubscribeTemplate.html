@@ -2,45 +2,31 @@
 <head>
 <title>OSEE Unsubscribe</title>
 <script type="text/javascript">
+	
 	function getHTTPObject() {
-		if (typeof XMLHttpRequest != 'undefined') {
-			return new XMLHttpRequest();
-		}
-		try {
-			return new ActiveXObject("Msxml2.XMLHTTP");
-		} catch (e) {
-			try {
-				return new ActiveXObject("Microsoft.XMLHTTP");
-			} catch (e) {
-			}
-		}
-		if (window.createRequest) {
-		try {
-			return window.createRequest();
-		} catch (e) {
-		}
-	}
-		
-		return false;
+		if (window.XMLHttpRequest) { // for IE7+, Firefox, Chrome, Opera, Safari
+  			return new XMLHttpRequest();
+  		}  // for IE6, IE5
+  		return new ActiveXObject("Microsoft.XMLHTTP");
 	}
 	
-	function unsubscribe(elementId, url, groupId, userId) {
-		document.getElementById(elementId).innerHTML = "<p><em>Sending unsubscribe request...</em></p>";
+	function unsubscribe(url, groupId, userId) {
+		var deleteStatus = document.getElementById('deleteStatus');
+		deleteStatus.innerHTML = "Sending unsubscribe request...";
+
 		var xmlhttp = getHTTPObject();
 		xmlhttp.open("DELETE", url, false);
 		xmlhttp.setRequestHeader("Content-Type", "application/xml;charset=utf-8");
-
 		xmlhttp.send("<request><groupId>" + groupId + "</groupId><userId>"+userId+"</userId></request>");
 		
-		document.getElementById(elementId).innerHTML = "<p><em>Status: " +  xmlhttp.status  +" " + xmlhttp.responseText + "</em></p>";
+		deleteStatus.innerHTML = "Status: " +  xmlhttp.status  + " " + xmlhttp.responseText;
 		var link = document.getElementById("unsubscribeLink");
 		link.parentNode.removeChild(link);
 	}
 </script>
 </head>
-
 <body>
-<a id="unsubscribeLink" href="javascript:unsubscribe('deleteStatus','%s','%s','%s');">Click here to confirm unsubscribe.</a>
-<p><span id="deleteStatus"></span></p>
+<a id="unsubscribeLink" href="javascript:unsubscribe('%s','%s','%s');">Click here to confirm unsubscribe.</a>
+<p><em id="deleteStatus"></em></p>
 </body>
 </html>
