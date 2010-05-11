@@ -83,6 +83,18 @@ public class RelationOrderMerger<T> {
          }
       }
 
+      while (leftIndex < left.size()) {
+         T leftElement = left.get(leftIndex);
+         mergedOrder.add(leftElement);
+         leftIndex++;
+      }
+
+      while (rightIndex < right.size()) {
+         T rightElement = right.get(rightIndex);
+         mergedOrder.add(rightElement);
+         rightIndex++;
+      }
+
       return mergedOrder;
    }
 
