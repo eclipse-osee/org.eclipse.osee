@@ -61,6 +61,7 @@ public abstract class OseeTestThread {
       this.env = new WeakReference<TestEnvironment>(env);
       thread = new Thread(group, name) {
 
+         @Override
          public void run() {
             try {
                OseeTestThread.this.run();
@@ -68,7 +69,8 @@ public abstract class OseeTestThread {
                   threadList.remove(OseeTestThread.this);
                }
             } catch (TestException e) {
-               logger.log(e.getLevel(), "TestException in " + e.getThreadName() + ": " + e.getMessage(), e);
+               OseeLog.log(Activator.class, e.getLevel(),
+                     "TestException in " + e.getThreadName() + ": " + e.getMessage(), e);
                cleanupAfterException(e);
             } catch (Throwable t) {
                OseeLog.log(Activator.class, Level.SEVERE, "Unhandled exception in " + thread.getName(), t);
@@ -110,6 +112,7 @@ public abstract class OseeTestThread {
          super("call trace");
       }
    }
+
    /**
     * This method will be called upon thread execution
     * 
@@ -126,7 +129,7 @@ public abstract class OseeTestThread {
    }
 
    public TestEnvironment getEnvironment() {
-      return ((TestEnvironment) OseeTestThread.this.env.get());
+      return (OseeTestThread.this.env.get());
    }
 
    public static Collection<OseeTestThread> getThreads() {
@@ -136,7 +139,7 @@ public abstract class OseeTestThread {
    private synchronized void cleanupAfterException(Throwable t) {
       causeOfDeath = t;
       timeOfDeath = Calendar.getInstance().getTime();
-      ((TestEnvironment) this.env.get()).handleException(t, Level.OFF);
+      (this.env.get()).handleException(t, Level.OFF);
    }
 
    public Throwable getCauseOfDeath() {

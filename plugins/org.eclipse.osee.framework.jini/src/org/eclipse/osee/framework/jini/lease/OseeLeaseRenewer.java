@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.jini.core.lease.Lease;
 import net.jini.core.lease.LeaseDeniedException;
 import net.jini.core.lease.UnknownLeaseException;
@@ -36,7 +35,6 @@ public class OseeLeaseRenewer {
 
    private Timer timer;
    private final Map<OseeLease, Renewer> map;
-   private final Logger logger = Logger.getLogger(OseeLeaseRenewer.class.getName());
 
    /**
     * The amount of time before a lease expires to first attempt renewal. This amount of time should be sufficiently

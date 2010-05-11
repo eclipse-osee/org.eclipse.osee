@@ -17,7 +17,6 @@ import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.jini.config.ConfigurationException;
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
@@ -44,7 +43,6 @@ public class ExperimentalLookup implements ServiceDiscoveryListener, DiscoveryLi
    private LookupDiscoveryManager lookupDiscoveryManager;
    private ServiceDiscoveryManager serviceDiscoveryManager;
    private LookupCache lookupCache;
-   private static final Logger logger = Logger.getLogger("org.eclipse.osee.framework.jini.discovery.ServiceDataStore");
 
    // *************************************************************************
    // Startup
