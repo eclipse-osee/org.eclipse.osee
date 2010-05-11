@@ -181,12 +181,22 @@ public final class ArtifactLoader {
 
    public static void loadArtifacts(Collection<Artifact> loadedItems, int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
       if (!insertParameters.isEmpty()) {
+         Collection<Artifact> data;
+         if (loadedItems.isEmpty()) {
+            data = loadedItems;
+         } else {
+            // Use a new list if loaded items already contains data to prevent artifact overwrites during loading;
+            data = new ArrayList<Artifact>(insertParameters.size());
+         }
          long time = System.currentTimeMillis();
          try {
             insertIntoArtifactJoin(insertParameters);
-            loadArtifactsFromQueryId(loadedItems, queryId, loadLevel, confirmer, insertParameters.size(), reload,
-                  historical, allowDeleted);
+            loadArtifactsFromQueryId(data, queryId, loadLevel, confirmer, insertParameters.size(), reload, historical,
+                  allowDeleted);
          } finally {
+            if (data != loadedItems) {
+               loadedItems.addAll(data);
+            }
             OseeLog.log(Activator.class, Level.FINE, String.format("Artifact Load Time [%s] for [%d] artifacts. ",
                   Lib.getElapseString(time), loadedItems.size()), new Exception("Artifact Load Time"));
             clearQuery(queryId);
@@ -210,7 +220,7 @@ public final class ArtifactLoader {
 
    /**
     * should only be used in tandem with with selectArtifacts()
-    * 
+    *
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     *           selectArtifacts
     */
@@ -220,7 +230,7 @@ public final class ArtifactLoader {
 
    /**
     * should only be used in tandem with with selectArtifacts()
-    * 
+    *
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     *           selectArtifacts
     */
@@ -283,8 +293,7 @@ public final class ArtifactLoader {
          artifact =
                factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"),
                      chStmt.getString("human_readable_id"), artifactType, chStmt.getInt("gamma_id"), branch,
-                     transactionId,
-                     ModificationType.getMod(chStmt.getInt("mod_type")), historical);
+                     transactionId, ModificationType.getMod(chStmt.getInt("mod_type")), historical);
 
       } else if (reload) {
          artifact.internalSetPersistenceData(chStmt.getInt("gamma_id"), transactionId,
