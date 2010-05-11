@@ -102,11 +102,12 @@
 	</target>
 
 	<target name="build">
-		<antcall target="setHttpProxy"/>
+		<antcall target="setHttpProxy" />
 		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritrefs="true" inheritall="true" />
 	</target>
 	
 	<target name="setHttpProxy" if="http.proxyHost">
+		<echo message="proxy: - ${http.proxyHost}:${http.proxyPort}" />
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
 	</target>
 
