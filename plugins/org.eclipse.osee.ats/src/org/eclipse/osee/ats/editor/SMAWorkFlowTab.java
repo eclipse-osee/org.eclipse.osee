@@ -114,6 +114,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private SMAGoalMembersSection smaGoalMembersSection;
    private SMAHistorySection smaHistorySection;
    private LoadingComposite loadingComposite;
+   private static String PRIVILEGED_EDIT = "(Priviledged Edit Enabled)";
 
    public SMAWorkFlowTab(StateMachineArtifact sma) {
       super(sma.getEditor(), "overview", "Workflow");
@@ -400,6 +401,13 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          toolkit.createLabel(comp, "    ");
       }
 
+      // Create Privileged Edit label
+      if (sma.getEditor().isPriviledgedEditModeEnabled()) {
+         Label label = toolkit.createLabel(comp, PRIVILEGED_EDIT);
+         label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+         label.setToolTipText("Priviledged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
+      }
+
       // Current Assignees
       if (isCurrentNonCompleteCanceledState) {
          boolean editable = (!sma.isCancelledOrCompleted() && !sma.isReadOnly() &&
@@ -412,7 +420,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          // team definition has allowed anyone to edit
          sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowAssigneeToAll.name()));
 
-         new SMAAssigneesHeader(comp, SWT.NONE, sma, toolkit, editable, sma.getEditor().isPriviledgedEditModeEnabled());
+         new SMAAssigneesHeader(comp, SWT.NONE, sma, toolkit, editable);
       }
    }
 

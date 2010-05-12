@@ -31,13 +31,12 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class SMAAssigneesHeader extends Composite {
 
    private static String TARGET_VERSION = "Assignee(s):";
-   private static String PRIVILEGED_EDIT = "(Priviledged Edit Enabled)";
    Label valueLabel;
 
-   public SMAAssigneesHeader(Composite parent, int style, final StateMachineArtifact sma, XFormToolkit toolkit, final boolean isEditable, boolean priviledgedEdit) {
+   public SMAAssigneesHeader(Composite parent, int style, final StateMachineArtifact sma, XFormToolkit toolkit, final boolean isEditable) {
       super(parent, style);
       setLayoutData(new GridData());
-      setLayout(ALayout.getZeroMarginLayout(priviledgedEdit ? 3 : 2, false));
+      setLayout(ALayout.getZeroMarginLayout(2, false));
       toolkit.adapt(this);
 
       try {
@@ -72,13 +71,6 @@ public class SMAAssigneesHeader extends Composite {
          } else {
             Label origLabel = toolkit.createLabel(this, TARGET_VERSION);
             origLabel.setLayoutData(new GridData());
-         }
-
-         // Create Privileged Edit label
-         if (priviledgedEdit) {
-            Label label = toolkit.createLabel(this, PRIVILEGED_EDIT);
-            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-            label.setToolTipText("Priviledged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
          }
 
          valueLabel = toolkit.createLabel(this, "Not Set");
