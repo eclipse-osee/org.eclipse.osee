@@ -209,12 +209,12 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
+                  updateTitleBar();
+                  refreshToolbar();
                   setLoading(false);
                   createAtsBody();
                   addMessageDecoration(scrolledForm);
                   FormsUtil.addHeadingGradient(toolkit, scrolledForm, true);
-                  refreshToolbar();
-                  updateTitleBar();
                } catch (OseeCoreException ex) {
                   handleException(ex);
                } finally {
@@ -447,7 +447,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    private void refreshToolbar() throws OseeCoreException {
       IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
-      scrolledForm.getToolBarManager().removeAll();
 
       if (sma.isTeamWorkflow() && (((TeamWorkFlowArtifact) sma).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) sma).getBranchMgr().isWorkingBranchInWork())) {
          toolBarMgr.add(new ShowMergeManagerAction((TeamWorkFlowArtifact) sma));

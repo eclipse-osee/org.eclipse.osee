@@ -116,7 +116,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
 
       Composite mainComp = toolkit.createComposite(parametersContainer, SWT.NONE);
       mainComp.setLayout(ALayout.getZeroMarginLayout(3, false));
-      mainComp.setLayoutData(new GridData(SWT.NONE, SWT.FILL, false, true));
+      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       createButtonCompositeOnLeft(mainComp);
       createSearchParametersOnRight(managedForm, mainComp);
@@ -127,7 +127,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    public void createSearchParametersOnRight(IManagedForm managedForm, Composite mainComp) throws OseeCoreException {
       Composite paramComp = new Composite(mainComp, SWT.NONE);
       paramComp.setLayout(ALayout.getZeroMarginLayout(1, false));
-      paramComp.setLayoutData(new GridData(SWT.NONE, SWT.FILL, false, true));
+      paramComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       List<DynamicXWidgetLayoutData> layoutDatas = null;
       dynamicXWidgetLayout = new DynamicXWidgetLayout(getDynamicWidgetLayoutListener(), getXWidgetOptionResolver());
