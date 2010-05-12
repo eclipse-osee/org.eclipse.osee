@@ -12,9 +12,15 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import java.util.Set;
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderMergeUtility;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderParser;
 
 /**
  * @author Theron Virgin
@@ -25,24 +31,6 @@ public class AttributeConflictBuilder extends ConflictBuilder {
    private final int attrId;
    private final int attrTypeId;
 
-   /**
-    * @param sourceGamma
-    * @param destGamma
-    * @param artId
-    * @param toTransactionId
-    * @param fromTransactionId
-    * @param artifact
-    * @param transactionType
-    * @param mergeBranch
-    * @param sourceBranch
-    * @param destBranch
-    * @param sourceValue
-    * @param destValue
-    * @param sourceContent
-    * @param destContent
-    * @param attrId
-    * @param attrTypeId
-    */
    public AttributeConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch sourceBranch, Branch destBranch, String sourceValue, int attrId, int attrTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, sourceBranch, destBranch);
       this.sourceValue = sourceValue;
@@ -53,12 +41,26 @@ public class AttributeConflictBuilder extends ConflictBuilder {
    @Override
    public Conflict getConflict(Branch mergeBranch, Set<Integer> artIdSet) throws OseeCoreException {
       for (Integer integer : artIdSet) {
-         if (integer.intValue() == artId) return null;
+         if (integer.intValue() == artId) {
+            return null;
+         }
       }
       AttributeConflict attributeConflict =
             new AttributeConflict(sourceGamma, destGamma, artId, toTransactionId, sourceValue, attrId, attrTypeId,
                   mergeBranch, sourceBranch, destBranch);
-      if (attributeConflict.getChangeItem().toString().equals("Word Ole Data")) return null;
+      if (attributeConflict.getChangeItem().toString().equals("Word Ole Data")) {
+         return null;
+      } else if (attributeConflict.getAttributeType().equals(CoreAttributeTypes.RELATION_ORDER)) {
+         Artifact left = attributeConflict.getSourceArtifact();
+         Artifact right = attributeConflict.getDestArtifact();
+         RelationOrderData mergedOrder = RelationOrderMergeUtility.mergeRelationOrder(left, right);
+         if (mergedOrder != null) {
+            RelationOrderParser parser = new RelationOrderParser();
+            String attributeValue = parser.toXml(mergedOrder);
+            attributeConflict.setStringAttributeValue(attributeValue);
+            attributeConflict.setStatus(ConflictStatus.RESOLVED);
+         }
+      }
       return attributeConflict;
    }
 
