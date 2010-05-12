@@ -190,6 +190,35 @@ public class ATSLog {
       }
    }
 
+   public String getCancellationReason() throws OseeCoreException {
+      LogItem item = getStateEvent(LogType.StateCancelled);
+      if (item == null) return "";
+      return item.getMsg();
+   }
+
+   public String getCancelledFromState() throws OseeCoreException {
+      LogItem item = getStateEvent(LogType.StateCancelled);
+      if (item == null) return "";
+      return item.getState();
+   }
+
+   public String getCompletedFromState() throws OseeCoreException {
+      LogItem item = getStateEvent(LogType.StateComplete);
+      if (item == null) return "";
+      return item.getState();
+   }
+
+   public void setCancellationReason(String reason) throws OseeCoreException {
+      List<LogItem> logItems = getLogItemsReversed();
+      for (LogItem item : logItems) {
+         if (item.getType() == LogType.StateCancelled) {
+            item.setMsg(reason);
+            putLogItems(logItems);
+            return;
+         }
+      }
+   }
+
    /**
     * Since originator can be changed, return the date of the first originated log item
     */

@@ -23,8 +23,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinitio
  */
 public class AtsCancellationReasonStateWorkItem extends WorkWidgetDefinition {
 
+   public static String ID = "ats.CancellationReason";
+
    protected AtsCancellationReasonStateWorkItem(StateMachineArtifact sma) throws OseeCoreException {
-      super("Cancellation Reason", "ats.CancellationReason");
+      super("Cancellation Reason", ID);
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
       data.setName(getName());
       LogItem item = sma.getLog().getStateEvent(LogType.StateCancelled);

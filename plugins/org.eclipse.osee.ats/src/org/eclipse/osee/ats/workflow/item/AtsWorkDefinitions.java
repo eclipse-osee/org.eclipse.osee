@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
@@ -30,8 +29,6 @@ import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.GoalWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
-import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
-import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -185,22 +182,6 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new AtsAttributeReviewRolesXWidgetWorkItem(ATSAttributes.ROLE_ATTRIBUTE));
 
       return workItems;
-   }
-
-   @Override
-   public Collection<WorkItemDefinition> getDynamicWorkItemDefinitionsForPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws OseeCoreException {
-      List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();
-      if (data instanceof StateMachineArtifact) {
-         StateMachineArtifact sma = (StateMachineArtifact) data;
-         if (workPageDefinition.isInstanceOfPage(AtsCancelledWorkPageDefinition.ID)) {
-            defs.add(new AtsCancelledFromStateWorkItem(sma));
-            defs.add(new AtsCancellationReasonStateWorkItem(sma));
-         }
-         if (workPageDefinition.isInstanceOfPage(AtsCompletedWorkPageDefinition.ID)) {
-            defs.add(new AtsCompletedFromStateWorkItem(sma));
-         }
-      }
-      return defs;
    }
 
    @Override

@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.editor.widget.StatePercentCompleteXWidget;
 import org.eclipse.osee.ats.editor.widget.TaskInfoXWidget;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.XCancellationReasonTextWidget;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -56,6 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -196,6 +198,18 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       }
 
+      if (atsWorkPage.isCompleteCancelledState()) {
+         Composite completeComp = new Composite(workComp, SWT.None);
+         GridLayout layout = new GridLayout(1, false);
+         completeComp.setLayout(layout);
+         completeComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         if (atsWorkPage.isCancelledPage()) {
+            createCancelledPageWidgets(completeComp);
+         } else if (atsWorkPage.isCompletePage()) {
+            createCompletedPageWidgets(completeComp);
+         }
+      }
+
       // Create dynamic XWidgets
       DynamicXWidgetLayout dynamicXWidgetLayout =
             atsWorkPage.createBody(getManagedForm(), workComp, sma, xModListener, isEditable || isGlobalEditable);
@@ -229,6 +243,29 @@ public class SMAWorkFlowSection extends SectionPart {
       }
 
       return workComp;
+   }
+
+   private void createCancelledPageWidgets(Composite parent) throws OseeCoreException {
+      XWidget xWidget = null;
+      xWidget = new XLabelValue("Cancelled from State", sma.getLog().getCancelledFromState());
+      xWidget.createWidgets(parent, 1);
+      allXWidgets.add(xWidget);
+
+      if (sma.getEditor().isPriviledgedEditModeEnabled()) {
+         xWidget = new XCancellationReasonTextWidget(sma);
+         xWidget.addXModifiedListener(xModListener);
+      } else {
+         xWidget = new XLabelValue("Cancellation Reason", sma.getLog().getCancellationReason());
+      }
+      xWidget.createWidgets(parent, 1);
+      allXWidgets.add(xWidget);
+   }
+
+   private void createCompletedPageWidgets(Composite parent) throws OseeCoreException {
+      XWidget xWidget = null;
+      xWidget = new XLabelValue("Completed from State", sma.getLog().getCompletedFromState());
+      xWidget.createWidgets(parent, 1);
+      allXWidgets.add(xWidget);
    }
 
    private void createMetricsHeader(Composite parent) throws OseeCoreException {

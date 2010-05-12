@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
+import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValueBase;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -41,7 +41,7 @@ import org.eclipse.ui.forms.IMessageManager;
 /**
  * @author Donald G. Dunne
  */
-public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactionEventListener {
+public class TaskInfoXWidget extends XLabelValueBase implements IFrameworkTransactionEventListener {
 
    private final String forStateName;
    private final IManagedForm managedForm;

@@ -36,15 +36,4 @@ public interface IWorkDefinitionProvider {
     */
    public WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws OseeCoreException;
 
-   /**
-    * Dynamic Work Item Definitions will be collected only when widgets are being drawn for the given workflow and
-    * workpage. This allows for dynamic widgets to be added conditionally and/or configured programatically.
-    * 
-    * @param workFlowDefinition current workflow
-    * @param workPageDefinition current workpage
-    * @param data information provided to the extending plugins to determine if work item definitions should be added
-    * @throws Exception
-    */
-   public Collection<WorkItemDefinition> getDynamicWorkItemDefinitionsForPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws OseeCoreException;
-
 }

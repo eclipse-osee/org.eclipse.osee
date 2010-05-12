@@ -215,22 +215,6 @@ public class WorkItemDefinitionFactory {
       return defs;
    }
 
-   /**
-    * Call to get dynamic definitions based on data specified. This is intended for extenders to be able to provide
-    * widgets that are either conditionally added or are configured dynamically based on dynamic circumstances
-    * 
-    * @param data
-    * @return list of WorkItemDefinitions
-    */
-   public static List<WorkItemDefinition> getDynamicWorkItemDefintions(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws OseeCoreException {
-      List<WorkItemDefinition> dynamicDefinitions = new ArrayList<WorkItemDefinition>();
-      for (IWorkDefinitionProvider provider : WorkDefinitionProvider.getWorkDefinitionProviders()) {
-         dynamicDefinitions.addAll(provider.getDynamicWorkItemDefinitionsForPage(workFlowDefinition,
-               workPageDefinition, data));
-      }
-      return dynamicDefinitions;
-   }
-
    public static List<WorkItemDefinition> getWorkItemDefinitions(Collection<String> pageids) throws OseeCoreException {
       loadDefinitions();
       List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();

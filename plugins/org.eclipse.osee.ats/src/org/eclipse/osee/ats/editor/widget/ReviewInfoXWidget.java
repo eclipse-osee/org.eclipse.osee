@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
+import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValueBase;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -61,7 +61,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransactionEventListener {
+public class ReviewInfoXWidget extends XLabelValueBase implements IFrameworkTransactionEventListener {
 
    private final String forStateName;
    private final ArrayList<Label> labelWidgets = new ArrayList<Label>();

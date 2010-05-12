@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayou
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
@@ -135,17 +134,6 @@ public class AtsWorkPage extends WorkPage {
       this.sma = sma;
       // Add static layoutDatas to atsWorkPage
       for (WorkItemDefinition workItemDefinition : getWorkPageDefinition().getWorkItems(true)) {
-         if (workItemDefinition instanceof WorkWidgetDefinition) {
-            DynamicXWidgetLayoutData data = ((WorkWidgetDefinition) workItemDefinition).get();
-            data.setDynamicXWidgetLayout(getDynamicXWidgetLayout());
-            data.setArtifact(sma);
-            addLayoutData(data);
-         }
-      }
-
-      // Add dynamic WorkItemDefinitions to atsWorkPage
-      for (WorkItemDefinition workItemDefinition : WorkItemDefinitionFactory.getDynamicWorkItemDefintions(
-            sma.getWorkFlowDefinition(), getWorkPageDefinition(), sma)) {
          if (workItemDefinition instanceof WorkWidgetDefinition) {
             DynamicXWidgetLayoutData data = ((WorkWidgetDefinition) workItemDefinition).get();
             data.setDynamicXWidgetLayout(getDynamicXWidgetLayout());
