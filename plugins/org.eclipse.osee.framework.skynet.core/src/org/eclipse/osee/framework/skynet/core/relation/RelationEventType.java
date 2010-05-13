@@ -14,5 +14,29 @@ package org.eclipse.osee.framework.skynet.core.relation;
  * @author Donald G. Dunne
  */
 public enum RelationEventType {
-   Deleted, Added, RationaleMod, ReOrdered, Undeleted
+
+   Deleted("AISIbR2MjAo7JhvDvkgA"),
+   Added("AISIbR69A2yjMFpbsSgA"),
+   RationaleMod("AISIbR9Tm0dwqN1KdoAA"),
+   ReOrdered("AISIbRohWReUi5aitFgA"),
+   Undeleted("AISIbRqzlF3s4TeMvzgA");
+
+   private final String guid;
+
+   private RelationEventType(String guid) {
+      this.guid = guid;
+   }
+
+   public String getGuid() {
+      return guid;
+   }
+
+   public static RelationEventType getType(String guid) {
+      for (RelationEventType type : values()) {
+         if (type.guid.equals(guid)) {
+            return type;
+         }
+      }
+      return null;
+   }
 }

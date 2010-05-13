@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test;
 
+import org.eclipse.osee.framework.messaging.event.res.test.cases.RemoteNetworkSenderTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactLoaderTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.Artifact_getLastModified;
 import org.eclipse.osee.framework.skynet.core.test.event.ArtifactEventManagerLoopbackTest;
@@ -18,8 +19,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {ArtifactLoaderTest.class, Artifact_getLastModified.class, ArtifactEventManagerTest.class,
-      ArtifactEventManagerLoopbackTest.class,})
+@Suite.SuiteClasses( {RemoteNetworkSenderTest.class, ArtifactEventManagerTest.class,
+      ArtifactEventManagerLoopbackTest.class, ArtifactLoaderTest.class, Artifact_getLastModified.class,})
 /**
  * @author Donald G. Dunne
  */

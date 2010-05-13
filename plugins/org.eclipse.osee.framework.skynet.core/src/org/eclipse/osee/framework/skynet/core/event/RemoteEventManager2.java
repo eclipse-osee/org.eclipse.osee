@@ -156,7 +156,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       try {
          System.out.println("UpdateArtifacts -> deleted" + guidArt);
          String branchGuid = guidArt.getBranchGuid();
-         Branch branch = BranchManager.getBranch(branchGuid);
+         Branch branch = BranchManager.getBranchByGuid(branchGuid);
          Artifact artifact = ArtifactCache.getActive(guidArt.getGuid(), branch);
          if (artifact == null) {
             // do nothing, artifact not in cache, so don't need to update

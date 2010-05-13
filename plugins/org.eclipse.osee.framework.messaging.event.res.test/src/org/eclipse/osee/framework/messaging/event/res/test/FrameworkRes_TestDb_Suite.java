@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.res.test;
 
+import org.eclipse.osee.framework.messaging.event.res.test.cases.RemoteNetworkSenderTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {FrameworkRes_Fast_Suite.class})
+@Suite.SuiteClasses( {RemoteNetworkSenderTest.class})
 /**
  * @author Donald G. Dunne
  */

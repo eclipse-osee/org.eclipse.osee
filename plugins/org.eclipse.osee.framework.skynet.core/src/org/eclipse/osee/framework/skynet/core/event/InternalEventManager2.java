@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.msgs.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.ArtifactEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
@@ -73,7 +73,7 @@ public class InternalEventManager2 {
 
                // Kick LOCAL
                if (!enableRemoteEventLoopback) {
-                  ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
+                  FrameworkEventManager.processEventArtifactsAndRelations(sender, artifactChanges);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -92,7 +92,7 @@ public class InternalEventManager2 {
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
-            ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
+            FrameworkEventManager.processEventArtifactsAndRelations(sender, artifactChanges);
 
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
@@ -117,7 +117,7 @@ public class InternalEventManager2 {
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
-            ArtifactEventManager.processArtifactChanges(sender, artifactChanges);
+            FrameworkEventManager.processEventArtifactsAndRelations(sender, artifactChanges);
 
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
@@ -154,7 +154,7 @@ public class InternalEventManager2 {
 
                // Kick LOCAL
                if (!enableRemoteEventLoopback || enableRemoteEventLoopback && sender.isRemote()) {
-                  ArtifactEventManager.processArtifactChanges(sender, transEvent);
+                  FrameworkEventManager.processEventArtifactsAndRelations(sender, transEvent);
                }
 
                // Kick REMOTE (If source was Local and this was not a default branch changed event

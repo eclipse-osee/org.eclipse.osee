@@ -11,16 +11,20 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.util.Collection;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.DefaultBasicGuidRelation;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeSql;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event.msgs.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -85,5 +89,18 @@ public class RelationTransactionData extends BaseTransactionData {
             getModificationType().isDeleted() ? RelationEventType.Deleted : RelationEventType.Added;
       events.add(new RelationModifiedEvent(new Sender(this.getClass().getName()), relationEventType, relation,
             relation.getBranch(), relation.getRelationType().getName()));
+      DefaultBasicGuidRelation defaultBasicGuidRelation =
+            new DefaultBasicGuidRelation(relation.getBranch().getGuid(), relation.getRelationType().getGuid(),
+                  relation.getGammaId(), relation.getArtifactA().getBasicGuidArtifact(),
+                  relation.getArtifactB().getBasicGuidArtifact());
+      if (relationEventType == RelationEventType.Deleted) {
+         transactionEvent.getDeletedRel().add(defaultBasicGuidRelation);
+      } else if (relationEventType == RelationEventType.Added) {
+         transactionEvent.getAddedRel().add(defaultBasicGuidRelation);
+      } else if (relationEventType == RelationEventType.RationaleMod) {
+         transactionEvent.getModifiedRel().add(defaultBasicGuidRelation);
+      } else {
+         OseeLog.log(Activator.class, Level.SEVERE, "Unhandled relation modified type " + relationEventType);
+      }
    }
 }

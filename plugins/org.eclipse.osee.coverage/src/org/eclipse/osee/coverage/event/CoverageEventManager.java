@@ -22,8 +22,9 @@ import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.ArtifactEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
@@ -64,7 +65,7 @@ public class CoverageEventManager implements IArtifactListener, OseeMessagingSta
 
    private void stopListeneingForFrameworkEvents() {
       if (filteredEventListener != null) {
-         ArtifactEventManager.removeListener(filteredEventListener);
+         FrameworkEventManager.removeListener(filteredEventListener);
       }
    }
 
@@ -73,7 +74,7 @@ public class CoverageEventManager implements IArtifactListener, OseeMessagingSta
          filteredEventListener = new FilteredEventListener(this);
          filteredEventListener.addFilter(createArtifactTypeEventFilter());
       }
-      ArtifactEventManager.addListener(filteredEventListener);
+      FrameworkEventManager.addListener(filteredEventListener);
    }
 
    private ArtifactTypeEventFilter createArtifactTypeEventFilter() {
@@ -128,7 +129,7 @@ public class CoverageEventManager implements IArtifactListener, OseeMessagingSta
    }
 
    @Override
-   public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Sender sender) {
+   public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Collection<EventBasicGuidRelation> eventRelations, Sender sender) {
       for (CoverageEditor editor : editors) {
          try {
             for (EventBasicGuidArtifact eventArt : eventArtifacts) {

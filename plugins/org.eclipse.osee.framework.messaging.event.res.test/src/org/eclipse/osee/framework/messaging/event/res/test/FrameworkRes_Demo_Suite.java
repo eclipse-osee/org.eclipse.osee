@@ -12,12 +12,13 @@ package org.eclipse.osee.framework.messaging.event.res.test;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.messaging.event.res.test.cases.RemoteNetworkSenderTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {FrameworkRes_Fast_Suite.class,})
+@Suite.SuiteClasses( {RemoteNetworkSenderTest.class,})
 /**
  * @author Donald G. Dunne
  */

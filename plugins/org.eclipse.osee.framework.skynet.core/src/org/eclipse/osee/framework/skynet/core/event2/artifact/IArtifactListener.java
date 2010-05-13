@@ -16,6 +16,6 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
  */
 public interface IArtifactListener extends IEventListener {
 
-   public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Sender sender);
+   public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Collection<EventBasicGuidRelation> eventRelations, Sender sender);
 
 }

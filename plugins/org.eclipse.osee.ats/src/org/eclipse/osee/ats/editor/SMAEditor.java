@@ -60,9 +60,10 @@ import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListen
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.ArtifactEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
@@ -193,7 +194,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactListen
             filteredEventListener.addFilter(createBranchGuidEventFilter());
             filteredEventListener.addFilter(createArtifactTypeEventFilter());
          }
-         ArtifactEventManager.addListener(filteredEventListener);
+         FrameworkEventManager.addListener(filteredEventListener);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -793,7 +794,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactListen
    }
 
    @Override
-   public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Sender sender) {
+   public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Collection<EventBasicGuidRelation> eventRelations, Sender sender) {
       System.out.println("SMAEditor: handleArtifactModified called " + sender);
       if (RemoteEventManager2.getInstance().isConnected()) {
          if (sma.isInTransition()) {

@@ -77,6 +77,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
       switch (getModificationType()) {
          case MODIFIED:
             artifactModType = ArtifactModType.Changed;
+            // transactionEvent populated in SkynetTransaction after all attribute changes have been made
             break;
          case DELETED:
             artifactModType = ArtifactModType.Deleted;
