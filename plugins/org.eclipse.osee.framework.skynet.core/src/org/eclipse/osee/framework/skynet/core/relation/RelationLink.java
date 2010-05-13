@@ -110,16 +110,14 @@ public class RelationLink {
       throw new IllegalArgumentException("The artifact " + artifact + " is on neither side of " + this);
    }
 
-   /**
-    * @return the aArtifactId
-    */
+   public RelationSide getOppositeSide(Artifact artifact) {
+      return getSide(artifact).oppositeSide();
+   }
+
    public int getAArtifactId() {
       return aArtifactId;
    }
 
-   /**
-    * @return the bArtifactId
-    */
    public int getBArtifactId() {
       return bArtifactId;
    }
@@ -218,16 +216,10 @@ public class RelationLink {
       return getArtifact(RelationSide.SIDE_B);
    }
 
-   /**
-    * @return Returns the rationale.
-    */
    public String getRationale() {
       return rationale;
    }
 
-   /**
-    * @param rationale The rationale to set.
-    */
    public void setRationale(String rationale, boolean notify) {
       if (rationale == null) {
          rationale = "";
@@ -351,16 +343,10 @@ public class RelationLink {
       return getId() > 0;
    }
 
-   /**
-    * @param gammaId
-    */
    void internalSetGammaId(int gammaId) {
       this.gammaId = gammaId;
    }
 
-   /**
-    * @return Branch
-    */
    public Branch getBranch() {
       return getBranch(RelationSide.SIDE_A);
    }
@@ -378,9 +364,6 @@ public class RelationLink {
       }
    }
 
-   /**
-    * @return the modificationType
-    */
    public ModificationType getModificationType() {
       return modificationType;
    }
