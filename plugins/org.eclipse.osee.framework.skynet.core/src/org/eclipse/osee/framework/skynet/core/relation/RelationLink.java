@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -26,6 +28,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
 
 /**
  * @author Jeff C. Phillips
@@ -201,11 +205,11 @@ public class RelationLink {
    }
 
    public Artifact getArtifactOnOtherSide(Artifact artifact) throws OseeCoreException {
-      return getArtifact(getSide(artifact).oppositeSide());
+      return getArtifact(getOppositeSide(artifact));
    }
 
    public Artifact getArtifactOnOtherSideIfLoaded(Artifact artifact) throws ArtifactDoesNotExist {
-      return getArtifactIfLoaded(getSide(artifact).oppositeSide());
+      return getArtifactIfLoaded(getOppositeSide(artifact));
    }
 
    public Artifact getArtifactA() throws OseeCoreException {

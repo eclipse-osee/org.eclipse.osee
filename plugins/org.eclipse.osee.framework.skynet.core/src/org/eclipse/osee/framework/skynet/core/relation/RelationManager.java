@@ -277,7 +277,7 @@ public class RelationManager {
          if (!relation.isDeleted()) {
             try {
                if (relation.getSide(artifact).isOppositeSide(relationSide)) {
-                  relationSide = relation.getSide(artifact).oppositeSide();
+                  relationSide = relation.getOppositeSide(artifact);
                   relatedArtifacts.add(relation.getArtifactOnOtherSide(artifact));
                }
             } catch (ArtifactDoesNotExist ex) {
@@ -655,8 +655,8 @@ public class RelationManager {
       Set<Pair<RelationType, RelationSide>> typesToUpdate = new HashSet<Pair<RelationType, RelationSide>>();
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
-            typesToUpdate.add(new Pair<RelationType, RelationSide>(relation.getRelationType(), relation.getSide(
-                  artifact).oppositeSide()));
+            typesToUpdate.add(new Pair<RelationType, RelationSide>(relation.getRelationType(), relation.getOppositeSide(
+                  artifact)));
             relation.delete(reorderRelations);
          }
       }
