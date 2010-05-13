@@ -98,7 +98,7 @@
 	</target>
 
 
-	<target name="run" depends="init,build,createSnapshot,cleanUp">
+	<target name="run" depends="init,build,createSnapshot">
 	</target>
 
 	<target name="build">
