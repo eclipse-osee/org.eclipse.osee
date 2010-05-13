@@ -146,7 +146,7 @@ public class RelationLink {
       return dirty;
    }
 
-   public void delete(boolean reorderRelations) throws ArtifactDoesNotExist {
+   public void delete(boolean reorderRelations) {
       internalDelete(reorderRelations, true);
    }
 
@@ -160,7 +160,7 @@ public class RelationLink {
       }
    }
 
-   public void internalRemoteEventDelete() throws ArtifactDoesNotExist {
+   public void internalRemoteEventDelete() {
       internalDelete(true, false);
    }
 
@@ -208,7 +208,7 @@ public class RelationLink {
       return getArtifact(getOppositeSide(artifact));
    }
 
-   public Artifact getArtifactOnOtherSideIfLoaded(Artifact artifact) throws ArtifactDoesNotExist {
+   public Artifact getArtifactOnOtherSideIfLoaded(Artifact artifact) {
       return getArtifactIfLoaded(getOppositeSide(artifact));
    }
 
@@ -246,7 +246,7 @@ public class RelationLink {
       }
    }
 
-   public boolean isOfType(IRelationType oseeType) throws OseeCoreException {
+   public boolean isOfType(IRelationType oseeType) {
       return relationType.equals(oseeType);
    }
 
