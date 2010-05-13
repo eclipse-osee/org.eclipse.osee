@@ -170,9 +170,6 @@ public class OteService implements IHostTestEnvironment, IService {
 		this.registeredServiceReference = ref;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment#disconnect(org.eclipse.osee.ote.core.IRemoteUserSession)
-	 */
 	@Override
 	public void disconnect(UserTestSessionKey key) throws RemoteException {
 		remoteEnvironment.disconnect(key);

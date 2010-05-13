@@ -32,10 +32,6 @@ public class EditActionableItemsAction extends Action {
       setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ACTIONABLE_ITEM));
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.jface.action.Action#run()
-    */
    @Override
    public void run() {
       try {

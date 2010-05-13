@@ -59,10 +59,6 @@ public class OpenInAtsWorldAction extends Action {
       performOpen();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.jface.action.Action#getImageDescriptor()
-    */
    @Override
    public ImageDescriptor getImageDescriptor() {
       return ImageManager.getImageDescriptor(AtsImage.GLOBE);

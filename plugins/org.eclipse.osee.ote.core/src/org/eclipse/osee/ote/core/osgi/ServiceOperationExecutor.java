@@ -28,18 +28,12 @@ public class ServiceOperationExecutor extends ServiceTracker{
 		super(context, serviceName, null);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.osgi.util.tracker.ServiceTracker#close()
-	 */
 	@Override
 	public void close() {
 		waitForOperationComplete();
 		super.close();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.osgi.util.tracker.ServiceTracker#removedService(org.osgi.framework.ServiceReference, java.lang.Object)
-	 */
 	@Override
 	public void removedService(ServiceReference reference, Object service) {
 		waitForOperationComplete();

@@ -125,17 +125,11 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
 		return !connectors.containsKey(serviceHealth.getServiceUniqueId());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback#fail(java.lang.Throwable)
-	 */
 	@Override
 	public void fail(Throwable th) {
 		th.printStackTrace();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback#success()
-	 */
 	@Override
 	public void success() {
 	}

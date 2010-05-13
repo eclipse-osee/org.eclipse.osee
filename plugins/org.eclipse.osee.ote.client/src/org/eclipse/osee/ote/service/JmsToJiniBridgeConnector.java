@@ -109,44 +109,21 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
       return new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0), new BasicILFactory(null, null, exportClassLoader), false, false);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.connection.service.IServiceConnector#getConnectorType()
-    */
    @Override
    public String getConnectorType() {
       return TYPE;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.connection.service.IServiceConnector#getProperty(java
-    * .lang.String, java.io.Serializable)
-    */
    @Override
    public Serializable getProperty(String property, Serializable defaultValue) {
       return properties.getProperty(property, defaultValue);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.connection.service.IServiceConnector#getService()
-    */
    @Override
    public Object getService() {
       return service;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.connection.service.IServiceConnector#ping()
-    */
    @Override
    public boolean ping() {
       return true;
@@ -170,13 +147,6 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * org.eclipse.osee.connection.service.IServiceConnector#upload(java.io.
-    * File)
-    */
    @Override
    public URI upload(File file) throws Exception {
       return null;
@@ -186,17 +156,11 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
       return uniqueServerId;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IServiceConnector#getProperties()
-    */
    @Override
    public EnhancedProperties getProperties() {
       return properties;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IServiceConnector#init(java.lang.Object, org.eclipse.osee.framework.jdk.core.util.EnhancedProperties)
-    */
    @Override
    public void init(Object service) throws UnknownHostException, ExportException {
       

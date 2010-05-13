@@ -77,11 +77,6 @@ public abstract class XHyperlinkLabelValueSelection extends XWidget {
          valueHyperlinkLabel.setToolTipText(Strings.isValid(getToolTip()) ? getToolTip() : "Select to Modify");
          valueHyperlinkLabel.setLayoutData(gd);
          valueHyperlinkLabel.addListener(SWT.MouseUp, new Listener() {
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-             */
             public void handleEvent(Event event) {
                if (handleSelection()) {
                   refresh();

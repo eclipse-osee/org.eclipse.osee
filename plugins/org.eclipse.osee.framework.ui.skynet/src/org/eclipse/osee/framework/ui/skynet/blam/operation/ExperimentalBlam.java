@@ -36,10 +36,6 @@ public class ExperimentalBlam extends AbstractBlam {
       return Arrays.asList("Admin");
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam#getXWidgetsXml()
-    */
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Even Branches\" /></xWidgets>";

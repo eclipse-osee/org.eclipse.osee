@@ -28,7 +28,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link AbstractOseeCache}
- *
+ * 
  * @author Roberto E. Escobar
  */
 public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
@@ -257,10 +257,6 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
 
    private final class TypeComparator implements Comparator<T> {
 
-      /*
-       * (non-Javadoc)
-       * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-       */
       @Override
       public int compare(T o1, T o2) {
          int result = -1;

@@ -35,10 +35,6 @@ public class DuplicateWorkflowAction extends Action {
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.DUPLICATE));
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.jface.action.Action#run()
-    */
    @Override
    public void run() {
       try {

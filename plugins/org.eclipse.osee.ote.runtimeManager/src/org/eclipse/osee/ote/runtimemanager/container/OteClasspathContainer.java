@@ -167,11 +167,6 @@ public class OteClasspathContainer implements IClasspathContainer {
 		return ID.segment(0);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jdt.core.IClasspathContainer#getKind()
-	 */
 	@Override
 	public int getKind() {
 		return IClasspathContainer.K_APPLICATION;

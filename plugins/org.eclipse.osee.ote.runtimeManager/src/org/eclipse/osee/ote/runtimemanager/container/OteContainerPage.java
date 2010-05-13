@@ -18,32 +18,20 @@ public class OteContainerPage extends WizardPage
       super("OTE Library");
    }
    
-   /* (non-Javadoc)
-    * @see org.eclipse.jdt.ui.wizards.IClasspathContainerPage#finish()
-    */
    @Override
    public boolean finish() {
       return true;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jdt.ui.wizards.IClasspathContainerPage#getSelection()
-    */
    @Override
    public IClasspathEntry getSelection() {
       return JavaCore.newContainerEntry(OteClasspathContainer.ID);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jdt.ui.wizards.IClasspathContainerPage#setSelection(org.eclipse.jdt.core.IClasspathEntry)
-    */
    @Override
    public void setSelection(IClasspathEntry containerEntry) {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-    */
    @Override
    public void createControl(Composite parent) {
       Composite comp = new Composite(parent, SWT.None);

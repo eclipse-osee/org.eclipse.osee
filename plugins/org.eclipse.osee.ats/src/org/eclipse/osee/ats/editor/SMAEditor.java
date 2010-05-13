@@ -60,10 +60,8 @@ import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListen
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
@@ -439,7 +437,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactListen
    }
 
    public static void editArtifact(Artifact artifact) {
-      if (artifact == null) return;
+      if (artifact == null) {
+         return;
+      }
       if (artifact.isDeleted()) {
          AWorkbench.popup("ERROR", "Artifact has been deleted");
          return;
@@ -452,8 +452,12 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactListen
    }
 
    public static void editArtifact(final StateMachineArtifact sma) {
-      if (sma == null) return;
-      if (sma == null) return;
+      if (sma == null) {
+         return;
+      }
+      if (sma == null) {
+         return;
+      }
       if (sma.isDeleted()) {
          AWorkbench.popup("ERROR", "Artifact has been deleted");
          return;
@@ -775,10 +779,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactListen
       return this;
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.ats.actions.ISelectedAtsArtifacts#getSelectedSMAArtifacts()
-    */
    @Override
    public Set<? extends Artifact> getSelectedSMAArtifacts() throws OseeStateException {
       return Collections.singleton(sma);

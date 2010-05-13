@@ -112,9 +112,6 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
       return absolutePath;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jdt.core.IClasspathContainer#getClasspathEntries()
-    */
    @Override
    public IClasspathEntry[] getClasspathEntries() {
       List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
@@ -148,17 +145,11 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
       return entries.toArray(retVal);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jdt.core.IClasspathContainer#getDescription()
-    */
    @Override
    public String getDescription() {
       return "OTE Classpath Container";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jdt.core.IClasspathContainer#getKind()
-    */
    @Override
    public int getKind() {
       return IClasspathContainer.K_APPLICATION;

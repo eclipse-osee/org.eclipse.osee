@@ -47,10 +47,6 @@ public class ShowChangeReportAction extends Action {
       teamArt.getBranchMgr().showChangeReport();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.jface.action.Action#getImageDescriptor()
-    */
    @Override
    public ImageDescriptor getImageDescriptor() {
       return ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE);

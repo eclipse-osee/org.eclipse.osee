@@ -212,10 +212,6 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<ArtifactType> {
    //      OseeTypesUtil.checkAttributes(artCache, attrCache, "666", branch2, "AAA", "HHH", "DDD", "CCC", "EEE");
    //   }
    //
-   //   /*
-   //    * (non-Javadoc)
-   //    * @see org.eclipse.osee.framework.skynet.core.test.types.AbstractOseeCacheTest#testDirty()
-   //    */
    //   @Override
    //   public void testDirty() throws OseeCoreException {
    //   }

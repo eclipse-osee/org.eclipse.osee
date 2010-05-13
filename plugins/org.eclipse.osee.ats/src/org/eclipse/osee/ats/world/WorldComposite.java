@@ -225,9 +225,6 @@ public class WorldComposite extends ScrolledComposite implements IOpenNewAtsWorl
       return worldXViewer;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.actions.IRefreshActionHandler#refreshActionHandler()
-    */
    @Override
    public void refreshActionHandler() {
       try {
@@ -237,25 +234,16 @@ public class WorldComposite extends ScrolledComposite implements IOpenNewAtsWorl
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.actions.OpenNewAtsWorldEditor.IOpenNewAtsWorldEditorHandler#getCustomizeDataCopy()
-    */
    @Override
    public CustomizeData getCustomizeDataCopy() throws OseeCoreException {
       return worldXViewer.getCustomizeMgr().generateCustDataFromTable();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.actions.OpenNewAtsWorldEditor.IOpenNewAtsWorldEditorHandler#getWorldEditorProviderCopy()
-    */
    @Override
    public IWorldEditorProvider getWorldEditorProviderCopy() throws OseeCoreException {
       return iWorldEditor.getWorldEditorProvider().copyProvider();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelected.IOpenNewAtsWorldEditorSelectedHandler#getSelectedArtifacts()
-    */
    @Override
    public ArrayList<Artifact> getSelectedArtifacts() throws OseeCoreException {
       return worldXViewer.getSelectedArtifacts();
