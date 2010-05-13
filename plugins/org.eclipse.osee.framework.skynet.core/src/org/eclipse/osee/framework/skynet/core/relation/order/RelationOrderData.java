@@ -114,16 +114,21 @@ public class RelationOrderData {
    }
 
    public void store(RelationType type, RelationSide side, IRelationSorterId requestedSorterId, List<? extends IArtifact> relativeSequence) throws OseeCoreException {
+      storeFromGuids(type, side, requestedSorterId, Artifacts.toGuids(relativeSequence));
+   }
+
+   public void storeFromGuids(RelationType type, RelationSide side, IRelationSorterId requestedSorterId, List<String> relativeSequence) throws OseeCoreException {
       boolean isDifferentSorterId = isDifferentSorterId(type, side, requestedSorterId);
       boolean changingRelatives = isRelativeOrderChange(type, side, requestedSorterId, relativeSequence);
       if (isDifferentSorterId || changingRelatives) {
          if (isRevertingToDefaultTypeOrder(type, side, requestedSorterId)) {
             removeOrderList(type, side);
          } else {
-            addOrderList(type, side, requestedSorterId, Artifacts.toGuids(relativeSequence));
+            addOrderList(type, side, requestedSorterId, relativeSequence);
          }
          accessor.store(getIArtifact(), this);
       }
+
    }
 
    protected boolean isRevertingToDefaultTypeOrder(RelationType type, RelationSide side, IRelationSorterId sorterId) throws OseeCoreException {
@@ -131,9 +136,9 @@ public class RelationOrderData {
       return sorterId.getGuid().equals(defaultOrderGuid) && isDifferentSorterId(type, side, sorterId);
    }
 
-   protected boolean isRelativeOrderChange(RelationType type, RelationSide side, IRelationSorterId sorterId, List<? extends IArtifact> relativeSequence) throws OseeCoreException {
+   protected boolean isRelativeOrderChange(RelationType type, RelationSide side, IRelationSorterId sorterId, List<String> relativeSequence) throws OseeCoreException {
       return sorterId.equals(RelationOrderBaseTypes.USER_DEFINED) && !relativeSequence.isEmpty() && //
-      !Artifacts.toGuids(relativeSequence).equals(getOrderList(type, side));
+      !relativeSequence.equals(getOrderList(type, side));
    }
 
    protected boolean isDifferentSorterId(RelationType type, RelationSide side, IRelationSorterId sorterId) throws OseeCoreException {

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.relation.order;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -145,7 +146,8 @@ public class RelationOrderParser {
                List<String> guidsList = Collections.emptyList();
                if (list != null) {
                   String[] guids = list.split(",");
-                  guidsList = Arrays.asList(guids);
+                  guidsList = new ArrayList<String>();
+                  Collections.addAll(guidsList, guids);
                }
                data.addOrderList(relationType, relationSide, orderType, guidsList);
             }
