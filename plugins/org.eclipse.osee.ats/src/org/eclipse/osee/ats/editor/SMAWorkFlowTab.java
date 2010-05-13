@@ -447,6 +447,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    private void refreshToolbar() throws OseeCoreException {
       IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
+      toolBarMgr.removeAll();
 
       if (sma.isTeamWorkflow() && (((TeamWorkFlowArtifact) sma).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) sma).getBranchMgr().isWorkingBranchInWork())) {
          toolBarMgr.add(new ShowMergeManagerAction((TeamWorkFlowArtifact) sma));
