@@ -15,3 +15,6 @@ plugin@org.apache.xml.serializer,2.7.1=GET,http://download.eclipse.org/tools/orb
 plugin@org.apache.xerces,2.9.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.xerces_2.9.0.v200909240008.jar
 plugin@org.mortbay.jetty.server,6.1.15=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.mortbay.jetty.server_6.1.15.v200905151201.jar
 plugin@org.mortbay.jetty.util,6.1.15=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.mortbay.jetty.util_6.1.15.v200905182336.jar
+
+plugin@com.google.inject,2.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/S20100508202910/bundles/com.google.inject_2.0.0.v201003051000.jar
+plugin@org.aopalliance,1.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/S20100508202910/bundles/org.aopalliance_1.0.0.v200905130917.jar
