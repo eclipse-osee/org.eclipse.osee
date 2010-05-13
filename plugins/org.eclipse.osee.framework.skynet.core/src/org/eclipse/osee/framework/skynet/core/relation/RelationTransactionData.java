@@ -93,12 +93,12 @@ public class RelationTransactionData extends BaseTransactionData {
             new DefaultBasicGuidRelation(relation.getBranch().getGuid(), relation.getRelationType().getGuid(),
                   relation.getGammaId(), relation.getArtifactA().getBasicGuidArtifact(),
                   relation.getArtifactB().getBasicGuidArtifact());
-      if (relationEventType == RelationEventType.Deleted) {
+      if (getModificationType() == ModificationType.ARTIFACT_DELETED || getModificationType() == ModificationType.DELETED) {
          transactionEvent.getDeletedRel().add(defaultBasicGuidRelation);
-      } else if (relationEventType == RelationEventType.Added) {
-         transactionEvent.getAddedRel().add(defaultBasicGuidRelation);
-      } else if (relationEventType == RelationEventType.RationaleMod) {
+      } else if (getModificationType() == ModificationType.MODIFIED) {
          transactionEvent.getModifiedRel().add(defaultBasicGuidRelation);
+      } else if (getModificationType() == ModificationType.INTRODUCED || getModificationType() == ModificationType.NEW || getModificationType() == ModificationType.UNDELETED) {
+         transactionEvent.getAddedRel().add(defaultBasicGuidRelation);
       } else {
          OseeLog.log(Activator.class, Level.SEVERE, "Unhandled relation modified type " + relationEventType);
       }

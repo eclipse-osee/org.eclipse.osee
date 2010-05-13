@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.Set;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -31,6 +33,8 @@ import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRela
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
+import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -52,10 +56,15 @@ public class ArtifactEventManagerTest {
          resultEventRelations.addAll(eventRelations);
          resultSender = sender;
       }
-
    }
+
    // artifact listener create for use by all tests to just capture result eventArtifacts for query
    private ArtifactEventListener artifactEventListener = new ArtifactEventListener();
+
+   public void clearEventCollections() {
+      resultEventArtifacts.clear();
+      resultEventRelations.clear();
+   }
 
    @org.junit.Test
    public void testRegistration() throws Exception {
@@ -74,7 +83,7 @@ public class ArtifactEventManagerTest {
    }
 
    @org.junit.Test
-   public void testAddModifyDeleteArtifactEvents() throws Exception {
+   public void testArtifactRelationEvents() throws Exception {
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
       FrameworkEventManager.removeAllListeners();
@@ -83,13 +92,23 @@ public class ArtifactEventManagerTest {
       FrameworkEventManager.addListener(artifactEventListener);
       Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
 
-      // Add new Artifact Test
+      Artifact newArt = testArtifactRelationEvents__addArtifact();
+      testArtifactRelationEvents__addRelation(newArt);
+      testArtifactRelationEvents__modifyArtifact(newArt);
+      testArtifactRelationEvents__modifyRelation(newArt);
+      testArtifactRelationEvents__deleteArtifact(newArt);
+
+      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
+   }
+
+   private Artifact testArtifactRelationEvents__addArtifact() throws Exception {
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
       newArt.persist();
 
       Thread.sleep(3000);
 
       Assert.assertEquals(2, resultEventArtifacts.size());
+      Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
       if (isRemoteTest()) {
          Assert.assertTrue(resultSender.isRemote());
       } else {
@@ -105,15 +124,41 @@ public class ArtifactEventManagerTest {
       }
       Assert.assertTrue(addedFound);
       Assert.assertTrue(modifiedFound);
+      return newArt;
+   }
 
-      // Modify Artifact Test
-      resultEventArtifacts.clear();
+   private void testArtifactRelationEvents__addRelation(Artifact newArt) throws Exception {
+      clearEventCollections();
+      Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
+      rootArt.addChild(newArt);
+      rootArt.persist();
+
+      Thread.sleep(3000);
+
+      Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
+      Assert.assertEquals(1, resultEventRelations.size());
+      if (isRemoteTest()) {
+         Assert.assertTrue(resultSender.isRemote());
+      } else {
+         Assert.assertTrue(resultSender.isLocal());
+      }
+      EventBasicGuidRelation guidArt = resultEventRelations.iterator().next();
+      Assert.assertEquals(RelationEventType.Added, guidArt.getModType());
+      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidArt.getRelTypeGuid());
+      Assert.assertEquals(newArt.getRelations(rootArt).iterator().next().getGammaId(), guidArt.getGammaId());
+      Assert.assertEquals(rootArt, guidArt.getArtA());
+      Assert.assertEquals(newArt, guidArt.getArtB());
+   }
+
+   private void testArtifactRelationEvents__modifyArtifact(Artifact newArt) throws Exception {
+      clearEventCollections();
       StaticIdManager.setSingletonAttributeValue(newArt, "this");
       newArt.persist();
 
       Thread.sleep(3000);
 
       Assert.assertEquals(1, resultEventArtifacts.size());
+      Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
       if (isRemoteTest()) {
          Assert.assertTrue(resultSender.isRemote());
       } else {
@@ -124,16 +169,44 @@ public class ArtifactEventManagerTest {
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
       Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
+   }
 
-      // Delete Artifact Test
-      resultEventArtifacts.clear();
+   private void testArtifactRelationEvents__modifyRelation(Artifact newArt) throws Exception {
+      clearEventCollections();
+      Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
+
+      Assert.assertEquals(1, newArt.getRelations(rootArt).size());
+      RelationLink relLink = newArt.getRelations(rootArt).iterator().next();
+      relLink.setRationale("This is the rationale", true);
+      newArt.persist();
+
+      Thread.sleep(3000);
+
+      Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());
+      Assert.assertEquals(1, resultEventRelations.size());
+      if (isRemoteTest()) {
+         Assert.assertTrue(resultSender.isRemote());
+      } else {
+         Assert.assertTrue(resultSender.isLocal());
+      }
+      EventBasicGuidRelation guidArt = resultEventRelations.iterator().next();
+      Assert.assertEquals(RelationEventType.RationaleMod, guidArt.getModType());
+      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidArt.getRelTypeGuid());
+      Assert.assertEquals(newArt.getRelations(rootArt).iterator().next().getGammaId(), guidArt.getGammaId());
+      Assert.assertEquals(rootArt, guidArt.getArtA());
+      Assert.assertEquals(newArt, guidArt.getArtB());
+   }
+
+   private void testArtifactRelationEvents__deleteArtifact(Artifact newArt) throws Exception {
+      clearEventCollections();
       newArt.deleteAndPersist();
 
       Thread.sleep(3000);
 
       Assert.assertEquals(2, resultEventArtifacts.size());
+      Assert.assertEquals(1, resultEventRelations.size());
       boolean deletedFound = false;
-      modifiedFound = false;
+      boolean modifiedFound = false;
       for (EventBasicGuidArtifact guidArt1 : resultEventArtifacts) {
          if (isRemoteTest()) {
             Assert.assertTrue(resultSender.isRemote());
@@ -149,7 +222,12 @@ public class ArtifactEventManagerTest {
       Assert.assertTrue(deletedFound);
       Assert.assertTrue(modifiedFound);
 
-      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
+      Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
+      EventBasicGuidRelation guidArt = resultEventRelations.iterator().next();
+      Assert.assertEquals(RelationEventType.Deleted, guidArt.getModType());
+      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidArt.getRelTypeGuid());
+      Assert.assertEquals(rootArt, guidArt.getArtA());
+      Assert.assertEquals(newArt, guidArt.getArtB());
    }
 
    @org.junit.Test
