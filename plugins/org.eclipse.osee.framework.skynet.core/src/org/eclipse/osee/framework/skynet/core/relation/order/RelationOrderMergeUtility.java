@@ -27,50 +27,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 
 public class RelationOrderMergeUtility {
-   private static List<String> mergeTypeSideOrder(Artifact left, Artifact right, IRelationEnumeration rts) throws OseeCoreException {
-      RelationOrderMerger<String> merger = new RelationOrderMerger<String>();
-      boolean includeDeleted = false;
-      List<String> leftRelatives = getGuidList(left.getRelatedArtifacts(rts, includeDeleted));
-      List<String> rightRelatives = getGuidList(right.getRelatedArtifacts(rts, includeDeleted));
-      Collection<String> mergedSet = getMergedSet(left, right, rts);
-
-      return merger.computeMergedOrder(leftRelatives, rightRelatives, mergedSet);
-   }
-
-   private static Collection<String> getMergedSet(Artifact left, Artifact right, IRelationEnumeration relationTypeSide) throws OseeCoreException {
-      Collection<String> mergedSet = new HashSet<String>();
-      Collection<String> deleted = new HashSet<String>();
-      boolean includeDeleted = false;
-      List<String> leftRelatives = getGuidList(left.getRelatedArtifacts(relationTypeSide, includeDeleted));
-      List<String> rightRelatives = getGuidList(right.getRelatedArtifacts(relationTypeSide, includeDeleted));
-
-      deleted.addAll(getDeleted(left, relationTypeSide));
-      deleted.addAll(getDeleted(right, relationTypeSide));
-
-      mergedSet.addAll(leftRelatives);
-      mergedSet.addAll(rightRelatives);
-      mergedSet.removeAll(deleted);
-      return mergedSet;
-   }
-
-   private static Collection<String> getDeleted(Artifact art, IRelationEnumeration rts) throws OseeCoreException {
-      Collection<String> toReturn = new HashSet<String>();
-      final boolean includeDeleted = true;
-      for (Artifact relative : art.getRelatedArtifacts(rts, includeDeleted)) {
-         if (relative.isDeleted()) {
-            toReturn.add(relative.getGuid());
-         }
-      }
-      return toReturn;
-   }
-
-   private static List<String> getGuidList(List<Artifact> artifacts) {
-      List<String> toReturn = new ArrayList<String>();
-      for (Artifact art : artifacts) {
-         toReturn.add(art.getGuid());
-      }
-      return toReturn;
-   }
 
    public static RelationOrderData mergeRelationOrder(Artifact left, Artifact right) throws OseeCoreException {
       RelationOrderFactory factory = new RelationOrderFactory();
@@ -105,5 +61,50 @@ public class RelationOrderMergeUtility {
       rts.addAll(rightData.getAvailableTypeSides());
 
       return rts;
+   }
+
+   private static List<String> mergeTypeSideOrder(Artifact left, Artifact right, IRelationEnumeration rts) throws OseeCoreException {
+      RelationOrderMerger<String> merger = new RelationOrderMerger<String>();
+      boolean includeDeleted = false;
+      List<String> leftRelatives = getGuidList(left.getRelatedArtifacts(rts, includeDeleted));
+      List<String> rightRelatives = getGuidList(right.getRelatedArtifacts(rts, includeDeleted));
+      Collection<String> mergedSet = getMergedSet(left, right, rts);
+
+      return merger.computeMergedOrder(leftRelatives, rightRelatives, mergedSet);
+   }
+
+   private static Collection<String> getMergedSet(Artifact left, Artifact right, IRelationEnumeration relationTypeSide) throws OseeCoreException {
+      Collection<String> mergedSet = new HashSet<String>();
+      Collection<String> deleted = new HashSet<String>();
+      boolean includeDeleted = false;
+      List<String> leftRelatives = getGuidList(left.getRelatedArtifacts(relationTypeSide, includeDeleted));
+      List<String> rightRelatives = getGuidList(right.getRelatedArtifacts(relationTypeSide, includeDeleted));
+
+      deleted.addAll(getDeleted(left, relationTypeSide));
+      deleted.addAll(getDeleted(right, relationTypeSide));
+
+      mergedSet.addAll(leftRelatives);
+      mergedSet.addAll(rightRelatives);
+      mergedSet.removeAll(deleted);
+      return mergedSet;
+   }
+
+   private static List<String> getGuidList(List<Artifact> artifacts) {
+      List<String> toReturn = new ArrayList<String>();
+      for (Artifact art : artifacts) {
+         toReturn.add(art.getGuid());
+      }
+      return toReturn;
+   }
+
+   private static Collection<String> getDeleted(Artifact art, IRelationEnumeration rts) throws OseeCoreException {
+      Collection<String> toReturn = new HashSet<String>();
+      final boolean includeDeleted = true;
+      for (Artifact relative : art.getRelatedArtifacts(rts, includeDeleted)) {
+         if (relative.isDeleted()) {
+            toReturn.add(relative.getGuid());
+         }
+      }
+      return toReturn;
    }
 }
