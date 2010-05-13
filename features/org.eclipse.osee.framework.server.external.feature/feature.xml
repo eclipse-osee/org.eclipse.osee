@@ -18,6 +18,7 @@
    </license>
 
    <requires>
+   	<import plugin="org.aopalliance" />
       <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.common" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.osgi" version="3.5.0" match="compatible"/>
