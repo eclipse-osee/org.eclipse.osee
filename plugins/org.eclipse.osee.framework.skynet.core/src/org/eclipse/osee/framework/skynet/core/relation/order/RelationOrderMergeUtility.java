@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 
@@ -99,12 +100,15 @@ public class RelationOrderMergeUtility {
 
    private static Collection<String> getDeleted(Artifact art, IRelationEnumeration rts) throws OseeCoreException {
       Collection<String> toReturn = new HashSet<String>();
+      RelationType type = RelationTypeManager.getType(rts);
       final boolean includeDeleted = true;
-      for (Artifact relative : art.getRelatedArtifacts(rts, includeDeleted)) {
-         if (relative.isDeleted()) {
-            toReturn.add(relative.getGuid());
+
+      for (RelationLink link : art.getRelationsAll(includeDeleted)) {
+         if (link.isOfType(type) && link.isDeleted()) {
+            toReturn.add(link.getArtifactOnOtherSide(art).getGuid());
          }
       }
+
       return toReturn;
    }
 }

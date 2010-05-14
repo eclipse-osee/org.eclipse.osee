@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderMergeUtility;
@@ -92,13 +93,13 @@ public class RelationOrderMergeUtilityTest {
       Artifact srcChild = ArtifactQuery.getArtifactFromId(destChildren[4].getGuid(), sourceBranch);
       setAsChild(srcParent, srcChild, USER_DEFINED);
       srcParent.persist();
-      destChildren[0].deleteAndPersist();
+      RelationManager.deleteRelationsAll(destChildren[0], true);
 
       RelationOrderData mergedOrder = RelationOrderMergeUtility.mergeRelationOrder(destParent, srcParent);
       Assert.assertNotNull(mergedOrder);
 
       List<String> orderList = mergedOrder.getOrderList(hierType, hierSide);
-      Assert.assertTrue(orderList.size() == 4);
+      Assert.assertEquals(orderList.size(), 4);
       Assert.assertTrue(orderList.get(0).equals(destChildren[1].getGuid()));
       Assert.assertTrue(orderList.get(1).equals(destChildren[2].getGuid()));
       Assert.assertTrue(orderList.get(2).equals(destChildren[3].getGuid()));
