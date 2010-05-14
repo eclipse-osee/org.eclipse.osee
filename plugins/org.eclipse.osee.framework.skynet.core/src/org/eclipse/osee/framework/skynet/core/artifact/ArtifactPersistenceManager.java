@@ -159,17 +159,17 @@ public class ArtifactPersistenceManager {
       for (Artifact artifact : artifacts) {
          deleteTrace(artifact, transaction, true);
       }
-      }
+   }
 
    private static void performDeleteChecks(Artifact... artifacts) throws OseeCoreException {
-         // Confirm artifacts are fit to delete
-         for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-            IStatus result = check.isDeleteable(Arrays.asList(artifacts));
-            if (!result.isOK()) {
-               throw new OseeStateException(result.getMessage());
-            }
+      // Confirm artifacts are fit to delete
+      for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
+         IStatus result = check.isDeleteable(Arrays.asList(artifacts));
+         if (!result.isOK()) {
+            throw new OseeStateException(result.getMessage());
          }
       }
+   }
 
    private static Collection<Integer> bulkLoadArtifacts(Artifact... artifacts) {
       Collection<Integer> artIds = new LinkedList<Integer>();
@@ -215,7 +215,8 @@ public class ArtifactPersistenceManager {
 
    public static void revertAttribute(OseeConnection connection, int branchId, int artId, int attributeId) throws OseeCoreException {
       TransactionRecord transId =
-            TransactionManager.createNextTransactionId(connection, BranchManager.getBranch(branchId), UserManager.getUser(), "");
+            TransactionManager.createNextTransactionId(connection, BranchManager.getBranch(branchId),
+                  UserManager.getUser(), "");
       long totalTime = System.currentTimeMillis();
       //Get attribute Gammas
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
@@ -247,7 +248,8 @@ public class ArtifactPersistenceManager {
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          chStmt.runPreparedQuery(GET_GAMMAS_RELATION_REVERT, branch.getId(), link.getId());
-         TransactionRecord transId = TransactionManager.createNextTransactionId(connection, branch, UserManager.getUser(), "");
+         TransactionRecord transId =
+               TransactionManager.createNextTransactionId(connection, branch, UserManager.getUser(), "");
          RevertAction revertAction = new RevertAction(connection, chStmt, transId);
          revertAction.revertObject(totalTime, link.getId(), "Relation Link");
       } finally {
@@ -266,7 +268,8 @@ public class ArtifactPersistenceManager {
       try {
          int branchId = branch.getId();
          chStmt.runPreparedQuery(GET_GAMMAS_ARTIFACT_REVERT, branchId, artId, branchId, artId, artId, branchId, artId);
-         TransactionRecord transId = TransactionManager.createNextTransactionId(connection, branch, UserManager.getUser(), "");
+         TransactionRecord transId =
+               TransactionManager.createNextTransactionId(connection, branch, UserManager.getUser(), "");
          RevertAction revertAction = new RevertAction(connection, chStmt, transId);
          revertAction.revertObject(totalTime, artId, "Artifact");
       } finally {
