@@ -9,6 +9,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 
 public final class UnsubscribeTransaction extends AbstractDbTxOperation {
    private final static String SELECT_RELATION_LINK =
-         "select txs.gamma_id, rel.rel_link_id, txs.mod_type from osee_relation_link rel, osee_txs txs where rel.a_art_id = ? and rel.b_art_id = ? and rel.rel_link_type_id = ? and rel.gamma_id=txs.gamma_id and txs.branch_id = ? and txs.tx_current = ?";
+         "select txs.gamma_id, rel.rel_link_id, txs.mod_type from osee_relation_link rel, osee_txs txs where rel.a_art_id = ? and rel.b_art_id = ? and rel.rel_link_type_id = ? and rel.gamma_id=txs.gamma_id and txs.branch_id = ? and txs.tx_current <> ? order by txs.tx_current";
    private final static String INSERT_INTO_TX_DETAILS =
          "insert into osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) values (?,?,?,?,?,?)";
    private final static String INSERT_INTO_TXS =
@@ -34,6 +35,7 @@ public final class UnsubscribeTransaction extends AbstractDbTxOperation {
    private int currentGammaId;
    private final UnsubscribeRequest unsubscribeData;
    private final IOseeCachingServiceProvider cacheProvider;
+   private String completionMethod;
 
    public UnsubscribeTransaction(IOseeDatabaseServiceProvider provider, IOseeCachingServiceProvider cacheProvider, UnsubscribeRequest unsubscribeData) {
       super(provider, "Delete Relation", Activator.PLUGIN_ID);
@@ -43,16 +45,16 @@ public final class UnsubscribeTransaction extends AbstractDbTxOperation {
 
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
-      getRelationTxData();
+      if (getRelationTxData()) {
+         UpdatePreviousTxCurrent txc = new UpdatePreviousTxCurrent(common, connection);
+         txc.addRelation(relationId);
+         txc.updateTxNotCurrents();
 
-      UpdatePreviousTxCurrent txc = new UpdatePreviousTxCurrent(common, connection);
-      txc.addRelation(relationId);
-      txc.updateTxNotCurrents();
-
-      createNewTxAddressing(connection);
+         createNewTxAddressing(connection);
+      }
    }
 
-   private void getRelationTxData() throws OseeCoreException {
+   private boolean getRelationTxData() throws OseeCoreException {
       IOseeCachingService cacheService = cacheProvider.getOseeCachingService();
       common = cacheService.getBranchCache().getCommonBranch();
       RelationType relationType = cacheService.getRelationTypeCache().get(CoreRelationTypes.Users_Artifact);
@@ -60,14 +62,15 @@ public final class UnsubscribeTransaction extends AbstractDbTxOperation {
 
       try {
          chStmt.runPreparedQuery(1, SELECT_RELATION_LINK, unsubscribeData.getGroupId(), unsubscribeData.getUserId(),
-               relationType.getId(), common.getId(), TxChange.CURRENT.getValue());
+               relationType.getId(), common.getId(), TxChange.NOT_CURRENT.getValue());
          if (chStmt.next()) {
             currentGammaId = chStmt.getInt("gamma_id");
             relationId = chStmt.getInt("rel_link_id");
             int modType = chStmt.getInt("mod_type");
-            ensureNotAlreadyDeleted(modType);
+            return ensureNotAlreadyDeleted(modType);
          } else {
-            throw new OseeCoreException(String.format("No relation link found for group %s and user %s",
+            throw new OseeStateException(String.format(
+                  "No existing relation (deleted or otherwise) was found for group [%s] and user [%s].",
                   unsubscribeData.getGroupId(), unsubscribeData.getUserId()));
          }
       } finally {
@@ -75,9 +78,15 @@ public final class UnsubscribeTransaction extends AbstractDbTxOperation {
       }
    }
 
-   private void ensureNotAlreadyDeleted(int modType) throws OseeCoreException {
+   private boolean ensureNotAlreadyDeleted(int modType) {
       if (modType == ModificationType.ARTIFACT_DELETED.getValue() || modType == ModificationType.DELETED.getValue()) {
-         throw new OseeCoreException("Relation already deleted");
+         completionMethod =
+               String.format("<br/>You have already been removed from the group.<br/>  group [%s] user [%s]",
+                     unsubscribeData.getGroupId(), unsubscribeData.getUserId());
+         return false;
+      } else {
+         completionMethod = String.format("<br/>You have been successfully unsubscribed.");
+         return true;
       }
    }
 
@@ -94,5 +103,9 @@ public final class UnsubscribeTransaction extends AbstractDbTxOperation {
             comment, timestamp, unsubscribeData.getUserId(), txType);
       getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TXS, ModificationType.DELETED.getValue(),
             TxChange.DELETED.getValue(), transactionId, currentGammaId, common.getId());
+   }
+
+   public String getCompletionMessage() {
+      return completionMethod;
    }
 }
