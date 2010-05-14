@@ -60,8 +60,10 @@ import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListen
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
