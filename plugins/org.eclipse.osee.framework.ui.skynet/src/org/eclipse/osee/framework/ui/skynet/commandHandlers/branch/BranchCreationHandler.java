@@ -92,18 +92,13 @@ public class BranchCreationHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException() throws OseeCoreException {
-      if (AWorkbench.getActivePage() == null) {
-         return false;
-      }
-      IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       boolean enabled;
-      if (selection.size() != 1) {
+      if (structuredSelection.size() != 1) {
          return false;
       }
 
-      Object object = selection.getFirstElement();
+      Object object = structuredSelection.getFirstElement();
       Branch branch = null;
 
       if (object instanceof Branch) {

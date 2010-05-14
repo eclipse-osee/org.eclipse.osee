@@ -72,7 +72,7 @@ public class UpdateBranchHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException() throws OseeCoreException {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       boolean enabled = false;
       Branch branch = getSelectedBranch();
       if (branch != null) {

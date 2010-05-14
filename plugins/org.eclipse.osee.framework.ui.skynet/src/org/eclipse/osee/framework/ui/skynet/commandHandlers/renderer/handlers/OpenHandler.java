@@ -42,9 +42,4 @@ public class OpenHandler extends AbstractEditorHandler {
       }
       return null;
    }
-
-   @Override
-   public boolean isEnabledWithException() throws OseeCoreException {
-      return super.isEnabledWithException();
-   }
 }

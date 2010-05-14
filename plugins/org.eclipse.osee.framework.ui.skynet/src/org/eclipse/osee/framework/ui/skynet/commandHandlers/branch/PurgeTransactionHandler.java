@@ -69,12 +69,8 @@ public class PurgeTransactionHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException() throws OseeCoreException {
-      if (AWorkbench.getActivePage() == null) return false;
-      IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-
-      List<TransactionRecord> transactions = Handlers.getTransactionsFromStructuredSelection(selection);
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+      List<TransactionRecord> transactions = Handlers.getTransactionsFromStructuredSelection(structuredSelection);
       return transactions.size() == 1 && AccessControlManager.isOseeAdmin();
    }
 }

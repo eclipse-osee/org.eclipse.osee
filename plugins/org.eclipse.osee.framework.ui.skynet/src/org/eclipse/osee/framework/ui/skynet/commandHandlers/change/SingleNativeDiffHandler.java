@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -25,12 +24,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Jeff C. Phillips
@@ -39,31 +36,13 @@ public class SingleNativeDiffHandler extends CommandHandler {
    private ArrayList<Change> changes;
 
    @Override
-   public boolean isEnabledWithException() throws OseeCoreException {
-      boolean enabled = false;
-
-      if (PlatformUI.getWorkbench().isClosing()) {
-         return false;
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+      changes = new ArrayList<Change>(Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
+      if (changes.size() == 1) {
+         Artifact sampleArtifact = changes.iterator().next().getChangeArtifact();
+         return AccessControlManager.hasPermission(sampleArtifact, PermissionEnum.READ);
       }
-
-      try {
-         ISelectionProvider selectionProvider =
-               AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-
-         if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-
-            changes = new ArrayList<Change>(Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
-
-            if (changes.size() == 1) {
-               Artifact sampleArtifact = changes.iterator().next().getChangeArtifact();
-               enabled = AccessControlManager.hasPermission(sampleArtifact, PermissionEnum.READ);
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
-      }
-      return enabled;
+      return false;
    }
 
    @Override

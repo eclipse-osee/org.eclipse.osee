@@ -27,6 +27,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -374,7 +375,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabledWithException() throws OseeCoreException {
+         public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
             List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
@@ -407,7 +408,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabledWithException() throws OseeCoreException {
+         public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
             List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1) {
@@ -439,7 +440,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabledWithException() throws OseeCoreException {
+         public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
             List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1) {
@@ -471,7 +472,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabledWithException() throws OseeCoreException {
+         public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
             List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1) {
@@ -503,7 +504,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabledWithException() throws OseeCoreException {
+         public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
             List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1) {
@@ -532,7 +533,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                }
 
                @Override
-               public boolean isEnabledWithException() throws OseeCoreException {
+               public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
                   selectedConflicts = mergeXWidget.getSelectedConflicts();
                   revertList = new ArrayList<List<Artifact>>();
                   populateRevertList();
@@ -588,7 +589,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          }
 
          @Override
-         public boolean isEnabledWithException() throws OseeCoreException {
+         public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
             List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
@@ -727,7 +728,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       }
 
       @Override
-      public boolean isEnabledWithException() throws OseeCoreException {
+      public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
          artifacts = new LinkedList<Artifact>();
          List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
          for (Conflict conflict : conflicts) {

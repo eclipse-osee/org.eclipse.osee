@@ -67,14 +67,8 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException() throws OseeCoreException {
-      if (AWorkbench.getActivePage() == null) {
-         return false;
-      }
-      IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-
-      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       return branches.size() == 1;
    }
 }

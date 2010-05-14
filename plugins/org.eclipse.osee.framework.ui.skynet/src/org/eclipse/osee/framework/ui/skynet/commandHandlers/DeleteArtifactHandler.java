@@ -15,7 +15,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -25,11 +24,9 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Jeff C. Phillips
@@ -60,20 +57,8 @@ public class DeleteArtifactHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException() throws OseeCoreException {
-      if (PlatformUI.getWorkbench().isClosing()) {
-         return false;
-      }
-      boolean isEnabled = false;
-
-      ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-
-      if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-         IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-         isEnabled = AccessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
-      }
-      return isEnabled;
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+      artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+      return AccessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
    }
 }

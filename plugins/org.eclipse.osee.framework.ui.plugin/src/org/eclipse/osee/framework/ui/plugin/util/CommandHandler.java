@@ -12,9 +12,13 @@ package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Ryan D. Brooks
@@ -23,13 +27,22 @@ public abstract class CommandHandler extends AbstractHandler {
 
    @Override
    public boolean isEnabled() {
-      try {
-         return isEnabledWithException();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(OseePluginUiActivator.class, Level.SEVERE, ex);
-         return false;
+      if (AWorkbench.getActivePage() != null && !PlatformUI.getWorkbench().isClosing()) {
+         ISelectionProvider selectionProvider =
+               AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+         if (selectionProvider != null) {
+            ISelection selection = selectionProvider.getSelection();
+            try {
+               if (selection instanceof IStructuredSelection) {
+                  return isEnabledWithException((IStructuredSelection) selection);
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(OseePluginUiActivator.class, Level.SEVERE, ex);
+            }
+         }
       }
+      return false;
    }
 
-   public abstract boolean isEnabledWithException() throws OseeCoreException;
+   public abstract boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException;
 }

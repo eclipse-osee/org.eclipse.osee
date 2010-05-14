@@ -17,10 +17,8 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * This abstract class provides the basic functionality for opening renderer editors.
@@ -36,22 +34,8 @@ public abstract class AbstractEditorHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException() throws OseeCoreException {
-      if (PlatformUI.getWorkbench().isClosing()) {
-         return false;
-      }
-      boolean isEnabled = false;
-
-      selectionProvider = AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-
-      if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-         IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-
-         isEnabled =
-               !artifacts.isEmpty() && AccessControlManager.checkObjectListPermission(artifacts, getPermissionLevel());
-      }
-      return isEnabled;
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+      artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+      return !artifacts.isEmpty() && AccessControlManager.checkObjectListPermission(artifacts, getPermissionLevel());
    }
-
 }

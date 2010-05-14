@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Jeff C. Phillips
@@ -61,17 +60,10 @@ public class MergeManagerHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException() throws OseeCoreException {
-      if (PlatformUI.getWorkbench().isClosing()) {
-         return false;
-      }
-
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       boolean enabled = false;
-      IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-
-      if (!selection.isEmpty()) {
-         List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
+      if (!structuredSelection.isEmpty()) {
+         List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 
          if (!branches.isEmpty()) {
             Branch selectedBranch = branches.iterator().next();

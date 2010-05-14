@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -113,7 +114,7 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
       }
 
       @Override
-      public boolean isEnabledWithException() throws OseeCoreException {
+      public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
          artifacts = new LinkedList<Artifact>();
          List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
          if (conflicts.size() != 1) {

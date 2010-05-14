@@ -154,21 +154,14 @@ public abstract class CommitHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException() throws OseeCoreException {
-      boolean enabled = false;
-      if (AWorkbench.getActivePage() == null) {
-         return enabled;
-      }
-      IStructuredSelection selection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-
-      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 
       if (branches.size() == 1) {
          Branch branch = branches.iterator().next();
-         enabled = useParentBranchValid(branch) || !useParentBranch && AccessControlManager.isOseeAdmin();
+         return useParentBranchValid(branch) || !useParentBranch && AccessControlManager.isOseeAdmin();
       }
-      return enabled;
+      return false;
    }
 
    protected boolean useParentBranchValid(Branch branch) throws OseeCoreException {
