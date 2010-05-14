@@ -54,7 +54,7 @@ public abstract class CommitHandler extends CommandHandler {
       final TransactionRecord transactionId = sourceBranch.getBaseTransaction();
       boolean branchCommitted = false;
 
-      if (conflictManager.getRemainingConflicts().size() > 0) {
+      if (!conflictManager.getRemainingConflicts().isEmpty()) {
          String message =
                "Commit stopped due to unresolved conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts";
          final String fMessage;
