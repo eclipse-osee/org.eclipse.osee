@@ -41,6 +41,13 @@ public class ArtifactQueryTestDemo {
 
       newArtifact.deleteAndPersist();
 
+      try {
+         Artifact ret = ArtifactQuery.checkArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch());
+         Assert.assertNull(ret);
+      } catch (ArtifactDoesNotExist ex) {
+         Assert.fail("ArtifactQuery should never throw ArtifactDoesNotExist with QueryType.CHECK");
+      }
+
       // Should NOT exist, cause deleted
       try {
          ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch());
