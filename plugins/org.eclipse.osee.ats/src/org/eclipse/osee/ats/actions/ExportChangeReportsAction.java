@@ -319,14 +319,14 @@ public class ExportChangeReportsAction extends Action {
                operation = ChangeManager.comparedToPreviousTx(pickTransaction(workflow), changes);
             } else {
                Branch workingBranch = atsBranchMgr.getWorkingBranch();
-               if (workingBranch != null) {
+               if (workingBranch != null && !workingBranch.getBranchType().isBaselineBranch()) {
                   operation = ChangeManager.comparedToParent(workingBranch, changes);
                }
             }
             if (operation != null) {
                doSubWork(operation, monitor, 0.50);
             }
-            if (!changes.isEmpty()) {
+            if (!changes.isEmpty() && changes.size() < 4000) {
                String folderName = workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPCRId, null);
                IOperation subOp = new WordChangeReportOperation(changes, true, folderName);
                doSubWork(subOp, monitor, 0.50);
