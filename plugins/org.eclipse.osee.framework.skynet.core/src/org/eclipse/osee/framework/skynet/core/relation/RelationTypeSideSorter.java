@@ -111,6 +111,23 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       setOrder(relatives, sorterIdToUse);
    }
 
+   @SuppressWarnings("unchecked")
+   public void removeItem(IRelationSorterId sorterId, IArtifact itemToRemove) throws OseeCoreException {
+      IRelationSorterId sorterIdToUse = sorterId;
+      if (sorterIdToUse == null) {
+         sorterIdToUse = getSorterId();
+      }
+      List<IArtifact> relatives = Collections.emptyList();
+      if (RelationOrderBaseTypes.USER_DEFINED == sorterIdToUse) {
+         IArtifact target = getIArtifact();
+         relatives = (List<IArtifact>) target.getRelatedArtifacts(this);
+         if (relatives.contains(itemToRemove)) {
+            relatives.remove(itemToRemove);
+         }
+      }
+      setOrder(relatives, sorterIdToUse);
+   }
+
    public void setOrder(List<? extends IArtifact> relatives, IRelationSorterId sorterId) throws OseeCoreException {
       orderData.store(getRelationType(), getSide(), sorterId, relatives);
    }

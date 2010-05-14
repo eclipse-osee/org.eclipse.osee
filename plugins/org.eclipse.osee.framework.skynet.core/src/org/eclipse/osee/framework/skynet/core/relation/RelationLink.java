@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import java.util.List;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -159,8 +162,22 @@ public class RelationLink {
       internalDelete(true, false);
    }
 
+   private void removeFromOrder() throws OseeCoreException {
+      RelationTypeSideSorter aSorter = RelationManager.createTypeSideSorter(getArtifactA(), relationType, SIDE_B);
+      RelationTypeSideSorter bSorter = RelationManager.createTypeSideSorter(getArtifactB(), relationType, SIDE_A);
+      aSorter.removeItem(null, getArtifactB());
+      bSorter.removeItem(null, getArtifactA());
+   }
+
    private void internalDelete(boolean reorderRelations, boolean setDirty) {
       if (!isDeleted()) {
+         if (reorderRelations) {
+            try {
+               removeFromOrder();
+            } catch (OseeCoreException e) {
+               OseeLog.log(Activator.class, Level.SEVERE, e.getMessage());
+            }
+         }
 
          markAsDeleted(setDirty);
 
