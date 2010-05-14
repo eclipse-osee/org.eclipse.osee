@@ -46,11 +46,9 @@ public class ConflictManagerExternal {
 
    public List<Conflict> getRemainingConflicts() throws OseeCoreException {
       List<Conflict> remainingConflicts = new ArrayList<Conflict>();
-      if (originalConflictsExist()) {
-         for (Conflict conflict : getOriginalConflicts()) {
-            if (!conflict.statusResolved() && !conflict.statusCommitted() && !conflict.statusInformational()) {
-               remainingConflicts.add(conflict);
-            }
+      for (Conflict conflict : getOriginalConflicts()) {
+         if (!conflict.statusResolved() && !conflict.statusCommitted() && !conflict.statusInformational()) {
+            remainingConflicts.add(conflict);
          }
       }
       return remainingConflicts;
