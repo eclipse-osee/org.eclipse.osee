@@ -17,8 +17,6 @@ import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
@@ -46,15 +44,10 @@ public class UnsubscribeServlet extends OseeHttpServlet {
    }
 
    @Override
-   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-   }
-
-   @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
          String requestUri = request.getRequestURL().toString();
          requestUri = requestUri.replace(request.getPathInfo(), "");
-
          UnsubscribeRequest data = UnsubscribeRequest.createFromURI(request);
 
          String page = createConfirmationPage(requestUri, data);
@@ -91,18 +84,15 @@ public class UnsubscribeServlet extends OseeHttpServlet {
    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
          UnsubscribeRequest data = UnsubscribeRequest.createFromXML(request);
-         IOperation del = new UnsubscribeTransaction(dbProvider, cacheProvider, data);
+         UnsubscribeTransaction del = new UnsubscribeTransaction(dbProvider, cacheProvider, data);
          Operations.executeWorkAndCheckStatus(del, new LogProgressMonitor(), -1);
-
-         String message =
-               String.format("Unsubscribed user [%s] from group [%s] - Success", data.getUserId(), data.getGroupId());
-         response.setStatus(HttpServletResponse.SC_ACCEPTED);
+         response.setStatus(HttpServletResponse.SC_OK);
          response.setContentType("text/plain");
+         String message = del.getCompletionMessage();
          response.setContentLength(message.length());
          response.getWriter().append(message);
       } catch (Exception ex) {
          handleError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error unsubscribing", ex);
       }
    }
-
 }
