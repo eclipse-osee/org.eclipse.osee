@@ -44,6 +44,11 @@ public class UnsubscribeServlet extends OseeHttpServlet {
    }
 
    @Override
+   protected void checkAccessControl(HttpServletRequest request) {
+      //prevent OseeHttpServlet.checkAccessControl from performing its check
+   }
+
+   @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
          String requestUri = request.getRequestURL().toString();
