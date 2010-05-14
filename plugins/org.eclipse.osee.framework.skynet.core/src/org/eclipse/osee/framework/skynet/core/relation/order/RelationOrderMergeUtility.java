@@ -105,7 +105,15 @@ public class RelationOrderMergeUtility {
 
       for (RelationLink link : art.getRelationsAll(includeDeleted)) {
          if (link.isOfType(type) && link.isDeleted()) {
-            toReturn.add(link.getArtifactOnOtherSide(art).getGuid());
+            if (link.getOppositeSide(art).equals(rts.getSide())) {
+               toReturn.add(link.getArtifactOnOtherSide(art).getGuid());
+            }
+         }
+      }
+
+      for (Artifact relative : art.getRelatedArtifacts(rts, includeDeleted)) {
+         if (relative.isDeleted()) {
+            toReturn.add(relative.getGuid());
          }
       }
 
