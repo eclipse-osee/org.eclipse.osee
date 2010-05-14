@@ -18,7 +18,9 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event.msgs.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -81,11 +83,13 @@ public class ArtifactTransactionData extends BaseTransactionData {
             break;
          case DELETED:
             artifactModType = ArtifactModType.Deleted;
-            transactionEvent.getDeleted().add(artifact.getBasicGuidArtifact());
+            transactionEvent.getArtifacts().add(
+                  new EventBasicGuidArtifact(EventModType.Deleted, artifact.getBasicGuidArtifact()));
             break;
          default:
             artifactModType = ArtifactModType.Added;
-            transactionEvent.getAdded().add(artifact.getBasicGuidArtifact());
+            transactionEvent.getArtifacts().add(
+                  new EventBasicGuidArtifact(EventModType.Added, artifact.getBasicGuidArtifact()));
             break;
       }
       events.add(new ArtifactModifiedEvent(new Sender(this.getClass().getName()), artifactModType, artifact,

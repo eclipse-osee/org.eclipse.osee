@@ -19,6 +19,7 @@ import java.util.Set;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -56,6 +57,11 @@ public class ArtifactEventManagerTest {
          resultEventRelations.addAll(eventRelations);
          resultSender = sender;
       }
+   }
+
+   @org.junit.Before
+   public void setUpTest() {
+      OseeProperties.setNewEvents(true);
    }
 
    // artifact listener create for use by all tests to just capture result eventArtifacts for query
@@ -190,7 +196,7 @@ public class ArtifactEventManagerTest {
          Assert.assertTrue(resultSender.isLocal());
       }
       EventBasicGuidRelation guidArt = resultEventRelations.iterator().next();
-      Assert.assertEquals(RelationEventType.RationaleMod, guidArt.getModType());
+      Assert.assertEquals(RelationEventType.ModifiedRationale, guidArt.getModType());
       Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidArt.getRelTypeGuid());
       Assert.assertEquals(newArt.getRelations(rootArt).iterator().next().getGammaId(), guidArt.getGammaId());
       Assert.assertEquals(rootArt, guidArt.getArtA());

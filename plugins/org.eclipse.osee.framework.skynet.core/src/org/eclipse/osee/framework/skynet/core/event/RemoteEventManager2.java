@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.event;
 
 import java.rmi.RemoteException;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -31,9 +29,6 @@ import org.eclipse.osee.framework.messaging.event.res.AttributeEventModification
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.messaging.event.res.ResEventManager;
-import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
-import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteChangeTypeArtifactsEvent1;
-import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePurgedArtifactsEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -41,11 +36,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
-import org.eclipse.osee.framework.skynet.core.event.msgs.BasicModifiedGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.msgs.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -85,7 +80,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                      OseeLog.log(Activator.class, Level.SEVERE, ex1);
                      new Status(Status.ERROR, Activator.PLUGIN_ID, -1, ex1.getLocalizedMessage(), ex1);
                   }
-
+                  // Handles TransactionEvents, ArtifactChangeTypeEvents, ArtifactPurgeEvents
                   if (remoteEvent instanceof RemoteTransactionEvent1) {
                      try {
                         RemoteTransactionEvent1 event1 = (RemoteTransactionEvent1) remoteEvent;
@@ -93,33 +88,6 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                         updateArtifacts(sender, transEvent);
                         InternalEventManager2.kickTransactionEvent(sender, transEvent);
                         // TODO process transaction event by updating artifact/relation caches
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                     }
-                  } else if (remoteEvent instanceof RemotePurgedArtifactsEvent1) {
-                     try {
-                        RemotePurgedArtifactsEvent1 event1 = (RemotePurgedArtifactsEvent1) remoteEvent;
-                        Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
-                        for (RemoteBasicGuidArtifact1 guidArt : event1.getArtifacts()) {
-                           artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged,
-                                 FrameworkEventUtil.getBasicGuidArtifact(guidArt)));
-                        }
-                        // TODO process purge event by updating artifact/relation caches
-                        InternalEventManager2.kickArtifactsPurgedEvent(sender, artifactChanges);
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                     }
-                  } else if (remoteEvent instanceof RemoteChangeTypeArtifactsEvent1) {
-                     try {
-                        RemoteChangeTypeArtifactsEvent1 event1 = (RemoteChangeTypeArtifactsEvent1) remoteEvent;
-                        Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
-                        for (RemoteBasicGuidArtifact1 guidArt : event1.getArtifacts()) {
-                           artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged,
-                                 FrameworkEventUtil.getBasicGuidArtifact(guidArt)));
-                        }
-                        // TODO process change type event by updating artifact/relation caches
-                        InternalEventManager2.kickArtifactsChangeTypeEvent(sender, artifactChanges,
-                              event1.getToArtTypeGuid());
                      } catch (Exception ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
@@ -139,16 +107,20 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
    private static void updateArtifacts(Sender sender, TransactionEvent transEvent) {
       // Handle Added Artifacts
       // Nothing to do for added cause they're not in cache yet.  Apps will load if they need them.
-      for (DefaultBasicGuidArtifact guidArt : transEvent.getAdded()) {
-         System.out.println("UpdateArtifacts -> added " + guidArt);
-      }
-      // Handle Deleted Artifacts
-      for (DefaultBasicGuidArtifact guidArt : transEvent.getDeleted()) {
-         updateDeletedArtifact(guidArt);
-      }
-      // Handle Modified Artifacts
-      for (BasicModifiedGuidArtifact guidArt : transEvent.getModified()) {
-         updateModifiedArtifact(guidArt);
+      for (EventBasicGuidArtifact guidArt : transEvent.getArtifacts()) {
+         if (guidArt.getModType() == EventModType.Added) {
+            System.out.println("UpdateArtifacts -> added " + guidArt);
+         }
+         // Handle Deleted Artifacts
+         else if (guidArt.getModType() == EventModType.Deleted || guidArt.getModType() == EventModType.Purged) {
+            updateDeletedArtifact(guidArt);
+         }
+         // Handle Modified Artifacts
+         else if (guidArt.getModType() == EventModType.Modified) {
+            updateModifiedArtifact((EventModifiedBasicGuidArtifact) guidArt);
+         } else {
+            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled mod type [%s]", guidArt.getModType()));
+         }
       }
    }
 
@@ -168,16 +140,16 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       }
    }
 
-   private static void updateModifiedArtifact(BasicModifiedGuidArtifact guidArt) {
+   private static void updateModifiedArtifact(EventModifiedBasicGuidArtifact guidArt) {
       try {
          System.out.println("UpdateArtifacts -> modified " + guidArt);
          String branchGuid = guidArt.getBranchGuid();
          Branch branch = BranchManager.getBranchByGuid(branchGuid);
-         Artifact artifact = ArtifactCache.getActive(guidArt.getArtGuid(), branch);
+         Artifact artifact = ArtifactCache.getActive(guidArt.getGuid(), branch);
          if (artifact == null) {
             // do nothing, artifact not in cache, so don't need to update
          } else if (!artifact.isHistorical()) {
-            for (AttributeChange attrChange : guidArt.getAttributes()) {
+            for (AttributeChange attrChange : guidArt.getAttributeChanges()) {
                if (!InternalEventManager.isEnableRemoteEventLoopback()) {
                   ModificationType modificationType =
                         AttributeEventModificationType.getType(attrChange.getModTypeGuid()).getModificationType();

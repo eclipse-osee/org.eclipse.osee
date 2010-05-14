@@ -377,7 +377,7 @@ public class FrameworkTransactionData {
                   }
                }
             }
-            if (xRelationModifiedEvent.relationEventType == RelationEventType.RationaleMod) {
+            if (xRelationModifiedEvent.relationEventType == RelationEventType.ModifiedRationale) {
                if (loadedRelation != null) {
                   cacheChangedRelations.add(loadedRelation);
                   if (loadedRelation.getArtifactA() != null) {

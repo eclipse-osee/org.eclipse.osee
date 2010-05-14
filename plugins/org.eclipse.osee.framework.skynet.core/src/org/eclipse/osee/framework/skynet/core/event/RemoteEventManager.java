@@ -633,7 +633,7 @@ public class RemoteEventManager {
                   UnloadedRelation unloadedRelation =
                         new UnloadedRelation(branch.getId(), event.getArtAId(), event.getArtATypeId(),
                               event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
-                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.RationaleMod,
+                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.ModifiedRationale,
                         unloadedRelation));
                } else if (event instanceof NetworkRelationLinkCreatedEvent) {
                   UnloadedRelation unloadedRelation =

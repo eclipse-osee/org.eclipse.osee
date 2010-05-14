@@ -593,7 +593,7 @@ public class InternalEventManager {
       String rationale = link.getRationale();
       String descriptorName = link.getRelationType().getName();
 
-      if (relEvent.relationEventType == RelationEventType.RationaleMod) {
+      if (relEvent.relationEventType == RelationEventType.ModifiedRationale) {
          networkEvent = new NetworkRelationLinkRationalModifiedEvent(eventBase, rationale);
       } else if (relEvent.relationEventType == RelationEventType.Deleted) {
          networkEvent = new NetworkRelationLinkDeletedEvent(eventBase);
@@ -742,7 +742,7 @@ public class InternalEventManager {
                   }
                }
             }
-            if (xRelationModifiedEvent.relationEventType == RelationEventType.RationaleMod) {
+            if (xRelationModifiedEvent.relationEventType == RelationEventType.ModifiedRationale) {
                if (loadedRelation != null) {
                   transData.cacheChangedRelations.add(loadedRelation);
                   if (loadedRelation.getArtifactA() != null) {

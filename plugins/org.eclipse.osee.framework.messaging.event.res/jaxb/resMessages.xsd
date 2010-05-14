@@ -17,30 +17,8 @@
   <xsd:sequence>
     <xsd:element name="branchGuid" type="xsd:string"/>
     <xsd:element name="transactionId" type="xsd:int"/>
-    <xsd:element name="modified" type="RemoteBasicModifiedGuidArtifact1" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="added" type="RemoteBasicGuidArtifact1" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="deleted" type="RemoteBasicGuidArtifact1" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="modifiedRel" type="RemoteBasicGuidRelation1" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="addedRel" type="RemoteBasicGuidRelation1" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="deletedRel" type="RemoteBasicGuidRelation1" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="networkSender" type="RemoteNetworkSender1" maxOccurs="1" minOccurs="1"/>
-  </xsd:sequence>
-</xsd:complexType>
-
-<xsd:complexType name="RemoteChangeTypeArtifactsEvent1">
-  <xsd:sequence>
-    <xsd:element name="toArtTypeGuid" type="xsd:string"/>
     <xsd:element name="artifacts" type="RemoteBasicGuidArtifact1" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="networkSender" type="RemoteNetworkSender1" maxOccurs="1" minOccurs="1"/>
-  </xsd:sequence>
-</xsd:complexType>
-
-<xsd:complexType name="RemoteBranchRenameEvent1">
-  <xsd:sequence>
-    <xsd:element name="name" type="xsd:string"/>
-    <xsd:element name="shortName" type="xsd:string"/>
-    <xsd:element name="modTypeGuid" type="xsd:string"/>
-    <xsd:element name="branchGuid" type="xsd:string"/>
+    <xsd:element name="relations" type="RemoteBasicGuidRelation1" maxOccurs="unbounded" minOccurs="1"/>
     <xsd:element name="networkSender" type="RemoteNetworkSender1" maxOccurs="1" minOccurs="1"/>
   </xsd:sequence>
 </xsd:complexType>
@@ -69,22 +47,9 @@
   </xsd:sequence>
 </xsd:complexType>
 
-<xsd:complexType name="RemotePurgedArtifactsEvent1">
-  <xsd:sequence>
-    <xsd:element name="artifacts" type="RemoteBasicGuidArtifact1" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="networkSender" type="RemoteNetworkSender1" maxOccurs="1" minOccurs="1"/>
-  </xsd:sequence>
-</xsd:complexType>
-
-<xsd:complexType name="RemoteAccessControlArtifactsEvent1">
-  <xsd:sequence>
-    <xsd:element name="modTypeGuid" type="xsd:string"/>
-    <xsd:element name="artifacts" type="RemoteBasicGuidArtifact1" maxOccurs="unbounded" minOccurs="1"/>
-  </xsd:sequence>
-</xsd:complexType>
-
 <xsd:complexType name="RemoteBasicGuidRelation1">
   <xsd:sequence>
+    <xsd:element name="modTypeGuid" type="xsd:string"/>
     <xsd:element name="branchGuid" type="xsd:string"/>
     <xsd:element name="relTypeGuid" type="xsd:string"/>
     <xsd:element name="gammaId" type="xsd:int"/>
@@ -93,14 +58,16 @@
   </xsd:sequence>
 </xsd:complexType>
 
-
-<xsd:complexType name="RemoteBasicModifiedGuidArtifact1">
+<xsd:complexType name="RemoteBasicGuidArtifact1">
   <xsd:sequence>
+    <xsd:element name="modTypeGuid" type="xsd:string"/>
     <xsd:element name="branchGuid" type="xsd:string"/>
     <xsd:element name="artTypeGuid" type="xsd:string"/>
-    <xsd:element name="artGuid" type="xsd:string"/>    
+    <xsd:element name="artGuid" type="xsd:string"/>
     <xsd:element name="attributes" type="RemoteAttributeChange1" maxOccurs="unbounded" minOccurs="1"/>
+    <xsd:element name="toArtTypeGuid" type="xsd:string"/>
   </xsd:sequence>
+    
 </xsd:complexType>
 
 <xsd:complexType name="RemoteAttributeChange1">
@@ -113,13 +80,6 @@
   </xsd:sequence>
 </xsd:complexType>
 
-<xsd:complexType name="RemoteBasicGuidArtifact1">
-  <xsd:sequence>
-    <xsd:element name="branchGuid" type="xsd:string"/>
-    <xsd:element name="artTypeGuid" type="xsd:string"/>
-    <xsd:element name="artGuid" type="xsd:string"/>
-  </xsd:sequence>
-</xsd:complexType>
 
 <xsd:complexType name="RemoteNetworkSender1">
   <xsd:sequence>

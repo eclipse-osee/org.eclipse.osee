@@ -69,7 +69,7 @@ public class RelationLink {
    /**
     * Return existing RelationLink or create new one. This needs to be synchronized so two threads don't create the same
     * link object twice.
-    *
+    * 
     * @param relationId 0 or relationId if already created
     */
    public static synchronized RelationLink getOrCreate(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType) {
@@ -233,7 +233,7 @@ public class RelationLink {
 
       if (notify) {
          try {
-            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.RationaleMod, this,
+            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.ModifiedRationale, this,
                   getABranch(), relationType.getName());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

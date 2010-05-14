@@ -23,7 +23,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event.msgs.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -94,11 +95,14 @@ public class RelationTransactionData extends BaseTransactionData {
                   relation.getGammaId(), relation.getArtifactA().getBasicGuidArtifact(),
                   relation.getArtifactB().getBasicGuidArtifact());
       if (getModificationType() == ModificationType.ARTIFACT_DELETED || getModificationType() == ModificationType.DELETED) {
-         transactionEvent.getDeletedRel().add(defaultBasicGuidRelation);
+         transactionEvent.getRelations().add(
+               new EventBasicGuidRelation(RelationEventType.Deleted, defaultBasicGuidRelation));
       } else if (getModificationType() == ModificationType.MODIFIED) {
-         transactionEvent.getModifiedRel().add(defaultBasicGuidRelation);
+         transactionEvent.getRelations().add(
+               new EventBasicGuidRelation(RelationEventType.ModifiedRationale, defaultBasicGuidRelation));
       } else if (getModificationType() == ModificationType.INTRODUCED || getModificationType() == ModificationType.NEW || getModificationType() == ModificationType.UNDELETED) {
-         transactionEvent.getAddedRel().add(defaultBasicGuidRelation);
+         transactionEvent.getRelations().add(
+               new EventBasicGuidRelation(RelationEventType.Added, defaultBasicGuidRelation));
       } else {
          OseeLog.log(Activator.class, Level.SEVERE, "Unhandled relation modified type " + relationEventType);
       }

@@ -13,30 +13,6 @@
        </xsd:appinfo>
     </xsd:annotation>
 
-<xsd:complexType name="TransactionEvent">
-  <xsd:sequence>
-    <xsd:element name="branchGuid" type="xsd:string"/>
-    <xsd:element name="transactionId" type="xsd:int"/>
-    <xsd:element name="modified" type="BasicModifiedGuidArtifact" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="added" type="DefaultBasicGuidArtifact" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="deleted" type="DefaultBasicGuidArtifact" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="modifiedRel" type="DefaultBasicGuidRelation" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="addedRel" type="DefaultBasicGuidRelation" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="deletedRel" type="DefaultBasicGuidRelation" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="networkSender" type="NetworkSender" maxOccurs="1" minOccurs="1"/>
-  </xsd:sequence>
-</xsd:complexType>
-
-<xsd:complexType name="BranchRenameEvent">
-  <xsd:sequence>
-    <xsd:element name="name" type="xsd:string"/>
-    <xsd:element name="shortName" type="xsd:string"/>
-    <xsd:element name="modTypeGuid" type="xsd:string"/>
-    <xsd:element name="branchGuid" type="xsd:string"/>
-    <xsd:element name="networkSender" type="NetworkSender" maxOccurs="1" minOccurs="1"/>
-  </xsd:sequence>
-</xsd:complexType>
-
 <xsd:complexType name="BranchEvent">
   <xsd:sequence>
     <xsd:element name="modTypeGuid" type="xsd:string"/>
@@ -58,22 +34,6 @@
   <xsd:sequence>
     <xsd:element name="transactionIds" type="xsd:string" maxOccurs="unbounded" minOccurs="1"/>
     <xsd:element name="networkSender" type="NetworkSender" maxOccurs="1" minOccurs="1"/>
-  </xsd:sequence>
-</xsd:complexType>
-
-<xsd:complexType name="AccessControlArtifactsEvent">
-  <xsd:sequence>
-    <xsd:element name="modTypeGuid" type="xsd:string"/>
-    <xsd:element name="artifacts" type="DefaultBasicGuidArtifact" maxOccurs="unbounded" minOccurs="1"/>
-  </xsd:sequence>
-</xsd:complexType>
-
-<xsd:complexType name="BasicModifiedGuidArtifact">
-  <xsd:sequence>
-    <xsd:element name="branchGuid" type="xsd:string"/>
-    <xsd:element name="artTypeGuid" type="xsd:string"/>
-    <xsd:element name="artGuid" type="xsd:string"/>    
-    <xsd:element name="attributes" type="AttributeChange" maxOccurs="unbounded" minOccurs="1"/>
   </xsd:sequence>
 </xsd:complexType>
 

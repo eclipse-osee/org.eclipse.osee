@@ -17,7 +17,7 @@ public enum RelationEventType {
 
    Deleted("AISIbR2MjAo7JhvDvkgA"),
    Added("AISIbR69A2yjMFpbsSgA"),
-   RationaleMod("AISIbR9Tm0dwqN1KdoAA"),
+   ModifiedRationale("AISIbR9Tm0dwqN1KdoAA"),
    ReOrdered("AISIbRohWReUi5aitFgA"),
    Undeleted("AISIbRqzlF3s4TeMvzgA");
 

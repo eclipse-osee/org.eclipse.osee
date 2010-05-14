@@ -19,9 +19,9 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.msgs.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
@@ -97,8 +97,13 @@ public class InternalEventManager2 {
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
                if (sender.isLocal()) {
-                  RemoteEventManager2.getInstance().kick(
-                        FrameworkEventUtil.getRemotePurgedArtifactsEvent(sender.getNetworkSender2(), artifactChanges));
+                  TransactionEvent transactionEvent = new TransactionEvent();
+                  transactionEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());
+                  transactionEvent.setNetworkSender(sender.getNetworkSender2());
+                  for (EventBasicGuidArtifact guidArt : artifactChanges) {
+                     transactionEvent.getArtifacts().add(guidArt);
+                  }
+                  RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemoteTransactionEvent(transactionEvent));
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -122,9 +127,13 @@ public class InternalEventManager2 {
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
                if (sender.isLocal()) {
-                  RemoteEventManager2.getInstance().kick(
-                        FrameworkEventUtil.getRemoteChangeTypeArtifactsEvent(sender.getNetworkSender2(),
-                              toArtifactTypeGuid, artifactChanges));
+                  TransactionEvent transactionEvent = new TransactionEvent();
+                  transactionEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());
+                  transactionEvent.setNetworkSender(sender.getNetworkSender2());
+                  for (EventBasicGuidArtifact guidArt : artifactChanges) {
+                     transactionEvent.getArtifacts().add(guidArt);
+                  }
+                  RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemoteTransactionEvent(transactionEvent));
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

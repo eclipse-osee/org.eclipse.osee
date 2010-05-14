@@ -19,8 +19,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {RemoteNetworkSenderTest.class, ArtifactEventManagerTest.class,
-      ArtifactEventManagerLoopbackTest.class, ArtifactLoaderTest.class, Artifact_getLastModified.class,})
+@Suite.SuiteClasses( {ArtifactEventManagerLoopbackTest.class, RemoteNetworkSenderTest.class,
+      ArtifactEventManagerTest.class, ArtifactLoaderTest.class, Artifact_getLastModified.class,})
 /**
  * @author Donald G. Dunne
  */
