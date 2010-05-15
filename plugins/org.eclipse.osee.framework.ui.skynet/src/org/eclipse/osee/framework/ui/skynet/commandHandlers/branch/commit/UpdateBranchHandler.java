@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit;
 
 import java.util.List;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -19,6 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -45,13 +47,9 @@ public class UpdateBranchHandler extends CommandHandler {
    protected boolean isValid(Branch branch) throws OseeCoreException {
       boolean result = false;
       if (branch.hasParentBranch()) {
-         try {
-            result = !branch.getParentBranch().equals(CoreBranches.SYSTEM_ROOT);
-            result &= branch.isEditable() && branch.getBranchType().isWorkingBranch();
-            result &= branch.getChildBranches().isEmpty();
-         } catch (Exception ex) {
-            result = false;
-         }
+         result = !branch.getParentBranch().equals(CoreBranches.SYSTEM_ROOT);
+         result &= branch.isEditable() && branch.getBranchType().isOfType(BranchType.WORKING, BranchType.BASELINE);
+         result &= branch.getChildBranches().isEmpty();
       }
       return result;
    }
