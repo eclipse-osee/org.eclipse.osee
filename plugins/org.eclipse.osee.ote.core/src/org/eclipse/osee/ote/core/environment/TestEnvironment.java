@@ -128,7 +128,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       this.factory = factory;
       this.testStation = factory.getTestStation();
       this.runtimeManager = factory.getRuntimeManager();
-      this.runtimeManager.addRuntimeLibraryListener(Activator.getInstance());
 
       this.associatedObjectListeners = new HashMap<Class<?>, ArrayList<IAssociatedObjectListener>>();
       this.associatedObjects = new HashMap<Class<?>, Object>(100);
@@ -414,7 +413,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       }
       isShutdown = true;
       runtimeManager.cleanup();
-      runtimeManager.removeRuntimeLibraryListener(Activator.getInstance());
       Activator.getInstance().unregisterTestEnvironment();
       // here we remove all environment tasks (emulators)
       removeAllTasks();
@@ -542,18 +540,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    public IServiceConnector getConnector() {
       return connector;
-   }
-
-   //   public void setConnector(IServiceConnector connector) {
-   //      this.connector = connector;
-   //   }
-
-   public void setupClassLoaderAndJar(String[] jarVersions, String classPath) throws Exception {
-      setupClassLoaderAndJar(jarVersions, new String[] {classPath});
-   }
-
-   public void setupClassLoaderAndJar(String[] jarVersions, String[] classPaths) throws Exception {
-      getRuntimeManager().setupClassLoaderAndJar(jarVersions, classPaths);
    }
 
    @Deprecated

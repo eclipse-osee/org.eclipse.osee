@@ -382,58 +382,6 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       return jarCache;
    }
 
-   public final boolean setupClassLoaderAndJar(String[] jarVersions, String[] classpaths) throws Exception {
-      return configureMessages(jarVersions, classpaths);
-
-   }
-
-   private boolean configureMessages(String[] jarVersions, String[] classpaths) throws IOException, BundleException {
-
-      if (!checkCurrentJarVersions(jarVersions).getStatus()) {
-         if (runtimeLibraryLoader != null) {
-            onRuntimeUnloaded();
-         }
-         currentJarVersions = jarVersions;
-         Arrays.sort(currentJarVersions);
-         runtimeLibraryLoader = getClassLoader(jarVersions);
-         scriptClassLoader =
-               new OseeURLClassLoader("Script ClassLoader", Lib.getUrlFromString(classpaths), this.runtimeLibraryLoader);
-         onRuntimeLoaded();
-         return true;
-      }
-
-      // NOTE cheap fix here.... we need to do this the right way so that the classpaths can get
-      // updated.... look at resetScriptClassloader
-      scriptClassLoader =
-            new OseeURLClassLoader("Script ClassLoader", Lib.getUrlFromString(classpaths), this.runtimeLibraryLoader);
-      return false;
-   }
-
-   /**
-    * @deprecated
-    */
-   @Deprecated
-   @Override
-   public void onRuntimeLoaded() {
-      for (RuntimeLibraryListener listener : listeners) {
-         if (scriptClassLoader == null) {
-            listener.onPostRuntimeLibraryUpdated(ExportClassLoader.getInstance());
-         } else {
-            listener.onPostRuntimeLibraryUpdated(scriptClassLoader);
-         }
-      }
-   }
-
-   /**
-    * @deprecated
-    */
-   @Deprecated
-   @Override
-   public void onRuntimeUnloaded() {
-      for (RuntimeLibraryListener listener : listeners) {
-         listener.onRuntimeLibraryUnload();
-      }
-   }
 
    /**
     * @throws BundleException
@@ -591,12 +539,6 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
 		   return;
 	   }
 	   cleanUpNeeded = false;
-
-	   try {
-		   onRuntimeUnloaded();
-	   } catch (Throwable th) {
-		   OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE, th);
-	   }
 
 
       for (Bundle bundle : installedBundles) {

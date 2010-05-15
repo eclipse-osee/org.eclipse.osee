@@ -13,11 +13,9 @@ package org.eclipse.osee.ote.core.internal;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.OteProperties;
 import org.eclipse.osee.ote.core.StandardShell;
 import org.eclipse.osee.ote.core.cmd.CommandDistributer;
@@ -27,7 +25,6 @@ import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.eclipse.osee.ote.core.environment.console.ConsoleCommandManager;
 import org.eclipse.osee.ote.core.environment.console.ICommandManager;
 import org.eclipse.osee.ote.core.environment.interfaces.RuntimeConfigurationInitilizer;
-import org.eclipse.osee.ote.core.environment.interfaces.RuntimeLibraryListener;
 import org.eclipse.osee.ote.core.environment.status.OTEStatusBoard;
 import org.eclipse.osee.ote.core.environment.status.StatusBoard;
 import org.osgi.framework.BundleActivator;
@@ -40,7 +37,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * @author Andrew M. Finkbeiner
  * @author Ryan D. Brooks
  */
-public class Activator implements BundleActivator, RuntimeLibraryListener {
+public class Activator implements BundleActivator {
 
    private ServiceRegistration statusBoardRegistration;
    private ServiceRegistration testEnvironmentRegistration;
@@ -48,7 +45,6 @@ public class Activator implements BundleActivator, RuntimeLibraryListener {
    CommandDistributer commandDistributer;
    private static Activator activator;
    private BundleContext bundleContext;
-   private List<RuntimeConfigurationInitilizer> initializersToUninitialize = new ArrayList<RuntimeConfigurationInitilizer>();
    private CompositeKeyHashMap<String, ServiceTrackerCustomizer, ServiceTracker> serviceTrackers = new CompositeKeyHashMap<String, ServiceTrackerCustomizer, ServiceTracker>();
    private ConsoleCommandManager consoleCommandManager;
    private StandardShell stdShell;
@@ -83,7 +79,6 @@ private ServiceDependencyTracker serviceDependencyTracker;
       closeAllValidServiceTrackers();
       statusBoardRegistration.unregister();
       unregisterTestEnvironment();
-      stopRuntimeServices();    
       if (stdShell != null) {
          stdShell.shutdown();
       }
@@ -110,52 +105,6 @@ private ServiceDependencyTracker serviceDependencyTracker;
          testEnvironmentRegistration.unregister();
       }
       testEnvironmentRegistration = bundleContext.registerService(TestEnvironmentInterface.class.getName(), env, new Hashtable());
-   }
-
-   public void onPostRuntimeLibraryUpdated(ClassLoader classloader) {
-      TestEnvironmentInterface env;
-      try {
-         env = (TestEnvironmentInterface)getServiceTracker(TestEnvironmentInterface.class.getName(), null).waitForService(2000);
-      } catch (InterruptedException ex1) {
-         throw new IllegalStateException("interrupted while waiting for service", ex1);
-      }
-      if (env == null) {
-         throw new IllegalStateException("Unable to acquire test environment service");
-      }
-      Class<? extends RuntimeConfigurationInitilizer> clazz = env.getEnvironmentFactory().getRuntimeClass();
-      if (clazz == null) {
-         String className = env.getEnvironmentFactory().getRuntimeLibraryConfiguration();
-         if(System.getProperty("ote.runtime.config.class") != null){
-            className = System.getProperty("ote.runtime.config.class");
-         }
-         try {
-            clazz = (Class<? extends RuntimeConfigurationInitilizer>)classloader.loadClass(className).asSubclass(RuntimeConfigurationInitilizer.class);
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, "Could not use reflection to load runtime configuration class", ex);
-            return;
-         }
-      }
-      try {
-         RuntimeConfigurationInitilizer initilizer = clazz.newInstance();
-         initializersToUninitialize.add(initilizer);
-         initilizer.startRuntimeOsgiServices(bundleContext);
-         if (env != null && env instanceof TestEnvironment){
-            ((TestEnvironment)env).waitForWorkerThreadsToComplete();
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Failed to initialize runtime. Runtime Config Class=" + clazz.getName(), ex);
-      } 
-   }
-
-   public void onRuntimeLibraryUnload() {
-      stopRuntimeServices();
-   }   
-
-   private synchronized void stopRuntimeServices(){
-      for(RuntimeConfigurationInitilizer initializer:initializersToUninitialize){
-         initializer.stopRuntimeOsgiServices();
-      }
-      initializersToUninitialize.clear();
    }
 
    /**

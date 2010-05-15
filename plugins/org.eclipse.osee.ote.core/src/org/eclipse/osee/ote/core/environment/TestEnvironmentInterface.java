@@ -78,8 +78,6 @@ public interface TestEnvironmentInterface {
    public Remote getControlInterface(String id) ;
    public void registerControlInterface(String id, Remote controlInterface) ;
    public IServiceConnector getConnector() ;
-   public void setupClassLoaderAndJar(String[] jarVersions, String classPath) throws Exception ;
-   public void setupClassLoaderAndJar(String[] jarVersions, String[] classPaths) throws Exception ;
    public IEnvironmentFactory getEnvironmentFactory();
    public void initializationThreadAdd(Callable callable);
 }

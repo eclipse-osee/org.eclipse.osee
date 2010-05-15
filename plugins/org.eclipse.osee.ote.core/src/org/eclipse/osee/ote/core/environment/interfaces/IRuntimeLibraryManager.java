@@ -30,15 +30,6 @@ public interface IRuntimeLibraryManager extends Xmlizable {
 
    ReturnStatus isRunningJarVersions(String[] versions);
 
-   /**
-    * Sets up the class loader
-    * 
-    * @param jarVersions
-    * @param classPaths
-    * @return true if there is no change in class loader configuration
-    * @throws Exception
-    */
-   boolean setupClassLoaderAndJar(String[] jarVersions, String[] classPaths) throws Exception;
 
    void addRuntimeLibraryListener(RuntimeLibraryListener listener);
 
@@ -66,19 +57,4 @@ public interface IRuntimeLibraryManager extends Xmlizable {
 
    void cleanup();
 
-   /**
-    * This will be replaced by using OSGi bundles and services in the future
-    * 
-    * @deprecated
-    */
-   @Deprecated
-   void onRuntimeUnloaded();
-
-   /**
-    * This will be replaced by using OSGi bundles and services in the future
-    * 
-    * @deprecated
-    */
-   @Deprecated
-   void onRuntimeLoaded();
 }
