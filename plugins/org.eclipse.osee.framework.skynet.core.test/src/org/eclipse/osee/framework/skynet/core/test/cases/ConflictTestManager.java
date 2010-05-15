@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
@@ -405,7 +406,13 @@ public class ConflictTestManager {
          }
       }
       if (artNumber == -1) {
-         throw new Exception("Source Artifact " + sourceArtifactId + " could not be found in the list of artifatcs");
+         // The relation order attribute of the parent folder will have a RelationOrder
+         // conflict that is not relevant to this test. -- RS
+         if (conflict.getArtifactName().equals("System Requirements") && (conflict.getAttributeType().equals(CoreAttributeTypes.RELATION_ORDER))) {
+            return;
+         } else {
+            throw new Exception("Source Artifact " + sourceArtifactId + " could not be found in the list of artifatcs");
+         }
       }
       for (AttributeValue value : conflictDefs[artNumber].values) {
          if (value.attributeName.equals(attributeName)) {
