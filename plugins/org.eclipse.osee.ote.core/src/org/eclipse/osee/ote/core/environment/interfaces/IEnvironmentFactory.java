@@ -28,15 +28,5 @@ public interface IEnvironmentFactory {
    ICommandContextFactory getCommandContextFactory();
    IRuntimeLibraryManager getRuntimeManager();
    ITestStation getTestStation();
-   /**
-    * gets the class for RuntimeConfiguration. Return null if the class needs to be loaded using reflection
-    * @return the class or null if the class must be dynamically loaded
-    */
-   Class<? extends RuntimeConfigurationInitilizer> getRuntimeClass();
-   
-   /**
-    * dybamically loads runtime configuration class. This is only called if {@link #getRuntimeClass()} returns null;
-    * @return
-    */
-   String getRuntimeLibraryConfiguration();
+
 }
