@@ -394,12 +394,21 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    public boolean isOrphan() throws OseeCoreException {
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(getBranch());
-      for (Artifact parent = getParent(); parent != null; parent = parent.getParent()) {
-         if (parent.equals(root)) {
-            return false;
-         }
+
+      if (root.equals(getArtifactRoot())) {
+         return false;
+      } else {
+         return true;
       }
-      return true;
+   }
+
+   public Artifact getArtifactRoot() throws OseeCoreException {
+      Artifact artifactRoot = null;
+
+      for (Artifact parent = getParent(); parent != null; parent = parent.getParent()) {
+         artifactRoot = parent;
+      }
+      return artifactRoot;
    }
 
    public Artifact getChild(String descriptiveName) throws OseeCoreException {

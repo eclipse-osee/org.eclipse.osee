@@ -1485,7 +1485,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    /**
     * Reveal an artifact in the viewer and select it.
-    *
+    * 
     * @param artifact
     */
    public static void revealArtifact(Artifact artifact) {
@@ -1552,8 +1552,14 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                artifactData.setArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), artifact.getBranch(),
                      false));
             }
-            if (artifact.isOrphan()) {
-               throw new OseeStateException("The artifact " + artifact.getName() + " does not have a parent (orphan).");
+
+            Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch());
+            Artifact artifactRoot = artifact.getArtifactRoot();
+
+            if (!root.equals(artifactRoot)) {
+               String artifactRootName = artifactRoot != null ? artifactRoot.getName() : artifact.getName();
+               throw new OseeStateException(
+                     "The artifact " + artifact.getName() + " is rooted on an orphan tree at " + artifactRootName);
             }
          }
       }

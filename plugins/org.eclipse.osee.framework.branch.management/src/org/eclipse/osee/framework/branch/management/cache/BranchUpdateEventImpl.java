@@ -30,9 +30,9 @@ import org.eclipse.osee.framework.core.server.IApplicationServerLookupProvider;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.services.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.core.util.HttpMessage;
+import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**

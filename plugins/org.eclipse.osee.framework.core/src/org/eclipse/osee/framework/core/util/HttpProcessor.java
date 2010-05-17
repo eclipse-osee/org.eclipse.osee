@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.jdk.core.util;
+package org.eclipse.osee.framework.core.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,7 +17,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethodBase;
@@ -29,6 +28,10 @@ import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -96,7 +99,7 @@ public class HttpProcessor {
       return new URI(locator);
    }
 
-   public static String put(URL url, InputStream inputStream, String contentType, String encoding) throws Exception {
+   public static String put(URL url, InputStream inputStream, String contentType, String encoding) throws OseeCoreException {
       int statusCode = -1;
       String response = null;
       PutMethod method = new PutMethod(url.toString());
@@ -115,14 +118,14 @@ public class HttpProcessor {
          result.setEncoding(method.getResponseCharSet());
          if (statusCode != HttpURLConnection.HTTP_CREATED) {
             String exceptionString = Lib.inputStreamToString(responseInputStream);
-            throw new Exception(exceptionString);
+            throw new OseeCoreException(exceptionString);
          } else {
             responseInputStream = method.getResponseBodyAsStream();
             response = Lib.inputStreamToString(responseInputStream);
          }
 
       } catch (Exception ex) {
-         throw new IOException(String.format("Error during POST [%s] - status code: [%s]", url, statusCode), ex);
+         OseeExceptions.wrapAndThrow(ex);
       } finally {
          try {
             if (responseInputStream != null) {
@@ -137,7 +140,7 @@ public class HttpProcessor {
       return response;
    }
 
-   public static AcquireResult post(URL url, InputStream inputStream, String contentType, String encoding, OutputStream outputStream) throws IOException {
+   public static AcquireResult post(URL url, InputStream inputStream, String contentType, String encoding, OutputStream outputStream) throws OseeCoreException {
       AcquireResult result = new AcquireResult();
       int statusCode = -1;
 
@@ -156,12 +159,12 @@ public class HttpProcessor {
          result.setEncoding(method.getResponseCharSet());
          if (statusCode != HttpStatus.SC_ACCEPTED) {
             String exceptionString = Lib.inputStreamToString(httpInputStream);
-            throw new Exception(exceptionString);
+            throw new OseeCoreException(exceptionString);
          } else {
             Lib.inputStreamToOutputStream(httpInputStream, outputStream);
          }
       } catch (Exception ex) {
-         throw new IOException(String.format("Error during POST [%s] - status code: [%s] ", url, statusCode), ex);
+         OseeExceptions.wrapAndThrow(ex);
       } finally {
          try {
             result.setCode(statusCode);

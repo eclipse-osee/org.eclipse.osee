@@ -1698,8 +1698,14 @@
         <extension
           point="org.eclipse.debug.core.statusHandlers">
        <statusHandler
-             class="org.eclipse.osee.framework.ui.skynet.handler.ArtifactChangeHandler"
+             class="org.eclipse.osee.framework.ui.skynet.handler.RemoveTrackChangesHandler"
              code="256"
+             id="org.eclipse.osee.framework.ui.skynet.ArtifactChangeHandler"
+             plugin="org.eclipse.osee.framework.skynet.core">
+       </statusHandler>
+       <statusHandler
+             class="org.eclipse.osee.framework.ui.skynet.handler.ArtifactChangeHandler"
+             code="257"
              id="org.eclipse.osee.framework.ui.skynet.ArtifactChangeHandler"
              plugin="org.eclipse.osee.framework.skynet.core">
        </statusHandler>
