@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core.relation;
 public enum RelationEventType {
 
    Deleted("AISIbR2MjAo7JhvDvkgA"),
+   Purged("AAn_P4kbcxaUKL4bosgA"),
    Added("AISIbR69A2yjMFpbsSgA"),
    ModifiedRationale("AISIbR9Tm0dwqN1KdoAA"),
    ReOrdered("AISIbRohWReUi5aitFgA"),

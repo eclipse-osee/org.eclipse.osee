@@ -92,17 +92,22 @@ public class RelationTransactionData extends BaseTransactionData {
             relation.getBranch(), relation.getRelationType().getName()));
       DefaultBasicGuidRelation defaultBasicGuidRelation =
             new DefaultBasicGuidRelation(relation.getBranch().getGuid(), relation.getRelationType().getGuid(),
-                  relation.getGammaId(), relation.getArtifactA().getBasicGuidArtifact(),
+                  relation.getId(), relation.getGammaId(), relation.getArtifactA().getBasicGuidArtifact(),
                   relation.getArtifactB().getBasicGuidArtifact());
       if (getModificationType() == ModificationType.ARTIFACT_DELETED || getModificationType() == ModificationType.DELETED) {
          transactionEvent.getRelations().add(
-               new EventBasicGuidRelation(RelationEventType.Deleted, defaultBasicGuidRelation));
+               new EventBasicGuidRelation(RelationEventType.Deleted, relation.getAArtifactId(),
+                     relation.getBArtifactId(), defaultBasicGuidRelation));
       } else if (getModificationType() == ModificationType.MODIFIED) {
-         transactionEvent.getRelations().add(
-               new EventBasicGuidRelation(RelationEventType.ModifiedRationale, defaultBasicGuidRelation));
+         EventBasicGuidRelation event =
+               new EventBasicGuidRelation(RelationEventType.ModifiedRationale, relation.getAArtifactId(),
+                     relation.getBArtifactId(), defaultBasicGuidRelation);
+         event.setRationale(relation.getRationale());
+         transactionEvent.getRelations().add(event);
       } else if (getModificationType() == ModificationType.INTRODUCED || getModificationType() == ModificationType.NEW || getModificationType() == ModificationType.UNDELETED) {
          transactionEvent.getRelations().add(
-               new EventBasicGuidRelation(RelationEventType.Added, defaultBasicGuidRelation));
+               new EventBasicGuidRelation(RelationEventType.Added, relation.getAArtifactId(),
+                     relation.getBArtifactId(), defaultBasicGuidRelation));
       } else {
          OseeLog.log(Activator.class, Level.SEVERE, "Unhandled relation modified type " + relationEventType);
       }

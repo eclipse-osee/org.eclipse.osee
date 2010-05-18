@@ -52,9 +52,13 @@
     <xsd:element name="modTypeGuid" type="xsd:string"/>
     <xsd:element name="branchGuid" type="xsd:string"/>
     <xsd:element name="relTypeGuid" type="xsd:string"/>
+    <xsd:element name="relationId" type="xsd:int"/>
     <xsd:element name="gammaId" type="xsd:int"/>
+    <xsd:element name="artAId" type="xsd:int"/>
     <xsd:element name="artA" type="RemoteBasicGuidArtifact1" maxOccurs="1" minOccurs="1"/>
+    <xsd:element name="artBId" type="xsd:int"/>
     <xsd:element name="artB" type="RemoteBasicGuidArtifact1" maxOccurs="1" minOccurs="1"/>
+    <xsd:element name="rationale" type="xsd:string"/>
   </xsd:sequence>
 </xsd:complexType>
 

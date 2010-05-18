@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredExcep
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -39,9 +40,14 @@ import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
  * Manages remote events from the SkynetEventService.
@@ -86,6 +92,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                         RemoteTransactionEvent1 event1 = (RemoteTransactionEvent1) remoteEvent;
                         TransactionEvent transEvent = FrameworkEventUtil.getTransactionEvent(event1);
                         updateArtifacts(sender, transEvent);
+                        updateRelations(sender, transEvent);
                         InternalEventManager2.kickTransactionEvent(sender, transEvent);
                         // TODO process transaction event by updating artifact/relation caches
                      } catch (Exception ex) {
@@ -105,9 +112,11 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
     * Updates local cache
     **/
    private static void updateArtifacts(Sender sender, TransactionEvent transEvent) {
-      // Handle Added Artifacts
-      // Nothing to do for added cause they're not in cache yet.  Apps will load if they need them.
+      // Don't crash on any one artifact update problem (no update method throughs exceptions)
       for (EventBasicGuidArtifact guidArt : transEvent.getArtifacts()) {
+         System.out.println("UpdateArtifacts -> " + guidArt);
+         // Handle Added Artifacts
+         // Nothing to do for added cause they're not in cache yet.  Apps will load if they need them.
          if (guidArt.getModType() == EventModType.Added) {
             System.out.println("UpdateArtifacts -> added " + guidArt);
          }
@@ -124,9 +133,72 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       }
    }
 
+   private static void updateRelations(Sender sender, TransactionEvent transEvent) {
+      for (EventBasicGuidRelation guidArt : transEvent.getRelations()) {
+         // Don't crash on any one relation update problem
+         try {
+            System.out.println("UpdateRelation -> " + guidArt);
+            RelationEventType eventType = guidArt.getModType();
+            String branchGuid = guidArt.getBranchGuid();
+            Branch branch = BranchManager.getBranchByGuid(branchGuid);
+            RelationType relationType = RelationTypeManager.getTypeByGuid(guidArt.getRelTypeGuid());
+            Artifact aArtifact = ArtifactCache.getActive(guidArt.getArtA().getGuid(), branch);
+            Artifact bArtifact = ArtifactCache.getActive(guidArt.getArtB().getGuid(), branch);
+            // Nothing in cache, ignore
+            if (aArtifact == null && bArtifact == null) {
+               return;
+            }
+            boolean aArtifactLoaded = aArtifact != null;
+            boolean bArtifactLoaded = bArtifact != null;
+
+            if (aArtifactLoaded || bArtifactLoaded) {
+               if (eventType == RelationEventType.Added) {
+                  RelationLink relation =
+                        RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
+                              guidArt.getArtBId(), branch, branch);
+
+                  if (relation == null || relation.getModificationType() == ModificationType.DELETED || relation.getModificationType() == ModificationType.ARTIFACT_DELETED) {
+                     relation =
+                           RelationLink.getOrCreate(guidArt.getArtAId(), guidArt.getArtBId(), branch, branch,
+                                 relationType, guidArt.getRelationId(), guidArt.getGammaId(), guidArt.getRationale(),
+                                 ModificationType.NEW);
+
+                  }
+               } else if (eventType == RelationEventType.Deleted || eventType == RelationEventType.Purged) {
+                  RelationLink relation =
+                        RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
+                              guidArt.getArtBId(), branch, branch);
+                  if (relation != null) {
+                     relation.internalRemoteEventDelete();
+                  }
+               } else if (eventType == RelationEventType.ModifiedRationale) {
+                  RelationLink relation =
+                        RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
+                              guidArt.getArtBId(), branch, branch);
+                  if (relation != null) {
+                     relation.internalSetRationale(guidArt.getRationale());
+                  }
+               } else if (eventType == RelationEventType.Undeleted) {
+                  RelationLink relation =
+                        RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
+                              guidArt.getArtBId(), branch, branch);
+                  if (relation != null) {
+                     relation.undelete();
+                  }
+               } else if (eventType == RelationEventType.ReOrdered) {
+                  // TODO Handle this
+               } else {
+                  OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled mod type [%s]", eventType));
+               }
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+   }
+
    private static void updateDeletedArtifact(DefaultBasicGuidArtifact guidArt) {
       try {
-         System.out.println("UpdateArtifacts -> deleted" + guidArt);
          String branchGuid = guidArt.getBranchGuid();
          Branch branch = BranchManager.getBranchByGuid(branchGuid);
          Artifact artifact = ArtifactCache.getActive(guidArt.getGuid(), branch);
@@ -142,7 +214,6 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
 
    private static void updateModifiedArtifact(EventModifiedBasicGuidArtifact guidArt) {
       try {
-         System.out.println("UpdateArtifacts -> modified " + guidArt);
          String branchGuid = guidArt.getBranchGuid();
          Branch branch = BranchManager.getBranchByGuid(branchGuid);
          Artifact artifact = ArtifactCache.getActive(guidArt.getGuid(), branch);

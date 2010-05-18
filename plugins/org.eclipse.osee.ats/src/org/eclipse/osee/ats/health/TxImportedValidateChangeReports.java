@@ -22,6 +22,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -34,7 +36,6 @@ import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -149,9 +150,9 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
 
          SkynetTransaction transaction = new SkynetTransaction(branch, "Import Validate Change Reports");
          List<Artifact> artifacts =
-               ArtifactQuery.getArtifactListFromTypeAndName(GeneralData.ARTIFACT_TYPE, "VCR_%", branch);
+               ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.GeneralData, "VCR_%", branch);
          for (Artifact artifact : artifacts) {
-            String data = artifact.getSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
+            String data = artifact.getSoleAttributeValue(CoreAttributeTypes.GENERAL_STRING_DATA);
             String name = artifact.getName();
             try {
                String dataDbGuid = getDataDbGuid(data);
@@ -160,7 +161,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
                      if (!currentDbGuid.equals(dataDbGuid)) {
                         String modified = translateImportedData(data);
                         modified = updateSourceGuid(currentDbGuid, modified);
-                        artifact.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, modified);
+                        artifact.setSoleAttributeValue(CoreAttributeTypes.GENERAL_STRING_DATA, modified);
                         artifact.persist(transaction);
                      }
                   }

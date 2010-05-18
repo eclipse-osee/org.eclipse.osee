@@ -57,7 +57,7 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
                Artifact dest = (Artifact) obj1;
                Artifact source = (Artifact) obj2;
 
-               Collection<RelationLink> links = dest.getRelations(source);
+               Collection<RelationLink> links = dest.internalGetRelations(source);
 
                Collection<String> linkNames = new ArrayList<String>(links.size());
                for (RelationLink link : links) {

@@ -67,4 +67,8 @@ public class AttributeEventModificationType {
    public String getGuid() {
       return guid;
    }
+
+   public String toString() {
+      return modificationType.name();
+   }
 }

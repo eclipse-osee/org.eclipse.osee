@@ -88,8 +88,7 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
    }
 
    public String toString() {
-      return String.format("[%s - G:%s - B:%s - A:%s]", EventModType.Modified.name(), getGuid(), getBranchGuid(),
-            getArtTypeGuid());
+      return String.format("[%s - G:%s - B:%s - A:%s]", eventModType, getGuid(), getBranchGuid(), getArtTypeGuid());
    }
 
 }

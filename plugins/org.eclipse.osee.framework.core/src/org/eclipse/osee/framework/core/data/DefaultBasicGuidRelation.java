@@ -14,10 +14,12 @@ public class DefaultBasicGuidRelation implements IBasicGuidRelation {
    String branchGuid;
    String relTypeGuid;
    int gammaId;
+   int relationId;
 
-   public DefaultBasicGuidRelation(String branchGuid, String relTypeGuid, int gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
+   public DefaultBasicGuidRelation(String branchGuid, String relTypeGuid, int relationId, int gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
       this.branchGuid = branchGuid;
       this.relTypeGuid = relTypeGuid;
+      this.relationId = relationId;
       this.gammaId = gammaId;
       this.artA = artA;
       this.artB = artB;
@@ -100,6 +102,14 @@ public class DefaultBasicGuidRelation implements IBasicGuidRelation {
          if (other.relTypeGuid != null) return false;
       } else if (!relTypeGuid.equals(other.relTypeGuid)) return false;
       return true;
+   }
+
+   public int getRelationId() {
+      return relationId;
+   }
+
+   public void setRelationId(int relationId) {
+      this.relationId = relationId;
    }
 
 }

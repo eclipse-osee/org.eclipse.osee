@@ -149,13 +149,17 @@ public class RelationLink {
    }
 
    public void undelete() {
-      markedAsChanged(ModificationType.UNDELETED, true);
+      internalUnDelete();
       try {
          OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Undeleted, this,
                getABranch(), relationType.getName());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+   }
+
+   public void internalUnDelete() {
+      markedAsChanged(ModificationType.UNDELETED, true);
    }
 
    public void internalRemoteEventDelete() {
@@ -240,22 +244,30 @@ public class RelationLink {
       if (rationale == null) {
          rationale = "";
       }
-
       if (this.rationale.equals(rationale)) {
          return;
       }
-
-      this.rationale = rationale;
+      internalSetRationale(rationale);
       markedAsChanged(ModificationType.MODIFIED, SET_DIRTY);
 
       if (notify) {
          try {
-            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.ModifiedRationale, this,
-                  getABranch(), relationType.getName());
+            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.ModifiedRationale,
+                  this, getABranch(), relationType.getName());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
+   }
+
+   public void internalSetRationale(String rationale) {
+      if (rationale == null) {
+         rationale = "";
+      }
+      if (this.rationale.equals(rationale)) {
+         return;
+      }
+      this.rationale = rationale;
    }
 
    public boolean isOfType(IRelationType oseeType) {

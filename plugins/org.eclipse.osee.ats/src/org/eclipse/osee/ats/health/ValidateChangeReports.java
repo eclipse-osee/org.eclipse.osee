@@ -28,6 +28,8 @@ import org.eclipse.osee.ats.health.change.ValidateChangeReportParser;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -42,7 +44,6 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
@@ -181,15 +182,14 @@ public class ValidateChangeReports extends XNavigateItemAction {
    static Result changeReportValidated(final String currentDbGuid, final TeamWorkFlowArtifact teamArt, XResultData resultData, boolean displayWasIs) throws OseeCoreException, ParserConfigurationException {
       String name = "VCR_" + teamArt.getHumanReadableId();
       List<Artifact> arts =
-            ArtifactQuery.getArtifactListFromTypeAndName(GeneralData.ARTIFACT_TYPE, name, AtsUtil.getAtsBranch());
+            ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.GeneralData, name, AtsUtil.getAtsBranch());
       String storedChangeReport = null;
       Artifact artifactForStore = null;
       if (arts.size() > 1) {
          throw new OseeStateException("Multiple artifacts found of name \"" + name + "\"");
       } else if (arts.size() == 1) {
          artifactForStore = arts.iterator().next();
-         storedChangeReport =
-               artifactForStore.getSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, null);
+         storedChangeReport = artifactForStore.getSoleAttributeValue(CoreAttributeTypes.GENERAL_STRING_DATA, null);
       }
       // Retrieve current
       ChangeData currentChangeData = teamArt.getBranchMgr().getChangeDataFromEarliestTransactionId();
@@ -197,10 +197,11 @@ public class ValidateChangeReports extends XNavigateItemAction {
       if (storedChangeReport == null) {
          // Reuse same artifact if already exists
          if (artifactForStore == null) {
-            artifactForStore = ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, AtsUtil.getAtsBranch(), name);
+            artifactForStore =
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, AtsUtil.getAtsBranch(), name);
          }
-         artifactForStore.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, getReport(
-               currentDbGuid, currentChangeData));
+         artifactForStore.setSoleAttributeValue(CoreAttributeTypes.GENERAL_STRING_DATA, getReport(currentDbGuid,
+               currentChangeData));
          artifactForStore.persist();
          resultData.log("Stored Change Report for " + teamArt.getHumanReadableId());
          return new Result(true, "Stored Change Report for " + teamArt.getHumanReadableId());

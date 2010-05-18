@@ -15,16 +15,20 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 public class EventBasicGuidRelation extends DefaultBasicGuidRelation {
 
    private final RelationEventType relationEventType;
+   private final int artAId;
+   private final int artBId;
+   private String rationale;
 
-   public EventBasicGuidRelation(RelationEventType relationEventType, DefaultBasicGuidRelation guidRel) {
-      super(guidRel.getBranchGuid(), guidRel.getRelTypeGuid(), guidRel.getGammaId(), guidRel.getArtA(),
-            guidRel.getArtB());
-      this.relationEventType = relationEventType;
+   public EventBasicGuidRelation(RelationEventType relationEventType, int artAId, int artBId, DefaultBasicGuidRelation guidRel) {
+      this(relationEventType, guidRel.getBranchGuid(), guidRel.getRelTypeGuid(), guidRel.getRelationId(),
+            guidRel.getGammaId(), artAId, guidRel.getArtA(), artBId, guidRel.getArtB());
    }
 
-   public EventBasicGuidRelation(RelationEventType relationEventType, String branchGuid, String relTypeGuid, int gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
-      super(branchGuid, relTypeGuid, gammaId, artA, artB);
+   public EventBasicGuidRelation(RelationEventType relationEventType, String branchGuid, String relTypeGuid, int relationId, int gammaId, int artAId, DefaultBasicGuidArtifact artA, int artBId, DefaultBasicGuidArtifact artB) {
+      super(branchGuid, relTypeGuid, relationId, gammaId, artA, artB);
       this.relationEventType = relationEventType;
+      this.artAId = artAId;
+      this.artBId = artBId;
    }
 
    public RelationEventType getModType() {
@@ -32,8 +36,8 @@ public class EventBasicGuidRelation extends DefaultBasicGuidRelation {
    }
 
    public String toString() {
-      return String.format("[%s - B:%s - TG:%s - GI:%d - A:%s - B:%s]", relationEventType, getBranchGuid(),
-            getBranchGuid(), getGammaId(), getArtA(), getArtB());
+      return String.format("[%s - B:%s - TG:%s - GI:%d - RI:%d - A:%s - B:%s]", relationEventType, getBranchGuid(),
+            getBranchGuid(), getGammaId(), getRelationId(), getArtA(), getArtB());
    }
 
    @Override
@@ -41,7 +45,9 @@ public class EventBasicGuidRelation extends DefaultBasicGuidRelation {
       final int prime = 31;
       int result = super.hashCode();
       result = prime * result + ((relationEventType == null) ? 0 : relationEventType.hashCode());
+      result = prime * result + artAId;
       result = prime * result + ((getArtA() == null) ? 0 : getArtA().hashCode());
+      result = prime * result + artBId;
       result = prime * result + ((getArtB() == null) ? 0 : getArtB().hashCode());
       return result;
    }
@@ -55,13 +61,31 @@ public class EventBasicGuidRelation extends DefaultBasicGuidRelation {
       if (relationEventType == null) {
          if (other.relationEventType != null) return false;
       } else if (!relationEventType.equals(other.relationEventType)) return false;
+      if (artAId != other.artAId) return false;
       if (getArtA() == null) {
          if (other.getArtA() != null) return false;
       } else if (!getArtA().equals(other.getArtA())) return false;
+      if (artBId != other.artBId) return false;
       if (getArtB() == null) {
          if (other.getArtB() != null) return false;
       } else if (!getArtB().equals(other.getArtB())) return false;
       return true;
+   }
+
+   public int getArtAId() {
+      return artAId;
+   }
+
+   public int getArtBId() {
+      return artBId;
+   }
+
+   public String getRationale() {
+      return rationale;
+   }
+
+   public void setRationale(String rationale) {
+      this.rationale = rationale;
    }
 
 }

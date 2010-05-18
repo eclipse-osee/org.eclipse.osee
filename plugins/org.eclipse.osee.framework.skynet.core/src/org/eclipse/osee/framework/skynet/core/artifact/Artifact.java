@@ -396,11 +396,11 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(getBranch());
 
       if (root.equals(getArtifactRoot())) {
-         return false;
+            return false;
       } else {
          return true;
+         }
       }
-   }
 
    public Artifact getArtifactRoot() throws OseeCoreException {
       Artifact artifactRoot = null;
@@ -1857,8 +1857,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     * 
     * @throws ArtifactDoesNotExist
     */
-   @Deprecated
-   public ArrayList<RelationLink> getRelations(Artifact artifact) throws OseeCoreException {
+   public ArrayList<RelationLink> internalGetRelations(Artifact artifact) throws OseeCoreException {
       ArrayList<RelationLink> relations = new ArrayList<RelationLink>();
       for (RelationLink relation : getRelationsAll(false)) {
          try {

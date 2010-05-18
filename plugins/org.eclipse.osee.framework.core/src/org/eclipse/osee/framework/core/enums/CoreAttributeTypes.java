@@ -24,6 +24,8 @@ public class CoreAttributeTypes extends NamedIdentity implements IAttributeType 
    public static final CoreAttributeTypes EMAIL = new CoreAttributeTypes("AAMFEbaZjEVoecDFCCQA", "Email");
    public static final CoreAttributeTypes FAVORITE_BRANCH =
          new CoreAttributeTypes("AAMFEbMnzS7P92knZKAA", "Favorite Branch");
+   public static final CoreAttributeTypes GENERAL_STRING_DATA =
+         new CoreAttributeTypes("AAMFEca+MB5ssx+Ax5wA", "General String Data");
    public static final CoreAttributeTypes NAME = new CoreAttributeTypes("AAMFEcF1AzV7PKuHmxwA", "Name");
    public static final CoreAttributeTypes NATIVE_CONTENT =
          new CoreAttributeTypes("AAMFEcdBJGBK9nr9TTQA", "Native Content");

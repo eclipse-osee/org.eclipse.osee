@@ -16,11 +16,11 @@ import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.store.CoverageOptionManagerStore.StoreLocation;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -43,7 +43,7 @@ public class CoverageOptionManagerStoreTest {
             ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.GeneralData, "Coverage Preferences",
                   BranchManager.getCommonBranch());
       if (artifact != null) {
-         KeyValueArtifact kvArt = new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
+         KeyValueArtifact kvArt = new KeyValueArtifact(artifact, CoreAttributeTypes.GENERAL_STRING_DATA.getName());
          kvArt.removeValues("CoverageOptions");
          kvArt.save();
          artifact.persist(transaction);
