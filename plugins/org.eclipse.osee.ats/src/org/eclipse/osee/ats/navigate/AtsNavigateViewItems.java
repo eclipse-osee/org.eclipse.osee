@@ -59,11 +59,13 @@ import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.IOperationFactory;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateContributionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateExtensionPointData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -143,11 +145,12 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          // Search Items
          items.add(new XNavigateItemOperation(null, FrameworkImage.BRANCH_CHANGE, "Open Change Report(s) by ID(s)",
-               new MultipleHridSearchOperation("", AtsEditor.ChangeReport)));
+               new MultipleHridSearchOperationFactory("Open Change Report(s) by ID(s)", AtsEditor.ChangeReport)));
          items.add(new XNavigateItemOperation(null, AtsImage.OPEN_BY_ID, "Search by ID(s) - Open World Editor",
-               new MultipleHridSearchOperation("", AtsEditor.WorldEditor)));
+               new MultipleHridSearchOperationFactory("Search by ID(s) - Open World Editor", AtsEditor.WorldEditor)));
          items.add(new XNavigateItemOperation(null, AtsImage.WORKFLOW_CONFIG, "Search by ID(s) - Open Workflow Editor",
-               new MultipleHridSearchOperation("", AtsEditor.WorkflowEditor)));
+               new MultipleHridSearchOperationFactory("Search by ID(s) - Open Workflow Editor",
+                     AtsEditor.WorkflowEditor)));
          items.add(new ArtifactImpactToActionSearchItem(null));
 
          XNavigateItem reportItems = new XNavigateItem(null, "Reports", AtsImage.REPORT);
@@ -329,4 +332,20 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       }
    }
 
+   private static final class MultipleHridSearchOperationFactory implements IOperationFactory {
+
+      private final AtsEditor atsEditor;
+      private final String operationName;
+
+      public MultipleHridSearchOperationFactory(String operationName, AtsEditor atsEditor) {
+         this.operationName = operationName;
+         this.atsEditor = atsEditor;
+      }
+
+      @Override
+      public IOperation createOperation() {
+         return new MultipleHridSearchOperation(operationName, atsEditor);
+      }
+
+   }
 }

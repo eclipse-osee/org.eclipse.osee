@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -41,7 +40,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.IOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecoratorPreferences;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
@@ -58,14 +56,14 @@ import org.eclipse.ui.dialogs.ListDialog;
 /**
  * @author Donald G. Dunne
  */
-public class MultipleHridSearchOperation extends AbstractOperation implements IOperationFactory {
+public class MultipleHridSearchOperation extends AbstractOperation {
    private String enteredIds = "";
    private boolean includeArtIds = false;
    private Branch branch;
-   List<String> ids = new ArrayList<String>();
-   Set<Artifact> resultAtsArts = new HashSet<Artifact>();
-   Set<Artifact> resultNonAtsArts = new HashSet<Artifact>();
-   Set<Artifact> artifacts = new HashSet<Artifact>();
+   private final List<String> ids = new ArrayList<String>();
+   private final Set<Artifact> resultAtsArts = new HashSet<Artifact>();
+   private final Set<Artifact> resultNonAtsArts = new HashSet<Artifact>();
+   private final Set<Artifact> artifacts = new HashSet<Artifact>();
    private final AtsEditor atsEditor;
 
    public MultipleHridSearchOperation(String operationName, AtsEditor atsEditor) {
@@ -81,9 +79,6 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IO
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Must Enter Valid Id");
             return;
          }
-         artifacts.clear();
-         resultAtsArts.clear();
-         resultNonAtsArts.clear();
          searchAndSplitResults();
          if (resultAtsArts.size() == 0 && resultNonAtsArts.size() == 0) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
@@ -289,11 +284,6 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IO
       public boolean isValid() {
          return valid;
       }
-   }
-
-   @Override
-   public IOperation createOperation() {
-      return this;
    }
 
 }
