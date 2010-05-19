@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Framework Types Tests
 Bundle-SymbolicName: org.eclipse.osee.framework.types.tests;singleton:=true
-Bundle-Version: 0.9.4.qualifier
+Bundle-Version: 0.9.5.qualifier
 Fragment-Host: org.eclipse.osee.framework.types
 Bundle-ClassPath: .
 Bundle-Vendor: Eclipse Open System Engineering Environment

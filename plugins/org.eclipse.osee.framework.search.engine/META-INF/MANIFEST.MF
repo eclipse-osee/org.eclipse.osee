@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Search Engine Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.search.engine;singleton:=true
-Bundle-Version: 0.9.4.qualifier
+Bundle-Version: 0.9.5.qualifier
 Bundle-Activator: org.eclipse.osee.framework.search.engine.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
