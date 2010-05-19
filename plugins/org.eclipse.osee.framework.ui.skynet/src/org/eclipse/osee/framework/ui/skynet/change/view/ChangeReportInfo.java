@@ -38,13 +38,15 @@ public class ChangeReportInfo implements ChangeReportInfoPresenter.Display {
 
       Composite composite = toolkit.createComposite(parent, SWT.WRAP);
       composite.setLayout(ALayout.getZeroMarginLayout(2, false));
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+      GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
+      gd.widthHint = 200;
+      composite.setLayoutData(gd);
 
       label = toolkit.createLabel(composite, "", SWT.NONE);
       label.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
 
       formText = toolkit.createFormText(composite, true);
-      GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
+      gd = new GridData(SWT.FILL, SWT.TOP, true, false);
       gd.widthHint = 200;
       formText.setLayoutData(gd);
       formText.layout();
