@@ -81,6 +81,9 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IO
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Must Enter Valid Id");
             return;
          }
+         artifacts.clear();
+         resultAtsArts.clear();
+         resultNonAtsArts.clear();
          searchAndSplitResults();
          if (resultAtsArts.size() == 0 && resultNonAtsArts.size() == 0) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
