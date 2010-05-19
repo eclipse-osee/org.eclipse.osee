@@ -21,9 +21,13 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewWordChangeReportHandler;
 import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -37,6 +41,7 @@ public class ChangeXViewer extends XViewer {
 
    public ChangeXViewer(Composite parent, int style, IXViewerFactory factory) {
       super(parent, style, factory);
+      getTree().addKeyListener(new KeySelectedListener());
    }
 
    @Override
@@ -61,6 +66,21 @@ public class ChangeXViewer extends XViewer {
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   private class KeySelectedListener implements KeyListener {
+      public void keyPressed(KeyEvent e) {
+      }
+
+      public void keyReleased(KeyEvent e) {
+         if (e.keyCode == SWT.F5) {
+            System.out.println("pressed");
+            ViewWordChangeReportHandler handler = (new ViewWordChangeReportHandler());
+            if (handler.isEnabled()) {
+               handler.execute(null);
+            }
+         }
       }
    }
 

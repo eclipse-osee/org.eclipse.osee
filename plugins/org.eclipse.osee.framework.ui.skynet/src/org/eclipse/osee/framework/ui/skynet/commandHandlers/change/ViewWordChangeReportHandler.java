@@ -19,12 +19,10 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -42,19 +40,6 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
    @Override
    public Object execute(ExecutionEvent event) {
-      IOperation operation = new WordChangeReportOperation(changes, false, null);
-      Operations.executeAsJob(operation, true);
-      return null;
-   }
-
-   @Override
-   public boolean isEnabled() {
-      if (PlatformUI.getWorkbench().isClosing()) {
-         return false;
-      }
-
-      boolean isEnabled = false;
-
       try {
          ISelectionProvider selectionProvider =
                AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
@@ -74,8 +59,28 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
                   changes.add(change);
                }
             }
-            isEnabled = AccessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+            IOperation operation = new WordChangeReportOperation(changes, false, null);
+            Operations.executeAsJob(operation, true);
          }
+      } catch (Exception ex) {
+         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+      }
+
+      return null;
+   }
+
+   @Override
+   public boolean isEnabled() {
+      if (PlatformUI.getWorkbench().isClosing()) {
+         return false;
+      }
+      boolean isEnabled = false;
+
+      try {
+         ISelectionProvider selectionProvider =
+               AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+         isEnabled = !selectionProvider.getSelection().isEmpty();
+
       } catch (Exception ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
       }

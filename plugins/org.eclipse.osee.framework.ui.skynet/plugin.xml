@@ -1437,7 +1437,7 @@
         id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command"
         name="Revert Attribute...">
   </command>
-		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command" name="View Word Change Report">
+		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command" name="View Word Change Report - F5">
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command" name="Compress Word Attributes">
          </command>
