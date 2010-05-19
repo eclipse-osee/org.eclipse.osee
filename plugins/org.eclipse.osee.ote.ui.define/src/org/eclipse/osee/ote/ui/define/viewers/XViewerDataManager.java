@@ -69,7 +69,7 @@ public class XViewerDataManager {
    }
 
    public void addArtifacts(IProgressMonitor monitor, final List<Artifact> artifacts) throws OseeCoreException, AttributeDoesNotExist {
-      if (branchMap.size() == 0) {
+      if (branchMap.isEmpty()) {
          if (xViewer.getXViewerFactory() instanceof MassXViewerFactory) {
             ((MassXViewerFactory) xViewer.getXViewerFactory()).registerAllAttributeColumnsForArtifacts(artifacts, true);
          }
@@ -268,6 +268,6 @@ public class XViewerDataManager {
    }
 
    public boolean isEmpty() {
-      return branchMap.size() == 0;
+      return branchMap.isEmpty();
    }
 }

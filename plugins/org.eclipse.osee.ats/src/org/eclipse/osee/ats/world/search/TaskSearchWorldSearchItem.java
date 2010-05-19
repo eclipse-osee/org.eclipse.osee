@@ -104,12 +104,12 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       User user = getSelectedUser();
 
       // If only user selected, handle that case separately
-      if (verArt == null && teamDefs.size() == 0 && user != null) {
+      if (verArt == null && teamDefs.isEmpty() && user != null) {
          return handleOnlyUserSelected();
       } // If version specified, get workflows from targeted relation
       if (verArt != null) {
          for (Artifact art : verArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)) {
-            if (teamDefs.size() == 0) {
+            if (teamDefs.isEmpty()) {
                workflows.add(art);
             }
             // Filter by team def if specified
@@ -184,13 +184,13 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
 
    @Override
    public Result isParameterSelectionValid() throws OseeCoreException {
-      if (getSelectedUser() != null && isIncludeCompletedCancelledCheckbox() && getSelectedVersionArtifact() == null && getSelectedTeamDefinitions().size() == 0) {
+      if (getSelectedUser() != null && isIncludeCompletedCancelledCheckbox() && getSelectedVersionArtifact() == null && getSelectedTeamDefinitions().isEmpty()) {
          // This case is unsupported  and should be filtered out prior to this point
          throw new OseeArgumentException("Unsupported User and Include Completed selected.");
       }
 
       // If only user selected, handle that case separately
-      if (getSelectedVersionArtifact() == null && getSelectedTeamDefinitions().size() == 0 && getSelectedUser() != null) {
+      if (getSelectedVersionArtifact() == null && getSelectedTeamDefinitions().isEmpty() && getSelectedUser() != null) {
          return Result.TrueResult;
       }
 
@@ -260,7 +260,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
                if (versionCombo != null) {
                   try {
                      Collection<TeamDefinitionArtifact> teamDefArts = getSelectedTeamDefinitions();
-                     if (teamDefArts.size() == 0) {
+                     if (teamDefArts.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
@@ -272,7 +272,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
                      }
                      Collection<String> names =
                            Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both));
-                     if (names.size() == 0) {
+                     if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }

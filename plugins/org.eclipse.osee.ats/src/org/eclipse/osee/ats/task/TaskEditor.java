@@ -283,7 +283,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
                public void run() {
                   try {
                      taskEditor.setPartName(itaskEditorProvider.getTaskEditorLabel(searchType));
-                     if (taskArts.size() == 0) {
+                     if (taskArts.isEmpty()) {
                         taskEditor.setTableTitle(
                               "No Results Found - " + itaskEditorProvider.getTaskEditorLabel(searchType), true);
                      } else {
@@ -361,7 +361,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
    @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
-      if (tasks.size() == 0) return StateMachineArtifact.DEFAULT_HOURS_PER_WORK_DAY;
+      if (tasks.isEmpty()) return StateMachineArtifact.DEFAULT_HOURS_PER_WORK_DAY;
       return tasks.iterator().next().getManHrsPerDayPreference();
    }
 

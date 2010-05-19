@@ -50,7 +50,7 @@ class MonitorTimedOutServices implements Runnable {
 			Map<String, ServiceHealthPlusTimeout> innerMap = map.get(item.first, item.second);
 			innerMap.remove(item.key);
 			System.out.println(item.key);
-			if(innerMap.size() == 0){
+			if(innerMap.isEmpty()){
 				map.remove(item.first, item.second);
 				System.out.println("removed " + item.first + item.second);
 			}

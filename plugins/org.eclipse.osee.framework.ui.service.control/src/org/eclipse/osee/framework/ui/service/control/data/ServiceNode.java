@@ -103,7 +103,7 @@ public class ServiceNode extends TreeObject implements IJiniService {
         	 toReturn.add( (String) ((PropertyEntry)entry).getProperty("group", "OSEE Services"));
          }
       }
-      if (toReturn.size() == 0) {
+      if (toReturn.isEmpty()) {
          toReturn.add("Public");
       }
       return toReturn;

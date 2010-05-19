@@ -31,7 +31,7 @@ public class AtsActionableItemToTeamDefinitionTest {
             AtsUtil.getAtsBranch())) {
          ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
          if (aia.isActionable()) {
-            if (TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).size() == 0) {
+            if (TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                sb.append("Actionable Item \"" + aia + "\" has no Team Def associated and is Actionable.");
                error = true;
             }

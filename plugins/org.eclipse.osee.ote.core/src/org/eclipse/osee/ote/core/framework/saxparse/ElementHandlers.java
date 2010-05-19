@@ -41,7 +41,7 @@ public abstract class ElementHandlers {
    }
    
    void endElementFound(String uri, String localName, String name, String content) throws SAXException {
-      if(listeners.size() == 0) return;
+      if(listeners.isEmpty()) return;
       Object obj = createEndElementFoundObject(uri, localName, name, content);
       for(IBaseSaxElementListener listener:listeners){
          listener.onEndElement(obj);
@@ -49,7 +49,7 @@ public abstract class ElementHandlers {
    }
    
    void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
-      if(listeners.size() == 0) return;
+      if(listeners.isEmpty()) return;
       Object obj = createStartElementFoundObject(uri, localName, name, attributes);
       for(IBaseSaxElementListener listener:listeners){
          listener.onStartElement(obj);

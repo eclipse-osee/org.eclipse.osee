@@ -513,7 +513,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    //
    //         // Get all customizations
    //         List<String> customizations = user.getAttributesToStringList("XViewer Customization");
-   //         if (customizations.size() == 0 && custDefaults.size() == 0) continue;
+   //         if (customizations.isEmpty() && custDefaults.isEmpty()) continue;
    //         Set<String> validGuids = new HashSet<String>();
    //         int currNumDefaults = custDefaults.getGuids().size();
    //         for (String custStr : new CopyOnWriteArrayList<String>(customizations)) {

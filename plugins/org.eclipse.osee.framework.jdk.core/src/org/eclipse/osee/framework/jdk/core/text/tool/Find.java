@@ -91,7 +91,7 @@ public class Find {
 
       List<File> files = Lib.recursivelyListFiles(new File(args[1]), Pattern.compile(args[2]));
       System.out.println("Searching " + files.size() + " files...");
-      if (files.size() == 0) {
+      if (files.isEmpty()) {
          return;
       }
 

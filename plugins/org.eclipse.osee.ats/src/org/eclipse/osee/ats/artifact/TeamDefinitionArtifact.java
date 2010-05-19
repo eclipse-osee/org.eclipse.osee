@@ -392,7 +392,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
             }
          }
       }
-      if (leads.size() == 0) {
+      if (leads.isEmpty()) {
          leads.addAll(getLeads());
       }
       return leads;

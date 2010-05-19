@@ -96,7 +96,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          final Collection<Artifact> srchArts =
                ArtifactQuery.getArtifactListFromName("%" + artifactName + "%", branch, true);
          final Set<Artifact> processArts = new HashSet<Artifact>();
-         if (srchArts.size() == 0) {
+         if (srchArts.isEmpty()) {
             return;
          }
          if (srchArts.size() > 1) {

@@ -612,7 +612,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
                currentAias.remove(aia);
             }
          }
-         if (currentAias.size() == 0) {
+         if (currentAias.isEmpty()) {
             return new Result("Can not remove all actionable items for a team.\n\nActionable Items will go to 0 for [" +
             //
             team.getTeamName() + "][" + team.getHumanReadableId() + "]\n\nCancel team workflow instead.");

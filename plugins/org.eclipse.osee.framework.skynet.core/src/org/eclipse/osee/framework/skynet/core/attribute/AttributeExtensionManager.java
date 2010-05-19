@@ -118,7 +118,7 @@ public class AttributeExtensionManager {
             }
          }
       }
-      if (toReturn.size() == 0) {
+      if (toReturn.isEmpty()) {
          throw new OseeStateException(String.format(
                "No Objects loaded for [%s] with element names %s and attribute [%s]", extensionPointId,
                Arrays.asList(elementNames), classNameAttribute));

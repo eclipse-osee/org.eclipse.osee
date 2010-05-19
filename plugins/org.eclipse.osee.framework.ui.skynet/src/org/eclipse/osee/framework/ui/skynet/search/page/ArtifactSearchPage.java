@@ -519,7 +519,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
 
       @Override
       public Object getFirstElement() {
-         return collection.size() == 0 ? null : iterator().next();
+         return collection.isEmpty() ? null : iterator().next();
       }
 
       @SuppressWarnings("unchecked")

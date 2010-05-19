@@ -246,7 +246,7 @@ public class Jaxp {
       for (Element e : source) {
          List<Element> children = getChildDirects(e, tag);
          if (!children.isEmpty()) {
-            if (path.size() == 0) {
+            if (path.isEmpty()) {
                list.addAll(children);
             } else {
                findElementsInternal(children, childPath, list);

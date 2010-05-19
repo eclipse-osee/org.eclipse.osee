@@ -67,7 +67,7 @@ public class ExcelAtsActionArtifactExtractor {
          if (aData.title.equals("")) {
             rd.logError("Row " + rowNum + "; Invalid Title");
          }
-         if (aData.actionableItems.size() == 0) {
+         if (aData.actionableItems.isEmpty()) {
             rd.logError("Row " + rowNum + ": Must have at least one ActionableItem defined");
          } else {
             for (String actionableItemName : aData.actionableItems) {

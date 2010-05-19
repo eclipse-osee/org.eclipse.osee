@@ -69,7 +69,7 @@ public class ATSNote {
       }
       NoteItem logItem = new NoteItem(type, state, date.getTime() + "", user, msg);
       List<NoteItem> logItems = getNoteItems();
-      if (logItems.size() == 0) {
+      if (logItems.isEmpty()) {
          logItems = Arrays.asList(logItem);
       } else {
          logItems.add(logItem);
@@ -167,7 +167,7 @@ public class ATSNote {
             showNotes.add(li);
          }
       }
-      if (showNotes.size() == 0) {
+      if (showNotes.isEmpty()) {
          return "";
       }
       StringBuilder builder = new StringBuilder();

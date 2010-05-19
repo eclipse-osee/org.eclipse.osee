@@ -64,7 +64,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   if (!title.equals("")) titles.add(title);
                }
 
-               if (artifacts.size() == 0) {
+               if (artifacts.isEmpty()) {
                   AWorkbench.popup("ERROR", "Must drag in Team Workflow to add tasks.");
                   return;
                }
@@ -77,7 +77,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   AWorkbench.popup("ERROR", "Artifact MUST be Team Workflow");
                   return;
                }
-               if (titles == null || titles.size() == 0) {
+               if (titles == null || titles.isEmpty()) {
                   AWorkbench.popup("ERROR", "Must enter title(s).");
                   return;
                }

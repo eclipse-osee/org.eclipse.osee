@@ -53,7 +53,7 @@ public class ExtendedStatusReportJob extends Job {
    }
 
    public static IStatus runIt(IProgressMonitor monitor, final String jobName, Collection<? extends Artifact> teamArts) {
-      if (teamArts.size() == 0) {
+      if (teamArts.isEmpty()) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, "No Artifacts Returned");
          return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "No Artifacts Returned", null);
       }

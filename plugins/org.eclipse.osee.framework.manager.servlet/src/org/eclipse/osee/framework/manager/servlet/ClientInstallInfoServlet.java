@@ -85,7 +85,7 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
                      List<ClientInstallInfo> infos = getInfoEntry(key);
                      response.setStatus(HttpServletResponse.SC_OK);
                      response.setContentType("text/html");
-                     if (infos.size() == 0) {
+                     if (infos.isEmpty()) {
                         response.getWriter().write("<html><body>No installations found</body></html>");
                      } else {
                         String html = InstallLinkPageGenerator.generate(infos, isCloseAllowed, isPromptAllowed);

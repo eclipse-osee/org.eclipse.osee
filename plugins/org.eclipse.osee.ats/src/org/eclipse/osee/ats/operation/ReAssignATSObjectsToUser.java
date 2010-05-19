@@ -72,7 +72,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                      atsArts.add(assignedArt);
                   }
                }
-               if (atsArts.size() == 0) {
+               if (atsArts.isEmpty()) {
                   AWorkbench.popup("ERROR", "Not workflows, tasks or reviews assigned to " + fromUser);
                   return;
                }

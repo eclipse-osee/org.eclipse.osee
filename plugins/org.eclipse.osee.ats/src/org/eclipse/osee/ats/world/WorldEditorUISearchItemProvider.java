@@ -126,7 +126,7 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
             final Collection<Artifact> artifacts;
             worldEditor.getWorldComposite().getXViewer().clear(forcePend);
             artifacts = worldUISearchItem.performSearchGetResults(false, searchType);
-            if (artifacts.size() == 0) {
+            if (artifacts.isEmpty()) {
                if (worldUISearchItem.isCancelled()) {
                   worldEditor.setTableTitle("CANCELLED - " + selectedName, false);
                   return Status.CANCEL_STATUS;

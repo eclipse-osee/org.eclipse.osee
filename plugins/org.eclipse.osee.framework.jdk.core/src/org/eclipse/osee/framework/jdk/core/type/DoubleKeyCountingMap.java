@@ -95,7 +95,7 @@ public class DoubleKeyCountingMap<KeyOne, KeyTwo> {
       HashMap<KeyTwo, MutableInteger> o = k1ToHashMap.get(k1);
       if (o != null) {
          value = o.remove(k2);
-         if (o.size() == 0) {
+         if (o.isEmpty()) {
             k1ToHashMap.remove(k1);
          }
       }
@@ -142,7 +142,7 @@ public class DoubleKeyCountingMap<KeyOne, KeyTwo> {
    }
 
    public boolean isEmpty() {
-      return k1ToHashMap.size() == 0;
+      return k1ToHashMap.isEmpty();
    }
 
    public Set<KeyOne> getKeySetOne() {

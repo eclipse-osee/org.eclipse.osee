@@ -100,7 +100,7 @@ public abstract class CommitHandler extends CommandHandler {
          Display.getDefault().syncExec(new Runnable() {
             public void run() {
                try {
-                  if (conflictManager.getOriginalConflicts().size() == 0) {
+                  if (conflictManager.getOriginalConflicts().isEmpty()) {
                      MessageDialog dialog =
                            new MessageDialog(Display.getCurrent().getActiveShell(), "Commit Branch", null,
                                  message.toString(), MessageDialog.QUESTION, new String[] {"Ok", "Cancel"}, 0);

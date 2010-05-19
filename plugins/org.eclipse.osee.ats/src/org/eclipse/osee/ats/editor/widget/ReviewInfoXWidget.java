@@ -101,7 +101,7 @@ public class ReviewInfoXWidget extends XLabelValueBase implements IFrameworkTran
       try {
          addAdminRightClickOption();
          Collection<ReviewSMArtifact> revArts = ReviewManager.getReviews(teamArt, forStateName);
-         if (revArts.size() == 0) {
+         if (revArts.isEmpty()) {
             setValueText("No Reviews Created");
          }
 
@@ -200,7 +200,7 @@ public class ReviewInfoXWidget extends XLabelValueBase implements IFrameworkTran
    }
 
    public static String toHTML(final TeamWorkFlowArtifact teamArt, String forStateName) throws OseeCoreException {
-      if (ReviewManager.getReviews(teamArt, forStateName).size() == 0) {
+      if (ReviewManager.getReviews(teamArt, forStateName).isEmpty()) {
          return "";
       }
       StringBuffer html = new StringBuffer();

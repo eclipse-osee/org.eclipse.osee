@@ -425,7 +425,7 @@ public class HyperView extends ViewPart implements IPartListener {
       if (HyperView.debugOn) {
          System.out.println("drawNodes");
       }
-      if (hvis.size() == 0) {
+      if (hvis.isEmpty()) {
          return;
       }
       final boolean isRight = relType == RelationEnum.RIGHT;
@@ -927,7 +927,7 @@ public class HyperView extends ViewPart implements IPartListener {
             @Override
             public void run() {
                printBackList("pre backSelected");
-               if (backList.size() == 0) {
+               if (backList.isEmpty()) {
                   return;
                }
                if (backListIndex > 0) {

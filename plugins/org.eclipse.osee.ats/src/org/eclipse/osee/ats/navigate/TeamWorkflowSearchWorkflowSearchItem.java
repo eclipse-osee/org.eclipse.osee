@@ -172,7 +172,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
                if (versionCombo != null) {
                   try {
                      Collection<TeamDefinitionArtifact> teamDefArts = getSelectedTeamDefinitions();
-                     if (teamDefArts.size() == 0) {
+                     if (teamDefArts.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
@@ -184,7 +184,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
                      }
                      Collection<String> names =
                            Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both));
-                     if (names.size() == 0) {
+                     if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
@@ -305,7 +305,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
          if (user != null && includeCompleted) {
             return new Result("Assignee and Include Completed are not compatible selections.");
          }
-         if (user != null && includeCompleted && verArt == null && teamDefs.size() == 0) {
+         if (user != null && includeCompleted && verArt == null && teamDefs.isEmpty()) {
             return new Result("You must select at least Team or Version with Include Completed.");
          }
          return Result.TrueResult;

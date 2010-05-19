@@ -101,7 +101,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                String filename = variableMap.getString(TASK_IMPORT_SPREADSHEET);
                boolean emailPocs = variableMap.getBoolean(EMAIL_POCS);
 
-               if (artifacts.size() == 0) {
+               if (artifacts.isEmpty()) {
                   AWorkbench.popup("ERROR", "Must drag in Team Workflow to add tasks.");
                   return;
                }

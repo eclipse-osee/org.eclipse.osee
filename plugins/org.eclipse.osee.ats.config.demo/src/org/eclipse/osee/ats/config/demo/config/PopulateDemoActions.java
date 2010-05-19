@@ -487,7 +487,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1);
 
       // Validate that something was imported
-      if (systemReq.getChildren().size() == 0) {
+      if (systemReq.getChildren().isEmpty()) {
          throw new IllegalStateException("Artifacts were not imported");
       }
    }

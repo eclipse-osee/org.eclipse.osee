@@ -57,7 +57,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       Collection<TeamDefinitionArtifact> teamDefs = getTeamDefinitions();
-      if (teamDefs.size() == 0) return;
+      if (teamDefs.isEmpty()) return;
       Set<String> emails = new HashSet<String>();
       for (TeamDefinitionArtifact teamDef : teamDefs) {
          if (memberTypes.contains(MemberType.Members) || memberTypes.contains(MemberType.Both)) {
@@ -69,7 +69,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
                if (!user.getEmail().equals("")) emails.add(user.getEmail());
          }
       }
-      if (emails.size() == 0) {
+      if (emails.isEmpty()) {
          AWorkbench.popup("Error", "No emails configured.");
          return;
       }

@@ -102,7 +102,7 @@ public class ExtensionPoints {
    public static IConfigurationElement getExtensionElement(String extensionPointId, String elementName) {
       List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(extensionPointId, elementName);
 
-      if (elements.size() == 0) {
+      if (elements.isEmpty()) {
          throw new IllegalArgumentException(
                "no elements named " + elementName + " for " + extensionPointId + " where found.");
       }

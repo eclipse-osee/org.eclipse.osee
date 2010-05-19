@@ -89,7 +89,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    }
 
    private boolean isEditRationaleEnabled() {
-      if (xCoverageViewer.getSelectedCoverageItems().size() == 0) return false;
+      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) return false;
       for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (!(item instanceof CoverageItem)) {
             return false;
@@ -99,7 +99,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    }
 
    private boolean isEditMethodEnabled() {
-      if (xCoverageViewer.getSelectedCoverageItems().size() == 0) return false;
+      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) return false;
       for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (!(item instanceof CoverageItem)) {
             return false;
@@ -109,7 +109,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    }
 
    private boolean isDeleteCoverageUnitEnabled() {
-      if (xCoverageViewer.getSelectedCoverageItems().size() == 0) return false;
+      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) return false;
       for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (!(item instanceof CoverageUnit)) {
             return false;
@@ -119,7 +119,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    }
 
    private boolean isEditMetricsEnabled() {
-      if (xCoverageViewer.getSelectedCoverageItems().size() == 0) return false;
+      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) return false;
       for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (!(item instanceof CoverageUnit)) {
             return false;

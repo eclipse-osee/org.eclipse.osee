@@ -33,7 +33,7 @@ public class MassEditDirtyArtifactOperation extends AbstractOperation implements
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       Collection<Artifact> dirtyArts = ArtifactCache.getDirtyArtifacts();
-      if (dirtyArts.size() == 0) {
+      if (dirtyArts.isEmpty()) {
          AWorkbench.popup("No Dirty Artifacts Found");
          return;
       }

@@ -150,7 +150,7 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
 
    public void handleDeleteTask() {
       final ArrayList<TaskArtifact> items = getSelectedTaskArtifactItems();
-      if (items.size() == 0) {
+      if (items.isEmpty()) {
          AWorkbench.popup("ERROR", "No Tasks Selected");
          return;
       }

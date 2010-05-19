@@ -47,7 +47,7 @@ public class OpenNewAtsTaskEditorSelected extends Action {
    @Override
    public void run() {
       try {
-         if (openNewAtsTaskEditorSelectedHandler.getSelectedArtifacts().size() == 0) {
+         if (openNewAtsTaskEditorSelectedHandler.getSelectedArtifacts().isEmpty()) {
             AWorkbench.popup("ERROR", "Select items to open");
             return;
          }

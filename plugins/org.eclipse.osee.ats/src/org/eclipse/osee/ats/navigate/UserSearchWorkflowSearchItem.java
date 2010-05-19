@@ -208,7 +208,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
                if (versionCombo != null) {
                   try {
                      Collection<TeamDefinitionArtifact> teamDefArts = getSelectedTeamDefinitions();
-                     if (teamDefArts.size() == 0) {
+                     if (teamDefArts.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
@@ -220,7 +220,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
                      }
                      Collection<String> names =
                            Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both));
-                     if (names.size() == 0) {
+                     if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }

@@ -177,7 +177,7 @@ public class NewActionPage1 extends WizardPage {
 
    @Override
    public boolean isPageComplete() {
-      if (treeViewer.getChecked().size() == 0) {
+      if (treeViewer.getChecked().isEmpty()) {
          return false;
       }
       try {
@@ -189,7 +189,7 @@ public class NewActionPage1 extends WizardPage {
          }
          Collection<TeamDefinitionArtifact> teamDefs =
                TeamDefinitionArtifact.getImpactedTeamDefs(getSelectedActionableItemArtifacts());
-         if (teamDefs.size() == 0) {
+         if (teamDefs.isEmpty()) {
             AWorkbench.popup("ERROR", "No Teams Associated with selected Actionable Items");
             return false;
          }

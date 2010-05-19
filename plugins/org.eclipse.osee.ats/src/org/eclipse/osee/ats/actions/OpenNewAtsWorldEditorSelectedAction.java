@@ -48,7 +48,7 @@ public class OpenNewAtsWorldEditorSelectedAction extends Action {
    @Override
    public void run() {
       try {
-         if (openNewAtsWorldEditorSelectedHandler.getSelectedArtifacts().size() == 0) {
+         if (openNewAtsWorldEditorSelectedHandler.getSelectedArtifacts().isEmpty()) {
             AWorkbench.popup("ERROR", "Select items to open");
             return;
          }

@@ -135,7 +135,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
    }
 
    private void processReviewArtifact(final ReviewSMArtifact reviewArt) throws OseeCoreException {
-      if (reviewArt.getActionableItemsDam().getActionableItemGuids().size() == 0) {
+      if (reviewArt.getActionableItemsDam().getActionableItemGuids().isEmpty()) {
          return;
       }
       actionableItemsLabel = toolkit.createLabel(this, "");

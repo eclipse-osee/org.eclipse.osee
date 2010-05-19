@@ -190,7 +190,7 @@ public class CoverageParameters {
     * CoverageItem is method specified
     */
    public boolean isCoverageMethodMatch(ICoverage coverage) {
-      if (coverageMethods.size() == 0 || !(coverage instanceof CoverageItem)) return true;
+      if (coverageMethods.isEmpty() || !(coverage instanceof CoverageItem)) return true;
       if (coverageMethods.contains(((CoverageItem) coverage).getCoverageMethod())) {
          return true;
       }
@@ -279,7 +279,7 @@ public class CoverageParameters {
 
    private void updateShowAll() {
       this.showAll =
-            getSelectedCoverageMethods().size() == 0 && getAssignee() == null && !Strings.isValid(getNotesStr()) && !Strings.isValid(getNamespace()) && !Strings.isValid(getRationale()) && !Strings.isValid(getName());
+            getSelectedCoverageMethods().isEmpty() && getAssignee() == null && !Strings.isValid(getNotesStr()) && !Strings.isValid(getNamespace()) && !Strings.isValid(getRationale()) && !Strings.isValid(getName());
    }
 
    public boolean isShowAll() {

@@ -47,7 +47,7 @@ public class MergeManager {
       for (ICoverage importCoverage : coverageImport.getChildren()) {
          processImportCoverage(importCoverage, mergeItems, null);
       }
-      if (mergeItems.size() == 0) {
+      if (mergeItems.isEmpty()) {
          mergeItems.add(new MessageMergeItem("Nothing to Import"));
       }
       return mergeItems;
@@ -446,7 +446,7 @@ public class MergeManager {
             break;
          }
          // If matches == 0, this is a deletion
-         else if (matches.size() == 0) {
+         else if (matches.isEmpty()) {
             groupMergeItems.add(new MergeItem(MergeType.Delete, packageItem, null, false));
          }
          // Else matches == 1, check the order; if different order, this is a Move_Due_To_Delete

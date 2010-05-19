@@ -91,7 +91,7 @@ public class EmailUserGroups extends XNavigateItemAction {
                   }
                }
             }
-            if (emails.size() == 0) {
+            if (emails.isEmpty()) {
                AWorkbench.popup("Error", "No emails configured.");
                return;
             }

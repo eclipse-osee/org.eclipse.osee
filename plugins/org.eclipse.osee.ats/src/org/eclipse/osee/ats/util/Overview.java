@@ -213,7 +213,7 @@ public class Overview {
    public void addRelationTable(String name, IRelationEnumeration side, Artifact parent) {
       try {
          List<Artifact> arts = parent.getRelatedArtifacts(side);
-         if (arts.size() == 0) {
+         if (arts.isEmpty()) {
             return;
          }
          startBorderTable(false, name);

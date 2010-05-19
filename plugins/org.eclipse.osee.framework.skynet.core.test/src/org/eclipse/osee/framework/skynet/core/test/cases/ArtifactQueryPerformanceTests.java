@@ -41,7 +41,7 @@ public class ArtifactQueryPerformanceTests {
     * public ArtifactQueryBuilder(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted, ArtifactLoad
     * loadLevel) {
     * this(artifactIds, 0, null, null, null, branch, allowDeleted, loadLevel, true);
-    * emptyCriteria = artifactIds.size() == 0;
+    * emptyCriteria = artifactIds.isEmpty();
     * }
     * public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted,
     * AbstractArtifactSearchCriteria... criteria) {
@@ -51,7 +51,7 @@ public class ArtifactQueryPerformanceTests {
     * public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria)
     * {
     * this(null, 0, null, null, null, branch, false, loadLevel, true, toArray(criteria));
-    * emptyCriteria = criteria.size() == 0;
+    * emptyCriteria = criteria.isEmpty();
     * }
     * public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel,
     * AbstractArtifactSearchCriteria... criteria) {
@@ -61,7 +61,7 @@ public class ArtifactQueryPerformanceTests {
     * public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel,
     * List<AbstractArtifactSearchCriteria> criteria) {
     * this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, true, toArray(criteria));
-    * emptyCriteria = criteria.size() == 0;
+    * emptyCriteria = criteria.isEmpty();
     * }
     */
 

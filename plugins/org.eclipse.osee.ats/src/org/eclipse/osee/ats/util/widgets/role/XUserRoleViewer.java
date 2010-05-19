@@ -211,7 +211,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
 
    public void handleDeleteUserRole(boolean persist) {
       final List<UserRole> items = getSelectedUserRoleItems();
-      if (items.size() == 0) {
+      if (items.isEmpty()) {
          AWorkbench.popup("ERROR", "No Roles Selected");
          return;
       }

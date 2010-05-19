@@ -41,7 +41,7 @@ public class ConvertActionableItemsAction extends Action {
       try {
          Collection<TeamWorkFlowArtifact> teamArts =
                Collections.castMatching(TeamWorkFlowArtifact.class, selectedAtsArtifacts.getSelectedSMAArtifacts());
-         if (teamArts.size() == 0) {
+         if (teamArts.isEmpty()) {
             throw new OseeStateException("No TeamWorkflows selected");
          }
 

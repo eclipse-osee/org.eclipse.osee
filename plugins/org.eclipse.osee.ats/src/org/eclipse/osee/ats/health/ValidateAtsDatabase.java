@@ -299,7 +299,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (art instanceof TeamWorkFlowArtifact) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
             try {
-               if (teamArt.getActionableItemsDam().getActionableItems().size() == 0) {
+               if (teamArt.getActionableItemsDam().getActionableItems().isEmpty()) {
                   testNameToResultsMap.put("testTeamWorkflows",
                         "Error: TeamWorkflow " + XResultData.getHyperlink(teamArt) + " has 0 ActionableItems");
                }
@@ -348,7 +348,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       xResultData.log(monitor, "testLoadAllCommonArtifactIds - Started " + XDate.getDateNow(XDate.MMDDYYHHMM));
       List<Integer> artIds = ArtifactQuery.selectArtifactListFromBranch(AtsUtil.getAtsBranch(), false);
 
-      if (artIds.size() == 0) {
+      if (artIds.isEmpty()) {
          xResultData.logError("Error: Artifact load returned 0 artifacts to check");
       }
       xResultData.log(monitor, "testLoadAllCommonArtifactIds - Completed " + XDate.getDateNow(XDate.MMDDYYHHMM));
@@ -466,7 +466,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsActionsHaveTeamWorkflow(Collection<Artifact> artifacts) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
          if (artifact instanceof ActionArtifact) {
-            if (((ActionArtifact) artifact).getTeamWorkFlowArtifacts().size() == 0) {
+            if (((ActionArtifact) artifact).getTeamWorkFlowArtifacts().isEmpty()) {
                testNameToResultsMap.put("testAtsActionsHaveTeamWorkflow",
                      "Error: Action " + XResultData.getHyperlink(artifact) + " has no Team Workflows\n");
             }
@@ -550,7 +550,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (artifact instanceof ActionableItemArtifact) {
             ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
             if (aia.isActionable()) {
-               if (TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).size() == 0) {
+               if (TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                   testNameToResultsMap.put(
                         "testActionableItemToTeamDefinition",
                         "Error: ActionableItem " + XResultData.getHyperlink(artifact.getName(), artifact) + " has to related TeamDefinition and is set to Actionable");
@@ -578,12 +578,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (artifact instanceof ReviewSMArtifact) {
             ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
             try {
-               if (reviewArtifact.getAttributes(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE.getStoreName()).size() > 0 && reviewArtifact.getDefectManager().getDefectItems().size() == 0) {
+               if (reviewArtifact.getAttributes(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE.getStoreName()).size() > 0 && reviewArtifact.getDefectManager().getDefectItems().isEmpty()) {
                   testNameToResultsMap.put(
                         "testReviewsHaveValidDefectAndRoleXml",
                         "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has defect attribute, but no defects (xml parsing error).");
                }
-               if (reviewArtifact.getAttributes(ATSAttributes.ROLE_ATTRIBUTE.getStoreName()).size() > 0 && reviewArtifact.getUserRoleManager().getUserRoles().size() == 0) {
+               if (reviewArtifact.getAttributes(ATSAttributes.ROLE_ATTRIBUTE.getStoreName()).size() > 0 && reviewArtifact.getUserRoleManager().getUserRoles().isEmpty()) {
                   testNameToResultsMap.put(
                         "testReviewsHaveValidDefectAndRoleXml",
                         "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has role attribute, but no roles (xml parsing error).");
@@ -601,7 +601,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       for (Artifact artifact : artifacts) {
          if (artifact instanceof ReviewSMArtifact) {
             ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
-            if (reviewArtifact.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Team).size() == 0 && reviewArtifact.getActionableItemsDam().getActionableItemGuids().size() == 0) {
+            if (reviewArtifact.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Team).isEmpty() && reviewArtifact.getActionableItemsDam().getActionableItemGuids().isEmpty()) {
                testNameToResultsMap.put(
                      "testReviewsHaveParentWorkflowOrActionableItems",
                      "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has 0 related parents and 0 actionable items.");
@@ -708,7 +708,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         "testStateMachineAssignees",
                         "Error: " + art.getHumanReadableId() + " is assigned to OseeSystem; invalid assignment - MANUAL FIX REQUIRED");
                }
-               if (!sma.isCompleted() && !sma.isCancelled() && sma.getStateMgr().getAssignees().size() == 0) {
+               if (!sma.isCompleted() && !sma.isCancelled() && sma.getStateMgr().getAssignees().isEmpty()) {
                   testNameToResultsMap.put(
                         "testStateMachineAssignees",
                         "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " In Work without assignees");
@@ -729,7 +729,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   }
                } else if (sma.getStateMgr().getAssignees().size() != relationAssigned.size()) {
                   // Make sure this isn't just an UnAssigned user issue (don't relate to unassigned user anymore)
-                  if (!(sma.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && relationAssigned.size() == 0)) {
+                  if (!(sma.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && relationAssigned.isEmpty())) {
                      testNameToResultsMap.put(
                            "testStateMachineAssignees",
                            "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " attribute assignees doesn't match related assignees");

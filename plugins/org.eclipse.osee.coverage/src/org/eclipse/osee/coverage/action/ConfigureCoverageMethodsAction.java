@@ -104,7 +104,7 @@ public class ConfigureCoverageMethodsAction extends Action {
                   coverageOptions = entryDiag.getEntry();
                   try {
                      CoverageOptionManager manager = new CoverageOptionManager(coverageOptions);
-                     if (manager.get().size() == 0) {
+                     if (manager.get().isEmpty()) {
                         throw new OseeArgumentException("No options specified");
                      }
                      if (manager.get(CoverageOptionManager.Not_Covered.getName()) == null) {

@@ -55,7 +55,7 @@ public class DefectManager {
    }
 
    public String getHtml() throws OseeCoreException {
-      if (getDefectItems().size() == 0) {
+      if (getDefectItems().isEmpty()) {
          return "";
       }
       StringBuffer sb = new StringBuffer();

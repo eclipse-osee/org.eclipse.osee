@@ -205,7 +205,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       if (teams.size() > 1) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE,
                getArtifactTypeName() + " " + getHumanReadableId() + " has multiple parent workflows");
-      } else if (!isStandAloneReview() && teams.size() == 0) {
+      } else if (!isStandAloneReview() && teams.isEmpty()) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE,
                getArtifactTypeName() + " " + getHumanReadableId() + " has no parent workflow");
       }

@@ -82,7 +82,7 @@ public class Artifact_setAttributeValues {
       artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, emptySet);
       artifact.persist();
 
-      assertTrue(artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).size() == 0);
+      assertTrue(artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).isEmpty());
    }
 
    @org.junit.Test

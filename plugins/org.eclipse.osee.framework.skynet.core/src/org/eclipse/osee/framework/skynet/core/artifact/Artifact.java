@@ -672,7 +672,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    public <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws OseeCoreException {
       ensureAttributesLoaded();
       List<Attribute<T>> soleAttributes = getAttributes(attributeTypeName);
-      if (soleAttributes.size() == 0) {
+      if (soleAttributes.isEmpty()) {
          return null;
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(String.format(
@@ -720,7 +720,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     */
    public <T> T getSoleAttributeValue(String attributeTypeName) throws OseeCoreException {
       List<Attribute<T>> soleAttributes = getAttributes(attributeTypeName);
-      if (soleAttributes.size() == 0) {
+      if (soleAttributes.isEmpty()) {
          if (!isAttributeTypeValid(attributeTypeName)) {
             throw new OseeArgumentException(String.format(
                   "The attribute type %s is not valid for artifacts of type [%s]", attributeTypeName,

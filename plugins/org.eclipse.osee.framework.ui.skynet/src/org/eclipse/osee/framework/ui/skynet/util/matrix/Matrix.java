@@ -72,7 +72,7 @@ public class Matrix {
       // of them and print them at the end of the report
       for (String name : nameToItem.keySet()) {
          System.out.println("nameToValues.get(name) *" + nameToValues.get(name) + "*");
-         if (nameToValues.get(name) == null || nameToValues.get(name).size() == 0)
+         if (nameToValues.get(name) == null || nameToValues.get(name).isEmpty())
             noValueNames.add(name);
          else
             names.add(name);

@@ -146,7 +146,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          return;
       }
       try {
-         if (loadedArtifacts.getLoadedArtifacts().size() == 0) {
+         if (loadedArtifacts.getLoadedArtifacts().isEmpty()) {
             return;
          }
          Displays.ensureInDisplayThread(new Runnable() {
@@ -388,7 +388,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       openInAtsWorldEditorAction = new Action("Open in ATS World Editor", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            if (getSelectedArtifacts().size() == 0) {
+            if (getSelectedArtifacts().isEmpty()) {
                AWorkbench.popup("Error", "No items selected");
                return;
             }
@@ -422,7 +422,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       openInAtsTaskEditorAction = new Action("Open in ATS Task Editor", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            if (getSelectedTaskArtifacts().size() == 0) {
+            if (getSelectedTaskArtifacts().isEmpty()) {
                AWorkbench.popup("Error", "No Tasks selected");
                return;
             }
@@ -624,7 +624,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
 
    public StateMachineArtifact getSelectedSMA() {
       Object obj = null;
-      if (getSelectedArtifactItems().size() == 0) {
+      if (getSelectedArtifactItems().isEmpty()) {
          return null;
       }
       obj = getTree().getSelection()[0].getData();
@@ -725,7 +725,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
 
    @Override
    public void handleDoubleClick() {
-      if (getSelectedArtifactItems().size() == 0) {
+      if (getSelectedArtifactItems().isEmpty()) {
          return;
       }
       Artifact art = getSelectedArtifactItems().iterator().next();

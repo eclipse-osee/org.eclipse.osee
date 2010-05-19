@@ -103,7 +103,7 @@ public class ConflictTest {
             "(Intermittent failures - needs re-write) - Number of conflicts found is not equal to the number of conflicts expected",
             ConflictTestManager.numberOfConflicts(), conflicts.size());
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
-            monitorLog.getSevereLogs().size() == 0);
+            monitorLog.getSevereLogs().isEmpty());
    }
 
    /**
@@ -155,7 +155,7 @@ public class ConflictTest {
          fail(Lib.exceptionToString(ex));
       }
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
-            monitorLog.getAllLogs().size() == 0);
+            monitorLog.getAllLogs().isEmpty());
    }
 
    public void checkCommitWithoutResolutionErrors() {
@@ -175,7 +175,7 @@ public class ConflictTest {
       }
 
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
-            monitorLog.getSevereLogs().size() == 0);
+            monitorLog.getSevereLogs().isEmpty());
    }
 
    @org.junit.Test

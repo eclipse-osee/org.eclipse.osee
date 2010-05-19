@@ -151,7 +151,7 @@ public class DecisionOption {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
-         if (followupRequired && assignees.size() == 0)
+         if (followupRequired && assignees.isEmpty())
             return new Result("If followup is specified, must set assignees.\nShould be: <userid><userid>");
          else if (!followupRequired && assignees.size() > 0)
             return new Result("If completed is specified, don't specify assigness.  Leave blank.\n");

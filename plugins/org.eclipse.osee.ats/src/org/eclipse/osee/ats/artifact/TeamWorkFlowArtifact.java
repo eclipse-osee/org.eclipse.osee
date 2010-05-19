@@ -292,7 +292,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       }
       Collection<ActionArtifact> arts =
             getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_Action, ActionArtifact.class);
-      if (arts.size() == 0) {
+      if (arts.isEmpty()) {
          throw new OseeStateException("Team " + getHumanReadableId() + " has no parent Action");
       } else if (arts.size() > 1) {
          throw new OseeStateException("Team " + getHumanReadableId() + " has multiple parent Actions");
@@ -310,7 +310,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    public String getWorldViewTargetedVersionStr() throws OseeCoreException {
       Collection<VersionArtifact> verArts =
             getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
-      if (verArts.size() == 0) {
+      if (verArts.isEmpty()) {
          return "";
       }
       if (verArts.size() > 1) {
@@ -407,7 +407,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       if (diag.open() != 0) {
          return Result.FalseResult;
       }
-      if (diag.getChecked().size() == 0) {
+      if (diag.getChecked().isEmpty()) {
          return new Result("At least one actionable item must must be selected.");
       }
       if (diag.getChecked().size() > 1) {

@@ -34,7 +34,7 @@ public class Diagram {
    }
 
    public Set<String> getPageNames() {
-      if (nodeNames.size() == 0) {
+      if (nodeNames.isEmpty()) {
          for (DiagramNode page : nodes)
             nodeNames.add(page.getName());
       }
@@ -56,7 +56,7 @@ public class Diagram {
       List<DiagramNode> foundPages = new ArrayList<DiagramNode>();
       for (DiagramNode page : nodes)
          if (page.getName().equals(pageName)) foundPages.add(page);
-      if (foundPages.size() == 0) throw new OseeArgumentException(
+      if (foundPages.isEmpty()) throw new OseeArgumentException(
             "Invalid node Name \"" + pageName + "\" from workflow => " + getId());
       return foundPages;
    }

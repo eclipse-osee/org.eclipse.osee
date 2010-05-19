@@ -156,7 +156,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
    private void handleImportSelected() {
       Collection<IMergeItem> mergeItems = getSelectedMergeItems();
-      if (mergeItems.size() == 0) {
+      if (mergeItems.isEmpty()) {
          AWorkbench.popup("Select Items to Import via Import Column");
          return;
       }

@@ -61,7 +61,7 @@ public class GoalArtifact extends StateMachineArtifact {
    @Override
    public StateMachineArtifact getParentSMA() throws OseeCoreException {
       List<Artifact> parents = getRelatedArtifacts(AtsRelationTypes.Goal_Goal);
-      if (parents.size() == 0) {
+      if (parents.isEmpty()) {
          return null;
       }
       if (parents.size() == 1) {

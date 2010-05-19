@@ -84,7 +84,7 @@ public class ActionTeamVersionListDialog extends ActionTeamListDialog {
          }
 
          public void widgetSelected(SelectionEvent e) {
-            if (versionList.getSelected().size() == 0)
+            if (versionList.getSelected().isEmpty())
                selectedVersion = null;
             else
                selectedVersion = (VersionArtifact) versionList.getSelected().iterator().next();

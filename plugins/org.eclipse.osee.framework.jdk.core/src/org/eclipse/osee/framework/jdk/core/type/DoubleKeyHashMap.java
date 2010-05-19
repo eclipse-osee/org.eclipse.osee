@@ -69,7 +69,7 @@ public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
       HashMap<KeyTwo, Value> o = k1ToHashMap.get(k1);
       if (o != null) {
          value = o.remove(k2);
-         if (o.size() == 0) {
+         if (o.isEmpty()) {
             k1ToHashMap.remove(k1);
          }
       }
@@ -120,7 +120,7 @@ public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
    }
 
    public boolean isEmpty() {
-      return k1ToHashMap.size() == 0;
+      return k1ToHashMap.isEmpty();
    }
 
    public Set<KeyOne> getKeySetOne() {

@@ -121,10 +121,10 @@ public class NewNotePage extends WizardPage {
       if (noteText.get().equals("")) {
          return false;
       }
-      if (typeList.getSelected().size() == 0) {
+      if (typeList.getSelected().isEmpty()) {
          return false;
       }
-      if (artifactList.getSelected().size() == 0) {
+      if (artifactList.getSelected().isEmpty()) {
          return false;
       }
       return true;

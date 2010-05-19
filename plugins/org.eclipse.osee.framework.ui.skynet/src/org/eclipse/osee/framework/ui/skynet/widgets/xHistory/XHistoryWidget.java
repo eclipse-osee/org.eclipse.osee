@@ -243,7 +243,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
                Displays.ensureInDisplayThread(new Runnable() {
                   public void run() {
                      if (loadHistory) {
-                        if (changes.size() == 0) {
+                        if (changes.isEmpty()) {
                            extraInfoLabel.setText(NO_HISTORY);
                            xHistoryViewer.setInput(changes);
                         } else {

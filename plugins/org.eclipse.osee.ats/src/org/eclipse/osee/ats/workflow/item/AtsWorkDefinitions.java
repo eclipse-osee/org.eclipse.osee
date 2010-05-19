@@ -272,7 +272,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    public static void addUpdateWorkItemToDefaultHeirarchy(Artifact art, SkynetTransaction transaction) throws OseeCoreException {
       // Relate if not already related
-      if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent, Artifact.class).size() == 0) {
+      if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent, Artifact.class).isEmpty()) {
          if (art.isOfType(WorkPageDefinition.ARTIFACT_NAME)) {
             relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkPages), art, transaction);
          }
@@ -311,7 +311,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
          }
          if (workItemDefinition instanceof WorkFlowDefinition) {
             WorkFlowDefinition workFlowDefinition = (WorkFlowDefinition) workItemDefinition;
-            if (workFlowDefinition.getPagesOrdered().size() == 0) {
+            if (workFlowDefinition.getPagesOrdered().isEmpty()) {
                throw new OseeStateException("Work Flow must have at least one state.");
             }
             if (workFlowDefinition.getStartPage() == null) {

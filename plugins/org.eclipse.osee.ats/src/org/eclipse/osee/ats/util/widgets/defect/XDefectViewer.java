@@ -347,7 +347,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
    public void handleDeleteDefect(boolean persist) {
       final List<DefectItem> items = getSelectedDefectItems();
-      if (items.size() == 0) {
+      if (items.isEmpty()) {
          AWorkbench.popup("ERROR", "No Defects Selected");
          return;
       }

@@ -70,7 +70,7 @@ public class StaticIdManagerTest {
          for (Artifact artifact : artifacts) {
             System.err.println("Search returned non-deleted " + artifact.getGuid());
          }
-         assertTrue("Expected 0 artifacts; Returned " + artifacts.size(), artifacts.size() == 0);
+         assertTrue("Expected 0 artifacts; Returned " + artifacts.size(), artifacts.isEmpty());
       }
    }
 
@@ -83,7 +83,7 @@ public class StaticIdManagerTest {
    public void testStaticIdsGettingCached() throws OseeCoreException {
       String staticId = "org." + GUID.create();
       Collection<Artifact> artifacts = ArtifactCache.getArtifactsByStaticId(staticId);
-      assertTrue("Should be 0; Returned " + artifacts.size(), artifacts.size() == 0);
+      assertTrue("Should be 0; Returned " + artifacts.size(), artifacts.isEmpty());
       Artifact art = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
       art.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, staticId);
       art.persist();

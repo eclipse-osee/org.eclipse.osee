@@ -75,12 +75,12 @@ public class MultipleHridSearchOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       if (getUserEntry()) {
          extractIds();
-         if (ids.size() == 0) {
+         if (ids.isEmpty()) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Must Enter Valid Id");
             return;
          }
          searchAndSplitResults();
-         if (resultAtsArts.size() == 0 && resultNonAtsArts.size() == 0) {
+         if (resultAtsArts.isEmpty() && resultNonAtsArts.isEmpty()) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
                   "Invalid HRID/Guid/Legacy PCR Id(s): " + Collections.toString(ids, ", "));
             return;

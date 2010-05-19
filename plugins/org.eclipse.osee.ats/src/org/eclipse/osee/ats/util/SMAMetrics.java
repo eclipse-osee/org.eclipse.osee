@@ -65,7 +65,7 @@ public class SMAMetrics {
       this.manHoursPerDay = manHoursPerDay;
       this.versionArtifact = versionArtifact;
       this.estimatedReleaseDate = estimatedReleaseDate;
-      if (artifacts.size() == 0) return;
+      if (artifacts.isEmpty()) return;
       Set<Artifact> resolvedArts = new HashSet<Artifact>(artifacts);
       for (Artifact art : artifacts) {
          if (art instanceof GoalArtifact) {
@@ -196,14 +196,14 @@ public class SMAMetrics {
    }
 
    public double getPercentCompleteByTeamWorkflow() throws OseeCoreException {
-      if (getTeamArts().size() == 0) return 0;
+      if (getTeamArts().isEmpty()) return 0;
       double completed = getCompletedTeamWorkflows().size();
       if (completed == 0) return 0;
       return completed / getTeamArts().size() * 100;
    }
 
    public double getPercentCompleteByWorkflow() throws OseeCoreException {
-      if (smas.size() == 0) return 0;
+      if (smas.isEmpty()) return 0;
       double completed = getCompletedWorkflows().size();
       if (completed == 0) return 0;
       return completed / smas.size() * 100;
@@ -220,7 +220,7 @@ public class SMAMetrics {
    }
 
    public double getPercentCompleteByTaskWorkflow() throws OseeCoreException {
-      if (getTaskArts().size() == 0) return 0;
+      if (getTaskArts().isEmpty()) return 0;
       double completed = getCompletedTaskWorkflows().size();
       if (completed == 0) return 0;
       return completed / getTaskArts().size() * 100;

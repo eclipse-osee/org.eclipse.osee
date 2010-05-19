@@ -84,7 +84,7 @@ public class SkynetUserArtifactCustomizeDefaults {
 
    public void save() {
       try {
-         if (defaultGuids.size() == 0) {
+         if (defaultGuids.isEmpty()) {
             user.deleteSoleAttribute(XVIEWER_DEFAULT_ATTRIBUTE);
          } else {
             user.setSoleAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE, getDefaultCustomizationXml());

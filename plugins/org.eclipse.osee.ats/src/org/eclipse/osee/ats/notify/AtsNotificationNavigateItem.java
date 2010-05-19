@@ -49,7 +49,7 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
 
       AtsNotificationCheckTreeDialog diag = new AtsNotificationCheckTreeDialog();
       if (diag.open() == 0) {
-         if (diag.getSelectedAtsNotifications().size() == 0) {
+         if (diag.getSelectedAtsNotifications().isEmpty()) {
             AWorkbench.popup("Error", "No Notifications Selected");
             return;
          }

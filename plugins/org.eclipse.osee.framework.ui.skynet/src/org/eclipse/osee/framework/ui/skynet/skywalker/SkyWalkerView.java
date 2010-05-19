@@ -304,7 +304,7 @@ public class SkyWalkerView extends ViewPart {
       // Add current artifact to history only if explore wasn't caused by going back in history
       if (!fromHistory && viewer.getInput() != null) {
          Artifact currArt = (Artifact) viewer.getInput();
-         if (history.size() == 0) {
+         if (history.isEmpty()) {
             history.add(currArt);
          } else if (history.size() > 0 && !history.get(history.size() - 1).equals(currArt)) {
             history.add(currArt);

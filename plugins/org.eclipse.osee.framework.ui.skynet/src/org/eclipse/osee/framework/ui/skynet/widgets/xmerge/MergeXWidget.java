@@ -688,7 +688,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
                         applyPreviousMerge(branchIds.get(dialog.getSelection()));
                      }
                   }
-                  if (selections.size() == 0) {
+                  if (selections.isEmpty()) {
                      new MessageDialog(Display.getCurrent().getActiveShell().getShell(),
                            "Apply Prior Merge Resolution", null, "This Source Branch has had No Prior Merges", 2,
                            new String[] {"OK"}, 1).open();

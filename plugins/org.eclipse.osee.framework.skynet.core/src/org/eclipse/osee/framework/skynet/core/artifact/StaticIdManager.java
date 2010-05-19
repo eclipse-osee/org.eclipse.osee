@@ -38,7 +38,7 @@ public class StaticIdManager {
     */
    public static void setSingletonAttributeValue(Artifact artifact, String staticId) throws OseeCoreException {
       List<Attribute<String>> attributes = artifact.getAttributes(STATIC_ID_ATTRIBUTE, staticId);
-      if (attributes.size() == 0) {
+      if (attributes.isEmpty()) {
          artifact.addAttribute(STATIC_ID_ATTRIBUTE, staticId);
       } else if (attributes.size() > 1) {
          // keep one of the attributes
@@ -89,7 +89,7 @@ public class StaticIdManager {
       if (artifacts.size() > 0) {
          OseeLog.log(Activator.class, Level.FINE, "StaticId Load: [" + staticId + "][" + artifactType + "]");
       }
-      if (queryIfNotFound && artifacts.size() == 0) {
+      if (queryIfNotFound && artifacts.isEmpty()) {
          artifacts = getArtifactsFromArtifactQuery(artifactType, staticId, branch);
       }
       return artifacts;
@@ -98,7 +98,7 @@ public class StaticIdManager {
    public static Artifact getSingletonArtifactOrException(IArtifactType artifactType, String staticId, Branch branch) throws OseeCoreException {
       Set<Artifact> artifacts = getArtifactsFromArtifactCache(artifactType, staticId, branch, true);
       // Exception on problems
-      if (artifacts.size() == 0) {
+      if (artifacts.isEmpty()) {
          throw new ArtifactDoesNotExist("Can't find requested artifact \"" + staticId + "\"");
       } else if (artifacts.size() > 1) {
          throw new MultipleArtifactsExist("Expected 1 \"" + staticId + "\" artifact, retrieved " + artifacts.size());
@@ -137,7 +137,7 @@ public class StaticIdManager {
     */
    private static Artifact getOrCreateSingletonArtifactHelper(IArtifactType artifactType, String staticId, IOseeBranch branch, boolean create) throws OseeCoreException {
       Set<Artifact> artifacts = getArtifactsFromArtifactCache(artifactType, staticId, branch, true);
-      if (artifacts.size() == 0 && create) {
+      if (artifacts.isEmpty() && create) {
          Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, branch);
          setSingletonAttributeValue(artifact, staticId);
          return artifact;

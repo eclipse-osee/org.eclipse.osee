@@ -69,7 +69,7 @@ public class BlamContributionManager {
       // Add blams to categories
       for (AbstractBlam blamOperation : BlamContributionManager.getBlamOperationsNameSort()) {
          // If categories not specified, add to top level
-         if (blamOperation.getCategories().size() == 0) {
+         if (blamOperation.getCategories().isEmpty()) {
             new XNavigateItemBlam(blamOperationItems, blamOperation);
          }
          for (String category : blamOperation.getCategories()) {

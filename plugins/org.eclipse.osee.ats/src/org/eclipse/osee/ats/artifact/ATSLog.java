@@ -82,7 +82,7 @@ public class ATSLog {
    }
 
    public String getHtml(boolean showLog) throws OseeCoreException {
-      if (getLogItems().size() == 0) {
+      if (getLogItems().isEmpty()) {
          return "";
       }
       StringBuffer sb = new StringBuffer();

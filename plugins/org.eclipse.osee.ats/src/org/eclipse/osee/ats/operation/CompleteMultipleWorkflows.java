@@ -46,7 +46,7 @@ public class CompleteMultipleWorkflows extends Action {
    public void run() {
       try {
          Collection<StateMachineArtifact> smas = worldEditor.getWorldComposite().getXViewer().getSelectedSMAArtifacts();
-         if (smas.size() == 0) {
+         if (smas.isEmpty()) {
             AWorkbench.popup("ERROR", "Must select one or more workflows");
             return;
          }

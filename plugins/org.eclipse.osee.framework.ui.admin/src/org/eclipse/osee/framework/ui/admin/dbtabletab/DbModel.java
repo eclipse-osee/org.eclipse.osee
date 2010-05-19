@@ -25,7 +25,7 @@ public class DbModel {
    }
 
    public Object getColumn(int num) {
-      if (columns.size() == 0 || num > columns.size())
+      if (columns.isEmpty() || num > columns.size())
          return "";
       else
          return columns.get(num);

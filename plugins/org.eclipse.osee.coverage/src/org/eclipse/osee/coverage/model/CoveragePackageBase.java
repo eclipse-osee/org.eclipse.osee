@@ -113,7 +113,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
          } else {
             nameStr = nameStr + "." + name;
          }
-         if (getCoverageUnits().size() == 0) {
+         if (getCoverageUnits().isEmpty()) {
             CoverageUnit newCoverageUnit = new CoverageUnit(this, nameStr, "", coverageUnitFileContentsProvider);
             newCoverageUnit.setFolder(true);
             newCoverageUnit.setNamespace(nameStr);

@@ -485,7 +485,7 @@ public class AtsBranchManager {
 
       List<Branch> branches = BranchManager.getBranches(branchFilter);
 
-      if (branches.size() == 0) {
+      if (branches.isEmpty()) {
          return null;
       } else if (branches.size() > 1) {
          throw new MultipleBranchesExist(

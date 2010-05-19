@@ -95,7 +95,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
                      accessibleArts.add(artifact);
                   }
                }
-               if (accessibleArts.size() == 0) {
+               if (accessibleArts.isEmpty()) {
                   AWorkbench.popup("ERROR", "No Artifacts to edit");
                } else {
                   AWorkbench.getActivePage().openEditor(
@@ -256,7 +256,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
    }
 
    public Branch getBranch() {
-      if (((MassArtifactEditorInput) getEditorInput()).getArtifacts().size() == 0) {
+      if (((MassArtifactEditorInput) getEditorInput()).getArtifacts().isEmpty()) {
          return null;
       }
       return ((MassArtifactEditorInput) getEditorInput()).getArtifacts().iterator().next().getBranch();

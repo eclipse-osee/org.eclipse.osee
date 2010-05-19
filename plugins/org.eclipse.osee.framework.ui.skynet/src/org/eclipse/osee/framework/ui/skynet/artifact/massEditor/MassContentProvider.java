@@ -53,7 +53,7 @@ public class MassContentProvider implements ITreeContentProvider {
    }
 
    public void updateAll(final Collection<? extends Object> arts) {
-      if (arts.size() == 0) return;
+      if (arts.isEmpty()) return;
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);

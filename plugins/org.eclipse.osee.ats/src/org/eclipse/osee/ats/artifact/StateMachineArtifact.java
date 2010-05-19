@@ -262,7 +262,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
          }
       }
       preSaveStateAssignees = getStateMgr().getAssignees();
-      if (newAssignees.size() == 0) {
+      if (newAssignees.isEmpty()) {
          return;
       }
       try {

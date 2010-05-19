@@ -135,7 +135,7 @@ public class WorldComposite extends ScrolledComposite implements IOpenNewAtsWorl
                   customizeData)) {
                setCustomizeData(customizeData);
             }
-            if (arts.size() == 0) {
+            if (arts.isEmpty()) {
                setTableTitle("No Results Found - " + name, true);
             } else {
                setTableTitle(name, false);

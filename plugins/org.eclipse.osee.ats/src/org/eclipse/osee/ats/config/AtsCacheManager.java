@@ -76,7 +76,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
       if (!teamTasksCache.containsKey(sma)) {
          Collection<TaskArtifact> taskArtifacts =
                sma.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
-         if (taskArtifacts.size() == 0) {
+         if (taskArtifacts.isEmpty()) {
             return taskArtifacts;
          }
          teamTasksCache.put(sma, taskArtifacts);

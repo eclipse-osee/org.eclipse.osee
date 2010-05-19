@@ -272,7 +272,7 @@ public class XRadioButtons extends XWidget {
    }
 
    public IStatus isValid() {
-      if (isRequiredEntry() && getSelectedNames().size() == 0) {
+      if (isRequiredEntry() && getSelectedNames().isEmpty()) {
          return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must have at least one selection.");
       }
       return Status.OK_STATUS;

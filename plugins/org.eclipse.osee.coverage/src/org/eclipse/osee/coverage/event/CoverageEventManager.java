@@ -122,7 +122,7 @@ public class CoverageEventManager implements IArtifactListener, OseeMessagingSta
 
    public void unregister(CoverageEditor coverageEditor) throws OseeCoreException {
       editors.remove(coverageEditor);
-      if (editors.size() == 0) {
+      if (editors.isEmpty()) {
          stopListeningForRemoteCoverageEvents();
          stopListeneingForFrameworkEvents();
       }

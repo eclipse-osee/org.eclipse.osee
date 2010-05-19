@@ -245,8 +245,8 @@ public class PreviewAndMultiPreviewTest {
             WordTemplateRenderer renderer = new WordTemplateRenderer();
             renderer.setOptions(null);
             renderer.preview(newMultiArts);
-            Assert.assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
-            Assert.assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+            Assert.assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).isEmpty());
+            Assert.assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).isEmpty());
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
             Assert.fail("Preview with children test failed.");
@@ -276,8 +276,8 @@ public class PreviewAndMultiPreviewTest {
             multiArt3.persist();
             Arrays.asList(multiArt1, multiArt2, multiArt3);
             RendererManager.previewInJob(artifacts);
-            Assert.assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
-            Assert.assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+            Assert.assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).isEmpty());
+            Assert.assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).isEmpty());
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
             Assert.fail("Preview with children test failed.");

@@ -91,7 +91,7 @@ public class RelationManager {
             }
          }
       }
-      if (relations.size() == 0) {
+      if (relations.isEmpty()) {
          return null;
       }
       if (relations.size() > 1) {

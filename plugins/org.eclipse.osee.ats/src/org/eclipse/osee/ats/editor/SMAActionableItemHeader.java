@@ -91,7 +91,7 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
       }
       final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) sma;
       if (!sma.isCancelled() && !sma.isCompleted()) {
-         if (teamWf.getParentActionArtifact().getActionableItems().size() == 0) {
+         if (teamWf.getParentActionArtifact().getActionableItems().isEmpty()) {
             label.setText(" " + "Error: No Actionable Items identified.");
             label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          } else {
@@ -110,7 +110,7 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
          label.update();
          layout();
       } else {
-         if (teamWf.getParentActionArtifact().getActionableItems().size() == 0) {
+         if (teamWf.getParentActionArtifact().getActionableItems().isEmpty()) {
             label.setText(" " + "Error: No Actionable Items identified.");
             label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          } else {

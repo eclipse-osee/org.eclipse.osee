@@ -76,7 +76,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
                boolean duplicateWorkflow = variableMap.getString(DUPLICATE_METHOD).equals(DUPLICATE_WORKFLOW);
                String title = variableMap.getString(TITLE);
 
-               if (artifacts.size() == 0) {
+               if (artifacts.isEmpty()) {
                   AWorkbench.popup("ERROR", "Must drag in Team Workflow to duplicate.");
                   return;
                }

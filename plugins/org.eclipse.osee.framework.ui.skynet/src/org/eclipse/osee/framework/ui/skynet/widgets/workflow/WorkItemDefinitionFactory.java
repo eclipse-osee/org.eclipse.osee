@@ -101,14 +101,14 @@ public class WorkItemDefinitionFactory {
       List<Artifact> parentArts =
             ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
                   parentWorkflowId, BranchManager.getCommonBranch());
-      if (parentArts == null || parentArts.size() == 0) {
+      if (parentArts == null || parentArts.isEmpty()) {
          throw new IllegalArgumentException("Can't access parentWorkflowId " + parentWorkflowId);
       }
       Artifact parentArt = parentArts.iterator().next();
       List<Artifact> childArts =
             ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
                   childWorkflowId, BranchManager.getCommonBranch());
-      if (childArts == null || childArts.size() == 0) {
+      if (childArts == null || childArts.isEmpty()) {
          throw new IllegalArgumentException("Can't access childWorkflowId " + childWorkflowId);
       }
       Artifact childArt = childArts.iterator().next();

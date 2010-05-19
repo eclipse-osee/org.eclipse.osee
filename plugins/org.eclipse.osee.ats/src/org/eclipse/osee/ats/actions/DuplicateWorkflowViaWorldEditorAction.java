@@ -41,7 +41,7 @@ public class DuplicateWorkflowViaWorldEditorAction extends Action {
 
    @Override
    public void run() {
-      if (worldEditor.getWorldComposite().getXViewer().getSelectedTeamWorkflowArtifacts().size() == 0) {
+      if (worldEditor.getWorldComposite().getXViewer().getSelectedTeamWorkflowArtifacts().isEmpty()) {
          AWorkbench.popup("ERROR", "Must select one or more team workflows to duplicate");
          return;
       }

@@ -135,7 +135,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
             final Collection<? extends Artifact> artifacts;
             worldEditor.getWorldComposite().getXViewer().clear(forcePend);
             artifacts = worldParameterSearchItem.performSearchGetResults(searchType);
-            if (artifacts.size() == 0) {
+            if (artifacts.isEmpty()) {
                if (worldParameterSearchItem.isCancelled()) {
                   monitor.done();
                   worldEditor.setTableTitle("CANCELLED - " + selectedName, false);

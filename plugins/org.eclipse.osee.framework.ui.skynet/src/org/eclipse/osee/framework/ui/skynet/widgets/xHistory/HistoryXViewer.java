@@ -42,7 +42,7 @@ public class HistoryXViewer extends XViewer {
    @Override
    public void handleDoubleClick() {
       try {
-         if (getSelectedChanges().size() == 0) {
+         if (getSelectedChanges().isEmpty()) {
             return;
          }
 

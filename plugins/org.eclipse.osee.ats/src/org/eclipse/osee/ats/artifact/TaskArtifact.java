@@ -286,7 +286,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (parentSma != null) return parentSma;
       Collection<StateMachineArtifact> smas =
             getRelatedArtifacts(AtsRelationTypes.SmaToTask_Sma, StateMachineArtifact.class);
-      if (smas.size() == 0) throw new OseeStateException("Task has no parent - " + getHumanReadableId());
+      if (smas.isEmpty()) throw new OseeStateException("Task has no parent - " + getHumanReadableId());
       parentSma = smas.iterator().next();
       return parentSma;
    }

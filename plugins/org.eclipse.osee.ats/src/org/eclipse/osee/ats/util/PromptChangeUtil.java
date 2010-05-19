@@ -128,7 +128,7 @@ public class PromptChangeUtil {
          return false;
       }
       Collection<User> users = uld.getUsersSelected();
-      if (users.size() == 0) {
+      if (users.isEmpty()) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
          return false;
       }

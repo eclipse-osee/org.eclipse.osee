@@ -34,7 +34,7 @@ public class XScriptTableLabelProvider extends XViewerLabelProvider {
 
    public XScriptTableLabelProvider(XScriptTable viewer) {
       super(viewer);
-      if (statusImage.size() == 0) {
+      if (statusImage.isEmpty()) {
          statusImage.put(ScriptStatusEnum.NOT_CONNECTED, ImageManager.getImage(OteTestManagerImage.ALERT_OBJ));
          statusImage.put(ScriptStatusEnum.READY, ImageManager.getImage(OteTestManagerImage.SCRIPT_READY_SM));
          statusImage.put(ScriptStatusEnum.IN_QUEUE, ImageManager.getImage(OteTestManagerImage.SCRIPT_IN_QUEUE_SM));

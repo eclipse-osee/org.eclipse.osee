@@ -48,7 +48,7 @@ public class DeleteCoverUnitAction extends Action {
 
    @Override
    public void run() {
-      if (selectedCoverageEditorItem.getSelectedCoverageEditorItems().size() == 0) {
+      if (selectedCoverageEditorItem.getSelectedCoverageEditorItems().isEmpty()) {
          AWorkbench.popup("Select Coverage Unit");
          return;
       }

@@ -83,22 +83,22 @@ public class ArtifactQueryBuilder {
     */
    public ArtifactQueryBuilder(Collection<Integer> artifactIds, IOseeBranch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
       this(artifactIds, 0, null, null, null, branch, null, allowDeleted, loadLevel, true);
-      emptyCriteria = artifactIds.size() == 0;
+      emptyCriteria = artifactIds.isEmpty();
    }
 
    public ArtifactQueryBuilder(List<String> guidOrHrids, IOseeBranch branch, ArtifactLoad loadLevel) {
       this(null, 0, guidOrHrids, null, null, branch, null, false, loadLevel, true);
-      emptyCriteria = guidOrHrids.size() == 0;
+      emptyCriteria = guidOrHrids.isEmpty();
    }
 
    public ArtifactQueryBuilder(List<String> guidOrHrids, IOseeBranch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
       this(null, 0, guidOrHrids, null, null, branch, null, allowDeleted, loadLevel, true);
-      emptyCriteria = guidOrHrids.size() == 0;
+      emptyCriteria = guidOrHrids.isEmpty();
    }
 
    public ArtifactQueryBuilder(List<String> guidOrHrids, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel) throws OseeCoreException {
       this(null, 0, guidOrHrids, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel, true);
-      emptyCriteria = guidOrHrids.size() == 0;
+      emptyCriteria = guidOrHrids.isEmpty();
    }
 
    public ArtifactQueryBuilder(int artifactId, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel) throws OseeCoreException {
@@ -115,7 +115,7 @@ public class ArtifactQueryBuilder {
 
    public ArtifactQueryBuilder(Collection<? extends IArtifactType> artifactTypes, IOseeBranch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
       this(null, 0, null, null, artifactTypes, branch, null, allowDeleted, loadLevel, true);
-      emptyCriteria = artifactTypes.size() == 0;
+      emptyCriteria = artifactTypes.isEmpty();
    }
 
    public ArtifactQueryBuilder(IOseeBranch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
@@ -129,7 +129,7 @@ public class ArtifactQueryBuilder {
 
    public ArtifactQueryBuilder(IOseeBranch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
       this(null, 0, null, null, null, branch, null, false, loadLevel, true, toArray(criteria));
-      emptyCriteria = criteria.size() == 0;
+      emptyCriteria = criteria.isEmpty();
    }
 
    public ArtifactQueryBuilder(IArtifactType artifactType, IOseeBranch branch, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
@@ -139,7 +139,7 @@ public class ArtifactQueryBuilder {
 
    public ArtifactQueryBuilder(IArtifactType artifactType, IOseeBranch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
       this(null, 0, null, null, Arrays.asList(artifactType), branch, null, false, loadLevel, true, toArray(criteria));
-      emptyCriteria = criteria.size() == 0;
+      emptyCriteria = criteria.isEmpty();
    }
 
    private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<? extends IArtifactType> artifactTypes, IOseeBranch branch, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel, boolean tableOrderForward, AbstractArtifactSearchCriteria... criteria) {
@@ -432,7 +432,7 @@ public class ArtifactQueryBuilder {
       }
       Collection<Artifact> artifacts = internalGetArtifacts(1, null, true);
 
-      if (artifacts.size() == 0) {
+      if (artifacts.isEmpty()) {
          throw new ArtifactDoesNotExist(getSoleExceptionMessage(artifacts.size()));
       }
       if (artifacts.size() > 1) {

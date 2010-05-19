@@ -77,7 +77,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    }
 
    private boolean isToggleImportEnabled() {
-      if (xCoverageViewer.getSelectedCoverageItems().size() == 0) return false;
+      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) return false;
       for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (item.isEditable().isFalse() || !(item instanceof IMergeItem) || !((IMergeItem) item).isImportAllowed()) {
             return false;

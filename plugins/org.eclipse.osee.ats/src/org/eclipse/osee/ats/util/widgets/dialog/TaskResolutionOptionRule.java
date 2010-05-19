@@ -53,7 +53,7 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
    public static TaskResolutionOptionRule getTaskResolutionOptionRule(WorkPageDefinition workPageDefinition) throws OseeCoreException {
       List<WorkItemDefinition> wids =
             workPageDefinition.getWorkItemDefinitionsByType(TaskResolutionOptionRule.WORK_TYPE);
-      if (wids.size() == 0) return null;
+      if (wids.isEmpty()) return null;
       WorkItemDefinition workItemDefinition = wids.iterator().next();
       if (workItemDefinition != null) {
          TaskResolutionOptionRule taskResolutionOptionRule = new TaskResolutionOptionRule(null, GUID.create(), null);

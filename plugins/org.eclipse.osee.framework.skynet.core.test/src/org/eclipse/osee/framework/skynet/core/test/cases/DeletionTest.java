@@ -293,7 +293,7 @@ public class DeletionTest {
 
 
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
-            monitorLog.getAllLogs().size() == 0);
+            monitorLog.getAllLogs().isEmpty());
       if (DEBUG) {
          fail("Deletion Test was run with tracing enabled to prevent stopping at a failure so no conditions were checked.");
       }

@@ -324,7 +324,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
          return;
       }
       final List<GroupExplorerItem> items = getSelectedItems();
-      if (items.size() == 0) {
+      if (items.isEmpty()) {
          AWorkbench.popup("ERROR", "No Items Selected");
          return;
       }
@@ -346,7 +346,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
 
    private void handleDeleteGroup() throws OseeCoreException {
       final ArrayList<GroupExplorerItem> items = getSelectedUniversalGroupItems();
-      if (items.size() == 0) {
+      if (items.isEmpty()) {
          AWorkbench.popup("ERROR", "No groups selected.");
          return;
       }

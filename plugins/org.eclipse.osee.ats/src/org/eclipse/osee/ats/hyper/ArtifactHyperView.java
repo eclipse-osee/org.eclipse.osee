@@ -268,7 +268,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
             try {
                Collection<Artifact> arts =
                      ArtifactQuery.getArtifactListFromIds(Arrays.asList(hridGuid), BranchManager.getCommonBranch());
-               if (arts.size() == 0) {
+               if (arts.isEmpty()) {
                   AWorkbench.popup("ERROR", "No Artifacts Found");
                   return;
                }

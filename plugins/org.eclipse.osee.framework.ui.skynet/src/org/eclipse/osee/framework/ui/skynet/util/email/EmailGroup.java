@@ -35,7 +35,7 @@ public class EmailGroup {
    }
 
    public boolean hasEmails() {
-      if (emails.size() == 0) return false;
+      if (emails.isEmpty()) return false;
       for (String str : emails) {
          if (EmailUtil.isEmailValid(str)) return true;
       }

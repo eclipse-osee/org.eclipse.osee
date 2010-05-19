@@ -82,7 +82,7 @@ public class SkyWalkerOptions {
    }
 
    public String getExtendedName(Artifact artifact) throws OseeCoreException {
-      if (getSelectedShowAttributeTypes().size() == 0) {
+      if (getSelectedShowAttributeTypes().isEmpty()) {
          return "";
       } else {
          StringBuffer sb = new StringBuffer();

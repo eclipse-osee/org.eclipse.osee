@@ -148,7 +148,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
          return Arrays.asList(new User[] {UserManager.getUser()});
       }
       Collection<User> users = UsersByIds.getUsers(value);
-      if (users.size() == 0) {
+      if (users.isEmpty()) {
          users.add(UserManager.getUser());
       }
       return users;

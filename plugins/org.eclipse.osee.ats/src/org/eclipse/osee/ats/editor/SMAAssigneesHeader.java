@@ -88,7 +88,7 @@ public class SMAAssigneesHeader extends Composite {
    private void updateLabel(StateMachineArtifact sma) throws OseeCoreException {
       String value = "";
       try {
-         if (sma.getStateMgr().getAssignees().size() == 0) {
+         if (sma.getStateMgr().getAssignees().isEmpty()) {
             value = "Error: State has no assignees";
          } else {
             valueLabel.setToolTipText(sma.getStateMgr().getAssigneesStr());

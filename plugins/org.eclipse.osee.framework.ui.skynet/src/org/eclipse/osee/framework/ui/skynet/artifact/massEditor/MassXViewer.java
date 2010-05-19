@@ -188,7 +188,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
 
    @Override
    public void handleDoubleClick() {
-      if (getSelectedArtifacts().size() == 0) return;
+      if (getSelectedArtifacts().isEmpty()) return;
       Artifact art = getSelectedArtifacts().iterator().next();
       RendererManager.openInJob(art, PresentationType.GENERALIZED_EDIT);
    }

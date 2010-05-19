@@ -47,7 +47,7 @@ public class UserRoleManager {
    }
 
    public String getHtml() throws OseeCoreException {
-      if (getUserRoles().size() == 0) return "";
+      if (getUserRoles().isEmpty()) return "";
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Defects"));
       sb.append(getTable());
@@ -144,7 +144,7 @@ public class UserRoleManager {
          if (!uRole.isCompleted() && uRole.getUser() != null) assignees.add(uRole.getUser());
       }
       // If roles are all completed, then still need to select a user to assign to SMA
-      if (assignees.size() == 0) {
+      if (assignees.isEmpty()) {
          if (getUserRoles(Role.Author).size() > 0)
             for (UserRole role : getUserRoles(Role.Author))
                assignees.add(role.getUser());

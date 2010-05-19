@@ -103,7 +103,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
    }
 
    public String getWorldViewNumberOfTasksRemaining() throws OseeCoreException {
-      if (getTaskArtifacts().size() == 0) return "";
+      if (getTaskArtifacts().isEmpty()) return "";
       return String.valueOf(getNumTasksInWork());
    }
 

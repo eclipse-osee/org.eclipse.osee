@@ -76,7 +76,7 @@ public class AtsExportPage extends WizardDataTransferPage {
       composite.setFont(parent.getFont());
 
       Label label = new Label(composite, SWT.NONE);
-      if (artifacts.size() == 0) {
+      if (artifacts.isEmpty()) {
          label.setText("Error: No ATS Artifacts input.  Close wizard and re-perform selection.");
          label.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       } else {
@@ -118,7 +118,7 @@ public class AtsExportPage extends WizardDataTransferPage {
    }
 
    public Result isEntryValid() {
-      if (artifacts.size() == 0) {
+      if (artifacts.isEmpty()) {
          return new Result("No Artifacts selected.  Cancel wizard and try again.");
       }
       if (!selectedExportOptions.contains(ExportOption.AS_HTML_TO_FILE) && !selectedExportOptions.contains(ExportOption.AS_HTML_TO_RESULT_EDITOR) && !selectedExportOptions.contains(ExportOption.AS_PDF)) {
