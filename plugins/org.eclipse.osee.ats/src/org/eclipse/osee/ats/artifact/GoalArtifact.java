@@ -121,11 +121,6 @@ public class GoalArtifact extends StateMachineArtifact {
          if (art instanceof GoalArtifact) {
             goals.add(art);
          }
-         if (art instanceof ActionArtifact) {
-            for (TeamWorkFlowArtifact teamArt : ((ActionArtifact) art).getTeamWorkFlowArtifacts()) {
-               getGoals(teamArt, goals, recurse);
-            }
-         }
          goals.addAll(art.getRelatedArtifacts(AtsRelationTypes.Goal_Goal, GoalArtifact.class));
          if (recurse && art instanceof StateMachineArtifact && ((StateMachineArtifact) art).getParentSMA() != null) {
             getGoals(((StateMachineArtifact) art).getParentSMA(), goals, recurse);
@@ -144,7 +139,13 @@ public class GoalArtifact extends StateMachineArtifact {
       if (!isHasGoal(artifact)) return "";
       Collection<Artifact> goals = GoalArtifact.getGoals(artifact, false);
       if (goals.size() > 1) {
-         return "unable to resolve duplicate parents";
+         List<Artifact> goalsSorted = new ArrayList<Artifact>(goals);
+         Collections.sort(goalsSorted);
+         StringBuffer sb = new StringBuffer();
+         for (Artifact goal : goalsSorted) {
+            sb.append(String.format("%s-[%s] ", getGoalOrder((GoalArtifact) goal, artifact), goal));
+         }
+         return sb.toString();
       }
       Artifact goal = goals.iterator().next();
       return getGoalOrder((GoalArtifact) goal, artifact);

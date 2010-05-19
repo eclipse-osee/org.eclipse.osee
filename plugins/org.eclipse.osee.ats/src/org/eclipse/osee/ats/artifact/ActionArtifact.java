@@ -478,13 +478,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    @Override
    public String getWorldViewGoals() throws OseeCoreException {
-      Set<Artifact> groups = new HashSet<Artifact>();
-      groups.addAll(getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
-      // Roll up if same for all children
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         groups.addAll(team.getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
-      }
-      return Artifacts.toString("; ", groups);
+      return Artifacts.toString("; ", getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
    }
 
    public String getWorldViewNumeric1() throws OseeCoreException {
@@ -512,7 +506,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public String getWorldViewGoalOrderVote() throws OseeCoreException {
-      return "";
+      return getSoleAttributeValue(ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE.getStoreName(), "");
    }
 
    public String getWorldViewWorkPackage() throws OseeCoreException {

@@ -61,6 +61,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactReloadEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
@@ -948,6 +949,24 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             return false;
          }
          Artifact useArt = (Artifact) treeItem.getData();
+         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
+         if (useArt instanceof IATSArtifact) {
+            boolean modified = false;
+            if (xCol.equals(WorldXViewerFactory.Goal_Order)) {
+               handleAltLeftClickGoalOrder(treeItem, (IATSArtifact) useArt);
+               return false;
+            } else if (xCol.equals(WorldXViewerFactory.Goal_Order_Vote_Col)) {
+               modified =
+                     PromptChangeUtil.promptChangeAttribute((Artifact) useArt, ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE,
+                           persist, true);
+            } else if (xCol.equals(WorldXViewerFactory.Goals_Col)) {
+               modified = PromptChangeUtil.promptChangeGoals((Artifact) useArt, persist);
+            }
+            if (modified) {
+               update(useArt, null);
+               return true;
+            }
+         }
          if (useArt instanceof ActionArtifact) {
             if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1) {
                useArt = ((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next();
@@ -956,7 +975,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             }
          }
          StateMachineArtifact sma = (StateMachineArtifact) useArt;
-         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
          boolean modified = false;
          if (xCol.equals(WorldXViewerFactory.Version_Target_Col)) {
             modified =
@@ -977,8 +995,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             modified = PromptChangeUtil.promptChangeEstimatedReleaseDate(sma);
          } else if (xCol.equals(WorldXViewerFactory.Groups_Col)) {
             modified = PromptChangeUtil.promptChangeGroups(sma, persist);
-         } else if (xCol.equals(WorldXViewerFactory.Goals_Col)) {
-            modified = PromptChangeUtil.promptChangeGoals(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Completion_Date_Col)) {
             modified =
                   PromptChangeUtil.promptChangeDate(sma, ATSAttributes.ESTIMATED_COMPLETION_DATE_ATTRIBUTE, persist);
@@ -1006,9 +1022,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             modified = PromptChangeUtil.promptChangeFloatAttribute(sma, ATSAttributes.NUMERIC1_ATTRIBUTE, persist);
          } else if (xCol.equals(WorldXViewerFactory.Numeric2_Col)) {
             modified = PromptChangeUtil.promptChangeFloatAttribute(sma, ATSAttributes.NUMERIC2_ATTRIBUTE, persist);
-         } else if (xCol.equals(WorldXViewerFactory.Goal_Order_Vote_Col)) {
-            modified =
-                  PromptChangeUtil.promptChangeAttribute(sma, ATSAttributes.GOAL_ORDER_VOTE_ATTRIBUTE, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Category_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, ATSAttributes.CATEGORY_ATTRIBUTE, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Resolution_Col)) {
@@ -1021,9 +1034,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             modified = PromptChangeUtil.promptChangeType(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Priority_Col)) {
             modified = PromptChangeUtil.promptChangePriority(sma, persist);
-         } else if (xCol.equals(WorldXViewerFactory.Goal_Order)) {
-            handleAltLeftClickGoalOrder(treeItem, sma);
-            return false;
          }
          if (modified) {
             update(useArt, null);
@@ -1035,7 +1045,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       return false;
    }
 
-   private void handleAltLeftClickGoalOrder(TreeItem treeItem, StateMachineArtifact sma) throws OseeCoreException {
+   private void handleAltLeftClickGoalOrder(TreeItem treeItem, IATSArtifact atsArt) throws OseeCoreException {
 
       GoalArtifact parentGoalArtifact = null;
       if (xViewerFactory instanceof GoalXViewerFactory) {
@@ -1052,7 +1062,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       }
       if (changedGoal != null) {
          refresh(changedGoal);
-         update(sma, null);
+         update(atsArt, null);
       }
    }
 

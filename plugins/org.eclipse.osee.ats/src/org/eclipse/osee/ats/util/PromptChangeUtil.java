@@ -73,13 +73,13 @@ public class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeGoals(StateMachineArtifact sma, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeGoals(Artifact sma, boolean persist) throws OseeCoreException {
       return promptChangeGoals(Arrays.asList(sma), persist);
    }
 
-   public static boolean promptChangeGoals(final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeGoals(final Collection<? extends Artifact> smas, boolean persist) throws OseeCoreException {
       Set<Artifact> selected = new HashSet<Artifact>();
-      for (StateMachineArtifact sma : smas) {
+      for (Artifact sma : smas) {
          selected.addAll(sma.getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
       }
       Collection<Artifact> allGoals =
@@ -89,7 +89,7 @@ public class PromptChangeUtil {
       dialog.setInitialSelections(selected.toArray());
       if (dialog.open() == 0) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Set Goals");
-         for (StateMachineArtifact sma : smas) {
+         for (Artifact sma : smas) {
             sma.setRelations(AtsRelationTypes.Goal_Goal, dialog.getSelection());
             sma.persist(transaction);
          }
