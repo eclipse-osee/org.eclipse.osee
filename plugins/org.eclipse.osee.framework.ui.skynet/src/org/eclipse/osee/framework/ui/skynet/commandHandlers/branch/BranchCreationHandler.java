@@ -107,7 +107,7 @@ public class BranchCreationHandler extends CommandHandler {
          branch = ((TransactionRecord) object).getBranch();
       }
 
-      if (branch == null) {
+      if (branch == null || branch.getArchiveState().isArchived()) {
          return false;
       }
 
