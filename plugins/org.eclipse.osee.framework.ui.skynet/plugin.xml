@@ -170,14 +170,6 @@
   <view
         allowMultiple="true"
         category="osee.jdk.core.category"
-        class="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView"
-        icon="images/branch_change.gif"
-        id="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView"
-        name="Change Report">
-  </view>
-  <view
-        allowMultiple="true"
-        category="osee.jdk.core.category"
         class="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView"
         icon="images/DBiconBlueEdit.GIF"
         id="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView"
@@ -392,13 +384,6 @@
  <extension
        name="The new change view"
        point="org.eclipse.ui.menus">
-    <menuContribution
-          locationURI="menu:org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView">
-       <command
-             commandId="org.eclipse.osee.framework.ui.skynet.change.ChangeView.showDocOrder"
-             style="toggle">
-       </command>
-    </menuContribution>
     <menuContribution
           locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView">
        <command
@@ -1102,10 +1087,6 @@
         id="Change View"
         point="org.eclipse.ui.handlers">
      <handler
-           class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ToggleChangeViewDocOrderHandler"
-           commandId="org.eclipse.osee.framework.ui.skynet.change.ChangeView.showDocOrder">
-     </handler>
-     <handler
            class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.SingleNativeDiffHandler"
            commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.singleNativeDiff.command">
      </handler>
@@ -1170,10 +1151,6 @@
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.updateBranch"
         icon="images/branchSynch.gif">
-  </image>
-  <image
-        commandId="org.eclipse.osee.framework.ui.skynet.change.ChangeView.showDocOrder"
-        icon="images/docOrder.gif">
   </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.showArchivedBranches"
@@ -1450,10 +1427,6 @@
         description="Collapse  a Tree Viewer"
         id="org.eclipse.osee.framework.ui.skynet.collapseTree.command"
         name="TreeCollapse">
-  </command>
-  <command
-        id="org.eclipse.osee.framework.ui.skynet.change.ChangeView.showDocOrder"
-        name="Show Document Order">
   </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.changeReportView.singleNativeDiff.command"

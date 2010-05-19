@@ -11,7 +11,6 @@ import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.change.CompareType;
-import org.eclipse.osee.framework.ui.skynet.change.IChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.change.ParentBranchProvider;
 import org.eclipse.osee.framework.ui.skynet.change.UiOtherBranchDialogProvider;
 import org.eclipse.osee.framework.ui.skynet.change.operations.LoadCompareBaseToHead;
@@ -21,13 +20,11 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public final class CompareAction extends Action {
 
    private final ChangeUiData uiData;
-   private final IChangeReportView view;
    private final CompareType compareType;
 
-   public CompareAction(CompareType compareType, IChangeReportView view, ChangeUiData uiData) {
+   public CompareAction(CompareType compareType, ChangeUiData uiData) {
       super(compareType.getHandler().getActionName(), Action.AS_PUSH_BUTTON);
       this.compareType = compareType;
-      this.view = view;
       this.uiData = uiData;
       setToolTipText(compareType.getHandler().getActionDescription());
       setImageDescriptor(ImageManager.getImageDescriptor(compareType.getHandler().getActionImage()));

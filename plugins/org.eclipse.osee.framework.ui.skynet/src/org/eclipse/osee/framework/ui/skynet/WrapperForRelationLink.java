@@ -17,15 +17,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-class WrapperForRelationLink implements IAdaptable{
+class WrapperForRelationLink implements IAdaptable {
 
    private final RelationType relationType;
    private final Artifact artifactA;
    private final Artifact artifactB;
    private final Artifact other;
-   
+
    public WrapperForRelationLink(RelationType relationType, Artifact other, Artifact artifactA, Artifact artifactB) {
       this.relationType = relationType;
       this.artifactA = artifactA;
@@ -40,26 +39,27 @@ class WrapperForRelationLink implements IAdaptable{
    Artifact getArtifactA() {
       return artifactA;
    }
-   
+
    Artifact getArtifactB() {
       return artifactB;
    }
-   
+
    Artifact getOther() {
       return other;
    }
-   
-   RelationSide getRelationSide(){
-      if(other.equals(artifactB)){
+
+   RelationSide getRelationSide() {
+      if (other.equals(artifactB)) {
          return RelationSide.SIDE_B;
       } else {
          return RelationSide.SIDE_A;
       }
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class arg0) {
-      if(arg0.equals(Artifact.class)){
+      if (arg0.equals(Artifact.class)) {
          return other;
       }
       return null;

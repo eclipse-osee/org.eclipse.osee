@@ -19,8 +19,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor;
-import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.progress.UIJob;
 
@@ -31,20 +29,12 @@ public final class ChangeUiUtil {
 
    public static void open(Branch branch) throws OseeCoreException {
       Conditions.checkNotNull(branch, "Branch");
-      if (EditorsPreferencePage.isUseLegacyChangeReportView()) {
-         ChangeView.open(branch); // Legacy Change Report
-      } else {
-         open(createInput(branch, true));
-      }
+      open(createInput(branch, true));
    }
 
    public static void open(TransactionRecord transactionId) throws OseeCoreException {
       Conditions.checkNotNull(transactionId, "TransactionId");
-      if (EditorsPreferencePage.isUseLegacyChangeReportView()) {
-         ChangeView.open(transactionId); // Legacy Change Report
-      } else {
-         open(createInput(transactionId, true));
-      }
+      open(createInput(transactionId, true));
    }
 
    public static ChangeReportEditorInput createInput(TransactionRecord transactionId, boolean loadOnOpen) throws OseeCoreException {

@@ -30,14 +30,10 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class EditorsPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
    private static String PreviewOnDoubleClickForWordArtifacts = "PreviewOnDoubleClickForWordArtifacts";
-   private static String CHANGE_REPORT_USE_LEGACY_VIEW_STRING = "change.report.use.legacy.view";
    private static String CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN =
          "change.report.close.editors.on.shutdown";
-   private Button previewOnDoubleClickForWordArtifacts, useLegacyChangeReportView, closeChangeReportEditorsOnShutdown;
-
-   public static boolean isUseLegacyChangeReportView() throws OseeCoreException {
-      return UserManager.getUser().getBooleanSetting(CHANGE_REPORT_USE_LEGACY_VIEW_STRING);
-   }
+   private Button previewOnDoubleClickForWordArtifacts;
+   private Button closeChangeReportEditorsOnShutdown;
 
    public static boolean isCloseChangeReportEditorsOnShutdown() throws OseeCoreException {
       return UserManager.getUser().getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
@@ -59,16 +55,6 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       previewOnDoubleClickForWordArtifacts.setText("Open MS Word preview on double-click of MS Word Artifact");
       try {
          previewOnDoubleClickForWordArtifacts.setSelection(EditorsPreferencePage.isPreviewOnDoubleClickForWordArtifacts());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-
-      useLegacyChangeReportView = new Button(composite, SWT.CHECK);
-      useLegacyChangeReportView.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
-      useLegacyChangeReportView.setText("Open Change Reports in Legacy View");
-      try {
-         boolean value = UserManager.getUser().getBooleanSetting(CHANGE_REPORT_USE_LEGACY_VIEW_STRING);
-         useLegacyChangeReportView.setSelection(value);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -111,10 +97,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
             user.deleteAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, PreviewOnDoubleClickForWordArtifacts);
          }
 
-         boolean result = useLegacyChangeReportView.getSelection();
-         user.setSetting(CHANGE_REPORT_USE_LEGACY_VIEW_STRING, String.valueOf(result));
-
-         result = closeChangeReportEditorsOnShutdown.getSelection();
+         boolean result = closeChangeReportEditorsOnShutdown.getSelection();
          user.setSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN, String.valueOf(result));
 
          user.persist();
