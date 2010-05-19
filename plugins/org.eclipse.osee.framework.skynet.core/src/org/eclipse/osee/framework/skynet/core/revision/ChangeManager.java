@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * Public API class for access to change data from branches and transactionIds
- *
+ * 
  * @author Jeff C. Phillips
  * @author Donald G. Dunne
  */
@@ -62,7 +62,7 @@ public final class ChangeManager {
 
    /**
     * Acquires changes for a particular artifact
-    *
+    * 
     * @param artifact
     * @param monitor
     * @return changes
@@ -73,9 +73,8 @@ public final class ChangeManager {
    }
 
    /**
-    * Acquires artifact, relation and attribute changes from a source branch
-    * since its creation.
-    *
+    * Acquires artifact, relation and attribute changes from a source branch since its creation.
+    * 
     * @param transactionId
     * @param monitor
     * @return changes
@@ -90,9 +89,8 @@ public final class ChangeManager {
    }
 
    /**
-    * Acquires artifact, relation and attribute changes from a source branch
-    * since its creation.
-    *
+    * Acquires artifact, relation and attribute changes from a source branch since its creation.
+    * 
     * @param sourceBranch
     * @param monitor
     * @return changes
@@ -108,10 +106,16 @@ public final class ChangeManager {
       return new ChangeDataLoader(changes, txDelta);
    }
 
+   public static IOperation compareTwoBranchesHead(IOseeBranch sourceBranch, IOseeBranch destinationBranch, Collection<Change> changes) throws OseeCoreException {
+      TransactionRecord startTx = TransactionManager.getHeadTransaction(sourceBranch);
+      TransactionRecord endTx = TransactionManager.getHeadTransaction(destinationBranch);
+      return new ChangeDataLoader(changes, new TransactionDelta(startTx, endTx));
+   }
+
    /**
     * For the given list of artifacts determine which transactions (on that artifact's branch) affected that artifact.
     * The branch's baseline transaction is excluded.
-    *
+    * 
     * @param artifacts
     * @return a map of artifact to collection of TransactionIds which affected the given artifact
     * @throws OseeCoreException
@@ -163,7 +167,7 @@ public final class ChangeManager {
    /**
     * For the given list of artifacts determine which branches (in the branch hierarchy for that artifact) affected that
     * artifact.
-    *
+    * 
     * @param artifacts
     * @return a map of artifact to collection of branches which affected the given artifact
     * @throws OseeCoreException

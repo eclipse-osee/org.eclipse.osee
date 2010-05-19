@@ -59,7 +59,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * Provides access to all branches as well as support for creating branches of all types
- *
+ * 
  * @author Ryan D. Brooks
  */
 public class BranchManager {
@@ -208,7 +208,7 @@ public class BranchManager {
 
    /**
     * Update branch
-    *
+    * 
     * @param Job
     */
    public static Job updateBranch(final Branch branch, final ConflictResolverOperation resolver) {
@@ -219,7 +219,7 @@ public class BranchManager {
    /**
     * Completes the update branch operation by committing latest parent based branch with branch with changes. Then
     * swaps branches so we are left with the most current branch containing latest changes.
-    *
+    * 
     * @param Job
     */
    public static Job completeUpdateBranch(final ConflictManagerExternal conflictManager, final boolean archiveSourceBranch, final boolean overwriteUnresolvedConflicts) {
@@ -252,7 +252,7 @@ public class BranchManager {
    /**
     * Delete a branch from the system. (This operation will set the branch state to deleted. This operation is
     * undo-able)
-    *
+    * 
     * @param branchId
     */
    public static Job deleteBranch(final Branch branch) {
@@ -262,7 +262,7 @@ public class BranchManager {
    /**
     * Commit the net changes from the source branch into the destination branch. If there are conflicts between the two
     * branches, the source branch changes will override those on the destination branch.
-    *
+    * 
     * @param monitor
     * @param conflictManager
     * @param archiveSourceBranch
@@ -278,23 +278,23 @@ public class BranchManager {
       if (!conflictManager.getDestinationBranch().isEditable()) {
          throw new OseeCoreException("Commit failed - unable to commit into a non-editable branch");
       }
-      runCommitExtPointActions(conflictManager.getSourceBranch());
+      runCommitExtPointActions(conflictManager);
       HttpCommitDataRequester.commitBranch(monitor, UserManager.getUser(), conflictManager.getSourceBranch(),
             conflictManager.getDestinationBranch(), archiveSourceBranch);
    }
 
-   private static void runCommitExtPointActions(Branch branch) throws OseeCoreException {
+   private static void runCommitExtPointActions(ConflictManagerExternal conflictManager) throws OseeCoreException {
       ExtensionDefinedObjects<CommitAction> extensions =
             new ExtensionDefinedObjects<CommitAction>("org.eclipse.osee.framework.skynet.core.CommitActions",
                   "CommitActions", "className");
       for (CommitAction commitAction : extensions.getObjects()) {
-         commitAction.runCommitAction(branch);
+         commitAction.runCommitAction(conflictManager.getSourceBranch(), conflictManager.getDestinationBranch());
       }
    }
 
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    *
+    * 
     * @param transactionIdNumber
     */
    public static void purgeTransactions(final int... transactionIdNumbers) {
@@ -303,7 +303,7 @@ public class BranchManager {
 
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    *
+    * 
     * @param transactionIdNumber
     */
    public static void purgeTransactions(IJobChangeListener jobChangeListener, final int... transactionIdNumbers) {
@@ -312,7 +312,7 @@ public class BranchManager {
 
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    *
+    * 
     * @param transactionIdNumber
     */
    public static Job purgeTransactions(IJobChangeListener jobChangeListener, boolean force, final int... transactionIdNumbers) {
@@ -366,7 +366,7 @@ public class BranchManager {
 
    /**
     * Creates a new Branch based on the transaction number selected and the parent branch.
-    *
+    * 
     * @param parentTransactionId
     * @param childBranchName
     * @throws OseeCoreException
@@ -385,7 +385,7 @@ public class BranchManager {
 
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
-    *
+    * 
     * @param parentTransactionId
     * @param childBranchName
     * @throws OseeCoreException
@@ -402,7 +402,7 @@ public class BranchManager {
 
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
-    *
+    * 
     * @param parentTransactionId
     * @param childBranchName
     * @throws OseeCoreException
@@ -417,7 +417,7 @@ public class BranchManager {
 
    /**
     * Creates a new root branch, imports skynet types and initializes.
-    *
+    * 
     * @param branchName
     * @param initializeArtifacts adds common artifacts needed by most normal root branches
     * @throws Exception

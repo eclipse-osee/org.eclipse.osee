@@ -17,5 +17,5 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author TheronVirgin
  */
 public interface CommitAction {
-   public void runCommitAction(IOseeBranch branch) throws OseeCoreException;
+   public void runCommitAction(IOseeBranch sourceBranch, IOseeBranch destinationBranch) throws OseeCoreException;
 }

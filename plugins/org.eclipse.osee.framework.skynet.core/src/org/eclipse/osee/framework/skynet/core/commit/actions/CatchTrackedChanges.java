@@ -41,10 +41,10 @@ public class CatchTrackedChanges implements CommitAction {
     */
 
    @Override
-   public void runCommitAction(IOseeBranch branch) throws OseeCoreException {
+   public void runCommitAction(IOseeBranch sourceBranch, IOseeBranch destinationBranch) throws OseeCoreException {
       Set<Artifact> changedArtifacts = new HashSet<Artifact>();
       Collection<Change> changes = new ArrayList<Change>();
-      IOperation operation = ChangeManager.comparedToParent(branch, changes);
+      IOperation operation = ChangeManager.compareTwoBranchesHead(sourceBranch, destinationBranch, changes);
       Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1.0);
 
       for (Change change : changes) {
