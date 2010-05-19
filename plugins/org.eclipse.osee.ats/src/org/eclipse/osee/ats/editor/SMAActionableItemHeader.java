@@ -92,7 +92,7 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
       final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) sma;
       if (!sma.isCancelled() && !sma.isCompleted()) {
          if (teamWf.getParentActionArtifact().getActionableItems().size() == 0) {
-            label.setText(" " + ACTION_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
+            label.setText(" " + "Error: No Actionable Items identified.");
             label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          } else {
             StringBuffer sb = new StringBuffer(teamWf.getActionableItemsDam().getActionableItemsStr());
@@ -111,10 +111,10 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
          layout();
       } else {
          if (teamWf.getParentActionArtifact().getActionableItems().size() == 0) {
-            label.setText(" " + ACTION_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
+            label.setText(" " + "Error: No Actionable Items identified.");
             label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          } else {
-            label.setText(" " + ACTION_ACTIONABLE_ITEMS + teamWf.getParentActionArtifact().getWorldViewActionableItems());
+            label.setText(" " + teamWf.getParentActionArtifact().getWorldViewActionableItems());
             label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
          }
