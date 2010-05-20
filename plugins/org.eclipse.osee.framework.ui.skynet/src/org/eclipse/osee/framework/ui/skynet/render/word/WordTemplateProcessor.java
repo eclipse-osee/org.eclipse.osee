@@ -101,6 +101,7 @@ public class WordTemplateProcessor {
                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    private String slaveTemplate;
+   private String slaveTemplateName;
    private boolean outlining;
    private boolean recurseChildren;
    private String outlineNumber;
@@ -120,13 +121,22 @@ public class WordTemplateProcessor {
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts Only used by Publish SRS
     * 
+    * @param variableMap
+    * @param masterTemplateArtifact
+    * @param slaveTemplateArtifact
+    * @param artifacts
+    * @throws OseeCoreException
     * @throws IOException
     */
    public void publishWithExtensionTemplates(VariableMap variableMap, Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
       String masterTemplate = masterTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WHOLE_WORD_CONTENT, "");
-      slaveTemplate =
-            slaveTemplateArtifact != null ? slaveTemplateArtifact.getSoleAttributeValue(
-                  CoreAttributeTypes.WHOLE_WORD_CONTENT, "") : "";
+      slaveTemplateName = "";
+      slaveTemplate = "";
+
+      if (slaveTemplateArtifact != null) {
+         slaveTemplateName = slaveTemplateArtifact.getSafeName();
+         slaveTemplate = slaveTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WHOLE_WORD_CONTENT, "");
+      }
 
       IFolder folder = RenderingUtil.ensureRenderFolderExists(PresentationType.PREVIEW);
       String fileName = String.format("%s_%s.xml", masterTemplateArtifact.getSafeName(), Lib.getDateTimeString());
@@ -249,6 +259,7 @@ public class WordTemplateProcessor {
       boolean doSubDocuments = false;
       String nextParagraphNumber = null;
       String outlineType = null;
+      boolean diff = variableMap.getBoolean("Publish As Diff");
 
       Matcher matcher = outlineNumberPattern.matcher(elementValue);
       if (matcher.find()) {
@@ -268,7 +279,6 @@ public class WordTemplateProcessor {
       }
 
       matcher = argumentElementsPattern.matcher(elementValue);
-
       VariableMap newVariableMap = doSubDocuments ? new VariableMap() : null;
 
       while (matcher.find()) {
@@ -296,13 +306,27 @@ public class WordTemplateProcessor {
          newVariableMap.setValue("Branch", variableMap.getBranch("Branch"));
          String subDocFileName = subdocumentName + ".xml";
          populateVariableMap(newVariableMap);
-         AIFile.writeToFile(folder.getFile(subDocFileName), applyTemplate(newVariableMap, null, slaveTemplate, folder,
-               nextParagraphNumber, outlineType, presentationType));
 
+         if (diff) {
+            generateDocumentDiff(newVariableMap, variableMap, subDocFileName);
+         } else {
+            AIFile.writeToFile(folder.getFile(subDocFileName), applyTemplate(newVariableMap, null, slaveTemplate,
+                  folder, nextParagraphNumber, outlineType, presentationType));
+         }
          wordMl.createHyperLinkDoc(subDocFileName);
+
       } else {
          populateVariableMap(variableMap);
       }
+   }
+
+   private void generateDocumentDiff(VariableMap newVariableMap, VariableMap variableMap, String fileName) throws OseeCoreException {
+      newVariableMap.setValue("artifacts", newVariableMap.getArtifacts("srsProducer.objects"));
+      newVariableMap.setValue("Diff from Baseline", variableMap.getBoolean("Diff from Baseline"));
+      newVariableMap.setValue("compareBranch", variableMap.getBranch("compareBranch"));
+      newVariableMap.setValue("template", slaveTemplateName);
+      WordTemplateFileDiffer templateFileDiffer = new WordTemplateFileDiffer();
+      templateFileDiffer.generateFileDifferences(fileName, newVariableMap);
    }
 
    public void populateVariableMap(VariableMap variableMap) throws OseeCoreException {
@@ -312,9 +336,7 @@ public class WordTemplateProcessor {
 
       String name = variableMap.getString("Name");
       Branch branch = variableMap.getBranch("Branch");
-
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(name, branch, false);
-
       variableMap.setValue("srsProducer.objects", artifacts);
    }
 
@@ -392,16 +414,15 @@ public class WordTemplateProcessor {
                }
             }
          } else {
+
             if (artifact.isAttributeTypeValid(attributeName)) {
                AttributeType attributeType = AttributeTypeManager.getType(attributeName);
                processAttribute(variableMap, artifact, wordMl, attributeElement, attributeType, false,
                      presentationType, multipleArtifacts);
             }
+
          }
       }
-      //wordMl.startParagraph();
-      //wordMl.endParagraph();
-
       wordMl.setPageLayout(artifact);
    }
 
@@ -417,8 +438,8 @@ public class WordTemplateProcessor {
          }
       }
 
-      //create wordTemplateContent for new guys
-      if (attributeType.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
+      //Create a wordTemplateContent for new guys when opening them for edit.
+      if (attributeType.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT) && presentationType == PresentationType.SPECIALIZED_EDIT) {
          artifact.getOrInitializeSoleAttributeValue(attributeType);
       }
 
@@ -459,12 +480,6 @@ public class WordTemplateProcessor {
       theMap.setValue("allAttrs", allAttrs);
 
       return theMap;
-   }
-
-   public static void writeXMLMetaDataWrapper(WordMLProducer wordMl, String name, String guid, String attributeId, String contentString) throws OseeCoreException {
-      wordMl.addWordMl("<ns0:" + name + " xmlns:ns0=\"" + WordTemplateRenderer.ARTIFACT_SCHEMA + "\" " + guid + " " + attributeId + ">");
-      wordMl.addWordMl(contentString);
-      wordMl.addWordMl("</ns0:" + name + "><w:p/>");
    }
 
    private String getArtifactSetXml(String artifactElement) {

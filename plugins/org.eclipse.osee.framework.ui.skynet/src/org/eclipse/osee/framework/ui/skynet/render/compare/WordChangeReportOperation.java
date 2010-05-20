@@ -33,16 +33,17 @@ public final class WordChangeReportOperation extends AbstractOperation {
    private final Collection<ArtifactDelta> artifactsToCompare;
 
    private final String reportDirName;
+   private final String fileName;
    private final boolean isSuppressWord;
    private final IAttributeType attributeType;
    private final ArtifactDeltaToFileConverter converter;
    private IFolder changeReportFolder;
 
-   public WordChangeReportOperation(Collection<ArtifactDelta> artifactsToCompare, ArtifactDeltaToFileConverter converter, String reportDirName, boolean isSuppressWord) {
+   public WordChangeReportOperation(Collection<ArtifactDelta> artifactsToCompare, ArtifactDeltaToFileConverter converter, String reportDirName, String fileName, boolean isSuppressWord) {
       super("Word Change Report", SkynetGuiPlugin.PLUGIN_ID);
       this.converter = converter;
       this.artifactsToCompare = artifactsToCompare;
-
+      this.fileName = fileName;
       this.isSuppressWord = isSuppressWord;
       this.reportDirName = Strings.isValid(reportDirName) ? reportDirName : GUID.create();
 
@@ -112,7 +113,8 @@ public final class WordChangeReportOperation extends AbstractOperation {
 
                monitor.setTaskName("Adding to Diff Script: " + (newerArtifact == null ? "Unnamed Artifact" : newerArtifact.getName()));
 
-               String localFileName = baseFileStr + "/" + GUID.create() + ".xml";
+               String localFileName = fileName != null ? fileName : GUID.create() + ".xml";
+               localFileName = baseFileStr + "/" + localFileName;
                generator.addComparison(fileDeltas.getFirst(), fileDeltas.getSecond(), localFileName, false);
 
                countSuccessful++;

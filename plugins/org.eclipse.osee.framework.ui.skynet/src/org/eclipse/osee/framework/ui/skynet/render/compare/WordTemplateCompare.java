@@ -135,11 +135,12 @@ public class WordTemplateCompare implements IComparator {
     */
    @Override
    public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactsToCompare) throws OseeCoreException {
+      String fileName = converter.getRenderer().getStringOption("fileName");
       String reportDirName = converter.getRenderer().getStringOption("diffReportFolderName");
       boolean isSuppressWord = converter.getRenderer().getBooleanOption("suppressWord");
 
       IOperation operation =
-            new WordChangeReportOperation(artifactsToCompare, converter, reportDirName, isSuppressWord);
+            new WordChangeReportOperation(artifactsToCompare, converter, reportDirName, fileName, isSuppressWord);
       Operations.executeWorkAndCheckStatus(operation, monitor, 1.0);
    }
 }

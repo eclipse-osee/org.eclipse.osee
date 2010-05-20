@@ -8,6 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+
 package org.eclipse.osee.define.blam.operation;
 
 import java.sql.Timestamp;
@@ -54,9 +55,10 @@ import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 public class PublishRequirements extends AbstractBlam {
    private boolean includeAttributes;
    private boolean publishAsDiff;
-   //private boolean removeTrackedChanges;
+   // private boolean removeTrackedChanges;
    private Date date;
    private Branch branch;
+   private boolean useBaselineTransaction;
 
    @Override
    public String getName() {
@@ -69,6 +71,7 @@ public class PublishRequirements extends AbstractBlam {
       List<Artifact> artifacts = variableMap.getArtifacts("artifacts");
       includeAttributes = variableMap.getBoolean("Publish With Attributes");
       publishAsDiff = variableMap.getBoolean("Publish As Diff");
+      useBaselineTransaction = variableMap.getBoolean("Diff from Baseline");
       // removeTrackedChanges = variableMap.getBoolean("Skip Artifacts with Tracked Changes");
       if (variableMap.getValue("Diff Starting Point") instanceof Date) {
          date = (Date) variableMap.getValue("Diff Starting Point");
@@ -104,8 +107,14 @@ public class PublishRequirements extends AbstractBlam {
             new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber,
                   ITemplateRenderer.TEMPLATE_OPTION, templateOption, ITemplateRenderer.TRANSACTION_OPTION, transaction,
                   "linkType", linkType, "inPublishMode", true);
-      TransactionRecord endTx = TransactionManager.getTransactionAtDate(branch, date);
-      TransactionDelta txDelta = new TransactionDelta(branch.getBaseTransaction(), endTx);
+
+      if (publishAsDiff) {
+         if (branch == null || (date == null && !useBaselineTransaction)) {
+            throw new OseeCoreException(
+                  "Must Select a " + branch == null ? "Branch" : "Date" + " to diff against when publishing as Diff");
+         }
+      }
+      TransactionDelta txDelta = createTransactionDelta(branch);
 
       for (Artifact artifact : artifacts) {
          try {
@@ -117,12 +126,22 @@ public class PublishRequirements extends AbstractBlam {
       transaction.execute();
    }
 
+   private TransactionDelta createTransactionDelta(Branch branch) throws OseeCoreException {
+      TransactionRecord startTx;
+      if (publishAsDiff && date != null && !useBaselineTransaction) {
+         startTx = TransactionManager.getTransactionAtDate(branch, date);
+      } else {
+         startTx = branch.getBaseTransaction();
+      }
+      return new TransactionDelta(startTx, TransactionManager.getHeadTransaction(branch));
+   }
+
    private void publish(IProgressMonitor monitor, Artifact artifact, VariableMap options, TransactionDelta txDelta) throws OseeCoreException {
       if (monitor.isCanceled()) {
          return;
       }
 
-      ArrayList<Artifact> nonFolderChildren = new ArrayList<Artifact>();
+      List<Artifact> nonFolderChildren = new ArrayList<Artifact>();
       if (artifact.isOfType("Folder")) {
          for (Artifact child : artifact.getChildren(publishAsDiff)) {
             if (child.isOfType("Folder")) {
@@ -136,13 +155,9 @@ public class PublishRequirements extends AbstractBlam {
       }
 
       if (publishAsDiff) {
-         if (branch == null || date == null) {
-            throw new OseeCoreException(
-                  "Must Select a " + branch == null ? "Branch" : "Date" + " to diff against when publishing as Diff");
-         }
-         nonFolderChildren = buildRecursiveList(nonFolderChildren);
+         nonFolderChildren = artifact.getDescendants();
          ArrayList<Artifact> olderArtifacts =
-               getOlderArtifacts(nonFolderChildren, txDelta.getEndTx().getId(), branch.getId());
+               getOlderArtifacts(nonFolderChildren, txDelta.getStartTx().getId(), branch.getId());
 
          Collection<ArtifactDelta> compareItems = new ArrayList<ArtifactDelta>();
          for (int index = 0; index < olderArtifacts.size() && index < nonFolderChildren.size(); index++) {
@@ -185,6 +200,7 @@ public class PublishRequirements extends AbstractBlam {
       builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish With Attributes\" />");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" />");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XLabel\" displayName=\"Diff Options:\" />");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Diff from Baseline\" />");
       builder.append("<XWidget xwidgetType=\"XDate\" displayName=\"Diff Starting Point\" />");
       builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Diff Branch\" defaultValue=\"" + BranchManager.getLastBranch().getGuid() + "\" />");
       builder.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" />");
@@ -192,7 +208,7 @@ public class PublishRequirements extends AbstractBlam {
       return builder.toString();
    }
 
-   private ArrayList<Artifact> getOlderArtifacts(ArrayList<Artifact> artifacts, int transactionId, int branchId) throws OseeCoreException {
+   private ArrayList<Artifact> getOlderArtifacts(List<Artifact> artifacts, int transactionId, int branchId) throws OseeCoreException {
       ArrayList<Artifact> historicArtifacts = new ArrayList<Artifact>(artifacts.size());
       int queryId = ArtifactLoader.getNewQueryId();
       Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();

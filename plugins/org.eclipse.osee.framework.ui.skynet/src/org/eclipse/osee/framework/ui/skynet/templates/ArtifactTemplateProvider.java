@@ -73,17 +73,38 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    @Override
    public Artifact getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws OseeCoreException {
       ensureTemplateCachePopulated();
-      List<String> possibleTemplateNames =
-            getPossibleTemplateNamesOrderedBySpecialization(renderer, artifact, presentationType, option);
 
-      for (String name : possibleTemplateNames) {
-         Artifact template = templateMap.get(name);
-         if (template != null) {
-            return template;
+      Artifact template = getArtifactFromOptionName(option);
+
+      if (template == null) {
+         List<String> possibleTemplateNames =
+               getPossibleTemplateNamesOrderedBySpecialization(renderer, artifact, presentationType, option);
+
+         for (String name : possibleTemplateNames) {
+            template = templateMap.get(name);
+            if (template != null) {
+               return template;
+            }
          }
+      } else {
+         return template;
       }
       throw new OseeArgumentException(String.format("Unable to find a valid template match for [%s, %s, %s, %s].",
             renderer.toString(), artifact.toString(), presentationType, option));
+   }
+
+   private Artifact getArtifactFromOptionName(String name) throws OseeCoreException {
+      Artifact toReturn = null;
+
+      if (name == null) {
+         return toReturn;
+      }
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(name, BranchManager.getCommonBranch(), false);
+
+      if (!artifacts.isEmpty()) {
+         toReturn = artifacts.iterator().next();
+      }
+      return toReturn;
    }
 
    private List<String> getPossibleTemplateNamesOrderedBySpecialization(IRenderer renderer, Artifact artifact, String presentationType, String option) throws OseeArgumentException {

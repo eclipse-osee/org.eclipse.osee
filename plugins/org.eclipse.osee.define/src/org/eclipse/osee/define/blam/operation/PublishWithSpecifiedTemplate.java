@@ -44,6 +44,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       Artifact master = getTemplate(variableMap.getString("Master Template"));
       Artifact slave = getTemplate(variableMap.getString("Slave Template"));
       Branch branch = variableMap.getBranch("Branch (If Template specifies Artifacts)");
+      Branch compareBranch = variableMap.getBranch("Compare Against Another Branch");
       List<Artifact> artifacts = variableMap.getArtifacts("Artifacts (If Not Specified in Template)");
       if (artifacts != null && !artifacts.isEmpty()) {
          branch = artifacts.get(0).getBranch();
@@ -54,9 +55,11 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       VariableMap newVariableMap = new VariableMap();
       newVariableMap.setValue("Branch", branch);
       newVariableMap.setValue("Update Paragraph Numbers", updateParagraphNumber);
+      newVariableMap.setValue("Publish As Diff", variableMap.getValue("Publish As Diff"));
+      //      newVariableMap.setValue("Diff from Baseline", variableMap.getValue("Diff from Baseline"));
+      newVariableMap.setValue("compareBranch", compareBranch);
 
       WordTemplateRenderer renderer = new WordTemplateRenderer();
-
       SkynetTransaction transaction = new SkynetTransaction(branch, "BLAM: Publish with specified template");
 
       renderer.setOptions(new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber,
@@ -91,8 +94,11 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       builder.append(")\" displayName=\"Slave Template\" horizontalLabel=\"true\"/><XWidget xwidgetType=\"XLabel\" displayName=\" \" />");
       builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch (If Template specifies Artifacts)\" defaultValue=\"" + BranchManager.getLastBranch().getGuid() + "\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Artifacts (If Not Specified in Template)\" />");
-
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" />");
+      //      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Diff from Baseline\" />");
+      builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Compare Against Another Branch\"/>");
       builder.append("</xWidgets>");
+
       return builder.toString();
    }
 
