@@ -8,6 +8,8 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.TreeSet;
+import javax.mail.MessagingException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -49,11 +51,16 @@ public class EmailGroupsBlam extends AbstractBlam {
 
       for (Artifact group : groups) {
          for (Artifact user : group.getRelatedArtifacts(CoreRelationTypes.Users_User)) {
-            userToGroupMap.put(user, group);
+            if (user.getSoleAttributeValue(CoreAttributeTypes.Active)) {
+               userToGroupMap.put(user, group);
+            } else {
+               println(String.format("The user %s is not active but is in group %s.", user.getName(), group.getName()));
+            }
          }
       }
 
-      for (Artifact user : userToGroupMap.keySet()) {
+      TreeSet<Artifact> users = new TreeSet<Artifact>(userToGroupMap.keySet());
+      for (Artifact user : users) {
          sendEmailTo(userToGroupMap.getValues(user), user, subject, body, bodyIsHtml);
       }
    }
@@ -79,12 +86,17 @@ public class EmailGroupsBlam extends AbstractBlam {
 
       for (Artifact group : groups) {
          html.append(String.format(
-                  "</br>You received this email because you are in the \"%s\" group.  <a href=\"%sosee/unsubscribe/group/%d/user/%d\">Unsubscribe</a>",
-                  group.getName(), HttpUrlBuilderClient.getInstance().getApplicationServerPrefix(), group.getArtId(),
-               user.getArtId()));
+               "</br>Click <a href=\"%sosee/unsubscribe/group/%d/user/%d\">unsubscribe</a> to stop receiving all emails for the topic \"%s\"",
+               HttpUrlBuilderClient.getInstance().getApplicationServerPrefix(), group.getArtId(),
+               user.getArtId(), group.getName()));
       }
       emailMessage.addHTMLBody(html.toString());
-      emailMessage.send();
+      try {
+         emailMessage.sendLocalThread();
+      } catch (MessagingException ex) {
+         println(String.format("An exception occured with sending the email for address \"%s\" for user %s.  %s",
+               emailAddress, user.getName(), ex));
+      }
    }
 
    @Override
@@ -99,7 +111,7 @@ public class EmailGroupsBlam extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XArtifactList\" displayName=\"Groups\" multiSelect=\"true\" /><XWidget xwidgetType=\"XText\" displayName=\"Subject\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Body is html\" /><XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XArtifactList\" displayName=\"Groups\" multiSelect=\"true\" /><XWidget xwidgetType=\"XText\" displayName=\"Subject\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Body is html\" defaultValue=\"true\" /><XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" /></xWidgets>";
    }
 
    @Override

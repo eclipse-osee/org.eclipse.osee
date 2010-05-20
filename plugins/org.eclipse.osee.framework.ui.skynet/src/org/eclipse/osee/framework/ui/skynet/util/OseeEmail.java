@@ -59,8 +59,6 @@ public class OseeEmail extends MimeMessage {
    };
 
    /**
-    * Default constructor
-    * 
     * @throws OseeCoreException
     */
    public OseeEmail() throws OseeCoreException {
@@ -221,7 +219,6 @@ public class OseeEmail extends MimeMessage {
     * 
     * @return A String representation of the current Body Type
     */
-   // Set the Body
    public String getBodyType() {
       return bodyType;
    }
@@ -278,8 +275,7 @@ public class OseeEmail extends MimeMessage {
     * Sends the message.
     */
    public void send() {
-      SendThread sendThread = new SendThread(this);
-      sendThread.start();
+      new SendThread(this).start();
    }
 
    private class SendThread extends Thread {
@@ -292,11 +288,15 @@ public class OseeEmail extends MimeMessage {
 
       @Override
       public void run() {
-         email.sendLocalThread();
+         try {
+            email.sendLocalThread();
+         } catch (MessagingException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
       }
    }
 
-   public void sendLocalThread() {
+   public void sendLocalThread() throws MessagingException {
       MimeBodyPart messageBodyPart = new MimeBodyPart();
       ClassLoader original = Thread.currentThread().getContextClassLoader();
       try {
@@ -322,8 +322,6 @@ public class OseeEmail extends MimeMessage {
          mainMessage.addBodyPart(messageBodyPart, 0);
          setContent(mainMessage);
          Transport.send(this);
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       } finally {
          Thread.currentThread().setContextClassLoader(original);
       }
