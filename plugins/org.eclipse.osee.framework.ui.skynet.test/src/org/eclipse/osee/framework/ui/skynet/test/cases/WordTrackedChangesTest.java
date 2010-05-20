@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WHOLE_WORD_CONTENT;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WORD_TEMPLATE_CONTENT;
-import static org.eclipse.osee.framework.skynet.core.utility.Requirements.SOFTWARE_REQUIREMENT;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.io.FileInputStream;
 import java.io.IOException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -21,10 +19,10 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeTrackedChangesException;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
+import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -48,19 +46,19 @@ public class WordTrackedChangesTest {
       RenderingUtil.setPopupsAllowed(false);
    }
 
-   @org.junit.Test(expected = OseeTrackedChangesException.class)
-   public void testWordSaveWithTrackChanges() throws Exception {
-      FileSystemRenderer.setWorkbenchSavePopUpDisabled(true);
-      Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
-      Artifact newArt = ArtifactTypeManager.addArtifact(SOFTWARE_REQUIREMENT, branch, getClass().getSimpleName());
-      try {
-         newArt.setSoleAttributeFromString(WORD_TEMPLATE_CONTENT, getFileContent(TEST_WORD_EDIT_FILE_NAME));
-      } finally {
-         newArt.persist();
-      }
+   @org.junit.Test
+   public void testFindTrackChanges() throws Exception {
+      assertTrue(WordAnnotationHandler.containsWordAnnotations(getFileContent(TEST_WORD_EDIT_FILE_NAME)));
    }
 
-   @org.junit.Test(expected = OseeTrackedChangesException.class)
+   @org.junit.Test
+   public void testRemoveTrackChanges() throws Exception {
+      String content = getFileContent(TEST_WORD_EDIT_FILE_NAME);
+      content = WordAnnotationHandler.removeAnnotations(content);
+      assertFalse(WordAnnotationHandler.containsWordAnnotations(content));
+   }
+
+   @org.junit.Test
    public void testWholeWordSaveWithTrackChanges() throws Exception {
       String content = getFileContent(TEST_WORD_EDIT_FILE_NAME);
       LinkType linkType = LinkType.OSEE_SERVER_LINK;
@@ -68,11 +66,8 @@ public class WordTrackedChangesTest {
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       Artifact newArt = ArtifactTypeManager.addArtifact("Test Procedure WML", branch, getClass().getSimpleName());
       String unlinkedContent = WordMlLinkHandler.unlink(linkType, newArt, content);
-      try {
-         newArt.setSoleAttributeFromString(WHOLE_WORD_CONTENT, unlinkedContent);
-      } finally {
-         newArt.persist();
-      }
+
+      assertTrue(WordAnnotationHandler.containsWordAnnotations(unlinkedContent));
    }
 
    private String getFileContent(String fileName) throws IOException {
