@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.core.testPoint;
 
 import java.util.ArrayList;
+
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestGroup;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
@@ -54,6 +55,14 @@ public class CheckGroup implements ITestGroup {
       return testPoints;
    }
 
+   public Operation getOperation() {
+      return operation;
+   }
+   
+   public String getGroupName() {
+      return groupName;
+   }
+   
    /**
     * @return The number of test points added to this check group so far
     */
