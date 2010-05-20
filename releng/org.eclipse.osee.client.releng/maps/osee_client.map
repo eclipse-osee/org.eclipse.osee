@@ -42,4 +42,3 @@ plugin@org.eclipse.osee.ats.config.demo=SVN,,http://dev.eclipse.org/svnroot/tech
 plugin@org.eclipse.osee.support.test.util=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.support.test.util
 
 feature@org.eclipse.osee.client.external.feature=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,features/org.eclipse.osee.client.external.feature
-
