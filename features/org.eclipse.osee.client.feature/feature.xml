@@ -37,31 +37,28 @@
          id="org.eclipse.osee.demo.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.osee.demo.feature.source"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.define.feature.source"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.ats.feature.source"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.framework.ui.feature.source"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.framework.feature.source"
+         version="0.0.0"/>
+
    <requires>
       <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.5.qualifier" match="greaterOrEqual"/>
    </requires>
 
-   <includes
-         id="org.eclipse.osee.demo.feature.source"
-         version="0.0.0"/>
-         
-   <includes
-         id="org.eclipse.osee.define.feature.source"
-         version="0.0.0"/>
-         
-   <includes
-         id="org.eclipse.osee.ats.feature.source"
-         version="0.0.0"/>
-         
-   <includes
-         id="org.eclipse.osee.framework.ui.feature.source"
-         version="0.0.0"/>
-         
-   <includes
-         id="org.eclipse.osee.framework.feature.source"
-         version="0.0.0"/>
-      
-   <includes
-         id="org.eclipse.osee.client.external.feature"
-         version="0.0.0"/>   
 </feature>
