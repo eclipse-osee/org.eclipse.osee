@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 
 /**
  * @author Donald G. Dunne
@@ -38,8 +37,5 @@ public class DbUtil {
 
    public static void setDbInit(boolean isInDbInit) {
       DbUtil.isInDbInit = isInDbInit;
-      if (isInDbInit) {
-         OseeEventManager.setDisableEvents(true);
-      }
    }
 }
