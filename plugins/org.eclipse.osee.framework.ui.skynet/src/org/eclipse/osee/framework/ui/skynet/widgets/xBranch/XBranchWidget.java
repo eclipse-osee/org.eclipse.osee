@@ -57,7 +57,7 @@ public class XBranchWidget extends XWidget implements IActionable {
    private static final String LOADING = "Loading ...";
    protected Label extraInfoLabel;
    private XBranchContentProvider branchContentProvider;
-   XBranchLabelProvider xBranchLabelProvider;
+   private XBranchLabelProvider xBranchLabelProvider;
    private FavoriteSorter sorter;
    private static final String VIEW_ID = "BrachView";
    private boolean filterRealTime;
