@@ -245,7 +245,7 @@ public class StateManager {
    }
 
    /**
-    * Adds the assignee AND writes to SMA. Does not persist.
+    * Adds the assignee AND writes to SMA. Does not persist. Will remove UnAssigned user if another assignee exists.
     * 
     * @param assignee
     * @throws Exception
@@ -253,6 +253,9 @@ public class StateManager {
    public void addAssignee(User assignee) throws OseeCoreException {
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.addAssignee(assignee);
+      if (state.getAssignees().size() > 1 && state.getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))) {
+         state.removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
+      }
       putState(state);
    }
 
