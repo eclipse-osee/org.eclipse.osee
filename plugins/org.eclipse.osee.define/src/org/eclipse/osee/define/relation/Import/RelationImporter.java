@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -67,7 +67,7 @@ public class RelationImporter implements RowProcessor {
       try {
          monitor.worked(1);
          Collection<Artifact> artifacts =
-               ArtifactQuery.getArtifactListFromTypeAndAttribute(Requirements.SUBSYSTEM_REQUIREMENT,
+               ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.SubsystemRequirement,
                      CoreAttributeTypes.PARAGRAPH_NUMBER, row[1], branch);
 
          Artifact rowArtifact;
@@ -123,8 +123,8 @@ public class RelationImporter implements RowProcessor {
          monitor.worked(1);
          try {
             Collection<Artifact> artifacts =
-                  ArtifactQuery.getArtifactListFromTypeAndName(Requirements.COMPONENT, row[i + leadingColumnCount],
-                        branch);
+                  ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.Component,
+                        row[i + leadingColumnCount], branch);
 
             columnArtifacts[i] = getSoleArtifact(artifacts);
             monitor.subTask(columnArtifacts[i].getName());

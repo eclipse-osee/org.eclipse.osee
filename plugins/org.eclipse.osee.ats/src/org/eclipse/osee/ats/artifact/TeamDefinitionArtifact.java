@@ -56,11 +56,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
  */
 public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArtifact {
 
-   public static String ARTIFACT_NAME = "Team Definition";
    public static Set<TeamDefinitionArtifact> EMPTY_SET = new HashSet<TeamDefinitionArtifact>();
    public static enum TeamDefinitionOptions {
-      TeamUsesVersions,
-      RequireTargetedVersion
+      TeamUsesVersions, RequireTargetedVersion
    };
 
    public TeamDefinitionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
@@ -199,7 +197,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
    public static List<TeamDefinitionArtifact> getTeamDefinitions(Active active) throws OseeCoreException {
       return Collections.castAll(AtsCacheManager.getArtifactsByActive(
-            ArtifactTypeManager.getType(TeamDefinitionArtifact.ARTIFACT_NAME), active));
+            ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), active));
    }
 
    public static List<TeamDefinitionArtifact> getTeamTopLevelDefinitions(Active active) throws OseeCoreException {
@@ -322,7 +320,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
       // Get work rules from team definition
       for (Artifact art : getRelatedArtifacts(CoreRelationTypes.WorkItem__Child)) {
-         if (art.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
             String id = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), "");
             if (id != null && !id.equals("")) {
                workRules.add((WorkRuleDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
@@ -502,7 +500,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
       for (String teamDefName : teamDefNames) {
          for (Artifact artifact : AtsCacheManager.getArtifactsByName(
-               ArtifactTypeManager.getType(TeamDefinitionArtifact.ARTIFACT_NAME), teamDefName)) {
+               ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName)) {
             teamDefs.add((TeamDefinitionArtifact) artifact);
          }
       }

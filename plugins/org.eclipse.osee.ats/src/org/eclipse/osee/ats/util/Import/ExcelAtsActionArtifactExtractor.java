@@ -72,8 +72,8 @@ public class ExcelAtsActionArtifactExtractor {
          } else {
             for (String actionableItemName : aData.actionableItems) {
                try {
-                  if (AtsCacheManager.getArtifactsByName(
-                        ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME), actionableItemName).size() > 0) {
+                  if (AtsCacheManager.getArtifactsByName(ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem),
+                        actionableItemName).size() > 0) {
                      rd.logError("Row " + rowNum + ": Couldn't find actionable item for \"" + actionableItemName + "\"");
                   }
                } catch (Exception ex) {

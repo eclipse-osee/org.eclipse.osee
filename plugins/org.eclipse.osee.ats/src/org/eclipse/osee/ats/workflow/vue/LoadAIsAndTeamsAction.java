@@ -236,7 +236,7 @@ public class LoadAIsAndTeamsAction {
                         page.getName(), AtsUtil.getAtsBranch());
          } else {
             teamDefArt =
-                  (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
+                  (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
                         AtsUtil.getAtsBranch(), page.getName());
          }
          if (!teamDefArt.isInDb()) {
@@ -310,7 +310,7 @@ public class LoadAIsAndTeamsAction {
          }
          if (aia == null) {
             aia =
-                  (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
+                  (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
                         AtsUtil.getAtsBranch());
             aia.setName(page.getName());
             for (String staticId : staticIds) {

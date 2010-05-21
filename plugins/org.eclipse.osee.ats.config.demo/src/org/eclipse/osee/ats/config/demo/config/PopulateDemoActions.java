@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -232,29 +233,27 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       DemoDbUtil.sleep(5000);
 
-      for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Robot,
-            reqTeam.getWorkingBranch())) {
+      for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Robot, reqTeam.getWorkingBranch())) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, new StringBuilder("Modifying artifact => ").append(
                art).toString());
          art.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Navigation.name());
          art.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "I");
          art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Navigation.name());
          Artifact navArt =
-               ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Navigation.name(),
+               ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Navigation.name(),
                      reqTeam.getWorkingBranch());
          art.addRelation(CoreRelationTypes.Allocation__Component, navArt);
          art.persist();
       }
 
-      for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Event,
-            reqTeam.getWorkingBranch())) {
+      for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Event, reqTeam.getWorkingBranch())) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, new StringBuilder("Modifying artifact => ").append(
                art).toString());
          art.setSoleAttributeValue(DemoProgramAttributes.CSCI.name(), DemoCscis.Interface.name());
          art.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "IV");
          art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
          Artifact robotArt =
-               ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Robot_API.name(),
+               ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Robot_API.name(),
                      reqTeam.getWorkingBranch());
          art.addRelation(CoreRelationTypes.Allocation__Component, robotArt);
          art.persist();
@@ -269,13 +268,12 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
 
       // Add three new artifacts
-      Artifact parentArt =
-            DemoDbUtil.getInterfaceInitializationSoftwareRequirement(reqTeam.getWorkingBranch());
+      Artifact parentArt = DemoDbUtil.getInterfaceInitializationSoftwareRequirement(reqTeam.getWorkingBranch());
       for (int x = 1; x < 4; x++) {
          String name = "Robot Interface Init " + x;
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Adding artifact => " + name);
          Artifact newArt =
-               ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, parentArt.getBranch(), name);
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parentArt.getBranch(), name);
          newArt.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "IV");
          newArt.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
          newArt.persist();
@@ -317,7 +315,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       DemoDbUtil.sleep(5000);
 
       Artifact branchArtifact =
-            DemoDbUtil.getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, DemoDbUtil.HAPTIC_CONSTRAINTS_REQ,
+            DemoDbUtil.getArtTypeRequirements(CoreArtifactTypes.SoftwareRequirement, DemoDbUtil.HAPTIC_CONSTRAINTS_REQ,
                   reqTeam.getWorkingBranch()).iterator().next();
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             new StringBuilder("Modifying branch artifact => ").append(branchArtifact).toString());
@@ -325,13 +323,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
       branchArtifact.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "IV");
       branchArtifact.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
       Artifact comArt =
-            ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Robot_API.name(),
+            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Robot_API.name(),
                   reqTeam.getWorkingBranch());
       branchArtifact.addRelation(CoreRelationTypes.Allocation__Component, comArt);
       branchArtifact.persist();
 
       Artifact parentArtifact =
-            DemoDbUtil.getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, DemoDbUtil.HAPTIC_CONSTRAINTS_REQ,
+            DemoDbUtil.getArtTypeRequirements(CoreArtifactTypes.SoftwareRequirement, DemoDbUtil.HAPTIC_CONSTRAINTS_REQ,
                   reqTeam.getWorkingBranch()).iterator().next();
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             new StringBuilder("Modifying parent artifact => ").append(parentArtifact).toString());
@@ -371,7 +369,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "IV");
          art.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
          Artifact comArt =
-               ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Robot_API.name(),
+               ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Robot_API.name(),
                      reqTeam.getWorkingBranch());
 
          art.addRelation(CoreRelationTypes.Allocation__Component, comArt);
@@ -379,21 +377,19 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
 
       // Delete one artifacts
-      for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.CISST,
-            reqTeam.getWorkingBranch())) {
+      for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.CISST, reqTeam.getWorkingBranch())) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, new StringBuilder("Deleting artifact => ").append(
                art).toString());
          art.deleteAndPersist();
       }
 
       // Add two new artifacts
-      Artifact parentArt =
-            DemoDbUtil.getInterfaceInitializationSoftwareRequirement(reqTeam.getWorkingBranch());
+      Artifact parentArt = DemoDbUtil.getInterfaceInitializationSoftwareRequirement(reqTeam.getWorkingBranch());
       for (int x = 15; x < 17; x++) {
          String name = "Claw Interface Init " + x;
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Adding artifact => " + name);
          Artifact newArt =
-               ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, parentArt.getBranch(), name);
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parentArt.getBranch(), name);
          newArt.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "IV");
          newArt.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
          parentArt.addChild(newArt);
@@ -458,12 +454,12 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
    private void demoDbImportReqsTx() throws OseeCoreException {
       try {
-         importRequirements(DemoSawBuilds.SAW_Bld_1, Requirements.SOFTWARE_REQUIREMENT + "s",
-               Requirements.SOFTWARE_REQUIREMENT, "support/SAW-SoftwareRequirements.xml");
-         importRequirements(DemoSawBuilds.SAW_Bld_1, Requirements.SYSTEM_REQUIREMENT + "s",
-               Requirements.SYSTEM_REQUIREMENT, "support/SAW-SystemRequirements.xml");
-         importRequirements(DemoSawBuilds.SAW_Bld_1, Requirements.SUBSYSTEM_REQUIREMENT + "s",
-               Requirements.SUBSYSTEM_REQUIREMENT, "support/SAW-SubsystemRequirements.xml");
+         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement.getName() + "s",
+               CoreArtifactTypes.SoftwareRequirement.getName(), "support/SAW-SoftwareRequirements.xml");
+         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SystemRequirement.getName() + "s",
+               CoreArtifactTypes.SystemRequirement.getName(), "support/SAW-SystemRequirements.xml");
+         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SubsystemRequirement.getName() + "s",
+               CoreArtifactTypes.SubsystemRequirement.getName(), "support/SAW-SubsystemRequirements.xml");
       } catch (Exception ex) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
       }
@@ -473,7 +469,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             "Importing \"" + rootArtifactName + "\" requirements on branch \"" + branch.getGuid() + "\"");
-      Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName("Folder", rootArtifactName, branch);
+      Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, rootArtifactName, branch);
 
       File file = OseeAtsConfigDemoActivator.getInstance().getPluginFile(filename);
       IArtifactImportResolver artifactResolver =
@@ -501,20 +497,21 @@ public class PopulateDemoActions extends XNavigateItemAction {
    private void demoDbTraceabilityTx(SkynetTransaction transaction, Branch branch) throws OseeCoreException {
       try {
          Collection<Artifact> systemArts =
-               DemoDbUtil.getArtTypeRequirements(Requirements.SYSTEM_REQUIREMENT, "Robot", branch);
+               DemoDbUtil.getArtTypeRequirements(CoreArtifactTypes.SystemRequirement, "Robot", branch);
 
-         Collection<Artifact> component = DemoDbUtil.getArtTypeRequirements(Requirements.COMPONENT, "API", branch);
-         component.addAll(DemoDbUtil.getArtTypeRequirements(Requirements.COMPONENT, "Hardware", branch));
-         component.addAll(DemoDbUtil.getArtTypeRequirements(Requirements.COMPONENT, "Sensor", branch));
+         Collection<Artifact> component = DemoDbUtil.getArtTypeRequirements(CoreArtifactTypes.Component, "API", branch);
+         component.addAll(DemoDbUtil.getArtTypeRequirements(CoreArtifactTypes.Component, "Hardware", branch));
+         component.addAll(DemoDbUtil.getArtTypeRequirements(CoreArtifactTypes.Component, "Sensor", branch));
 
          Collection<Artifact> subSystemArts =
-               DemoDbUtil.getArtTypeRequirements(Requirements.SUBSYSTEM_REQUIREMENT, "Robot", branch);
-         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(Requirements.SUBSYSTEM_REQUIREMENT, "Video", branch));
-         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(Requirements.SUBSYSTEM_REQUIREMENT, "Interface", branch));
+               DemoDbUtil.getArtTypeRequirements(CoreArtifactTypes.SubsystemRequirement, "Robot", branch);
+         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(CoreArtifactTypes.SubsystemRequirement, "Video", branch));
+         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(CoreArtifactTypes.SubsystemRequirement, "Interface",
+               branch));
 
          Collection<Artifact> softArts =
-               DemoDbUtil.getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, "Robot", branch);
-         softArts.addAll(DemoDbUtil.getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, "Interface", branch));
+               DemoDbUtil.getArtTypeRequirements(CoreArtifactTypes.SoftwareRequirement, "Robot", branch);
+         softArts.addAll(DemoDbUtil.getArtTypeRequirements(CoreArtifactTypes.SoftwareRequirement, "Interface", branch));
 
          // Relate System to SubSystem to Software Requirements
          for (Artifact systemArt : systemArts) {
@@ -542,7 +539,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          // Create Test Script Artifacts
          Set<Artifact> verificationTests = new HashSet<Artifact>();
-         Artifact verificationHeader = ArtifactQuery.getArtifactFromTypeAndName("Folder", "Verification Tests", branch);
+         Artifact verificationHeader =
+               ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "Verification Tests", branch);
          if (verificationHeader == null) {
             throw new IllegalStateException("Could not find Verification Tests header");
          }
@@ -558,7 +556,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          // Create Validation Test Procedure Artifacts
          Set<Artifact> validationTests = new HashSet<Artifact>();
-         Artifact validationHeader = ArtifactQuery.getArtifactFromTypeAndName("Folder", "Validation Tests", branch);
+         Artifact validationHeader =
+               ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "Validation Tests", branch);
          if (validationHeader == null) {
             throw new IllegalStateException("Could not find Validation Tests header");
          }
@@ -574,7 +573,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          // Create Integration Test Procedure Artifacts
          Set<Artifact> integrationTests = new HashSet<Artifact>();
-         Artifact integrationHeader = ArtifactQuery.getArtifactFromTypeAndName("Folder", "Integration Tests", branch);
+         Artifact integrationHeader =
+               ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "Integration Tests", branch);
          if (integrationHeader == null) {
             throw new IllegalStateException("Could not find integration Tests header");
          }

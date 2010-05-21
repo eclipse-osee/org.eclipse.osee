@@ -10,6 +10,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -29,8 +30,8 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage("Heading", FrameworkImage.HEADING, this);
       ArtifactImageManager.registerBaseImage("Narrative", FrameworkImage.NARRITIVE, this);
       ArtifactImageManager.registerBaseImage("Blam Workflow", FrameworkImage.BLAM, this);
-      ArtifactImageManager.registerBaseImage("Folder", PluginUiImage.FOLDER, this);
-      ArtifactImageManager.registerBaseImage("User", FrameworkImage.USER, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.Folder, PluginUiImage.FOLDER, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.User, FrameworkImage.USER, this);
       ArtifactImageManager.registerBaseImage("Global Preferences", FrameworkImage.GEAR, this);
       ArtifactImageManager.registerBaseImage("User Group", FrameworkImage.USERS, this);
       ArtifactImageManager.registerBaseImage("Work Flow Definition", FrameworkImage.WORKFLOW, this);

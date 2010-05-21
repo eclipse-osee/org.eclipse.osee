@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -446,9 +448,8 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       }
    }
 
-   @Override
-   public String getArtifactTypeName() {
-      return ARTIFACT_NAME;
+   public IArtifactType getArtifactType() {
+      return CoreArtifactTypes.WorkFlowDefinition;
    }
 
    public WorkPageDefinition getStartPage() throws OseeCoreException {

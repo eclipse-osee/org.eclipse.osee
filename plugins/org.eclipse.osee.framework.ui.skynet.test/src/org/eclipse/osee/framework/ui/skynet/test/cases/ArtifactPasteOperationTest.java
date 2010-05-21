@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -59,21 +60,20 @@ public class ArtifactPasteOperationTest {
       relationOrderFactory = new RelationOrderFactory();
 
       Branch branch = BranchManager.getCommonBranch();
-      String artifactType = "Folder";
-      parent1 = ArtifactTypeManager.addArtifact(artifactType, branch, "Parent");
+      parent1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "Parent");
 
-      child1 = ArtifactTypeManager.addArtifact(artifactType, branch, "child_a");
+      child1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "child_a");
       child1.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, emptyList);
 
-      child2 = ArtifactTypeManager.addArtifact(artifactType, branch, "child_b");
-      child3 = ArtifactTypeManager.addArtifact(artifactType, branch, "child_c");
+      child2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "child_b");
+      child3 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "child_c");
 
       parent1.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, emptyList);
       parent1.addChild(child1);
       parent1.addChild(child3);
       parent1.addChild(child2);
 
-      destination = ArtifactTypeManager.addArtifact(artifactType, branch, "Destination");
+      destination = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "Destination");
       destination.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, emptyList);
       destination.addChild(parent1);
    }

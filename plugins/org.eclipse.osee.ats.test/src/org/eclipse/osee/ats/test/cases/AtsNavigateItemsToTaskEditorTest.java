@@ -27,10 +27,10 @@ import org.eclipse.osee.ats.test.util.NavigateTestUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -110,7 +110,7 @@ public class AtsNavigateItemsToTaskEditorTest {
 
    public void runGeneralTaskSearchOnCompletedCancelledTest(XNavigateItem item, boolean selected, int expectedNum) throws Exception {
       Artifact groupArt =
-            ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME, "Test Group",
+            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup, "Test Group",
                   AtsUtil.getAtsBranch());
       Set<Artifact> selectedUsers = new HashSet<Artifact>();
       TaskEditor editor = getSingleEditorOrFail();

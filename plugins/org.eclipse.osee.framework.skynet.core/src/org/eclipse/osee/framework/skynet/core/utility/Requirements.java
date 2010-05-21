@@ -17,19 +17,14 @@ package org.eclipse.osee.framework.skynet.core.utility;
 public interface Requirements {
    public final static String HARDWARE_REQUIREMENT = "Hardware Requirement";
    public final static String HARDWARE_REQUIREMENTS = "Hardware Requirements";
-   public final static String SOFTWARE_REQUIREMENT = "Software Requirement";
    public final static String SOFTWARE_REQUIREMENTS = "Software Requirements";
-   public final static String SYSTEM_REQUIREMENT = "System Requirement";
    public final static String SYSTEM_REQUIREMENTS = "System Requirements";
    public final static String SYSTEM_DESIGN = "System Design";
    public final static String SYSTEM_FUNCTION = "System Function";
-   public final static String REQUIREMENT = "Requirement";
 
-   public final static String SUBSYSTEM_REQUIREMENT = "Subsystem Requirement";
    public final static String SUBSYSTEM_REQUIREMENTS = "Subsystem Requirements";
    public final static String SUBSYSTEM_DESIGN = "Subsystem Design";
    public final static String SUBSYSTEM_FUNCTION = "Subsystem Function";
-   public final static String COMPONENT = "Component";
 
    public final static String ABSTRACT_TEST_UNIT = "Abstract Test Unit";
 

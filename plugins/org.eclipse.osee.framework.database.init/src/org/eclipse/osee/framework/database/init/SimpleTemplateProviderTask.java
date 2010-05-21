@@ -80,7 +80,8 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
          Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
 
          templateFolder =
-               ArtifactTypeManager.addArtifact("Folder", BranchManager.getCommonBranch(), "Document Templates");
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
+                     "Document Templates");
          rootArt.addChild(templateFolder);
          templateFolder.persist();
       }

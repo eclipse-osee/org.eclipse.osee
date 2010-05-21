@@ -57,12 +57,12 @@ import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.UserWorldSearchItem.UserSearchOption;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -316,7 +316,7 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testGroupsSearch() throws Exception {
       WorldEditor.closeAll();
       Artifact groupArt =
-            ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME, "Test Group",
+            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup, "Test Group",
                   AtsUtil.getAtsBranch());
       assertTrue(groupArt != null);
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Group Search");

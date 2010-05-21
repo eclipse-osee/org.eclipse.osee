@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewWithChildWordHandler;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
@@ -62,7 +62,7 @@ public class PreviewAndMultiPreviewTest {
       branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       // create a new requirement artifact
       newArt =
-            ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
                   PreviewAndMultiPreviewTest.class.getSimpleName());
       newArt.persist();
       artifacts = Arrays.asList(newArt);
@@ -125,7 +125,7 @@ public class PreviewAndMultiPreviewTest {
          try {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
-                  ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
                         getClass().getSimpleName() + "1");
             childArt.persist();
             newArt.addChild(childArt);
@@ -150,7 +150,7 @@ public class PreviewAndMultiPreviewTest {
          try {
             monitorLog = TestUtil.severeLoggingStart();
             Artifact childArt =
-                  ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
                         getClass().getSimpleName() + "1");
             childArt.persist();
             newArt.addChild(childArt);
@@ -230,15 +230,15 @@ public class PreviewAndMultiPreviewTest {
             monitorLog = TestUtil.severeLoggingStart();
             List<Artifact> newMultiArts = new ArrayList<Artifact>();
             Artifact multiArt1 =
-                  ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
                         getClass().getSimpleName() + "3");
             multiArt1.persist();
             Artifact multiArt2 =
-                  ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
                         getClass().getSimpleName() + "2");
             multiArt2.persist();
             Artifact multiArt3 =
-                  ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
                         getClass().getSimpleName() + "1");
             multiArt3.persist();
             newMultiArts = Arrays.asList(multiArt1, multiArt2, multiArt3);
@@ -263,15 +263,15 @@ public class PreviewAndMultiPreviewTest {
             monitorLog = TestUtil.severeLoggingStart();
             new ArrayList<Artifact>();
             Artifact multiArt1 =
-                  ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
                         getClass().getSimpleName() + "3");
             multiArt1.persist();
             Artifact multiArt2 =
-                  ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
                         getClass().getSimpleName() + "2");
             multiArt2.persist();
             Artifact multiArt3 =
-                  ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch,
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
                         getClass().getSimpleName() + "1");
             multiArt3.persist();
             Arrays.asList(multiArt1, multiArt2, multiArt3);

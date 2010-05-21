@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -83,7 +84,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
       monitor.subTask("Loading Higher Level Requirements"); // bulk load to improve performance
       monitor.worked(1);
-      ArtifactQuery.getArtifactListFromType(Requirements.SUBSYSTEM_REQUIREMENT, branch);
+      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirement, branch);
       monitor.worked(30);
 
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
@@ -158,7 +159,8 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
          excelWriter.writeRow();
          excelWriter.writeRow();
          excelWriter.writeRow("5.2." + count++ + " " + subSysName + " Requirements Allocation Traceability to Lower Level Requirements");
-         excelWriter.writeRow(Requirements.SUBSYSTEM_REQUIREMENT, null, "Traceable Lower Level Requirements", null);
+         excelWriter.writeRow(CoreArtifactTypes.SubsystemRequirement.getName(), null,
+               "Traceable Lower Level Requirements", null);
          excelWriter.writeRow("Paragraph #", "Paragraph Title", "Paragraph #", "Paragraph Title");
 
          String[] row = new String[4];
@@ -198,7 +200,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    private void initLowLevelRequirements(List<Artifact> artifacts) throws OseeCoreException {
       RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
-         if (!artifact.isOfType("Folder")) {
+         if (!artifact.isOfType(CoreArtifactTypes.Folder)) {
             lowLevelReqs.add(artifact);
          }
          lowLevelReqs.addAll(artifact.getDescendants());
@@ -208,7 +210,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    private void initAllocationComponents(List<Artifact> artifacts) throws OseeCoreException {
       RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
-         if (!artifact.isOfType("Folder")) {
+         if (!artifact.isOfType(CoreArtifactTypes.Folder)) {
             components.add(artifact);
          }
          components.addAll(artifact.getDescendants());

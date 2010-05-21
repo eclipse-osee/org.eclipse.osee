@@ -273,13 +273,13 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
    public static void addUpdateWorkItemToDefaultHeirarchy(Artifact art, SkynetTransaction transaction) throws OseeCoreException {
       // Relate if not already related
       if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent, Artifact.class).isEmpty()) {
-         if (art.isOfType(WorkPageDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
             relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkPages), art, transaction);
          }
-         if (art.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
             relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkRules), art, transaction);
          }
-         if (art.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
             relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkWidgets), art, transaction);
          }
          if (art.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {

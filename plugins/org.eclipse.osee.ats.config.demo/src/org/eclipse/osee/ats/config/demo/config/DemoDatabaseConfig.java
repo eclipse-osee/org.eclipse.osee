@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.vue.AtsDbConfig;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.OseeInfo;
@@ -80,7 +81,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
 
       // Set Joe Smith as Priviledged Member of SAW Test
       Artifact teamDef =
-            ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, "SAW Test",
+            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, "SAW Test",
                   AtsUtil.getAtsBranch());
       teamDef.addRelation(AtsRelationTypes.PrivilegedMember_Member, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith));
       teamDef.persist(transaction);
@@ -100,10 +101,10 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
    private void populateProgramBranch(IOseeBranch branch) throws OseeCoreException {
       Branch programBranch = BranchManager.getBranch(branch);
       Artifact sawProduct =
-            ArtifactTypeManager.addArtifact(Requirements.COMPONENT, programBranch, "SAW Product Decomposition");
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, programBranch, "SAW Product Decomposition");
 
       for (String subsystem : DemoSubsystems.getSubsystems()) {
-         sawProduct.addChild(ArtifactTypeManager.addArtifact(Requirements.COMPONENT, programBranch, subsystem));
+         sawProduct.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, programBranch, subsystem));
       }
 
       Artifact programRoot = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(programBranch);
@@ -112,7 +113,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       for (String name : new String[] {Requirements.SYSTEM_REQUIREMENTS, Requirements.SUBSYSTEM_REQUIREMENTS,
             Requirements.SOFTWARE_REQUIREMENTS, Requirements.HARDWARE_REQUIREMENTS, "Verification Tests",
             "Validation Tests", "Integration Tests"}) {
-         programRoot.addChild(ArtifactTypeManager.addArtifact("Folder", programBranch, name));
+         programRoot.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, programBranch, name));
       }
 
       sawProduct.persist();

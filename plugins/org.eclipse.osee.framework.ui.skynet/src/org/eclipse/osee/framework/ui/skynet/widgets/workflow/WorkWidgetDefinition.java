@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -26,7 +28,6 @@ import org.xml.sax.SAXException;
  */
 public class WorkWidgetDefinition extends WorkItemDefinition {
 
-   public static String ARTIFACT_NAME = "Work Widget Definition";
    public static String tagName = DynamicXWidgetLayout.XWIDGET;
    private DynamicXWidgetLayoutData widgetLayoutData;
 
@@ -44,8 +45,8 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
    }
 
    public WorkWidgetDefinition(Artifact artifact) throws OseeCoreException {
-      this(artifact.getName(), artifact.getSoleAttributeValue(
-            WorkItemAttributes.WORK_ID.getAttributeTypeName(), artifact.getName()));
+      this(artifact.getName(), artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
+            artifact.getName()));
       setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
       loadWorkDataKeyValueMap(artifact);
 
@@ -117,8 +118,7 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
       }
    }
 
-   @Override
-   public String getArtifactTypeName() {
-      return ARTIFACT_NAME;
+   public IArtifactType getArtifactType() {
+      return CoreArtifactTypes.WorkWidgetDefinition;
    }
 }

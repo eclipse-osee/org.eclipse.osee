@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -55,7 +55,7 @@ public class ChangeManagerTest {
    public void setUp() throws Exception {
       assertFalse("This test can not be run on Production", ClientSessionManager.isProductionDataStore());
 
-      modArtifact = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, CoreBranches.SYSTEM_ROOT);
+      modArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, CoreBranches.SYSTEM_ROOT);
       modArtifact.persist();
 
       sleep(5000);
@@ -67,7 +67,7 @@ public class ChangeManagerTest {
                   UserManager.getUser(SystemUser.OseeSystem));
       sleep(5000);
 
-      newArtifact = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch);
+      newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch);
       newArtifact.persist();
       sleep(5000);
       BranchManager.refreshBranches();

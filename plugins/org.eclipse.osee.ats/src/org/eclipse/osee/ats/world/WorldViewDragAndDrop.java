@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
-import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
@@ -102,7 +101,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                         Artifact art = artifacts[0];
                         if (art instanceof IWorldViewArtifact) {
                            name = art.getName();
-                        } else if (art.isOfType(UniversalGroup.ARTIFACT_TYPE_NAME)) {
+                        } else if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
                            GroupWorldSearchItem groupWorldSearchItem = new GroupWorldSearchItem(art.getBranch());
                            groupWorldSearchItem.setSelectedGroup(art);
                            WorldEditor.open(new WorldEditorUISearchItemProvider(groupWorldSearchItem, null,
@@ -113,7 +112,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                      for (Artifact art : artifacts) {
                         if (art instanceof IWorldViewArtifact) {
                            arts.add(art);
-                        } else if (art.isOfType(UniversalGroup.ARTIFACT_TYPE_NAME)) {
+                        } else if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
                            for (Artifact relArt : art.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
                               if (relArt instanceof IWorldViewArtifact) {
                                  arts.add(relArt);

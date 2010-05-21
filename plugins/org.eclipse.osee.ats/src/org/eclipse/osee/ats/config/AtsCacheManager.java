@@ -121,7 +121,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
       }
       try {
          for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
-            if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME) || artifact.isOfType(WorkPageDefinition.ARTIFACT_NAME) || artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition) || artifact.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
+            if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition) || artifact.isOfType(CoreArtifactTypes.WorkPageDefinition) || artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition) || artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
                WorkItemDefinitionFactory.deCache(artifact);
             }
             if (artifact instanceof TaskArtifact) {
@@ -146,7 +146,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
          return;
       }
       for (Artifact artifact : transData.cacheDeletedArtifacts) {
-         if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME) || artifact.isOfType(WorkPageDefinition.ARTIFACT_NAME) || artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition) || artifact.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
+         if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition) || artifact.isOfType(CoreArtifactTypes.WorkPageDefinition) || artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition) || artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
             WorkItemDefinitionFactory.deCache(artifact);
          }
          if (artifact instanceof TaskArtifact) {
@@ -157,13 +157,13 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
          }
       }
       for (Artifact artifact : transData.cacheAddedArtifacts) {
-         if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
+         if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkRuleDefinition(artifact), artifact);
-         } else if (artifact.isOfType(WorkPageDefinition.ARTIFACT_NAME)) {
+         } else if (artifact.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkPageDefinition(artifact), artifact);
-         } else if (artifact.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
+         } else if (artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkWidgetDefinition(
                   artifact), artifact);
          } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
@@ -186,13 +186,13 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
          }
       }
       for (Artifact artifact : transData.getArtifactsInRelations(ChangeType.All, CoreRelationTypes.WorkItem__Child)) {
-         if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
+         if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkRuleDefinition(artifact), artifact);
-         } else if (artifact.isOfType(WorkPageDefinition.ARTIFACT_NAME)) {
+         } else if (artifact.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkPageDefinition(artifact), artifact);
-         } else if (artifact.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
+         } else if (artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkWidgetDefinition(
                   artifact), artifact);
          } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {

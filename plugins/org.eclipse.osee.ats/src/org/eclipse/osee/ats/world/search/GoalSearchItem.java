@@ -103,7 +103,7 @@ public class GoalSearchItem extends WorldUISearchItem {
          for (String teamDefName : teamDefNames) {
             TeamDefinitionArtifact aia =
                   (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
-                        ArtifactTypeManager.getType(TeamDefinitionArtifact.ARTIFACT_NAME), teamDefName);
+                        ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
             if (aia != null) {
                teamDefs.add(aia);
             }

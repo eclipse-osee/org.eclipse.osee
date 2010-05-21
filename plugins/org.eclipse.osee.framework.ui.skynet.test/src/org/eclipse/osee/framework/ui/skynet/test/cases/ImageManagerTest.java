@@ -56,7 +56,7 @@ public abstract class ImageManagerTest {
    public static void testSetup() throws Exception {
       monitorLog = new SevereLoggingMonitor();
       // Clear db image
-      ArtifactImageManager.setArtifactTypeImageInDb(ArtifactTypeManager.getType("Folder"), null);
+      ArtifactImageManager.setArtifactTypeImageInDb(ArtifactTypeManager.getType(CoreArtifactTypes.Folder), null);
       OseeLog.registerLoggerListener(monitorLog);
    }
 
@@ -113,8 +113,8 @@ public abstract class ImageManagerTest {
 
    @org.junit.Test
    public void testGetImageByType() throws Exception {
-      assertTrue("Image returned not a folder image.", ArtifactImageManager.getImage(
-            ArtifactTypeManager.getType("Folder")).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
+      assertTrue("Image returned not a folder image.", ArtifactImageManager.getImage(CoreArtifactTypes.Folder).equals(
+            ImageManager.getImage(PluginUiImage.FOLDER)));
 
    }
 
@@ -139,15 +139,14 @@ public abstract class ImageManagerTest {
             ImageManager.getImage(PluginUiImage.FOLDER)));
 
       // Set different image for folder
-      ArtifactImageManager.setArtifactTypeImageInDb(ArtifactTypeManager.getType("Folder"),
-            getByteArrayInputStream("heading.gif"));
+      ArtifactImageManager.setArtifactTypeImageInDb(CoreArtifactTypes.Folder, getByteArrayInputStream("heading.gif"));
 
       // Test that different image overrides folder image
       assertFalse("Image returned should be \"Heading\" image.", ArtifactImageManager.getImage(folder).equals(
             ImageManager.getImage(PluginUiImage.FOLDER)));
 
       // Clear db image
-      ArtifactImageManager.setArtifactTypeImageInDb(ArtifactTypeManager.getType("Folder"), null);
+      ArtifactImageManager.setArtifactTypeImageInDb(CoreArtifactTypes.Folder, null);
 
       // Reload cache
       ArtifactImageManager.loadCache();

@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,7 +46,7 @@ public class AtsPurgeTest {
    private final Map<String, Integer> postCreateActionCount = new HashMap<String, Integer>();
    private final Map<String, Integer> postPurgeCount = new HashMap<String, Integer>();
    List<String> tables =
-      Arrays.asList("osee_attribute", "osee_arts", "osee_relation_link", "osee_tx_details", "osee_txs");
+         Arrays.asList("osee_attribute", "osee_arts", "osee_relation_link", "osee_tx_details", "osee_txs");
 
    /**
     * @throws java.lang.Exception
@@ -66,10 +67,10 @@ public class AtsPurgeTest {
       // Create Action, Workflow and Tasks
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Purge Test");
       ActionArtifact actionArt =
-         ActionManager.createAction(null, getClass().getSimpleName(), "description", ChangeType.Improvement,
-               PriorityType.Priority_2, false, null, org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
-                     ActionableItemArtifact.class, ArtifactQuery.getArtifactListFromTypeAndName(
-                           ActionableItemArtifact.ARTIFACT_NAME, "SAW Test", AtsUtil.getAtsBranch())), transaction);
+            ActionManager.createAction(null, getClass().getSimpleName(), "description", ChangeType.Improvement,
+                  PriorityType.Priority_2, false, null, org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+                        ActionableItemArtifact.class, ArtifactQuery.getArtifactListFromTypeAndName(
+                              AtsArtifactTypes.ActionableItem, "SAW Test", AtsUtil.getAtsBranch())), transaction);
       actionArt.persist(transaction);
       transaction.execute();
 
@@ -78,7 +79,7 @@ public class AtsPurgeTest {
 
       for (int x = 0; x < 30; x++) {
          TaskArtifact taskArt =
-            actionArt.getTeamWorkFlowArtifacts().iterator().next().createNewTask(getClass().getSimpleName() + x);
+               actionArt.getTeamWorkFlowArtifacts().iterator().next().createNewTask(getClass().getSimpleName() + x);
          taskArt.persist();
          artsToPurge.add(taskArt);
       }

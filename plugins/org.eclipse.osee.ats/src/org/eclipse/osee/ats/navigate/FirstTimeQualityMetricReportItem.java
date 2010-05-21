@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.VersionMetrics;
 import org.eclipse.osee.ats.util.VersionTeamMetrics;
@@ -73,7 +74,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       if (useTeamDef == null && teamDefName != null) {
          useTeamDef =
                (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
-                     ArtifactTypeManager.getType(TeamDefinitionArtifact.ARTIFACT_NAME), teamDefName);
+                     ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
       }
       if (useTeamDef == null) {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");

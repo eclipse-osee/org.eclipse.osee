@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -135,7 +136,7 @@ public abstract class WorkItemDefinition {
 
    @Override
    public String toString() {
-      return getArtifactTypeName() + ":    Name: \"" + name +
+      return getArtifactType() + ":    Name: \"" + name +
       //
       "\"    Id: \"" + id + "\"   " +
       //
@@ -174,7 +175,7 @@ public abstract class WorkItemDefinition {
       }
       if (artifact == null) {
          // Create new
-         artifact = ArtifactTypeManager.addArtifact(getArtifactTypeName(), BranchManager.getCommonBranch());
+         artifact = ArtifactTypeManager.addArtifact(getArtifactType(), BranchManager.getCommonBranch());
       }
       //      if (!getId().equals("atsStatePercentCompleteWeight.DefaultWorkflow")) {
       //         System.err.println("Skipping all but atsStatePercentCompleteWeight.DefaultWorkflow - Remove This");
@@ -202,7 +203,7 @@ public abstract class WorkItemDefinition {
       return artifact;
    }
 
-   public abstract String getArtifactTypeName();
+   public abstract IArtifactType getArtifactType();
 
    public void setType(String type) {
       this.type = type;

@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -20,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
 
-   public static String ARTIFACT_NAME = "Work Page Definition";
    private String pageName;
 
    public WorkPageDefinition(String pageName, String pageId, String parentId) {
@@ -104,8 +105,8 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
    }
 
    @Override
-   public String getArtifactTypeName() {
-      return ARTIFACT_NAME;
+   public IArtifactType getArtifactType() {
+      return CoreArtifactTypes.WorkPageDefinition;
    }
 
    public String getPageName() {

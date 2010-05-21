@@ -26,9 +26,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 
 /**
  * @author Ryan D. Brooks
@@ -82,10 +79,10 @@ public class AtsArtifactFactory extends ArtifactFactory {
          artifactTypes.add(ArtifactTypeManager.getType(AtsArtifactTypes.Version));
          artifactTypes.add(ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition));
          artifactTypes.add(ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem));
-         artifactTypes.add(ArtifactTypeManager.getType(WorkRuleDefinition.ARTIFACT_NAME));
+         artifactTypes.add(ArtifactTypeManager.getType(CoreArtifactTypes.WorkRuleDefinition));
          artifactTypes.add(ArtifactTypeManager.getType(CoreArtifactTypes.WorkFlowDefinition));
-         artifactTypes.add(ArtifactTypeManager.getType(WorkWidgetDefinition.ARTIFACT_NAME));
-         artifactTypes.add(ArtifactTypeManager.getType(WorkPageDefinition.ARTIFACT_NAME));
+         artifactTypes.add(ArtifactTypeManager.getType(CoreArtifactTypes.WorkWidgetDefinition));
+         artifactTypes.add(ArtifactTypeManager.getType(CoreArtifactTypes.WorkPageDefinition));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }

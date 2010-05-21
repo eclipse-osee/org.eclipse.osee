@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionActionableItemListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -99,7 +100,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          for (String actionItemName : actionItemNames) {
             ActionableItemArtifact aia =
                   (ActionableItemArtifact) AtsCacheManager.getSoleArtifactByName(
-                        ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME), actionItemName);
+                        ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), actionItemName);
             if (aia != null) {
                actionItems.add(aia);
             }

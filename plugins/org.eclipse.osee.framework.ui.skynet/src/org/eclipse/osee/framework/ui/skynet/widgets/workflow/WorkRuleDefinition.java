@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -19,12 +21,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class WorkRuleDefinition extends WorkItemDefinition {
 
-   public static String ARTIFACT_NAME = "Work Rule Definition";
-
    /**
     * Instantiate rule with no value where name and id are same.
-    * 
-    * @param id
     */
    public WorkRuleDefinition(String id) {
       this(id, id, null, null);
@@ -32,9 +30,6 @@ public class WorkRuleDefinition extends WorkItemDefinition {
 
    /**
     * Instantiate rule with no value. This is for self describing rules such as atsAllowCommit.
-    * 
-    * @param name
-    * @param id
     */
    public WorkRuleDefinition(String name, String id) {
       this(name, id, null, null);
@@ -48,8 +43,8 @@ public class WorkRuleDefinition extends WorkItemDefinition {
    }
 
    public WorkRuleDefinition(Artifact artifact) throws OseeCoreException {
-      this(artifact.getName(), artifact.getSoleAttributeValue(
-            WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""), null, null);
+      this(artifact.getName(), artifact.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""),
+            null, null);
       setDescription(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_DESCRIPTION.getAttributeTypeName(), ""));
       setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
       loadWorkDataKeyValueMap(artifact);
@@ -61,9 +56,8 @@ public class WorkRuleDefinition extends WorkItemDefinition {
       return ruleArt;
    }
 
-   @Override
-   public String getArtifactTypeName() {
-      return ARTIFACT_NAME;
+   public IArtifactType getArtifactType() {
+      return CoreArtifactTypes.WorkRuleDefinition;
    }
 
 }

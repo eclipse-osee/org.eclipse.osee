@@ -14,6 +14,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.List;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -29,8 +31,6 @@ import org.junit.Before;
  */
 public class RelationDeletionTest {
 
-   private static final String ARTIFACT_TYPE = "Folder";
-
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
@@ -43,10 +43,10 @@ public class RelationDeletionTest {
       OseeLog.registerLoggerListener(monitor);
 
       Branch branch = BranchManager.getCommonBranch();
-      Artifact parent = createArtifact(ARTIFACT_TYPE, branch);
-      Artifact child1 = createArtifact(ARTIFACT_TYPE, branch);
-      Artifact child2 = createArtifact(ARTIFACT_TYPE, branch);
-      Artifact child3 = createArtifact(ARTIFACT_TYPE, branch);
+      Artifact parent = createArtifact(CoreArtifactTypes.Folder, branch);
+      Artifact child1 = createArtifact(CoreArtifactTypes.Folder, branch);
+      Artifact child2 = createArtifact(CoreArtifactTypes.Folder, branch);
+      Artifact child3 = createArtifact(CoreArtifactTypes.Folder, branch);
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child2);
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child3);
@@ -74,7 +74,7 @@ public class RelationDeletionTest {
       assertTrue(monitor.toString(), monitor.getSevereLogs().isEmpty());
    }
 
-   private Artifact createArtifact(String type, Branch branch) throws OseeCoreException {
-      return ArtifactTypeManager.makeNewArtifact(ArtifactTypeManager.getType(ARTIFACT_TYPE), branch);
+   private Artifact createArtifact(IArtifactType artifactType, Branch branch) throws OseeCoreException {
+      return ArtifactTypeManager.makeNewArtifact(artifactType, branch);
    }
 }

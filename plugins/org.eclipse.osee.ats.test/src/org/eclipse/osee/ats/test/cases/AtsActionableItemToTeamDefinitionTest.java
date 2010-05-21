@@ -14,6 +14,7 @@ import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -27,7 +28,7 @@ public class AtsActionableItemToTeamDefinitionTest {
    public void testAtsActionableItemToTeamDefinition() throws Exception {
       boolean error = false;
       StringBuffer sb = new StringBuffer();
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromType(ActionableItemArtifact.ARTIFACT_NAME,
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.ActionableItem,
             AtsUtil.getAtsBranch())) {
          ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
          if (aia.isActionable()) {

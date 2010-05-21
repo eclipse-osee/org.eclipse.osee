@@ -54,12 +54,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Assert;
@@ -131,7 +129,7 @@ public class AtsBranchConfigurationTest {
       // configure version to use branch and allow create/commit
       OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring version to use branch and allow create/commit");
       TeamDefinitionArtifact teamDef =
-            (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME,
+            (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
                   AtsTestBranches.BranchViaVersions.getName(), AtsUtil.getAtsBranch());
       VersionArtifact verArtToTarget = null;
       for (VersionArtifact vArt : teamDef.getVersionsArtifacts()) {
@@ -188,7 +186,7 @@ public class AtsBranchConfigurationTest {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Make new requirement artifact");
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getWorkingBranch());
       Artifact blk3MainArt =
-            ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, teamWf.getWorkingBranch(),
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, teamWf.getWorkingBranch(),
                   AtsTestBranches.BranchViaVersions.getName() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist();
@@ -235,7 +233,7 @@ public class AtsBranchConfigurationTest {
       // configure team def to use branch
       OseeLog.log(AtsPlugin.class, Level.INFO, "Configuring team def to use branch and allow create/commit");
       TeamDefinitionArtifact teamDef =
-            (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME,
+            (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
                   AtsTestBranches.BranchViaTeamDef.getName(), AtsUtil.getAtsBranch());
       teamDef.setSoleAttributeFromString(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(),
             viaTeamDefBranch.getGuid());
@@ -283,7 +281,7 @@ public class AtsBranchConfigurationTest {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Make new requirement artifact");
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getWorkingBranch());
       Artifact blk3MainArt =
-            ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, teamWf.getWorkingBranch(),
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, teamWf.getWorkingBranch(),
                   AtsTestBranches.BranchViaTeamDef.getName() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist();
@@ -352,7 +350,7 @@ public class AtsBranchConfigurationTest {
          transaction.execute();
       }
 
-      arts = ArtifactQuery.getArtifactListFromType(WorkPageDefinition.ARTIFACT_NAME, AtsUtil.getAtsBranch());
+      arts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.WorkPageDefinition, AtsUtil.getAtsBranch());
       if (arts.size() > 0) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact workArt : arts) {

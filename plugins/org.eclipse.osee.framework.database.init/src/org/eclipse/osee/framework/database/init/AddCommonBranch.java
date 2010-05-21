@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.database.init;
 
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
@@ -20,7 +21,6 @@ import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
@@ -44,7 +44,7 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
       if (initializeRootArtifacts) {
          ArtifactTypeManager.addArtifact(OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME, CoreBranches.SYSTEM_ROOT,
                OseeSystemArtifacts.DEFAULT_HIERARCHY_ROOT_NAME).persist();
-         ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, CoreBranches.SYSTEM_ROOT,
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.UniversalGroup, CoreBranches.SYSTEM_ROOT,
                OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME).persist();
 
          BranchManager.createTopLevelBranch(CoreBranches.COMMON);

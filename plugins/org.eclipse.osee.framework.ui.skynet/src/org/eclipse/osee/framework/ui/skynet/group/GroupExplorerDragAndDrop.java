@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
-import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -108,7 +108,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
          return;
       }
       for (Artifact art : artData.getArtifacts()) {
-         if (art.isOfType(UniversalGroup.ARTIFACT_TYPE_NAME)) {
+         if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
             event.detail = DND.DROP_NONE;
             return;
          }
@@ -240,8 +240,8 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                      Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
                      for (Artifact art : insertArts) {
-                        parentArtifact.setRelationOrder(CoreRelationTypes.Universal_Grouping__Members,
-                              targetArtifact, isFeedbackAfter, art);
+                        parentArtifact.setRelationOrder(CoreRelationTypes.Universal_Grouping__Members, targetArtifact,
+                              isFeedbackAfter, art);
                         targetArtifact = art;
                      }
                      parentArtifact.persist();
@@ -257,8 +257,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
 
                      for (Artifact art : insertArts) {
                         parentArtifact.addRelation(RelationOrderBaseTypes.USER_DEFINED,
-                              CoreRelationTypes.Universal_Grouping__Members, targetArtifact, isFeedbackAfter,
-                              art, "");
+                              CoreRelationTypes.Universal_Grouping__Members, targetArtifact, isFeedbackAfter, art, "");
                      }
                      parentArtifact.persist();
                   }

@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -42,7 +43,6 @@ import org.junit.Test;
  */
 public class RelationOrderingTest {
 
-   private static final String ARTIFACT_TYPE = "Folder";
    private static final String STATIC_ID_TO_DELETE = "testOrderPersist";
 
    private Branch branch;
@@ -66,15 +66,15 @@ public class RelationOrderingTest {
    @Before
    public void setupArtifacts() throws Exception {
       branch = BranchManager.getCommonBranch();
-      parent = createArtifact(ARTIFACT_TYPE, branch);
+      parent = createArtifact(CoreArtifactTypes.Folder, branch);
 
-      child1 = createArtifact(ARTIFACT_TYPE, branch);
+      child1 = createArtifact(CoreArtifactTypes.Folder, branch);
       child1.setSoleAttributeFromString("Name", "a_child");
 
-      child2 = createArtifact(ARTIFACT_TYPE, branch);
+      child2 = createArtifact(CoreArtifactTypes.Folder, branch);
       child2.setSoleAttributeFromString("Name", "b_child");
 
-      child3 = createArtifact(ARTIFACT_TYPE, branch);
+      child3 = createArtifact(CoreArtifactTypes.Folder, branch);
       child3.setSoleAttributeFromString("Name", "c_child");
 
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
@@ -107,11 +107,11 @@ public class RelationOrderingTest {
 
       checkDesc();
 
-      Artifact child4 = createArtifact("User", branch);
+      Artifact child4 = createArtifact(CoreArtifactTypes.User, branch);
       child1.setSoleAttributeFromString("Name", "a_child");
-      Artifact child5 = createArtifact("User", branch);
+      Artifact child5 = createArtifact(CoreArtifactTypes.User, branch);
       child2.setSoleAttributeFromString("Name", "b_child");
-      Artifact child6 = createArtifact("User", branch);
+      Artifact child6 = createArtifact(CoreArtifactTypes.User, branch);
 
       parent.addRelation(CoreRelationTypes.Users_User, child4);
       parent.addRelation(CoreRelationTypes.Users_User, child5);
@@ -223,7 +223,7 @@ public class RelationOrderingTest {
       Assert.assertFalse("Artifact should not be dirty.", mainFolder.isDirty());
    }
 
-   private Artifact createArtifact(String type, Branch branch) throws OseeCoreException {
-      return ArtifactTypeManager.makeNewArtifact(ArtifactTypeManager.getType(type), branch);
+   private Artifact createArtifact(IArtifactType artifactType, Branch branch) throws OseeCoreException {
+      return ArtifactTypeManager.makeNewArtifact(artifactType, branch);
    }
 }

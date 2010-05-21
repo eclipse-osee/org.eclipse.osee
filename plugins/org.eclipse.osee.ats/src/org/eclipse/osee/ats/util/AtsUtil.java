@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -42,6 +41,7 @@ import org.eclipse.osee.ats.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
-import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
@@ -266,7 +265,7 @@ public final class AtsUtil {
    public static void createATSAction(String initialDescription, String actionableItemName) {
       // Ensure actionable item is configured for ATS before continuing
       try {
-         AtsCacheManager.getSoleArtifactByName(ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME),
+         AtsCacheManager.getSoleArtifactByName(ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem),
                actionableItemName);
       } catch (ArtifactDoesNotExist ex) {
          AWorkbench.popup(
@@ -357,7 +356,7 @@ public final class AtsUtil {
    public static void openInAtsWorldEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException {
       Set<Artifact> otherArts = new HashSet<Artifact>();
       for (Artifact art : artifacts) {
-         if (art.isOfType(UniversalGroup.ARTIFACT_TYPE_NAME)) {
+         if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
             WorldEditor.open(new WorldEditorUISearchItemProvider(new GroupWorldSearchItem(art), null,
                   TableLoadOption.None));
          } else {

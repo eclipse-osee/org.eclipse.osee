@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -113,7 +112,7 @@ public class SetRequirementCategory extends AbstractBlam {
          return requirement;
       } catch (MultipleArtifactsExist ex) {
          List<Artifact> artiafcts =
-               ArtifactQuery.getArtifactListFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT,
+               ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.SoftwareRequirement,
                      canonicalRequirementName, branch);
          for (Artifact requirement : artiafcts) {
             if (requirement.isOrphan()) {

@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.navigate;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -65,7 +66,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
          try {
             TeamDefinitionArtifact teamDef =
                   (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
-                        ArtifactTypeManager.getType(TeamDefinitionArtifact.ARTIFACT_NAME), teamDefName);
+                        ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
             if (teamDef != null) return teamDef;
          } catch (ArtifactDoesNotExist ex) {
             // do nothing, going to get team below

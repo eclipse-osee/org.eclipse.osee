@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.core.data.TransactionDelta;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -142,9 +143,9 @@ public class PublishRequirements extends AbstractBlam {
       }
 
       List<Artifact> nonFolderChildren = new ArrayList<Artifact>();
-      if (artifact.isOfType("Folder")) {
+      if (artifact.isOfType(CoreArtifactTypes.Folder)) {
          for (Artifact child : artifact.getChildren(publishAsDiff)) {
-            if (child.isOfType("Folder")) {
+            if (child.isOfType(CoreArtifactTypes.Folder)) {
                publish(monitor, child, options, txDelta);
             } else {
                nonFolderChildren.add(child);

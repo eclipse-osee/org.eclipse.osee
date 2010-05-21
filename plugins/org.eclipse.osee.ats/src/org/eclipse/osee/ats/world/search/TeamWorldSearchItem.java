@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -47,9 +48,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 public class TeamWorldSearchItem extends WorldUISearchItem {
 
    public enum ReleasedOption {
-      Released,
-      UnReleased,
-      Both
+      Released, UnReleased, Both
    };
    private Collection<TeamDefinitionArtifact> teamDefs;
    private final boolean recurseChildren;
@@ -128,7 +127,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          for (String teamDefName : teamDefNames) {
             TeamDefinitionArtifact aia =
                   (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
-                        ArtifactTypeManager.getType(TeamDefinitionArtifact.ARTIFACT_NAME), teamDefName);
+                        ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
             if (aia != null) {
                teamDefs.add(aia);
             }

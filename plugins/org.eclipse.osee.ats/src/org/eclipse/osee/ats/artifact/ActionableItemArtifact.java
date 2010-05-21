@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -38,15 +39,13 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
  */
 public class ActionableItemArtifact extends Artifact {
 
-   public static String ARTIFACT_NAME = "Actionable Item";
-
    public ActionableItemArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
    public static List<ActionableItemArtifact> getActionableItems(Active active) throws OseeCoreException {
       return Collections.castAll(AtsCacheManager.getArtifactsByActive(
-            ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME), active));
+            ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), active));
    }
 
    public static String getNotActionableItemError(Artifact aia) {
@@ -72,7 +71,7 @@ public class ActionableItemArtifact extends Artifact {
 
    public static List<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
       return Collections.castAll(AtsCacheManager.getArtifactsByActive(
-            ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME), Active.Both));
+            ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), Active.Both));
    }
 
    public boolean isActionable() throws OseeCoreException {
@@ -83,7 +82,7 @@ public class ActionableItemArtifact extends Artifact {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String actionableItemName : actionableItemNames) {
          for (Artifact artifact : AtsCacheManager.getArtifactsByName(
-               ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME), actionableItemName)) {
+               ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), actionableItemName)) {
             aias.add((ActionableItemArtifact) artifact);
          }
       }

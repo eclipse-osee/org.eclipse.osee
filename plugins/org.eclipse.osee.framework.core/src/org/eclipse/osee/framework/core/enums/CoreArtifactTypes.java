@@ -23,6 +23,7 @@ public class CoreArtifactTypes extends NamedIdentity implements IArtifactType {
          new CoreArtifactTypes("ATkaanWmHH3PkhGNVjwA", "Abstract Test Result");
    public static final CoreArtifactTypes Artifact = new CoreArtifactTypes("AAMFDh6S7gRLupAMwywA", "Artifact");
    public static final CoreArtifactTypes CodeUnit = new CoreArtifactTypes("AAMFDkEh216dzK1mTZgA", "Code Unit");
+   public static final CoreArtifactTypes Component = new CoreArtifactTypes("AAMFDkG6omAsD6dXPYgA", "Component");
    public static final CoreArtifactTypes Folder = new CoreArtifactTypes("AAMFDg_wmiYHHY5swJwA", "Folder");
    public static final CoreArtifactTypes GeneralData = new CoreArtifactTypes("AAMFDhQXfyb2m+jCwlwA", "General Data");
    public static final CoreArtifactTypes GeneralDocument =
@@ -30,12 +31,16 @@ public class CoreArtifactTypes extends NamedIdentity implements IArtifactType {
    public static final CoreArtifactTypes GlobalPreferences =
          new CoreArtifactTypes("AAMFDho2kBqyoOZEw+gA", "Global Preferences");
    public static final CoreArtifactTypes Heading = new CoreArtifactTypes("AAMFDhEzni8FpFb5yHwA", "Heading");
+   public static final CoreArtifactTypes HardwareRequirement =
+         new CoreArtifactTypes("AAMFDh8dhUflUdK9FdgA", "Hardware Requirement");
    public static final CoreArtifactTypes IndirectSoftwareRequirement =
          new CoreArtifactTypes("AAMFDiC7HRQMqr5S0QwA", "Indirect Software Requirement");
    public static final CoreArtifactTypes Requirement = new CoreArtifactTypes("ABM_vxEEowY+8i2_q9gA", "Requirement");
    public static final CoreArtifactTypes RootArtifact = new CoreArtifactTypes("AAMFDhHDqlbzKcIxcsAA", "Root Artifact");
    public static final CoreArtifactTypes SoftwareRequirement =
          new CoreArtifactTypes("AAMFDiAwhRFXwIyapJAA", "Software Requirement");
+   public static final CoreArtifactTypes SystemRequirement =
+         new CoreArtifactTypes("AAMFDiSTcDGdUd9+tHAA", "System Requirement");
    public static final CoreArtifactTypes SoftwareRequirementDrawing =
          new CoreArtifactTypes("ABNClhgUfwj6A3EAArQA", "Software Requirement Drawing");
    public static final CoreArtifactTypes SoftwareRequirementFunction =

@@ -54,8 +54,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionF
 import org.eclipse.ui.progress.UIJob;
 
 /**
- * This class creates a simple configuration of ATS given team definition name,
- * version names (if desired), actionable items and workflow id.
+ * This class creates a simple configuration of ATS given team definition name, version names (if desired), actionable
+ * items and workflow id.
  * 
  * @author Donald G. Dunne
  */
@@ -121,7 +121,7 @@ public class AtsConfigManager extends AbstractOperation {
 
    private TeamDefinitionArtifact createTeamDefinition(IProgressMonitor monitor, double workAmount, SkynetTransaction transaction) throws OseeCoreException {
       TeamDefinitionArtifact teamDefinition =
-            (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
+            (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
                   AtsUtil.getAtsBranch(), teamDefName);
       if (versionNames == null || versionNames.size() > 0) {
          teamDefinition.setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
@@ -138,7 +138,7 @@ public class AtsConfigManager extends AbstractOperation {
 
       // Create top actionable item
       ActionableItemArtifact topAia =
-            (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
+            (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
                   AtsUtil.getAtsBranch(), teamDefName);
       topAia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
       topAia.persist(transaction);
@@ -152,7 +152,7 @@ public class AtsConfigManager extends AbstractOperation {
       // Create children actionable item
       for (String name : actionableItems) {
          ActionableItemArtifact aia =
-               (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
+               (ActionableItemArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
                      AtsUtil.getAtsBranch(), name);
          aia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), true);
          topAia.addChild(aia);

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.config.demo.util;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -42,7 +43,7 @@ public class DemoTeams {
       // Add check to keep exception from occurring for OSEE developers running against production
       if (ClientSessionManager.isProductionDataStore()) return null;
       try {
-         return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME,
+         return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
                team.name().replaceAll("_", " "), AtsUtil.getAtsBranch());
       } catch (Exception ex) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);

@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -89,7 +89,7 @@ public class WordEditTest {
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
          FileSystemRenderer.setWorkbenchSavePopUpDisabled(true);
          Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
-         Artifact newArt = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch, className);
+         Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch, className);
          newArt.persist();
          // open the artifacts; testing one artifact for now
          List<Artifact> artifacts = Arrays.asList(newArt);

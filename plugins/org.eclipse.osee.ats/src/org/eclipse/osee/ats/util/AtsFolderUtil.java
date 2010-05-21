@@ -60,7 +60,6 @@ public class AtsFolderUtil {
    }
 
    public static Map<AtsFolder, Artifact> folderMap = new HashMap<AtsFolder, Artifact>();
-   public static String FOLDER_ARTIFACT = "Folder";
 
    public static Artifact getFolder(AtsFolder atsFolder) throws OseeCoreException {
       if (!folderMap.containsKey(atsFolder)) {

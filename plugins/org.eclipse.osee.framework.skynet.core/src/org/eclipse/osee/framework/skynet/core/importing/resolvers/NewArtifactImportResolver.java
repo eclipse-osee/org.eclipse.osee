@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -60,7 +61,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       } else if (kind == RoughArtifactKind.SECONDARY) {
          return secondaryArtifactType;
       } else if (kind == RoughArtifactKind.CONTAINER) {
-         return ArtifactTypeManager.getType("Folder");
+         return ArtifactTypeManager.getType(CoreArtifactTypes.Folder);
       } else {
          throw new OseeCoreException("Unknown Artifact Kind " + kind);
       }

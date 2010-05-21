@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -148,8 +149,7 @@ public final class ArtifactImageManager {
    }
 
    private static enum ChangeImageType {
-      CHANGE_KIND,
-      CHANGE_TYPE;
+      CHANGE_KIND, CHANGE_TYPE;
    }
 
    private static Image getChangeImage(Change change, ChangeImageType changeImageType) {
@@ -178,6 +178,15 @@ public final class ArtifactImageManager {
          toReturn = ImageManager.getImage(ImageManager.setupImageWithOverlay(keyedImage, overlay, Location.TOP_LEFT));
       }
       return toReturn;
+   }
+
+   public static Image getImage(IArtifactType artifactType) {
+      try {
+         return getImage(ArtifactTypeManager.getType(artifactType));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      return ImageManager.getImage(ImageManager.MISSING);
    }
 
    public static Image getImage(ArtifactType artifactType) {
@@ -218,6 +227,10 @@ public final class ArtifactImageManager {
 
    public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider, String artifactTypeName) {
       providersOverrideImageMap.put(artifactTypeName, imageProvider);
+   }
+
+   public synchronized static void registerBaseImage(IArtifactType artifactType, KeyedImage oseeImage, ArtifactImageProvider provider) throws OseeDataStoreException {
+      registerBaseImage(artifactType.getName(), oseeImage, provider);
    }
 
    public synchronized static void registerBaseImage(String artifactTypeName, KeyedImage oseeImage, ArtifactImageProvider provider) throws OseeDataStoreException {
@@ -290,6 +303,10 @@ public final class ArtifactImageManager {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return ImageManager.setupImage(baseImageEnum);
+   }
+
+   public static void setArtifactTypeImageInDb(IArtifactType artifactType, ByteArrayInputStream byteInput) throws OseeCoreException {
+      setArtifactTypeImageInDb(ArtifactTypeManager.getType(artifactType), byteInput);
    }
 
    public static void setArtifactTypeImageInDb(ArtifactType artifactType, ByteArrayInputStream byteInput) throws OseeDataStoreException {

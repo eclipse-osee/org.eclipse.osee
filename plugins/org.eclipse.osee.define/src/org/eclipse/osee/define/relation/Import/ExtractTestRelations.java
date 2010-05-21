@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -88,7 +89,7 @@ public class ExtractTestRelations {
 
       // Make sure that the runtime relation type is available
       Artifact reqArtifact =
-            ArtifactQuery.getArtifactFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, reqArtifactName, branch);
+            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, reqArtifactName, branch);
 
       // Make sure we have the reqArtifact
       if (reqArtifact == null) {

@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -28,12 +29,11 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Donald G. Dunne
  */
 public class UniversalGroup {
-   public static final String ARTIFACT_TYPE_NAME = "Universal Group";
 
    public static Collection<Artifact> getGroups(Branch branch) {
       Collection<Artifact> artifacts = null;
       try {
-         artifacts = ArtifactQuery.getArtifactListFromType(ARTIFACT_TYPE_NAME, branch);
+         artifacts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UniversalGroup, branch);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          artifacts = new LinkedList<Artifact>();
@@ -53,7 +53,7 @@ public class UniversalGroup {
 
    public static Collection<Artifact> getGroups(String groupName, Branch branch) {
       try {
-         return ArtifactQuery.getArtifactListFromTypeAndName(ARTIFACT_TYPE_NAME, groupName, branch);
+         return ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.UniversalGroup, groupName, branch);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -65,7 +65,7 @@ public class UniversalGroup {
          throw new OseeArgumentException("Group Already Exists");
       }
 
-      Artifact groupArt = ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, branch, name);
+      Artifact groupArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.UniversalGroup, branch, name);
       groupArt.persist();
       Artifact groupRoot = getTopUniversalGroupArtifact(branch);
       groupRoot.addRelation(CoreRelationTypes.Universal_Grouping__Members, groupArt);
@@ -74,7 +74,7 @@ public class UniversalGroup {
    }
 
    public static Artifact getTopUniversalGroupArtifact(Branch branch) throws OseeCoreException {
-      return ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME,
+      return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup,
             OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME, branch);
    }
 }

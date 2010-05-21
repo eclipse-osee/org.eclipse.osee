@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.test.cases;
 
 import static org.junit.Assert.assertFalse;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -30,7 +31,7 @@ public class AtsTeamDefintionToWorkflowTest {
    public void testTeamDefinitionToWorkflow() throws Exception {
       boolean error = false;
       StringBuffer sb = new StringBuffer();
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromType(TeamDefinitionArtifact.ARTIFACT_NAME,
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.TeamDefinition,
             AtsUtil.getAtsBranch())) {
          TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
          if (teamDef.isActionable() && teamDef.getWorkFlowDefinition() == null) {

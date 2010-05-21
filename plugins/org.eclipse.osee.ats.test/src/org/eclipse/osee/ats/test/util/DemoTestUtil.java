@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
@@ -51,7 +51,7 @@ public class DemoTestUtil {
    public static Result isDbPopulatedWithDemoData() throws Exception {
       Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
 
-      if (ArtifactQuery.getArtifactListFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, "%Robot%", branch).size() != 6) {
+      if (ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "%Robot%", branch).size() != 6) {
          return new Result(
                "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
       }

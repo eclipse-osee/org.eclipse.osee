@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.config.demo.artifact.DemoCodeTeamWorkflowArtifact;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -25,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.support.test.util.DemoUsers;
 
@@ -71,10 +72,10 @@ public class DemoDbUtil {
    }
 
    public static Collection<Artifact> getSoftwareRequirements(SoftwareRequirementStrs str, Branch branch) throws OseeCoreException {
-      return getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, str.name(), branch);
+      return getArtTypeRequirements(CoreArtifactTypes.SoftwareRequirement, str.name(), branch);
    }
 
-   public static Collection<Artifact> getArtTypeRequirements(String artifactType, String artifactNameStr, Branch branch) throws OseeCoreException {
+   public static Collection<Artifact> getArtTypeRequirements(IArtifactType artifactType, String artifactNameStr, Branch branch) throws OseeCoreException {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getName());
       Collection<Artifact> arts =
@@ -91,7 +92,7 @@ public class DemoDbUtil {
    public static Artifact getInterfaceInitializationSoftwareRequirement(Branch branch) throws OseeCoreException {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO,
             "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
-      return ArtifactQuery.getArtifactFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, INTERFACE_INITIALIZATION,
+      return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, INTERFACE_INITIALIZATION,
             branch);
    }
 

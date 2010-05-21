@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -77,7 +78,7 @@ public class ArtifactExportJob extends Job {
    }
 
    private void writeArtifactPreview(File exportPath, IProgressMonitor monitor, Artifact artifact, PresentationType presentationType) throws Exception {
-      if (artifact.isOfType("Folder")) {
+      if (artifact.isOfType(CoreArtifactTypes.Folder)) {
          File folder = new File(exportPath, artifact.getName());
          folder.mkdir();
          for (Artifact child : artifact.getChildren()) {

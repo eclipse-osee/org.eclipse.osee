@@ -75,9 +75,9 @@ public class WorkItemDefinitionFactory {
                BranchManager.getCommonBranch(), false)) {
             if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
                addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
-            } else if (art.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
+            } else if (art.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
                addItemDefinition(WriteType.New, new WorkWidgetDefinition(art), art);
-            } else if (art.isOfType(WorkPageDefinition.ARTIFACT_NAME)) {
+            } else if (art.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
                addItemDefinition(WriteType.New, new WorkPageDefinition(art), art);
             } else if (art.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
                addItemDefinition(WriteType.New, new WorkFlowDefinition(art), art);
@@ -144,15 +144,15 @@ public class WorkItemDefinitionFactory {
 
    private static void loadDefinitionsInternal(WriteType writeType, Collection<Artifact> arts) throws OseeCoreException {
       for (Artifact art : arts) {
-         if (art.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
             addItemDefinition(writeType, new WorkRuleDefinition(art), art);
          }
-         if (art.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
             addItemDefinition(writeType, new WorkWidgetDefinition(art), art);
          }
-         if (art.isOfType(WorkPageDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
             addItemDefinition(writeType, new WorkPageDefinition(art), art);
          }

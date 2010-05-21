@@ -378,6 +378,11 @@ public class ArtifactQuery {
       return queryFromTypeAndAttribute(artifactType, attributeTypeName, attributeValue, branch).getArtifacts(100, null);
    }
 
+   public static List<Artifact> getArtifactListFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, String attributeValue, IOseeBranch branch) throws OseeCoreException {
+      return queryFromTypeAndAttribute(artifactType, attributeType.getName(), attributeValue, branch).getArtifacts(100,
+            null);
+   }
+
    public static List<Artifact> getArtifactListFromTypeAndAttribute(String artifactTypeName, IAttributeType attributeType, String attributeValue, IOseeBranch branch) throws OseeCoreException {
       return queryFromTypeAndAttribute(artifactTypeName, attributeType.getName(), attributeValue, branch).getArtifacts(
             100, null);

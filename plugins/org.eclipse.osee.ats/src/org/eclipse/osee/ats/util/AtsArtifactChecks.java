@@ -29,8 +29,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCheck;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 
 /**
  * Check for certain conditions that must be met to delete an ATS object or User artifact.
@@ -110,14 +108,14 @@ public class AtsArtifactChecks extends ArtifactCheck {
                      art);
             }
          }
-         if (art.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
             if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent).size() > 0) {
                return String.format(
                      "ATS WorkRuleDefinition [%s] selected to delete has related Work Items via WorkItem__Parent that must be removed first.",
                      art);
             }
          }
-         if (art.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
             if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent).size() > 0) {
                return String.format(
                      "ATS WorkWidgetDefinition [%s] selected to delete has related Work Items via WorkItem__Parent that must be removed first.",

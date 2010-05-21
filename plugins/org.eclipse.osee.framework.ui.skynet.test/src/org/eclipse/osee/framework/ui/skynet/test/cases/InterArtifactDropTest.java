@@ -12,11 +12,10 @@ package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -28,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandler;
 import org.junit.After;
@@ -60,19 +58,20 @@ public class InterArtifactDropTest {
                   UserManager.getUser(SystemUser.OseeSystem));
       sleep(5000);
 
-      sourceArtifact = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, sourceBranch);
+      sourceArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
       sourceArtifact.persist();
 
       destinationBranch =
             BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, destinationBranchName,
                   UserManager.getUser(SystemUser.OseeSystem));
-      
+
       updateTestParentSourceBranch =
             BranchManager.createWorkingBranch(sourceBranch, updateSourceBranchName,
-               UserManager.getUser(SystemUser.OseeSystem));
-      
-      updateTestSourceBranch = BranchManager.createWorkingBranch(updateTestParentSourceBranch, updateTestSourceName,
-                                           UserManager.getUser(SystemUser.OseeSystem));
+                  UserManager.getUser(SystemUser.OseeSystem));
+
+      updateTestSourceBranch =
+            BranchManager.createWorkingBranch(updateTestParentSourceBranch, updateTestSourceName,
+                  UserManager.getUser(SystemUser.OseeSystem));
 
       sleep(5000);
    }
@@ -93,24 +92,23 @@ public class InterArtifactDropTest {
 
       assertTrue(sourceArtifact.getName().equals(destArtifact.getName()));
    }
-   
+
    @org.junit.Test
    public void testUpdateBranch() throws Exception {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
 
-      
       Artifact updateTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact.getArtId(), updateTestSourceBranch);
       updateTestArtifact.setName("I am an update branch test");
       updateTestArtifact.persist();
-      
+
       InterArtifactExplorerDropHandler dropHandler = new InterArtifactExplorerDropHandler();
-      dropHandler.dropArtifactIntoDifferentBranch(sourceArtifact, new Artifact[] {updateTestArtifact},
-            false);
+      dropHandler.dropArtifactIntoDifferentBranch(sourceArtifact, new Artifact[] {updateTestArtifact}, false);
 
       sleep(5000);
       //Acquire the updated artifact
-      Artifact destArtifact = ArtifactQuery.getArtifactFromId(updateTestArtifact.getArtId(), sourceArtifact.getBranch());
+      Artifact destArtifact =
+            ArtifactQuery.getArtifactFromId(updateTestArtifact.getArtId(), sourceArtifact.getBranch());
       assertTrue(updateTestArtifact.getName().equals(destArtifact.getName()));
    }
 
@@ -119,7 +117,7 @@ public class InterArtifactDropTest {
       Thread.sleep(milliseconds);
       OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Awake");
    }
-   
+
    @After
    public void tearDown() throws Exception {
    }
