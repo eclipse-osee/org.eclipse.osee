@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -164,8 +165,7 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
 
    public TaskArtifact createNewTask(Collection<User> assignees, String title) throws OseeCoreException {
       TaskArtifact taskArt = null;
-      taskArt =
-            (TaskArtifact) ArtifactTypeManager.addArtifact(TaskArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch(), title);
+      taskArt = (TaskArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Task, AtsUtil.getAtsBranch(), title);
       taskArt.getLog().addLog(LogType.Originated, "", "");
 
       // Initialize state machine

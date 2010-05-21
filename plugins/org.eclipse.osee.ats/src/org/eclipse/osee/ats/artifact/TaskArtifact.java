@@ -44,8 +44,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class TaskArtifact extends StateMachineArtifact implements IWorldViewArtifact, IATSStateMachineArtifact {
 
-   public static String ARTIFACT_NAME = "Task";
-
    public static enum TaskStates {
       InWork, Completed, Cancelled
    };

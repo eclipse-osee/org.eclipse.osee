@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.hyper;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -46,7 +47,7 @@ public class TasksActionHyperItem extends ActionHyperItem {
 
    @Override
    public Image getImage() throws OseeCoreException {
-      return ArtifactImageManager.getImage(ArtifactTypeManager.getType(TaskArtifact.ARTIFACT_NAME));
+      return ArtifactImageManager.getImage(ArtifactTypeManager.getType(AtsArtifactTypes.Task));
 
    }
 

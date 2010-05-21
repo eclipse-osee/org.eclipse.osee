@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.hyper;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.swt.graphics.Image;
@@ -59,7 +60,7 @@ public class TasksHyperViewArtifact implements IHyperArtifact {
 
    @Override
    public String getHyperType() {
-      return TaskArtifact.ARTIFACT_NAME;
+      return AtsArtifactTypes.Task.getName();
    }
 
    @Override

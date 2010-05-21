@@ -40,13 +40,6 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
       Prepare, Review, Completed
    };
 
-   /**
-    * @param parentFactory
-    * @param guid
-    * @param humanReadableId
-    * @param branch
-    * @throws OseeDataStoreException
-    */
    public PeerToPeerReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       defectManager = new DefectManager(this);

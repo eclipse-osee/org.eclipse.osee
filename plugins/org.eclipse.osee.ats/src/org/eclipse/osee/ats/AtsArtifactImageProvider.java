@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats;
 
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -41,7 +40,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage("PeerToPeer Review", AtsImage.REVIEW, this);
 
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Version.getName());
-      ArtifactImageManager.registerOverrideImageProvider(this, TaskArtifact.ARTIFACT_NAME);
+      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Task.getName());
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.PeerToPeerReview.getName());
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.DecisionReview.getName());
       for (IArtifactType artifactType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()) {

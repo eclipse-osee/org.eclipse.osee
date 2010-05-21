@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
@@ -212,16 +211,17 @@ public class AtsDeleteManagerTest {
       for (Artifact artifact : artifacts) {
          numArts.put(artifact.getArtifactTypeName());
       }
-      assertTrue("Should be " + numActions + " ActionArtifact, found " + numArts.get(ActionArtifact.ARTIFACT_NAME),
-            numArts.get(ActionArtifact.ARTIFACT_NAME) == numActions);
+      assertTrue(
+            "Should be " + numActions + " ActionArtifact, found " + numArts.get(AtsArtifactTypes.Action.getName()),
+            numArts.get(AtsArtifactTypes.Action.getName()) == numActions);
       assertTrue(
             "Should be " + numCodeWorkflows + " Demo Code Workflow, found " + numArts.get(TestUtil.DEMO_CODE_TEAM_WORKFLOW_ARTIFACT),
             numArts.get(TestUtil.DEMO_CODE_TEAM_WORKFLOW_ARTIFACT) == numCodeWorkflows);
       assertTrue(
             "Should be " + numReqWorkflows + " Demo Req Workflow, found " + numArts.get(TestUtil.DEMO_REQ_TEAM_WORKFLOW_ARTIFACT),
             numArts.get(TestUtil.DEMO_REQ_TEAM_WORKFLOW_ARTIFACT) == numReqWorkflows);
-      assertTrue("Should be " + numTasks + " TaskArtifacts, found " + numArts.get(TaskArtifact.ARTIFACT_NAME),
-            numArts.get(TaskArtifact.ARTIFACT_NAME) == numTasks);
+      assertTrue("Should be " + numTasks + " TaskArtifacts, found " + numArts.get(AtsArtifactTypes.Task.getName()),
+            numArts.get(AtsArtifactTypes.Task.getName()) == numTasks);
       assertTrue(
             "Should be " + numReviews + " DecisionReviewArtifact, found " + numArts.get(AtsArtifactTypes.DecisionReview.getName()),
             numArts.get(AtsArtifactTypes.DecisionReview.getName()) == numReviews);

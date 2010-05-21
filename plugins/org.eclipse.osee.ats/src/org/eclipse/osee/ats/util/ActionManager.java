@@ -36,7 +36,7 @@ public class ActionManager {
          monitor.subTask("Creating Action");
       }
       ActionArtifact actionArt =
-            (ActionArtifact) ArtifactTypeManager.addArtifact(ActionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch());
+            (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtil.getAtsBranch());
       ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, validationRequired,
             needByDate);
 
