@@ -177,16 +177,6 @@ public class BranchManager {
    }
 
    public static Branch getBranch(Integer branchId) throws OseeCoreException {
-      return getBranch(branchId, true);
-   }
-
-   public static Branch getBranchNoExistenceExcpetion(Integer branchId) throws OseeCoreException {
-      return getBranch(branchId, false);
-   }
-
-   // Always exception for invalid id's, they won't ever be found in the
-   private static Branch getBranch(Integer branchId, boolean throwException) throws OseeCoreException {
-      // database or cache.
       if (branchId == null) {
          throw new BranchDoesNotExist("Branch Id is null");
       }
@@ -200,7 +190,7 @@ public class BranchManager {
             branch = cache.getById(branchId);
          }
       }
-      if (throwException && branch == null) {
+      if (branch == null) {
          throw new BranchDoesNotExist("Branch could not be acquired for branch id: " + branchId);
       }
       return branch;
@@ -446,21 +436,15 @@ public class BranchManager {
 
    private void initializeLastBranchValue() {
       try {
-         String branchIdStr = UserManager.getUser().getSetting(LAST_DEFAULT_BRANCH);
-         if (branchIdStr == null) {
+         String branchGuid = UserManager.getUser().getSetting(LAST_DEFAULT_BRANCH);
+         lastBranch = getBranchByGuid(branchGuid);
+      } catch (Exception ex) {
+         try {
             lastBranch = getDefaultInitialBranch();
-            UserManager.getUser().setSetting(LAST_DEFAULT_BRANCH, String.valueOf(lastBranch.getId()));
-         } else {
-            if (Strings.isValid(branchIdStr)) {
-               lastBranch = getBranchNoExistenceExcpetion(Integer.parseInt(branchIdStr));
-               if (lastBranch == null) {
-                  lastBranch = getDefaultInitialBranch();
-               }
-            }
+            UserManager.getUser().setSetting(LAST_DEFAULT_BRANCH, lastBranch.getGuid());
+         } catch (OseeCoreException ex1) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex1);
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-
       }
    }
 
