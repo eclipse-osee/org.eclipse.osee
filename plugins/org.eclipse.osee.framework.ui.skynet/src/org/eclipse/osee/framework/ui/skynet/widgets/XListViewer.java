@@ -100,7 +100,9 @@ public class XListViewer extends XWidget {
 
    public void setLabelProvider(ILabelProvider labelProvider) {
       this.labelProvider = labelProvider;
-      if (listViewer != null) listViewer.setLabelProvider(labelProvider);
+      if (listViewer != null) {
+         listViewer.setLabelProvider(labelProvider);
+      }
    }
 
    public void setSorter(ViewerSorter sorter) {
@@ -109,14 +111,18 @@ public class XListViewer extends XWidget {
 
    public void setInput(Collection<Object> input) {
       this.input = input;
-      if (listViewer != null) listViewer.setInput(input);
+      if (listViewer != null) {
+         listViewer.setInput(input);
+      }
    }
 
    /**
     * @param input
     */
    public void setInput(Object input) {
-      if (listViewer != null) listViewer.setInput(input);
+      if (listViewer != null) {
+         listViewer.setInput(input);
+      }
    }
 
    public Object getInput() {
@@ -145,14 +151,17 @@ public class XListViewer extends XWidget {
    /**
     * Create List Widgets. Widgets Created: List: horizonatalSpan takes up 2 columns; horizontalSpan must be >=2
     */
+   @Override
    protected void createControls(Composite parent, int horizontalSpan) {
 
       this.parent = parent;
       composite = null;
 
-      if (!verticalLabel && (horizontalSpan < 2))
+      if (!verticalLabel && (horizontalSpan < 2)) {
          horizontalSpan = 2;
-      else if (verticalLabel) horizontalSpan = 1;
+      } else if (verticalLabel) {
+         horizontalSpan = 1;
+      }
 
       if (isDisplayLabel() && verticalLabel) {
          composite = new Composite(parent, SWT.NONE);
@@ -181,7 +190,9 @@ public class XListViewer extends XWidget {
                   (multiSelect ? SWT.MULTI : SWT.SINGLE) | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
       listViewer.setContentProvider(contentProvider);
       listViewer.setLabelProvider(labelProvider);
-      if (sorter != null) listViewer.setSorter(sorter);
+      if (sorter != null) {
+         listViewer.setSorter(sorter);
+      }
       listViewer.setInput(input);
       listViewer.getTable().setMenu(listMenu);
       listViewer.getTable().addSelectionListener(new SelectionListener() {
@@ -197,8 +208,12 @@ public class XListViewer extends XWidget {
       if (grabHorizontal) {
          gd.grabExcessHorizontalSpace = true;
       }
-      if (widthHint > 0) gd.widthHint = widthHint;
-      if (heightHint > 0) gd.heightHint = heightHint;
+      if (widthHint > 0) {
+         gd.widthHint = widthHint;
+      }
+      if (heightHint > 0) {
+         gd.heightHint = heightHint;
+      }
       gd.grabExcessVerticalSpace = true;
       listViewer.getTable().setLayoutData(gd);
       listViewer.getTable().addSelectionListener(listListener);
@@ -213,16 +228,22 @@ public class XListViewer extends XWidget {
    public void dispose() {
       labelWidget.dispose();
       listViewer.getTable().dispose();
-      if (composite != null && !composite.isDisposed()) composite.dispose();
-      if (parent != null && !parent.isDisposed()) parent.layout();
+      if (composite != null && !composite.isDisposed()) {
+         composite.dispose();
+      }
+      if (parent != null && !parent.isDisposed()) {
+         parent.layout();
+      }
    }
 
+   @Override
    public void setFocus() {
    }
 
    /**
     * Don't need this since overriding toReport and toXml
     */
+   @Override
    public String getXmlData() {
       return "";
    }
@@ -230,6 +251,7 @@ public class XListViewer extends XWidget {
    /**
     * Don't need this since overriding setFromXml
     */
+   @Override
    public void setXmlData(String str) {
       return;
    }
@@ -239,6 +261,7 @@ public class XListViewer extends XWidget {
       notifyXModifiedListeners();
    }
 
+   @Override
    public void refresh() {
       updateListWidget();
    }
@@ -258,6 +281,7 @@ public class XListViewer extends XWidget {
       return selected;
    }
 
+   @Override
    public void setFromXml(String xml) {
    }
 
@@ -308,22 +332,28 @@ public class XListViewer extends XWidget {
       updateListWidget();
    }
 
+   @Override
    public IStatus isValid() {
-      if (!isRequiredEntry()) return Status.OK_STATUS;
+      if (!isRequiredEntry()) {
+         return Status.OK_STATUS;
+      }
       int size = getSelected().size();
       if (requiredMaxSelected != 0) {
          if ((size >= requiredMinSelected) && (size <= requiredMaxSelected)) {
             return Status.OK_STATUS;
-         } else if (size < requiredMinSelected)
+         } else if (size < requiredMinSelected) {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
                   getLabel() + " must have at least " + requiredMinSelected + " selected.");
-         else if (size < requiredMaxSelected)
+         } else if (size < requiredMaxSelected) {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID,
                   getLabel() + " should only have " + requiredMaxSelected + " selected.");
-         else
+         } else {
             return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel());
+         }
       }
-      if (size == 0) return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must be selected.");
+      if (size == 0) {
+         return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must be selected.");
+      }
       return Status.OK_STATUS;
 
    }
@@ -349,6 +379,7 @@ public class XListViewer extends XWidget {
       }
    }
 
+   @Override
    public String getReportData() {
       String s = "\n";
       for (Object obj : getSelected()) {
@@ -358,14 +389,17 @@ public class XListViewer extends XWidget {
       return s;
    }
 
+   @Override
    public String toXml() {
       return toXml(getXmlRoot(), getXmlSubRoot());
    }
 
+   @Override
    public String toXml(String xmlRoot, String xmlSubRoot) {
       return "";
    }
 
+   @Override
    public String toHTML(String labelFont) {
       String s = "<dl><dt>" + AHTML.getLabelStr(labelFont, getLabel() + ": ") + "<dt><ul type=\"disc\">";
       for (Object xItem : getSelected()) {

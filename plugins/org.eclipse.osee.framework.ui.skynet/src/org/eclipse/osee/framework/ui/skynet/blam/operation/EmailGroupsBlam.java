@@ -6,8 +6,11 @@
 
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.TreeSet;
 import javax.mail.MessagingException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -17,9 +20,12 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
@@ -27,6 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -34,7 +41,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Ryan D. Brooks
  */
-public class EmailGroupsBlam extends AbstractBlam {
+public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
+   private XArtifactList templateList;
+   private XText bodyTextBox;
+   private XText subjectTextBox;
 
    @Override
    public String getName() {
@@ -47,6 +57,7 @@ public class EmailGroupsBlam extends AbstractBlam {
       String body = variableMap.getString("Body");
       boolean bodyIsHtml = variableMap.getBoolean("Body is html");
       Collection<Artifact> groups = variableMap.getCollection(Artifact.class, "Groups");
+
       HashCollection<Artifact, Artifact> userToGroupMap = new HashCollection<Artifact, Artifact>();
 
       for (Artifact group : groups) {
@@ -104,14 +115,24 @@ public class EmailGroupsBlam extends AbstractBlam {
       super.widgetCreating(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals("Groups")) {
          XArtifactList listViewer = (XArtifactList) xWidget;
-         listViewer.setInputArtifacts(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup,
-               BranchManager.getCommonBranch()));
+         List<Artifact> groups =
+               ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup, BranchManager.getCommonBranch());
+         Collections.sort(groups);
+         listViewer.setInputArtifacts(groups);
+         listViewer.addXModifiedListener(this);
+      } else if (xWidget.getLabel().equals("Template")) {
+         templateList = (XArtifactList) xWidget;
+         templateList.addXModifiedListener(this);
+      } else if (xWidget.getLabel().equals("Body")) {
+         bodyTextBox = (XText) xWidget;
+      } else if (xWidget.getLabel().equals("Subject")) {
+         subjectTextBox = (XText) xWidget;
       }
    }
 
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XArtifactList\" displayName=\"Groups\" multiSelect=\"true\" /><XWidget xwidgetType=\"XText\" displayName=\"Subject\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Body is html\" defaultValue=\"true\" /><XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XArtifactList\" displayName=\"Groups\" multiSelect=\"true\" /><XWidget xwidgetType=\"XArtifactList\" displayName=\"Template\" /><XWidget xwidgetType=\"XText\" displayName=\"Subject\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Body is html\" defaultValue=\"true\" /><XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" /></xWidgets>";
    }
 
    @Override
@@ -122,5 +143,25 @@ public class EmailGroupsBlam extends AbstractBlam {
    @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Util");
+   }
+
+   public void widgetModified(XWidget xWidget) {
+      try {
+         if (xWidget == templateList) {
+            Artifact template = (Artifact) templateList.getSelected().iterator().next();
+            subjectTextBox.set(template.getName());
+            String body = template.getSoleAttributeValue(CoreAttributeTypes.GENERAL_STRING_DATA);
+            bodyTextBox.set(body);
+         } else {
+            XArtifactList groupList = (XArtifactList) xWidget;
+            Collection<Artifact> templates = new ArrayList<Artifact>();
+            for (Object group : groupList.getSelected()) {
+               templates.addAll(((Artifact) group).getChildren());
+            }
+            templateList.setInputArtifacts(templates);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 }

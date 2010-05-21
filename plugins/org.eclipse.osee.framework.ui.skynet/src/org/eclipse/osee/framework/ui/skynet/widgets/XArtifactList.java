@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
  */
 public class XArtifactList extends XListViewer {
 
-   public XArtifactList() throws OseeCoreException {
+   public XArtifactList() {
       this("ArtList", "", "");
    }
 
@@ -34,5 +33,4 @@ public class XArtifactList extends XListViewer {
       super.setLabelProvider(new ArtifactLabelProvider());
       super.setContentProvider(new ArrayContentProvider());
    }
-
 }

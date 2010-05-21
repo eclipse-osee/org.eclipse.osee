@@ -28,9 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class VariableMap {
    private final Map<String, Object> variableMap = new HashMap<String, Object>();
 
-   public VariableMap() {
-   }
-
    /**
     * @throws OseeArgumentException
     */
@@ -53,6 +50,10 @@ public class VariableMap {
 
    public ArtifactType getArtifactType(String parameterName) throws OseeArgumentException {
       return getSingleCollectionValue(ArtifactType.class, parameterName);
+   }
+
+   public Artifact getArtifact(String parameterName) throws OseeArgumentException {
+      return getSingleCollectionValue(Artifact.class, parameterName);
    }
 
    public AttributeType getAttributeType(String parameterName) throws OseeArgumentException {
