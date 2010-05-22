@@ -18,10 +18,10 @@ import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 
 /**
  * @author Roberto E. Escobar
@@ -67,23 +67,23 @@ public class TestUnitData extends BaseTraceDataCache {
    @Override
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
       IProgressMonitor subMonitor = SubMonitor.convert(monitor);
-      testCases.addAll(ArtifactQuery.getArtifactListFromType(Requirements.TEST_CASE, getBranch()));
+      testCases.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestCase, getBranch()));
       populateTraceMap(monitor, testCases, testCaseMap);
       subMonitor.worked(20);
 
       if (!monitor.isCanceled()) {
          monitor.subTask(String.format("Load Test Support from: [%s]", getBranch().getShortName()));
 
-         testSupportItems.addAll(ArtifactQuery.getArtifactListFromType(Requirements.TEST_SUPPORT, getBranch()));
+         testSupportItems.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestSupport, getBranch()));
          populateTraceMap(monitor, testSupportItems, testSupportMap);
          subMonitor.worked(20);
       }
 
       if (!monitor.isCanceled()) {
          monitor.subTask(String.format("Load Test Procedures from: [%s]", getBranch().getShortName()));
-         testProcedures.addAll(ArtifactQuery.getArtifactListFromType(Requirements.TEST_PROCEDURE, getBranch()));
-         testProcedures.addAll(ArtifactQuery.getArtifactListFromType("Test Procedure WML", getBranch()));
-         testProcedures.addAll(ArtifactQuery.getArtifactListFromType("Test Procedure XL", getBranch()));
+         testProcedures.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestProcedure, getBranch()));
+         testProcedures.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestProcedureWML, getBranch()));
+         testProcedures.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestProcedureXL, getBranch()));
          populateTraceMap(monitor, testProcedures, testProcedureMap);
          subMonitor.worked(20);
       }

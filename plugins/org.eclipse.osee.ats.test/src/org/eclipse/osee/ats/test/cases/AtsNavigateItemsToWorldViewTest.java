@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.test.util.CustomizeDemoTableTestUtil;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.test.util.NavigateTestUtil;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldXViewer;
@@ -558,7 +559,7 @@ public class AtsNavigateItemsToWorldViewTest {
    public void getAllTreeItems(TreeItem[] treeItem, List<Artifact> taskArts) throws OseeCoreException {
       for (TreeItem item : treeItem) {
          if (item.getData() instanceof Artifact) {
-            if (((Artifact) item.getData()).isOfType("Task")) {
+            if (((Artifact) item.getData()).isOfType(AtsArtifactTypes.Task)) {
                getXViewer().getTree().setSelection(item);
                taskArts.add((Artifact) item.getData());
             }

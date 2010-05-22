@@ -103,9 +103,9 @@ public class CreateNewUser extends AbstractBlam {
       for (XListItem groupNameListItem : variableMap.getCollection(XListItem.class, "Groups")) {
          for (Artifact groupArt : groupArts) {
             if (groupNameListItem.getName().equals(groupArt.getName())) {
-               if (groupArt.isOfType("Universal Group")) {
+               if (groupArt.isOfType(CoreArtifactTypes.UniversalGroup)) {
                   groupArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, user);
-               } else if (groupArt.isOfType("User Group")) {
+               } else if (groupArt.isOfType(CoreArtifactTypes.UserGroup)) {
                   groupArt.addRelation(CoreRelationTypes.Users_User, user);
                }
             }

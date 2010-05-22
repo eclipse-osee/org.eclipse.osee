@@ -69,7 +69,7 @@ public class EmailUserGroups extends XNavigateItemAction {
 
             Set<String> emails = new HashSet<String>();
             for (Artifact artifact : dialog.getSelection()) {
-               if (artifact.isOfType("Universal Group")) {
+               if (artifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
                   for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
                      if (userArt instanceof User) {
                         if (!EmailUtil.isEmailValid((User) userArt)) {
@@ -80,7 +80,7 @@ public class EmailUserGroups extends XNavigateItemAction {
                         }
                      }
                   }
-               } else if (artifact.isOfType("User Group")) {
+               } else if (artifact.isOfType(CoreArtifactTypes.UserGroup)) {
                   for (User user : artifact.getRelatedArtifacts(CoreRelationTypes.Users_User, User.class)) {
                      if (!EmailUtil.isEmailValid(user)) {
                         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, String.format(

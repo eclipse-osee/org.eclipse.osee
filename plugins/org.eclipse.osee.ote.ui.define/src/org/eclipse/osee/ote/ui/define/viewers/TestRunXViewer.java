@@ -25,6 +25,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.ote.define.AUTOGEN.OteArtifactTypes;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.jobs.CommitTestRunJob;
@@ -256,7 +256,7 @@ public class TestRunXViewer extends XViewer {
       boolean returnValue = false;
       ArrayList<Artifact> dispositionArtifacts = new ArrayList<Artifact>();
       for (Artifact artifact : selectedArtifacts) {
-         if (artifact.isOfType(OteArtifactTypes.TEST_RUN.getName())) {
+         if (artifact.isOfType(CoreArtifactTypes.TestRun)) {
             String name = artifact.getSoleAttributeValueAsString("Name", "");
             if (name != "") {
                Artifact dispoArtifact = null;

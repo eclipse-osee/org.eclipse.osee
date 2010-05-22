@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
 
 public class ExtractTestRelations {
@@ -121,13 +120,13 @@ public class ExtractTestRelations {
 
    private Artifact getTestArtifact(IFile testArtifactFile, Branch branch) throws OseeCoreException {
       try {
-         return ArtifactQuery.getArtifactFromTypeAndName(Requirements.TEST_CASE, testArtifactFile.getName(), branch);
+         return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.TestCase, testArtifactFile.getName(), branch);
       } catch (MultipleArtifactsExist ex) {
          OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
          return null;
       } catch (ArtifactDoesNotExist ex) {
          Artifact testArtifact =
-               ArtifactTypeManager.addArtifact(Requirements.TEST_CASE, branch, testArtifactFile.getName());
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, branch, testArtifactFile.getName());
          testArtifact.setSoleAttributeValue("Content URL", testArtifactFile.getFullPath().toString());
          testArtifact.persist();
          return testArtifact;

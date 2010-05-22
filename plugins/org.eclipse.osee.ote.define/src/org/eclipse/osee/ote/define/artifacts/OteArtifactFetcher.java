@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -26,15 +27,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.ote.define.OteDefinePlugin;
-import org.eclipse.osee.ote.define.AUTOGEN.OteArtifactTypes;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OteArtifactFetcher<T extends Artifact> {
-   private final OteArtifactTypes oteArtifactType;
+   private final CoreArtifactTypes oteArtifactType;
 
-   protected OteArtifactFetcher(OteArtifactTypes oteArtifactType) {
+   protected OteArtifactFetcher(CoreArtifactTypes oteArtifactType) {
       this.oteArtifactType = oteArtifactType;
    }
 

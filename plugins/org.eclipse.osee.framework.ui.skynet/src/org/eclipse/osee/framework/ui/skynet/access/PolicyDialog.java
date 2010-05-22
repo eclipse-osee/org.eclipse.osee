@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
-
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -87,7 +87,8 @@ public class PolicyDialog extends Dialog {
       cmbPermissionLevel.setText("-Select Permission-");
       ArrayList<Artifact> subjectList = new ArrayList<Artifact>();
       subjectList.addAll(UserManager.getUsersSortedByName());
-      subjectList.addAll(ArtifactQuery.getArtifactListFromType("User Group", BranchManager.getCommonBranch()));
+      subjectList.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup,
+            BranchManager.getCommonBranch()));
       Collections.sort(subjectList, new userComparator<Artifact>());
       for (Artifact subject : subjectList) {
          String name = subject.getName();

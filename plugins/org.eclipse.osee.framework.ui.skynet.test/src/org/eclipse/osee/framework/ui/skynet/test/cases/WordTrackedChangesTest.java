@@ -14,6 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.io.FileInputStream;
 import java.io.IOException;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -64,7 +65,8 @@ public class WordTrackedChangesTest {
       LinkType linkType = LinkType.OSEE_SERVER_LINK;
       FileSystemRenderer.setWorkbenchSavePopUpDisabled(true);
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
-      Artifact newArt = ArtifactTypeManager.addArtifact("Test Procedure WML", branch, getClass().getSimpleName());
+      Artifact newArt =
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, branch, getClass().getSimpleName());
       String unlinkedContent = WordMlLinkHandler.unlink(linkType, newArt, content);
 
       assertTrue(WordAnnotationHandler.containsWordAnnotations(unlinkedContent));

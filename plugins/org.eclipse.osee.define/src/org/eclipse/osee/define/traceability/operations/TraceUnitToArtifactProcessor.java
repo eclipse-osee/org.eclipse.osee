@@ -171,7 +171,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
       if (hasChange || artifactWasCreated) {
          HierarchyHandler.addArtifact(transaction, traceUnitArtifact);
-         if (traceUnitArtifact.isOfType(Requirements.ABSTRACT_TEST_UNIT)) {
+         if (traceUnitArtifact.isOfType(CoreArtifactTypes.AbstractTestUnit)) {
             TestRunHandler.linkWithTestUnit(transaction, traceUnitArtifact);
          }
          traceUnitArtifact.persist(transaction);
@@ -241,9 +241,9 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
 
       public static void linkWithTestUnit(SkynetTransaction transaction, Artifact testCase) throws OseeCoreException {
-         if (testCase.isOfType(Requirements.TEST_CASE)) {
+         if (testCase.isOfType(CoreArtifactTypes.TestCase)) {
             List<Artifact> testRuns =
-                  ArtifactQuery.getArtifactListFromTypeAndName(Requirements.TEST_RUN, testCase.getName(),
+                  ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.TestRun, testCase.getName(),
                         transaction.getBranch());
 
             for (Artifact testRun : testRuns) {
@@ -257,9 +257,9 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
       public static void addArtifact(SkynetTransaction transaction, Artifact testUnit) throws OseeCoreException {
          Artifact folder = null;
-         if (testUnit.isOfType(Requirements.TEST_CASE)) {
+         if (testUnit.isOfType(CoreArtifactTypes.TestCase)) {
             folder = getOrCreateTestCaseFolder(transaction);
-         } else if (testUnit.isOfType(Requirements.TEST_SUPPORT)) {
+         } else if (testUnit.isOfType(CoreArtifactTypes.TestSupport)) {
             folder = getOrCreateTestSupportFolder(transaction);
          } else if (testUnit.isOfType(CoreArtifactTypes.CodeUnit)) {
             folder = getOrCreateCodeUnitFolder(transaction);

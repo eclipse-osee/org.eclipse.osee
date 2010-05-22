@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -59,11 +60,11 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       init();
 
       monitor.subTask("Aquiring Design Artifacts"); // bulk load for performance reasons
-      ArtifactQuery.getArtifactListFromType("Subsystem Design", branch);
+      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemDesign, branch);
       monitor.worked(10);
 
       monitor.subTask("Aquiring Subsystem Requirements"); // bulk load for performance reasons
-      ArtifactQuery.getArtifactListFromType("Subsystem Requirement", branch);
+      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirement, branch);
       monitor.worked(60);
 
       int workIncrement = 30 / subsystems.size();
@@ -92,12 +93,13 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
          excelWriter.writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, ""));
          excelWriter.writeCell(subsystemRequirement.getName());
 
-         if (subsystemRequirement.isOfType("Subsystem Requirement")) {
+         if (subsystemRequirement.isOfType(CoreArtifactTypes.SubsystemRequirement)) {
             boolean loopNeverRan = true;
             for (Artifact subsystemDesign : subsystemRequirement.getRelatedArtifacts(CoreRelationTypes.Design__Design)) {
-               if (subsystemDesign.isOfType("Subsystem Design")) {
+               if (subsystemDesign.isOfType(CoreArtifactTypes.SubsystemDesign)) {
                   loopNeverRan = false;
-                  excelWriter.writeCell(subsystemDesign.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, ""), 2);
+                  excelWriter.writeCell(subsystemDesign.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, ""),
+                        2);
                   excelWriter.writeCell(subsystemDesign.getName(), 3);
                   excelWriter.endRow();
                }
@@ -119,7 +121,6 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       return "Publish Subsystem To Design Traceability Tables";
    }
 
-   
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Subsystem Root Artifacts\" /></xWidgets>";

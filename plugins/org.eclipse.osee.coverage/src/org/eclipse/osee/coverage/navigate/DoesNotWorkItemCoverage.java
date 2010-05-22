@@ -24,6 +24,7 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.SimpleTestUnitProvider;
+import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.store.CoverageAttributes;
 import org.eclipse.osee.coverage.store.DbTestUnitProvider;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
@@ -99,7 +100,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       int fixCount = 0, binaryMoveCount = 0, totalCoverageUnits = 0, totalCoverageItems = 0;
       XResultData rd = new XResultData();
       SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Item to name_id");
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromType("Coverage Unit", branch)) {
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromType(CoverageArtifactTypes.CoverageUnit, branch)) {
          System.out.println("Processing Item " + artifact);
          totalCoverageUnits++;
          for (Attribute<?> attr : artifact.getAttributes(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
@@ -146,7 +147,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       SkynetTransaction transaction = new SkynetTransaction(branch, "Fix coverage item names");
 
       boolean persist = true;
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromType("Coverage Unit", branch)) {
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromType(CoverageArtifactTypes.CoverageUnit, branch)) {
          System.out.println("Processing Item " + artifact);
          for (Attribute<?> attr : artifact.getAttributes(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
             String attrStr = (String) attr.getValue();
@@ -186,7 +187,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
 
       boolean persist = true;
       Set<Artifact> coverageUnitsFixed = new HashSet<Artifact>();
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromType("Coverage Unit", branch)) {
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromType(CoverageArtifactTypes.CoverageUnit, branch)) {
          System.out.println("Processing Item " + artifact);
          for (Attribute<?> attr : artifact.getAttributes(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
             String str = (String) attr.getValue();

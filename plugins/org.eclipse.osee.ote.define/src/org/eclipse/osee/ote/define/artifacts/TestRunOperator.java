@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.MappedAttributeDataProvider;
-import org.eclipse.osee.ote.define.AUTOGEN.OteArtifactTypes;
 import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
 
 /**
@@ -34,10 +34,10 @@ import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
  */
 public class TestRunOperator {
    private static final OteArtifactFetcher<Artifact> TEST_RUN_ARTIFACT_FETCHER =
-         new OteArtifactFetcher<Artifact>(OteArtifactTypes.TEST_RUN);
+         new OteArtifactFetcher<Artifact>(CoreArtifactTypes.TestRun);
 
    private static final OteArtifactFetcher<Artifact> TEST_SCRIPT_ARTIFACT_FETCHER =
-         new OteArtifactFetcher<Artifact>(OteArtifactTypes.TEST_SCRIPT);
+         new OteArtifactFetcher<Artifact>(CoreArtifactTypes.TestCase);
 
    private final Artifact artifact;
 
@@ -55,9 +55,9 @@ public class TestRunOperator {
 
    private void checkForType(Artifact artifact) throws OseeArgumentException {
       try {
-         if (!artifact.isOfType(OteArtifactTypes.TEST_RUN.getName())) {
+         if (!artifact.isOfType(CoreArtifactTypes.TestRun)) {
             throw new OseeArgumentException(String.format("Unable to operate on type [%s]. Only [%s] allowed.",
-                  artifact.getArtifactTypeName(), OteArtifactTypes.TEST_RUN.getName()));
+                  artifact.getArtifactTypeName(), CoreArtifactTypes.TestRun));
          }
       } catch (OseeCoreException e) {
          // TODO Auto-generated catch block

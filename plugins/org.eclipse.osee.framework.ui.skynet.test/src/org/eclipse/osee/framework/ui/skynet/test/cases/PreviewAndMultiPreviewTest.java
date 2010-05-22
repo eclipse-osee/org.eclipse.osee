@@ -297,7 +297,8 @@ public class PreviewAndMultiPreviewTest {
             monitorLog = TestUtil.severeLoggingStart();
             List<Artifact> arts = new ArrayList<Artifact>();
             Artifact art =
-                  ArtifactTypeManager.addArtifact("Test Procedure WML", branch, getClass().getSimpleName() + "4");
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, branch,
+                        getClass().getSimpleName() + "4");
             art.persist();
             arts = Arrays.asList(art);
             WholeDocumentRenderer renderer = new WholeDocumentRenderer();
@@ -321,7 +322,8 @@ public class PreviewAndMultiPreviewTest {
             monitorLog = TestUtil.severeLoggingStart();
             new ArrayList<Artifact>();
             Artifact art =
-                  ArtifactTypeManager.addArtifact("Test Procedure WML", branch, getClass().getSimpleName() + "4");
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, branch,
+                        getClass().getSimpleName() + "4");
             art.persist();
             Arrays.asList(art);
             RendererManager.previewInJob(artifacts);

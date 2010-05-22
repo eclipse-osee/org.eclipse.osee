@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,7 +38,7 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
       if (artifact instanceof IATSArtifact) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
-      if (artifact.isOfType("Universal Group")) {
+      if (artifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
          if (artifact.getRelatedArtifactsCount(CoreRelationTypes.Universal_Grouping__Members) == 0) {
             return NO_MATCH;
          }

@@ -21,6 +21,8 @@ public class CoreArtifactTypes extends NamedIdentity implements IArtifactType {
          new CoreArtifactTypes("ABNAYPwV6H4EkjQ3+QQA", "Abstract Software Requirement");
    public static final CoreArtifactTypes AbstractTestResult =
          new CoreArtifactTypes("ATkaanWmHH3PkhGNVjwA", "Abstract Test Result");
+   public static final CoreArtifactTypes AbstractTestUnit =
+         new CoreArtifactTypes("AISIbSI6wzEUfPdCQaAA", "Abstract Test Unit");
    public static final CoreArtifactTypes Artifact = new CoreArtifactTypes("AAMFDh6S7gRLupAMwywA", "Artifact");
    public static final CoreArtifactTypes CodeUnit = new CoreArtifactTypes("AAMFDkEh216dzK1mTZgA", "Code Unit");
    public static final CoreArtifactTypes Component = new CoreArtifactTypes("AAMFDkG6omAsD6dXPYgA", "Component");
@@ -51,6 +53,11 @@ public class CoreArtifactTypes extends NamedIdentity implements IArtifactType {
          new CoreArtifactTypes("BtMwyalHkHkrRo7D0aAA", "Direct Software Requirement");
    public static final CoreArtifactTypes SubsystemRequirement =
          new CoreArtifactTypes("AAMFDiN9KiAkhuLqOhQA", "Subsystem Requirement");
+   public static final CoreArtifactTypes SubsystemDesign =
+         new CoreArtifactTypes("AAMFDiHVwBo+Yx73BoQA", "Subsystem Design");
+   public static final CoreArtifactTypes SystemFunction =
+         new CoreArtifactTypes("AAMFDjisx2s6BUTDo3wA", "System Function");
+   public static final CoreArtifactTypes TestCase = new CoreArtifactTypes("AAMFDikEi0TGK27TKPgA", "Test Case");
    public static final CoreArtifactTypes TestInformationSheet =
          new CoreArtifactTypes("AAMFDjnM3wQxCjwatKAA", "Test Information Sheet");
    public static final CoreArtifactTypes TestPlanElement =
@@ -61,10 +68,14 @@ public class CoreArtifactTypes extends NamedIdentity implements IArtifactType {
          new CoreArtifactTypes("AAMFDiWs_HdDJTbPPQgA", "Test Procedure Native");
    public static final CoreArtifactTypes TestProcedureWML =
          new CoreArtifactTypes("AAMFDiUeCG3KWx5XqeQA", "Test Procedure WML");
+   public static final CoreArtifactTypes TestProcedureXL =
+         new CoreArtifactTypes("AAn_QG1xVGGhvAzxVMQA", "Test Procedure XL");
    public static final CoreArtifactTypes TestResultNative =
          new CoreArtifactTypes("ATkaanWmHH3PkhGNVjwA", "Test Result Native");
    public static final CoreArtifactTypes TestResultWML =
          new CoreArtifactTypes("ATk6NKFFmD_zg1b_eaQA", "Test Result WML");
+   public static final CoreArtifactTypes TestRun = new CoreArtifactTypes("AAMFDjqDHWo+orlSpaQA", "Test Run");
+   public static final CoreArtifactTypes TestSupport = new CoreArtifactTypes("AAMFDj+FW0f_Ut72ocQA", "Test Support");
    public static final CoreArtifactTypes TestUnit = new CoreArtifactTypes("ABM2d6uxUw66aSdo0LwA", "Test Unit");
    public static final CoreArtifactTypes UniversalGroup =
          new CoreArtifactTypes("AAMFDhLY2TnADPA_EQQA", "Universal Group");

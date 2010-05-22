@@ -64,7 +64,6 @@ import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImpor
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.NewArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -546,7 +545,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          }
          for (String str : new String[] {"A", "B", "C"}) {
             Artifact newArt =
-                  ArtifactTypeManager.addArtifact(Requirements.TEST_CASE, verificationHeader.getBranch(),
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, verificationHeader.getBranch(),
                         "Verification Test " + str);
             verificationTests.add(newArt);
             verificationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
@@ -563,7 +562,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          }
          for (String str : new String[] {"1", "2", "3"}) {
             Artifact newArt =
-                  ArtifactTypeManager.addArtifact(Requirements.TEST_PROCEDURE, validationHeader.getBranch(),
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure, validationHeader.getBranch(),
                         "Validation Test " + str);
             validationTests.add(newArt);
             validationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
@@ -580,7 +579,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          }
          for (String str : new String[] {"X", "Y", "Z"}) {
             Artifact newArt =
-                  ArtifactTypeManager.addArtifact(Requirements.TEST_PROCEDURE, integrationHeader.getBranch(),
+                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure, integrationHeader.getBranch(),
                         "integration Test " + str);
             integrationTests.add(newArt);
             integrationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
