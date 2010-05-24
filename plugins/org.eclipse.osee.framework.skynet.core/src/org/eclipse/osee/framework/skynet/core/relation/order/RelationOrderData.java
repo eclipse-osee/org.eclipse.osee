@@ -128,7 +128,6 @@ public class RelationOrderData {
          }
          accessor.store(getIArtifact(), this);
       }
-
    }
 
    protected boolean isRevertingToDefaultTypeOrder(RelationType type, RelationSide side, IRelationSorterId sorterId) throws OseeCoreException {
@@ -137,8 +136,7 @@ public class RelationOrderData {
    }
 
    protected boolean isRelativeOrderChange(RelationType type, RelationSide side, IRelationSorterId sorterId, List<String> relativeSequence) throws OseeCoreException {
-      return sorterId.equals(RelationOrderBaseTypes.USER_DEFINED) && !relativeSequence.isEmpty() && //
-      !relativeSequence.equals(getOrderList(type, side));
+      return sorterId.equals(RelationOrderBaseTypes.USER_DEFINED) && !relativeSequence.equals(getOrderList(type, side));
    }
 
    protected boolean isDifferentSorterId(RelationType type, RelationSide side, IRelationSorterId sorterId) throws OseeCoreException {

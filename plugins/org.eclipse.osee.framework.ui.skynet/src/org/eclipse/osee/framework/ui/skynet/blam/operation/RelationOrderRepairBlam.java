@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -38,6 +39,7 @@ import org.xml.sax.SAXException;
 
 public class RelationOrderRepairBlam extends AbstractBlam {
    SkynetTransaction transaction;
+   boolean recurse;
 
    @Override
    public List<DynamicXWidgetLayoutData> getLayoutDatas() throws IllegalArgumentException, ParserConfigurationException, SAXException, IOException, CoreException {
@@ -46,7 +48,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
 
    @Override
    public String getName() {
-      return "Relation Order Repair BLAM";
+      return "Relation Order Repair";
    }
 
    @Override
@@ -66,23 +68,16 @@ public class RelationOrderRepairBlam extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      boolean recurse = variableMap.getBoolean("Recurse Over Hierarchy");
+      recurse = variableMap.getBoolean("Recurse Over Hierarchy");
       List<Artifact> inputArtifacts = variableMap.getArtifacts("Artifacts");
       if (inputArtifacts.isEmpty()) {
          return;
       }
       Branch branch = getBranch(inputArtifacts);
       transaction = new SkynetTransaction(branch, getName());
-
       for (Artifact art : inputArtifacts) {
          resetRelationOrder(art);
-         if (recurse) {
-            for (Artifact child : art.getChildren()) {
-               resetRelationOrder(child);
-            }
-         }
       }
-
       transaction.execute();
    }
 
@@ -100,7 +95,14 @@ public class RelationOrderRepairBlam extends AbstractBlam {
    private void resetRelationOrder(Artifact art) throws OseeCoreException, IOException {
       RelationOrderData currentData = new RelationOrderFactory().createRelationOrderData(art);
       for (Pair<String, String> typeSide : currentData.getAvailableTypeSides()) {
-         RelationType type = RelationTypeManager.getType(typeSide.getFirst());
+         RelationType type;
+         try {
+            type = RelationTypeManager.getType(typeSide.getFirst());
+         } catch (OseeTypeDoesNotExist ex) {
+            getOutput().append(
+                  String.format("Type [%s] on artifact [%s] does not exist\n", typeSide.getFirst(), art.getName()));
+            return;
+         }
          RelationSide side = RelationSide.fromString(typeSide.getSecond());
          String sorterGuid = currentData.getCurrentSorterGuid(type, side);
 
@@ -108,10 +110,20 @@ public class RelationOrderRepairBlam extends AbstractBlam {
             List<String> orderList = currentData.getOrderList(type, side);
             List<String> actualOrder = Artifacts.toGuids(art.getRelatedArtifacts(new RelationTypeSide(type, side)));
             if (!orderList.equals(actualOrder)) {
-               getOutput().append(String.format("Incorrect order of %s (%s %s)\n", art.getName(), type, side));
+               getOutput().append(String.format("Incorrect order on %s (%s %s)\n", art.getName(), type, side));
+               //               if (actualOrder.isEmpty()) {
+               //                  currentData.removeOrderList(type, side);
+               //               } else {
                currentData.storeFromGuids(type, side, RelationOrderBaseTypes.USER_DEFINED, actualOrder);
+               //               }
                art.persist(transaction);
             }
+         }
+      }
+
+      if (recurse) {
+         for (Artifact child : art.getChildren()) {
+            resetRelationOrder(child);
          }
       }
    }
