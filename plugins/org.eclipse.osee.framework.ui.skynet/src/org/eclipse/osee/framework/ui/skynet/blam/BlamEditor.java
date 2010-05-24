@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -86,11 +87,11 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
       return super.getAdapter(adapter);
    }
 
-   private VariableMap getBlamVariableMap() {
+   private VariableMap getBlamVariableMap() throws OseeArgumentException {
       return overviewPage.getInput();
    }
 
-   public void executeBlam() {
+   public void executeBlam() throws OseeArgumentException {
       getEditorInput().getBlamOperation().execute(getPartName(), overviewPage.getOutput(), getBlamVariableMap(),
             new BlamEditorExecutionAdapter());
    }

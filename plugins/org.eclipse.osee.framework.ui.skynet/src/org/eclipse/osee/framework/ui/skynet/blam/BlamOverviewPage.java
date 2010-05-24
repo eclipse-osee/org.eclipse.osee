@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.util.Collection;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.ui.skynet.IHelpContextIds;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamInputSection;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamOutputSection;
@@ -139,7 +140,7 @@ public class BlamOverviewPage extends FormPage {
       return outputSection.getOutput();
    }
 
-   public VariableMap getInput() {
+   public VariableMap getInput() throws OseeArgumentException {
       return inputSection.getData();
    }
 
