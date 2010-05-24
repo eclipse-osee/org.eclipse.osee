@@ -111,11 +111,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
             List<String> actualOrder = Artifacts.toGuids(art.getRelatedArtifacts(new RelationTypeSide(type, side)));
             if (!orderList.equals(actualOrder)) {
                getOutput().append(String.format("Incorrect order on %s (%s %s)\n", art.getName(), type, side));
-               //               if (actualOrder.isEmpty()) {
-               //                  currentData.removeOrderList(type, side);
-               //               } else {
                currentData.storeFromGuids(type, side, RelationOrderBaseTypes.USER_DEFINED, actualOrder);
-               //               }
                art.persist(transaction);
             }
          }
