@@ -262,13 +262,14 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
                writeAddressingChanges(archived, false);
                if (modType == ModificationType.MODIFIED) {
                   addToUpdateAddresssing(ModificationType.NEW, netGammaId, modType, transactionId, obsoleteGammaId);
-               } else if (modType == ModificationType.NEW || modType == ModificationType.INTRODUCED || modType == ModificationType.DELETED || modType == ModificationType.MERGED) {
+               } else if (modType.matches(ModificationType.NEW, ModificationType.INTRODUCED, ModificationType.DELETED,
+                     ModificationType.MERGED)) {
                   addToUpdateAddresssing(modType, netGammaId, modType, transactionId, obsoleteGammaId);
                } else {
                   throw new OseeStateException("unexpected mod type: " + modType);
                }
             } else {
-               if (modType == ModificationType.MODIFIED || modType == ModificationType.NEW || modType == ModificationType.INTRODUCED) {
+               if (modType.matches(ModificationType.NEW, ModificationType.INTRODUCED, ModificationType.MODIFIED)) {
                   addressingToDelete.add(new Object[] {transactionId, obsoleteGammaId});
                } else if (modType == ModificationType.DELETED || modType == ModificationType.MERGED) {
                   if (previuosTransactionId != transactionId) { // can't use a gamma (netGammaId) more than once in a transaction
