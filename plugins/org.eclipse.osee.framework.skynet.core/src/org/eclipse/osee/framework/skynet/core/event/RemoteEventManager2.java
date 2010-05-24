@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.messaging.event.res.AttributeEventModification
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.messaging.event.res.ResEventManager;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
@@ -50,6 +52,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * Manages remote events from the SkynetEventService.
@@ -96,7 +100,14 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                         updateArtifacts(sender, transEvent);
                         updateRelations(sender, transEvent);
                         InternalEventManager2.kickTransactionEvent(sender, transEvent);
-                        // TODO process transaction event by updating artifact/relation caches
+                     } catch (Exception ex) {
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
+                     }
+                  } else if (remoteEvent instanceof RemoteBranchEvent1) {
+                     try {
+                        BranchEvent branchEvent = FrameworkEventUtil.getBranchEvent((RemoteBranchEvent1) remoteEvent);
+                        updateBranches(sender, branchEvent);
+                        InternalEventManager2.kickBranchEvent(sender, branchEvent);
                      } catch (Exception ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
@@ -108,6 +119,22 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       job.setSystem(true);
       job.setUser(false);
       job.schedule();
+   }
+
+   /**
+    * Updates local cache
+    */
+   private static void updateBranches(Sender sender, BranchEvent branchEvent) {
+      BranchEventType eventType = branchEvent.getEventType();
+      try {
+         if (eventType == BranchEventType.Committed) {
+            TransactionManager.clearCommitArtifactCacheForAssociatedArtifact((IArtifact) BranchManager.getBranchByGuid(
+                  branchEvent.getBranchGuid()).getAssociatedArtifact());
+         }
+         BranchManager.refreshBranches();
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
    }
 
    /**

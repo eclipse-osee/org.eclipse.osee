@@ -41,7 +41,7 @@ public class ToggleFavoriteBranchHandler extends CommandHandler {
 
       try {
          UserManager.getUser().toggleFavoriteBranch(selectedBranch);
-         OseeEventManager.kickBranchEvent(this, BranchEventType.Added, selectedBranch.getId());
+         OseeEventManager.kickBranchEvent(this, BranchEventType.Added, selectedBranch.getId(), selectedBranch.getGuid());
 
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

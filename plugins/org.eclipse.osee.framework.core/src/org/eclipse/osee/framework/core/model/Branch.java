@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.internal.fields.AssociatedArtifactField;
 import org.eclipse.osee.framework.core.internal.fields.CollectionField;
@@ -137,7 +138,11 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAda
       BranchState state = getBranchState();
       return !state.isCommitted() && !state.isRebaselined() && // 
       !state.isDeleted() && !state.isCreationInProgress() && //
-      !getArchiveState().isArchived();
+      !getArchiveState().isArchived() && !isPurged();
+   }
+
+   public boolean isPurged() {
+      return getStorageState() == StorageState.PURGED;
    }
 
    @Override

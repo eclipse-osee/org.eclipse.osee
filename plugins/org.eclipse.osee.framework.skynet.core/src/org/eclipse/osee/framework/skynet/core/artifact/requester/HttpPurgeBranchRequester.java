@@ -16,13 +16,17 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.PurgeBranchRequest;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.Function;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Jeff C. Phillips
@@ -40,8 +44,14 @@ public class HttpPurgeBranchRequester {
                   requestData, null);
 
       if (response.wasSuccessful()) {
+         branch.setStorageState(StorageState.PURGED);
          BranchManager.decache(branch);
-         OseeEventManager.kickBranchEvent(HttpPurgeBranchRequester.class, BranchEventType.Purged, branch.getId());
+         try {
+            OseeEventManager.kickBranchEvent(HttpPurgeBranchRequester.class, BranchEventType.Purged, branch.getId(),
+                  branch.getGuid());
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         }
       }
    }
 }

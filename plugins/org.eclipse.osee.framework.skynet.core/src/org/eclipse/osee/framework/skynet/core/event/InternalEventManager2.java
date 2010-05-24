@@ -17,8 +17,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
@@ -145,6 +147,44 @@ public class InternalEventManager2 {
                   RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemoteTransactionEvent(transactionEvent));
                }
             } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      };
+      execute(runnable);
+   }
+
+   /*
+    * Kick LOCAL and REMOTE branch events
+    */
+   static void kickBranchEvent(final Sender sender, final BranchEvent branchEvent) {
+      if (isDisableEvents()) {
+         return;
+      }
+      eventLog("OEM2: kickBranchEvent: type: " + branchEvent.getEventType() + " guid: " + branchEvent.getBranchGuid() + " - " + sender);
+      Runnable runnable = new Runnable() {
+         public void run() {
+            try {
+               // Log if this is a loopback and what is happening
+               if (enableRemoteEventLoopback) {
+                  OseeLog.log(
+                        InternalEventManager.class,
+                        Level.WARNING,
+                        "OEM2: BranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+               }
+               BranchEventType branchEventType = branchEvent.getEventType();
+
+               // Kick LOCAL
+               if (!enableRemoteEventLoopback || enableRemoteEventLoopback && branchEventType.isRemoteEventType() && sender.isRemote()) {
+                  if (sender.isRemote() || sender.isLocal() && branchEventType.isLocalEventType()) {
+                     FrameworkEventManager.processBranchEvent(sender, branchEvent);
+                  }
+               }
+               // Kick REMOTE (If source was Local and this was not a default branch changed event
+               if (sender.isLocal() && branchEventType.isRemoteEventType()) {
+                  RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemoteBranchEvent(branchEvent));
+               }
+            } catch (OseeAuthenticationRequiredException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }

@@ -15,9 +15,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAttributeChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidRelation1;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
@@ -51,6 +53,20 @@ public class FrameworkEventUtil {
 
    public static boolean isModified(Artifact artifact, Collection<EventBasicGuidArtifact> eventGuidArts) {
       return FrameworkEventUtil.isEvent(artifact, eventGuidArts, Arrays.asList(EventModType.Modified));
+   }
+
+   public static RemoteBranchEvent1 getRemoteBranchEvent(BranchEvent branchEvent) {
+      RemoteBranchEvent1 event = new RemoteBranchEvent1();
+      event.setModTypeGuid(branchEvent.getEventType().getGuid());
+      event.setBranchGuid(branchEvent.getBranchGuid());
+      return event;
+   }
+
+   public static BranchEvent getBranchEvent(RemoteBranchEvent1 branchEvent) {
+      BranchEvent event = new BranchEvent();
+      event.setEventType(BranchEventType.getByGuid(branchEvent.getModTypeGuid()));
+      event.setBranchGuid(branchEvent.getBranchGuid());
+      return event;
    }
 
    public static RemoteTransactionEvent1 getRemoteTransactionEvent(TransactionEvent transEvent) {

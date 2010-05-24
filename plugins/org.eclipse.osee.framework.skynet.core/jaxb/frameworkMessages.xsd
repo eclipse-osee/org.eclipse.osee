@@ -13,14 +13,6 @@
        </xsd:appinfo>
     </xsd:annotation>
 
-<xsd:complexType name="BranchEvent">
-  <xsd:sequence>
-    <xsd:element name="modTypeGuid" type="xsd:string"/>
-    <xsd:element name="branchGuid" type="xsd:string"/>
-    <xsd:element name="networkSender" type="NetworkSender" maxOccurs="1" minOccurs="1"/>
-  </xsd:sequence>
-</xsd:complexType>
-
 <xsd:complexType name="BroadcastEvent">
   <xsd:sequence>
     <xsd:element name="eventTypeGuid" type="xsd:string"/>

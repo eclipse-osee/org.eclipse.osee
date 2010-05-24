@@ -55,7 +55,7 @@ public class ArchiveBranchHandler extends CommandHandler {
          BranchManager.persist(branches);
 
          for (Branch branch : branches) {
-            OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, branch.getId());
+            OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, branch.getId(), branch.getGuid());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);

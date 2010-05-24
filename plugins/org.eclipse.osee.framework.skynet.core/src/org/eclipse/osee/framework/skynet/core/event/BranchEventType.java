@@ -10,22 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
+
 /**
  * @author Donald G. Dunne
  */
 public enum BranchEventType {
 
    // Local and Remote events
-   Purged(EventType.LocalAndRemote),
-   Deleted(EventType.LocalAndRemote),
-   Added(EventType.LocalAndRemote),
-   Renamed(EventType.LocalAndRemote),
-   Committed(EventType.LocalAndRemote),
-   TypeUpdated(EventType.LocalAndRemote),
-   StateUpdated(EventType.LocalAndRemote),
-   ArchiveStateUpdated(EventType.LocalAndRemote);
+   Purged(EventType.LocalAndRemote, "AAn_QG7jRGZAqPE0UewA"),
+   Deleted(EventType.LocalAndRemote, "AAn_QHBDvwtT5jjKaHgA"),
+   Added(EventType.LocalAndRemote, "AAn_QHDohywDoSTxwcQA"),
+   Renamed(EventType.LocalAndRemote, "AAn_QHGLIUsH2BdX2gwA"),
+   Committed(EventType.LocalAndRemote, "AAn_QHIu0mGZytQ11QwA"),
+   TypeUpdated(EventType.LocalAndRemote, "AAn_QHLW4DKKbUkEZggA"),
+   StateUpdated(EventType.LocalAndRemote, "AAn_QHQdKhxNLtWPchAA"),
+   ArchiveStateUpdated(EventType.LocalAndRemote, "AAn_QHS7Zhr6OLhKl3gA");
 
    private final EventType eventType;
+   private final String guid;
 
    public boolean isRemoteEventType() {
       return eventType == EventType.LocalAndRemote || eventType == EventType.RemoteOnly;
@@ -38,7 +40,21 @@ public enum BranchEventType {
    /**
     * @param localOnly true if this event type is to be thrown only locally and not to other clients
     */
-   private BranchEventType(EventType eventType) {
+   private BranchEventType(EventType eventType, String guid) {
       this.eventType = eventType;
+      this.guid = guid;
+   }
+
+   public String getGuid() {
+      return guid;
+   }
+
+   public static BranchEventType getByGuid(String guid) {
+      for (BranchEventType type : values()) {
+         if (type.guid.equals(guid)) {
+            return type;
+         }
+      }
+      return null;
    }
 }

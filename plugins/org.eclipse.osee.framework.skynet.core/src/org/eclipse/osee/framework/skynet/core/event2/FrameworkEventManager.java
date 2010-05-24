@@ -50,6 +50,24 @@ public class FrameworkEventManager {
       return event instanceof IArtifactListener || (event instanceof FilteredEventListener && ((FilteredEventListener) event).isOfType(IArtifactListener.class));
    }
 
+   public static void processBranchEvent(Sender sender, BranchEvent branchEvent) {
+      for (IEventListener listener : listeners) {
+         IBranchListener branchListner = null;
+         Collection<IEventFilter> eventFilters = null;
+         if (listener instanceof IBranchListener) {
+            branchListner = (IBranchListener) listener;
+            eventFilters = Collections.emptyList();
+         } else if (listener instanceof FilteredEventListener && ((FilteredEventListener) listener).getEventListener() instanceof IBranchListener) {
+            branchListner = (IBranchListener) ((FilteredEventListener) listener).getEventListener();
+            eventFilters = ((FilteredEventListener) listener).getEventFilters();
+         }
+         if (branchListner != null) {
+            // TODO handle filters first
+            ((IBranchListener) listener).handleBranchEvent(sender, branchEvent);
+         }
+      }
+   }
+
    public static void processEventArtifactsAndRelations(Sender sender, TransactionEvent transEvent) {
       processEventArtifactsAndRelations(sender, transEvent.getArtifacts(), transEvent.getRelations());
    }
@@ -65,15 +83,13 @@ public class FrameworkEventManager {
          if (listener instanceof IArtifactListener) {
             artifactListener = (IArtifactListener) listener;
             eventFilters = Collections.emptyList();
-         } else if (listener instanceof FilteredEventListener) {
+         } else if (listener instanceof FilteredEventListener && ((FilteredEventListener) listener).getEventListener() instanceof IArtifactListener) {
             artifactListener = (IArtifactListener) ((FilteredEventListener) listener).getEventListener();
             eventFilters = ((FilteredEventListener) listener).getEventFilters();
          }
          if (artifactListener != null) {
             // TODO handle filters first
             artifactListener.handleArtifactModified(eventArtifacts, eventRelations, sender);
-
-            // TODO handle artifact change type??
          }
       }
    }

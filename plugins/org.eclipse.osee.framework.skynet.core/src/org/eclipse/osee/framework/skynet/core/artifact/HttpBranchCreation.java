@@ -21,9 +21,12 @@ import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
@@ -56,7 +59,12 @@ public class HttpBranchCreation {
                   CoreTranslatorId.BRANCH_CREATION_REQUEST, request, CoreTranslatorId.BRANCH_CREATION_RESPONSE);
 
       Branch branch = BranchManager.getBranch(response.getBranchId());
-      OseeEventManager.kickBranchEvent(HttpBranchCreation.class, BranchEventType.Added, branch.getId());
+      try {
+         OseeEventManager.kickBranchEvent(HttpBranchCreation.class, BranchEventType.Added, branch.getId(),
+               branch.getGuid());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+      }
       return branch;
    }
 

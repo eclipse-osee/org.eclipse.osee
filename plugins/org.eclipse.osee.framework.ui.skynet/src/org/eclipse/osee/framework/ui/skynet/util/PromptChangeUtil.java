@@ -35,7 +35,7 @@ public class PromptChangeUtil {
          BranchType type = ld.getSelection();
          for (TreeItem item : branches) {
             Branch branch = (Branch) item.getData();
-            BranchManager.updateBranchType(null, branch.getId(), type);
+            BranchManager.updateBranchType(null, branch.getId(), branch.getGuid(), type);
          }
          return true;
       }
@@ -49,7 +49,7 @@ public class PromptChangeUtil {
          BranchState state = ld.getSelection();
          for (TreeItem item : branches) {
             Branch branch = (Branch) item.getData();
-            BranchManager.updateBranchState(null, branch.getId(), state);
+            BranchManager.updateBranchState(null, branch.getId(), branch.getGuid(), state);
          }
          return true;
       }
@@ -63,7 +63,7 @@ public class PromptChangeUtil {
          BranchArchivedState state = ld.getSelection();
          for (TreeItem item : branches) {
             Branch branch = (Branch) item.getData();
-            BranchManager.updateBranchArchivedState(null, branch.getId(), state);
+            BranchManager.updateBranchArchivedState(null, branch.getId(), branch.getGuid(), state);
          }
          return true;
       }

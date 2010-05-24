@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
@@ -68,7 +69,7 @@ public class OseeEventManager {
    }
 
    //Kick LOCAL and REMOTE branch events
-   public static void kickBranchEvent(Object source, BranchEventType branchEventType, int branchId) throws OseeCoreException {
+   public static void kickBranchEvent(Object source, BranchEventType branchEventType, int branchId, String branchGuid) throws OseeCoreException {
       if (testBranchEventListener != null) {
          testBranchEventListener.handleBranchEvent(getSender(source), branchEventType, branchId);
       }
@@ -76,6 +77,10 @@ public class OseeEventManager {
          return;
       }
       InternalEventManager.kickBranchEvent(getSender(source), branchEventType, branchId);
+      BranchEvent branchEvent = new BranchEvent();
+      branchEvent.setBranchGuid(branchGuid);
+      branchEvent.setEventType(branchEventType);
+      InternalEventManager2.kickBranchEvent(getSender(source), branchEvent);
    }
 
    // Kick LOCAL and REMOTE branch events

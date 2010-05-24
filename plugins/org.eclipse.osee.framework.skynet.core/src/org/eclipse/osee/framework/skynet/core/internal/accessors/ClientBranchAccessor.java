@@ -30,10 +30,13 @@ import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.util.BranchCacheUpdateUtil;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
 
 /**
@@ -96,18 +99,18 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
       for (Branch branch : branches) {
          if (branch.getBranchState().isDeleted()) {
             try {
-               OseeEventManager.kickBranchEvent(this, BranchEventType.Deleted, branch.getId());
+               OseeEventManager.kickBranchEvent(this, BranchEventType.Deleted, branch.getId(), branch.getGuid());
             } catch (Exception ex) {
-               // Do Nothing
+               OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
             }
          }
 
          try {
             if (branch.isFieldDirty(AbstractOseeType.NAME_FIELD_KEY)) {
-               OseeEventManager.kickBranchEvent(this, BranchEventType.Renamed, branch.getId());
+               OseeEventManager.kickBranchEvent(this, BranchEventType.Renamed, branch.getId(), branch.getGuid());
             }
          } catch (Exception ex) {
-            // Do Nothing
+            OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
          }
       }
    }
