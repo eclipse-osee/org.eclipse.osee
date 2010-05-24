@@ -1,9 +1,13 @@
-/*
- * Created on Dec 8, 2007
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
-
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.ArrayList;
@@ -82,8 +86,7 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
          println(String.format("The email address \"%s\" for user %s is not valid.", emailAddress, user.getName()));
          return;
       }
-      OseeEmail emailMessage =
-            new OseeEmail(emailAddress, subject, "", BodyType.Html);
+      OseeEmail emailMessage = new OseeEmail(emailAddress, subject, "", BodyType.Html);
 
       StringBuilder html = new StringBuilder();
 
@@ -98,8 +101,8 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
       for (Artifact group : groups) {
          html.append(String.format(
                "</br>Click <a href=\"%sosee/unsubscribe/group/%d/user/%d\">unsubscribe</a> to stop receiving all emails for the topic \"%s\"",
-               HttpUrlBuilderClient.getInstance().getApplicationServerPrefix(), group.getArtId(),
-               user.getArtId(), group.getName()));
+               HttpUrlBuilderClient.getInstance().getApplicationServerPrefix(), group.getArtId(), user.getArtId(),
+               group.getName()));
       }
       emailMessage.addHTMLBody(html.toString());
       try {
