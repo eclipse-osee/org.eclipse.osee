@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.sections;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -58,7 +59,7 @@ public class BlamInputSection extends BaseBlamSection {
       updateDataPart();
    }
 
-   public VariableMap getData() {
+   public VariableMap getData() throws OseeArgumentException {
       VariableMap blamVariableMap = new VariableMap();
       List<XWidget> xWidgets = XWidgetUtility.findXWidgetsInControl(getSection());
       for (XWidget xWidget : xWidgets) {
