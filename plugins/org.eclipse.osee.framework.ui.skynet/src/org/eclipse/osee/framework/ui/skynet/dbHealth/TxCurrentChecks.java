@@ -28,7 +28,7 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       getResultsProvider().clearTabs();
 
-      checkAndFix("osee_arts", "art_id", monitor);
+      checkAndFix("osee_artifact", "art_id", monitor);
       checkAndFix("osee_attribute", "attr_id", monitor);
       checkAndFix("osee_relation_link", "rel_link_id", monitor);
    }

@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.branch.management.exchange.transform;
 
 import java.util.HashMap;
-import javax.xml.stream.XMLStreamException;
-import org.eclipse.osee.framework.branch.management.exchange.ImportController;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -23,47 +21,46 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 /**
  * @author Ryan D. Brooks
  */
-public class V0_9_0Transformer implements IOseeDbExportTransformer {
+public class V0_9_0Transformer implements IOseeExchangeVersionTransformer {
 
    private final IOseeCachingService cachingService;
 
    public V0_9_0Transformer(IOseeCachingService cachingService) {
-      super();
       this.cachingService = cachingService;
    }
 
    @Override
-   public String applyTransform(ImportController importController) throws Exception {
+   public String applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
       try {
-         replaceDataTypeIdsWithGuids(importController, cachingService.getArtifactTypeCache(),
-               ExportItem.OSEE_ARTIFACT_DATA, "art_type_id", "name");
-         replaceDataTypeIdsWithGuids(importController, cachingService.getAttributeTypeCache(),
-               ExportItem.OSEE_ATTRIBUTE_DATA, "attr_type_id", "name");
-         replaceDataTypeIdsWithGuids(importController, cachingService.getRelationTypeCache(),
+         replaceDataTypeIdsWithGuids(processor, cachingService.getArtifactTypeCache(), ExportItem.OSEE_ARTIFACT_DATA,
+               "art_type_id", "name");
+         replaceDataTypeIdsWithGuids(processor, cachingService.getAttributeTypeCache(), ExportItem.OSEE_ATTRIBUTE_DATA,
+               "attr_type_id", "name");
+         replaceDataTypeIdsWithGuids(processor, cachingService.getRelationTypeCache(),
                ExportItem.OSEE_RELATION_LINK_DATA, "rel_link_type_id", "type_name");
 
          V0_9_0TxDetailsHandler txdHandler = new V0_9_0TxDetailsHandler();
-         importController.parseExportItem(ExportItem.OSEE_TX_DETAILS_DATA, txdHandler);
+         processor.parse(ExportItem.OSEE_TX_DETAILS_DATA, txdHandler);
 
          SaxTransformer txsTransformer = new V0_9_0TxsTransformer(txdHandler.getBranchIdMap());
-         importController.transformExportItem(ExportItem.OSEE_TXS_DATA, txsTransformer);
+         processor.transform(ExportItem.OSEE_TXS_DATA, txsTransformer);
          txsTransformer.finish();
-      } catch (XMLStreamException ex) {
+      } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
 
-      importController.deleteExportItem("osee.branch.definitions.xml");
-      importController.transformExportItem(ExportItem.EXPORT_MANIFEST, new V0_9_0_ManifestRule());
+      processor.deleteExportItem("osee.branch.definitions.xml");
+      processor.transform(ExportItem.EXPORT_MANIFEST, new V0_9_0_ManifestRule());
 
       return "0.9.0";
    }
 
-   private void replaceDataTypeIdsWithGuids(ImportController importController, AbstractOseeCache<?> cache, ExportItem exportItem, String typeIdColumn, String typeNameColumn) throws Exception {
+   private void replaceDataTypeIdsWithGuids(ExchangeDataProcessor processor, AbstractOseeCache<?> cache, ExportItem exportItem, String typeIdColumn, String typeNameColumn) throws Exception {
       V0_9_0TypeHandler typeHandler = new V0_9_0TypeHandler(cache, typeIdColumn, typeNameColumn);
-      importController.parseExportItem(exportItem + ".type.xml", typeHandler);
+      processor.parse(exportItem + ".type.xml", typeHandler);
       HashMap<Integer, String> typeIdMap = typeHandler.getTypeIdMap();
       SaxTransformer typeTransformer = new V0_9_0ItemTransformer(typeIdMap, typeIdColumn);
-      importController.transformExportItem(exportItem, typeTransformer);
+      processor.parse(exportItem, typeTransformer);
       typeTransformer.finish();
    }
 
@@ -73,6 +70,6 @@ public class V0_9_0Transformer implements IOseeDbExportTransformer {
    }
 
    @Override
-   public void finalizeTransform(ImportController importController) throws Exception {
+   public void finalizeTransform(ExchangeDataProcessor processor) throws Exception {
    }
 }

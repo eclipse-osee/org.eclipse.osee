@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class ArtifactTransactionData extends BaseTransactionData {
    private static final String INSERT_ARTIFACT =
-         "INSERT INTO osee_arts (gamma_id, art_id, art_type_id, guid, human_readable_id) VALUES (?,?,?,?,?)";
+         "INSERT INTO osee_artifact (gamma_id, art_id, art_type_id, guid, human_readable_id) VALUES (?,?,?,?,?)";
 
    private final Artifact artifact;
 

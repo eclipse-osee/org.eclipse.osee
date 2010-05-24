@@ -7,7 +7,7 @@
 	<!--                                                       -->
 	<!-- _____________________________________________________ -->
 
-	<Table name="OSEE_ARTS" schema="OSEE" tablespace="osee_data">
+	<Table name="OSEE_ARTIFACT" schema="OSEE" tablespace="osee_data">
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />

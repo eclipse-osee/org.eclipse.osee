@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 public class ArtifactTypeSearch implements ISearchPrimitive {
    private final String typeName;
    private final DeprecatedOperator operation;
-   private static final String tables = "osee_arts, osee_artifact_type";
+   private static final String tables = "osee_artifact, osee_artifact_type";
    private final static String TOKEN = ";";
 
    /**
@@ -37,7 +37,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
 
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       String sql =
-            "osee_artifact_type.name" + operation + " ? AND osee_artifact_type.art_type_id = osee_arts.art_type_id";
+            "osee_artifact_type.name" + operation + " ? AND osee_artifact_type.art_type_id = osee_artifact.art_type_id";
       dataList.add(typeName);
 
       return sql;

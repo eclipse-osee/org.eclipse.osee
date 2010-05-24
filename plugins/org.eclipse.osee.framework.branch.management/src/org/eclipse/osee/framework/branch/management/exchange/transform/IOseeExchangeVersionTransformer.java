@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.transform;
 
-import org.eclipse.osee.framework.branch.management.exchange.ImportController;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
  */
-public interface IOseeDbExportTransformer {
-   public abstract String applyTransform(ImportController importController) throws Exception;
+public interface IOseeExchangeVersionTransformer {
+
+   public abstract String applyTransform(ExchangeDataProcessor processor) throws Exception;
 
    public abstract boolean isApplicable(String exportVersion) throws OseeCoreException;
 
-   public abstract void finalizeTransform(ImportController importController) throws Exception;
+   public abstract void finalizeTransform(ExchangeDataProcessor processor) throws Exception;
 }

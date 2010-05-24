@@ -41,7 +41,7 @@ public class UpdatePreviousTxCurrent {
    }
 
    public void updateTxNotCurrents() throws OseeDataStoreException {
-      updateTxNotCurrents("osee_arts", "art_id", artifactJoin);
+      updateTxNotCurrents("osee_artifact", "art_id", artifactJoin);
       updateTxNotCurrents("osee_attribute", "attr_id", attributeJoin);
       updateTxNotCurrents("osee_relation_link", "rel_link_id", relationJoin);
    }

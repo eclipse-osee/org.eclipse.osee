@@ -175,7 +175,7 @@ public class ChangeArtifactType {
       ArtifactType originalType = artifact.getArtifactType();
       artifact.setArtifactType(newArtifactType);
       try {
-         ConnectionHandler.runPreparedUpdate("UPDATE osee_arts t1 SET t1.art_type_id = ? WHERE t1.art_id = ?",
+         ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact t1 SET t1.art_type_id = ? WHERE t1.art_id = ?",
                newArtifactType.getId(), artifact.getArtId());
       } catch (OseeDataStoreException ex) {
          artifact.setArtifactType(originalType);

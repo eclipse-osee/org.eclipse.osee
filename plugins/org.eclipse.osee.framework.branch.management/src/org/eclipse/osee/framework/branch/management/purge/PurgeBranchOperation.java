@@ -99,7 +99,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       findDeleteableGammas(SELECT_DELETABLE_TXS_REMOVED_GAMMAS, 0.10);
       findDeleteableGammas(String.format(SELECT_DELETABLE_GAMMAS, sourceTableName), 0.10);
 
-      purgeGammas("osee_arts", 0.10);
+      purgeGammas("osee_artifact", 0.10);
       purgeGammas("osee_attribute", 0.10);
       purgeGammas("osee_relation_link", 0.10);
 

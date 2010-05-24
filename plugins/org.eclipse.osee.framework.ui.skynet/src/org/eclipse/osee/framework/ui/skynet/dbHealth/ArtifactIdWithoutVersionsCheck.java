@@ -27,22 +27,22 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
 
    private static final String GET_INVALID_A_ART_IDS =
-      "select item.a_art_id as artId, item.rel_link_id as itemId from osee_relation_link item where NOT EXISTS (select oav.art_id from osee_arts oav where oav.art_id = item.a_art_id)";
+      "select item.a_art_id as artId, item.rel_link_id as itemId from osee_relation_link item where NOT EXISTS (select oav.art_id from osee_artifact oav where oav.art_id = item.a_art_id)";
 
    private static final String GET_INVALID_B_ART_IDS =
-      "select item.b_art_id as artId, item.rel_link_id as itemId from osee_relation_link item where NOT EXISTS (select oav.art_id from osee_arts oav where oav.art_id = item.b_art_id)";
+      "select item.b_art_id as artId, item.rel_link_id as itemId from osee_relation_link item where NOT EXISTS (select oav.art_id from osee_artifact oav where oav.art_id = item.b_art_id)";
 
    private static final String GET_INVALID_ATTR_IDS_ART_IDS =
-      "select item.art_id as artId, item.attr_id as itemId from osee_attribute item where NOT EXISTS (select oav.art_id from osee_arts oav where oav.art_id = item.art_id)";
+      "select item.art_id as artId, item.attr_id as itemId from osee_attribute item where NOT EXISTS (select oav.art_id from osee_artifact oav where oav.art_id = item.art_id)";
 
    private static final String GET_INVALID_ACL_ART_IDS =
-      "select item.art_id as artId from osee_artifact_acl item where NOT EXISTS (select oav.art_id from osee_arts oav where oav.art_id = item.art_id)";
+      "select item.art_id as artId from osee_artifact_acl item where NOT EXISTS (select oav.art_id from osee_artifact oav where oav.art_id = item.art_id)";
 
    /**
     * @param operationName
     */
    public ArtifactIdWithoutVersionsCheck() {
-      super("Artifact Id Without osee_arts Table Entry");
+      super("Artifact Id Without osee_artifact Table Entry");
    }
 
    @Override
@@ -133,7 +133,7 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
 
    @Override
    public String getCheckDescription() {
-      return "Verifies that artifact entries in the relation, attribute and artifact tables have a valid entry in the osee_arts table.";
+      return "Verifies that artifact entries in the relation, attribute and artifact tables have a valid entry in the osee_artifact table.";
    }
 
    @Override

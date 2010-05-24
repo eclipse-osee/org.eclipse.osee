@@ -42,14 +42,14 @@ public class ArtifactHridSearch implements ISearchPrimitive {
    }
 
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
-      String sql = "osee_arts.human_readable_id" + operator + "?";
+      String sql = "osee_artifact.human_readable_id" + operator + "?";
       dataList.add(humanReadableId);
 
       return sql;
    }
 
    public String getTableSql(List<Object> dataList, Branch branch) {
-      return "osee_arts";
+      return "osee_artifact";
    }
 
    @Override

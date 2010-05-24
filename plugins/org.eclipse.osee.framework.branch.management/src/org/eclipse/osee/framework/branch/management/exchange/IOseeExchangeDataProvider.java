@@ -8,19 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.branch.management.exchange.handler;
+package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.io.File;
-import org.xml.sax.ContentHandler;
+import org.eclipse.osee.framework.branch.management.exchange.handler.IExportItem;
 
 /**
  * @author Ryan D. Brooks
  */
-public interface IOseeDbExportDataProvider {
-
-   public void saxParse(IExportItem exportItem, ContentHandler handler) throws Exception;
-
-   public void saxParse(String fileName, ContentHandler handler) throws Exception;
+public interface IOseeExchangeDataProvider {
 
    public boolean wasZipExtractionRequired();
 

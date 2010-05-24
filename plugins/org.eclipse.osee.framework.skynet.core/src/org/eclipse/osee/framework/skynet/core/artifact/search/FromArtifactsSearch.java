@@ -51,7 +51,7 @@ public class FromArtifactsSearch implements ISearchPrimitive {
    }
 
    public String getTableSql(List<Object> dataList, Branch branch) {
-      return "osee_arts";
+      return "osee_artifact";
    }
 
    @Override

@@ -70,9 +70,9 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
          "UPDATE OSEE_BRANCH_ACL SET permission_id = ? WHERE privilege_entity_id =? AND branch_id = ?";
 
    private static final String GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST =
-         "SELECT aac1.*, art1.art_type_id FROM osee_arts art1, osee_artifact_acl aac1 WHERE art1.art_id = aac1.privilege_entity_id";
+         "SELECT aac1.*, art1.art_type_id FROM osee_artifact art1, osee_artifact_acl aac1 WHERE art1.art_id = aac1.privilege_entity_id";
    private static final String GET_ALL_BRANCH_ACCESS_CONTROL_LIST =
-         "SELECT bac1.*, art1.art_type_id FROM osee_arts art1, osee_branch_acl bac1 WHERE art1.art_id = bac1.privilege_entity_id";
+         "SELECT bac1.*, art1.art_type_id FROM osee_artifact art1, osee_branch_acl bac1 WHERE art1.art_id = bac1.privilege_entity_id";
 
    private static final String DELETE_ARTIFACT_ACL_FROM_BRANCH = "DELETE FROM OSEE_ARTIFACT_ACL WHERE  branch_id =?";
    private static final String DELETE_BRANCH_ACL_FROM_BRANCH = "DELETE FROM OSEE_BRANCH_ACL WHERE branch_id =?";

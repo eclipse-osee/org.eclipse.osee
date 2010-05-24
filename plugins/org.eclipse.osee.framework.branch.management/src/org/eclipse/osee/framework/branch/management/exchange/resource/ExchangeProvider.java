@@ -78,7 +78,7 @@ public class ExchangeProvider implements IResourceProvider {
    public int delete(IResourceLocator locator) throws OseeCoreException {
       int toReturn = IResourceManager.FAIL;
       File file = new File(resolve(locator));
-      if (file == null || file.exists() != true) {
+      if (file.exists() != true) {
          toReturn = IResourceManager.RESOURCE_NOT_FOUND;
       } else if (file.exists() == true && file.canWrite() == true) {
          boolean result = Lib.deleteFileAndEmptyParents(BASE_PATH, file);

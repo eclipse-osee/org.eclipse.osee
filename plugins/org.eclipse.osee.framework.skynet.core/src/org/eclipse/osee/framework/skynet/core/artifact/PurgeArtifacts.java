@@ -43,7 +43,7 @@ public class PurgeArtifacts extends DbTransaction {
    private static final String INSERT_SELECT_ITEM =
          "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) SELECT /*+ ordered FIRST_ROWS */ ?, ?, txs.gamma_id, txs.transaction_id FROM osee_join_artifact aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.branch_id = txs.branch_id";
    private static final String COUNT_ARTIFACT_VIOLATIONS =
-         "SELECT art.art_id, txs.branch_id FROM osee_join_artifact aj, osee_arts art, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id";
+         "SELECT art.art_id, txs.branch_id FROM osee_join_artifact aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id";
    private static final String DELETE_FROM_TXS_USING_JOIN_TRANSACTION =
          "DELETE FROM osee_txs txs1 WHERE EXISTS ( select 1 from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.transaction_id = txs1.transaction_id AND jt1.gamma_id = txs1.gamma_id)";
    private static final String DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION =
@@ -53,7 +53,7 @@ public class PurgeArtifacts extends DbTransaction {
    private static final String DELETE_FROM_ATTRIBUTE_VERSIONS =
          "DELETE FROM osee_attribute attr1 WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = attr1.gamma_id AND not exists ( select * from osee_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
    private static final String DELETE_FROM_ARTIFACT_VERSIONS =
-         "DELETE FROM osee_arts art WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = art.gamma_id AND not exists ( select * from osee_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
+         "DELETE FROM osee_artifact art WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = art.gamma_id AND not exists ( select * from osee_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
 
    private final Collection<? extends Artifact> artifactsToPurge;
 
@@ -123,7 +123,7 @@ public class PurgeArtifacts extends DbTransaction {
                "(aj.art_id = item.a_art_id OR aj.art_id = item.b_art_id)", transactionJoinId, insertTime, queryId);
          insertSelectItems(connection, "osee_attribute", "aj.art_id = item.art_id", transactionJoinId, insertTime,
                queryId);
-         insertSelectItems(connection, "osee_arts", "aj.art_id = item.art_id", transactionJoinId, insertTime, queryId);
+         insertSelectItems(connection, "osee_artifact", "aj.art_id = item.art_id", transactionJoinId, insertTime, queryId);
 
          int txsDeletes =
                ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_TXS_USING_JOIN_TRANSACTION,

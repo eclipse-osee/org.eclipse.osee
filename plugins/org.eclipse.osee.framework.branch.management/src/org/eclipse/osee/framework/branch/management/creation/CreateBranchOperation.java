@@ -67,7 +67,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    private final static String SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN =
          "SELECT item.gamma_id, txs.mod_type FROM osee_attribute item, osee_txs txs, osee_join_artifact artjoin WHERE txs.branch_id = ? AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.art_id and artjoin.query_id = ? order by txs.transaction_id desc";
    private final static String SELECT_ARTIFACT_ADDRESSING_FROM_JOIN =
-         "SELECT item.gamma_id, txs.mod_type FROM osee_arts item, osee_txs txs, osee_join_artifact artjoin WHERE txs.branch_id = ? AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.art_id and artjoin.query_id = ? order by txs.transaction_id desc";
+         "SELECT item.gamma_id, txs.mod_type FROM osee_artifact item, osee_txs txs, osee_join_artifact artjoin WHERE txs.branch_id = ? AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.art_id and artjoin.query_id = ? order by txs.transaction_id desc";
 
    private static final String TEST_MERGE_BRANCH_EXISTENCE =
          "SELECT count(1) FROM osee_merge WHERE source_branch_id = ? AND dest_branch_id = ?";

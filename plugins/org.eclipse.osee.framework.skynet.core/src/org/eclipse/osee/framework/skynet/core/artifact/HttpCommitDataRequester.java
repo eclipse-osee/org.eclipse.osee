@@ -34,9 +34,9 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 public class HttpCommitDataRequester {
 
    private static final String ARTIFACT_CHANGES =
-      "SELECT av.art_id, txs1.branch_id FROM osee_txs txs1, osee_arts av WHERE txs1.branch_id = ? AND txs1.transaction_id = ? AND txs1.gamma_id = av.gamma_id " +
+      "SELECT av.art_id, txs1.branch_id FROM osee_txs txs1, osee_artifact av WHERE txs1.branch_id = ? AND txs1.transaction_id = ? AND txs1.gamma_id = av.gamma_id " +
       "UNION ALL " +
-      "SELECT art.art_id, txs2.branch_id FROM osee_txs txs2, osee_relation_link rel, osee_arts art WHERE txs2.branch_id = ? and txs2.transaction_id = ? AND txs2.gamma_id = rel.gamma_id AND (rel.a_art_id = art.art_id OR rel.b_art_id = art.art_id) " +
+      "SELECT art.art_id, txs2.branch_id FROM osee_txs txs2, osee_relation_link rel, osee_artifact art WHERE txs2.branch_id = ? and txs2.transaction_id = ? AND txs2.gamma_id = rel.gamma_id AND (rel.a_art_id = art.art_id OR rel.b_art_id = art.art_id) " +
       "UNION ALL " +
       "SELECT att.art_id, txs3.branch_id FROM osee_txs txs3, osee_attribute att WHERE txs3.branch_id = ? AND txs3.transaction_id = ? AND txs3.gamma_id = att.gamma_id";
 

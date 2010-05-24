@@ -77,7 +77,7 @@ public class ChangeItemLoader {
 
    private final class ArtifactChangeItemFactory implements ChangeItemFactory {
       private static final String SELECT_ARTIFACTS_BY_GAMMAS =
-            "select art_id, art_type_id, txj.gamma_id from osee_arts id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
+            "select art_id, art_type_id, txj.gamma_id from osee_artifact id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
       @Override
       public String getLoadByGammaQuery() {
@@ -102,7 +102,7 @@ public class ChangeItemLoader {
 
       @Override
       public String getItemTableName() {
-         return "osee_arts";
+         return "osee_artifact";
       }
 
       @Override

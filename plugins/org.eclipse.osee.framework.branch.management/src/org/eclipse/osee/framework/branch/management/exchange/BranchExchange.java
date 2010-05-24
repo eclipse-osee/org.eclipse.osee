@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.branch.management.exchange;
 import java.io.File;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
-import org.eclipse.osee.framework.branch.management.exchange.handler.IOseeDbExportDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.handler.StandardOseeDbExportDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeLocatorProvider;
+import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeDataProcessor;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -50,7 +50,7 @@ public class BranchExchange implements IBranchExchange {
 
    @Override
    public void importBranch(IResourceLocator exportDataLocator, Options options, int... branchIds) throws Exception {
-      IOseeDbExportDataProvider exportDataProvider = createExportDataProvider(exportDataLocator);
+      IOseeExchangeDataProvider exportDataProvider = createExportDataProvider(exportDataLocator);
       ImportController importController = new ImportController(oseeServices, exportDataProvider, options, branchIds);
       importController.execute();
    }
@@ -66,14 +66,15 @@ public class BranchExchange implements IBranchExchange {
 
    @Override
    public IResourceLocator checkIntegrity(IResourceLocator fileToCheck) throws Exception {
-      IOseeDbExportDataProvider exportDataProvider = createExportDataProvider(fileToCheck);
-      ExchangeIntegrity exchangeIntegrityCheck = new ExchangeIntegrity(oseeServices, exportDataProvider);
+      IOseeExchangeDataProvider exportDataProvider = createExportDataProvider(fileToCheck);
+      ExchangeDataProcessor processor = new ExchangeDataProcessor(exportDataProvider);
+      ExchangeIntegrity exchangeIntegrityCheck = new ExchangeIntegrity(oseeServices, exportDataProvider, processor);
       exchangeIntegrityCheck.execute();
       return oseeServices.getResourceLocatorManager().generateResourceLocator(ExchangeLocatorProvider.PROTOCOL, "",
             exchangeIntegrityCheck.getExchangeCheckFileName());
    }
 
-   private IOseeDbExportDataProvider createExportDataProvider(IResourceLocator exportDataLocator) throws Exception {
+   private IOseeExchangeDataProvider createExportDataProvider(IResourceLocator exportDataLocator) throws Exception {
       Pair<Boolean, File> result =
             ExchangeUtil.getTempExchangeFile(exportDataLocator, oseeServices.getResourceManager());
       return new StandardOseeDbExportDataProvider(result.getSecond(), result.getFirst());

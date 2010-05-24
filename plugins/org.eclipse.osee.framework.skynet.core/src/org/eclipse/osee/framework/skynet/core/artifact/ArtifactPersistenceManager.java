@@ -43,7 +43,7 @@ public class ArtifactPersistenceManager {
    private static final String GET_GAMMAS_ARTIFACT_REVERT =
          "SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, osee_attribute attr1 WHERE txs1.gamma_id = attr1.gamma_id and txs1.branch_id = ? and attr1.art_id = ? " + //
          "UNION ALL SELECT txs2.gamma_id, txs2.transaction_id FROM osee_txs txs2, osee_relation_link rel2 WHERE txs2.gamma_id = rel2.gamma_id AND txs2.branch_id = ? AND (rel2.a_art_id = ? or rel2.b_art_id = ?) " + //
-         "UNION ALL SELECT txs3.gamma_id, txs3.transaction_id FROM osee_txs txs3, osee_arts art3 WHERE txs3.gamma_id = art3.gamma_id AND txs3.branch_id = ? AND art3.art_id = ?";
+         "UNION ALL SELECT txs3.gamma_id, txs3.transaction_id FROM osee_txs txs3, osee_artifact art3 WHERE txs3.gamma_id = art3.gamma_id AND txs3.branch_id = ? AND art3.art_id = ?";
 
    private static final String GET_GAMMAS_RELATION_REVERT =
          "SELECT txs.gamma_id, txs.transaction_id FROM osee_txs txs, osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id AND txs.branch_id = ? AND rel.rel_link_id = ?";
@@ -52,12 +52,12 @@ public class ArtifactPersistenceManager {
          "SELECT txs.gamma_id, txs.transaction_id FROM osee_txs txs, osee_attribute attr WHERE txs.gamma_id = attr.gamma_id AND txs.branch_id = ? AND attr.attr_id = ?";
 
    private static final String ARTIFACT_SELECT =
-         "SELECT art1.art_id, txs1.branch_id FROM osee_arts art1, osee_txs txs1 WHERE art1.gamma_id = txs1.gamma_id AND txs1.tx_current = " + TxChange.CURRENT.getValue() + " AND txs1.branch_id = ? AND ";
+         "SELECT art1.art_id, txs1.branch_id FROM osee_artifact art1, osee_txs txs1 WHERE art1.gamma_id = txs1.gamma_id AND txs1.tx_current = " + TxChange.CURRENT.getValue() + " AND txs1.branch_id = ? AND ";
 
-   private static final String ARTIFACT_ID_SELECT = "SELECT art1.art_id FROM osee_arts art1 WHERE ";
+   private static final String ARTIFACT_ID_SELECT = "SELECT art1.art_id FROM osee_artifact art1 WHERE ";
 
    private static final String ARTIFACT_NEW_ON_BRANCH =
-         "SELECT count(1) FROM osee_arts art, osee_txs txs WHERE art.art_id = ? and art.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id = ?";
+         "SELECT count(1) FROM osee_artifact art, osee_txs txs WHERE art.art_id = ? and art.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id = ?";
 
    private static final String RELATION_NEW_ON_BRANCH =
          "SELECT count(1) FROM osee_relation_link rel, osee_txs txs WHERE rel.a_art_id = ? and rel.b_art_id = ? and rel.rel_link_type_id = ? and rel.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id = ?";
@@ -114,7 +114,7 @@ public class ArtifactPersistenceManager {
          ISearchPrimitive primitive = null;
          Iterator<ISearchPrimitive> iter = searchCriteria.iterator();
 
-         sql.append("art1.art_id IN(SELECT art_id FROM osee_arts art1, (");
+         sql.append("art1.art_id IN(SELECT art_id FROM osee_artifact art1, (");
 
          while (iter.hasNext()) {
             primitive = iter.next();

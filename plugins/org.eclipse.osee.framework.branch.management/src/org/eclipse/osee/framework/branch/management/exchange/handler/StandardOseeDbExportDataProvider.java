@@ -13,12 +13,12 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.io.File;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeUtil;
-import org.xml.sax.ContentHandler;
+import org.eclipse.osee.framework.branch.management.exchange.IOseeExchangeDataProvider;
 
 /**
  * @author Ryan D. Brooks
  */
-public class StandardOseeDbExportDataProvider implements IOseeDbExportDataProvider {
+public class StandardOseeDbExportDataProvider implements IOseeExchangeDataProvider {
    private final File exportDataRootPath;
    private final boolean wasZipExtractionRequired;
 
@@ -26,16 +26,6 @@ public class StandardOseeDbExportDataProvider implements IOseeDbExportDataProvid
       this.wasZipExtractionRequired = wasZipExtractionRequired;
       this.exportDataRootPath = exportDataRootPath;
 
-   }
-
-   @Override
-   public void saxParse(IExportItem exportItem, ContentHandler handler) throws Exception {
-      ExchangeUtil.readExchange(getFile(exportItem), handler);
-   }
-
-   @Override
-   public void saxParse(String fileName, ContentHandler handler) throws Exception {
-      ExchangeUtil.readExchange(new File(exportDataRootPath, fileName), handler);
    }
 
    @Override

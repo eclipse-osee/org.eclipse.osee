@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.Options;
-import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 
 /**
  * @author Roberto E. Escobar
@@ -65,7 +64,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
       this.errorList = Collections.synchronizedList(new ArrayList<String>());
    }
 
-   public String getExchangeFileName() throws MalformedLocatorException {
+   public String getExchangeFileName() {
       return this.exportName;
    }
 

@@ -29,7 +29,7 @@ public class NotSearch implements ISearchPrimitive {
    }
 
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
-      return "NOT EXISTS(SELECT 'x' FROM (" + ArtifactPersistenceManager.getSelectArtIdSql(search, dataList, branch) + ") arts" + " WHERE osee_arts.art_id = arts." + search.getArtIdColName() + ")";
+      return "NOT EXISTS(SELECT 'x' FROM (" + ArtifactPersistenceManager.getSelectArtIdSql(search, dataList, branch) + ") arts" + " WHERE osee_artifact.art_id = arts." + search.getArtIdColName() + ")";
    }
 
    public String getArtIdColName() {
@@ -37,7 +37,7 @@ public class NotSearch implements ISearchPrimitive {
    }
 
    public String getTableSql(List<Object> dataList, Branch branch) {
-      return "osee_arts";
+      return "osee_artifact";
    }
 
    public String getStorageString() {

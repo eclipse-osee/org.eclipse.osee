@@ -53,7 +53,7 @@ public class DuplicateHridTest {
       return toReturn;
    }
 
-   private static final String GET_ARTIFACTS = "SELECT t1.human_readable_id FROM osee_arts t1, osee_artifact_type t3";
+   private static final String GET_ARTIFACTS = "SELECT t1.human_readable_id FROM osee_artifact t1, osee_artifact_type t3";
 
    private static final char[][] chars =
          new char[][] {

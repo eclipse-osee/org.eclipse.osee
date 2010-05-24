@@ -38,7 +38,7 @@ public class RelatedToAndOfIDSearch implements ISearchPrimitive {
    }
 
    public String getTables() {
-      return "(SELECT * FROM osee_arts INNER JOIN osee_relation_link ON (( b_art_id=" + artId + " AND art_id=a_art_id) or (a_art_id=" + artId + " and art_id = b_art_id))) artLinkJoin";
+      return "(SELECT * FROM osee_artifact INNER JOIN osee_relation_link ON (( b_art_id=" + artId + " AND art_id=a_art_id) or (a_art_id=" + artId + " and art_id = b_art_id))) artLinkJoin";
    }
 
    @Override

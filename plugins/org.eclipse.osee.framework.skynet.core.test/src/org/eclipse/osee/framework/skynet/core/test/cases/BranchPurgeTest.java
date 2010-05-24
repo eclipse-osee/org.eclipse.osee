@@ -35,7 +35,7 @@ import org.junit.Before;
  * This test is intended to be run against a demo database. It tests the branch purge logic by counting the rows of the
  * version and txs tables, creating a branch, making changes and then purging the branch. If it works properly, all rows
  * should be equal.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class BranchPurgeTest {
@@ -44,7 +44,7 @@ public class BranchPurgeTest {
    private final Map<String, Integer> postCreateBranchCount = new HashMap<String, Integer>();
    private final Map<String, Integer> postPurgeCount = new HashMap<String, Integer>();
    List<String> tables =
-         Arrays.asList("osee_attribute", "osee_arts", "osee_relation_link", "osee_tx_details", "osee_txs");
+         Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs");
 
    /**
     * @throws java.lang.Exception

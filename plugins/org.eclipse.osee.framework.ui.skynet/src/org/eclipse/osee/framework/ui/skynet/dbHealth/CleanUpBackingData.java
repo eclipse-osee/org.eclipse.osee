@@ -103,7 +103,7 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
       this.monitor = monitor;
 
       processNotAddressedGammas("osee_attribute");
-      processNotAddressedGammas("osee_arts");
+      processNotAddressedGammas("osee_artifact");
       processNotAddressedGammas("osee_relation_link");
       processEmptyTransactions();
 

@@ -66,7 +66,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
          Boolean.parseBoolean(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));
 
    private static final String GET_ATTRS =
-         "SELECT DISTINCT(art.human_readable_id), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_arts art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != ''";
+         "SELECT DISTINCT(art.human_readable_id), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_artifact art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != ''";
    private final Collection<String> badData = new LinkedList<String>();
    private static final String[] columnHeaders = new String[] {"Corrupted Data"};
 

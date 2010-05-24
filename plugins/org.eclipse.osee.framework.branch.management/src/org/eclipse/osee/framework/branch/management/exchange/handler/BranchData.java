@@ -89,6 +89,14 @@ public final class BranchData implements Cloneable {
    }
 
    @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((backingData == null) ? 0 : backingData.hashCode());
+      return result;
+   }
+
+   @Override
    public boolean equals(Object obj) {
       if (obj == this) {
          return true;
@@ -132,4 +140,5 @@ public final class BranchData implements Cloneable {
    public void setBranchType(BranchType branchType) {
       this.backingData.put(BRANCH_TYPE, branchType.getValue());
    }
+
 }

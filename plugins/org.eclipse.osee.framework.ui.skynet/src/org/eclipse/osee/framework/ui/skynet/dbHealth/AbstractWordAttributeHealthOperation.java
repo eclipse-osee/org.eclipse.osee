@@ -106,7 +106,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
 
    private final class FindAllWordAttributesNeedingFix extends AbstractOperation {
       private static final String GET_ATTRS =
-            "SELECT DISTINCT(art.human_readable_id), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_arts art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != '' order by attr.gamma_id asc"; // and t1.attr_id = 1155574";
+            "SELECT DISTINCT(art.human_readable_id), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_artifact art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != '' order by attr.gamma_id asc"; // and t1.attr_id = 1155574";
 
       private final List<AttrData> attributesWithErrors;
 

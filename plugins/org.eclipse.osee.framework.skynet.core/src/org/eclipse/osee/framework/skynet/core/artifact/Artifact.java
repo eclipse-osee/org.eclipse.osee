@@ -1470,7 +1470,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    public static boolean isUniqueHRID(String id) throws OseeDataStoreException {
       String DUPLICATE_HRID_SEARCH =
-            "select count(1) from (select DISTINCT(art_id) from osee_arts where human_readable_id = ?) t1";
+            "select count(1) from (select DISTINCT(art_id) from osee_artifact where human_readable_id = ?) t1";
       return ConnectionHandler.runPreparedQueryFetchLong(0L, DUPLICATE_HRID_SEARCH, id) <= 0;
    }
 

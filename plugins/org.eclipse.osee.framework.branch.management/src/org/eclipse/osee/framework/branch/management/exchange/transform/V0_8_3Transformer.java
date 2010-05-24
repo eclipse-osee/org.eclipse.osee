@@ -10,19 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.transform;
 
-import org.eclipse.osee.framework.branch.management.exchange.ImportController;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
  */
-public class V0_8_3Transformer implements IOseeDbExportTransformer {
+public class V0_8_3Transformer implements IOseeExchangeVersionTransformer {
 
    @Override
-   public String applyTransform(ImportController importController) throws OseeCoreException {
-      importController.transformExportItem(ExportItem.EXPORT_DB_SCHEMA, new V0_8_3_DbSchemaRule());
-      importController.transformExportItem(ExportItem.OSEE_BRANCH_DATA, new V0_8_3_BranchRule());
+   public String applyTransform(ExchangeDataProcessor ruleProcessor) throws OseeCoreException {
+      ruleProcessor.transform(ExportItem.EXPORT_DB_SCHEMA, new V0_8_3_DbSchemaRule());
+      ruleProcessor.transform(ExportItem.OSEE_BRANCH_DATA, new V0_8_3_BranchRule());
       return "0.8.3";
    }
 
@@ -32,6 +31,6 @@ public class V0_8_3Transformer implements IOseeDbExportTransformer {
    }
 
    @Override
-   public void finalizeTransform(ImportController importController) throws Exception {
+   public void finalizeTransform(ExchangeDataProcessor ruleProcessor) throws Exception {
    }
 }

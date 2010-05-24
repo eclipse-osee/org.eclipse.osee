@@ -43,9 +43,9 @@ import org.junit.Before;
 public class DeletionTest {
 
    private static final String CHECK_FOR_ZERO_TX_CURRENT =
-      "SELECT txs.tx_current, txs.transaction_id FROM osee_txs txs, osee_arts art WHERE txs.branch_id = ? AND txs.transaction_id < ? AND txs.tx_current != 0 AND txs.gamma_id = art.gamma_id and art.art_id = ?";
+      "SELECT txs.tx_current, txs.transaction_id FROM osee_txs txs, osee_artifact art WHERE txs.branch_id = ? AND txs.transaction_id < ? AND txs.tx_current != 0 AND txs.gamma_id = art.gamma_id and art.art_id = ?";
    private static final String CHECK_FOR_DELETED_TX_CURRENT =
-      "SELECT txs.tx_current, txs.transaction_id FROM osee_txs txs, osee_arts art WHERE txs.branch_id = ? AND txs.tx_current = 2 AND txs.gamma_id = art.gamma_id and art.art_id = ?";
+      "SELECT txs.tx_current, txs.transaction_id FROM osee_txs txs, osee_artifact art WHERE txs.branch_id = ? AND txs.tx_current = 2 AND txs.gamma_id = art.gamma_id and art.art_id = ?";
 
    private static final String CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE =
       "SELECT txs.tx_current, txs.transaction_id FROM osee_txs txs, osee_attribute att WHERE txs.branch_id = ? AND txs.transaction_id < ? AND txs.tx_current != 0 AND txs.gamma_id = att.gamma_id and att.attr_id = ?";
@@ -60,7 +60,7 @@ public class DeletionTest {
    private static final String GET_DELETED_TRANSACTION = "SELECT * FROM osee_txs WHERE transaction_id = ?";
 
    private static final String GET_ARTIFACT_DEBUG =
-      "select txs.branch_id, txs.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, art.art_id FROM osee_txs txs, osee_arts art WHERE txs.branch_id = ? AND txs.gamma_id = art.gamma_id AND art.art_id = ?";
+      "select txs.branch_id, txs.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, art.art_id FROM osee_txs txs, osee_artifact art WHERE txs.branch_id = ? AND txs.gamma_id = art.gamma_id AND art.art_id = ?";
 
    private static final String GET_ATTRIBUTE_DEBUG =
       "select txs.branch_id, txs.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, att.art_id, att.attr_id FROM osee_txs txs, osee_attribute att WHERE txs.branch_id = ? AND txs.gamma_id = att.gamma_id AND att.attr_id = ?";

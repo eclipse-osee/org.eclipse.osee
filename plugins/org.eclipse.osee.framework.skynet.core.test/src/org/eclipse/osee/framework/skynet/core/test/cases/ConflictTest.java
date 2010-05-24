@@ -180,11 +180,11 @@ public class ConflictTest {
 
    @org.junit.Test
    public void testCommitFiltering() throws OseeCoreException {
-      checkNoTxCurrent("art_id", "osee_arts");
+      checkNoTxCurrent("art_id", "osee_artifact");
       checkNoTxCurrent("attr_id", "osee_attribute");
       checkNoTxCurrent("rel_link_id", "osee_relation_link");
 
-      checkMultipleTxCurrent("art_id", "osee_arts");
+      checkMultipleTxCurrent("art_id", "osee_artifact");
       checkMultipleTxCurrent("attr_id", "osee_attribute");
       checkMultipleTxCurrent("rel_link_id", "osee_relation_link");
 

@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
  */
 public class HealthHelper {
    public static final String ALL_BACKING_GAMMAS =
-         "(SELECT gamma_id FROM osee_arts UNION SELECT gamma_id FROM osee_attribute UNION SELECT gamma_id FROM osee_relation_link)";
+         "(SELECT gamma_id FROM osee_artifact UNION SELECT gamma_id FROM osee_attribute UNION SELECT gamma_id FROM osee_relation_link)";
 
    private static final String[] NO_TX_CURRENT_SET =
          {

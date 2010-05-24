@@ -177,7 +177,7 @@ public class ArtifactQueryBuilder {
       }
 
       nextAliases.put("osee_txs", new NextAlias("txs"));
-      nextAliases.put("osee_arts", new NextAlias("art"));
+      nextAliases.put("osee_artifact", new NextAlias("art"));
       nextAliases.put("osee_attribute", new NextAlias("att"));
       nextAliases.put("osee_relation_link", new NextAlias("rel"));
       nextAliases.put("osee_join_char_id", new NextAlias("jch"));
@@ -216,11 +216,11 @@ public class ArtifactQueryBuilder {
          if (guids != null && !guids.isEmpty()) {
             jguidAlias = appendAliasedTable("osee_join_char_id");
          }
-         artAlias = appendAliasedTable("osee_arts");
+         artAlias = appendAliasedTable("osee_artifact");
          txsAlias = appendAliasedTable("osee_txs");
       } else {
          txsAlias = appendAliasedTable("osee_txs");
-         artAlias = appendAliasedTable("osee_arts");
+         artAlias = appendAliasedTable("osee_artifact");
          if (guids != null && guids.size() > 0) {
             jguidAlias = appendAliasedTable("osee_join_char_id");
          }

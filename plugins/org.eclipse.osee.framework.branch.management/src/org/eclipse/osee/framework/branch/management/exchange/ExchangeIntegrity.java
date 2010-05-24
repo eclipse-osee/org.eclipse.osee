@@ -19,11 +19,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.IExportItem;
-import org.eclipse.osee.framework.branch.management.exchange.handler.IOseeDbExportDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
+import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeDataProcessor;
 import org.eclipse.osee.framework.core.enums.ConflictType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
@@ -34,12 +33,14 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class ExchangeIntegrity {
    private final OseeServices services;
-   private final IOseeDbExportDataProvider exportDataProvider;
+   private final IOseeExchangeDataProvider exportDataProvider;
+   private final ExchangeDataProcessor processor;
    private String checkExchange;
 
-   public ExchangeIntegrity(OseeServices services, IOseeDbExportDataProvider exportDataProvider) {
+   public ExchangeIntegrity(OseeServices services, IOseeExchangeDataProvider exportDataProvider, ExchangeDataProcessor processor) {
       this.services = services;
       this.exportDataProvider = exportDataProvider;
+      this.processor = processor;
    }
 
    public String getExchangeCheckFileName() {
@@ -50,7 +51,7 @@ public class ExchangeIntegrity {
       long startTime = System.currentTimeMillis();
       try {
          ManifestSaxHandler manifestSaxHandler = new ManifestSaxHandler();
-         exportDataProvider.saxParse(ExportItem.EXPORT_MANIFEST, manifestSaxHandler);
+         processor.parse(ExportItem.EXPORT_MANIFEST, manifestSaxHandler);
 
          List<IExportItem> filesToCheck = new ArrayList<IExportItem>();
          filesToCheck.addAll(manifestSaxHandler.getImportFiles());
@@ -58,13 +59,13 @@ public class ExchangeIntegrity {
 
          final List<IndexCollector> checkList = ExchangeDb.createCheckList();
          for (final IExportItem importFile : filesToCheck) {
-            exportDataProvider.saxParse(importFile, new CheckSaxHandler(services, exportDataProvider, checkList,
+            processor.parse(importFile, new CheckSaxHandler(services, exportDataProvider, checkList,
                   importFile.getFileName()));
          }
          checkExchange = exportDataProvider.getExportedDataRoot() + ".verify.xml";
          writeResults(exportDataProvider.getExportedDataRoot().getParentFile(), checkExchange, checkList);
       } finally {
-         exportDataProvider.cleanUp();
+         processor.cleanUp();
          OseeLog.log(this.getClass(), Level.INFO, String.format("Verified [%s] in [%s]",
                exportDataProvider.getExportedDataRoot(), Lib.getElapseString(startTime)));
       }
@@ -114,7 +115,7 @@ public class ExchangeIntegrity {
       private final List<IndexCollector> checkList;
       private final String fileBeingProcessed;
 
-      protected CheckSaxHandler(OseeServices services, IOseeDbExportDataProvider exportDataProvider, List<IndexCollector> checkList, String fileBeingProcessed) throws OseeCoreException {
+      protected CheckSaxHandler(OseeServices services, IOseeExchangeDataProvider exportDataProvider, List<IndexCollector> checkList, String fileBeingProcessed) {
          super(services, exportDataProvider, true, 0);
          this.checkList = checkList;
          this.fileBeingProcessed = Lib.removeExtension(fileBeingProcessed);

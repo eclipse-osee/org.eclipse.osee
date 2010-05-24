@@ -31,7 +31,7 @@ public class TxCurrentsAndModTypesCommand extends BaseServerCommand {
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       try {
-         checkAndFix("osee_arts", "art_id", monitor);
+         checkAndFix("osee_artifact", "art_id", monitor);
          checkAndFix("osee_attribute", "attr_id", monitor);
          checkAndFix("osee_relation_link", "rel_link_id", monitor);
 

@@ -58,7 +58,7 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
       Integer priority = new Integer(fieldMap.get(ExportImportXml.PRIORITY));
       String source = fieldMap.get(ExportImportXml.SOURCE);
 
-      if (Strings.isValid(fileName) && Strings.isValid(source) && priority != null) {
+      if (Strings.isValid(fileName) && Strings.isValid(source)) {
          if (source.equals(ExportImportXml.DB_SCHEMA)) {
             this.metadataFile = fileName;
          } else {

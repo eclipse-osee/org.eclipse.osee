@@ -44,13 +44,13 @@ public class RevertAction {
          "UPDATE osee_txs SET tx_current = " + TxChange.CURRENT.getValue() + " WHERE gamma_id = ? and transaction_id = ?";
 
    private static final String REVERT_ARTIFACT_VERSION_CURRENT_SELECT =
-         "(SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, osee_arts art1 WHERE art1.art_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id = (SELECT max(txs.transaction_id) FROM osee_txs txs, osee_arts art WHERE txs.branch_id = ? AND txs.gamma_id = art.gamma_id AND art.art_id = ?))";
+         "(SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, osee_artifact art1 WHERE art1.art_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id = (SELECT max(txs.transaction_id) FROM osee_txs txs, osee_artifact art WHERE txs.branch_id = ? AND txs.gamma_id = art.gamma_id AND art.art_id = ?))";
 
    private static final String REVERT_ARTIFACT_VERSION_SET_CURRENT =
          "UPDATE osee_txs SET tx_current = CASE WHEN mod_type = 3 THEN 2 WHEN mod_type = 5 THEN 3 ELSE 1 END WHERE (gamma_id, transaction_id) IN " + REVERT_ARTIFACT_VERSION_CURRENT_SELECT;
 
    private static final String REVERT_ARTIFACT_VERSION_SELECT =
-         "SELECT txs.gamma_id, txs.transaction_id FROM osee_txs txs, osee_arts art WHERE txs.transaction_id in (%s) AND txs.gamma_id = art.gamma_id AND NOT EXISTS (SELECT 'x' FROM osee_txs txs2 WHERE txs2.transaction_id = txs.transaction_id AND txs2.gamma_id != txs.gamma_id)";
+         "SELECT txs.gamma_id, txs.transaction_id FROM osee_txs txs, osee_artifact art WHERE txs.transaction_id in (%s) AND txs.gamma_id = art.gamma_id AND NOT EXISTS (SELECT 'x' FROM osee_txs txs2 WHERE txs2.transaction_id = txs.transaction_id AND txs2.gamma_id != txs.gamma_id)";
 
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Revert"));

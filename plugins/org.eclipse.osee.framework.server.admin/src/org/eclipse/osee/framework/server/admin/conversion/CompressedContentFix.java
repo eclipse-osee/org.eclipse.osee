@@ -43,7 +43,7 @@ public class CompressedContentFix {
    private static CompressedContentFix instance = null;
 
    private static final String FIND_ALL_NATIVE_CONTENT_SQL =
-         "SELECT art1.art_id, art1.human_readable_id, art1.guid, attr1.uri FROM osee_attribute attr1, osee_attribute_type attyp1, osee_arts art1 WHERE attyp1.NAME = 'Native Content' AND attyp1.attr_type_id = attr1.attr_type_id AND art1.ART_ID = attr1.ART_ID";
+         "SELECT art1.art_id, art1.human_readable_id, art1.guid, attr1.uri FROM osee_attribute attr1, osee_attribute_type attyp1, osee_artifact art1 WHERE attyp1.NAME = 'Native Content' AND attyp1.attr_type_id = attr1.attr_type_id AND art1.ART_ID = attr1.ART_ID";
 
    public static CompressedContentFix getInstance() {
       if (instance == null) {

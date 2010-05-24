@@ -19,10 +19,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
+import org.eclipse.osee.framework.branch.management.exchange.IOseeExchangeDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.OseeServices;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryResource;
 import org.eclipse.osee.framework.core.enums.ConflictType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -37,17 +37,17 @@ import org.eclipse.osee.framework.resource.management.Options;
  */
 public class RelationalSaxHandler extends BaseDbSaxHandler {
 
-   public static RelationalSaxHandler createWithLimitedCache(OseeServices services, IOseeDbExportDataProvider exportDataProvider, int cacheLimit) throws OseeCoreException {
+   public static RelationalSaxHandler createWithLimitedCache(OseeServices services, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
       return new RelationalSaxHandler(services, exportDataProvider, false, cacheLimit);
    }
 
    private final List<IResourceLocator> transferredBinaryContent;
    private final Set<Integer> branchesToImport;
-   private final IOseeDbExportDataProvider exportDataProvider;
+   private final IOseeExchangeDataProvider exportDataProvider;
    private final OseeServices services;
    private IExportItem exportItem;
 
-   protected RelationalSaxHandler(OseeServices services, IOseeDbExportDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) throws OseeCoreException {
+   protected RelationalSaxHandler(OseeServices services, IOseeExchangeDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
       super(services.getDatabaseService(), isCacheAll, cacheLimit);
       this.branchesToImport = new HashSet<Integer>();
       this.transferredBinaryContent = new ArrayList<IResourceLocator>();

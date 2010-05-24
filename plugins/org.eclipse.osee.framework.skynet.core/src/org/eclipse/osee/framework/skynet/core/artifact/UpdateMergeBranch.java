@@ -54,7 +54,7 @@ public class UpdateMergeBranch extends DbTransaction {
    private static final String PURGE_BASELINE_RELATION_TRANS =
          "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id AND txs.transaction_id = ? AND txs.branch_id = ? AND (rel.a_art_id = ? or rel.b_art_id = ?))";
    private static final String PURGE_BASELINE_ARTIFACT_TRANS =
-         "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_arts art WHERE txs.gamma_id = art.gamma_id AND txs.transaction_id = ? AND txs.branch_id = ? AND art.art_id = ?)";
+         "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_artifact art WHERE txs.gamma_id = art.gamma_id AND txs.transaction_id = ? AND txs.branch_id = ? AND art.art_id = ?)";
 
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
@@ -160,7 +160,7 @@ public class UpdateMergeBranch extends DbTransaction {
    private final static String INSERT_ATTRIBUTE_GAMMAS =
          "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, atr1.gamma_id, txs1.mod_type, ?, ? FROM osee_attribute atr1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
    private final static String INSERT_ARTIFACT_GAMMAS =
-         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, arv1.gamma_id, txs1.mod_type, ?, ? FROM osee_arts arv1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
+         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, arv1.gamma_id, txs1.mod_type, ?, ? FROM osee_artifact arv1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
 
    private void addArtifactsToBranch(OseeConnection connection, Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIds) throws OseeCoreException {
       if (artIds == null || artIds.isEmpty()) {
