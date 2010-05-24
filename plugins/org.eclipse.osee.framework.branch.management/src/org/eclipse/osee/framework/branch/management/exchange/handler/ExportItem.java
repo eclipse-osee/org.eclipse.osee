@@ -19,6 +19,7 @@ public enum ExportItem implements IExportItem {
    OSEE_BRANCH_DATA("osee_branch"),
    OSEE_TX_DETAILS_DATA("osee_tx_details"),
    OSEE_TXS_DATA("osee_txs"),
+   OSEE_TXS_ARCHIVED_DATA("osee_txs_archived"),
    OSEE_ARTIFACT_DATA("osee_artifact"),
    OSEE_ATTRIBUTE_DATA("osee_attribute"),
    OSEE_RELATION_LINK_DATA("osee_relation_link"),

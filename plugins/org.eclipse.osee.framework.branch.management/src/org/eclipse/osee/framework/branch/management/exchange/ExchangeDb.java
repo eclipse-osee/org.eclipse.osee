@@ -95,6 +95,9 @@ public class ExchangeDb {
    private static final String TX_DETAILS_TABLE_QUERY =
          "SELECT txd1.TRANSACTION_ID, txd1.TIME, txd1.AUTHOR, txd1.OSEE_COMMENT, txd1.BRANCH_ID, txd1.COMMIT_ART_ID, txd1.TX_TYPE FROM osee_tx_details txd1, osee_join_export_import jex1 WHERE txd1.branch_id = jex1.id1 AND jex1.query_id=? %s ORDER BY txd1.transaction_id";
 
+   private static final String TXS_ARCHIVE_TABLE_QUERY =
+         "SELECT txs1.GAMMA_ID, txs1.TRANSACTION_ID, txs1.TX_CURRENT, txs1.MOD_TYPE, txs1.BRANCH_ID FROM osee_txs_archived txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE txs1.transaction_id = txd1.transaction_id AND txs1.branch_id = jex1.id1 AND jex1.query_id=? %s";
+
    private static final String TXS_TABLE_QUERY =
          "SELECT txs1.GAMMA_ID, txs1.TRANSACTION_ID, txs1.TX_CURRENT, txs1.MOD_TYPE, txs1.BRANCH_ID FROM osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE txs1.transaction_id = txd1.transaction_id AND txs1.branch_id = jex1.id1 AND jex1.query_id=? %s";
 
@@ -126,6 +129,7 @@ public class ExchangeDb {
       items.add(new RelationalExportItem(services, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY));
       items.add(new RelationalExportItem(services, ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY));
       items.add(new RelationalExportItem(services, ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY));
+      items.add(new RelationalExportItem(services, ExportItem.OSEE_TXS_ARCHIVED_DATA, TXS_ARCHIVE_TABLE_QUERY));
       items.add(new RelationalExportItem(services, ExportItem.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY));
       items.add(new RelationalExportItem(services, ExportItem.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY));
       items.add(new RelationalExportItem(services, ExportItem.OSEE_RELATION_LINK_DATA, RELATION_LINK_TABLE_QUERY));
@@ -139,14 +143,16 @@ public class ExchangeDb {
 
    static List<IndexCollector> createCheckList() {
       List<IndexCollector> items = new ArrayList<IndexCollector>();
-      items.add(new IndexCollector("osee.txs.data", GAMMA_ID, GAMMA_ID_REG_ALIASES));
-      items.add(new IndexCollector("osee.tx.details.data", TRANSACTION_ID, TRANSACTION_ID_REG_ALIASES,
+      items.add(new IndexCollector(ExportItem.OSEE_TXS_DATA, GAMMA_ID, GAMMA_ID_REG_ALIASES));
+      items.add(new IndexCollector(ExportItem.OSEE_TXS_ARCHIVED_DATA, GAMMA_ID, GAMMA_ID_REG_ALIASES));
+      items.add(new IndexCollector(ExportItem.OSEE_TX_DETAILS_DATA, TRANSACTION_ID, TRANSACTION_ID_REG_ALIASES,
             TRANSACTION_ID_NEG_ONE_ALIASES));
-      items.add(new IndexCollector("osee.artifact.data", ARTIFACT_ID, ARTIFACT_ID_REG_ALIASES,
+      items.add(new IndexCollector(ExportItem.OSEE_ARTIFACT_DATA, ARTIFACT_ID, ARTIFACT_ID_REG_ALIASES,
             ARTIFACT_ID_NEG_ONE_ALIASES));
-      items.add(new IndexCollector("osee.attribute.data", ATTRIBUTE_ID));
-      items.add(new IndexCollector("osee.relation.link.data", RELATION_ID));
-      items.add(new IndexCollector("osee.branch.data", BRANCH_ID, BRANCH_ID_REG_ALIASES, BRANCH_ID_NEG_ONE_ALIASES));
+      items.add(new IndexCollector(ExportItem.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_ID));
+      items.add(new IndexCollector(ExportItem.OSEE_RELATION_LINK_DATA, RELATION_ID));
+      items.add(new IndexCollector(ExportItem.OSEE_BRANCH_DATA, BRANCH_ID, BRANCH_ID_REG_ALIASES,
+            BRANCH_ID_NEG_ONE_ALIASES));
       return items;
    }
 

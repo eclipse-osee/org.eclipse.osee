@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -24,14 +25,14 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Roberto E. Escobar
  */
 public final class IndexCollector {
-   private final String source;
+   private final ExportItem source;
    private final String primaryKey;
    private final Set<String> aliases;
    private final Set<String> negativeOneAliases;
    private final Set<Long> ids;
    private final Map<String, Set<Long>> notFound;
 
-   IndexCollector(String source, String primaryKey, String[] aliases, String[] negativeOneAliases) {
+   IndexCollector(ExportItem source, String primaryKey, String[] aliases, String[] negativeOneAliases) {
       this.source = source;
       this.primaryKey = primaryKey.toLowerCase();
       this.ids = java.util.Collections.synchronizedSet(new HashSet<Long>());
@@ -53,15 +54,15 @@ public final class IndexCollector {
       this.notFound = java.util.Collections.synchronizedMap(new HashMap<String, Set<Long>>());
    }
 
-   IndexCollector(String source, String primaryKey, String[] aliases) {
+   IndexCollector(ExportItem source, String primaryKey, String[] aliases) {
       this(source, primaryKey, aliases, null);
    }
 
-   IndexCollector(String source, String primaryKey) {
+   IndexCollector(ExportItem source, String primaryKey) {
       this(source, primaryKey, new String[] {primaryKey}, null);
    }
 
-   public String getSource() {
+   public ExportItem getSource() {
       return source;
    }
 
