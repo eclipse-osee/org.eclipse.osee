@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArti
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
@@ -60,15 +61,32 @@ public class ChangeArtifactType {
          processRelations(artifact, artifactType);
          artifactsUserAccepted.add(artifact);
          if (doesUserAcceptArtifactChange(artifact, artifactType)) {
-            changeArtifactTypeThroughHistory(artifact, artifactType);
-            artifactChanges.add(new EventChangeTypeBasicGuidArtifact(artifact.getBranch().getGuid(),
-                  artifact.getArtifactType().getGuid(), artifactType.getGuid(), artifact.getGuid()));
+            ArtifactType originalType = artifact.getArtifactType();
+            boolean success = changeArtifactTypeThroughHistory(artifact, artifactType);
+            if (success) {
+               artifactChanges.add(new EventChangeTypeBasicGuidArtifact(artifact.getBranch().getGuid(),
+                     originalType.getGuid(), artifactType.getGuid(), artifact.getGuid()));
+            }
          }
       }
 
       // Kick Local and Remote Events
       OseeEventManager.kickArtifactsChangeTypeEvent(ChangeArtifactType.class, artifactType.getId(),
             artifactType.getGuid(), new LoadedArtifacts(artifactsUserAccepted), artifactChanges);
+   }
+
+   public static void handleRemoteChangeType(EventChangeTypeBasicGuidArtifact guidArt) {
+      try {
+         Artifact artifact =
+               ArtifactCache.getActive(guidArt.getGuid(), BranchManager.getBranchByGuid(guidArt.getBranchGuid()));
+         if (artifact == null) return;
+         ArtifactCache.deCache(artifact);
+         RelationManager.deCache(artifact);
+         artifact.setArtifactType(ArtifactTypeManager.getTypeByGuid(guidArt.getArtTypeGuid()));
+         artifact.clearEditState();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Error handling remote change type", ex);
+      }
    }
 
    public static void changeArtifactTypeReportOnly(StringBuffer results, Collection<Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {
@@ -164,23 +182,28 @@ public class ChangeArtifactType {
     * @param newArtifactType
     * @throws OseeCoreException
     */
-   private static void changeArtifactTypeThroughHistory(Artifact artifact, ArtifactType newArtifactType) throws OseeCoreException {
+   private static boolean changeArtifactTypeThroughHistory(Artifact artifact, ArtifactType newArtifactType) throws OseeCoreException {
       for (Attribute<?> attribute : attributesToPurge) {
          attribute.purge();
       }
       for (RelationLink relation : relationsToDelete) {
          relation.delete(true);
       }
+      ArtifactCache.deCache(artifact);
+      RelationManager.deCache(artifact);
 
       ArtifactType originalType = artifact.getArtifactType();
       artifact.setArtifactType(newArtifactType);
       try {
-         ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact t1 SET t1.art_type_id = ? WHERE t1.art_id = ?",
+         ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact SET art_type_id = ? WHERE art_id = ?",
                newArtifactType.getId(), artifact.getArtId());
       } catch (OseeDataStoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          artifact.setArtifactType(originalType);
+         return false;
       } finally {
          artifact.clearEditState();
       }
+      return true;
    }
 }

@@ -35,12 +35,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -127,7 +129,13 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
          // Handle Modified Artifacts
          else if (guidArt.getModType() == EventModType.Modified) {
             updateModifiedArtifact((EventModifiedBasicGuidArtifact) guidArt);
-         } else {
+         }
+         // Handle Change Type Artifacts
+         else if (guidArt.getModType() == EventModType.ChangeType) {
+            ChangeArtifactType.handleRemoteChangeType((EventChangeTypeBasicGuidArtifact) guidArt);
+         }
+         // Unknown mod type
+         else {
             OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled mod type [%s]", guidArt.getModType()));
          }
       }

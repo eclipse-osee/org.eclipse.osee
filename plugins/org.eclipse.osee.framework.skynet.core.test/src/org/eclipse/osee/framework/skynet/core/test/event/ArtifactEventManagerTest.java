@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
@@ -758,14 +759,18 @@ public class ArtifactEventManagerTest {
       }
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
-      Assert.assertEquals(CoreArtifactTypes.GeneralData.getGuid(), guidArt.getFromArtTypeGuid());
-      // TODO Framework needs to reload artifact as new type; doesn't happen yet
-      Assert.assertEquals(CoreArtifactTypes.Heading.getGuid(), newArt.getArtifactType().getGuid());
       Assert.assertEquals(CoreArtifactTypes.Heading.getGuid(), guidArt.getArtTypeGuid());
+      Assert.assertEquals(CoreArtifactTypes.GeneralData.getGuid(), guidArt.getFromArtTypeGuid());
+      // Reload artifact; since artifact cache cleared, it should be loaded as new artifact type
+      Artifact changedArt = ArtifactQuery.getArtifactFromId(newArt.getGuid(), newArt.getBranch());
+      Assert.assertEquals(CoreArtifactTypes.Heading.getGuid(), changedArt.getArtifactType().getGuid());
 
       TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
    }
 
+   /**
+    * Need to always get a new relationId that hasn't been used in this DB yet
+    */
    private int getIncrementingRelationId() {
       return 9999 + IncrementingNum.get();
    }

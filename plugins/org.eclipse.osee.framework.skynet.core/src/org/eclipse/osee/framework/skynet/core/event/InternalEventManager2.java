@@ -121,11 +121,20 @@ public class InternalEventManager2 {
       eventLog("OEM2:kickArtifactsChangeTypeEvent " + sender + " - " + artifactChanges);
       Runnable runnable = new Runnable() {
          public void run() {
-            // Kick LOCAL
-            FrameworkEventManager.processEventArtifactsAndRelations(sender, artifactChanges);
-
-            // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
+               if (enableRemoteEventLoopback) {
+                  OseeLog.log(
+                        InternalEventManager.class,
+                        Level.WARNING,
+                        "OEM2: TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+               }
+
+               // Kick LOCAL
+               if (!enableRemoteEventLoopback || enableRemoteEventLoopback && sender.isRemote()) {
+                  FrameworkEventManager.processEventArtifactsAndRelations(sender, artifactChanges);
+               }
+
+               // Kick REMOTE (If source was Local and this was not a default branch changed event
                if (sender.isLocal()) {
                   TransactionEvent transactionEvent = new TransactionEvent();
                   transactionEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());

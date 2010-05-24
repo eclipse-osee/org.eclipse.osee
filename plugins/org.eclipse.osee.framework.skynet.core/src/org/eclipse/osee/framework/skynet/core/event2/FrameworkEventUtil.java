@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -62,6 +63,13 @@ public class FrameworkEventUtil {
             event.getArtifacts().add(
                   getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(), guidArt.getBasicGuidArtifact(),
                         ((EventModifiedBasicGuidArtifact) guidArt).getAttributeChanges()));
+         } else if (guidArt.getModType() == EventModType.ChangeType) {
+            EventChangeTypeBasicGuidArtifact changeGuidArt = (EventChangeTypeBasicGuidArtifact) guidArt;
+            RemoteBasicGuidArtifact1 remGuidArt =
+                  getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(), guidArt.getBasicGuidArtifact(), null);
+            remGuidArt.setArtTypeGuid(changeGuidArt.getFromArtTypeGuid());
+            remGuidArt.setToArtTypeGuid(changeGuidArt.getArtTypeGuid());
+            event.getArtifacts().add(remGuidArt);
          } else {
             event.getArtifacts().add(
                   getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(), guidArt.getBasicGuidArtifact(), null));
@@ -86,6 +94,8 @@ public class FrameworkEventUtil {
          } else {
             if (modType == EventModType.Modified) {
                event.getArtifacts().add(getEventModifiedBasicGuidArtifact(modType, remGuidArt));
+            } else if (modType == EventModType.ChangeType) {
+               event.getArtifacts().add(getEventChangeTypeBasicGuidArtifact(modType, remGuidArt));
             } else {
                event.getArtifacts().add(getEventBasicGuidArtifact(modType, remGuidArt));
             }
@@ -145,6 +155,11 @@ public class FrameworkEventUtil {
    public static EventBasicGuidArtifact getEventBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {
       return new EventBasicGuidArtifact(modType, remGuidArt.getBranchGuid(), remGuidArt.getArtTypeGuid(),
             remGuidArt.getArtGuid());
+   }
+
+   public static EventChangeTypeBasicGuidArtifact getEventChangeTypeBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {
+      return new EventChangeTypeBasicGuidArtifact(remGuidArt.getBranchGuid(), remGuidArt.getArtTypeGuid(),
+            remGuidArt.getToArtTypeGuid(), remGuidArt.getArtGuid());
    }
 
    public static EventModifiedBasicGuidArtifact getEventModifiedBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {

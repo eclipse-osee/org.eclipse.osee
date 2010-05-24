@@ -655,8 +655,8 @@ public class RelationManager {
       Set<Pair<RelationType, RelationSide>> typesToUpdate = new HashSet<Pair<RelationType, RelationSide>>();
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
-            typesToUpdate.add(new Pair<RelationType, RelationSide>(relation.getRelationType(), relation.getOppositeSide(
-                  artifact)));
+            typesToUpdate.add(new Pair<RelationType, RelationSide>(relation.getRelationType(),
+                  relation.getOppositeSide(artifact)));
             relation.delete(reorderRelations);
          }
       }
@@ -810,5 +810,9 @@ public class RelationManager {
    private static void updateOrderListOnDelete(Artifact artifact, RelationType relationType, RelationSide relationSide, List<Artifact> relatives) throws OseeCoreException {
       RelationTypeSideSorter sorter = createTypeSideSorter(artifact, relationType, relationSide);
       sorter.setOrder(relatives, sorter.getSorterId());
+   }
+
+   public static void deCache(Artifact artifact) {
+      relationsByType.removeValues(new ArtifactKey(artifact));
    }
 }
