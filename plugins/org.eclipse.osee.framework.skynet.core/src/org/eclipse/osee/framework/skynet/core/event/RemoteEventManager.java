@@ -678,12 +678,8 @@ public class RemoteEventManager {
    public static void internalHandleRemoteArtifactDeleted(Artifact artifact) throws OseeCoreException {
       if (artifact == null) {
          return;
-      }
-      if (!artifact.isHistorical()) {
-         if (!InternalEventManager.isEnableRemoteEventLoopback()) {
-            ArtifactCache.deCache(artifact);
-            artifact.internalSetDeleted();
-         }
+      } else {
+         artifact.internalSetDeletedFromRemoteEvent();
       }
    }
 

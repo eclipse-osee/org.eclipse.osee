@@ -77,7 +77,7 @@ public abstract class Attribute<T> {
 
    /**
     * Base implementation does nothing. Subclasses may override to do setup that depends on the attribute state data.
-    *
+    * 
     * @throws OseeCoreException
     */
    protected void uponInitialize() throws OseeCoreException {
@@ -160,7 +160,7 @@ public abstract class Attribute<T> {
    /**
     * Subclasses must provide an implementation of this method and in general should not override the other set value
     * methods
-    *
+    * 
     * @param value
     * @throws OseeCoreException
     */
@@ -243,7 +243,7 @@ public abstract class Attribute<T> {
 
    /**
     * Currently this method provides support for quasi attribute type inheritance
-    *
+    * 
     * @param artifactType
     * @return whether this attribute's type or any of its super-types are the specified type
     */
@@ -253,7 +253,7 @@ public abstract class Attribute<T> {
 
    /**
     * Currently this method provides support for quasi attribute type inheritance
-    *
+    * 
     * @param artifactType
     * @return whether this attribute's type or any of its super-types are the specified type
     */
@@ -267,7 +267,7 @@ public abstract class Attribute<T> {
 
    /**
     * Deletes the attribute
-    *
+    * 
     * @throws OseeStateException
     */
    public final void setArtifactDeleted() throws OseeStateException {
@@ -276,7 +276,7 @@ public abstract class Attribute<T> {
 
    /**
     * Deletes the attribute
-    *
+    * 
     * @throws OseeStateException
     */
    public final void delete() throws OseeStateException {
@@ -342,8 +342,8 @@ public abstract class Attribute<T> {
          return modificationType.isDeleted();
       } catch (NullPointerException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, String.format(
-               "Unexpected null modification type for artifact attribute [%d] gamma [%d] on artifact [%s]",
-               getId(), getGammaId(), getArtifact().getSafeName()), ex);
+               "Unexpected null modification type for artifact attribute [%d] gamma [%d] on artifact [%s]", getId(),
+               getGammaId(), getArtifact().getSafeName()), ex);
       }
       return false;
    }
@@ -364,4 +364,9 @@ public abstract class Attribute<T> {
    public void internalSetModificationType(ModificationType modificationType) {
       this.modificationType = modificationType;
    }
+
+   public void internalSetDeletedFromRemoteEvent() throws OseeCoreException {
+      internalSetModificationType(ModificationType.DELETED);
+   }
+
 }

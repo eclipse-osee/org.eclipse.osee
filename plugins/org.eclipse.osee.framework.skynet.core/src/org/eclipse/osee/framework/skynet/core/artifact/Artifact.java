@@ -396,11 +396,11 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(getBranch());
 
       if (root.equals(getArtifactRoot())) {
-            return false;
+         return false;
       } else {
          return true;
-         }
       }
+   }
 
    public Artifact getArtifactRoot() throws OseeCoreException {
       Artifact artifactRoot = null;
@@ -1109,6 +1109,17 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
       for (Attribute<?> attribute : getAttributes()) {
          attribute.setArtifactDeleted();
+      }
+   }
+
+   public void internalSetDeletedFromRemoteEvent() throws OseeCoreException {
+      if (!isHistorical()) {
+         this.modType = ModificationType.DELETED;
+         ArtifactCache.deCache(this);
+
+         for (Attribute<?> attribute : getAttributes()) {
+            attribute.internalSetDeletedFromRemoteEvent();
+         }
       }
    }
 
