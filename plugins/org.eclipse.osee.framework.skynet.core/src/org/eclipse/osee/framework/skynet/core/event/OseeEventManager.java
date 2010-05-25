@@ -12,17 +12,21 @@ package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.logging.Level;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -48,10 +52,6 @@ public class OseeEventManager {
 
    /**
     * Kick local remote event manager event
-    * 
-    * @param sender
-    * @param remoteEventServiceEventType
-    * @throws OseeCoreException
     */
    public static void kickRemoteEventManagerEvent(Object source, RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
       if (InternalEventManager.isDisableEvents()) {
@@ -70,6 +70,7 @@ public class OseeEventManager {
 
    //Kick LOCAL and REMOTE branch events
    public static void kickBranchEvent(Object source, BranchEventType branchEventType, int branchId, String branchGuid) throws OseeCoreException {
+      System.err.println("OEM: kickBranchEvent: type: " + branchEventType + " guid: " + branchGuid + " - " + source);
       if (testBranchEventListener != null) {
          testBranchEventListener.handleBranchEvent(getSender(source), branchEventType, branchId);
       }
@@ -80,6 +81,7 @@ public class OseeEventManager {
       BranchEvent branchEvent = new BranchEvent();
       branchEvent.setBranchGuid(branchGuid);
       branchEvent.setEventType(branchEventType);
+      branchEvent.setNetworkSender(getSender(source).getNetworkSender2());
       InternalEventManager2.kickBranchEvent(getSender(source), branchEvent);
    }
 
@@ -208,4 +210,33 @@ public class OseeEventManager {
       }
       testBranchEventListener = branchEventListener;
    }
+
+   public static boolean isEventDebugConsole() {
+      return System.getProperty("eventDebug").equals("console");
+   }
+
+   public static boolean isEventDebugErrorLog() {
+      return System.getProperty("eventDebug").equals("log") || "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Events"));
+   }
+
+   public static void eventLog(String output) {
+      eventLog(output, null);
+   }
+
+   public static void eventLog(String output, Exception ex) {
+      try {
+         if (isEventDebugConsole()) {
+            System.err.println(output + (ex != null ? " <<ERROR>> " + ex.getLocalizedMessage() : ""));
+         } else if (isEventDebugErrorLog()) {
+            if (ex != null) {
+               OseeLog.log(Activator.class, Level.SEVERE, output, ex);
+            } else {
+               OseeLog.log(Activator.class, Level.INFO, output);
+            }
+         }
+      } catch (Exception ex1) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex1);
+      }
+   }
+
 }

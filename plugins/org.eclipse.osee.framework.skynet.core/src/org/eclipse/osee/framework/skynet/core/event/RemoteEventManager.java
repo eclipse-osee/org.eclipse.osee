@@ -84,6 +84,7 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
  * Manages remote events from the SkynetEventService.
  * 
  * @author Jeff C. Phillips
+ * @author Donald G. Dunne
  */
 public class RemoteEventManager {
    private static String ACCEPTABLE_SERVICE;
@@ -97,11 +98,11 @@ public class RemoteEventManager {
    private RemoteEventManager() {
       super();
       if (OseeProperties.isNewEvents()) {
-         OseeLog.log(Activator.class, Level.INFO, "REM1 Disabled");
+         OseeEventManager.eventLog("REM1 Disabled");
          internalSkynetEventManager = null;
          clientEventListener = null;
       } else {
-         OseeLog.log(Activator.class, Level.INFO, "REM1 Enabled");
+         OseeEventManager.eventLog("REM1 Enabled");
          internalSkynetEventManager = new InternalSkynetEventManager();
          clientEventListener = new EventListener();
          checkJiniRegistration();
@@ -174,7 +175,7 @@ public class RemoteEventManager {
        * to be modified so this client doesn't think the events came from itself.
        */
       if (InternalEventManager.isEnableRemoteEventLoopback()) {
-         OseeLog.log(Activator.class, Level.INFO, "REM: Loopback enabled - Returning events as Remote event.");
+         OseeEventManager.eventLog("REM: Loopback enabled - Returning events as Remote event.");
          Thread thread = new Thread() {
             @Override
             public void run() {
@@ -538,7 +539,7 @@ public class RemoteEventManager {
                            if (attribute != null) {
                               if (attribute.isDirty()) {
                                  dirtyAttributeName.add(attribute.getNameValueDescription());
-                                 OseeLog.log(Activator.class, Level.INFO, String.format(
+                                 OseeEventManager.eventLog(String.format(
                                        "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
                                        attribute.getId(), attribute.toString()));
                               }
@@ -558,7 +559,7 @@ public class RemoteEventManager {
                                  attribute.internalSetGammaId(skynetAttributeChange.getGammaId());
                                  attribute.setNotDirty();
                               } catch (OseeCoreException ex) {
-                                 OseeLog.log(Activator.class, Level.INFO, String.format(
+                                 OseeEventManager.eventLog(String.format(
                                        "Exception updating %s's attribute %d [/n%s/n].", artifact.getSafeName(),
                                        attribute.getId(), attribute.toString()), ex);
                               }
@@ -579,7 +580,7 @@ public class RemoteEventManager {
                                     modificationType, false, skynetAttributeChange.getData());
                            }
                         } catch (OseeCoreException ex) {
-                           OseeLog.log(Activator.class, Level.INFO, String.format(
+                           OseeEventManager.eventLog(String.format(
                                  "Exception updating %s's attribute change for attributeTypeId %d.",
                                  artifact.getSafeName(), skynetAttributeChange.getTypeId()), ex);
                         }
@@ -606,7 +607,7 @@ public class RemoteEventManager {
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            OseeEventManager.eventLog("Update Artifacts", ex);
          }
       }
 
@@ -670,7 +671,7 @@ public class RemoteEventManager {
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            OseeEventManager.eventLog("Update Relations", ex);
          }
       }
    }

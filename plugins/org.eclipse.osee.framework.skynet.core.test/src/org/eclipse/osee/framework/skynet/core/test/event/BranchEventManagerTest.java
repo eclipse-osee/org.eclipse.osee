@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -26,7 +27,10 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
@@ -73,9 +77,39 @@ public class BranchEventManagerTest {
       testEvents__typeChange(workingBranch);
       testEvents__stateChange(workingBranch);
       testEvents__deleted(workingBranch);
-      testEvents__purged(workingBranch);
+      testEvents__purged(topLevel);
+      testEvents__committed(topLevel);
 
       TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
+   }
+
+   private Branch testEvents__committed(Branch topLevel) throws Exception {
+      clearEventCollections();
+      Branch workingBranch =
+            BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to commit", UserManager.getUser());
+
+      Assert.assertNotNull(workingBranch);
+
+      final String guid = workingBranch.getGuid();
+      Assert.assertNotNull(workingBranch);
+      Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, workingBranch);
+      newArt.persist();
+      ConflictManagerExternal conflictManager = new ConflictManagerExternal(topLevel, workingBranch);
+      BranchManager.commitBranch(null, conflictManager, true, true);
+
+      Thread.sleep(4000);
+
+      Assert.assertNotNull(resultBranchEvent);
+      Assert.assertEquals(BranchEventType.Committed, resultBranchEvent.getEventType());
+      if (isRemoteTest()) {
+         Assert.assertTrue(resultSender.isRemote());
+      } else {
+         Assert.assertTrue(resultSender.isLocal());
+      }
+      Assert.assertEquals(guid, resultBranchEvent.getBranchGuid());
+      Assert.assertEquals(BranchState.COMMITTED, workingBranch.getBranchState());
+      Assert.assertFalse(workingBranch.isEditable());
+      return workingBranch;
    }
 
    private Branch testEvents__purged(Branch topLevel) throws Exception {

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.event;
 
 import java.rmi.RemoteException;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -25,7 +24,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
@@ -89,7 +87,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                         return Status.OK_STATUS;
                      }
                   } catch (OseeAuthenticationRequiredException ex1) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex1);
+                     OseeEventManager.eventLog("REM2: authentication", ex1);
                      new Status(Status.ERROR, Activator.PLUGIN_ID, -1, ex1.getLocalizedMessage(), ex1);
                   }
                   // Handles TransactionEvents, ArtifactChangeTypeEvents, ArtifactPurgeEvents
@@ -101,7 +99,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                         updateRelations(sender, transEvent);
                         InternalEventManager2.kickTransactionEvent(sender, transEvent);
                      } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
+                        OseeEventManager.eventLog("REM2: RemoteTransactionEvent1", ex);
                      }
                   } else if (remoteEvent instanceof RemoteBranchEvent1) {
                      try {
@@ -109,7 +107,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                         updateBranches(sender, branchEvent);
                         InternalEventManager2.kickBranchEvent(sender, branchEvent);
                      } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
+                        OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
                      }
                   }
                   monitor.done();
@@ -133,7 +131,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
          }
          BranchManager.refreshBranches();
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeEventManager.eventLog("REM2: updateBranches", ex);
       }
    }
 
@@ -143,11 +141,11 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
    private static void updateArtifacts(Sender sender, TransactionEvent transEvent) {
       // Don't crash on any one artifact update problem (no update method throughs exceptions)
       for (EventBasicGuidArtifact guidArt : transEvent.getArtifacts()) {
-         System.out.println("UpdateArtifacts -> " + guidArt);
+         OseeEventManager.eventLog(String.format("REM2: updateArtifact -> [%s]", guidArt));
          // Handle Added Artifacts
          // Nothing to do for added cause they're not in cache yet.  Apps will load if they need them.
          if (guidArt.getModType() == EventModType.Added) {
-            System.out.println("UpdateArtifacts -> added " + guidArt);
+            // do nothing cause not in cache
          }
          // Handle Deleted Artifacts
          else if (guidArt.getModType() == EventModType.Deleted || guidArt.getModType() == EventModType.Purged) {
@@ -163,7 +161,8 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
          }
          // Unknown mod type
          else {
-            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled mod type [%s]", guidArt.getModType()));
+            OseeEventManager.eventLog(String.format("REM2: updateArtifacts - Unhandled mod type [%s]",
+                  guidArt.getModType()));
          }
       }
    }
@@ -172,7 +171,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       for (EventBasicGuidRelation guidArt : transEvent.getRelations()) {
          // Don't crash on any one relation update problem
          try {
-            System.out.println("UpdateRelation -> " + guidArt);
+            OseeEventManager.eventLog(String.format("REM2: updateRelation -> [%s]", guidArt));
             RelationEventType eventType = guidArt.getModType();
             String branchGuid = guidArt.getBranchGuid();
             Branch branch = BranchManager.getBranchByGuid(branchGuid);
@@ -223,11 +222,11 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                } else if (eventType == RelationEventType.ReOrdered) {
                   // TODO Handle this
                } else {
-                  OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled mod type [%s]", eventType));
+                  OseeEventManager.eventLog(String.format("REM2: updateRelations - Unhandled mod type [%s]", eventType));
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            OseeEventManager.eventLog("REM2: updateRelations", ex);
          }
       }
    }
@@ -243,7 +242,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
             RemoteEventManager.internalHandleRemoteArtifactDeleted(artifact);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeEventManager.eventLog("REM2: updateDeletedArtifact", ex);
       }
    }
 
@@ -266,15 +265,14 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                      // Process MODIFIED / DELETED attribute
                      if (attribute != null) {
                         if (attribute.isDirty()) {
-                           OseeLog.log(Activator.class, Level.INFO, String.format(
-                                 "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
-                                 attribute.getId(), attribute.toString()));
+                           OseeEventManager.eventLog(String.format("%s's attribute %d [/n%s/n] has been overwritten.",
+                                 artifact.getSafeName(), attribute.getId(), attribute.toString()));
                         }
                         try {
                            if (modificationType == null) {
-                              OseeLog.log(Activator.class, Level.SEVERE, String.format(
-                                    "MOD1: Can't get mod type for %s's attribute %d.", artifact.getArtifactTypeName(),
-                                    attrChange.getAttributeId()));
+                              OseeEventManager.eventLog(String.format(
+                                    "REM2: updateModifiedArtifact - Can't get mod type for %s's attribute %d.",
+                                    artifact.getArtifactTypeName(), attrChange.getAttributeId()));
                               continue;
                            }
                            if (modificationType.isDeleted()) {
@@ -286,8 +284,8 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                            attribute.internalSetGammaId(attrChange.getGammaId());
                            attribute.setNotDirty();
                         } catch (OseeCoreException ex) {
-                           OseeLog.log(Activator.class, Level.INFO, String.format(
-                                 "Exception updating %s's attribute %d [/n%s/n].", artifact.getSafeName(),
+                           OseeEventManager.eventLog(String.format(
+                                 "REM2: Exception updating %s's attribute %d [/n%s/n].", artifact.getSafeName(),
                                  attribute.getId(), attribute.toString()), ex);
                         }
                      }
@@ -295,9 +293,8 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                      // Process NEW attribute
                      else {
                         if (modificationType == null) {
-                           OseeLog.log(Activator.class, Level.SEVERE, String.format(
-                                 "MOD2: Can't get mod type for %s's attribute %d.", artifact.getArtifactTypeName(),
-                                 attrChange.getAttributeId()));
+                           OseeEventManager.eventLog(String.format("REM2: Can't get mod type for %s's attribute %d.",
+                                 artifact.getArtifactTypeName(), attrChange.getAttributeId()));
                            continue;
                         }
                         artifact.internalInitializeAttribute(attributeType, attrChange.getAttributeId(),
@@ -305,15 +302,15 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                                     new Object[attrChange.getData().size()]));
                      }
                   } catch (OseeCoreException ex) {
-                     OseeLog.log(Activator.class, Level.INFO, String.format(
-                           "Exception updating %s's attribute change for attributeTypeId %d.", artifact.getSafeName(),
-                           attributeType.getId()), ex);
+                     OseeEventManager.eventLog(String.format(
+                           "REM2: Exception updating %s's attribute change for attributeTypeId %d.",
+                           artifact.getSafeName(), attributeType.getId()), ex);
                   }
                }
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeEventManager.eventLog("REM2: updateModifiedArtifact", ex);
       }
    }
 
@@ -324,9 +321,9 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
    public void registerForRemoteEvents() throws OseeCoreException {
       if (OseeProperties.isNewEvents()) {
          ResEventManager.getInstance().start(this);
-         OseeLog.log(Activator.class, Level.INFO, "REM2 Enabled");
+         OseeEventManager.eventLog("REM2: Enabled");
       } else {
-         OseeLog.log(Activator.class, Level.INFO, "REM2 Disabled");
+         OseeEventManager.eventLog("REM2: Disabled");
       }
    }
 
@@ -343,6 +340,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
     */
    public void kick(final RemoteEvent remoteEvent) {
       if (OseeProperties.isNewEvents() && isConnected()) {
+         OseeEventManager.eventLog(String.format("REM2: kick - [%s]", remoteEvent));
          Job job =
                new Job(String.format("[%s] - sending [%s]", getClass().getSimpleName(),
                      remoteEvent.getClass().getSimpleName())) {
@@ -351,7 +349,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                      try {
                         ResEventManager.getInstance().kick(remoteEvent);
                      } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
+                        OseeEventManager.eventLog("REM2: kick", ex);
                         return new Status(Status.ERROR, Activator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
                      }
                      return Status.OK_STATUS;
@@ -362,7 +360,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       }
 
       if (InternalEventManager2.isEnableRemoteEventLoopback()) {
-         OseeLog.log(Activator.class, Level.INFO, "REM2: Loopback enabled - Returning events as Remote event.");
+         OseeEventManager.eventLog("REM2: Loopback enabled - Returning events as Remote event.");
          Thread thread = new Thread() {
             @Override
             public void run() {
@@ -371,8 +369,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                   remoteEvent.getNetworkSender().setSessionId(newSessionId);
                   instance.onEvent(remoteEvent);
                } catch (RemoteException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-
+                  OseeEventManager.eventLog("REM2: kick w/ loopback", ex);
                }
             }
          };

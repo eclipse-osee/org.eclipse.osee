@@ -21,7 +21,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -71,8 +70,6 @@ public class InternalEventManager {
    private static final List<IEventListener> listeners = new CopyOnWriteArrayList<IEventListener>();
    public static final Collection<UnloadedArtifact> EMPTY_UNLOADED_ARTIFACTS = Collections.emptyList();
    private static boolean disableEvents = false;
-   private static final boolean DEBUG =
-         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Events"));
 
    private static final ThreadFactory threadFactory = new OseeEventThreadFactory("Osee Events");
    private static final ExecutorService executorService =
@@ -88,7 +85,7 @@ public class InternalEventManager {
       if (isDisableEvents()) {
          return;
       }
-      eventLog("OEM: kickRemoteEventManagerEvent: type: " + remoteEventServiceEventType + " - " + sender);
+      OseeEventManager.eventLog("IEM1: kickRemoteEventManagerEvent: type: " + remoteEventServiceEventType + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
@@ -114,7 +111,7 @@ public class InternalEventManager {
       }
 
       if (!broadcastEventType.isPingOrPong()) {
-         eventLog("OEM: kickBroadcastEvent: type: " + broadcastEventType.name() + " message: " + message + " - " + sender);
+         OseeEventManager.eventLog("IEM1: kickBroadcastEvent: type: " + broadcastEventType.name() + " message: " + message + " - " + sender);
       }
       Runnable runnable = new Runnable() {
          public void run() {
@@ -145,7 +142,7 @@ public class InternalEventManager {
       if (isDisableEvents()) {
          return;
       }
-      eventLog("OEM: kickBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
+      OseeEventManager.eventLog("IEM1: kickBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             try {
@@ -154,7 +151,7 @@ public class InternalEventManager {
                   OseeLog.log(
                         InternalEventManager.class,
                         Level.WARNING,
-                        "OEM: BranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+                        "IEM1: BranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
                // Kick LOCAL
@@ -196,7 +193,7 @@ public class InternalEventManager {
 
    // Kick LOCAL and REMOTE branch events
    static void kickMergeBranchEvent(final Sender sender, final MergeBranchEventType branchEventType, final int branchId) {
-      eventLog("OEM: kickMergeBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
+      OseeEventManager.eventLog("IEM1: kickMergeBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             try {
@@ -205,7 +202,7 @@ public class InternalEventManager {
                   OseeLog.log(
                         InternalEventManager.class,
                         Level.WARNING,
-                        "OEM: MergeBranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+                        "IEM1: MergeBranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
                // Kick LOCAL
@@ -251,7 +248,7 @@ public class InternalEventManager {
       if (isDisableEvents()) {
          return;
       }
-      eventLog("OEM: kickAccessControlEvent - type: " + accessControlEventType + sender + " loadedArtifacts: " + loadedArtifacts);
+      OseeEventManager.eventLog("IEM1: kickAccessControlEvent - type: " + accessControlEventType + sender + " loadedArtifacts: " + loadedArtifacts);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
@@ -291,7 +288,7 @@ public class InternalEventManager {
     * This event does NOT go external
     */
    static void kickLocalBranchToArtifactCacheUpdateEvent(final Sender sender) throws OseeCoreException {
-      eventLog("OEM: kickLocalBranchToArtifactCacheUpdateEvent - " + sender);
+      OseeEventManager.eventLog("IEM1: kickLocalBranchToArtifactCacheUpdateEvent - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
@@ -303,7 +300,7 @@ public class InternalEventManager {
 
    // Kick LOCAL artifact modified event; This event does NOT go external
    static void kickArtifactModifiedEvent(final Sender sender, final ArtifactModType artifactModType, final Artifact artifact) throws OseeCoreException {
-      eventLog("OEM: kickArtifactModifiedEvent - " + artifactModType + " - " + artifact.getGuid() + " - " + sender + " - " + artifact.getDirtySkynetAttributeChanges());
+      OseeEventManager.eventLog("IEM1: kickArtifactModifiedEvent - " + artifactModType + " - " + artifact.getGuid() + " - " + sender + " - " + artifact.getDirtySkynetAttributeChanges());
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
@@ -316,7 +313,7 @@ public class InternalEventManager {
 
    // Kick LOCAL relation modified event; This event does NOT go external
    static void kickRelationModifiedEvent(final Sender sender, final RelationEventType relationEventType, final RelationLink link, final Branch branch, final String relationType) throws OseeCoreException {
-      eventLog("OEM: kickRelationModifiedEvent - " + relationEventType + " - " + link + " - " + sender);
+      OseeEventManager.eventLog("IEM1: kickRelationModifiedEvent - " + relationEventType + " - " + link + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
@@ -332,7 +329,7 @@ public class InternalEventManager {
       if (isDisableEvents()) {
          return;
       }
-      eventLog("OEM: kickArtifactsPurgedEvent " + sender + " - " + loadedArtifacts);
+      OseeEventManager.eventLog("IEM1: kickArtifactsPurgedEvent " + sender + " - " + loadedArtifacts);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
@@ -359,7 +356,7 @@ public class InternalEventManager {
       if (isDisableEvents()) {
          return;
       }
-      eventLog("OEM: kickArtifactsChangeTypeEvent " + sender + " - " + loadedArtifacts);
+      OseeEventManager.eventLog("IEM1: kickArtifactsChangeTypeEvent " + sender + " - " + loadedArtifacts);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
@@ -387,7 +384,7 @@ public class InternalEventManager {
       if (isDisableEvents()) {
          return;
       }
-      eventLog("OEM: kickTransactionsDeletedEvent " + sender + " - " + transactionIds.length);
+      OseeEventManager.eventLog("IEM1: kickTransactionsDeletedEvent " + sender + " - " + transactionIds.length);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
@@ -411,7 +408,7 @@ public class InternalEventManager {
       if (isDisableEvents()) {
          return;
       }
-      eventLog("OEM: kickTransactionEvent #ModEvents: " + xModifiedEvents.size() + " - " + sender);
+      OseeEventManager.eventLog("IEM1: kickTransactionEvent #ModEvents: " + xModifiedEvents.size() + " - " + sender);
       final Collection<ArtifactTransactionModifiedEvent> xModifiedEventsCopy =
             new ArrayList<ArtifactTransactionModifiedEvent>();
       xModifiedEventsCopy.addAll(xModifiedEvents);
@@ -425,7 +422,7 @@ public class InternalEventManager {
                   OseeLog.log(
                         InternalEventManager.class,
                         Level.WARNING,
-                        "OEM: TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+                        "IEM1: TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
                // Kick LOCAL
@@ -452,7 +449,7 @@ public class InternalEventManager {
       if (isDisableEvents()) {
          return;
       }
-      eventLog("OEM: kickArtifactReloadEvent #Reloads: " + artifacts.size() + " - " + sender);
+      OseeEventManager.eventLog("IEM1: kickArtifactReloadEvent #Reloads: " + artifacts.size() + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             try {
@@ -461,7 +458,7 @@ public class InternalEventManager {
                   OseeLog.log(
                         InternalEventManager.class,
                         Level.WARNING,
-                        "OEM: kickArtifactReloadEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+                        "IEM1: kickArtifactReloadEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
                // Kick LOCAL
@@ -487,7 +484,7 @@ public class InternalEventManager {
       if (!priorityListeners.contains(listener)) {
          priorityListeners.add(listener);
       }
-      eventLog("OEM: addPriorityListener (" + priorityListeners.size() + ") " + listener);
+      OseeEventManager.eventLog("IEM1: addPriorityListener (" + priorityListeners.size() + ") " + listener);
    }
 
    static void addListener(IEventListener listener) {
@@ -497,11 +494,11 @@ public class InternalEventManager {
       if (!listeners.contains(listener)) {
          listeners.add(listener);
       }
-      eventLog("OEM: addListener (" + listeners.size() + ") " + listener);
+      OseeEventManager.eventLog("IEM1: addListener (" + listeners.size() + ") " + listener);
    }
 
    static void removeListeners(IEventListener listener) {
-      eventLog("OEM: removeListener: (" + listeners.size() + ") " + listener);
+      OseeEventManager.eventLog("IEM1: removeListener: (" + listeners.size() + ") " + listener);
       listeners.remove(listener);
       priorityListeners.remove(listener);
    }
@@ -801,16 +798,6 @@ public class InternalEventManager {
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-      }
-   }
-
-   public static void eventLog(String output) {
-      try {
-         if (DEBUG) {
-            OseeLog.log(InternalEventManager.class, Level.INFO, output);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
       }
    }
 

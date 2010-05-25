@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.skynet.core.event.IEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
@@ -51,6 +52,7 @@ public class FrameworkEventManager {
    }
 
    public static void processBranchEvent(Sender sender, BranchEvent branchEvent) {
+      OseeEventManager.eventLog(String.format("FEM: processBranchEvent [%s]", branchEvent));
       for (IEventListener listener : listeners) {
          IBranchListener branchListner = null;
          Collection<IEventFilter> eventFilters = null;
@@ -77,6 +79,8 @@ public class FrameworkEventManager {
    }
 
    public static void processEventArtifactsAndRelations(Sender sender, Collection<EventBasicGuidArtifact> eventArtifacts, Collection<EventBasicGuidRelation> eventRelations) {
+      OseeEventManager.eventLog(String.format("FEM: processArtsAndRels arts[%s] rels[%s]", eventArtifacts,
+            eventRelations));
       for (IEventListener listener : listeners) {
          IArtifactListener artifactListener = null;
          Collection<IEventFilter> eventFilters = null;
