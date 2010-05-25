@@ -17,15 +17,15 @@ import org.eclipse.osee.framework.core.enums.TxChange;
  * @author Ryan D. Brooks
  */
 public final class Address implements Comparable<Address> {
-   final int branchId;
-   final int itemId;
-   final int transactionId;
-   final long gammaId;
-   final ModificationType modType;
-   final TxChange txCurrent;
-   final boolean isBaseline;
-   TxChange correctedTxCurrent;
-   boolean purge;
+   private final int branchId;
+   private final int itemId;
+   private final int transactionId;
+   private final long gammaId;
+   private ModificationType modType;
+   private final TxChange txCurrent;
+   private final boolean isBaseline;
+   private TxChange correctedTxCurrent;
+   private boolean purge;
 
    public Address(boolean isBaseline, int branchId, int itemId, int transactionId, long gammaId, ModificationType modType, TxChange txCurrent) {
       super();
@@ -73,6 +73,54 @@ public final class Address implements Comparable<Address> {
 
    public boolean hasIssue() {
       return purge || correctedTxCurrent != null;
+   }
+
+   public TxChange getCorrectedTxCurrent() {
+      return correctedTxCurrent;
+   }
+
+   public void setCorrectedTxCurrent(TxChange correctedTxCurrent) {
+      this.correctedTxCurrent = correctedTxCurrent;
+   }
+
+   public boolean isPurge() {
+      return purge;
+   }
+
+   public void setPurge(boolean purge) {
+      this.purge = purge;
+   }
+
+   public int getBranchId() {
+      return branchId;
+   }
+
+   public int getItemId() {
+      return itemId;
+   }
+
+   public int getTransactionId() {
+      return transactionId;
+   }
+
+   public long getGammaId() {
+      return gammaId;
+   }
+
+   public ModificationType getModType() {
+      return modType;
+   }
+
+   public void setModType(ModificationType modType) {
+      this.modType = modType;
+   }
+
+   public TxChange getTxCurrent() {
+      return txCurrent;
+   }
+
+   public boolean isBaseline() {
+      return isBaseline;
    }
 
    @Override
