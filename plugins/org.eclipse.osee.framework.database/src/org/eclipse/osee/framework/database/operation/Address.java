@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 /**
  * @author Ryan D. Brooks
  */
-public final class Address {
+public final class Address implements Comparable<Address> {
    final int branchId;
    final int itemId;
    final int transactionId;
@@ -78,5 +78,14 @@ public final class Address {
    @Override
    public String toString() {
       return "Address [branchId=" + branchId + ", gammaId=" + gammaId + ", itemId=" + itemId + ", modType=" + modType + ", transactionId=" + transactionId + ", txCurrent=" + txCurrent + "]";
+   }
+
+   @Override
+   public int compareTo(Address otherAddress) {
+      if (transactionId != otherAddress.transactionId) {
+         return transactionId - otherAddress.transactionId;
+      } else {
+         return (int) (gammaId - otherAddress.gammaId);
+      }
    }
 }
