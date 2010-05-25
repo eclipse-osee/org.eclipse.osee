@@ -15,9 +15,10 @@ import org.eclipse.core.runtime.Platform;
 /**
  * @author Roberto E. Escobar
  */
-public class EclipseVersion {
+public final class EclipseVersion {
 
    private EclipseVersion() {
+      super();
    }
 
    public static boolean isVersion(String toCheck) {

@@ -30,6 +30,7 @@ public class VersionControl {
    }
 
    private VersionControl() {
+      super();
    }
 
    public URI getLocalFileMatchingRepositoryUrl(String url, String revision) {
@@ -66,19 +67,21 @@ public class VersionControl {
       if (p.getProperty("file.separator").equals("/")) {
          File ctFile = new File("/usr/src/rational/2003.06.00/rhat_x86/clearcase/rhat_x86/bin/cleartool");
 
-         if (ctFile.exists())
+         if (ctFile.exists()) {
             return true;
-         else
+         } else {
             return false;
+         }
       }
       // Windows
       if (p.getProperty("file.separator").equals("\\")) {
          File ctFile = new File("C:\\Program Files\\Rational\\ClearCase\\bin\\cleartool.exe");
 
-         if (ctFile.exists())
+         if (ctFile.exists()) {
             return true;
-         else
+         } else {
             return false;
+         }
       }
       return false;
    }

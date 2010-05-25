@@ -21,10 +21,10 @@ import org.eclipse.osee.framework.svn.enums.RepositoryEnums.EntryFields;
  */
 public class RepositoryEntry implements IRepositoryEntry {
 
-   private Map<EntryFields, String> entryMap;
+   private final Map<EntryFields, String> entryMap;
    private String modifiedFlag;
-   private String fileType;
-   private String controlSystem;
+   private final String fileType;
+   private final String controlSystem;
 
    public RepositoryEntry(String fileType, String controlSystem) {
       this.entryMap = new HashMap<EntryFields, String>();
@@ -52,6 +52,7 @@ public class RepositoryEntry implements IRepositoryEntry {
       entryMap.put(field, value);
    }
 
+   @Override
    public String toString() {
       String toReturn = " Entry: " + getType() + "\n";
       Set<EntryFields> keys = entryMap.keySet();

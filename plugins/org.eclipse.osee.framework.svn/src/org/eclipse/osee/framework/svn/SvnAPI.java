@@ -52,6 +52,7 @@ public class SvnAPI {
    private static final String SVN_REPOSITORY_TYPE = "SVN";
 
    private SvnAPI() {
+      super();
    }
 
    public static SvnAPI getInstance() {
