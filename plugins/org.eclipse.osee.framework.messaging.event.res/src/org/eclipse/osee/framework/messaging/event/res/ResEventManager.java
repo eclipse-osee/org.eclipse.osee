@@ -12,6 +12,7 @@ import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 
 /**
@@ -64,11 +65,14 @@ public class ResEventManager implements OseeMessagingStatusCallback {
    public void addingRemoteEventService(ConnectionNode connectionNode) {
       this.connectionNode = connectionNode;
       connectionNode.subscribe(ResMessages.RemoteTransactionEvent1, new RemoteTransactionEvent1Listener(), instance);
+      connectionNode.subscribe(ResMessages.RemoteBranchEvent1, new RemoteBranchEvent1Listener(), instance);
    }
 
    public void kick(RemoteEvent remoteEvent) throws Exception {
       if (remoteEvent instanceof RemoteTransactionEvent1) {
          sendRemoteEvent(ResMessages.RemoteTransactionEvent1, remoteEvent);
+      } else if (remoteEvent instanceof RemoteBranchEvent1) {
+         sendRemoteEvent(ResMessages.RemoteBranchEvent1, remoteEvent);
       } else {
          System.out.println("ResEventManager: Unhandled remote event " + remoteEvent);
       }
@@ -115,6 +119,25 @@ public class ResEventManager implements OseeMessagingStatusCallback {
                message.getClass().getSimpleName()));
          try {
             frameworkEventListener.onEvent(remoteTransactionEvent1);
+         } catch (RemoteException ex) {
+            System.err.println(getClass().getSimpleName() + " - process: " + ex.getLocalizedMessage());
+         }
+      }
+   }
+
+   public class RemoteBranchEvent1Listener extends OseeMessagingListener {
+
+      public RemoteBranchEvent1Listener() {
+         super(RemoteBranchEvent1.class);
+      }
+
+      @Override
+      public void process(final Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
+         RemoteBranchEvent1 remoteBranchEvent1 = (RemoteBranchEvent1) message;
+         System.err.println(String.format(getClass().getSimpleName() + " - received [%s]",
+               message.getClass().getSimpleName()));
+         try {
+            frameworkEventListener.onEvent(remoteBranchEvent1);
          } catch (RemoteException ex) {
             System.err.println(getClass().getSimpleName() + " - process: " + ex.getLocalizedMessage());
          }
