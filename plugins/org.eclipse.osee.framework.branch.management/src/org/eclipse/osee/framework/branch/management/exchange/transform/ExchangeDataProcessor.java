@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
 
 public final class ExchangeDataProcessor {
    private final IOseeExchangeDataProvider dataProvider;
@@ -37,22 +36,28 @@ public final class ExchangeDataProcessor {
    }
 
    private void transform(File targetFile, SaxTransformer transformer) throws OseeCoreException {
+      File tempFile = new File(Lib.changeExtension(targetFile.getPath(), "temp"));
+      if (!targetFile.renameTo(tempFile)) {
+         throw new OseeStateException("not able to rename " + targetFile);
+      }
+
+      XMLStreamWriter writer = null;
       try {
-         File tempFile = new File(Lib.changeExtension(targetFile.getPath(), "temp"));
-         if (!targetFile.renameTo(tempFile)) {
-            throw new OseeStateException("not able to rename " + targetFile);
-         }
          XMLOutputFactory factory = XMLOutputFactory.newInstance();
-         XMLStreamWriter writer = factory.createXMLStreamWriter(new FileWriter(targetFile));
+         writer = factory.createXMLStreamWriter(new FileWriter(targetFile));
          transformer.setWriter(writer);
          ExchangeUtil.readExchange(tempFile, transformer);
          tempFile.delete();
-      } catch (IOException ex) {
+      } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
-      } catch (XMLStreamException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      } catch (SAXException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+      } finally {
+         if (writer != null) {
+            try {
+               writer.close();
+            } catch (XMLStreamException ex) {
+               // Do Nothing;
+            }
+         }
       }
    }
 

@@ -29,7 +29,9 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.MetaData;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaDataSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeDataProcessor;
+import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeTransformProvider;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeTransformer;
+import org.eclipse.osee.framework.branch.management.exchange.transform.IExchangeTransformProvider;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -90,8 +92,10 @@ public final class ImportController {
    private void setup() throws Exception {
       currentSavePoint = "sourceSetup";
 
-      exchangeDataProcessor = new ExchangeDataProcessor(exportDataProvider);
-      exchangeTransformer = new ExchangeTransformer(oseeServices, exchangeDataProcessor);
+      ExchangeDataProcessor exchangeDataProcessor = new ExchangeDataProcessor(exportDataProvider);
+      IExchangeTransformProvider transformProvider = new ExchangeTransformProvider(oseeServices.getCachingService());
+      exchangeTransformer = new ExchangeTransformer(transformProvider, exchangeDataProcessor);
+
       exchangeTransformer.applyTransforms();
 
       currentSavePoint = "manifest";
@@ -124,7 +128,7 @@ public final class ImportController {
                "Error during save point save - you will not be able to reimport from last source again.");
          throw ex;
       } finally {
-         exportDataProvider.cleanUp();
+         exchangeDataProcessor.cleanUp();
          translator = null;
          manifestHandler = null;
          metadataHandler = null;

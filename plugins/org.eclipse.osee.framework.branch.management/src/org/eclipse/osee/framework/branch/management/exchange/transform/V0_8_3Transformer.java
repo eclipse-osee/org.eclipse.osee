@@ -12,25 +12,27 @@ package org.eclipse.osee.framework.branch.management.exchange.transform;
 
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.osgi.framework.Version;
 
 /**
  * @author Ryan D. Brooks
  */
 public class V0_8_3Transformer implements IOseeExchangeVersionTransformer {
+   private static final Version MAX_VERSION = new Version("0.8.3");
 
    @Override
    public String applyTransform(ExchangeDataProcessor ruleProcessor) throws OseeCoreException {
       ruleProcessor.transform(ExportItem.EXPORT_DB_SCHEMA, new V0_8_3_DbSchemaRule());
       ruleProcessor.transform(ExportItem.OSEE_BRANCH_DATA, new V0_8_3_BranchRule());
-      return "0.8.3";
-   }
-
-   @Override
-   public boolean isApplicable(String exportVersion) throws OseeCoreException {
-      return exportVersion == null;
+      return getMaxVersion().toString();
    }
 
    @Override
    public void finalizeTransform(ExchangeDataProcessor ruleProcessor) throws Exception {
+   }
+
+   @Override
+   public Version getMaxVersion() {
+      return MAX_VERSION;
    }
 }

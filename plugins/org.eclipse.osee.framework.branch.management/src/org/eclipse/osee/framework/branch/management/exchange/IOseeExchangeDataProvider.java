@@ -20,8 +20,6 @@ public interface IOseeExchangeDataProvider {
 
    public boolean wasZipExtractionRequired();
 
-   public void cleanUp();
-
    public File getExportedDataRoot();
 
    public File getFile(IExportItem item);

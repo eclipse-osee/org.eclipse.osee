@@ -17,11 +17,13 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
+import org.osgi.framework.Version;
 
 /**
  * @author Ryan D. Brooks
  */
 public class V0_9_0Transformer implements IOseeExchangeVersionTransformer {
+   private static final Version MAX_VERSION = new Version("0.9.0");
 
    private final IOseeCachingService cachingService;
 
@@ -52,7 +54,7 @@ public class V0_9_0Transformer implements IOseeExchangeVersionTransformer {
       processor.deleteExportItem("osee.branch.definitions.xml");
       processor.transform(ExportItem.EXPORT_MANIFEST, new V0_9_0_ManifestRule());
 
-      return "0.9.0";
+      return MAX_VERSION.toString();
    }
 
    private void replaceDataTypeIdsWithGuids(ExchangeDataProcessor processor, AbstractOseeCache<?> cache, ExportItem exportItem, String typeIdColumn, String typeNameColumn) throws Exception {
@@ -65,11 +67,11 @@ public class V0_9_0Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public boolean isApplicable(String exportVersion) throws OseeCoreException {
-      return exportVersion.startsWith("0.8.3");
+   public void finalizeTransform(ExchangeDataProcessor processor) throws Exception {
    }
 
    @Override
-   public void finalizeTransform(ExchangeDataProcessor processor) throws Exception {
+   public Version getMaxVersion() {
+      return MAX_VERSION;
    }
 }

@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.io.File;
-import org.eclipse.osee.framework.branch.management.exchange.ExchangeUtil;
 import org.eclipse.osee.framework.branch.management.exchange.IOseeExchangeDataProvider;
 
 /**
@@ -36,11 +35,6 @@ public class StandardOseeDbExportDataProvider implements IOseeExchangeDataProvid
    @Override
    public boolean wasZipExtractionRequired() {
       return wasZipExtractionRequired;
-   }
-
-   @Override
-   public void cleanUp() {
-      ExchangeUtil.cleanUpTempExchangeFile(exportDataRootPath, wasZipExtractionRequired);
    }
 
    @Override

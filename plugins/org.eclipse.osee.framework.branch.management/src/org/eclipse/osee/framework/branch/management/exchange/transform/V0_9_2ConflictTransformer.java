@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.branch.management.exchange.transform;
 
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
-import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 import org.xml.sax.Attributes;
 
@@ -21,6 +20,7 @@ import org.xml.sax.Attributes;
  */
 public class V0_9_2ConflictTransformer extends SaxTransformer {
    private final Map<Integer, Long> artIdToNetGammaId;
+   private static final int ARTIFACT_CONFLICT = 3; // DO NOT CHANGE TO USE ENUM
 
    public V0_9_2ConflictTransformer(Map<Integer, Long> artIdToNetGammaId) {
       this.artIdToNetGammaId = artIdToNetGammaId;
@@ -29,9 +29,8 @@ public class V0_9_2ConflictTransformer extends SaxTransformer {
    @Override
    public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws Exception {
       if (localName.equals("entry")) {
-         int conclictTypeId = Integer.parseInt(attributes.getValue("conflict_type"));
-         ConflictType conflictType = ConflictType.valueOf(conclictTypeId);
-         if (ConflictType.ARTIFACT == conflictType) {
+         int conflictType = Integer.parseInt(attributes.getValue("conflict_type"));
+         if (ARTIFACT_CONFLICT == conflictType) {
             transformEntry(uri, localName, qName, attributes);
          } else {
             super.startElementFound(uri, localName, qName, attributes);
