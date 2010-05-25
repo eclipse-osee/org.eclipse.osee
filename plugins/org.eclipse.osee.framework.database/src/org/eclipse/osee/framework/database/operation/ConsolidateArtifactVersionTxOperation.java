@@ -124,29 +124,29 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    }
 
    private void consolidateMods(List<Address> mods) {
-      ModificationType mod0 = mods.get(0).modType;
+      ModificationType mod0 = mods.get(0).getModType();
       boolean knownCase = false;
       if (mods.size() == 1) {
          if (mod0 == ModificationType.MODIFIED) {
             knownCase = true;
             updateTxsCurrentModData.add(new Object[] {ModificationType.NEW.getValue(),
-                  mods.get(0).txCurrent.getValue(), mods.get(0).transactionId, mods.get(0).gammaId});
+                  mods.get(0).getTxCurrent().getValue(), mods.get(0).getTransactionId(), mods.get(0).getGammaId()});
          } else {
             knownCase = true;
          }
       } else {
-         ModificationType mod1 = mods.get(1).modType;
+         ModificationType mod1 = mods.get(1).getModType();
          if (mod0.matches(ModificationType.NEW, ModificationType.INTRODUCED, ModificationType.MERGED)) {
             if (mods.size() == 2 && mod1.matches(ModificationType.DELETED, ModificationType.MERGED)) {
                knownCase = true;
             } else if (mods.size() == 3) {
-               ModificationType mod2 = mods.get(2).modType;
+               ModificationType mod2 = mods.get(2).getModType();
                if (mod1 == ModificationType.DELETED && mod2 == ModificationType.DELETED) {
                   knownCase = true;
                   // must purge most recent delete and set previous one to current
-                  updateTxsCurrentModData.add(new Object[] {mods.get(1).modType.getValue(),
-                        TxChange.DELETED.getValue(), mods.get(1).transactionId, mods.get(1).gammaId});
-                  addressingToDelete.add(new Object[] {mods.get(2).transactionId, mods.get(2).gammaId});
+                  updateTxsCurrentModData.add(new Object[] {mods.get(1).getModType().getValue(),
+                        TxChange.DELETED.getValue(), mods.get(1).getTransactionId(), mods.get(1).getGammaId()});
+                  addressingToDelete.add(new Object[] {mods.get(2).getTransactionId(), mods.get(2).getGammaId()});
                } else if (mod1 == ModificationType.MERGED && mod2 == ModificationType.DELETED) {
                   knownCase = true;
                }

@@ -63,9 +63,9 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    }
 
    private void logIssue(String issue, Address address) {
-      reporter.report(issue, String.valueOf(address.branchId), String.valueOf(address.itemId),
-            String.valueOf(address.transactionId), String.valueOf(address.gammaId), address.modType.toString(),
-            address.txCurrent.toString());
+      reporter.report(issue, String.valueOf(address.getBranchId()), String.valueOf(address.getItemId()),
+            String.valueOf(address.getTransactionId()), String.valueOf(address.getGammaId()),
+            address.getModType().toString(), address.getTxCurrent().toString());
    }
 
    private void consolidateAddressing() {
@@ -76,13 +76,13 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
       if (issueDetected()) {
          for (Address address : addresses) {
-            if (address.purge) {
+            if (address.isPurge()) {
                logIssue("purge", address);
-               purgeData.add(new Object[] {address.transactionId, address.gammaId});
-            } else if (address.correctedTxCurrent != null) {
-               logIssue("corrected txCurrent: " + address.correctedTxCurrent, address);
-               currentData.add(new Object[] {address.correctedTxCurrent.getValue(), address.transactionId,
-                     address.gammaId});
+               purgeData.add(new Object[] {address.getTransactionId(), address.getGammaId()});
+            } else if (address.getCorrectedTxCurrent() != null) {
+               logIssue("corrected txCurrent: " + address.getCorrectedTxCurrent(), address);
+               currentData.add(new Object[] {address.getCorrectedTxCurrent().getValue(), address.getTransactionId(),
+                     address.getGammaId()});
             } else {
                System.out.println("would have fixed merge here");
             }
@@ -95,8 +95,8 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       Address lastAddress = addresses.get(index);
       if (!lastAddress.isBaselineTx()) {
          for (; index > -1; index--) {
-            if (!addresses.get(index).purge) {
-               if (addresses.get(index).modType == ModificationType.MERGED) {
+            if (!addresses.get(index).isPurge()) {
+               if (addresses.get(index).getModType() == ModificationType.MERGED) {
                   logIssue("found merged mod type for item not in baseline: ", addresses.get(index));
                }
                return;
@@ -110,7 +110,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
       for (Address address : addresses) {
          if (address.hasSameGamma(previousAddress) && address.hasSameModType(previousAddress)) {
-            previousAddress.purge = true;
+            previousAddress.setPurge(true);
          }
          previousAddress = address;
       }
@@ -130,8 +130,8 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
       for (Address address : addresses) {
          if (address.isSameTransaction(previousAddress)) {
-            if (address.hasSameModType(previousAddress) || !address.modType.isDeleted() && previousAddress.modType.isEdited()) {
-               address.purge = true;
+            if (address.hasSameModType(previousAddress) || !address.getModType().isDeleted() && previousAddress.getModType().isEdited()) {
+               address.setPurge(true);
             } else {
                logIssue("multiple versions in one transaction - unknown case", address);
             }
@@ -143,7 +143,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private void checkForMultipleCurrents() {
       boolean mostRecentTx = true;
       for (Address address : addresses) {
-         if (!address.purge) {
+         if (!address.isPurge()) {
             if (mostRecentTx) {
                address.ensureCorrectCurrent();
                mostRecentTx = false;
