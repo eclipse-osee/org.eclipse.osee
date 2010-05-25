@@ -7,8 +7,7 @@ Bundle-Activator: org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ote.ui,
- org.eclipse.osee.ote.ui.navigate,
- org.eclipse.osee.ote.ui.view
+ org.eclipse.osee.ote.ui.navigate
 Bundle-ClassPath: library.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.core.resources,
