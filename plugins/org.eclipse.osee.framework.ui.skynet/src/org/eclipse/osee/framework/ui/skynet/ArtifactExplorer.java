@@ -357,7 +357,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          myTreeEditor.minimumWidth = 50;
 
          new ArtifactExplorerDragAndDrop(treeViewer, VIEW_ID, this);
-         getViewSite().getActionBars().updateActionBars();
 
          OseeUiActions.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Artifact Explorer");
 
