@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+<extension-point id="ToolbarItem" name="ToolbarItem" schema="schema/ToolbarItem.exsd"/>
+<extension-point id="detailsProvider" name="Message Details Provider" schema="schema/RenderTabProvider.exsd"/>
+   <extension
+      id="osee.test.message"
+      name="Message"
+      point="org.eclipse.ui.views">
+      <category
+         name="OSEE Test"
+         id="osee.test.category"/>
+      <view
+         class="org.eclipse.osee.ote.ui.message.view.MessageView"
+         icon="images/glasses.gif"
+         category="osee.test.category"
+         name="MessageView"
+         id="org.eclipse.osee.ote.ui.message.view.MessageView"/>
+      <view
+         class="org.eclipse.osee.ote.ui.message.watch.WatchView"
+         icon="images/binoculars.gif"
+         category="osee.test.category"
+         name="MessageWatch"
+         id="org.eclipse.osee.ote.ui.message.watch.WatchView"/>
+   </extension>
+   <extension
+         id="CsvRunner"
+         name="CsvRunner"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run class="org.eclipse.osee.ote.ui.message.watch.recording.xform.RunCSVConversion"/>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.plugin.XNavigateItem">
+      <XNavigateItem 
+      classname="org.eclipse.osee.ote.ui.message.navigate.MessageNavigateViewItems" 
+      category="Messaging"
+      viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
+      </XNavigateItem>
+   </extension>
+
+<extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.osee.ote.ui.TestPerspective">
+         <view
+               relationship="stack"
+               id="org.eclipse.osee.ote.ui.message.watch.WatchView"
+               relative="org.eclipse.jdt.ui.PackageExplorer">
+         </view>
+         <viewShortcut
+               id="org.eclipse.osee.ote.ui.message.watch.WatchView">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
+
+<extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.osee.ote.ui.TestPerspective">
+         <view
+               relationship="stack"
+               id="org.eclipse.osee.ote.ui.message.view.MessageView"
+               relative="org.eclipse.pde.runtime.LogView">
+         </view>
+         <viewShortcut
+               id="org.eclipse.osee.ote.ui.message.view.MessageView">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
+
+
+   <extension point="org.eclipse.help.contexts">
+      <contexts file="reference/contexts.xml"/>
+   </extension>
+   <extension
+         id="CsvTransform"
+         name="CsvTransform"
+         point="org.eclipse.osee.ote.ui.message.ToolbarItem">
+      <ToolbarItem
+            Action="org.eclipse.osee.ote.ui.message.watch.recording.xform.CsvTransform"
+            Label="Csv Transform"
+            Tooltip="Transform the base CSV format."/>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="reference/msgViewtoc.xml"
+            primary="false">
+      </toc>
+      <toc
+            file="reference/msgWatchtoc.xml"
+            primary="false">
+      </toc>
+   </extension> 
+</plugin>

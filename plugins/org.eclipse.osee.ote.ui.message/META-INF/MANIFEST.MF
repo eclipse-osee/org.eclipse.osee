@@ -1,0 +1,33 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE MessageTool Plug-in (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.ote.ui.message;singleton:=true
+Bundle-Version: 0.9.5.qualifier
+Bundle-ClassPath: messageTool.jar
+Bundle-Activator: org.eclipse.osee.ote.ui.message.internal.Activator
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.core.resources,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.osee.ote.core,
+ org.eclipse.osee.ote.message;visibility:=reexport,
+ org.eclipse.osee.framework.ui.plugin,
+ org.eclipse.osee.framework.ui.swt,
+ org.eclipse.osee.ote.messaging.dds,
+ org.eclipse.osee.ote.connection.service,
+ org.eclipse.osee.ote.client,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.nebula.widgets.xviewer,
+ org.eclipse.help,
+ org.eclipse.osee.ote.client.msg;visibility:=reexport,
+ org.eclipse.osee.ote.ui.message.util
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.osee.ote.ui.message,
+ org.eclipse.osee.ote.ui.message.internal,
+ org.eclipse.osee.ote.ui.message.tree,
+ org.eclipse.osee.ote.ui.message.view,
+ org.eclipse.osee.ote.ui.message.watch
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.osee.framework.core.operation
