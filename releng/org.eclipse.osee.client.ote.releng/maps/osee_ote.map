@@ -13,5 +13,7 @@ plugin@org.eclipse.osee.ote.runtimeManager=SVN,,http://dev.eclipse.org/svnroot/t
 plugin@org.eclipse.osee.ote.ui=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ote.ui
 plugin@org.eclipse.osee.ote.ui.host.cmd=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ote.ui.host.cmd
 plugin@org.eclipse.osee.ote.ui.markers=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ote.ui.markers
+plugin@org.eclipse.osee.ote.ui.message=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ote.ui.message
+plugin@org.eclipse.osee.ote.ui.message.util=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ote.ui.message.util
 plugin@org.eclipse.osee.ote.ui.mux=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ote.ui.mux
 plugin@org.eclipse.osee.ote.ui.test.manager=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ote.ui.test.manager
