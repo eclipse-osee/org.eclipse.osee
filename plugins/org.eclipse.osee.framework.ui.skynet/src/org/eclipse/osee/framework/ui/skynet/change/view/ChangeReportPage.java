@@ -248,6 +248,10 @@ public class ChangeReportPage extends FormPage implements IChangeReportPreferenc
                getEditor().refresh();
                getEditor().getActionBarContributor().getReloadAction().setEnabled(true);
                getEditor().getActionBarContributor().getOpenAssociatedArtifactAction().updateEnablement();
+               changeReportTable.refreshTableHeightHint();
+               getManagedForm().getForm().getBody().layout(true);
+               getManagedForm().getForm().reflow(true);
+               getManagedForm().refresh();
                showBusy(false);
                return Status.OK_STATUS;
             }

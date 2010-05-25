@@ -8,9 +8,12 @@ package org.eclipse.osee.framework.ui.skynet.change.view;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeXViewer;
@@ -34,6 +37,8 @@ public class ChangeReportTable implements EditorSection.IWidget {
 
    private ChangeXViewer xChangeViewer;
    private final ChangeUiData changeData;
+   private int defaultTableHeightHint = 100;
+   private final int paddedTableHeightHint = 2;
 
    public ChangeReportTable(ChangeUiData changeData) {
       this.changeData = changeData;
@@ -68,7 +73,7 @@ public class ChangeReportTable implements EditorSection.IWidget {
 
       Tree tree = xChangeViewer.getTree();
       GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-      gridData.heightHint = 100;
+      gridData.heightHint = defaultTableHeightHint;
       tree.setLayout(ALayout.getZeroMarginLayout());
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
@@ -79,6 +84,24 @@ public class ChangeReportTable implements EditorSection.IWidget {
 
       new ChangeDragAndDrop(tree, ChangeXViewerFactory.NAMESPACE);
       onUpdate();
+   }
+
+   public void refreshTableHeightHint() {
+      try {
+         int numItems = xChangeViewer.getTree().getItemCount();
+         int heightHint = defaultTableHeightHint;
+         int treeItemHeight = xChangeViewer.getTree().getItemHeight();
+         int calculatedTableHeightHint = treeItemHeight * (numItems + 1);
+         if (calculatedTableHeightHint > defaultTableHeightHint) {
+            heightHint = treeItemHeight * (paddedTableHeightHint + numItems);
+         }
+         Tree tree = xChangeViewer.getTree();
+         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+         gridData.heightHint = heightHint > defaultTableHeightHint ? heightHint : defaultTableHeightHint;
+         tree.setLayoutData(gridData);
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString());
+      }
    }
 
    @Override
