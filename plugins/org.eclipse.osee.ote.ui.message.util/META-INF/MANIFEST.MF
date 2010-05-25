@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE OTE Messaging Utils
+Bundle-SymbolicName: org.eclipse.osee.ote.ui.message.util
+Bundle-Version: 0.9.5.qualifier
+Bundle-Activator: org.eclipse.osee.ote.ui.message.util.internal.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.ote.client.msg,
+ org.eclipse.osee.ote.message,
+ org.eclipse.osee.ote.client
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.eclipse.osee.ote.ui.message.util
+Import-Package: org.eclipse.osee.framework.jdk.core.persistence
+Bundle-Vendor: Eclipse Open System Engineering Environment
