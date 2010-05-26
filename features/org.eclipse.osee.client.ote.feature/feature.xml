@@ -27,20 +27,19 @@
       <import plugin="org.apache.commons.net"/>
       <import plugin="org.eclipse.osee.framework.logging"/>
       <import plugin="org.eclipse.help"/>
-      <import plugin="org.apache.xerces"/>
-      <import plugin="org.eclipse.osee.framework.messaging"/>
       <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.apache.xerces"/>
+      <import plugin="org.eclipse.osee.framework.core"/>
+      <import plugin="org.eclipse.osee.framework.messaging"/>
+      <import plugin="org.eclipse.osee.framework.plugin.core"/>
       <import plugin="org.eclipse.ui" version="3.5.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.jobs"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.osee.framework.core"/>
-      <import plugin="org.eclipse.osee.framework.plugin.core"/>
       <import plugin="org.eclipse.osee.framework.svn"/>
       <import plugin="org.eclipse.osee.framework.ui.plugin"/>
-      <import plugin="org.eclipse.osee.framework.ui.service.control"/>
       <import plugin="org.eclipse.osee.framework.ui.swt"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.ui.editors"/>
@@ -50,8 +49,12 @@
       <import plugin="org.eclipse.nebula.widgets.xviewer"/>
       <import plugin="org.eclipse.osee.framework.jini"/>
       <import plugin="net.jini"/>
+      <import plugin="org.eclipse.osee.framework.ui.service.control"/>
       <import plugin="org.eclipse.ui" version="3.4.2" match="greaterOrEqual"/>
       <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.5.qualifier" match="greaterOrEqual"/>
+      <import plugin="javax.xml"/>
+      <import plugin="org.eclipse.osee.framework.ui.ws"/>
+      <import plugin="jms.libraries"/>
    </requires>
 
    <plugin
