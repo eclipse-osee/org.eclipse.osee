@@ -78,9 +78,34 @@ public class BranchEventManagerTest {
       testEvents__stateChange(workingBranch);
       testEvents__deleted(workingBranch);
       testEvents__purged(topLevel);
-      testEvents__committed(topLevel);
+      Branch committedBranch = testEvents__committed(topLevel);
+      testEvents__changeArchiveState(committedBranch);
 
       TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
+   }
+
+   private Branch testEvents__changeArchiveState(Branch committedBranch) throws Exception {
+      clearEventCollections();
+
+      Assert.assertNotNull(committedBranch);
+      final String guid = committedBranch.getGuid();
+      Assert.assertEquals(BranchArchivedState.ARCHIVED, committedBranch.getArchiveState());
+      BranchManager.updateBranchArchivedState(null, committedBranch.getId(), committedBranch.getGuid(),
+            BranchArchivedState.UNARCHIVED);
+
+      Thread.sleep(4000);
+
+      Assert.assertNotNull(resultBranchEvent);
+      Assert.assertEquals(BranchEventType.ArchiveStateUpdated, resultBranchEvent.getEventType());
+      if (isRemoteTest()) {
+         Assert.assertTrue(resultSender.isRemote());
+      } else {
+         Assert.assertTrue(resultSender.isLocal());
+      }
+      Assert.assertEquals(guid, resultBranchEvent.getBranchGuid());
+      Assert.assertEquals(BranchArchivedState.UNARCHIVED, committedBranch.getArchiveState());
+      Assert.assertFalse(committedBranch.isEditable());
+      return committedBranch;
    }
 
    private Branch testEvents__committed(Branch topLevel) throws Exception {

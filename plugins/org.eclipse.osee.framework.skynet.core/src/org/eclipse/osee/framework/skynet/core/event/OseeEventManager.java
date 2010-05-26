@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredExcep
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
@@ -70,7 +71,7 @@ public class OseeEventManager {
 
    //Kick LOCAL and REMOTE branch events
    public static void kickBranchEvent(Object source, BranchEventType branchEventType, int branchId, String branchGuid) throws OseeCoreException {
-      System.err.println("OEM: kickBranchEvent: type: " + branchEventType + " guid: " + branchGuid + " - " + source);
+      eventLog("OEM: kickBranchEvent: type: " + branchEventType + " guid: " + branchGuid + " - " + source);
       if (testBranchEventListener != null) {
          testBranchEventListener.handleBranchEvent(getSender(source), branchEventType, branchId);
       }
@@ -212,10 +213,12 @@ public class OseeEventManager {
    }
 
    public static boolean isEventDebugConsole() {
+      if (!Strings.isValid(System.getProperty("eventDebug"))) return false;
       return System.getProperty("eventDebug").equals("console");
    }
 
    public static boolean isEventDebugErrorLog() {
+      if (!Strings.isValid(System.getProperty("eventDebug"))) return false;
       return System.getProperty("eventDebug").equals("log") || "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Events"));
    }
 
