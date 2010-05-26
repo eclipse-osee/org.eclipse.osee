@@ -32,6 +32,22 @@ import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
  * @author Ryan Schmitt
  */
 public class AttributeLoader {
+   private static String getSql(boolean historical, boolean allowDeletedArtifacts, ArtifactLoad loadLevel) throws OseeCoreException {
+      OseeSql sqlKey;
+      if (historical) {
+         sqlKey = OseeSql.LOAD_HISTORICAL_ATTRIBUTES;
+      } else if (loadLevel == ArtifactLoad.ALL_CURRENT) {
+         sqlKey = OseeSql.LOAD_ALL_CURRENT_ATTRIBUTES;
+      } else if (allowDeletedArtifacts) {
+         sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES_WITH_DELETED;
+      } else {
+         sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES;
+      }
+
+      String sql = ClientSessionManager.getSql(sqlKey);
+      return sql;
+   }
+
    static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical, boolean allowDeletedArtifacts, ArtifactLoad loadLevel) throws OseeCoreException {
       if (loadLevel == SHALLOW || loadLevel == ArtifactLoad.RELATION) {
          return;
@@ -39,18 +55,7 @@ public class AttributeLoader {
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         OseeSql sqlKey;
-         if (historical) {
-            sqlKey = OseeSql.LOAD_HISTORICAL_ATTRIBUTES;
-         } else if (loadLevel == ArtifactLoad.ALL_CURRENT) {
-            sqlKey = OseeSql.LOAD_ALL_CURRENT_ATTRIBUTES;
-         } else if (allowDeletedArtifacts) {
-            sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES_WITH_DELETED;
-         } else {
-            sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES;
-         }
-
-         String sql = ClientSessionManager.getSql(sqlKey);
+         String sql = getSql(historical, allowDeletedArtifacts, loadLevel);
          chStmt.runPreparedQuery(artifacts.size() * 8, sql, queryId);
 
          Artifact artifact = null;
@@ -125,7 +130,7 @@ public class AttributeLoader {
          chStmt.close();
       }
    }
-   
+
    static void finishSetupOfPreviousArtifact(Artifact artifact, List<Integer> transactionNumbers) throws OseeCoreException {
       if (artifact != null) { // exclude the first pass because there is no previous artifact
          setLastAttributePersistTransaction(artifact, transactionNumbers);
@@ -134,7 +139,7 @@ public class AttributeLoader {
          ArtifactCache.cachePostAttributeLoad(artifact);
       }
    }
-   
+
    private static void setLastAttributePersistTransaction(Artifact artifact, List<Integer> transactionNumbers) {
       int maxTransactionId = Integer.MIN_VALUE;
       for (Integer transactionId : transactionNumbers) {
