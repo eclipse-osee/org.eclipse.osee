@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.ATTRIBUTE;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.SHALLOW;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
-import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -36,12 +36,8 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -337,7 +333,7 @@ public final class ArtifactLoader {
    }
 
    private static void loadRelationData(int queryId, Collection<Artifact> artifacts, boolean historical, ArtifactLoad loadLevel) throws OseeCoreException {
-      if (loadLevel == SHALLOW || loadLevel == ArtifactLoad.ATTRIBUTE) {
+      if (loadLevel == SHALLOW || loadLevel == ATTRIBUTE) {
          return;
       }
 

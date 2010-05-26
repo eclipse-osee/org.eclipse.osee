@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.SHALLOW;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.RELATION;
+import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.SHALLOW;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -33,7 +34,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
  * @author Ryan Schmitt
  */
 public class AttributeLoader {
-   private static String getSql(boolean historical, boolean allowDeletedArtifacts, ArtifactLoad loadLevel) throws OseeCoreException {
+   private static boolean historical = false;
+
+   private static String getSql(boolean allowDeletedArtifacts, ArtifactLoad loadLevel) throws OseeCoreException {
       OseeSql sqlKey;
       if (historical) {
          sqlKey = OseeSql.LOAD_HISTORICAL_ATTRIBUTES;
@@ -55,16 +58,29 @@ public class AttributeLoader {
       public int attrId = -1;
       public int gammaId = -1;
       public int modType = -1;
+      public int transactionId = -1;
+      public int attrTypeId = -1;
+      public String value = "";
+      public int stripeId = -1;
+      public String uri = "";
 
       public AttrData() {
       }
 
-      public AttrData(int _artifactId, int _branchId, int _attrId, int _gammaId, int _modType) {
-         artifactId = _artifactId;
-         branchId = _branchId;
-         attrId = _attrId;
-         gammaId = _gammaId;
-         modType = _modType;
+      public AttrData(IOseeStatement chStmt, boolean historical) throws OseeDataStoreException {
+         artifactId = chStmt.getInt("art_id");
+         branchId = chStmt.getInt("branch_id");
+         attrId = chStmt.getInt("attr_id");
+         gammaId = chStmt.getInt("gamma_id");
+         modType = chStmt.getInt("mod_type");
+
+         transactionId = chStmt.getInt("transaction_id");
+         attrTypeId = chStmt.getInt("attr_type_id");
+         value = chStmt.getString("value");
+         if (historical) {
+            stripeId = chStmt.getInt("stripe_transaction_id");
+         }
+         uri = chStmt.getString("uri");
       }
 
       public static boolean isDifferentArtifact(AttrData previous, AttrData current) {
@@ -76,85 +92,106 @@ public class AttributeLoader {
       }
    }
 
-   static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical, boolean allowDeletedArtifacts, ArtifactLoad loadLevel) throws OseeCoreException {
+   static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean _historical, boolean allowDeletedArtifacts, ArtifactLoad loadLevel) throws OseeCoreException {
       if (loadLevel == SHALLOW || loadLevel == RELATION) {
          return;
       }
+      historical = _historical;
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         String sql = getSql(historical, allowDeletedArtifacts, loadLevel);
+         String sql = getSql(allowDeletedArtifacts, loadLevel);
          chStmt.runPreparedQuery(artifacts.size() * 8, sql, queryId);
 
-         Artifact artifact = null;
-         AttrData previous = new AttrData();
-
-         List<Integer> transactionNumbers = new ArrayList<Integer>();
+         Artifact currentArtifact = null;
+         AttrData previousAttr = new AttrData();
+         List<AttrData> currentAttributes = new ArrayList<AttrData>();
 
          while (chStmt.next()) {
-            AttrData current =
-                  new AttrData(chStmt.getInt("art_id"), chStmt.getInt("branch_id"), chStmt.getInt("attr_id"),
-                        chStmt.getInt("gamma_id"), chStmt.getInt("mod_type"));
+            AttrData nextAttr = new AttrData(chStmt, historical);
 
-            if (AttrData.isDifferentArtifact(previous, current)) {
-               finishSetupOfPreviousArtifact(artifact, transactionNumbers);
-
-               if (historical) {
-                  artifact = ArtifactCache.getHistorical(current.artifactId, chStmt.getInt("stripe_transaction_id"));
-               } else {
-                  artifact = ArtifactCache.getActive(current.artifactId, current.branchId);
-               }
-               if (artifact == null) {
-                  //TODO just masking a DB issue, we should probably really have an error here - throw new ArtifactDoesNotExist("Can not find aritfactId: " + artifactId + " on branch " + branchId);
-                  OseeLog.log(ArtifactLoader.class, Level.WARNING, String.format(
-                        "Orphaned attribute for artifact id[%d] branch[%d]", current.artifactId, current.branchId));
-               } else if (artifact.isAttributesLoaded()) {
-                  artifact = null;
-               }
+            if (AttrData.isDifferentArtifact(previousAttr, nextAttr)) {
+               handleArtifact(currentArtifact, currentAttributes);
+               currentAttributes.clear();
+               currentArtifact = getArtifact(nextAttr);
             }
 
-            if (AttrData.multipleVersionsExist(current, previous)) {
-               if (historical) {
-                  // Okay to skip on historical loading... because the most recent transaction is used first due to sorting on the query
-               } else {
-                  OseeLog.log(
-                        ArtifactLoader.class,
-                        Level.WARNING,
-                        String.format(
-                              "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
-                              current.attrId, current.artifactId, current.branchId, previous.gammaId, current.gammaId,
-                              previous.modType, current.modType));
-               }
-            } else if (artifact != null) { //artifact will have been set to null if artifact.isAttributesLoaded() returned true
-               AttributeType attributeType = AttributeTypeManager.getType(chStmt.getInt("attr_type_id"));
-               boolean isBooleanAttribute =
-                     AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType);
-               boolean isEnumAttribute =
-                     AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType);
-               String value = chStmt.getString("value");
-               if (isBooleanAttribute || isEnumAttribute) {
-                  value = Strings.intern(value);
-               }
-               artifact.internalInitializeAttribute(attributeType, current.attrId, current.gammaId,
-                     ModificationType.getMod(current.modType), false, value, chStmt.getString("uri"));
-               transactionNumbers.add(chStmt.getInt("transaction_id"));
-            }
-
-            previous = current;
+            currentAttributes.add(nextAttr);
+            previousAttr = nextAttr;
          }
-         finishSetupOfPreviousArtifact(artifact, transactionNumbers);
+         handleArtifact(currentArtifact, currentAttributes);
       } finally {
          chStmt.close();
       }
    }
 
-   static void finishSetupOfPreviousArtifact(Artifact artifact, List<Integer> transactionNumbers) throws OseeCoreException {
-      if (artifact != null) { // exclude the first pass because there is no previous artifact
-         setLastAttributePersistTransaction(artifact, transactionNumbers);
-         transactionNumbers.clear();
-         artifact.meetMinimumAttributeCounts(false);
-         ArtifactCache.cachePostAttributeLoad(artifact);
+   private static Artifact getArtifact(AttrData current) {
+      Artifact artifact = null;
+      if (historical) {
+         artifact = ArtifactCache.getHistorical(current.artifactId, current.stripeId);
+      } else {
+         artifact = ArtifactCache.getActive(current.artifactId, current.branchId);
       }
+      if (artifact == null) {
+         OseeLog.log(ArtifactLoader.class, Level.WARNING, String.format(
+               "Orphaned attribute for artifact id[%d] branch[%d]", current.artifactId, current.branchId));
+      }
+      return artifact;
+   }
+
+   private static void handleArtifact(Artifact artifact, List<AttrData> attributes) throws OseeCoreException {
+      if (artifact == null) {
+         return; // If the artifact is null, it means the attributes are orphaned.
+      }
+      List<Integer> transactionNumbers = new ArrayList<Integer>();
+      AttrData previous = new AttrData();
+      synchronized (artifact) {
+         if (!artifact.isAttributesLoaded()) {
+            for (AttrData current : attributes) {
+               if (AttrData.multipleVersionsExist(current, previous)) {
+                  handleMultipleVersions(previous, current, historical);
+               } else {
+                  handleAttribute(artifact, current, previous);
+                  transactionNumbers.add(current.transactionId);
+               }
+               previous = current;
+            }
+            setLastAttributePersistTransaction(artifact, transactionNumbers);
+            artifact.meetMinimumAttributeCounts(false);
+            ArtifactCache.cachePostAttributeLoad(artifact);
+         }
+      }
+   }
+
+   private static void handleMultipleVersions(AttrData previous, AttrData current, boolean historical) {
+      // Okay to skip on historical loading, because the most recent
+      // transaction is used first due to sorting on the query
+      if (!historical) {
+         OseeLog.log(
+               ArtifactLoader.class,
+               Level.WARNING,
+               String.format(
+                     "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
+                     current.attrId, current.artifactId, current.branchId, previous.gammaId, current.gammaId,
+                     previous.modType, current.modType));
+      }
+   }
+
+   private static void handleAttribute(Artifact artifact, AttrData current, AttrData previous) throws OseeCoreException {
+      AttributeType attributeType = AttributeTypeManager.getType(current.attrTypeId);
+      String value = current.value;
+      if (isEnumOrBoolean(attributeType)) {
+         value = Strings.intern(value);
+      }
+      boolean markDirty = false;
+      artifact.internalInitializeAttribute(attributeType, current.attrId, current.gammaId,
+            ModificationType.getMod(current.modType), markDirty, value, current.uri);
+   }
+
+   private static boolean isEnumOrBoolean(AttributeType attributeType) throws OseeCoreException {
+      boolean isBooleanAttribute = AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType);
+      boolean isEnumAttribute = AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType);
+      return isBooleanAttribute || isEnumAttribute;
    }
 
    private static void setLastAttributePersistTransaction(Artifact artifact, List<Integer> transactionNumbers) {
