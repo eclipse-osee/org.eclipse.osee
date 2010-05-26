@@ -233,6 +233,7 @@
 	</target>
 
 	<target name="setHttpProxy" if="http.proxyHost">
+		<echo message="proxy: - ${http.proxyHost}:${http.proxyPort}" />
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
 	</target>
 	
