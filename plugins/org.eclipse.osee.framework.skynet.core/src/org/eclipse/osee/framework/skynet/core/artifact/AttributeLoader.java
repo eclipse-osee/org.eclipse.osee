@@ -17,10 +17,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
@@ -34,22 +34,37 @@ import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
  * @author Ryan Schmitt
  */
 public class AttributeLoader {
-   private static boolean historical = false;
 
-   private static String getSql(boolean allowDeletedArtifacts, ArtifactLoad loadLevel) throws OseeCoreException {
-      OseeSql sqlKey;
-      if (historical) {
-         sqlKey = OseeSql.LOAD_HISTORICAL_ATTRIBUTES;
-      } else if (loadLevel == ArtifactLoad.ALL_CURRENT) {
-         sqlKey = OseeSql.LOAD_ALL_CURRENT_ATTRIBUTES;
-      } else if (allowDeletedArtifacts) {
-         sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES_WITH_DELETED;
-      } else {
-         sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES;
+   static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical, boolean allowDeletedArtifacts, ArtifactLoad loadLevel) throws OseeCoreException {
+      if (loadLevel == SHALLOW || loadLevel == RELATION) {
+         return;
       }
 
-      String sql = ClientSessionManager.getSql(sqlKey);
-      return sql;
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         String sql = getSql(allowDeletedArtifacts, loadLevel, historical);
+         chStmt.runPreparedQuery(artifacts.size() * 8, sql, queryId);
+
+         Artifact currentArtifact = null;
+         AttrData previousAttr = new AttrData();
+         List<AttrData> currentAttributes = new ArrayList<AttrData>();
+
+         while (chStmt.next()) {
+            AttrData nextAttr = new AttrData(chStmt, historical);
+
+            if (AttrData.isDifferentArtifact(previousAttr, nextAttr)) {
+               loadAttributesFor(currentArtifact, currentAttributes, historical);
+               currentAttributes.clear();
+               currentArtifact = getArtifact(nextAttr, historical);
+            }
+
+            currentAttributes.add(nextAttr);
+            previousAttr = nextAttr;
+         }
+         loadAttributesFor(currentArtifact, currentAttributes, historical);
+      } finally {
+         chStmt.close();
+      }
    }
 
    private static final class AttrData {
@@ -84,48 +99,15 @@ public class AttributeLoader {
       }
 
       public static boolean isDifferentArtifact(AttrData previous, AttrData current) {
-         return (current.branchId != previous.branchId || current.artifactId != previous.artifactId);
+         return current.branchId != previous.branchId || current.artifactId != previous.artifactId;
       }
 
       public static boolean multipleVersionsExist(AttrData current, AttrData previous) {
-         return (current.attrId == previous.attrId && current.branchId == previous.branchId && current.artifactId == previous.artifactId);
+         return current.attrId == previous.attrId && current.branchId == previous.branchId && current.artifactId == previous.artifactId;
       }
    }
 
-   static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean _historical, boolean allowDeletedArtifacts, ArtifactLoad loadLevel) throws OseeCoreException {
-      if (loadLevel == SHALLOW || loadLevel == RELATION) {
-         return;
-      }
-      historical = _historical;
-
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
-      try {
-         String sql = getSql(allowDeletedArtifacts, loadLevel);
-         chStmt.runPreparedQuery(artifacts.size() * 8, sql, queryId);
-
-         Artifact currentArtifact = null;
-         AttrData previousAttr = new AttrData();
-         List<AttrData> currentAttributes = new ArrayList<AttrData>();
-
-         while (chStmt.next()) {
-            AttrData nextAttr = new AttrData(chStmt, historical);
-
-            if (AttrData.isDifferentArtifact(previousAttr, nextAttr)) {
-               handleArtifact(currentArtifact, currentAttributes);
-               currentAttributes.clear();
-               currentArtifact = getArtifact(nextAttr);
-            }
-
-            currentAttributes.add(nextAttr);
-            previousAttr = nextAttr;
-         }
-         handleArtifact(currentArtifact, currentAttributes);
-      } finally {
-         chStmt.close();
-      }
-   }
-
-   private static Artifact getArtifact(AttrData current) {
+   private static Artifact getArtifact(AttrData current, boolean historical) {
       Artifact artifact = null;
       if (historical) {
          artifact = ArtifactCache.getHistorical(current.artifactId, current.stripeId);
@@ -139,7 +121,7 @@ public class AttributeLoader {
       return artifact;
    }
 
-   private static void handleArtifact(Artifact artifact, List<AttrData> attributes) throws OseeCoreException {
+   private static void loadAttributesFor(Artifact artifact, List<AttrData> attributes, boolean historical) throws OseeCoreException {
       if (artifact == null) {
          return; // If the artifact is null, it means the attributes are orphaned.
       }
@@ -151,7 +133,7 @@ public class AttributeLoader {
                if (AttrData.multipleVersionsExist(current, previous)) {
                   handleMultipleVersions(previous, current, historical);
                } else {
-                  handleAttribute(artifact, current, previous);
+                  loadAttribute(artifact, current, previous);
                   transactionNumbers.add(current.transactionId);
                }
                previous = current;
@@ -164,7 +146,7 @@ public class AttributeLoader {
    }
 
    private static void handleMultipleVersions(AttrData previous, AttrData current, boolean historical) {
-      // Okay to skip on historical loading, because the most recent
+      // Do not warn about skipping on historical loading, because the most recent
       // transaction is used first due to sorting on the query
       if (!historical) {
          OseeLog.log(
@@ -177,8 +159,8 @@ public class AttributeLoader {
       }
    }
 
-   private static void handleAttribute(Artifact artifact, AttrData current, AttrData previous) throws OseeCoreException {
-      AttributeType attributeType = AttributeTypeManager.getType(current.attrTypeId);
+   private static void loadAttribute(Artifact artifact, AttrData current, AttrData previous) throws OseeCoreException {
+      IAttributeType attributeType = AttributeTypeManager.getType(current.attrTypeId);
       String value = current.value;
       if (isEnumOrBoolean(attributeType)) {
          value = Strings.intern(value);
@@ -188,7 +170,7 @@ public class AttributeLoader {
             ModificationType.getMod(current.modType), markDirty, value, current.uri);
    }
 
-   private static boolean isEnumOrBoolean(AttributeType attributeType) throws OseeCoreException {
+   private static boolean isEnumOrBoolean(IAttributeType attributeType) throws OseeCoreException {
       boolean isBooleanAttribute = AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType);
       boolean isEnumAttribute = AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType);
       return isBooleanAttribute || isEnumAttribute;
@@ -200,5 +182,20 @@ public class AttributeLoader {
          maxTransactionId = Math.max(maxTransactionId, transactionId);
       }
       artifact.setTransactionId(maxTransactionId);
+   }
+
+   private static String getSql(boolean allowDeletedArtifacts, ArtifactLoad loadLevel, boolean historical) throws OseeCoreException {
+      OseeSql sqlKey;
+      if (historical) {
+         sqlKey = OseeSql.LOAD_HISTORICAL_ATTRIBUTES;
+      } else if (loadLevel == ArtifactLoad.ALL_CURRENT) {
+         sqlKey = OseeSql.LOAD_ALL_CURRENT_ATTRIBUTES;
+      } else if (allowDeletedArtifacts) {
+         sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES_WITH_DELETED;
+      } else {
+         sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES;
+      }
+
+      return ClientSessionManager.getSql(sqlKey);
    }
 }
