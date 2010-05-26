@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -43,11 +44,13 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -62,10 +65,13 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -228,11 +234,37 @@ public class NavigateView extends ViewPart implements IActionable {
          @Override
          public void widgetSelected(SelectionEvent e) {
             try {
+               if (!Strings.isValid(searchArea.getText())) {
+                  AWorkbench.popup("Please enter search string");
+                  return;
+               }
                xNavComp.handleDoubleClick(new SearchNavigateItem(null, new AtsNavigateQuickSearch("ATS Quick Search",
                      searchArea.getText(), isIncludeCompleteCancelled())));
             } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
+         }
+      });
+      searchButton.addMouseListener(new MouseListener() {
+
+         @Override
+         public void mouseUp(MouseEvent mouseEvent) {
+         }
+
+         @Override
+         public void mouseDoubleClick(MouseEvent mouseEvent) {
+            if (mouseEvent.button == 3) {
+               try {
+                  File file = AtsPlugin.getInstance().getPluginFile("support/OSEEDay.wav");
+                  Program.launch(file.getAbsolutePath());
+               } catch (Exception ex) {
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               }
+            }
+         }
+
+         @Override
+         public void mouseDown(MouseEvent arg0) {
          }
       });
 
