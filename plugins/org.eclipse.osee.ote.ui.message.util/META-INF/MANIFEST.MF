@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE OTE Messaging Utils
-Bundle-SymbolicName: org.eclipse.osee.ote.ui.message.util
+Bundle-SymbolicName: org.eclipse.osee.ote.ui.message.util;singleton:=true
 Bundle-Version: 0.9.5.qualifier
 Bundle-Activator: org.eclipse.osee.ote.ui.message.util.internal.Activator
 Require-Bundle: org.eclipse.ui,
