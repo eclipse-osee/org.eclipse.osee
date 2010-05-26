@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.SHALLOW;
+import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.RELATION;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -48,8 +49,35 @@ public class AttributeLoader {
       return sql;
    }
 
+   private static final class AttrData {
+      public int artifactId = -1;
+      public int branchId = -1;
+      public int attrId = -1;
+      public int gammaId = -1;
+      public int modType = -1;
+
+      public AttrData() {
+      }
+
+      public AttrData(int _artifactId, int _branchId, int _attrId, int _gammaId, int _modType) {
+         artifactId = _artifactId;
+         branchId = _branchId;
+         attrId = _attrId;
+         gammaId = _gammaId;
+         modType = _modType;
+      }
+
+      public static boolean isDifferentArtifact(AttrData previous, AttrData current) {
+         return (current.branchId != previous.branchId || current.artifactId != previous.artifactId);
+      }
+
+      public static boolean multipleVersionsExist(AttrData current, AttrData previous) {
+         return (current.attrId == previous.attrId && current.branchId == previous.branchId && current.artifactId == previous.artifactId);
+      }
+   }
+
    static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical, boolean allowDeletedArtifacts, ArtifactLoad loadLevel) throws OseeCoreException {
-      if (loadLevel == SHALLOW || loadLevel == ArtifactLoad.RELATION) {
+      if (loadLevel == SHALLOW || loadLevel == RELATION) {
          return;
       }
 
@@ -59,41 +87,33 @@ public class AttributeLoader {
          chStmt.runPreparedQuery(artifacts.size() * 8, sql, queryId);
 
          Artifact artifact = null;
-         int previousArtifactId = -1;
-         int previousBranchId = -1;
-         int previousAttrId = -1;
-         int previousGammaId = -1;
-         int previousModType = -1;
+         AttrData previous = new AttrData();
 
          List<Integer> transactionNumbers = new ArrayList<Integer>();
 
          while (chStmt.next()) {
-            int artifactId = chStmt.getInt("art_id");
-            int branchId = chStmt.getInt("branch_id");
-            int attrId = chStmt.getInt("attr_id");
-            int gammaId = chStmt.getInt("gamma_id");
-            int modType = chStmt.getInt("mod_type");
+            AttrData current =
+                  new AttrData(chStmt.getInt("art_id"), chStmt.getInt("branch_id"), chStmt.getInt("attr_id"),
+                        chStmt.getInt("gamma_id"), chStmt.getInt("mod_type"));
 
-            // if a different artifact than the previous iteration
-            if (branchId != previousBranchId || artifactId != previousArtifactId) {
+            if (AttrData.isDifferentArtifact(previous, current)) {
                finishSetupOfPreviousArtifact(artifact, transactionNumbers);
 
                if (historical) {
-                  artifact = ArtifactCache.getHistorical(artifactId, chStmt.getInt("stripe_transaction_id"));
+                  artifact = ArtifactCache.getHistorical(current.artifactId, chStmt.getInt("stripe_transaction_id"));
                } else {
-                  artifact = ArtifactCache.getActive(artifactId, branchId);
+                  artifact = ArtifactCache.getActive(current.artifactId, current.branchId);
                }
                if (artifact == null) {
                   //TODO just masking a DB issue, we should probably really have an error here - throw new ArtifactDoesNotExist("Can not find aritfactId: " + artifactId + " on branch " + branchId);
                   OseeLog.log(ArtifactLoader.class, Level.WARNING, String.format(
-                        "Orphaned attribute for artifact id[%d] branch[%d]", artifactId, branchId));
+                        "Orphaned attribute for artifact id[%d] branch[%d]", current.artifactId, current.branchId));
                } else if (artifact.isAttributesLoaded()) {
                   artifact = null;
                }
             }
 
-            // if we get more than one version from the same attribute on the same artifact on the same branch
-            if (attrId == previousAttrId && branchId == previousBranchId && artifactId == previousArtifactId) {
+            if (AttrData.multipleVersionsExist(current, previous)) {
                if (historical) {
                   // Okay to skip on historical loading... because the most recent transaction is used first due to sorting on the query
                } else {
@@ -102,7 +122,8 @@ public class AttributeLoader {
                         Level.WARNING,
                         String.format(
                               "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
-                              attrId, artifactId, branchId, previousGammaId, gammaId, previousModType, modType));
+                              current.attrId, current.artifactId, current.branchId, previous.gammaId, current.gammaId,
+                              previous.modType, current.modType));
                }
             } else if (artifact != null) { //artifact will have been set to null if artifact.isAttributesLoaded() returned true
                AttributeType attributeType = AttributeTypeManager.getType(chStmt.getInt("attr_type_id"));
@@ -114,16 +135,12 @@ public class AttributeLoader {
                if (isBooleanAttribute || isEnumAttribute) {
                   value = Strings.intern(value);
                }
-               artifact.internalInitializeAttribute(attributeType, attrId, gammaId, ModificationType.getMod(modType),
-                     false, value, chStmt.getString("uri"));
+               artifact.internalInitializeAttribute(attributeType, current.attrId, current.gammaId,
+                     ModificationType.getMod(current.modType), false, value, chStmt.getString("uri"));
                transactionNumbers.add(chStmt.getInt("transaction_id"));
             }
 
-            previousArtifactId = artifactId;
-            previousBranchId = branchId;
-            previousAttrId = attrId;
-            previousGammaId = gammaId;
-            previousModType = modType;
+            previous = current;
          }
          finishSetupOfPreviousArtifact(artifact, transactionNumbers);
       } finally {
