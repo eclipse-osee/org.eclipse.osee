@@ -47,10 +47,11 @@ import org.eclipse.osee.ote.core.log.ITestPointTally;
 import org.eclipse.osee.ote.core.log.TestLogger;
 import org.eclipse.osee.ote.core.log.record.TestPointRecord;
 import org.eclipse.osee.ote.core.log.record.TestRecord;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMessageManager;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAccessor;
+import org.eclipse.osee.ote.message.test.TestMemType;
 
 public class UnitTestAccessor implements ITestEnvironmentMessageSystemAccessor, ITestAccessor {
    private final HashMap<EnvironmentTask, ScheduledFuture<?>> handleMap =
@@ -513,8 +514,8 @@ public class UnitTestAccessor implements ITestEnvironmentMessageSystemAccessor, 
       return null;
    }
 
-   public boolean isPhysicalTypeAvailable(MemType physicalType) {
-      return physicalType == MemType.ETHERNET;
+   public boolean isPhysicalTypeAvailable(DataType physicalType) {
+      return physicalType == TestMemType.ETHERNET;
    }
 
    public void abortTestScript() {
@@ -611,6 +612,14 @@ public class UnitTestAccessor implements ITestEnvironmentMessageSystemAccessor, 
 
    public TestCase getTestCase() {
 
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAccessor#getDataTypes()
+    */
+   @Override
+   public Set<DataType> getDataTypes() {
       return null;
    }
 

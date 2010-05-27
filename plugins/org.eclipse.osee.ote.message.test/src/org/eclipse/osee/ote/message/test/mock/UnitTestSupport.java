@@ -24,7 +24,7 @@ import org.eclipse.osee.ote.core.testPoint.Operation;
 import org.eclipse.osee.ote.message.MessageSystemException;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.DiscreteElement;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.listener.IOSEEMessageListener;
 
 public class UnitTestSupport {
@@ -81,7 +81,7 @@ public class UnitTestSupport {
       IOSEEMessageListener listener = new IOSEEMessageListener() {
          int index = 1;
 
-         public void onDataAvailable(MessageData data, MemType type) throws MessageSystemException {
+         public void onDataAvailable(MessageData data, DataType type) throws MessageSystemException {
             if (index < sequence.length) {
                element.setValue(sequence[index]);
                System.out.println(element.getName() + " is now " + element.getValue());

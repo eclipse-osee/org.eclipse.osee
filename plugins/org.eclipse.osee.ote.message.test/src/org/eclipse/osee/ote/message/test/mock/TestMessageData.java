@@ -13,12 +13,12 @@ package org.eclipse.osee.ote.message.test.mock;
 import org.eclipse.osee.ote.message.IMessageHeader;
 import org.eclipse.osee.ote.message.data.IMessageDataVisitor;
 import org.eclipse.osee.ote.message.data.MessageData;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 
 public class TestMessageData extends MessageData {
 
     public TestMessageData(String typeName, String name, int dataByteSize,
-	    int offset, MemType memType) {
+	    int offset, DataType memType) {
 	super(typeName, name, dataByteSize, offset, memType);
     }
 

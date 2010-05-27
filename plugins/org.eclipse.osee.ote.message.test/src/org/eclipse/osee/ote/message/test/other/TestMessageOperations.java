@@ -13,7 +13,7 @@ package org.eclipse.osee.ote.message.test.other;
 import org.eclipse.osee.framework.jdk.core.util.benchmark.Benchmark;
 import org.eclipse.osee.ote.message.MessageSystemException;
 import org.eclipse.osee.ote.message.data.MessageData;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.listener.IOSEEMessageListener;
 import org.eclipse.osee.ote.message.test.mock.TestMessage;
 import org.eclipse.osee.ote.message.test.mock.UnitTestSupport;
@@ -51,7 +51,7 @@ public class TestMessageOperations {
       TestMessage msg = new TestMessage();
       final Benchmark bm = new Benchmark("transmission rate");
       msg.addListener(new IOSEEMessageListener() {
-         public void onDataAvailable(MessageData data, MemType type) throws MessageSystemException {
+         public void onDataAvailable(MessageData data, DataType type) throws MessageSystemException {
             bm.samplePoint();
          }
 

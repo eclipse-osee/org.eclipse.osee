@@ -16,7 +16,7 @@ import org.eclipse.osee.ote.message.elements.EnumeratedElement;
 import org.eclipse.osee.ote.message.elements.Float32Element;
 import org.eclipse.osee.ote.message.elements.IntegerElement;
 import org.eclipse.osee.ote.message.elements.StringElement;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.test.TestMemType;
 
 public class TestMessage extends Message<UnitTestAccessor, TestMessageData, TestMessage> {
 
@@ -29,17 +29,17 @@ public class TestMessage extends Message<UnitTestAccessor, TestMessageData, Test
       super("TEST_MSG", 100, 0, true, 0, 50.0);
       TestMessageData ethData =
             new TestMessageData(this.getClass().getName(), getName(), getDefaultByteSize(), getDefaultOffset(),
-                  MemType.ETHERNET);
+                  TestMemType.ETHERNET);
       TestMessageData serialData =
             new TestMessageData(this.getClass().getName(), getName(), getDefaultByteSize(), getDefaultOffset(),
-                  MemType.SERIAL);
+                  TestMemType.SERIAL);
       setDefaultMessageData(ethData);
       INT_ELEMENT_1 = new IntegerElement(this, "INT_ELEMENT_1", ethData, 0, 0, 15);
       STRING_ELEMENT_1 = new StringElement(this, "STRING_ELEMENT_1", ethData, 2, 0, 159);
       ENUM_ELEMENT_1 = new EnumeratedElement<TestEnum>(this, "ENUM_ELEMENT_1", TestEnum.class, ethData, 22, 0, 7);
       FLOAT32_ELEMENT_1 = new Float32Element(this, "FLOAT32_ELEMENT_1", ethData, 23, 0, 31);
       addElements(INT_ELEMENT_1, STRING_ELEMENT_1, ENUM_ELEMENT_1, FLOAT32_ELEMENT_1);
-      setMemSource(MemType.ETHERNET);
+      setMemSource(TestMemType.ETHERNET);
    }
 
    @Override
