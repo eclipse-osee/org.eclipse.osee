@@ -13,6 +13,7 @@ import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBroadcastEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 
 /**
@@ -66,6 +67,7 @@ public class ResEventManager implements OseeMessagingStatusCallback {
       this.connectionNode = connectionNode;
       connectionNode.subscribe(ResMessages.RemoteTransactionEvent1, new RemoteTransactionEvent1Listener(), instance);
       connectionNode.subscribe(ResMessages.RemoteBranchEvent1, new RemoteBranchEvent1Listener(), instance);
+      connectionNode.subscribe(ResMessages.RemoteBroadcastEvent1, new RemoteBroadcastEvent1Listener(), instance);
    }
 
    public void kick(RemoteEvent remoteEvent) throws Exception {
@@ -138,6 +140,25 @@ public class ResEventManager implements OseeMessagingStatusCallback {
                message.getClass().getSimpleName()));
          try {
             frameworkEventListener.onEvent(remoteBranchEvent1);
+         } catch (RemoteException ex) {
+            System.err.println(getClass().getSimpleName() + " - process: " + ex.getLocalizedMessage());
+         }
+      }
+   }
+
+   public class RemoteBroadcastEvent1Listener extends OseeMessagingListener {
+
+      public RemoteBroadcastEvent1Listener() {
+         super(RemoteBroadcastEvent1.class);
+      }
+
+      @Override
+      public void process(final Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
+         RemoteBroadcastEvent1 remoteBroadcastEvent1 = (RemoteBroadcastEvent1) message;
+         System.err.println(String.format(getClass().getSimpleName() + " - received [%s]",
+               message.getClass().getSimpleName()));
+         try {
+            frameworkEventListener.onEvent(remoteBroadcastEvent1);
          } catch (RemoteException ex) {
             System.err.println(getClass().getSimpleName() + " - process: " + ex.getLocalizedMessage());
          }

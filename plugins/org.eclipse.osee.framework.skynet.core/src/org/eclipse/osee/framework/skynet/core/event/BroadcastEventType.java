@@ -14,12 +14,13 @@ package org.eclipse.osee.framework.skynet.core.event;
  * @author Donald G. Dunne
  */
 public enum BroadcastEventType {
-   Message(EventType.RemoteOnly),
-   Ping(EventType.RemoteOnly),
-   Pong(EventType.RemoteOnly),
-   Force_Shutdown(EventType.RemoteOnly);
+   Message(EventType.RemoteOnly, "AAn_QHYAmR1zR6BMU8QA"),
+   Ping(EventType.RemoteOnly, "AAn_QHaq1hnSs1du2twA"),
+   Pong(EventType.RemoteOnly, "AAn_QHdMWETFTHYRkKQA"),
+   Force_Shutdown(EventType.RemoteOnly, "AAn_QHfqlBSxbuANqXAA");
 
    private final EventType eventType;
+   private final String guid;
 
    public boolean isRemoteEventType() {
       return eventType == EventType.LocalAndRemote || eventType == EventType.RemoteOnly;
@@ -32,11 +33,26 @@ public enum BroadcastEventType {
    /**
     * @param localOnly true if this event type is to be thrown only locally and not to other clients
     */
-   private BroadcastEventType(EventType eventType) {
+   private BroadcastEventType(EventType eventType, String guid) {
       this.eventType = eventType;
+      this.guid = guid;
    }
 
    public boolean isPingOrPong() {
       return this == BroadcastEventType.Ping || this == BroadcastEventType.Pong;
    }
+
+   public static BroadcastEventType getByGuid(String guid) {
+      for (BroadcastEventType type : values()) {
+         if (type.guid.equals(guid)) {
+            return type;
+         }
+      }
+      return null;
+   }
+
+   public String getGuid() {
+      return guid;
+   }
+
 }

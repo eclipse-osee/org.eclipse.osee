@@ -10,8 +10,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IRemoteEventManagerEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
@@ -97,4 +100,24 @@ public class FrameworkEventManager {
          }
       }
    }
+
+   public static void processEventBroadcastEvent(Sender sender, BroadcastEvent broadcastEvent) {
+      OseeEventManager.eventLog(String.format("FEM: processEventBroadcastEvent [%s]", broadcastEvent));
+      if (broadcastEvent.getUsers().size() == 0) return;
+      for (IEventListener listener : listeners) {
+         if (listener instanceof IBroadcastEventListener) {
+            ((IBroadcastEventListener) listener).handleBroadcastEvent(sender, broadcastEvent);
+         }
+      }
+   }
+
+   public static void processRemoteEventManagerEvent(Sender sender, RemoteEventServiceEventType remoteEventServiceEvent) {
+      OseeEventManager.eventLog(String.format("FEM: processRemoteEventManagerEvent [%s]", remoteEventServiceEvent));
+      for (IEventListener listener : listeners) {
+         if (listener instanceof IRemoteEventManagerEventListener) {
+            ((IRemoteEventManagerEventListener) listener).handleRemoteEventManagerEvent(sender, remoteEventServiceEvent);
+         }
+      }
+   }
+
 }

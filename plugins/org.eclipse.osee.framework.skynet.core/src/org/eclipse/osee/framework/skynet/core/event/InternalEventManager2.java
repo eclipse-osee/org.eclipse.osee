@@ -15,13 +15,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 
 /**
@@ -50,6 +54,27 @@ public class InternalEventManager2 {
       executorService.submit(runnable);
    }
 
+   // Kick LOCAL "remote event manager" event
+   static void kickRemoteEventManagerEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
+      if (isDisableEvents()) {
+         return;
+      }
+      OseeEventManager.eventLog("IEM1: kickRemoteEventManagerEvent: type: " + remoteEventServiceEventType + " - " + sender);
+      Runnable runnable = new Runnable() {
+         public void run() {
+            // Kick LOCAL
+            try {
+               if (sender.isLocal() && remoteEventServiceEventType.isLocalEventType()) {
+                  FrameworkEventManager.processRemoteEventManagerEvent(sender, remoteEventServiceEventType);
+               }
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      };
+      execute(runnable);
+   }
+
    // Kick LOCAL ArtifactReloadEvent
    static void kickArtifactReloadEvent(final Sender sender, final Set<EventBasicGuidArtifact> artifactChanges) {
       if (isDisableEvents()) {
@@ -70,72 +95,6 @@ public class InternalEventManager2 {
                }
             } catch (Exception ex) {
                OseeEventManager.eventLog("IEM2 kickArtifactReloadEvent", ex);
-            }
-         }
-      };
-      execute(runnable);
-   }
-
-   // Kick LOCAL and REMOTE purged event depending on sender
-   static void kickArtifactsPurgedEvent(final Sender sender, final Set<EventBasicGuidArtifact> artifactChanges) throws OseeCoreException {
-      if (isDisableEvents()) {
-         return;
-      }
-      OseeEventManager.eventLog("IEM2:kickArtifactsPurgedEvent " + sender + " - " + artifactChanges);
-      Runnable runnable = new Runnable() {
-         public void run() {
-            // Kick LOCAL
-            FrameworkEventManager.processEventArtifactsAndRelations(sender, artifactChanges);
-
-            // Kick REMOTE (If source was Local and this was not a default branch changed event
-            try {
-               if (sender.isLocal()) {
-                  TransactionEvent transactionEvent = new TransactionEvent();
-                  transactionEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());
-                  transactionEvent.setNetworkSender(sender.getNetworkSender2());
-                  for (EventBasicGuidArtifact guidArt : artifactChanges) {
-                     transactionEvent.getArtifacts().add(guidArt);
-                  }
-                  RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemoteTransactionEvent(transactionEvent));
-               }
-            } catch (OseeCoreException ex) {
-               OseeEventManager.eventLog("IEM2 kickArtifactsPurgedEvent", ex);
-            }
-         }
-      };
-      execute(runnable);
-   }
-
-   // Kick LOCAL and REMOTE artifact change type depending on sender
-   static void kickArtifactsChangeTypeEvent(final Sender sender, final Set<EventBasicGuidArtifact> artifactChanges, final String toArtifactTypeGuid) throws OseeCoreException {
-      if (isDisableEvents()) {
-         return;
-      }
-      OseeEventManager.eventLog("IEM2:kickArtifactsChangeTypeEvent " + sender + " - " + artifactChanges);
-      Runnable runnable = new Runnable() {
-         public void run() {
-            try {
-               if (enableRemoteEventLoopback) {
-                  OseeEventManager.eventLog("IEM2: TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
-               }
-
-               // Kick LOCAL
-               if (!enableRemoteEventLoopback || enableRemoteEventLoopback && sender.isRemote()) {
-                  FrameworkEventManager.processEventArtifactsAndRelations(sender, artifactChanges);
-               }
-
-               // Kick REMOTE (If source was Local and this was not a default branch changed event
-               if (sender.isLocal()) {
-                  TransactionEvent transactionEvent = new TransactionEvent();
-                  transactionEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());
-                  transactionEvent.setNetworkSender(sender.getNetworkSender2());
-                  for (EventBasicGuidArtifact guidArt : artifactChanges) {
-                     transactionEvent.getArtifacts().add(guidArt);
-                  }
-                  RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemoteTransactionEvent(transactionEvent));
-               }
-            } catch (OseeCoreException ex) {
-               OseeEventManager.eventLog("IEM2 kickArtifactsChangeTypeEvent", ex);
             }
          }
       };
@@ -214,6 +173,37 @@ public class InternalEventManager2 {
                }
             } catch (Exception ex) {
                OseeEventManager.eventLog("IEM2 kickTransactionEvent", ex);
+            }
+         }
+      };
+      execute(runnable);
+   }
+
+   /*
+    * Kick LOCAL and REMOTE broadcast event
+    */
+   static void kickBroadcastEvent(final Sender sender, final BroadcastEvent broadcastEvent) throws OseeCoreException {
+      if (isDisableEvents()) {
+         return;
+      }
+
+      if (!broadcastEvent.getBroadcastEventType().isPingOrPong()) {
+         OseeEventManager.eventLog("IEM1: kickBroadcastEvent: type: " + broadcastEvent.getBroadcastEventType().name() + " message: " + broadcastEvent.getMessage() + " - " + sender);
+      }
+      Runnable runnable = new Runnable() {
+         public void run() {
+            try {
+               // Kick from REMOTE
+               if (sender.isRemote() || sender.isLocal() && broadcastEvent.getBroadcastEventType().isLocalEventType()) {
+                  FrameworkEventManager.processEventBroadcastEvent(sender, broadcastEvent);
+               }
+
+               // Kick REMOTE (If source was Local and this was not a default branch changed event
+               if (sender.isLocal() && broadcastEvent.getBroadcastEventType().isRemoteEventType()) {
+                  RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemoteBroadcastEvent(broadcastEvent));
+               }
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       };

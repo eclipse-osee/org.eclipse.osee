@@ -13,15 +13,6 @@
        </xsd:appinfo>
     </xsd:annotation>
 
-<xsd:complexType name="BroadcastEvent">
-  <xsd:sequence>
-    <xsd:element name="eventTypeGuid" type="xsd:string"/>
-    <xsd:element name="userIds" type="xsd:string" maxOccurs="unbounded" minOccurs="1"/>
-    <xsd:element name="message" type="xsd:string"/>
-    <xsd:element name="networkSender" type="NetworkSender" maxOccurs="1" minOccurs="1"/>
-  </xsd:sequence>
-</xsd:complexType>
-
 <xsd:complexType name="TransactionDeletedEvent">
   <xsd:sequence>
     <xsd:element name="transactionIds" type="xsd:string" maxOccurs="unbounded" minOccurs="1"/>

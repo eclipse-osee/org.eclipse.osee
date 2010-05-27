@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
@@ -52,21 +53,25 @@ public class OseeEventManager {
    }
 
    /**
-    * Kick local remote event manager event
+    * Kick LOCAL remote event manager event
     */
    public static void kickRemoteEventManagerEvent(Object source, RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
       if (InternalEventManager.isDisableEvents()) {
          return;
       }
       InternalEventManager.kickRemoteEventManagerEvent(getSender(source), remoteEventServiceEventType);
+      InternalEventManager2.kickRemoteEventManagerEvent(getSender(source), remoteEventServiceEventType);
    }
 
    // Kick LOCAL and REMOTE broadcast event
-   public static void kickBroadcastEvent(Object source, BroadcastEventType broadcastEventType, String[] userIds, String message) throws OseeCoreException {
+   public static void kickBroadcastEvent(Object source, BroadcastEvent broadcastEvent) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickBroadcastEvent(getSender(source), broadcastEventType, userIds, message);
+      InternalEventManager.kickBroadcastEvent(getSender(source), broadcastEvent.getBroadcastEventType(),
+            broadcastEvent.getUsers().toArray(new String[broadcastEvent.getUsers().size()]),
+            broadcastEvent.getMessage());
+      InternalEventManager2.kickBroadcastEvent(getSender(source), broadcastEvent);
    }
 
    //Kick LOCAL and REMOTE branch events
@@ -132,7 +137,7 @@ public class OseeEventManager {
          return;
       }
       InternalEventManager.kickArtifactsPurgedEvent(getSender(source), loadedArtifacts);
-      InternalEventManager2.kickArtifactsPurgedEvent(getSender(source), artifactChanges);
+      // Handled by kickTransactionEvent for new Events
    }
 
    // Kick LOCAL and REMOTE artifact change type depending on sender
@@ -141,7 +146,7 @@ public class OseeEventManager {
          return;
       }
       InternalEventManager.kickArtifactsChangeTypeEvent(getSender(source), toArtifactTypeId, loadedArtifacts);
-      InternalEventManager2.kickArtifactsChangeTypeEvent(getSender(source), artifactChanges, toArtifactTypeGuid);
+      // Handled by kickTransactionEvent for new Events
    }
 
    // Kick LOCAL and REMOTE transaction deleted event
@@ -158,7 +163,9 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickTransactionEvent(getSender(source), xModifiedEvents);
+      if (xModifiedEvents != null) {
+         InternalEventManager.kickTransactionEvent(getSender(source), xModifiedEvents);
+      }
       transactionEvent.setNetworkSender(getSender(source).getNetworkSender2());
       InternalEventManager2.kickTransactionEvent(getSender(source), transactionEvent);
    }

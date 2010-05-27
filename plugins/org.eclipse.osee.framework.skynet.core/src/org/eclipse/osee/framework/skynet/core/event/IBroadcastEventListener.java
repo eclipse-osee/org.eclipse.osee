@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
+import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IBroadcastEventListener extends IEventListener {
-   public void handleBroadcastEvent(Sender sender, BroadcastEventType broadcastEventType, String[] userIds, String message);
+
+   public void handleBroadcastEvent(Sender sender, BroadcastEvent broadcastEvent);
 
 }

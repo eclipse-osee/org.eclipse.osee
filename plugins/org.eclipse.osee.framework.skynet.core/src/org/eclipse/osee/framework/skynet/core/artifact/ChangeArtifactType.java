@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -71,8 +72,18 @@ public class ChangeArtifactType {
       }
 
       // Kick Local and Remote Events
+      // Old Events
       OseeEventManager.kickArtifactsChangeTypeEvent(ChangeArtifactType.class, artifactType.getId(),
             artifactType.getGuid(), new LoadedArtifacts(artifactsUserAccepted), artifactChanges);
+
+      // New Events
+      TransactionEvent transactionEvent = new TransactionEvent();
+      transactionEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());
+      for (EventBasicGuidArtifact guidArt : artifactChanges) {
+         transactionEvent.getArtifacts().add(guidArt);
+      }
+      OseeEventManager.kickTransactionEvent(ChangeArtifactType.class, null, transactionEvent);
+
    }
 
    public static void handleRemoteChangeType(EventChangeTypeBasicGuidArtifact guidArt) {

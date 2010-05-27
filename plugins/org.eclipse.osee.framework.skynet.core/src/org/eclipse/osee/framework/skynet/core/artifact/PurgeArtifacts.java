@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -66,6 +67,7 @@ public class PurgeArtifacts extends DbTransaction {
 
    @Override
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
+      if (artifactsToPurge == null || artifactsToPurge.size() == 0) return;
       //first determine if the purge is legal.
       List<Object[]> batchParameters = new ArrayList<Object[]>();
       int queryId = ArtifactLoader.getNewQueryId();
@@ -123,7 +125,8 @@ public class PurgeArtifacts extends DbTransaction {
                "(aj.art_id = item.a_art_id OR aj.art_id = item.b_art_id)", transactionJoinId, insertTime, queryId);
          insertSelectItems(connection, "osee_attribute", "aj.art_id = item.art_id", transactionJoinId, insertTime,
                queryId);
-         insertSelectItems(connection, "osee_artifact", "aj.art_id = item.art_id", transactionJoinId, insertTime, queryId);
+         insertSelectItems(connection, "osee_artifact", "aj.art_id = item.art_id", transactionJoinId, insertTime,
+               queryId);
 
          int txsDeletes =
                ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_TXS_USING_JOIN_TRANSACTION,
@@ -165,8 +168,17 @@ public class PurgeArtifacts extends DbTransaction {
          }
 
          // Kick Local and Remote Events
+         // Old Events
          OseeEventManager.kickArtifactsPurgedEvent("PurgeDbTransaction", new LoadedArtifacts(artifactsToPurge),
                artifactChanges);
+
+         // New Events
+         TransactionEvent transactionEvent = new TransactionEvent();
+         transactionEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());
+         for (EventBasicGuidArtifact guidArt : artifactChanges) {
+            transactionEvent.getArtifacts().add(guidArt);
+         }
+         OseeEventManager.kickTransactionEvent(PurgeArtifacts.class, null, transactionEvent);
 
       } finally {
          ArtifactLoader.clearQuery(connection, queryId);

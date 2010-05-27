@@ -11,15 +11,23 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAttributeChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidRelation1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBroadcastEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
@@ -53,6 +61,43 @@ public class FrameworkEventUtil {
 
    public static boolean isModified(Artifact artifact, Collection<EventBasicGuidArtifact> eventGuidArts) {
       return FrameworkEventUtil.isEvent(artifact, eventGuidArts, Arrays.asList(EventModType.Modified));
+   }
+
+   public static RemoteBroadcastEvent1 getRemoteBroadcastEvent(BroadcastEvent broadcastEvent) {
+      RemoteBroadcastEvent1 event = new RemoteBroadcastEvent1();
+      event.setNetworkSender(getRemoteNetworkSender(broadcastEvent.getNetworkSender()));
+      event.setMessage(broadcastEvent.getMessage());
+      event.setEventTypeGuid(broadcastEvent.getBroadcastEventType().getGuid());
+      for (User user : broadcastEvent.getUsers()) {
+         try {
+            if (Strings.isValid(user.getUserId())) {
+               event.getUserIds().add(user.getUserId());
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         }
+      }
+      return event;
+   }
+
+   public static BroadcastEvent getBroadcastEvent(RemoteBroadcastEvent1 remEvent) {
+      BroadcastEvent broadcastEvent = new BroadcastEvent();
+      for (String userId : remEvent.getUserIds()) {
+         try {
+            User user = UserManager.getUserByUserId(userId);
+            if (user != null) {
+               broadcastEvent.addUser(user);
+            }
+         } catch (UserNotInDatabase ex) {
+            // do nothing
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         }
+      }
+      broadcastEvent.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
+      broadcastEvent.setMessage(remEvent.getMessage());
+      broadcastEvent.setBroadcastEventType(BroadcastEventType.getByGuid(remEvent.getEventTypeGuid()));
+      return broadcastEvent;
    }
 
    public static RemoteBranchEvent1 getRemoteBranchEvent(BranchEvent branchEvent) {

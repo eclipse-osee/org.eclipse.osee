@@ -14,17 +14,18 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.osee.framework.ui.skynet.ats.IOseeAtsService;
@@ -134,64 +135,57 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
    }
 
    @Override
-   public void handleBroadcastEvent(Sender sender, BroadcastEventType broadcastEventType, String[] userIds, final String message) {
-      boolean isShutdownAllowed = false;
+   public void handleBroadcastEvent(Sender sender, final BroadcastEvent broadcastEvent) {
 
       // Determine whether this is a shutdown event
       // Prevent shutting down users without a valid message
-      if (broadcastEventType == BroadcastEventType.Force_Shutdown) {
-         if (message == null || message.length() == 0) {
+      if (broadcastEvent.getBroadcastEventType() == BroadcastEventType.Force_Shutdown) {
+         if (broadcastEvent.getMessage() == null || broadcastEvent.getMessage().length() == 0) {
             return;
          }
-         try {
-            User user = UserManager.getUser();
-            if (user != null) {
-               String userId = user.getUserId();
-               for (String temp : userIds) {
-                  if (temp.equals(userId)) {
-                     isShutdownAllowed = true;
-                     break;
-                  }
-               }
-            }
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error processing shutdown", ex);
-         }
-         final boolean isShutdownRequest = isShutdownAllowed;
          Display.getDefault().asyncExec(new Runnable() {
             public void run() {
+               boolean isShutdownRequest = false;
+               try {
+                  isShutdownRequest = broadcastEvent.getUsers().contains(UserManager.getUser());
+               } catch (OseeCoreException ex) {
+                  // do nothing
+               }
                if (isShutdownRequest) {
                   MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "Shutdown Requested", message);
+                        "Shutdown Requested", broadcastEvent.getMessage());
                   // Shutdown the bench when this event is received
                   PlatformUI.getWorkbench().close();
                }
             }
          });
-      } else if (broadcastEventType == BroadcastEventType.Message) {
-         if (message == null || message.length() == 0) {
+      } else if (broadcastEvent.getBroadcastEventType() == BroadcastEventType.Message) {
+         if (broadcastEvent.getMessage() == null || broadcastEvent.getMessage().length() == 0) {
             return;
          }
          Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     "Remote Message", message);
+                     "Remote Message", broadcastEvent.getMessage());
             }
          });
-      } else if (broadcastEventType == BroadcastEventType.Ping) {
+      } else if (broadcastEvent.getBroadcastEventType() == BroadcastEventType.Ping) {
          // Another client ping'd this client for session information; Pong back with
          // original client's session id so it can be identified as the correct pong
          try {
-            OseeEventManager.kickBroadcastEvent(this, BroadcastEventType.Pong, new String[] {},
-                  sender.getOseeSession().toString());
+            BroadcastEvent returnEvent = new BroadcastEvent();
+            returnEvent.setBroadcastEventType(BroadcastEventType.Pong);
+            returnEvent.setMessage(sender.getOseeSession().toString());
+            OseeEventManager.kickBroadcastEvent(this, returnEvent);
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
-      } else if (broadcastEventType == BroadcastEventType.Pong) {
+      } else if (broadcastEvent.getBroadcastEventType() == BroadcastEventType.Pong) {
          // Got pong from another client; If message == this client's sessionId, then it's
          // the response from this client's ping
          try {
-            if (message != null && message.equals(ClientSessionManager.getSession().toString())) {
+            if (broadcastEvent.getMessage() != null && broadcastEvent.getMessage().equals(
+                  ClientSessionManager.getSession().toString())) {
                OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Pong: " + sender.toString());
             }
          } catch (OseeAuthenticationRequiredException ex) {
