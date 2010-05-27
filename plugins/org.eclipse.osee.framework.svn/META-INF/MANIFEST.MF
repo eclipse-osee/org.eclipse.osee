@@ -1,14 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Svn Integration (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.framework.svn
+Bundle-SymbolicName: org.eclipse.osee.framework.svn;singleton:=true
 Bundle-Version: 0.9.5.qualifier
 Bundle-Activator: org.eclipse.osee.framework.svn.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.svn,
  org.eclipse.osee.framework.svn.entry
-Bundle-ClassPath: library.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.core.commands,
  org.eclipse.core.resources,
