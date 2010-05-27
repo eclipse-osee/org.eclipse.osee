@@ -27,7 +27,7 @@ import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.Element;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.listener.IOSEEMessageListener;
 import org.eclipse.osee.ote.message.tool.rec.ElementEntryFactory;
 import org.eclipse.osee.ote.message.tool.rec.MessageRecorder;
@@ -53,13 +53,13 @@ public class MessageRecEntry<T extends Message<?, ?, T>> implements IMessageEntr
    private volatile boolean enabled = false;
    private int longestLength = 0;
    private final MessageRecorder recorder;
-   private final MemType type;
+   private final DataType type;
    private final int headerSize;
    private final HashMap<MessageData, Byte> dataMap = new HashMap<MessageData, Byte>(16);
    private boolean bodyDump;
    private boolean headerDump;
 
-   public MessageRecEntry(T msg, MemType type, boolean headerDump, Element[] hdrElements, boolean bodyDump, Element[] bdyElements, MessageRecorder recorder) {
+   public MessageRecEntry(T msg, DataType type, boolean headerDump, Element[] hdrElements, boolean bodyDump, Element[] bdyElements, MessageRecorder recorder) {
       this.msg = msg;
       this.type = type;
       this.recorder = recorder;
@@ -176,7 +176,7 @@ public class MessageRecEntry<T extends Message<?, ?, T>> implements IMessageEntr
       // do nothing
    }
 
-   public synchronized void onDataAvailable(MessageData data, MemType type) throws MessageSystemException {
+   public synchronized void onDataAvailable(MessageData data, DataType type) throws MessageSystemException {
       if (this.type == type && enabled) {
          bm.startSample();
          final int length = data.getCurrentLength();

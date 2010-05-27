@@ -12,7 +12,7 @@ package org.eclipse.osee.ote.message;
 
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestScript;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMessageManager;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAccessor;
@@ -50,7 +50,7 @@ public abstract class MessageSystemTestCase extends TestCase implements ITestAcc
    public IMessageManager<?,?> getMsgManager() {
       return msgSysTestEnvironment.getMsgManager();
    }
-   public boolean isPhysicalTypeAvailable(MemType mux) {
+   public boolean isPhysicalTypeAvailable(DataType mux) {
       return msgSysTestEnvironment.isPhysicalTypeAvailable(mux);
    }
    public void associateObject(Class<?> c, Object obj) {

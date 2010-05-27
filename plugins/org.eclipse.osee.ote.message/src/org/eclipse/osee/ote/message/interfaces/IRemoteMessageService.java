@@ -13,15 +13,16 @@ package org.eclipse.osee.ote.message.interfaces;
 import java.net.InetSocketAddress;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.EnumSet;
 import java.util.Map;
+import java.util.Set;
+
 import org.eclipse.osee.ote.message.commands.RecordCommand;
 import org.eclipse.osee.ote.message.commands.SetElementValue;
 import org.eclipse.osee.ote.message.commands.SetMessageModeCmd;
 import org.eclipse.osee.ote.message.commands.SubscribeToMessage;
 import org.eclipse.osee.ote.message.commands.UnSubscribeToMessage;
 import org.eclipse.osee.ote.message.commands.ZeroizeElement;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.tool.SubscriptionDetails;
 import org.eclipse.osee.ote.message.tool.rec.IMessageEntryFactory;
 
@@ -56,7 +57,7 @@ public interface IRemoteMessageService extends Remote {
 
    SubscriptionDetails setReaderWriterMode(SetMessageModeCmd cmd) throws RemoteException;
 
-   EnumSet<MemType> getAvailablePhysicalTypes() throws RemoteException;
+   Set<DataType> getAvailablePhysicalTypes() throws RemoteException;
 
    boolean startRecording(RecordCommand cmd) throws RemoteException;
 

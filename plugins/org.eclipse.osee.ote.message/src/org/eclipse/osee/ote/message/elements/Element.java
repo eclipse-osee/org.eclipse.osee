@@ -19,7 +19,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.MessageSystemException;
 import org.eclipse.osee.ote.message.data.MessageData;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 
 /**
  * @author Ryan D. Brooks
@@ -127,7 +127,7 @@ public abstract class Element  implements ITimeout {
       this.timedOut = timeout;
    }
 
-   public MemType getType() {
+   public DataType getType() {
       return messageData.getType();
    }
 

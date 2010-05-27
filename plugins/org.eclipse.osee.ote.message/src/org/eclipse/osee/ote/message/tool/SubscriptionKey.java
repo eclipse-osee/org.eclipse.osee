@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.message.tool;
 
 import java.io.Serializable;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 
 /**
  * @author Ken J. Aguilar
@@ -24,11 +24,11 @@ public final class SubscriptionKey implements Serializable {
    private static final long serialVersionUID = 4385205425559852952L;
 
    private final int id;
-   private final MemType type;
+   private final DataType type;
    private final MessageMode mode;
    private final String messageClassName;
 
-   public SubscriptionKey(int id, MemType type, MessageMode mode, String messageClassName) {
+   public SubscriptionKey(int id, DataType type, MessageMode mode, String messageClassName) {
       this.id = id;
       this.type = type;
       this.mode = mode;
@@ -39,7 +39,7 @@ public final class SubscriptionKey implements Serializable {
       return id;
    }
 
-   public MemType getType() {
+   public DataType getType() {
       return type;
    }
 

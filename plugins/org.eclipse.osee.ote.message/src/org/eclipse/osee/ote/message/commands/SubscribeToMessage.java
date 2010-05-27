@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.message.commands;
 
 import java.io.Serializable;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
@@ -31,13 +31,13 @@ public class SubscribeToMessage implements Serializable {
     */
    private static final long serialVersionUID = -8639822314152666969L;
    private final String message;
-   private final MemType type;
+   private final DataType type;
    private final MessageMode mode;
    private final IMsgToolServiceClient callback;
    /**
     * 
     */
-   public SubscribeToMessage(String message, MemType type, MessageMode mode, IMsgToolServiceClient callback) {
+   public SubscribeToMessage(String message, DataType type, MessageMode mode, IMsgToolServiceClient callback) {
       super();
       this.message = message;
       this.type = type;
@@ -56,7 +56,7 @@ public class SubscribeToMessage implements Serializable {
       return message;
    }
    
-   public MemType getType() {
+   public DataType getType() {
       return type;
    }
 

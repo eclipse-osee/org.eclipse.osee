@@ -13,7 +13,7 @@ package org.eclipse.osee.ote.message;
 import java.util.logging.Level;
 
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 
 /**
  * @author Ken J. Aguilar
@@ -60,7 +60,7 @@ public class MessageEventLogger implements UniversalMessageListener{
       this.showStackTrace = showStackTrace;
    }
 
-   public void onChange(MemType oldtype, MemType newType, Message<?, ?, ?> message) {
+   public void onChange(DataType oldtype, DataType newType, Message<?, ?, ?> message) {
       log(Level.INFO, String.format(
             "MemType for %s %s has changed from %s to %s", 
             message.getName(), 

@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -34,15 +34,15 @@ public interface IMessageManager<T extends MessageData, U extends Message<? exte
 
    Collection<U> getAllWriters();
 
-   Collection<U> getAllReaders(MemType type);
+   Collection<U> getAllReaders(DataType type);
 
-   Collection<U> getAllWriters(MemType type);
+   Collection<U> getAllWriters(DataType type);
 
    void init() throws Exception;
 
    void publishMessages(boolean publish);
 
-   boolean isPhysicalTypeAvailable(MemType physicalType);
+   boolean isPhysicalTypeAvailable(DataType physicalType);
 
    IMessageRequestor<T, U> createMessageRequestor(String name);
 }

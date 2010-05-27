@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,7 +39,7 @@ import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.Element;
 import org.eclipse.osee.ote.message.elements.MsgWaitResult;
 import org.eclipse.osee.ote.message.elements.RecordElement;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMessageManager;
 import org.eclipse.osee.ote.message.interfaces.IMessageRequestor;
 import org.eclipse.osee.ote.message.interfaces.IMessageScheduleChangeListener;
@@ -63,9 +63,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       new ArrayList<IMessageScheduleChangeListener>(10);
    private boolean destroyed = false;
 
-   private MemType currentMemType;
-   private final EnumMap<MemType, ArrayList<U>> memTypeToMessageMap = new EnumMap<MemType, ArrayList<U>>(MemType.class);
-   private final EnumMap<MemType, ArrayList<T>> memToDataMap = new EnumMap<MemType, ArrayList<T>>(MemType.class);
+   private DataType currentMemType;
+   private final Map<DataType, ArrayList<U>> memTypeToMessageMap = new HashMap<DataType, ArrayList<U>>();
+   private final Map<DataType, ArrayList<T>> memToDataMap = new HashMap<DataType, ArrayList<T>>();
    private final int phase;
    protected double rate;
    protected final double defaultRate;
@@ -75,7 +75,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    private IMessageRequestor messageRequestor = null;
    private static final double doubleTolerance = 0.000001;
-   private final EnumSet<MemType> memTypeActive = EnumSet.noneOf(MemType.class);
+   private final Set<DataType> memTypeActive = new HashSet<DataType>();
 
    private T defaultMessageData;
 
@@ -242,7 +242,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return memToDataMap.get(currentMemType).get(0).getPayloadSize();
    }
 
-   public int getPayloadSize(MemType type) {
+   public int getPayloadSize(DataType type) {
       checkState();
       return memToDataMap.get(type).get(0).getPayloadSize();
    }
@@ -261,7 +261,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return 0;
    }
 
-   public int getHeaderSize(MemType type) {
+   public int getHeaderSize(DataType type) {
       checkState();
       return memToDataMap.get(type).get(0).getMsgHeader().getHeaderSize();
    }
@@ -300,7 +300,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return getActiveDataSource().containsSendListener(listener);
    }
 
-   public void send(MemType type) throws MessageSystemException {
+   public void send(DataType type) throws MessageSystemException {
       checkState();
       if (!isTurnedOff) {
          Collection<T> dataList = memToDataMap.get(type);
@@ -328,7 +328,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    //	}
    //	}
 
-   public boolean setMemSource(S accessor, MemType type) {
+   public boolean setMemSource(S accessor, DataType type) {
       return setMemSource(type);
    }
 
@@ -344,14 +344,14 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * 
     * @param memType the possibly new physical mem type.
     */
-   public void switchElementAssociation(MemType memType) {
+   public void switchElementAssociation(DataType memType) {
       checkState();
       switchElementAssociation(getMessageTypeAssociation(memType));
    }
 
 //   public abstract void switchElementAssociation(Collection<U> messages);
 
-   public void addMessageTypeAssociation(MemType memType, U messageToBeAdded) {
+   public void addMessageTypeAssociation(DataType memType, U messageToBeAdded) {
       checkState();
       ArrayList<U> list;
       if (!memTypeToMessageMap.containsKey(memType)) {
@@ -365,7 +365,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       //		addMessageDataSource(messageToBeAdded.defaultMessageData);
    }
 
-   protected Collection<U> getMessageTypeAssociation(MemType type) {
+   protected Collection<U> getMessageTypeAssociation(DataType type) {
       final ArrayList<U> list = memTypeToMessageMap.get(type);
       if (list != null)
          return Collections.unmodifiableCollection(list);
@@ -387,10 +387,10 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    protected void addMessageDataSource(T data) {
-      final MemType type = data.getType();
+      final DataType type = data.getType();
       final ArrayList<T> list;
       if (!memToDataMap.containsKey(type)) {
-         list = new ArrayList<T>(MemType.values().length);
+         list = new ArrayList<T>();
          memToDataMap.put(type, list);
       } else {
          list = memToDataMap.get(type);
@@ -399,7 +399,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       data.addMessage(this);
    }
 
-   public Collection<T> getMemSource(MemType type) {
+   public Collection<T> getMemSource(DataType type) {
       checkState();
       final ArrayList<T> list = memToDataMap.get(type);
       if (list != null)
@@ -408,7 +408,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
          return new ArrayList<T>();
    }
 
-   public boolean getMemSource(MemType type, Collection<T> listToAddto) {
+   public boolean getMemSource(DataType type, Collection<T> listToAddto) {
       checkState();
       final ArrayList<T> list = memToDataMap.get(type);
       if (list != null) {
@@ -417,7 +417,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return false;
    }
 
-   public MemType getMemType() {
+   public DataType getMemType() {
       return currentMemType;
    }
 
@@ -446,7 +446,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       
    }
 
-   public Collection<Element> getElements(MemType type) {
+   public Collection<Element> getElements(DataType type) {
       checkState();
       LinkedList<Element> list = new LinkedList<Element>();
       for (Element element : elementMap.values()) {
@@ -536,7 +536,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
 
-   public Element getElement(List<Object> elementPath, MemType type) {
+   public Element getElement(List<Object> elementPath, DataType type) {
       return getElement(elementPath).switchMessages(this.getMessageTypeAssociation(type));
    }
 
@@ -547,7 +547,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * @return the element associated with the given name
     * @throws IllegalArgumentException if an element doesn't exist with given name.  Use {@link #hasElement(String)} with any use of this function.
     */
-   public Element getElement(String elementName, MemType type) {
+   public Element getElement(String elementName, DataType type) {
       checkState();
       Element retVal = elementMap.get(elementName);
       if(retVal != null ) {
@@ -561,7 +561,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return getBodyOrHeaderElement(elementName, currentMemType);
    }
 
-   public Element getBodyOrHeaderElement(String elementName, MemType type) {
+   public Element getBodyOrHeaderElement(String elementName, DataType type) {
       checkState();
       Element e = elementMap.get(elementName);
       if (e == null) {
@@ -710,7 +710,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * @param data the Message Data object that has been updated
     * @param type the memtype of the message data object
     */
-   public void notifyListeners(final MessageData data, final MemType type) {
+   public void notifyListeners(final MessageData data, final DataType type) {
       checkState();
       this.listenerHandler.onDataAvailable(data, type);
       this.removableListenerHandler.onDataAvailable(data, type);
@@ -748,7 +748,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    public void zeroize() {
       checkState();
-      for (MemType memType : memToDataMap.keySet()) {
+      for (DataType memType : memToDataMap.keySet()) {
          for (Element el : getElements(memType)) {
             el.zeroize();
          }
@@ -933,7 +933,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return getMaxDataSize(currentMemType);
    }
 
-   public int getMaxDataSize(MemType type) {
+   public int getMaxDataSize(DataType type) {
       checkState();
       int size = 0;
       for (MessageData msgData : memToDataMap.get(type)) {
@@ -992,7 +992,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return dataList.get(0);
    }
 
-   public T getActiveDataSource(MemType type) {
+   public T getActiveDataSource(DataType type) {
       checkState();
       ArrayList<T> dataList = memToDataMap.get(type);
       return dataList != null ? dataList.get(0) : null;
@@ -1013,14 +1013,14 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * @param currentMemType the currentMemType to set
     */
-   protected void setCurrentMemType(MemType currentMemType) {
+   protected void setCurrentMemType(DataType currentMemType) {
       checkState();
       this.currentMemType = currentMemType;
    }
 
-   public boolean setMemSource(MemType type) {
+   public boolean setMemSource(DataType type) {
       checkState();
-      MemType oldMemType = getMemType();
+      DataType oldMemType = getMemType();
       notifyPreMemSourceChangeListeners(oldMemType, type, this);
       this.switchElementAssociation(type);
       setCurrentMemType(type);
@@ -1028,9 +1028,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return true;
    }
 
-   public boolean activateMemSource(MemType type) {
+   public boolean activateMemSource(DataType type) {
       checkState();
-      MemType oldMemType = getMemType();
+      DataType oldMemType = getMemType();
       notifyPreMemSourceChangeListeners(oldMemType, type, this);
       //		this.switchElementAssociation(type);
       //		setCurrentMemType(type);
@@ -1041,7 +1041,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * 
     */
-   private void notifyPostMemSourceChangeListeners(MemType old, MemType newtype, Message<?, ?, ?> message) {
+   private void notifyPostMemSourceChangeListeners(DataType old, DataType newtype, Message<?, ?, ?> message) {
       checkState();
       for (IMemSourceChangeListener listener : postMemSourceChangeListeners) {
          try {
@@ -1055,7 +1055,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    /**
     * 
     */
-   private void notifyPreMemSourceChangeListeners(MemType old, MemType newtype, Message<?, ?, ?> message) {
+   private void notifyPreMemSourceChangeListeners(DataType old, DataType newtype, Message<?, ?, ?> message) {
       checkState();
       for (IMemSourceChangeListener listener : preMemSourceChangeListeners) {
          listener.onChange(old, newtype, message);
@@ -1095,12 +1095,12 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return memToDataMap.values();
    }
 
-   public Set<MemType> getAvailableMemTypes() {
+   public Set<DataType> getAvailableMemTypes() {
       checkState();
       return memToDataMap.keySet();
    }
 
-   public Collection<T> getMessageData(MemType type) {
+   public Collection<T> getMessageData(DataType type) {
       checkState();
       return memToDataMap.get(type);
    }
@@ -1151,19 +1151,19 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return defaultMessageData.isWriter();
    }
 
-   public void setMemTypeActive(MemType type) {
+   public void setMemTypeActive(DataType type) {
       checkState();
       memTypeActive.add(type);
       notifyPostMemSourceChangeListeners(currentMemType, currentMemType, this);
    }
 
-   public void setMemTypeInactive(MemType type) {
+   public void setMemTypeInactive(DataType type) {
       checkState();
       memTypeActive.add(type);
       notifyPostMemSourceChangeListeners(currentMemType, currentMemType, this);
    }
 
-   public boolean isMemTypeActive(MemType type) {
+   public boolean isMemTypeActive(DataType type) {
       checkState();
       return memTypeActive.contains(type);
    }
@@ -1230,14 +1230,14 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public void switchElementAssociation(Collection<U> messages) {
    }
    
-   public Map<MemType, Class<? extends Message>[]> getAssociatedMessages() {
-      return new HashMap<MemType, Class<? extends Message>[]>();
+   public Map<DataType, Class<? extends Message>[]> getAssociatedMessages() {
+      return new HashMap<DataType, Class<? extends Message>[]>();
    }
 
    public void postCreateMessageSetup(IMessageManager messageManager, MessageData data) throws Exception {
-      Map<MemType, Class<? extends Message>[]> o = getAssociatedMessages();
+      Map<DataType, Class<? extends Message>[]> o = getAssociatedMessages();
       messageRequestor = messageManager.createMessageRequestor(getName());
-      for (Entry<MemType, Class<? extends Message>[]> entry : o.entrySet()) {
+      for (Entry<DataType, Class<? extends Message>[]> entry : o.entrySet()) {
           if (messageManager.isPhysicalTypeAvailable(entry.getKey())) {
              for (Class<? extends Message> clazz : entry.getValue()) {
                 final Message message;
@@ -1310,7 +1310,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 	   return getElementByPath(path, currentMemType);
    }
    
-   public Element getElementByPath(ElementPath path, MemType type) {
+   public Element getElementByPath(ElementPath path, DataType type) {
 	   if (path.isHeaderElement()) {
 	         Element[] elements = getActiveDataSource(type).getMsgHeader().getElements();
 	         for (Element element : elements) {

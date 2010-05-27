@@ -22,7 +22,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestLogger;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestStation;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimerControl;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMessageManager;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAccessor;
@@ -43,7 +43,7 @@ public abstract class MessageSystemTestScript extends TestScript implements ITes
       return msgSysEnvironment.getMsgManager();
    }
 
-   public boolean isPhysicalTypeAvailable(MemType mux) {
+   public boolean isPhysicalTypeAvailable(DataType mux) {
       return msgSysEnvironment.isPhysicalTypeAvailable(mux);
    }
 

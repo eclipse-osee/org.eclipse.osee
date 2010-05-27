@@ -11,9 +11,10 @@
 package org.eclipse.osee.ote.message.tool;
 
 import java.io.Serializable;
-import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ote.message.enums.MemType;
+
+import org.eclipse.osee.ote.message.enums.DataType;
 
 /**
  * @author Ken J. Aguilar
@@ -27,13 +28,12 @@ public class SubscriptionDetails implements Serializable {
 
    private final SubscriptionKey key;
    private final byte[] currentData;
-   private final EnumSet<MemType> availableMemTypes;
+   private final Set<DataType> availableMemTypes;
 
-   public SubscriptionDetails(SubscriptionKey key, byte[] currentData, Set<MemType> availableMemTypes) {
+   public SubscriptionDetails(SubscriptionKey key, byte[] currentData, Set<DataType> availableMemTypes) {
       this.key = key;
       this.currentData = currentData;
-      this.availableMemTypes = EnumSet.noneOf(MemType.class);
-      this.availableMemTypes.addAll(availableMemTypes);
+      this.availableMemTypes = new HashSet<DataType>(availableMemTypes);
    }
 
    public SubscriptionKey getKey() {
@@ -44,7 +44,7 @@ public class SubscriptionDetails implements Serializable {
       return currentData;
    }
 
-   public EnumSet<MemType> getAvailableMemTypes() {
+   public Set<DataType> getAvailableMemTypes() {
       return availableMemTypes;
    }
 }

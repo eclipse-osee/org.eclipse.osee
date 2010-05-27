@@ -26,7 +26,7 @@ import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.MessageSystemException;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.MsgWaitResult;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.ITestAccessor;
 import org.eclipse.osee.ote.message.listener.IOSEEMessageListener;
 
@@ -84,7 +84,7 @@ public class MultiMessageCondition {
       }
 
       @Override
-      public synchronized void onDataAvailable(MessageData data, MemType type) throws MessageSystemException {
+      public synchronized void onDataAvailable(MessageData data, DataType type) throws MessageSystemException {
          MessageCounter count = hitCount.get(data);
          if (count != null) {
             if (count.getCount() == 0) {

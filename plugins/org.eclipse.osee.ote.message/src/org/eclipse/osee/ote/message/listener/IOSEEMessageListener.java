@@ -12,13 +12,13 @@ package org.eclipse.osee.ote.message.listener;
 
 import org.eclipse.osee.ote.message.MessageSystemException;
 import org.eclipse.osee.ote.message.data.MessageData;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface IOSEEMessageListener {
-   void onDataAvailable(MessageData data, MemType type) throws MessageSystemException;
+   void onDataAvailable(MessageData data, DataType type) throws MessageSystemException;
    void onInitListener() throws MessageSystemException;
 }

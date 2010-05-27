@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
@@ -45,7 +46,7 @@ import org.eclipse.osee.ote.message.commands.RecordCommand.MessageRecordDetails;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.DiscreteElement;
 import org.eclipse.osee.ote.message.elements.Element;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMessageManager;
 import org.eclipse.osee.ote.message.interfaces.IMessageRequestor;
 import org.eclipse.osee.ote.message.interfaces.IMessageScheduleChangeListener;
@@ -70,8 +71,8 @@ public class AbstractMessageToolService implements IRemoteMessageService {
 
    private final HashMap<String, Throwable> cancelledSubscriptions = new HashMap<String, Throwable>(40);
    private final DatagramChannel channel;
-   private final HashMap<String, EnumMap<MemType, EnumMap<MessageMode, SubscriptionRecord>>> messageMap =
-         new HashMap<String, EnumMap<MemType, EnumMap<MessageMode, SubscriptionRecord>>>(100);
+   private final HashMap<String, Map<DataType, EnumMap<MessageMode, SubscriptionRecord>>> messageMap =
+         new HashMap<String, Map<DataType, EnumMap<MessageMode, SubscriptionRecord>>>(100);
 
    private final IMessageRequestor messageRequestor;
    private MessageRecorder recorder;
@@ -113,8 +114,8 @@ public class AbstractMessageToolService implements IRemoteMessageService {
    /**
     * Associates a {@link Message} with a {@link IOSEEMessageReaderListener} and handles transmitting the message data
     * upon a the method call
-    * {@link org.eclipse.osee.ote.message.listener.IOSEEMessageListener#onDataAvailable(MessageData, MemType)}. When a
-    * listener's {@link #onDataAvailable(MessageData, MemType)} method is invoked it will transmit the new data to all
+    * {@link org.eclipse.osee.ote.message.listener.IOSEEMessageListener#onDataAvailable(MessageData, DataType)}. When a
+    * listener's {@link #onDataAvailable(MessageData, DataType)} method is invoked it will transmit the new data to all
     * registered clients
     * 
     * @author Ken J. Aguilar
@@ -138,7 +139,7 @@ public class AbstractMessageToolService implements IRemoteMessageService {
        * @param type
        * @param clients
        */
-      SubscriptionRecord(final Message<?, ?, ?> msg, final MemType type, final MessageMode mode, final ClientInfo... clients) {
+      SubscriptionRecord(final Message<?, ?, ?> msg, final DataType type, final MessageMode mode, final ClientInfo... clients) {
          this.msg = msg;
          this.key = new SubscriptionKey(idCounter.incrementAndGet(), type, mode, msg.getName());
 
@@ -179,7 +180,7 @@ public class AbstractMessageToolService implements IRemoteMessageService {
          return strBuilder.toString();
       }
 
-      SubscriptionRecord(final Message<?, ?, ?> msg, final MemType type, final MessageMode mode, final ArrayList<ClientInfo> clients) {
+      SubscriptionRecord(final Message<?, ?, ?> msg, final DataType type, final MessageMode mode, final ArrayList<ClientInfo> clients) {
 
          this.msg = msg;
          this.key = new SubscriptionKey(idCounter.incrementAndGet(), type, mode, msg.getName());
@@ -260,7 +261,7 @@ public class AbstractMessageToolService implements IRemoteMessageService {
        * 
        * @see IOSEEMessageReaderListener
        */
-      public synchronized void onDataAvailable(final MessageData data, final MemType type) {
+      public synchronized void onDataAvailable(final MessageData data, final DataType type) {
          final byte[] msgData = data.toByteArray();
          final int msgLength = data.getCurrentLength();
          /* do nothing if there is no clients registered for this type */
@@ -465,7 +466,7 @@ public class AbstractMessageToolService implements IRemoteMessageService {
          if (msgInstance == null) {
             throw new Exception("Could not instantiate reader for " + name);
          }
-         final MemType type = cmd.getType();
+         final DataType type = cmd.getType();
          if (!((MessageSystemTestEnvironment) Activator.getTestEnvironment()).isPhysicalTypeAvailable(type)) {
             // the message can't exist in this environment return null;
             return null;
@@ -475,7 +476,7 @@ public class AbstractMessageToolService implements IRemoteMessageService {
          IMsgToolServiceClient reference = cmd.getCallback();
 
          key = reference.getTestSessionKey();
-         final InetSocketAddress address = reference.getAddressByType(msgInstance.getMessageName(), type.ordinal());
+         final InetSocketAddress address = reference.getAddressByType(msgInstance.getMessageName(), type);
          if (address == null) {
             throw new Exception(
                   "client callback for user " + key.getUser().getName() + " returned a null address when subscribing to " + name);
@@ -484,9 +485,9 @@ public class AbstractMessageToolService implements IRemoteMessageService {
                "Client %s at %s is subscribing to message %s: current mem=%s", key.getUser().getName(),
                address.toString(), name, type));
 
-         EnumMap<MemType, EnumMap<MessageMode, SubscriptionRecord>> memToModeMap = messageMap.get(name);
+         Map<DataType, EnumMap<MessageMode, SubscriptionRecord>> memToModeMap = messageMap.get(name);
          if (memToModeMap == null) {
-            memToModeMap = new EnumMap<MemType, EnumMap<MessageMode, SubscriptionRecord>>(MemType.class);
+            memToModeMap = new HashMap<DataType, EnumMap<MessageMode, SubscriptionRecord>>();
             messageMap.put(name, memToModeMap);
          }
          EnumMap<MessageMode, SubscriptionRecord> modeMap = memToModeMap.get(type);
@@ -611,9 +612,9 @@ public class AbstractMessageToolService implements IRemoteMessageService {
 
    public synchronized void unsubscribeToMessage(final UnSubscribeToMessage cmd) throws RemoteException {
       final String name = cmd.getMessage();
-      final MemType type = cmd.getMemTypeOrdinal();
+      final DataType type = cmd.getMemTypeOrdinal();
 
-      final EnumMap<MemType, EnumMap<MessageMode, SubscriptionRecord>> memToModeMap = messageMap.get(name);
+      final Map<DataType, EnumMap<MessageMode, SubscriptionRecord>> memToModeMap = messageMap.get(name);
       if (memToModeMap == null) {
          /* no listeners for this message so return */
          return;
@@ -673,7 +674,7 @@ public class AbstractMessageToolService implements IRemoteMessageService {
             if (reader == null) {
                throw new RemoteException("Could not instantiate reader for " + name);
             }
-            MemType type = details.getType();
+            DataType type = details.getType();
             List<List<Object>> elementNames = details.getBodyElementNames();
             ArrayList<Element> elementsToRecord = new ArrayList<Element>(elementNames.size());
             for (List<Object> elementName : elementNames) {
@@ -776,7 +777,7 @@ public class AbstractMessageToolService implements IRemoteMessageService {
       }
       OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, "terminate message tool service");
       try {
-         for (EnumMap<MemType, EnumMap<MessageMode, SubscriptionRecord>> memToModeMap : messageMap.values()) {
+         for (Map<DataType, EnumMap<MessageMode, SubscriptionRecord>> memToModeMap : messageMap.values()) {
             for (EnumMap<MessageMode, SubscriptionRecord> modeMap : memToModeMap.values()) {
                for (SubscriptionRecord listener : modeMap.values()) {
                   /* unregister the listenr for message updates */
@@ -850,13 +851,8 @@ public class AbstractMessageToolService implements IRemoteMessageService {
 
    }
 
-   public EnumSet<MemType> getAvailablePhysicalTypes() {
-      final EnumSet<MemType> available = EnumSet.noneOf(MemType.class);
-      for (MemType type : MemType.values()) {
-         if (((MessageSystemTestEnvironment) Activator.getTestEnvironment()).isPhysicalTypeAvailable(type)) {
-            available.add(type);
-         }
-      }
+   public Set<DataType> getAvailablePhysicalTypes() {
+      final Set<DataType> available = new HashSet<DataType>(((MessageSystemTestEnvironment) Activator.getTestEnvironment()).getDataTypes());
       return available;
    }
 
@@ -864,7 +860,7 @@ public class AbstractMessageToolService implements IRemoteMessageService {
       final String name = cmd.getName();
 
       try {
-         final EnumMap<MemType, EnumMap<MessageMode, SubscriptionRecord>> memToModeMap = messageMap.get(name);
+         final Map<DataType, EnumMap<MessageMode, SubscriptionRecord>> memToModeMap = messageMap.get(name);
          if (memToModeMap == null) {
             throw new IllegalStateException("No subscriptions registered for message " + name);
          }

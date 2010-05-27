@@ -13,7 +13,7 @@ package org.eclipse.osee.ote.message.commands;
 import java.io.Serializable;
 import java.util.List;
 
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 
 
 
@@ -32,12 +32,12 @@ public class ZeroizeElement implements Serializable {
 	private static final long serialVersionUID = 2245725475520729629L;
 	private final String message;
 	   private final List<Object> element;
-       private final MemType type;
+       private final DataType type;
 	   
 	   /**
 	    * 
 	    */
-	   public ZeroizeElement(String message, MemType type, List<Object> elementPath) {
+	   public ZeroizeElement(String message, DataType type, List<Object> elementPath) {
 	      super();
 	      this.message = message;
           this.type = type;
@@ -59,7 +59,7 @@ public class ZeroizeElement implements Serializable {
 	      return element;
 	   }
        
-       public MemType getMemType() {
+       public DataType getMemType() {
           return type;
        }
 }

@@ -12,9 +12,10 @@ package org.eclipse.osee.ote.message;
 
 import java.io.Serializable;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
 /**
@@ -29,19 +30,20 @@ public final class MessageState implements Serializable {
 
    private static final long serialVersionUID = -8977593021184452337L;
    
-   private final MemType currentMemType;
+   private final DataType currentMemType;
    private final byte[] data;
-   private final EnumSet<MemType> availableMemTypes;
+   private final Set<DataType> availableMemTypes;
    private final MessageMode mode;
    
-   public MessageState(final MemType currentMemType, final byte[] data, final Set<MemType> availableMemTypes, final MessageMode mode) {
+   public MessageState(final DataType currentMemType, final byte[] data, final Set<DataType> availableMemTypes, final MessageMode mode) {
       this.currentMemType = currentMemType;
       this.data = data;
-      this.availableMemTypes = EnumSet.copyOf(availableMemTypes);
+      
+      this.availableMemTypes = new HashSet<DataType>(availableMemTypes);
       this.mode = mode;
    }
 
-   public MemType getCurrentMemType() {
+   public DataType getCurrentMemType() {
       return currentMemType;
    }
 
@@ -49,7 +51,7 @@ public final class MessageState implements Serializable {
       return data;
    }
    
-   public EnumSet<MemType> getAvailableMemTypes() {
+   public Set<DataType> getAvailableMemTypes() {
       return availableMemTypes;
    }
    

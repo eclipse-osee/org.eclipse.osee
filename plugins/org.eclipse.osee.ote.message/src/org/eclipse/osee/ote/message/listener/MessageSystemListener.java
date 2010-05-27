@@ -25,7 +25,7 @@ import org.eclipse.osee.ote.message.MessageSystemException;
 import org.eclipse.osee.ote.message.condition.ICondition;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.MsgWaitResult;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IOSEEMessageReaderListener;
 import org.eclipse.osee.ote.message.interfaces.IOSEEMessageWriterListener;
 
@@ -218,7 +218,7 @@ IOSEEMessageWriterListener, ITimeout {
 				listener, SPEED.SLOW));
 	}
 
-	public synchronized void onDataAvailable(final MessageData data, MemType type) throws MessageSystemException{
+	public synchronized void onDataAvailable(final MessageData data, DataType type) throws MessageSystemException{
 
 		tbm.startSample();
 		if (message.getMemType() == type) {
@@ -267,10 +267,10 @@ IOSEEMessageWriterListener, ITimeout {
 
 		private final MessageData data;
 
-		private final MemType type;
+		private final DataType type;
 
 		public SlowListenerNotifier(IOSEEMessageListener listener, MessageData data,
-				MemType type, boolean isOnInit) {
+				DataType type, boolean isOnInit) {
 			this.listener = listener;
 			this.data = data;
 			this.type = type;

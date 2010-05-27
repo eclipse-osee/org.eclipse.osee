@@ -19,14 +19,8 @@ import org.eclipse.osee.ote.message.interfaces.INamespace;
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
  */
-public enum MemType  implements Serializable, INamespace {
-  TS_META_DATA,
-  PUB_SUB,
-  MUX,
-  WIRE_MP_DIRECT,
-  WIRE_AIU,
-  SERIAL,
-  ETHERNET,
-  IGTTS_WIRE,
-  MUX_LM;
+public interface DataType extends Serializable, INamespace {
+
+	String name();
+	
 }

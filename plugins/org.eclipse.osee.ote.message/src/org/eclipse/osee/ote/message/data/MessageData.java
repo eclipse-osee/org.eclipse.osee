@@ -26,7 +26,7 @@ import org.eclipse.osee.ote.message.IMessageSendListener;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.MessageSystemException;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.Namespace;
 import org.eclipse.osee.ote.messaging.dds.Data;
 import org.eclipse.osee.ote.messaging.dds.DataSample;
@@ -66,14 +66,14 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    private final CopyOnWriteArrayList<Message> messages = new CopyOnWriteArrayList<Message>();
    private List<IMessageSendListener> messageSendListeners = new CopyOnWriteArrayList<IMessageSendListener>();
    private final int defaultDataByteSize;
-   private final MemType memType;
+   private final DataType memType;
    private boolean isEnabled = true;
    private long activityCount = 0;
    private long sentCount;
    private int currentLength;
    private boolean isScheduled = false;
 
-   public MessageData(String typeName, String name, int dataByteSize, int offset, MemType memType) {
+   public MessageData(String typeName, String name, int dataByteSize, int offset, DataType memType) {
       mem = new MemoryResource(new byte[dataByteSize], offset, dataByteSize - offset);
       myDataSample = new DataSample(this);
       this.typeName = typeName;
@@ -83,7 +83,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       this.memType = memType;
    }
 
-   public MessageData(String typeName, String name, MemoryResource mem, MemType memType) {
+   public MessageData(String typeName, String name, MemoryResource mem, DataType memType) {
       this.mem = mem;
       myDataSample = new DataSample(this);
       this.typeName = typeName;
@@ -94,7 +94,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       GCHelper.getGCHelper().addRefWatch(this);
    }
 
-   public MessageData(String name, int dataByteSize, int offset, MemType memType) {
+   public MessageData(String name, int dataByteSize, int offset, DataType memType) {
       this(name, name, dataByteSize, offset, memType);
    }
 
@@ -124,7 +124,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    public abstract IMessageHeader getMsgHeader();
 
-   public MemType getType() {
+   public DataType getType() {
       return memType;
    }
 
@@ -243,7 +243,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
     */
    @SuppressWarnings("unchecked")
    public void notifyListeners() throws MessageSystemException {
-      final MemType memType = getType();
+      final DataType memType = getType();
       for (Message message : messages) {
          try {
             if (!message.isDestroyed()) {

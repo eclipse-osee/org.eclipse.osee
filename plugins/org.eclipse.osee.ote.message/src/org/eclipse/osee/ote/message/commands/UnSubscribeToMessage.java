@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.message.commands;
 
 import java.io.Serializable;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
@@ -31,7 +31,7 @@ public class UnSubscribeToMessage implements Serializable {
    private final String messageName;
    private final MessageMode mode;
    private final IMsgToolServiceClient client;
-   private final MemType memTypeOrdinal;
+   private final DataType memTypeOrdinal;
    /**
     * Creates a new unsubscribe command.
     * @param messageName the name of the message that the message manager service will no longer
@@ -39,7 +39,7 @@ public class UnSubscribeToMessage implements Serializable {
     * @param address the address of the client.
     */
    public UnSubscribeToMessage(final String messageName, final MessageMode mode, 
-         final MemType memTypeOrdinal, IMsgToolServiceClient client) {
+         final DataType memTypeOrdinal, IMsgToolServiceClient client) {
       this.messageName = messageName;
       this.mode = mode;
       this.client = client;
@@ -54,7 +54,7 @@ public class UnSubscribeToMessage implements Serializable {
       return client;
    }
    
-   public MemType getMemTypeOrdinal() {
+   public DataType getMemTypeOrdinal() {
       return memTypeOrdinal;
    }
 

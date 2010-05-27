@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.interfaces;
 
+import java.util.Set;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -20,5 +22,6 @@ public interface ITestEnvironmentMessageSystemAccessor extends ITestEnvironmentA
    @SuppressWarnings("unchecked")
    IMessageManager getMsgManager();
 
-   boolean isPhysicalTypeAvailable(MemType physicalType);
+   boolean isPhysicalTypeAvailable(DataType physicalType);
+   Set<DataType> getDataTypes();
 }

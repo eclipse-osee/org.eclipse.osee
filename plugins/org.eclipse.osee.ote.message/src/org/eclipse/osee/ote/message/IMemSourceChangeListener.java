@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message;
 
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface IMemSourceChangeListener {
-   void onChange(MemType oldtype, MemType newType, Message<?,?,?> message);
+   void onChange(DataType oldtype, DataType newType, Message<?,?,?> message);
 }

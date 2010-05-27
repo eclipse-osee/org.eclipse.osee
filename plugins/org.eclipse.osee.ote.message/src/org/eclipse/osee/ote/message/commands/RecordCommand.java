@@ -14,7 +14,7 @@ import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
 
 
@@ -28,13 +28,13 @@ public class RecordCommand implements Serializable {
 
 		private static final long serialVersionUID = 2954398510075588584L;
 		private final String name;
-		private final MemType type;
+		private final DataType type;
 		private final List<List<Object>> headerElementNames;
 		private final List<List<Object>> bodyElementNames;
 		private final boolean headerDump;
 		private final boolean bodyDump;
 		
-		public MessageRecordDetails(final String name, final MemType type, boolean headerDump, final List<List<Object>> headerElementNames, boolean bodyDump, final List<List<Object>> bodyElementNames ) {
+		public MessageRecordDetails(final String name, final DataType type, boolean headerDump, final List<List<Object>> headerElementNames, boolean bodyDump, final List<List<Object>> bodyElementNames ) {
 			super();
 			this.name = name;
 			this.type = type;
@@ -68,7 +68,7 @@ public class RecordCommand implements Serializable {
 			return name;
 		}
 
-		public MemType getType() {
+		public DataType getType() {
 			return type;
 		}
 		
