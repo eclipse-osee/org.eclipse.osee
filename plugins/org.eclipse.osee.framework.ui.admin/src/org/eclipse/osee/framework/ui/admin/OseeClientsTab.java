@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -152,7 +153,11 @@ public class OseeClientsTab {
                      "Are you sure you want to shutdown the selected OSEE clients?");
          if (false != result) {
             try {
-               OseeEventManager.kickBroadcastEvent(this, BroadcastEventType.Force_Shutdown, selectedUsers, reason);
+               BroadcastEvent broadcastEvent = new BroadcastEvent();
+               broadcastEvent.setBroadcastEventType(BroadcastEventType.Force_Shutdown);
+//               broadcastEvent.setUsers(selectedUsers);
+               broadcastEvent.setMessage(reason);
+               OseeEventManager.kickBroadcastEvent(this, broadcastEvent);
                AWorkbench.popup("Success", "Shutdown request sent.");
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
