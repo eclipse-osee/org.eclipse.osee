@@ -1,8 +1,13 @@
-/*
- * Created on Apr 29, 2010
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.cases;
 
 import static org.junit.Assert.assertFalse;
@@ -90,7 +95,8 @@ public class ArtifactLoaderTest {
 
       // create some threads to load them all at same time
       List<Thread> threads = new ArrayList<Thread>();
-      for (int x = 1; x < 8; x++) {
+      final int TOTAL_THREADS = 7;
+      for (int x = 1; x <= TOTAL_THREADS; x++) {
          threads.add(new LoadArtifacts("Thread " + x));
       }
 
@@ -101,11 +107,11 @@ public class ArtifactLoaderTest {
       }
 
       // stop after 10 seconds
-      long endTime = new Date().getTime() + (10 * 1000);
+      long endTime = new Date().getTime() + (15 * 1000);
       while (true) {
          Thread.sleep(1000);
          System.out.println("Checking for thread completion..." + numThreadsCompleted + "/7");
-         if (numThreadsCompleted == 7) {
+         if (numThreadsCompleted == TOTAL_THREADS) {
             break;
          }
          if (new Date().getTime() > endTime) {
