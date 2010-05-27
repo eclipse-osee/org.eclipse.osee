@@ -13,7 +13,7 @@ package org.eclipse.osee.ote.client.msg.core.internal.state;
 import java.util.Set;
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
 import org.eclipse.osee.ote.message.Message;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
 /**
@@ -21,7 +21,7 @@ import org.eclipse.osee.ote.message.tool.MessageMode;
  *
  */
 public interface ISubscriptionState {
-	MemType getMemType();
+   DataType getMemType();
 
 	MessageMode getMode();
 
@@ -29,7 +29,7 @@ public interface ISubscriptionState {
 
 	Message getMessage();
 
-	Set<MemType> getAvailableTypes();
+	Set<DataType> getAvailableTypes();
 	
 	ISubscriptionState onMessageDbFound(AbstractMessageDataBase msgDB);
 

@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.client.msg.core.internal.MessageReference;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 import org.eclipse.osee.ote.message.tool.MessageMode;
@@ -53,7 +53,7 @@ public abstract class AbstractMessageDataBase {
       this.dictionary = dictionary;
    }
 
-   public MessageInstance findInstance(String name, MessageMode mode, MemType type) {
+   public MessageInstance findInstance(String name, MessageMode mode, DataType type) {
       MessageReference reference = new MessageReference(type, mode, name);
       return referenceToMsgMap.get(reference);
    }
@@ -62,7 +62,7 @@ public abstract class AbstractMessageDataBase {
       return acquireInstance(name, MessageMode.READER, null);
    }
 
-   public MessageInstance acquireInstance(String name, MessageMode mode, MemType type) throws Exception {
+   public MessageInstance acquireInstance(String name, MessageMode mode, DataType type) throws Exception {
       if (type == null) {
          Class<? extends Message> msgClass = dictionary.lookupMessage(name);
          Message msg = createMessage(msgClass);

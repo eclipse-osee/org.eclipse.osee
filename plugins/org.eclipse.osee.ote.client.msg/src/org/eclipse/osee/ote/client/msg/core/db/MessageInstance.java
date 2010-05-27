@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.client.msg.core.db;
 
-import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.commands.SubscribeToMessage;
 import org.eclipse.osee.ote.message.commands.UnSubscribeToMessage;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 import org.eclipse.osee.ote.message.tool.MessageMode;
@@ -26,15 +27,15 @@ import org.eclipse.osee.ote.message.tool.SubscriptionKey;
  */
 public class MessageInstance {
 
-   private final MemType type;
+   private final DataType type;
    private final MessageMode mode;
    private final Message msg;
    private SubscriptionKey serverSubscriptionKey = null;
    private int refcount = 0;
-   private final EnumSet<MemType> availableTypes = EnumSet.noneOf(MemType.class);
+   private final Set<DataType> availableTypes = new HashSet<DataType>();
    private boolean supported = true;
 
-   public MessageInstance(Message msg, MessageMode mode, MemType type) {
+   public MessageInstance(Message msg, MessageMode mode, DataType type) {
       this.msg = msg;
       this.mode = mode;
       this.type = type;
@@ -95,7 +96,7 @@ public class MessageInstance {
       return refcount > 0;
    }
 
-   public MemType getType() {
+   public DataType getType() {
       return type;
    }
 
@@ -103,7 +104,7 @@ public class MessageInstance {
       return mode;
    }
 
-   public EnumSet<MemType> getAvailableTypes() {
+   public Set<DataType> getAvailableTypes() {
       return availableTypes;
    }
 

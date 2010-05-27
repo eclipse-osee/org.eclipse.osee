@@ -21,7 +21,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.commands.RecordCommand.MessageRecordDetails;
 import org.eclipse.osee.ote.message.elements.Element;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.ui.message.tree.ElementNode;
 import org.eclipse.osee.ote.ui.message.tree.MessageNode;
 import org.eclipse.osee.ote.ui.message.tree.WatchList;
@@ -268,7 +268,7 @@ public class RecordingFilter extends WizardPage {
          }
       }
 
-      public MessageRecordDetails create(String msg, MemType currentMemType) {
+      public MessageRecordDetails create(String msg, DataType currentMemType) {
          return new MessageRecordDetails(msg, currentMemType, headerDump, headers, bodyDump, elements);
       }
    }

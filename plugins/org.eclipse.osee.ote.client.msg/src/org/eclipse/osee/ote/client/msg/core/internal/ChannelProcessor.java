@@ -17,12 +17,11 @@ import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
 import org.eclipse.osee.ote.client.msg.core.db.MessageInstance;
 import org.eclipse.osee.ote.message.data.MessageData;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 
 /**
  * Handles processing of updates from a channel. The channel processor maintains an internal queue whose max size
@@ -34,7 +33,7 @@ final public class ChannelProcessor {
 	private final ArrayBlockingQueue<Task> queue;
 	private final ExecutorService threadPool;
 	private final AbstractMessageDataBase msgDb;
-	private final MemType memType;
+	private final DataType memType;
 
 	/**
 	 * A task allows each channel to have multiple updates processed
@@ -75,7 +74,7 @@ final public class ChannelProcessor {
 
 	}
 
-	public ChannelProcessor(int depth, int bufferSize, ExecutorService threadPool, AbstractMessageDataBase msgDb, MemType memType) {
+	public ChannelProcessor(int depth, int bufferSize, ExecutorService threadPool, AbstractMessageDataBase msgDb, DataType memType) {
 		this.queue = new ArrayBlockingQueue<Task>(depth);
 		try {
 			// fill the queue with pre-allocated tasks

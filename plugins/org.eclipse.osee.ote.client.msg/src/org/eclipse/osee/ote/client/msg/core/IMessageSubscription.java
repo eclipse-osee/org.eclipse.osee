@@ -13,7 +13,7 @@ package org.eclipse.osee.ote.client.msg.core;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ote.message.Message;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
 /**
@@ -28,7 +28,7 @@ public interface IMessageSubscription {
 
    MessageMode getMessageMode();
 
-   MemType getMemType();
+   DataType getMemType();
 
    /**
     * returns whether or not the subscription has been activated. A subscription is considered activated if and only if
@@ -40,7 +40,7 @@ public interface IMessageSubscription {
 
    boolean isResolved();
 
-   void changeMemType(MemType type);
+   void changeMemType(DataType type);
 
    void send() throws Exception;
 
@@ -50,7 +50,7 @@ public interface IMessageSubscription {
 
    void changeMessageMode(MessageMode mode);
 
-   Set<MemType> getAvailableTypes();
+   Set<DataType> getAvailableTypes();
 
    boolean addSubscriptionListener(ISubscriptionListener listener);
 

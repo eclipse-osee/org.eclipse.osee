@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.client.msg.core.internal;
 
 import org.eclipse.osee.ote.message.Message;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
 /**
@@ -20,11 +20,11 @@ import org.eclipse.osee.ote.message.tool.MessageMode;
  */
 public class MessageReference {
 
-	private final MemType type;
+	private final DataType type;
 	private final MessageMode mode;
 	private final String msgClassName;
 
-	public MessageReference(MemType type, MessageMode mode, String msgClassName) {
+	public MessageReference(DataType type, MessageMode mode, String msgClassName) {
 		this.type = type;
 		this.mode = mode;
 		this.msgClassName = msgClassName;
@@ -40,7 +40,7 @@ public class MessageReference {
 		return msgClassName;
 	}
 
-	public MemType getType() {
+	public DataType getType() {
 		return type;
 	}
 

@@ -16,9 +16,9 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.DatagramChannel;
 import java.rmi.RemoteException;
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -35,7 +35,7 @@ import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.message.commands.RecordCommand;
 import org.eclipse.osee.ote.message.commands.RecordCommand.MessageRecordDetails;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystem;
@@ -183,40 +183,11 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
    }
 
    private void createProccessors() throws IOException {
-      EnumSet<MemType> availableTypes = service.getAvailablePhysicalTypes();
+      Set<DataType> availableTypes = service.getAvailablePhysicalTypes();
 
       int port = PortUtil.getInstance().getConsecutiveValidPorts(availableTypes.size());
-      for (MemType type : availableTypes) {
-         final ChannelProcessor handler;
-         switch (type) {
-            case MUX:
-               handler = new ChannelProcessor(20, 256, threadPool, msgDatabase, type);
-               break;
-            case MUX_LM:
-               handler = new ChannelProcessor(5, 256, threadPool, msgDatabase, type);
-               break;
-            case PUB_SUB:
-               handler = new ChannelProcessor(10, 65455, threadPool, msgDatabase, type);
-               break;
-            case WIRE_AIU:
-               // pass through
-            case WIRE_MP_DIRECT:
-               // pass through
-            case IGTTS_WIRE:
-               handler = new ChannelProcessor(5, 512, threadPool, msgDatabase, type);
-               break;
-            case ETHERNET:
-               handler = new ChannelProcessor(5, 2048, threadPool, msgDatabase, type);
-               break;
-            case SERIAL:
-               handler = new ChannelProcessor(3, 10000, threadPool, msgDatabase, type);
-               break;
-            case TS_META_DATA:
-               handler = new ChannelProcessor(3, 2048, threadPool, msgDatabase, type);
-               break;
-            default:
-               throw new Error("no case for mem type of " + type);
-         }
+      for (DataType type : availableTypes) {
+         final ChannelProcessor handler = new ChannelProcessor(type.getToolingDepth(), type.getToolingBufferSize(), threadPool, msgDatabase, type);
          dispatcher.addChannel(localAddress, port, type, handler);
          port++;
       }
@@ -261,11 +232,11 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
    }
 
    @Override
-   public InetSocketAddress getAddressByType(String messageName, int memType) throws RemoteException {
-      final DatagramChannel channel = dispatcher.getChannel(MemType.values()[memType]);
+   public InetSocketAddress getAddressByType(String messageName, DataType dataType) throws RemoteException {
+      final DatagramChannel channel = dispatcher.getChannel(dataType);
       OseeLog.log(Activator.class, Level.INFO, String.format(
             "callback from remote msg manager: msg=%s, type=%s, ip=%s:%d\n", messageName,
-            MemType.values()[memType], localAddress.toString(), channel.socket().getLocalPort()));
+            dataType.name(), localAddress.toString(), channel.socket().getLocalPort()));
 
       return new InetSocketAddress(localAddress, channel.socket().getLocalPort());
    }

@@ -16,13 +16,13 @@ import java.net.InetSocketAddress;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 
 /**
  * A thread that listens for activity on a set of channels and then
@@ -37,7 +37,7 @@ public final class UpdateDispatcher {
 	private static final int RECEIVE_BUFFER_SIZE = 1024 * 128;
 
 	/** * Class Instance Fields ** */
-	private final EnumMap<MemType, DatagramChannel> channelMap = new EnumMap<MemType, DatagramChannel>(MemType.class);
+	private final Map<DataType, DatagramChannel> channelMap = new HashMap<DataType, DatagramChannel>();
 
 	private final InetSocketAddress remoteAddress;
 	private final Object gate = new Object();
@@ -122,11 +122,11 @@ public final class UpdateDispatcher {
 		return running;
 	}
 
-	public DatagramChannel getChannel(MemType type) {
+	public DatagramChannel getChannel(DataType type) {
 		return channelMap.get(type);
 	}
 
-	public SelectionKey addChannel(InetAddress localAddress, int port, MemType type, ChannelProcessor processor)
+	public SelectionKey addChannel(InetAddress localAddress, int port, DataType type, ChannelProcessor processor)
 			throws IOException {
 		final DatagramChannel channel = DatagramChannel.open();
 		channel.configureBlocking(false);
@@ -161,7 +161,7 @@ public final class UpdateDispatcher {
 			} catch (Exception ex) {
 				OseeLog.log(Activator.class, Level.WARNING, "Exception closing selector", ex);
 			} finally {
-				for (final MemType type : channelMap.keySet()) {
+				for (final DataType type : channelMap.keySet()) {
 					try {
 						final DatagramChannel channel = channelMap.get(type);
 						if (channel != null) {

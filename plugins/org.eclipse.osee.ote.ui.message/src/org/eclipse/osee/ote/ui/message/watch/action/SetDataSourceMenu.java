@@ -15,7 +15,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.nebula.widgets.xviewer.XSubMenuManager;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.ui.message.tree.WatchedMessageNode;
 
 /**
@@ -43,7 +43,7 @@ public class SetDataSourceMenu extends XSubMenuManager implements IMenuListener 
 
 	@Override
 	public void menuAboutToShow(IMenuManager manager) {
-		for (MemType type : node.getSubscription().getAvailableTypes()) {
+		for (DataType type : node.getSubscription().getAvailableTypes()) {
 			add(new SetDataSourceAction(node, type));
 		}
 		

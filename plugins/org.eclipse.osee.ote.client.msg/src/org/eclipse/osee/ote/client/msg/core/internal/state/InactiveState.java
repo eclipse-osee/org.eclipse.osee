@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.client.msg.core.internal.state;
 
-import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
 import org.eclipse.osee.ote.client.msg.core.db.MessageInstance;
 import org.eclipse.osee.ote.message.Message;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 
 /**
  * @author Ken J. Aguilar
@@ -91,8 +91,8 @@ public class InactiveState extends AbstractSubscriptionState {
 
 
 	@Override
-	public Set<MemType> getAvailableTypes() {
-		return EnumSet.noneOf(MemType.class);
+	public Set<DataType> getAvailableTypes() {
+		return new HashSet<DataType>();
 	}
 
 

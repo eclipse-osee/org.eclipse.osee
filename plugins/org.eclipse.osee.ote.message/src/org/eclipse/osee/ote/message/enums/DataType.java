@@ -22,5 +22,6 @@ import org.eclipse.osee.ote.message.interfaces.INamespace;
 public interface DataType extends Serializable, INamespace {
 
 	String name();
-	
+	int getToolingDepth();
+	int getToolingBufferSize();
 }

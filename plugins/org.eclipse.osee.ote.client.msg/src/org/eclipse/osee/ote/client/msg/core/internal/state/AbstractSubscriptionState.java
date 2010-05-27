@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.client.msg.core.internal.state;
 
 import org.eclipse.osee.ote.client.msg.core.internal.MessageSubscription;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
 /**
@@ -20,11 +20,11 @@ import org.eclipse.osee.ote.message.tool.MessageMode;
  */
 public abstract class AbstractSubscriptionState implements ISubscriptionState {
 
-	private final MemType type;
+	private final DataType type;
 	private final MessageMode mode;
 	private final MessageSubscription subscription;
 	
-	protected AbstractSubscriptionState(MessageSubscription subscription, MemType type, MessageMode mode) {
+	protected AbstractSubscriptionState(MessageSubscription subscription, DataType type, MessageMode mode) {
 		this.subscription = subscription;
 		this.type = type;
 		this.mode = mode;
@@ -38,7 +38,7 @@ public abstract class AbstractSubscriptionState implements ISubscriptionState {
 	
 
 	@Override
-	public MemType getMemType() {
+	public DataType getMemType() {
 		return type;
 	}
 

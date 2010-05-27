@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.client.msg.core.internal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.client.msg.core.ISubscriptionListener;
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
@@ -22,7 +21,7 @@ import org.eclipse.osee.ote.client.msg.core.internal.state.UnresolvedState;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.commands.SetElementValue;
 import org.eclipse.osee.ote.message.commands.ZeroizeElement;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
@@ -50,7 +49,7 @@ public class MessageSubscription implements IMessageSubscription {
 		bind(name, null, MessageMode.READER);
 	}
 
-	private void bind(String name, MemType type, MessageMode mode) {
+	private void bind(String name, DataType type, MessageMode mode) {
 		currentState = new UnresolvedState(name, this, type, mode);
 	}
 
@@ -65,7 +64,7 @@ public class MessageSubscription implements IMessageSubscription {
 	}
 
 	@Override
-	public synchronized MemType getMemType() {
+	public synchronized DataType getMemType() {
 		return currentState.getMemType();
 	}
 
@@ -109,7 +108,7 @@ public class MessageSubscription implements IMessageSubscription {
 	}
 
 	@Override
-	public synchronized Set<MemType> getAvailableTypes() {
+	public synchronized Set<DataType> getAvailableTypes() {
 		return currentState.getAvailableTypes();
 	}
 
@@ -119,7 +118,7 @@ public class MessageSubscription implements IMessageSubscription {
 			return;
 		}
 		String name = getMessageClassName();
-		MemType type = getMemType();
+		DataType type = getMemType();
 		notifyCanceled();
 		doCancel();
 		bind(name, type, mode);
@@ -140,7 +139,7 @@ public class MessageSubscription implements IMessageSubscription {
 	}
 
 	@Override
-	public synchronized void changeMemType(MemType type) {
+	public synchronized void changeMemType(DataType type) {
 		if (type == getMemType()) {
 			return;
 		}

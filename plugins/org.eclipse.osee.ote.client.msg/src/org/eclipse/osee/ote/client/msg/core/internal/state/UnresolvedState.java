@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.client.msg.core.internal.state;
 
-import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -18,7 +18,7 @@ import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
 import org.eclipse.osee.ote.client.msg.core.db.MessageInstance;
 import org.eclipse.osee.ote.client.msg.core.internal.MessageSubscription;
 import org.eclipse.osee.ote.message.Message;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
 /**
@@ -27,12 +27,12 @@ import org.eclipse.osee.ote.message.tool.MessageMode;
  */
 public class UnresolvedState extends AbstractSubscriptionState {
 
-	private MemType type;
+	private DataType type;
 
 	private final String msgClassName;
 	private MessageInstance instance = null;
 	
-	public UnresolvedState(String msgClassName, MessageSubscription subscription, MemType type, MessageMode mode) {
+	public UnresolvedState(String msgClassName, MessageSubscription subscription, DataType type, MessageMode mode) {
 		super(subscription, type, mode);
 		this.type = type;
 		this.msgClassName = msgClassName;
@@ -68,7 +68,7 @@ public class UnresolvedState extends AbstractSubscriptionState {
 	}
 
 	@Override
-	public MemType getMemType() {
+	public DataType getMemType() {
 		return type;
 	}
 	
@@ -88,8 +88,8 @@ public class UnresolvedState extends AbstractSubscriptionState {
 	}
 
 	@Override
-	public Set<MemType> getAvailableTypes() {
-		return EnumSet.noneOf(MemType.class);
+	public Set<DataType> getAvailableTypes() {
+		return new HashSet<DataType>();
 	}
 
 	@Override

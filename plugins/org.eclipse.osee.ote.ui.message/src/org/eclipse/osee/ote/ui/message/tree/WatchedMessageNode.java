@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.swt.OverlayImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.message.commands.RecordCommand.MessageRecordDetails;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.ui.message.OteMessageImage;
 import org.eclipse.osee.ote.ui.message.messageXViewer.MessageXViewerFactory;
 import org.eclipse.osee.ote.ui.message.watch.ElementPath;
@@ -63,7 +63,7 @@ public class WatchedMessageNode extends MessageNode {
       return null;
    }
 
-   public MemType getMemType() {
+   public DataType getMemType() {
       return subscription.getMemType();
    }
 

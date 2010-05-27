@@ -16,7 +16,7 @@ import org.eclipse.osee.ote.client.msg.core.AbstractMessageListener;
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.message.MessageSystemException;
 import org.eclipse.osee.ote.message.data.MessageData;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -52,7 +52,7 @@ public class MessageUpdateListener extends AbstractMessageListener {
 	}
 
 	@Override
-	public void onDataAvailable(MessageData data, MemType type) throws MessageSystemException {
+	public void onDataAvailable(MessageData data, DataType type) throws MessageSystemException {
 		if (type == getSubscription().getMemType()) {
 			node.incrementCounter();
 		}

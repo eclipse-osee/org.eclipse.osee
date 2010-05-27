@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.ui.message.watch.action;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ote.message.enums.MemType;
+import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.ui.message.tree.WatchedMessageNode;
 
 /**
@@ -22,9 +22,9 @@ public class SetDataSourceAction extends Action {
 
 
 	private final WatchedMessageNode node;
-	private final MemType type;
+	private final DataType type;
 	
-	public SetDataSourceAction(WatchedMessageNode node, MemType type) {
+	public SetDataSourceAction(WatchedMessageNode node, DataType type) {
 		super(type.name(), Action.AS_RADIO_BUTTON);
 		this.node = node;
 		this.type = type;
