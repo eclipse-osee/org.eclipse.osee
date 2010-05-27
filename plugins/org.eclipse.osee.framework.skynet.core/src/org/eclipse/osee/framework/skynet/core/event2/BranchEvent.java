@@ -9,6 +9,11 @@ public class BranchEvent extends FrameworkEvent {
    private BranchEventType eventType;
    private NetworkSender networkSender;
 
+   public BranchEvent(BranchEventType branchEventType, String branchGuid) {
+      this.branchGuid = branchGuid;
+      this.eventType = branchEventType;
+   }
+
    /**
     * Gets the value of the branchGuid property.
     * 

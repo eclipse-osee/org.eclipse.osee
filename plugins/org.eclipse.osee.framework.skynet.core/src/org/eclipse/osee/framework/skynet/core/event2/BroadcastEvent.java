@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.skynet.core.event2;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
@@ -19,6 +20,12 @@ public class BroadcastEvent extends FrameworkEvent {
    Collection<User> users;
    String message;
    NetworkSender networkSender;
+
+   public BroadcastEvent(BroadcastEventType broadcastEventType, Collection<User> users, String message) {
+      this.broadcastEventType = broadcastEventType;
+      this.users = users != null ? users : new ArrayList<User>();
+      this.message = message;
+   }
 
    public BroadcastEventType getBroadcastEventType() {
       return broadcastEventType;

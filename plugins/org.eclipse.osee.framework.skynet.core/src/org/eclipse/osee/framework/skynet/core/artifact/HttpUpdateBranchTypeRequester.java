@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.requester.HttpPurgeBranchRequester;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -39,8 +40,8 @@ public class HttpUpdateBranchTypeRequester {
       if (response.wasSuccessful()) {
          BranchManager.refreshBranches();
          try {
-            OseeEventManager.kickBranchEvent(HttpPurgeBranchRequester.class, BranchEventType.TypeUpdated, branchId,
-                  branchGuid);
+            OseeEventManager.kickBranchEvent(HttpPurgeBranchRequester.class, new BranchEvent(
+                  BranchEventType.TypeUpdated, branchGuid), branchId);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
          }

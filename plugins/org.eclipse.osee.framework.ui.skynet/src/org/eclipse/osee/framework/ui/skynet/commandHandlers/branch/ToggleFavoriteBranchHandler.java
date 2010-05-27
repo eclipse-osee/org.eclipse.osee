@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -41,7 +42,8 @@ public class ToggleFavoriteBranchHandler extends CommandHandler {
 
       try {
          UserManager.getUser().toggleFavoriteBranch(selectedBranch);
-         OseeEventManager.kickBranchEvent(this, BranchEventType.Added, selectedBranch.getId(), selectedBranch.getGuid());
+         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Added, selectedBranch.getGuid()),
+               selectedBranch.getId());
 
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

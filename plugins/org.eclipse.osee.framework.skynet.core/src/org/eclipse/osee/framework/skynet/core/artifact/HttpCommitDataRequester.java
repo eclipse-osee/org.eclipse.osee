@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
@@ -66,8 +67,8 @@ public class HttpCommitDataRequester {
          ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, queryData, 400, ArtifactLoad.FULL, true, null, true);
          try {
             // Kick commit event
-            OseeEventManager.kickBranchEvent(HttpCommitDataRequester.class, BranchEventType.Committed,
-                  sourceBranch.getId(), sourceBranch.getGuid());
+            OseeEventManager.kickBranchEvent(HttpCommitDataRequester.class, new BranchEvent(BranchEventType.Committed,
+                  sourceBranch.getGuid()), sourceBranch.getId());
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
          }

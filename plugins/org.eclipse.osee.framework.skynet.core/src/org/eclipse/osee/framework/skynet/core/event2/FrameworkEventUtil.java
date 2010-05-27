@@ -81,23 +81,28 @@ public class FrameworkEventUtil {
    }
 
    public static BroadcastEvent getBroadcastEvent(RemoteBroadcastEvent1 remEvent) {
-      BroadcastEvent broadcastEvent = new BroadcastEvent();
-      for (String userId : remEvent.getUserIds()) {
-         try {
-            User user = UserManager.getUserByUserId(userId);
-            if (user != null) {
-               broadcastEvent.addUser(user);
+      BroadcastEventType broadcastEventType = BroadcastEventType.getByGuid(remEvent.getEventTypeGuid());
+      if (broadcastEventType != null) {
+         BroadcastEvent broadcastEvent = new BroadcastEvent(broadcastEventType, null, remEvent.getMessage());
+         for (String userId : remEvent.getUserIds()) {
+            try {
+               User user = UserManager.getUserByUserId(userId);
+               if (user != null) {
+                  broadcastEvent.addUser(user);
+               }
+            } catch (UserNotInDatabase ex) {
+               // do nothing
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
             }
-         } catch (UserNotInDatabase ex) {
-            // do nothing
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
          }
+         broadcastEvent.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
+         return broadcastEvent;
+      } else {
+         OseeLog.log(Activator.class, Level.WARNING,
+               "Unhandled broadcast event type guid " + remEvent.getEventTypeGuid());
       }
-      broadcastEvent.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
-      broadcastEvent.setMessage(remEvent.getMessage());
-      broadcastEvent.setBroadcastEventType(BroadcastEventType.getByGuid(remEvent.getEventTypeGuid()));
-      return broadcastEvent;
+      return null;
    }
 
    public static RemoteBranchEvent1 getRemoteBranchEvent(BranchEvent branchEvent) {
@@ -109,11 +114,15 @@ public class FrameworkEventUtil {
    }
 
    public static BranchEvent getBranchEvent(RemoteBranchEvent1 branchEvent) {
-      BranchEvent event = new BranchEvent();
-      event.setEventType(BranchEventType.getByGuid(branchEvent.getModTypeGuid()));
-      event.setBranchGuid(branchEvent.getBranchGuid());
-      event.setNetworkSender(getNetworkSender(branchEvent.getNetworkSender()));
-      return event;
+      BranchEventType branchEventType = BranchEventType.getByGuid(branchEvent.getModTypeGuid());
+      if (branchEventType != null) {
+         BranchEvent event = new BranchEvent(branchEventType, branchEvent.getBranchGuid());
+         event.setNetworkSender(getNetworkSender(branchEvent.getNetworkSender()));
+         return event;
+      } else {
+         OseeLog.log(Activator.class, Level.WARNING, "Unhandled branch event type guid " + branchEvent.getBranchGuid());
+      }
+      return null;
    }
 
    public static RemoteTransactionEvent1 getRemoteTransactionEvent(TransactionEvent transEvent) {

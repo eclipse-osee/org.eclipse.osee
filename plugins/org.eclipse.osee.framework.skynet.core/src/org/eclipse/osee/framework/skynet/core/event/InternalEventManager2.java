@@ -55,11 +55,11 @@ public class InternalEventManager2 {
    }
 
    // Kick LOCAL "remote event manager" event
-   static void kickRemoteEventManagerEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
+   static void kickLocalRemEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM1: kickRemoteEventManagerEvent: type: " + remoteEventServiceEventType + " - " + sender);
+      OseeEventManager.eventLog("IEM1: kickLocalRemEvent: type: " + remoteEventServiceEventType + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
@@ -76,7 +76,7 @@ public class InternalEventManager2 {
    }
 
    // Kick LOCAL ArtifactReloadEvent
-   static void kickArtifactReloadEvent(final Sender sender, final Set<EventBasicGuidArtifact> artifactChanges) {
+   static void kickLocalArtifactReloadEvent(final Sender sender, final Set<EventBasicGuidArtifact> artifactChanges) {
       if (isDisableEvents()) {
          return;
       }

@@ -316,11 +316,13 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
 
    public void deregisterForRemoteEvents() throws OseeCoreException {
       ResEventManager.getInstance().stop();
+      OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem2_DisConnected);
    }
 
    public void registerForRemoteEvents() throws OseeCoreException {
       if (OseeProperties.isNewEvents()) {
          ResEventManager.getInstance().start(this);
+         OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem2_Connected);
          OseeEventManager.eventLog("REM2: Enabled");
       } else {
          OseeEventManager.eventLog("REM2: Disabled");

@@ -52,15 +52,13 @@ public class OseeEventManager {
       return new Sender(sourceObject, ClientSessionManager.getSession());
    }
 
-   /**
-    * Kick LOCAL remote event manager event
-    */
-   public static void kickRemoteEventManagerEvent(Object source, RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
+   // Kick LOCAL remote-event event
+   public static void kickLocalRemEvent(Object source, RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
       if (InternalEventManager.isDisableEvents()) {
          return;
       }
       InternalEventManager.kickRemoteEventManagerEvent(getSender(source), remoteEventServiceEventType);
-      InternalEventManager2.kickRemoteEventManagerEvent(getSender(source), remoteEventServiceEventType);
+      InternalEventManager2.kickLocalRemEvent(getSender(source), remoteEventServiceEventType);
    }
 
    // Kick LOCAL and REMOTE broadcast event
@@ -75,18 +73,15 @@ public class OseeEventManager {
    }
 
    //Kick LOCAL and REMOTE branch events
-   public static void kickBranchEvent(Object source, BranchEventType branchEventType, int branchId, String branchGuid) throws OseeCoreException {
-      eventLog("OEM: kickBranchEvent: type: " + branchEventType + " guid: " + branchGuid + " - " + source);
+   public static void kickBranchEvent(Object source, BranchEvent branchEvent, int branchId) throws OseeCoreException {
+      eventLog("OEM: kickBranchEvent: type: " + branchEvent.getEventType() + " guid: " + branchEvent.getBranchGuid() + " - " + source);
       if (testBranchEventListener != null) {
-         testBranchEventListener.handleBranchEvent(getSender(source), branchEventType, branchId);
+         testBranchEventListener.handleBranchEvent(getSender(source), branchEvent.getEventType(), branchId);
       }
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickBranchEvent(getSender(source), branchEventType, branchId);
-      BranchEvent branchEvent = new BranchEvent();
-      branchEvent.setBranchGuid(branchGuid);
-      branchEvent.setEventType(branchEventType);
+      InternalEventManager.kickBranchEvent(getSender(source), branchEvent.getEventType(), branchId);
       branchEvent.setNetworkSender(getSender(source).getNetworkSender2());
       InternalEventManager2.kickBranchEvent(getSender(source), branchEvent);
    }
@@ -171,12 +166,12 @@ public class OseeEventManager {
    }
 
    // Kick LOCAL transaction event
-   public static void kickArtifactReloadEvent(Object source, Collection<? extends Artifact> artifacts) throws OseeCoreException {
+   public static void kickLocalArtifactReloadEvent(Object source, Collection<? extends Artifact> artifacts) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
       InternalEventManager.kickArtifactReloadEvent(getSender(source), artifacts);
-      InternalEventManager2.kickArtifactReloadEvent(getSender(source), EventBasicGuidArtifact.get(
+      InternalEventManager2.kickLocalArtifactReloadEvent(getSender(source), EventBasicGuidArtifact.get(
             EventModType.Reloaded, artifacts));
    }
 

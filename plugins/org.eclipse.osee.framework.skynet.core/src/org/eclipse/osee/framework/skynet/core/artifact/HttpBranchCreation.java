@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
@@ -60,8 +61,8 @@ public class HttpBranchCreation {
 
       Branch branch = BranchManager.getBranch(response.getBranchId());
       try {
-         OseeEventManager.kickBranchEvent(HttpBranchCreation.class, BranchEventType.Added, branch.getId(),
-               branch.getGuid());
+         OseeEventManager.kickBranchEvent(HttpBranchCreation.class, new BranchEvent(BranchEventType.Added,
+               branch.getGuid()), branch.getId());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
       }

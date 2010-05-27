@@ -253,7 +253,7 @@ public class RemoteEventManager {
          OseeLog.log(Activator.class, Level.WARNING, "Skynet Event Service connection lost\n" + e.toString(), e);
          setEventService(null);
          try {
-            OseeEventManager.kickRemoteEventManagerEvent(instance, RemoteEventServiceEventType.DisConnected);
+            OseeEventManager.kickLocalRemEvent(instance, RemoteEventServiceEventType.Rem1_DisConnected);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -268,7 +268,7 @@ public class RemoteEventManager {
                setEventService(service);
                OseeLog.log(Activator.class, Level.INFO,
                      "Skynet Event Service connection established " + ACCEPTABLE_SERVICE);
-               OseeEventManager.kickRemoteEventManagerEvent(this, RemoteEventServiceEventType.Connected);
+               OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem1_Connected);
             } else {
                OseeLog.log(Activator.class, Level.SEVERE, "Client listener reference was null");
             }

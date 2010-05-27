@@ -96,7 +96,7 @@ public class SkynetServiceContributionItem extends OseeContributionItem implemen
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            updateStatus(remoteEventServiceEventType == RemoteEventServiceEventType.Connected);
+            updateStatus(remoteEventServiceEventType == RemoteEventServiceEventType.Rem1_Connected);
          }
       });
    }

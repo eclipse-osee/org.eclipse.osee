@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -55,7 +56,8 @@ public class ArchiveBranchHandler extends CommandHandler {
          BranchManager.persist(branches);
 
          for (Branch branch : branches) {
-            OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, branch.getId(), branch.getGuid());
+            OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch.getGuid()),
+                  branch.getId());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);

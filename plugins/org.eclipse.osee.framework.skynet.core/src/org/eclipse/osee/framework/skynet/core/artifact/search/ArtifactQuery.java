@@ -480,7 +480,7 @@ public class ArtifactQuery {
 
    public static Artifact reloadArtifactFromId(int artId, IOseeBranch branch) throws OseeCoreException {
       Artifact artifact = new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifact();
-      OseeEventManager.kickArtifactReloadEvent(new ArtifactQuery(), Collections.singleton(artifact));
+      OseeEventManager.kickLocalArtifactReloadEvent(new ArtifactQuery(), Collections.singleton(artifact));
       return artifact;
    }
 
@@ -498,7 +498,7 @@ public class ArtifactQuery {
 
       Collection<Artifact> reloadedArts =
             new ArtifactQueryBuilder(artIds, branch, true, FULL).reloadArtifacts(artifacts.size());
-      OseeEventManager.kickArtifactReloadEvent(new ArtifactQuery(), artifacts);
+      OseeEventManager.kickLocalArtifactReloadEvent(new ArtifactQuery(), artifacts);
       return reloadedArts;
    }
 }

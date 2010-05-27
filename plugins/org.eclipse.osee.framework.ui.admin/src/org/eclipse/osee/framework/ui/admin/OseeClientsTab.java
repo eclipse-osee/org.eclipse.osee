@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.ui.admin;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -155,11 +157,8 @@ public class OseeClientsTab {
                      "Are you sure you want to shutdown the selected OSEE clients?");
          if (false != result) {
             try {
-               BroadcastEvent event = new BroadcastEvent();
-               event.setBroadcastEventType(BroadcastEventType.Force_Shutdown);
-               event.setUsers(selectedUsers);
-               event.setMessage(reason);
-               OseeEventManager.kickBroadcastEvent(this, event);
+               OseeEventManager.kickBroadcastEvent(this, new BroadcastEvent(BroadcastEventType.Force_Shutdown,
+                     selectedUsers, reason));
                AWorkbench.popup("Success", "Shutdown request sent.");
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -183,12 +182,12 @@ public class OseeClientsTab {
    }
 
    private Collection<User> getSelectedUsers() {
-      List<User> toReturn = new ArrayList<User>();
+      Set<User> toReturn = new HashSet<User>();
       try {
          Object[] checked = peopleCheckboxTreeViewer.getCheckedElements();
          for (Object object : checked) {
             if (false != peopleCheckboxTreeViewer.getChecked(object)) {
-               toReturn.add(((User) object));
+               toReturn.add((User) object);
             }
          }
       } catch (Exception ex) {

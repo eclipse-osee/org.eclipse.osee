@@ -173,10 +173,8 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
          // Another client ping'd this client for session information; Pong back with
          // original client's session id so it can be identified as the correct pong
          try {
-            BroadcastEvent returnEvent = new BroadcastEvent();
-            returnEvent.setBroadcastEventType(BroadcastEventType.Pong);
-            returnEvent.setMessage(sender.getOseeSession().toString());
-            OseeEventManager.kickBroadcastEvent(this, returnEvent);
+            OseeEventManager.kickBroadcastEvent(this, new BroadcastEvent(BroadcastEventType.Pong, null,
+                  sender.getOseeSession().toString()));
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
