@@ -48,7 +48,7 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * Allows administration of access for OSEE environment <li>Database tables <li>OSEE user permissions
- * 
+ *
  * @author Jeff C. Phillips
  */
 
@@ -150,10 +150,10 @@ public class AdminView extends ViewPart implements IActionable {
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Broadcast Message",
                   "Broadcast message\n\n\"" + message + "\"\n\nAre you sure?")) {
                try {
-                  BroadcastEvent broadcastEvent = new BroadcastEvent();
-                  broadcastEvent.setBroadcastEventType(BroadcastEventType.Message);
-                  broadcastEvent.setMessage(message);
-                  OseeEventManager.kickBroadcastEvent(this, broadcastEvent);
+                  BroadcastEvent event = new BroadcastEvent();
+                  event.setBroadcastEventType(BroadcastEventType.Message);
+                  event.setMessage(message);
+                  OseeEventManager.kickBroadcastEvent(this, event);
                   AWorkbench.popup("Success", "Message sent.");
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -167,10 +167,10 @@ public class AdminView extends ViewPart implements IActionable {
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Ping OSEE Instantiations?",
             "Ping OSEE Instantiations?")) {
          try {
-            BroadcastEvent broadcastEvent = new BroadcastEvent();
-            broadcastEvent.setBroadcastEventType(BroadcastEventType.Ping);
-            broadcastEvent.setMessage(ClientSessionManager.getSession().toString());
-            OseeEventManager.kickBroadcastEvent(this, broadcastEvent);
+            BroadcastEvent event = new BroadcastEvent();
+            event.setBroadcastEventType(BroadcastEventType.Ping);
+            event.setMessage(ClientSessionManager.getSession().toString());
+            OseeEventManager.kickBroadcastEvent(this, event);
             AWorkbench.popup("Success", "Ping Sent");
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

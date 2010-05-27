@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.admin;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -18,6 +19,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -146,18 +148,18 @@ public class OseeClientsTab {
       return composite;
    }
 
-   private void processShutdownRequest(String reason, String[] selectedUsers) {
-      if (reason != null && reason.length() > 0 && selectedUsers.length > 0) {
+   private void processShutdownRequest(String reason, Collection<User> selectedUsers) {
+      if (Strings.isValid(reason) && !selectedUsers.isEmpty()) {
          boolean result =
                MessageDialog.openConfirm(mainComposite.getShell(), "Disconnect OSEE Clients",
                      "Are you sure you want to shutdown the selected OSEE clients?");
          if (false != result) {
             try {
-               BroadcastEvent broadcastEvent = new BroadcastEvent();
-               broadcastEvent.setBroadcastEventType(BroadcastEventType.Force_Shutdown);
-//               broadcastEvent.setUsers(selectedUsers);
-               broadcastEvent.setMessage(reason);
-               OseeEventManager.kickBroadcastEvent(this, broadcastEvent);
+               BroadcastEvent event = new BroadcastEvent();
+               event.setBroadcastEventType(BroadcastEventType.Force_Shutdown);
+               event.setUsers(selectedUsers);
+               event.setMessage(reason);
+               OseeEventManager.kickBroadcastEvent(this, event);
                AWorkbench.popup("Success", "Shutdown request sent.");
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -169,7 +171,7 @@ public class OseeClientsTab {
          if (reason == null || reason.length() <= 0) {
             error.append("  A reason must be entered before a client can be requested to shutdown.\n");
          }
-         if (selectedUsers.length <= 0) {
+         if (selectedUsers.isEmpty()) {
             error.append("  At least 1 user must be selected.\n");
          }
          MessageDialog.openError(mainComposite.getShell(), "Disconnect OSEE Clients", error.toString());
@@ -180,19 +182,19 @@ public class OseeClientsTab {
       return AccessControlManager.isOseeAdmin();
    }
 
-   private String[] getSelectedUsers() {
-      List<String> toReturn = new ArrayList<String>();
+   private Collection<User> getSelectedUsers() {
+      List<User> toReturn = new ArrayList<User>();
       try {
          Object[] checked = peopleCheckboxTreeViewer.getCheckedElements();
          for (Object object : checked) {
             if (false != peopleCheckboxTreeViewer.getChecked(object)) {
-               toReturn.add(((User) object).getUserId());
+               toReturn.add(((User) object));
             }
          }
       } catch (Exception ex) {
          OseeLog.log(AdminPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return toReturn.toArray(new String[toReturn.size()]);
+      return toReturn;
    }
 
    private void createUserSelectionArea(Composite parent) {

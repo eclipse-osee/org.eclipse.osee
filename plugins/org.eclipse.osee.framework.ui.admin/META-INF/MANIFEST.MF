@@ -8,18 +8,19 @@ Bundle-Activator: org.eclipse.osee.framework.ui.admin.AdminPlugin
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.osee.framework.ui.ws,
- org.eclipse.osee.framework.skynet.core
+ org.eclipse.osee.framework.ui.ws
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.database.core,
+ org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.access,
  org.eclipse.osee.framework.skynet.core.artifact,
  org.eclipse.osee.framework.skynet.core.event,
+ org.eclipse.osee.framework.skynet.core.event2,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.ui.plugin.util,
  org.eclipse.osee.framework.ui.skynet,
