@@ -93,7 +93,10 @@ public class RecordingFilter extends WizardPage {
          @Override
          public void widgetSelected(SelectionEvent e) {
             viewer.expandAll();
-            viewer.setAllChecked(true);
+            Object[] objects = viewer.getExpandedElements();
+            for (Object element : objects) {
+               viewer.setSubtreeChecked(element, true);
+            }
             setPageComplete(isPageComplete());
          }
 
@@ -276,7 +279,7 @@ public class RecordingFilter extends WizardPage {
    public Element getMessageElement(ElementPath elementPath) {
       Element el = null;
       WatchedMessageNode node = watchList.getMessageNode((String) elementPath.get(0));
-      Message msg = node.getSubscription().getMessage();
+      Message<?, ?, ?> msg = node.getSubscription().getMessage();
       el = msg.getElement(elementPath.getElementPath());
       return el;
    }

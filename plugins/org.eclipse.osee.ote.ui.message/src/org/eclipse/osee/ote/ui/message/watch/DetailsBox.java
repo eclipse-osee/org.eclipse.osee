@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -115,7 +114,7 @@ public class DetailsBox implements IRegistryEventListener {
 
    /**
     * display details about specified node
-    * 
+    *
     * @param node node whose details will be displayed in the detail window of the GUI
     */
    public void setDetailText(final AbstractTreeNode node) {
@@ -148,7 +147,7 @@ public class DetailsBox implements IRegistryEventListener {
                hexDumpTxt.setText(node.getName() + " not found in library");
                return null;
             }
-            final Message msg = msgNode.getSubscription().getMessage();
+            final Message<?, ?, ?> msg = msgNode.getSubscription().getMessage();
             if (msg.isDestroyed()) {
                return null;
             }
@@ -203,7 +202,7 @@ public class DetailsBox implements IRegistryEventListener {
 
          public Object messageNode(final MessageNode node) {
             WatchedMessageNode msgNode = (WatchedMessageNode) node;
-            final Message msg = msgNode.getSubscription().getMessage();
+            final Message<?, ?, ?> msg = msgNode.getSubscription().getMessage();
             if (msg != null && !msg.isDestroyed()) {
                hexDumpTxt.setRedraw(false);
                printByteDump(msg);
@@ -223,11 +222,11 @@ public class DetailsBox implements IRegistryEventListener {
 
    /**
     * writes message data to a buffer in hex format
-    * 
+    *
     * @param data
     * @param offset
     */
-   private int printByteDump(Message msg) {
+   private int printByteDump(Message<?, ?, ?> msg) {
       strBuilder.setLength(0);
       int ypos = hexDumpTxt.getTopIndex();
       int xpos = hexDumpTxt.getHorizontalIndex();
@@ -301,9 +300,10 @@ public class DetailsBox implements IRegistryEventListener {
                   return;
                }
                try {
-                  Class<? extends DetailsProvider> clazz =
-                        bundle.loadClass(className).asSubclass(DetailsProvider.class);
-                  Constructor<? extends DetailsProvider> constructor = clazz.getConstructor(Composite.class, int.class);
+                  Class<?> clazz = bundle.loadClass(className);
+                  Class<? extends DetailsProvider> detailsClazz = clazz.asSubclass(DetailsProvider.class);
+                  Constructor<? extends DetailsProvider> constructor =
+                        detailsClazz.getConstructor(Composite.class, int.class);
                   try {
                      DetailsProvider provider = constructor.newInstance(infoFolder, SWT.NONE);
                      TabItem newTab = new TabItem(infoFolder, SWT.NONE);
@@ -339,9 +339,6 @@ public class DetailsBox implements IRegistryEventListener {
    public void removed(IExtension[] extensions) {
       final List<TabItem> removedElements = new LinkedList<TabItem>();
       for (IExtension extension : extensions) {
-         for (IConfigurationElement element : extension.getConfigurationElements()) {
-
-         }
          TabItem item = detailsProviderMap.get(extension.getUniqueIdentifier());
          if (item != null) {
             removedElements.add(item);

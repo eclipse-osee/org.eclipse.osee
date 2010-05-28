@@ -38,7 +38,7 @@ public class ChildElementNodeLabelProvider extends LabelProvider {
    @Override
    public String getText(Object element) {
       if (element instanceof Element) {
-         if (element instanceof RecordMap) {
+         if (element instanceof RecordMap<?>) {
             return ((Element) element).getDescriptiveName();
          } else {
             return String.format("%s: byte=%d, msb=%d, lsb=%d", ((Element) element).getDescriptiveName(),

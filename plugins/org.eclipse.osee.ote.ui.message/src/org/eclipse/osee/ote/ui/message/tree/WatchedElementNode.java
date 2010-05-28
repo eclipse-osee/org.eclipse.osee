@@ -12,9 +12,9 @@ package org.eclipse.osee.ote.ui.message.tree;
 
 import java.util.Collection;
 import java.util.HashMap;
-
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
+import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.elements.DiscreteElement;
 import org.eclipse.osee.ote.message.elements.Element;
@@ -90,9 +90,8 @@ public class WatchedElementNode extends ElementNode {
 
    public void setResolved(boolean isResolved) {
       if (isResolved) {
-         element =
-               getSubscription().getMessage().getElement(getElementPath().getElementPath(),
-                     getSubscription().getMemType());
+         Message<?, ?, ?> message = getSubscription().getMessage();
+         element = message.getElement(getElementPath().getElementPath(), getSubscription().getMemType());
 
          if (element == null) {
             columnValues.clear();
@@ -104,13 +103,13 @@ public class WatchedElementNode extends ElementNode {
          columnValues.put(MessageXViewerFactory.lsb, Integer.valueOf(element.getLsb()));
          columnValues.put(MessageXViewerFactory.msb, Integer.valueOf(element.getMsb()));
          columnValues.put(MessageXViewerFactory.bitSize, Integer.valueOf(element.getBitLength()));
-         if (element instanceof DiscreteElement) {
-            value = ((DiscreteElement) element).getValue();
+         if (element instanceof DiscreteElement<?>) {
+            value = ((DiscreteElement<?>) element).getValue();
             columnValues.put(MessageXViewerFactory.byteOffset, Integer.valueOf(element.getByteOffset()));
          } else if (element instanceof RecordMap<?>) {
             value = "";
             columnValues.put(MessageXViewerFactory.byteOffset,
-                  Integer.valueOf(((RecordMap) element).get(0).getByteOffset()));
+                  Integer.valueOf(((RecordMap<?>) element).get(0).getByteOffset()));
          } else {
             value = "";
             columnValues.put(MessageXViewerFactory.byteOffset, Integer.valueOf(element.getByteOffset()));
@@ -130,14 +129,14 @@ public class WatchedElementNode extends ElementNode {
          return;
       }
 
-      if (element instanceof DiscreteElement) {
+      if (element instanceof DiscreteElement<?>) {
          MessageData data = element.getMessage().getActiveDataSource();
          int headerSize = data.getMsgHeader() == null ? 0 : data.getMsgHeader().getHeaderSize();
          if (element.getByteOffset() >= data.getCurrentLength() - headerSize) {
             value = "???";
             deltas.add(this);
          } else {
-            DiscreteElement discrete = (DiscreteElement) element;
+            DiscreteElement<?> discrete = (DiscreteElement<?>) element;
             Object newValue = discrete.getValue();
             if (!newValue.equals(value)) {
                value = newValue;

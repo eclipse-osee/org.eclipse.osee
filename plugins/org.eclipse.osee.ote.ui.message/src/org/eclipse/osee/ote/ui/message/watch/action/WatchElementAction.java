@@ -15,6 +15,8 @@ import java.util.LinkedList;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
+import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.elements.Element;
 import org.eclipse.osee.ote.message.elements.RecordElement;
 import org.eclipse.osee.ote.ui.message.OteMessageImage;
@@ -49,7 +51,10 @@ public class WatchElementAction extends Action {
       final String msgName = msgNode.getMessageClassName();
       final LinkedList<Element> list = new LinkedList<Element>();
       boolean needsTreeView = false;
-      Collection<Element> msgElements = msgNode.getSubscription().getMessage().getElements();
+
+      IMessageSubscription subscription = msgNode.getSubscription();
+      Message<?, ?, ?> message = subscription.getMessage();
+      Collection<Element> msgElements = message.getElements();
 
       for (final Element element : msgElements) {
          if (element instanceof RecordElement) {

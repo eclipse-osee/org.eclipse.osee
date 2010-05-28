@@ -47,10 +47,10 @@ public class SetValueAction extends Action {
 
    @Override
    public void run() {
-      Message msg = msgNode.getSubscription().getMessage();
+      Message<?,?,?> msg = msgNode.getSubscription().getMessage();
       List<Object> path = node.getElementPath().getElementPath();
       Element element = msg.getElement(path);
-      if (element instanceof EnumeratedElement) {
+      if (element instanceof EnumeratedElement<?>) {
          final EnumeratedElement<?> enumElement = (EnumeratedElement<?>) element;
          try {
             final Enum<?>[] values = enumElement.getEnumValues();
