@@ -19,16 +19,12 @@
 
    <requires>
       <import plugin="com.lowagie.text" version="2.1.7" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.httpclient"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.jobs"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.commons.codec"/>
-      <import plugin="org.apache.commons.httpclient"/>
       <import plugin="org.apache.xerces"/>
-      <import plugin="jms.libraries"/>
-      <import plugin="org.apache.commons.logging"/>
-      <import plugin="net.jini"/>
-      <import plugin="org.eclipse.core.resources"/>
    </requires>
 
    <plugin
@@ -47,27 +43,6 @@
 
    <plugin
          id="org.eclipse.osee.framework.logging"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.messaging"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.jini"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.plugin.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
