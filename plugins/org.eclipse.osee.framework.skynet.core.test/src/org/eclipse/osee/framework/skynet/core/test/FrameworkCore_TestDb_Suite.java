@@ -17,13 +17,16 @@ import org.eclipse.osee.framework.skynet.core.test.event.ArtifactEventManagerLoo
 import org.eclipse.osee.framework.skynet.core.test.event.ArtifactEventManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.event.BranchEventManagerLoopbackTest;
 import org.eclipse.osee.framework.skynet.core.test.event.BranchEventManagerTest;
+import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventLoopbackTest;
+import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {BranchEventManagerLoopbackTest.class, BranchEventManagerTest.class,
-      ArtifactEventManagerTest.class, ArtifactEventManagerLoopbackTest.class, RemoteNetworkSenderTest.class,
-      ArtifactLoaderTest.class, Artifact_getLastModified.class,})
+@Suite.SuiteClasses( {TransactionEventTest.class, TransactionEventLoopbackTest.class,
+      BranchEventManagerLoopbackTest.class, BranchEventManagerTest.class, ArtifactEventManagerTest.class,
+      ArtifactEventManagerLoopbackTest.class, RemoteNetworkSenderTest.class, ArtifactLoaderTest.class,
+      Artifact_getLastModified.class,})
 /**
  * @author Donald G. Dunne
  */

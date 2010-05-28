@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.PersistEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
@@ -85,7 +85,7 @@ public class RelationTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events, TransactionEvent transactionEvent) throws OseeCoreException {
+   protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events, PersistEvent persistEvent) throws OseeCoreException {
       RelationEventType relationEventType =
             getModificationType().isDeleted() ? RelationEventType.Deleted : RelationEventType.Added;
       events.add(new RelationModifiedEvent(new Sender(this.getClass().getName()), relationEventType, relation,
@@ -95,7 +95,7 @@ public class RelationTransactionData extends BaseTransactionData {
                   relation.getId(), relation.getGammaId(), relation.getArtifactA().getBasicGuidArtifact(),
                   relation.getArtifactB().getBasicGuidArtifact());
       if (getModificationType() == ModificationType.ARTIFACT_DELETED || getModificationType() == ModificationType.DELETED) {
-         transactionEvent.getRelations().add(
+         persistEvent.getRelations().add(
                new EventBasicGuidRelation(RelationEventType.Deleted, relation.getAArtifactId(),
                      relation.getBArtifactId(), defaultBasicGuidRelation));
       } else if (getModificationType() == ModificationType.MODIFIED) {
@@ -103,9 +103,9 @@ public class RelationTransactionData extends BaseTransactionData {
                new EventBasicGuidRelation(RelationEventType.ModifiedRationale, relation.getAArtifactId(),
                      relation.getBArtifactId(), defaultBasicGuidRelation);
          event.setRationale(relation.getRationale());
-         transactionEvent.getRelations().add(event);
+         persistEvent.getRelations().add(event);
       } else if (getModificationType() == ModificationType.INTRODUCED || getModificationType() == ModificationType.NEW || getModificationType() == ModificationType.UNDELETED) {
-         transactionEvent.getRelations().add(
+         persistEvent.getRelations().add(
                new EventBasicGuidRelation(RelationEventType.Added, relation.getAArtifactId(),
                      relation.getBArtifactId(), defaultBasicGuidRelation));
       } else {

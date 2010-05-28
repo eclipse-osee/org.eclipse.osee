@@ -13,14 +13,22 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -29,8 +37,15 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionChange;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -86,6 +101,9 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       try {
          Arrays.sort(txIdsToDelete);
 
+         // Need to compute the events prior to purge
+         TransactionEvent transactionEvent = getPurgeTransactionEvent(txIdsToDelete);
+
          HashCollection<Branch, TxDeleteInfo> fromToTxData =
                getTransactionPairs(monitor, txIdsToDelete, txsToDeleteQuery, 0.20);
          txsToDeleteQuery.store(connection);
@@ -98,6 +116,8 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
 
          deleteTxCurrent(connection);
          updateTxCurrent(connection, monitor, 0.20);
+
+         OseeEventManager.kickTransactionEvent(this, transactionEvent);
       } catch (OseeCoreException ex) {
          if (connection != null && connection.isClosed() != true) {
             txsToDeleteQuery.delete(connection);
@@ -108,7 +128,71 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
          txsToDeleteQuery.delete();
          ArtifactLoader.clearQuery(artifactJoinId);
       }
-      OseeEventManager.kickTransactionsDeletedEvent(this, txIdsToDelete);
+   }
+
+   public static void handleRemotePurgeTransactionEvent(TransactionEvent transEvent) {
+      if (transEvent.getEventType() != TransactionEventType.Purged) return;
+
+      Set<Artifact> artifactsInCache = new HashSet<Artifact>();
+      for (TransactionChange transChange : transEvent.getTransactions()) {
+         try {
+            TransactionManager.deCache(transChange.getTransactionId());
+         } catch (OseeCoreException ex1) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex1);
+         }
+
+         for (DefaultBasicGuidArtifact guidArt : transChange.getArtifacts()) {
+            try {
+               Artifact artifact = ArtifactCache.getActive(guidArt);
+               if (artifact != null) {
+                  artifactsInCache.add(artifact);
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+            // This will kick the artifacts reloaded event which should be handled by Applications/UIs
+            try {
+               ArtifactQuery.reloadArtifacts(artifactsInCache);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      }
+   }
+
+   private TransactionEvent getPurgeTransactionEvent(int[] txIdsToDelete) {
+      try {
+         TransactionEvent transactionEvent = new TransactionEvent();
+         transactionEvent.setEventType(TransactionEventType.Purged);
+         for (int transId : txIdsToDelete) {
+            try {
+               TransactionChange transChange = new TransactionChange();
+               transChange.setTransactionId(transId);
+               TransactionRecord transRecord = TransactionManager.getTransactionId(transId);
+               Branch branch = BranchManager.getBranch(transRecord.getBranchId());
+               transChange.setBranchGuid(branch.getGuid());
+
+               Collection<Change> changes = new ArrayList<Change>();
+               IOperation operation = ChangeManager.comparedToPreviousTx(transRecord, changes);
+               Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1.0);
+               Set<Artifact> processedArts = new HashSet<Artifact>();
+               for (Change change : changes) {
+                  Artifact art = change.getChangeArtifact();
+                  if (!processedArts.contains(art)) {
+                     transChange.getArtifacts().add(art.getBasicGuidArtifact());
+                     processedArts.add(art);
+                  }
+               }
+               transactionEvent.getTransactions().add(transChange);
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+         return transactionEvent;
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return null;
    }
 
    private void getAffectedArtifacts(OseeConnection connection, int transactionQueryId) throws OseeDataStoreException {

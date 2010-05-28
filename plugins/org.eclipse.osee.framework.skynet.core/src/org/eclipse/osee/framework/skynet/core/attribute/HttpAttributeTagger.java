@@ -39,6 +39,8 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ITransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -128,7 +130,7 @@ public class HttpAttributeTagger {
       }
    }
 
-   private final class EventRelay implements IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, ITransactionsDeletedEventListener {
+   private final class EventRelay implements IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, ITransactionEventListener, ITransactionsDeletedEventListener {
       @Override
       public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       }
@@ -160,6 +162,12 @@ public class HttpAttributeTagger {
 
       @Override
       public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
+         // Need to fix tags based on this event
+      }
+
+      @Override
+      public void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
+         // Need to fix tags based on this event
       }
 
       @Override
@@ -188,5 +196,6 @@ public class HttpAttributeTagger {
             }
          }
       }
+
    }
 }

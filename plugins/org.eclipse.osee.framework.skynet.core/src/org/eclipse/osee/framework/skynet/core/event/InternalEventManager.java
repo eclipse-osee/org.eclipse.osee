@@ -364,7 +364,7 @@ public class InternalEventManager {
    }
 
    // Kick LOCAL and remote transaction deleted event
-   static void kickTransactionsDeletedEvent(final Sender sender, final int[] transactionIds) throws OseeCoreException {
+   static void kickTransactionsPurgedEvent(final Sender sender, final int[] transactionIds) throws OseeCoreException {
       //TODO This needs to be converted into the individual artifacts and relations that were deleted/modified
       if (isDisableEvents()) {
          return;
@@ -388,12 +388,12 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   // Kick LOCAL and REMOTE TransactionEvent
-   static void kickTransactionEvent(final Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
+   // Kick LOCAL and REMOTE PersistEvent
+   static void kickPersistEvent(final Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       if (isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM1: kickTransactionEvent #ModEvents: " + xModifiedEvents.size() + " - " + sender);
+      OseeEventManager.eventLog("IEM1: kickPersistEvent #ModEvents: " + xModifiedEvents.size() + " - " + sender);
       final Collection<ArtifactTransactionModifiedEvent> xModifiedEventsCopy =
             new ArrayList<ArtifactTransactionModifiedEvent>();
       xModifiedEventsCopy.addAll(xModifiedEvents);
@@ -407,7 +407,7 @@ public class InternalEventManager {
                   OseeLog.log(
                         InternalEventManager.class,
                         Level.WARNING,
-                        "IEM1: TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+                        "IEM1: PersistEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
                // Kick LOCAL

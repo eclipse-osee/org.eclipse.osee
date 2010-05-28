@@ -49,7 +49,7 @@ import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.PersistEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -219,6 +219,12 @@ public class SkynetTransaction extends DbTransaction {
       }
    }
 
+   /**
+    * Returns the next transaction to be used by the system<br>
+    * <br>
+    * IF transaction has not been executed, this is the transactionId that will be used.<br>
+    * ELSE this is next transaction to be used upon execute
+    */
    public int getTransactionNumber() throws OseeCoreException {
       return internalGetTransactionRecord().getId();
    }
@@ -386,7 +392,7 @@ public class SkynetTransaction extends DbTransaction {
 
    private void updateModifiedCachedObject() throws OseeCoreException {
       Collection<ArtifactTransactionModifiedEvent> xModifiedEvents = new ArrayList<ArtifactTransactionModifiedEvent>();
-      TransactionEvent transactionEvent = new TransactionEvent();
+      PersistEvent persistEvent = new PersistEvent();
 
       // Update all transaction items before collecting events
       for (BaseTransactionData transactionData : transactionDataItems.values()) {
@@ -395,7 +401,7 @@ public class SkynetTransaction extends DbTransaction {
 
       // Collect events before clearing any dirty flags
       for (BaseTransactionData transactionData : transactionDataItems.values()) {
-         transactionData.internalAddToEvents(xModifiedEvents, transactionEvent);
+         transactionData.internalAddToEvents(xModifiedEvents, persistEvent);
       }
 
       for (Artifact artifact : artifactReferences) {
@@ -407,7 +413,7 @@ public class SkynetTransaction extends DbTransaction {
                   new EventModifiedBasicGuidArtifact(artifact.getBranch().getGuid(),
                         artifact.getArtifactType().getGuid(), artifact.getGuid(),
                         artifact.getDirtyFrameworkAttributeChanges());
-            transactionEvent.getArtifacts().add(guidArt);
+            persistEvent.getArtifacts().add(guidArt);
          }
       }
       // Clear all dirty flags
@@ -416,7 +422,7 @@ public class SkynetTransaction extends DbTransaction {
       }
 
       if (xModifiedEvents.size() > 0) {
-         OseeEventManager.kickTransactionEvent(this, xModifiedEvents, transactionEvent);
+         OseeEventManager.kickPersistEvent(this, xModifiedEvents, persistEvent);
          xModifiedEvents.clear();
       }
    }

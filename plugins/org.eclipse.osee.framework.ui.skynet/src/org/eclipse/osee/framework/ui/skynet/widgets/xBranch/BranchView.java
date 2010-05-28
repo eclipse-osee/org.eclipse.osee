@@ -32,6 +32,9 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ITransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionEventType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
@@ -48,7 +51,7 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Jeff C. Phillips
  */
-public class BranchView extends ViewPart implements IActionable, IBranchEventListener, ITransactionsDeletedEventListener {
+public class BranchView extends ViewPart implements IActionable, IBranchEventListener, ITransactionEventListener, ITransactionsDeletedEventListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView";
    private BranchViewPresentationPreferences branchViewPresentationPreferences;
    private static String HELP_CONTEXT_ID = "BranchView";
@@ -159,6 +162,21 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    }
 
    @Override
+   public void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
+      if (transEvent.getEventType() == TransactionEventType.Purged) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            public void run() {
+               try {
+                  xBranchWidget.refresh();
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         });
+      }
+   }
+
+   @Override
    public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
@@ -229,4 +247,5 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    protected void setShowArchivedBranches(boolean showArchivedBranches) {
       xBranchWidget.setShowArchivedBranches(showArchivedBranches);
    }
+
 }

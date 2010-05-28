@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.PersistEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -173,12 +173,12 @@ public class PurgeArtifacts extends DbTransaction {
                artifactChanges);
 
          // New Events
-         TransactionEvent transactionEvent = new TransactionEvent();
-         transactionEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());
+         PersistEvent persistEvent = new PersistEvent();
+         persistEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());
          for (EventBasicGuidArtifact guidArt : artifactChanges) {
-            transactionEvent.getArtifacts().add(guidArt);
+            persistEvent.getArtifacts().add(guidArt);
          }
-         OseeEventManager.kickTransactionEvent(PurgeArtifacts.class, null, transactionEvent);
+         OseeEventManager.kickPersistEvent(PurgeArtifacts.class, null, persistEvent);
 
       } finally {
          ArtifactLoader.clearQuery(connection, queryId);

@@ -480,7 +480,7 @@ public class RemoteEventManager {
                      }
                   } else if (event instanceof NetworkTransactionDeletedEvent) {
                      try {
-                        InternalEventManager.kickTransactionsDeletedEvent(sender,
+                        InternalEventManager.kickTransactionsPurgedEvent(sender,
                               ((NetworkTransactionDeletedEvent) event).getTransactionIds());
                      } catch (Exception ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -495,7 +495,7 @@ public class RemoteEventManager {
                    */
                   Sender transactionSender =
                         new Sender("RemoteEventManager", lastArtifactRelationModChangeSender.getOseeSession());
-                  InternalEventManager.kickTransactionEvent(transactionSender, xModifiedEvents);
+                  InternalEventManager.kickPersistEvent(transactionSender, xModifiedEvents);
                }
 
                return Status.OK_STATUS;

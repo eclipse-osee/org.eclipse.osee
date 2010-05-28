@@ -22,6 +22,8 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidRelati
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBroadcastEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -128,6 +130,38 @@ public class FrameworkEventUtil {
    public static RemoteTransactionEvent1 getRemoteTransactionEvent(TransactionEvent transEvent) {
       RemoteTransactionEvent1 event = new RemoteTransactionEvent1();
       event.setNetworkSender(getRemoteNetworkSender(transEvent.getNetworkSender()));
+      event.setEventTypeGuid(transEvent.getEventType().getGuid());
+      for (TransactionChange change : transEvent.getTransactions()) {
+         RemoteTransactionChange1 remChange = new RemoteTransactionChange1();
+         remChange.setBranchGuid(change.getBranchGuid());
+         remChange.setTransactionId(change.getTransactionId());
+         for (DefaultBasicGuidArtifact guidArt : change.getArtifacts()) {
+            remChange.getArtifacts().add(getRemoteBasicGuidArtifact(guidArt));
+         }
+         event.getTransactions().add(remChange);
+      }
+      return event;
+   }
+
+   public static TransactionEvent getTransactionEvent(RemoteTransactionEvent1 remEvent) {
+      TransactionEvent event = new TransactionEvent();
+      event.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
+      event.setEventType(TransactionEventType.getByGuid(remEvent.getEventTypeGuid()));
+      for (RemoteTransactionChange1 remChange : remEvent.getTransactions()) {
+         TransactionChange change = new TransactionChange();
+         change.setBranchGuid(remChange.getBranchGuid());
+         change.setTransactionId(remChange.getTransactionId());
+         for (RemoteBasicGuidArtifact1 remGuidArt : remChange.getArtifacts()) {
+            change.getArtifacts().add(getBasicGuidArtifact(remGuidArt));
+         }
+         event.getTransactions().add(change);
+      }
+      return event;
+   }
+
+   public static RemotePersistEvent1 getRemotePersistEvent(PersistEvent transEvent) {
+      RemotePersistEvent1 event = new RemotePersistEvent1();
+      event.setNetworkSender(getRemoteNetworkSender(transEvent.getNetworkSender()));
       event.setBranchGuid(transEvent.getBranchGuid());
       event.setTransactionId(transEvent.getTransactionId());
       for (EventBasicGuidArtifact guidArt : transEvent.getArtifacts()) {
@@ -153,8 +187,8 @@ public class FrameworkEventUtil {
       return event;
    }
 
-   public static TransactionEvent getTransactionEvent(RemoteTransactionEvent1 remEvent) {
-      TransactionEvent event = new TransactionEvent();
+   public static PersistEvent getPersistEvent(RemotePersistEvent1 remEvent) {
+      PersistEvent event = new PersistEvent();
       event.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
       event.setBranchGuid(remEvent.getBranchGuid());
       event.setTransactionId(remEvent.getTransactionId());

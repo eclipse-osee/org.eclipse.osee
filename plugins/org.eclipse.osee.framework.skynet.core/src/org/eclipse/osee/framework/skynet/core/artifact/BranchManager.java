@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.BranchFilter;
+import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -111,6 +112,10 @@ public class BranchManager {
 
    public static void refreshBranches() throws OseeCoreException {
       getCache().reloadCache();
+   }
+
+   public static Branch getBranch(DefaultBasicGuidArtifact guidArt) throws OseeCoreException {
+      return BranchManager.getBranchByGuid(guidArt.getBranchGuid());
    }
 
    public static Branch getBranch(String branchName) throws OseeCoreException {

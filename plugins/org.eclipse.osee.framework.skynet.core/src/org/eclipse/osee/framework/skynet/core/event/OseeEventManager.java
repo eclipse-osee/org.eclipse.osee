@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
@@ -25,7 +26,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
+import org.eclipse.osee.framework.skynet.core.event2.PersistEvent;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -138,24 +142,37 @@ public class OseeEventManager {
    }
 
    // Kick LOCAL and REMOTE transaction deleted event
-   public static void kickTransactionsDeletedEvent(Object source, int[] transactionIds) throws OseeCoreException {
+   public static void kickTransactionEvent(Object source, final TransactionEvent transactionEvent) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
+      Set<Integer> transactionIds = new HashSet<Integer>();
+      for (TransactionChange transChange : transactionEvent.getTransactions()) {
+         transactionIds.add(transChange.getTransactionId());
+      }
+      int[] transIds = new int[transactionIds.size()];
+      int x = 0;
+      for (Integer value : transactionIds) {
+         transIds[x++] = value.intValue();
+      }
       //TODO This needs to be converted into the individual artifacts and relations that were deleted/modified
-      InternalEventManager.kickTransactionsDeletedEvent(getSender(source), transactionIds);
+      if (transactionEvent.getEventType() == TransactionEventType.Purged) {
+         InternalEventManager.kickTransactionsPurgedEvent(getSender(source), transIds);
+      }
+      transactionEvent.setNetworkSender(getSender(source).getNetworkSender2());
+      InternalEventManager2.kickTransactionEvent(getSender(source), transactionEvent);
    }
 
    // Kick LOCAL and REMOTE transaction event
-   public static void kickTransactionEvent(Object source, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents, TransactionEvent transactionEvent) throws OseeAuthenticationRequiredException {
+   public static void kickPersistEvent(Object source, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents, PersistEvent persistEvent) throws OseeAuthenticationRequiredException {
       if (isDisableEvents()) {
          return;
       }
       if (xModifiedEvents != null) {
-         InternalEventManager.kickTransactionEvent(getSender(source), xModifiedEvents);
+         InternalEventManager.kickPersistEvent(getSender(source), xModifiedEvents);
       }
-      transactionEvent.setNetworkSender(getSender(source).getNetworkSender2());
-      InternalEventManager2.kickTransactionEvent(getSender(source), transactionEvent);
+      persistEvent.setNetworkSender(getSender(source).getNetworkSender2());
+      InternalEventManager2.kickPersistEvent(getSender(source), persistEvent);
    }
 
    // Kick LOCAL transaction event

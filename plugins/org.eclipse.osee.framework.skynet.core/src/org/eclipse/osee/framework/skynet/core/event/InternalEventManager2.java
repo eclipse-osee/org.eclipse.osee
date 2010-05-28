@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
+import org.eclipse.osee.framework.skynet.core.event2.PersistEvent;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -84,15 +85,10 @@ public class InternalEventManager2 {
       Runnable runnable = new Runnable() {
          public void run() {
             try {
-               // Log if this is a loopback and what is happening
-               if (enableRemoteEventLoopback) {
-                  OseeEventManager.eventLog("IEM2: kickArtifactReloadEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
-               }
+               // No need to check loopback on this kick cause reload is only local
 
                // Kick LOCAL
-               if (!enableRemoteEventLoopback) {
-                  FrameworkEventManager.processEventArtifactsAndRelations(sender, artifactChanges);
-               }
+               FrameworkEventManager.processEventArtifactsAndRelations(sender, artifactChanges);
             } catch (Exception ex) {
                OseeEventManager.eventLog("IEM2 kickArtifactReloadEvent", ex);
             }
@@ -141,7 +137,45 @@ public class InternalEventManager2 {
       execute(runnable);
    }
 
-   // Kick LOCAL and REMOTE TransactionEvent
+   // Kick LOCAL and REMOTE PersistEvent
+   static void kickPersistEvent(final Sender sender, final PersistEvent transEvent) {
+      if (transEvent.getNetworkSender() == null) {
+         OseeEventManager.eventLog("IEM2: kickPersistEvent <<ERROR>> networkSender can't be null.");
+         return;
+      }
+      if (isDisableEvents()) {
+         return;
+      }
+      OseeEventManager.eventLog("IEM2:kickPersistEvent [" + transEvent + "] - " + sender);
+      Runnable runnable = new Runnable() {
+         public void run() {
+            // Roll-up change information
+            try {
+               // Log if this is a loopback and what is happening
+               if (!enableRemoteEventLoopback) {
+                  OseeEventManager.eventLog("IEM2: PersistEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+               }
+
+               // Kick LOCAL
+               boolean normalOperation = !enableRemoteEventLoopback;
+               boolean loopbackTestEnabledAndRemoteEventReturned = enableRemoteEventLoopback && sender.isRemote();
+               if (normalOperation || loopbackTestEnabledAndRemoteEventReturned) {
+                  FrameworkEventManager.processEventArtifactsAndRelations(sender, transEvent);
+               }
+
+               // Kick REMOTE (If source was Local and this was not a default branch changed event
+               if (sender.isLocal()) {
+                  RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemotePersistEvent(transEvent));
+               }
+            } catch (Exception ex) {
+               OseeEventManager.eventLog("IEM2 kickPersistEvent", ex);
+            }
+         }
+      };
+      execute(runnable);
+   }
+
+   // Kick LOCAL and REMOTE PersistEvent
    static void kickTransactionEvent(final Sender sender, final TransactionEvent transEvent) {
       if (transEvent.getNetworkSender() == null) {
          OseeEventManager.eventLog("IEM2: kickTransactionEvent <<ERROR>> networkSender can't be null.");
@@ -150,7 +184,7 @@ public class InternalEventManager2 {
       if (isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM2:kickTransactionEvent [" + transEvent + "] - " + sender);
+      OseeEventManager.eventLog("IEM2: kickTransactionEvent [" + transEvent + "] - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             // Roll-up change information
@@ -164,15 +198,16 @@ public class InternalEventManager2 {
                boolean normalOperation = !enableRemoteEventLoopback;
                boolean loopbackTestEnabledAndRemoteEventReturned = enableRemoteEventLoopback && sender.isRemote();
                if (normalOperation || loopbackTestEnabledAndRemoteEventReturned) {
-                  FrameworkEventManager.processEventArtifactsAndRelations(sender, transEvent);
+                  FrameworkEventManager.processTransactionEvent(sender, transEvent);
                }
 
                // Kick REMOTE (If source was Local and this was not a default branch changed event
                if (sender.isLocal()) {
+                  // Kick REMOTE
                   RemoteEventManager2.getInstance().kick(FrameworkEventUtil.getRemoteTransactionEvent(transEvent));
                }
             } catch (Exception ex) {
-               OseeEventManager.eventLog("IEM2 kickTransactionEvent", ex);
+               OseeEventManager.eventLog("IEM2: kickTransactionEvent", ex);
             }
          }
       };

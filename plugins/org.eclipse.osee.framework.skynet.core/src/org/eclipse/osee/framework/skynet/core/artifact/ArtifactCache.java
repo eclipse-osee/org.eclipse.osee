@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -145,6 +146,10 @@ public final class ArtifactCache {
 
    public static Artifact getActive(Integer artId, Branch branch) {
       return getActive(artId, branch.getId());
+   }
+
+   public static Artifact getActive(DefaultBasicGuidArtifact guidArt) throws OseeCoreException {
+      return getActive(guidArt.getGuid(), BranchManager.getBranch(guidArt));
    }
 
    public static Artifact getActive(Integer artId, IOseeBranch branch) throws OseeCoreException {

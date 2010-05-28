@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.PersistEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -77,23 +77,22 @@ public class ChangeArtifactType {
             artifactType.getGuid(), new LoadedArtifacts(artifactsUserAccepted), artifactChanges);
 
       // New Events
-      TransactionEvent transactionEvent = new TransactionEvent();
-      transactionEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());
+      PersistEvent persistEvent = new PersistEvent();
+      persistEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());
       for (EventBasicGuidArtifact guidArt : artifactChanges) {
-         transactionEvent.getArtifacts().add(guidArt);
+         persistEvent.getArtifacts().add(guidArt);
       }
-      OseeEventManager.kickTransactionEvent(ChangeArtifactType.class, null, transactionEvent);
+      OseeEventManager.kickPersistEvent(ChangeArtifactType.class, null, persistEvent);
 
    }
 
    public static void handleRemoteChangeType(EventChangeTypeBasicGuidArtifact guidArt) {
       try {
-         Artifact artifact =
-               ArtifactCache.getActive(guidArt.getGuid(), BranchManager.getBranchByGuid(guidArt.getBranchGuid()));
+         Artifact artifact = ArtifactCache.getActive(guidArt);
          if (artifact == null) return;
          ArtifactCache.deCache(artifact);
          RelationManager.deCache(artifact);
-         artifact.setArtifactType(ArtifactTypeManager.getTypeByGuid(guidArt.getArtTypeGuid()));
+         artifact.setArtifactType(ArtifactTypeManager.getType(guidArt));
          artifact.clearEditState();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Error handling remote change type", ex);

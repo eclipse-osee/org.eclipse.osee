@@ -29,17 +29,21 @@ import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.messaging.event.res.ResEventManager;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
+import org.eclipse.osee.framework.skynet.core.event2.PersistEvent;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventChangeTypeBasicGuidArtifact;
@@ -91,13 +95,13 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                      new Status(Status.ERROR, Activator.PLUGIN_ID, -1, ex1.getLocalizedMessage(), ex1);
                   }
                   // Handles TransactionEvents, ArtifactChangeTypeEvents, ArtifactPurgeEvents
-                  if (remoteEvent instanceof RemoteTransactionEvent1) {
+                  if (remoteEvent instanceof RemotePersistEvent1) {
                      try {
-                        RemoteTransactionEvent1 event1 = (RemoteTransactionEvent1) remoteEvent;
-                        TransactionEvent transEvent = FrameworkEventUtil.getTransactionEvent(event1);
+                        RemotePersistEvent1 event1 = (RemotePersistEvent1) remoteEvent;
+                        PersistEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
                         updateArtifacts(sender, transEvent);
                         updateRelations(sender, transEvent);
-                        InternalEventManager2.kickTransactionEvent(sender, transEvent);
+                        InternalEventManager2.kickPersistEvent(sender, transEvent);
                      } catch (Exception ex) {
                         OseeEventManager.eventLog("REM2: RemoteTransactionEvent1", ex);
                      }
@@ -109,6 +113,14 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                      } catch (Exception ex) {
                         OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
                      }
+                  } else if (remoteEvent instanceof RemoteTransactionEvent1) {
+                     try {
+                        TransactionEvent transEvent =
+                              FrameworkEventUtil.getTransactionEvent((RemoteTransactionEvent1) remoteEvent);
+                        handleTransactionEvent(sender, transEvent);
+                     } catch (Exception ex) {
+                        OseeEventManager.eventLog("REM2: RemoteBranchEvent1", ex);
+                     }
                   }
                   monitor.done();
                   return Status.OK_STATUS;
@@ -117,6 +129,19 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       job.setSystem(true);
       job.setUser(false);
       job.schedule();
+   }
+
+   private void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
+      try {
+         if (transEvent.getEventType() == TransactionEventType.Purged) {
+            PurgeTransactionOperation.handleRemotePurgeTransactionEvent(transEvent);
+            InternalEventManager2.kickTransactionEvent(sender, transEvent);
+         } else {
+            OseeEventManager.eventLog("REM2: handleTransactionEvent - unhandled mod type " + transEvent.getEventType());
+         }
+      } catch (Exception ex) {
+         OseeEventManager.eventLog("REM2: handleTransactionEvent", ex);
+      }
    }
 
    /**
@@ -138,7 +163,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
    /**
     * Updates local cache
     **/
-   private static void updateArtifacts(Sender sender, TransactionEvent transEvent) {
+   private static void updateArtifacts(Sender sender, PersistEvent transEvent) {
       // Don't crash on any one artifact update problem (no update method throughs exceptions)
       for (EventBasicGuidArtifact guidArt : transEvent.getArtifacts()) {
          OseeEventManager.eventLog(String.format("REM2: updateArtifact -> [%s]", guidArt));
@@ -167,17 +192,16 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       }
    }
 
-   private static void updateRelations(Sender sender, TransactionEvent transEvent) {
+   private static void updateRelations(Sender sender, PersistEvent transEvent) {
       for (EventBasicGuidRelation guidArt : transEvent.getRelations()) {
          // Don't crash on any one relation update problem
          try {
             OseeEventManager.eventLog(String.format("REM2: updateRelation -> [%s]", guidArt));
             RelationEventType eventType = guidArt.getModType();
-            String branchGuid = guidArt.getBranchGuid();
-            Branch branch = BranchManager.getBranchByGuid(branchGuid);
+            Branch branch = BranchManager.getBranch(guidArt.getArtA());
             RelationType relationType = RelationTypeManager.getTypeByGuid(guidArt.getRelTypeGuid());
-            Artifact aArtifact = ArtifactCache.getActive(guidArt.getArtA().getGuid(), branch);
-            Artifact bArtifact = ArtifactCache.getActive(guidArt.getArtB().getGuid(), branch);
+            Artifact aArtifact = ArtifactCache.getActive(guidArt.getArtA());
+            Artifact bArtifact = ArtifactCache.getActive(guidArt.getArtB());
             // Nothing in cache, ignore
             if (aArtifact == null && bArtifact == null) {
                return;
@@ -233,9 +257,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
 
    private static void updateDeletedArtifact(DefaultBasicGuidArtifact guidArt) {
       try {
-         String branchGuid = guidArt.getBranchGuid();
-         Branch branch = BranchManager.getBranchByGuid(branchGuid);
-         Artifact artifact = ArtifactCache.getActive(guidArt.getGuid(), branch);
+         Artifact artifact = ArtifactCache.getActive(guidArt);
          if (artifact == null) {
             // do nothing, artifact not in cache, so don't need to update
          } else if (!artifact.isHistorical()) {
@@ -248,9 +270,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
 
    private static void updateModifiedArtifact(EventModifiedBasicGuidArtifact guidArt) {
       try {
-         String branchGuid = guidArt.getBranchGuid();
-         Branch branch = BranchManager.getBranchByGuid(branchGuid);
-         Artifact artifact = ArtifactCache.getActive(guidArt.getGuid(), branch);
+         Artifact artifact = ArtifactCache.getActive(guidArt);
          if (artifact == null) {
             // do nothing, artifact not in cache, so don't need to update
          } else if (!artifact.isHistorical()) {

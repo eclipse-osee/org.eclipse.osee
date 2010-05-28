@@ -18,6 +18,9 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ITransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionChange;
+import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportActionBarContributor;
@@ -147,7 +150,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       }
    }
 
-   private final class EventRelay implements IBranchEventListener, ITransactionsDeletedEventListener {
+   private final class EventRelay implements IBranchEventListener, ITransactionEventListener, ITransactionsDeletedEventListener {
 
       @Override
       public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
@@ -180,6 +183,22 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
          for (int transactionIdToMatch : txDeltas) {
             for (int txId : transactionIds) {
                if (transactionIdToMatch == txId) {
+                  close(false);
+                  break;
+               }
+            }
+         }
+      }
+
+      @Override
+      public void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
+         ChangeUiData changeUiData = getEditorInput().getChangeData();
+         int[] txDeltas = new int[2];
+         txDeltas[0] = changeUiData.getTxDelta().getStartTx().getId();
+         txDeltas[1] = changeUiData.getTxDelta().getEndTx().getId();
+         for (int transactionIdToMatch : txDeltas) {
+            for (TransactionChange transChange : transEvent.getTransactions()) {
+               if (transactionIdToMatch == transChange.getTransactionId()) {
                   close(false);
                   break;
                }

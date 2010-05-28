@@ -73,7 +73,7 @@ public class FrameworkEventManager {
       }
    }
 
-   public static void processEventArtifactsAndRelations(Sender sender, TransactionEvent transEvent) {
+   public static void processEventArtifactsAndRelations(Sender sender, PersistEvent transEvent) {
       processEventArtifactsAndRelations(sender, transEvent.getArtifacts(), transEvent.getRelations());
    }
 
@@ -120,4 +120,12 @@ public class FrameworkEventManager {
       }
    }
 
+   public static void processTransactionEvent(Sender sender, TransactionEvent transactionEvent) {
+      OseeEventManager.eventLog(String.format("FEM: processTransactionEvent [%s]", transactionEvent));
+      for (IEventListener listener : listeners) {
+         if (listener instanceof ITransactionEventListener) {
+            ((ITransactionEventListener) listener).handleTransactionEvent(sender, transactionEvent);
+         }
+      }
+   }
 }

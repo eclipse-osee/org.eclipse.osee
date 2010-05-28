@@ -13,7 +13,7 @@
        </xsd:appinfo>
     </xsd:annotation>
 
-<xsd:complexType name="RemoteTransactionEvent1">
+<xsd:complexType name="RemotePersistEvent1">
   <xsd:sequence>
     <xsd:element name="branchGuid" type="xsd:string"/>
     <xsd:element name="transactionId" type="xsd:int"/>
@@ -40,10 +40,20 @@
   </xsd:sequence>
 </xsd:complexType>
 
-<xsd:complexType name="RemoteTransactionDeletedEvent1">
+<xsd:complexType name="RemoteTransactionEvent1">
   <xsd:sequence>
-    <xsd:element name="transactionIds" type="xsd:string" maxOccurs="unbounded" minOccurs="1"/>
+    <xsd:element name="eventTypeGuid" type="xsd:string"/>
+    <xsd:element name="transactions" type="RemoteTransactionChange1" maxOccurs="unbounded" minOccurs="1"/>
     <xsd:element name="networkSender" type="RemoteNetworkSender1" maxOccurs="1" minOccurs="1"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+
+<xsd:complexType name="RemoteTransactionChange1">
+  <xsd:sequence>
+    <xsd:element name="branchGuid" type="xsd:string" maxOccurs="1" minOccurs="1"/>
+    <xsd:element name="transactionId" type="xsd:int" maxOccurs="1" minOccurs="1"/>
+    <xsd:element name="artifacts" type="RemoteBasicGuidArtifact1" maxOccurs="unbounded" minOccurs="1"/>
   </xsd:sequence>
 </xsd:complexType>
 

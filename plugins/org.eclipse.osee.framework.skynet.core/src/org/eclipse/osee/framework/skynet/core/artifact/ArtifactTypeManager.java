@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -40,7 +41,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 /**
  * Contains methods specific to artifact types. All artifact methods will eventually be moved from the
  * ConfigurationPersistenceManager to here.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class ArtifactTypeManager {
@@ -99,6 +100,10 @@ public class ArtifactTypeManager {
       return !getCache().getByName(name).isEmpty();
    }
 
+   public static ArtifactType getType(DefaultBasicGuidArtifact guidArt) throws OseeCoreException {
+      return getTypeByGuid(guidArt.getArtTypeGuid());
+   }
+
    /**
     * @return Returns the artifact type matching the guid
     * @param guid artifact type guid to match
@@ -140,7 +145,7 @@ public class ArtifactTypeManager {
 
    /**
     * Get Artifact Types by type names.
-    *
+    * 
     * @return Returns the types with a particular name
     * @param artifactTypeNames names to get
     * @throws OseeDataStoreException
@@ -168,7 +173,7 @@ public class ArtifactTypeManager {
 
    /**
     * Get a new instance of type artifactTypeName
-    *
+    * 
     * @param artifactTypeName
     * @param branch
     * @throws OseeCoreException
@@ -183,7 +188,7 @@ public class ArtifactTypeManager {
 
    /**
     * Get a new instance of type artifactTypeName and set it's name.
-    *
+    * 
     * @param artifactTypeName
     * @param branch
     * @param name
@@ -203,7 +208,7 @@ public class ArtifactTypeManager {
    /**
     * Get a new instance of the type of artifact. This is just a convenience method that calls makeNewArtifact on the
     * known factory with this descriptor for the descriptor parameter, and the supplied branch.
-    *
+    * 
     * @param branch branch on which artifact will be created
     * @return Return artifact reference
     * @throws OseeCoreException
@@ -242,7 +247,7 @@ public class ArtifactTypeManager {
    /**
     * Given a set of artifact types, they will be converted to the new artifact type and the old artifact types will be
     * purged
-    *
+    * 
     * @param purgeArtifactTypes types to be converted and purged
     * @param newArtifactType new type to convert any existing artifacts of the old type
     * @throws OseeCoreException
@@ -274,7 +279,7 @@ public class ArtifactTypeManager {
    /**
     * Run code that will be run during purge with convert and report on what relations, attributes will be deleted as
     * part of the conversion.
-    *
+    * 
     * @param purgeArtifactTypes
     * @param newArtifactType
     * @throws OseeCoreException
@@ -305,7 +310,7 @@ public class ArtifactTypeManager {
     * Get a new instance of the type of artifact described by this descriptor. This is just a convenience method that
     * calls makeNewArtifact on the known factory with this descriptor for the descriptor parameter, and the supplied
     * branch.
-    *
+    * 
     * @return Return artifact reference
     * @throws OseeCoreException
     * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType)
@@ -324,7 +329,7 @@ public class ArtifactTypeManager {
     * Get a new instance of the type of artifact described by this descriptor. This is just a convenience method that
     * calls makeNewArtifact on the known factory with this descriptor for the descriptor parameter, and the supplied
     * branch.
-    *
+    * 
     * @param branch branch on which artifact will be created
     * @return Return artifact reference
     * @throws OseeCoreException

@@ -8,23 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.event;
+package org.eclipse.osee.framework.skynet.core.event2;
+
+import org.eclipse.osee.framework.skynet.core.event.EventType;
 
 /**
  * @author Donald G. Dunne
  */
-public enum BranchEventType {
+public enum TransactionEventType {
 
    // Local and Remote events
-   Purged(EventType.LocalAndRemote, "AAn_QG7jRGZAqPE0UewA"),
-   Deleted(EventType.LocalAndRemote, "AAn_QHBDvwtT5jjKaHgA"),
-   Added(EventType.LocalAndRemote, "AAn_QHDohywDoSTxwcQA"),
-   Renamed(EventType.LocalAndRemote, "AAn_QHGLIUsH2BdX2gwA"),
-   Committed(EventType.LocalAndRemote, "AAn_QHIu0mGZytQ11QwA"),
-   TypeUpdated(EventType.LocalAndRemote, "AAn_QHLW4DKKbUkEZggA"),
-   StateUpdated(EventType.LocalAndRemote, "AAn_QHQdKhxNLtWPchAA"),
-   ArchiveStateUpdated(EventType.LocalAndRemote, "AAn_QHS7Zhr6OLhKl3gA"),
-   MergeConflictResolved(EventType.LocalAndRemote, "AAn_QHiJ53W5W_k8W7AA");
+   Purged(EventType.LocalAndRemote, "");
 
    private final EventType eventType;
    private final String guid;
@@ -40,7 +34,7 @@ public enum BranchEventType {
    /**
     * @param localOnly true if this event type is to be thrown only locally and not to other clients
     */
-   private BranchEventType(EventType eventType, String guid) {
+   private TransactionEventType(EventType eventType, String guid) {
       this.eventType = eventType;
       this.guid = guid;
    }
@@ -49,8 +43,8 @@ public enum BranchEventType {
       return guid;
    }
 
-   public static BranchEventType getByGuid(String guid) {
-      for (BranchEventType type : values()) {
+   public static TransactionEventType getByGuid(String guid) {
+      for (TransactionEventType type : values()) {
          if (type.guid.equals(guid)) {
             return type;
          }

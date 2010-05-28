@@ -263,6 +263,14 @@ public final class TransactionManager {
       return getTransactionId(chStmt.getInt("transaction_id"), chStmt);
    }
 
+   public static void deCache(int txId) throws OseeCoreException {
+      TransactionCache txCache = getTransactionCache();
+      TransactionRecord transactionRecord = txCache.getById(txId);
+      if (transactionRecord != null) {
+         txCache.decache(transactionRecord);
+      }
+   }
+
    private synchronized static TransactionRecord getTransactionId(int txId, IOseeStatement chStmt) throws OseeCoreException {
       TransactionCache txCache = getTransactionCache();
       TransactionRecord transactionRecord = txCache.getById(txId);

@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.messaging.event.res.AttributeEventModification
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAttributeChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidRelation1;
-import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.messaging.event.res.test.cases.RemoteNetworkSenderTest;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -62,8 +62,8 @@ public class ArtifactEventManagerTest {
    final Set<EventBasicGuidRelation> resultEventRelations = new HashSet<EventBasicGuidRelation>();
    public static Sender resultSender = null;
    public static List<String> ignoreLogging =
-         Arrays.asList("OEM: TransactionEvent Loopback enabled", "OEM: kickArtifactReloadEvent Loopback enabled",
-               "OEM2: TransactionEvent Loopback enabled", "OEM2: kickArtifactReloadEvent Loopback enabled");
+         Arrays.asList("OEM: PersistEvent Loopback enabled", "OEM: kickArtifactReloadEvent Loopback enabled",
+               "OEM2: PersistEvent Loopback enabled", "OEM2: kickArtifactReloadEvent Loopback enabled");
    public static int incrementingGammaId = 2231;
 
    public class ArtifactEventListener implements IArtifactListener {
@@ -304,7 +304,7 @@ public class ArtifactEventManagerTest {
       clearEventCollections();
 
       // Create fake remote event that would come in from another client
-      RemoteTransactionEvent1 remoteEvent =
+      RemotePersistEvent1 remoteEvent =
             getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(getIncrementingRelationId(),
                   RelationEventType.Added, CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
 
@@ -339,7 +339,7 @@ public class ArtifactEventManagerTest {
       RelationLink relLink = injectArt.getRelations(CoreRelationTypes.Default_Hierarchical__Parent).iterator().next();
 
       // Create fake remote event that would come in from another client
-      RemoteTransactionEvent1 remoteEvent =
+      RemotePersistEvent1 remoteEvent =
             getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(relLink.getId(),
                   RelationEventType.Deleted, CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
 
@@ -372,7 +372,7 @@ public class ArtifactEventManagerTest {
       clearEventCollections();
 
       // Create fake remote event that would come in from another client
-      RemoteTransactionEvent1 remoteEvent =
+      RemotePersistEvent1 remoteEvent =
             getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(getIncrementingRelationId(),
                   RelationEventType.Added, CoreRelationTypes.Default_Hierarchical__Child, rootArt, injectArt);
       RemoteBasicGuidRelation1 relation = remoteEvent.getRelations().iterator().next();
@@ -410,7 +410,7 @@ public class ArtifactEventManagerTest {
       RelationLink relLink = injectArt.getRelations(CoreRelationTypes.Default_Hierarchical__Parent).iterator().next();
 
       // Create fake remote event that would come in from another client
-      RemoteTransactionEvent1 remoteEvent =
+      RemotePersistEvent1 remoteEvent =
             getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(relLink.getId(),
                   RelationEventType.ModifiedRationale, CoreRelationTypes.Default_Hierarchical__Child, rootArt,
                   injectArt);
@@ -458,7 +458,7 @@ public class ArtifactEventManagerTest {
       clearEventCollections();
 
       // Create fake remote event that would come in from another client
-      RemoteTransactionEvent1 remoteEvent = getFakeGeneralDataArtifactRemoteEventForArtifactModified(injectArt);
+      RemotePersistEvent1 remoteEvent = getFakeGeneralDataArtifactRemoteEventForArtifactModified(injectArt);
       RemoteBasicGuidArtifact1 remGuidArt = remoteEvent.getArtifacts().iterator().next();
 
       RemoteAttributeChange1 remAttrChg = new RemoteAttributeChange1();
@@ -511,7 +511,7 @@ public class ArtifactEventManagerTest {
       clearEventCollections();
 
       // Create fake remote event that would come in from another client
-      RemoteTransactionEvent1 remoteEvent = getFakeGeneralDataArtifactRemoteEventForArtifactModified(injectArt);
+      RemotePersistEvent1 remoteEvent = getFakeGeneralDataArtifactRemoteEventForArtifactModified(injectArt);
       RemoteBasicGuidArtifact1 remGuidArt = remoteEvent.getArtifacts().iterator().next();
 
       // Create add attribute record
@@ -562,7 +562,7 @@ public class ArtifactEventManagerTest {
       clearEventCollections();
 
       // Create fake remote event that would come in from another client
-      RemoteTransactionEvent1 remoteEvent = getFakeGeneralDataArtifactRemoteEventForArtifactModified(injectArt);
+      RemotePersistEvent1 remoteEvent = getFakeGeneralDataArtifactRemoteEventForArtifactModified(injectArt);
       RemoteBasicGuidArtifact1 remGuidArt = remoteEvent.getArtifacts().iterator().next();
 
       // Create delete attribute record
@@ -604,9 +604,9 @@ public class ArtifactEventManagerTest {
       return injectArt;
    }
 
-   private RemoteTransactionEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactModified(Artifact modifiedArt) throws OseeCoreException {
+   private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactModified(Artifact modifiedArt) throws OseeCoreException {
       // Create fake remote event that would come in from another client
-      RemoteTransactionEvent1 remoteEvent = new RemoteTransactionEvent1();
+      RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client
       remoteEvent.setNetworkSender(RemoteNetworkSenderTest.networkSender);
       remoteEvent.setTransactionId(1000);
@@ -622,9 +622,9 @@ public class ArtifactEventManagerTest {
       return remoteEvent;
    }
 
-   private RemoteTransactionEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(int relationId, RelationEventType relationEventType, IRelationType relType, Artifact artA, Artifact artB) throws OseeCoreException {
+   private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(int relationId, RelationEventType relationEventType, IRelationType relType, Artifact artA, Artifact artB) throws OseeCoreException {
       // Create fake remote event that would come in from another client
-      RemoteTransactionEvent1 remoteEvent = new RemoteTransactionEvent1();
+      RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client
       remoteEvent.setNetworkSender(RemoteNetworkSenderTest.networkSender);
       remoteEvent.setTransactionId(1000);
