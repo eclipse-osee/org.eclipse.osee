@@ -19,7 +19,6 @@ import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
-import org.eclipse.osee.ote.service.IOteClientService;
 import org.eclipse.osee.ote.service.ITestConnectionListener;
 import org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin;
 
@@ -28,10 +27,7 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
    private IRemoteCommandConsole remoteConsole;
    private ITestEnvironment env;
 
-   private final IOteClientService clientService;
-   public OteRemoteConsole(IOteClientService clientService) {
-	   this.clientService =clientService;
-	   clientService.addConnectionListener(this);
+   public OteRemoteConsole() {
    }
 
    private boolean isOteConsoleServiceAvailable() {
@@ -93,7 +89,7 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
 
    @Override
    public void onPreDisconnect(ConnectionEvent event) {
-         close();
+      close();
    }
 
 }
