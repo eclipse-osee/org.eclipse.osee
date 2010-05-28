@@ -59,10 +59,8 @@ public class AtsResourceProvider implements IResourceProvider {
 
    @Override
    public IResource acquire(IResourceLocator locator, Options options) throws OseeCoreException {
-      IResource toReturn = null;
       OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, null, options);
-      toReturn = optionsProcessor.getResourceToServer();
-      return toReturn;
+      return optionsProcessor.getResourceToServer();
    }
 
    @Override

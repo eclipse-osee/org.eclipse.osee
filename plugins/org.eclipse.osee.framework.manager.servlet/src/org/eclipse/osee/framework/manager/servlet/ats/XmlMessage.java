@@ -75,8 +75,9 @@ public class XmlMessage {
       Conditions.checkExpressionFailOnTrue(hasMessages && hasNodes, "Cannot have messages and nodes");
 
       XMLOutputFactory factory = XMLOutputFactory.newInstance();
+      XMLStreamWriter writer = null;
       try {
-         XMLStreamWriter writer = factory.createXMLStreamWriter(output);
+         writer = factory.createXMLStreamWriter(output);
          writer.writeStartDocument("UTF-8", "1.0");
          writer.writeStartElement("response");
 
@@ -131,6 +132,14 @@ public class XmlMessage {
          writer.writeEndDocument();
       } catch (XMLStreamException ex) {
          OseeExceptions.wrapAndThrow(ex);
+      } finally {
+         if (writer != null) {
+            try {
+               writer.close();
+            } catch (XMLStreamException ex) {
+               // Do nothing;
+            }
+         }
       }
    }
 
