@@ -23,5 +23,5 @@ public interface ITestEnvironmentMessageSystemAccessor extends ITestEnvironmentA
    IMessageManager getMsgManager();
 
    boolean isPhysicalTypeAvailable(DataType physicalType);
-   Set<DataType> getDataTypes();
+   Set<? extends DataType> getDataTypes();
 }
