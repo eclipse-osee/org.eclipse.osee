@@ -92,6 +92,7 @@ public class OseeEventManager {
          return;
       }
       InternalEventManager.kickMergeBranchEvent(getSender(source), branchEventType, branchId);
+      // Handled by kickMergeBranchEvent for new Events
    }
 
    // Kick LOCAL and REMOTE access control events
@@ -100,14 +101,6 @@ public class OseeEventManager {
          return;
       }
       InternalEventManager.kickAccessControlArtifactsEvent(getSender(source), accessControlModType, loadedArtifacts);
-   }
-
-   // Kick local event to notify application that the branch to artifact cache has been updated
-   public static void kickLocalBranchToArtifactCacheUpdateEvent(Object source) throws OseeCoreException {
-      if (isDisableEvents()) {
-         return;
-      }
-      InternalEventManager.kickLocalBranchToArtifactCacheUpdateEvent(getSender(source));
    }
 
    // Kick LOCAL artifact modified event; This event does NOT go external

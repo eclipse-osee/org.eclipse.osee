@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
-
 /**
  * @author Donald G. Dunne
  */
@@ -24,7 +23,8 @@ public enum BranchEventType {
    Committed(EventType.LocalAndRemote, "AAn_QHIu0mGZytQ11QwA"),
    TypeUpdated(EventType.LocalAndRemote, "AAn_QHLW4DKKbUkEZggA"),
    StateUpdated(EventType.LocalAndRemote, "AAn_QHQdKhxNLtWPchAA"),
-   ArchiveStateUpdated(EventType.LocalAndRemote, "AAn_QHS7Zhr6OLhKl3gA");
+   ArchiveStateUpdated(EventType.LocalAndRemote, "AAn_QHS7Zhr6OLhKl3gA"),
+   MergeConflictResolved(EventType.LocalAndRemote, "AAn_QHiJ53W5W_k8W7AA");
 
    private final EventType eventType;
    private final String guid;

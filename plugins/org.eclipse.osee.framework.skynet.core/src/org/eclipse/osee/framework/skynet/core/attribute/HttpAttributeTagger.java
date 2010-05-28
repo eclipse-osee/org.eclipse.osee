@@ -134,10 +134,6 @@ public class HttpAttributeTagger {
       }
 
       @Override
-      public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-      }
-
-      @Override
       public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
          //         if (sender.isRemote()) {
          //            return;

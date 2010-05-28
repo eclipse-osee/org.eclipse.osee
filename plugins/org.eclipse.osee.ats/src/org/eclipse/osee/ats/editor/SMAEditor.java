@@ -673,10 +673,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactListen
    }
 
    @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-   }
-
-   @Override
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
       try {
          if (loadedArtifacts.getLoadedArtifacts().contains(sma)) {

@@ -16,8 +16,9 @@ package org.eclipse.osee.framework.skynet.core.event;
 public enum MergeBranchEventType {
 
    // Local and Remote events
-   ConflictResolved(EventType.LocalAndRemote),
-   Update(EventType.LocalAndRemote);
+   // TODO This type can be deleted once move to new events is completed; handled through
+   // BranchEventType.MergeConflictResolved for new events
+   ConflictResolved(EventType.LocalAndRemote);
 
    private final EventType eventType;
 

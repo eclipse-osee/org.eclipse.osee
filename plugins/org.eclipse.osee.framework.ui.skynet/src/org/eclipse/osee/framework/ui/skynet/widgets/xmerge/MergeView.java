@@ -19,7 +19,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
@@ -271,10 +270,13 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       MenuManager subMenuManager = new MenuManager("Differences", "diffTransaction");
       menuManager.add(subMenuManager);
       createDiffItems(subMenuManager, new DiffHandler(menuManager, 1, mergeXWidget), "Show Source Branch Differences");
-      createDiffItems(subMenuManager, new DiffHandler(menuManager, 2, mergeXWidget), "Show Destination Branch Differences");
-      createDiffItems(subMenuManager, new DiffHandler(menuManager, 3, mergeXWidget), "Show Source/Destination Differences");
+      createDiffItems(subMenuManager, new DiffHandler(menuManager, 2, mergeXWidget),
+            "Show Destination Branch Differences");
+      createDiffItems(subMenuManager, new DiffHandler(menuManager, 3, mergeXWidget),
+            "Show Source/Destination Differences");
       createDiffItems(subMenuManager, new DiffHandler(menuManager, 4, mergeXWidget), "Show Source/Merge Differences");
-      createDiffItems(subMenuManager, new DiffHandler(menuManager, 5, mergeXWidget), "Show Destination/Merge Differences");
+      createDiffItems(subMenuManager, new DiffHandler(menuManager, 5, mergeXWidget),
+            "Show Destination/Merge Differences");
    }
 
    private String addDiffItems(MenuManager subMenuManager, String command) {
@@ -774,10 +776,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             }
          });
       }
-   }
-
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
    @Override

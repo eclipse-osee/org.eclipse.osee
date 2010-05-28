@@ -283,21 +283,6 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   /*
-    * Kick LOCAL event to notify application that the branch to artifact cache has been updated; 
-    * This event does NOT go external
-    */
-   static void kickLocalBranchToArtifactCacheUpdateEvent(final Sender sender) throws OseeCoreException {
-      OseeEventManager.eventLog("IEM1: kickLocalBranchToArtifactCacheUpdateEvent - " + sender);
-      Runnable runnable = new Runnable() {
-         public void run() {
-            // Kick LOCAL
-            safelyInvokeListeners(IBranchEventListener.class, "handleLocalBranchToArtifactCacheUpdateEvent", sender);
-         }
-      };
-      execute(runnable);
-   }
-
    // Kick LOCAL artifact modified event; This event does NOT go external
    static void kickArtifactModifiedEvent(final Sender sender, final ArtifactModType artifactModType, final Artifact artifact) throws OseeCoreException {
       OseeEventManager.eventLog("IEM1: kickArtifactModifiedEvent - " + artifactModType + " - " + artifact.getGuid() + " - " + sender + " - " + artifact.getDirtySkynetAttributeChanges());

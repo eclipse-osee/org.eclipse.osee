@@ -107,14 +107,14 @@ public class FrameworkEventUtil {
 
    public static RemoteBranchEvent1 getRemoteBranchEvent(BranchEvent branchEvent) {
       RemoteBranchEvent1 event = new RemoteBranchEvent1();
-      event.setModTypeGuid(branchEvent.getEventType().getGuid());
+      event.setEventTypeGuid(branchEvent.getEventType().getGuid());
       event.setBranchGuid(branchEvent.getBranchGuid());
       event.setNetworkSender(getRemoteNetworkSender(branchEvent.getNetworkSender()));
       return event;
    }
 
    public static BranchEvent getBranchEvent(RemoteBranchEvent1 branchEvent) {
-      BranchEventType branchEventType = BranchEventType.getByGuid(branchEvent.getModTypeGuid());
+      BranchEventType branchEventType = BranchEventType.getByGuid(branchEvent.getEventTypeGuid());
       if (branchEventType != null) {
          BranchEvent event = new BranchEvent(branchEventType, branchEvent.getBranchGuid());
          event.setNetworkSender(getNetworkSender(branchEvent.getNetworkSender()));

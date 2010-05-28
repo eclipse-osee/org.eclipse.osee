@@ -15,14 +15,12 @@ import static org.eclipse.osee.framework.core.enums.PermissionEnum.DENY;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.FULLACCESS;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.LOCK;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.READ;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
@@ -54,7 +52,7 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
  * Provides access control for OSEE.
- *
+ * 
  * @author Jeff C. Phillips
  */
 
@@ -370,7 +368,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
                if (recurse) {
                   Artifact artifact =
                         ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
-                        BranchManager.getBranch(artifactAccessObject.getId()));
+                              BranchManager.getBranch(artifactAccessObject.getId()));
                   AccessControlData childAccessControlData = null;
 
                   for (Artifact child : artifact.getChildren()) {
@@ -622,10 +620,6 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
-   }
-
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
    @Override

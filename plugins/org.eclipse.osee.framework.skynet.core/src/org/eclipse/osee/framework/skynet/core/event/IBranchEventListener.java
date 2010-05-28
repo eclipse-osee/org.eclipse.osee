@@ -18,6 +18,4 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 public interface IBranchEventListener extends IEventListener {
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException;
 
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) throws OseeCoreException;
-
 }

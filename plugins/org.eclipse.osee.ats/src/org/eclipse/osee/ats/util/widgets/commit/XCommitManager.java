@@ -375,17 +375,18 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    }
 
    @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
+   public void handleBranchEvent(Sender sender, final BranchEventType branchModType, int branchId) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            loadTable();
+            if (branchModType == BranchEventType.MergeConflictResolved) {
+               xCommitManager.refresh();
+               refresh();
+            } else {
+               loadTable();
+            }
          }
       });
-   }
-
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
    @Override

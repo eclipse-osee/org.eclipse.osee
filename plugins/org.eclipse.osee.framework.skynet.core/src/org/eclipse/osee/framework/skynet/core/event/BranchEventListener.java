@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
-
 /**
  * @author Donald G. Dunne
  */
@@ -18,10 +17,6 @@ public class BranchEventListener implements IBranchEventListener {
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
-   }
-
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
 }

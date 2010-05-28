@@ -66,7 +66,4 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IBran
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
    }
 
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-   }
 }

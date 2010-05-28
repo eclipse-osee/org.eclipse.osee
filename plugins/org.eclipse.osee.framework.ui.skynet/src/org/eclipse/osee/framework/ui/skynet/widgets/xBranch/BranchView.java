@@ -45,7 +45,7 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * Displays persisted changes made to an artifact.
- *
+ * 
  * @author Jeff C. Phillips
  */
 public class BranchView extends ViewPart implements IActionable, IBranchEventListener, ITransactionsDeletedEventListener {
@@ -156,10 +156,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
             }
          }
       });
-   }
-
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
    @Override

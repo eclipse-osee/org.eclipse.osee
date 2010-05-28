@@ -150,10 +150,6 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    private final class EventRelay implements IBranchEventListener, ITransactionsDeletedEventListener {
 
       @Override
-      public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) throws OseeCoreException {
-      }
-
-      @Override
       public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
          ChangeUiData changeUiData = getEditorInput().getChangeData();
          Branch[] branches = new Branch[2];

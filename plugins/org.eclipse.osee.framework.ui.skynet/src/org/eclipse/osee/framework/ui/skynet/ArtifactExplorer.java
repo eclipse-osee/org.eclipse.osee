@@ -1432,10 +1432,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    }
 
    @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-   }
-
-   @Override
    public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifacts) {
       try {
          if (loadedArtifacts.isNotForBranch(branch)) {

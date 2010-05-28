@@ -183,10 +183,6 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       }
 
       @Override
-      public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-      }
-
-      @Override
       public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifacts) {
          try {
             if (accessControlEventType == AccessControlEventType.ArtifactsLocked || accessControlEventType == AccessControlEventType.ArtifactsUnlocked) {

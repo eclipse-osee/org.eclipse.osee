@@ -309,10 +309,6 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       }
    }
 
-   @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-   }
-
    private void closeView() {
       SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
    }

@@ -259,10 +259,6 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    }
 
    @Override
-   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) throws OseeCoreException {
-   }
-
-   @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       refreshOnBranchEvent();
    }
