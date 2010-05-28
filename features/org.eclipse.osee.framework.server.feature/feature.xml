@@ -18,17 +18,14 @@
    </license>
 
    <requires>
-      <import plugin="org.apache.commons.codec"/>
-      <import plugin="org.apache.commons.httpclient"/>
-      <import plugin="org.apache.commons.lang" version="2.4.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.jobs" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="com.lowagie.text" version="2.1.7" match="greaterOrEqual"/>
+      <import plugin="org.junit4"/>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.eclipse.equinox.app"/>
       <import plugin="javax.servlet"/>
+      <import plugin="com.lowagie.text" version="2.1.7" match="greaterOrEqual"/>
       <import plugin="org.apache.derby" version="10.5.1" match="greaterOrEqual"/>
       <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext" version="1.0.0" match="greaterOrEqual"/>
@@ -42,21 +39,7 @@
    </requires>
 
    <plugin
-         id="org.eclipse.osee.framework.jdk.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.framework.branch.management"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -106,13 +89,6 @@
 
    <plugin
          id="org.eclipse.osee.framework.database"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.logging"
          download-size="0"
          install-size="0"
          version="0.0.0"

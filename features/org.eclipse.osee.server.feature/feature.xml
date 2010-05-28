@@ -33,6 +33,14 @@
          id="org.eclipse.osee.framework.server.external.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.osee.core.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.osee.core.feature.source"
+         version="0.0.0"/>
+
    <plugin
          id="org.eclipse.osee.demo.db.connection"
          download-size="0"

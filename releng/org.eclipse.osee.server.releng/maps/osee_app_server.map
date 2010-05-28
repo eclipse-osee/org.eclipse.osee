@@ -16,3 +16,8 @@ plugin@org.eclipse.osee.framework.resource.provider.attribute=SVN,,http://dev.ec
 plugin@org.eclipse.osee.framework.search.engine=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.search.engine
 plugin@org.eclipse.osee.framework.server.admin=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.server.admin
 plugin@org.eclipse.osee.framework.types=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.types 
+
+feature@org.eclipse.osee.core.feature=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,features/org.eclipse.osee.core.feature
+plugin@org.eclipse.osee.framework.core=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core
+plugin@org.eclipse.osee.framework.jdk.core=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.jdk.core
+plugin@org.eclipse.osee.framework.logging=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.logging
