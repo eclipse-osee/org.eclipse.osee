@@ -24,7 +24,7 @@
 	</target>
 
 	<target name="generateConfig">
-		<generateConfigIni configFolder="${configFolder}" pluginsFolder="${pluginsFolder}" />
+		<generateConfigIni configPath="${configFolder}" pluginsPath="${pluginsFolder}" />
 	</target>
 
 	<target name="pack">
@@ -81,17 +81,17 @@
 	<!--   GENERATE CONFIG.INI                                           -->
 	<!-- *************************************************************** -->
 	<macrodef name="generateConfigIni">
-		<attribute name="configFolder" />
-		<attribute name="pluginsFolder" />
+		<attribute name="configPath" />
+		<attribute name="pluginsPath" />
 		<sequential>
-			<echo file="@{configFolder}/config.ini" append="false" message="osgi.bundles= \${line.separator}\${line.separator}" />
+			<echo file="@{configPath}/config.ini" append="false" message="osgi.bundles= \${line.separator}\${line.separator}" />
 
 			<pathconvert property="serverBundles" setonempty="false" pathsep=";">
 				<path>
-					<fileset dir="@{pluginsFolder}">
+					<fileset dir="@{pluginsPath}">
 						<exclude name="org.eclipse.osgi_*.jar" />
 						<exclude name="org.eclipse.equinox.launcher_*.jar" />
-						<exclude name="*source*.jar" />
+						<exclude name="*source_*.jar" />
 					</fileset>
 				</path>
 			</pathconvert>
@@ -104,15 +104,15 @@
 					<if>
 						<equals arg1="${isFirst}" arg2="true" />
 						<then>
-							<echo file="@{configFolder}/config.ini" message=", \${line.separator}" append="true" />
+							<echo file="@{configPath}/config.ini" message=", \${line.separator}" append="true" />
 							<var name="isFirst" value="false" />
 						</then>
 					</if>
-					<echo file="@{configFolder}/config.ini" message="${projectName}@start" append="true" />
+					<echo file="@{configPath}/config.ini" message="${projectName}@start" append="true" />
 					<var name="isFirst" value="true" />
 				</sequential>
 			</for>
-			<echo file="@{configFolder}/config.ini" append="true">
+			<echo file="@{configPath}/config.ini" append="true">
 osgi.noShutdown=true
 eclipse.ignoreApp=true
 equinox.ds.debug=true
