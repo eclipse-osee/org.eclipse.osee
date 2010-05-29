@@ -136,7 +136,7 @@ osee.log.default=INFO
 			<echo file="@{filepath}" append="false">java \
 -Dorg.osgi.service.http.port=@{serverport} \
 -Dosee.db.connection.id=@{connection.id} \
-@{extraVMArgs} -jar @{launcher} -console
+@{extraVMArgs} -jar plugins/@{launcher} -console
 </echo>
 			<if>
 				<equals arg1="executable" arg2="true" />
