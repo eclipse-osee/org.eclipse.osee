@@ -37,7 +37,6 @@ Bundle-ClassPath: jini2_1/lib/browser.jar,
  jini2_1/lib/start.jar,
  jini2_1/lib/sun-util.jar,
  jini2_1/lib/tools.jar
-Bundle-Activator: net.jini.JiniPlugin
 Bundle-Vendor: Sun
 Bundle-ActivationPolicy: lazy
 Export-Package: com.sun.jini.action,
@@ -88,7 +87,6 @@ Export-Package: com.sun.jini.action,
  com.sun.jini.tool.envcheck.plugins.resources,
  com.sun.jini.tool.envcheck.resources,
  com.sun.jini.tool.resources,
- net.jini,
  net.jini.activation,
  net.jini.admin,
  net.jini.config,

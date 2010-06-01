@@ -36,6 +36,5 @@
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/start.jar" sourcepath="net.jinisrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/sun-util.jar" sourcepath="net.jinisrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/tools.jar" sourcepath="jini2_1/source.zip"/>
-	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
