@@ -57,7 +57,7 @@ public interface IRemoteMessageService extends Remote {
 
    SubscriptionDetails setReaderWriterMode(SetMessageModeCmd cmd) throws RemoteException;
 
-   Set<DataType> getAvailablePhysicalTypes() throws RemoteException;
+   Set<? extends DataType> getAvailablePhysicalTypes() throws RemoteException;
 
    boolean startRecording(RecordCommand cmd) throws RemoteException;
 
