@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {FrameworkRes_TestDb_Suite.class, FrameworkCore_TestDb_Suite.class, ArtifactQueryTestDemo.class,
+@Suite.SuiteClasses( {FrameworkCore_TestDb_Suite.class, FrameworkRes_TestDb_Suite.class, ArtifactQueryTestDemo.class,
       AtsTest_TestDb_Suite.class, FrameworkUi_TestDb_Suite.class})
 /**
  * This Test Suite is to run against a postgres database with ATS Developer as the DbInit.<br>
