@@ -6,8 +6,7 @@ Bundle-Version: 0.9.5.qualifier
 Bundle-Activator: org.eclipse.osee.ote.service.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
-Import-Package: net.jini,
- net.jini.activation,
+Import-Package: net.jini.activation,
  net.jini.admin,
  net.jini.config,
  net.jini.constraint,
