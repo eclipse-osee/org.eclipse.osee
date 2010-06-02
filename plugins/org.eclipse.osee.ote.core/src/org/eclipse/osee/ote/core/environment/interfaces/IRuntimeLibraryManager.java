@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.ote.core.ReturnStatus;
 import org.eclipse.osee.ote.core.environment.BundleConfigurationReport;
 import org.eclipse.osee.ote.core.environment.BundleDescription;
+import org.osgi.framework.Version;
 
 public interface IRuntimeLibraryManager extends Xmlizable {
    /**
@@ -53,6 +54,8 @@ public interface IRuntimeLibraryManager extends Xmlizable {
 
    Class<?> loadFromScriptClassLoader(String path) throws ClassNotFoundException;
 
+   Class<?> loadClass(String name, Version version) throws ClassNotFoundException;
+   
    Class<?> loadFromRuntimeLibraryLoader(String path) throws ClassNotFoundException;
 
    void cleanup();

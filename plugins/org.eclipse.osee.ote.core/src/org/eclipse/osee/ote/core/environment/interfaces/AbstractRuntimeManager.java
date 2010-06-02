@@ -38,6 +38,8 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Version;
+import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -521,6 +523,26 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       Class<?> scriptClass = scriptClassLoader.loadClass(path);
       GCHelper.getGCHelper().addRefWatch(scriptClass);
       return scriptClass;
+   }
+   
+   public Class<?> loadClass(String name, Version version) throws ClassNotFoundException{
+	   ExportedPackage[] exportedPackages = packageAdmin.getExportedPackages(getPackageFromClass(name));
+	   for(ExportedPackage exportedPackage:exportedPackages){
+		   Bundle bundle = exportedPackage.getExportingBundle();
+		   if(bundle.getVersion().equals(version)){
+			   return bundle.loadClass(name);
+		   }
+	   }
+	   return null;
+   }
+   
+   private String getPackageFromClass(String clazz){
+	   int index = clazz.lastIndexOf(".");
+	   if(index > 0){
+		   return clazz.substring(0, index);
+	   } else {
+		   return "";
+	   }
    }
 
    public Class<?> loadFromRuntimeLibraryLoader(String path) throws ClassNotFoundException {
