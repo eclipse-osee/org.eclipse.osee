@@ -85,10 +85,14 @@ public class InternalEventManager2 {
       Runnable runnable = new Runnable() {
          public void run() {
             try {
-               // No need to check loopback on this kick cause reload is only local
-
                // Kick LOCAL
-               FrameworkEventManager.processEventArtifactsAndRelations(sender, artifactChanges);
+               boolean normalOperation = !enableRemoteEventLoopback;
+               boolean loopbackTestEnabledAndRemoteEventReturned = enableRemoteEventLoopback && sender.isRemote();
+               if ((normalOperation && sender.isLocal()) || loopbackTestEnabledAndRemoteEventReturned) {
+                  FrameworkEventManager.processEventArtifactsAndRelations(sender, artifactChanges);
+               }
+
+               // NO REMOTE KICK
             } catch (Exception ex) {
                OseeEventManager.eventLog("IEM2 kickArtifactReloadEvent", ex);
             }
