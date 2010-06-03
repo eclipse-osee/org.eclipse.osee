@@ -100,6 +100,13 @@ public class WatchedElementNode extends ElementNode {
             setDisabledReason("could not find the element " + getElementPath().getElementName());
             return;
          }
+         if (element.isNonMappingElement()) {
+             columnValues.clear();
+             value = "???";
+             setEnabled(false);
+             setDisabledReason("this element does not map in " + getSubscription().getMemType());
+             return;
+         }
          columnValues.put(MessageXViewerFactory.lsb, Integer.valueOf(element.getLsb()));
          columnValues.put(MessageXViewerFactory.msb, Integer.valueOf(element.getMsb()));
          columnValues.put(MessageXViewerFactory.bitSize, Integer.valueOf(element.getBitLength()));
