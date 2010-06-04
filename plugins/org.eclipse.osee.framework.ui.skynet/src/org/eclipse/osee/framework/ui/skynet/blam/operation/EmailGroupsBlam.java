@@ -16,7 +16,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
-import javax.mail.MessagingException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -49,6 +52,8 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
    private XArtifactList templateList;
    private XText bodyTextBox;
    private XText subjectTextBox;
+   private ExecutorService emailTheadPool;
+   private final Collection<Future<String>> futures = new ArrayList<Future<String>>(300);
 
    @Override
    public String getName() {
@@ -61,6 +66,8 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
       String body = variableMap.getString("Body");
       boolean bodyIsHtml = variableMap.getBoolean("Body is html");
       Collection<Artifact> groups = variableMap.getCollection(Artifact.class, "Groups");
+      emailTheadPool = Executors.newFixedThreadPool(30);
+      futures.clear();
 
       HashCollection<Artifact, Artifact> userToGroupMap = new HashCollection<Artifact, Artifact>();
 
@@ -78,15 +85,20 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
       for (Artifact user : users) {
          sendEmailTo(userToGroupMap.getValues(user), user, subject, body, bodyIsHtml);
       }
+      emailTheadPool.shutdown();
+      emailTheadPool.awaitTermination(100, TimeUnit.MINUTES);
+      for (Future<String> future : futures) {
+         println(future.get());
+      }
    }
 
-   private void sendEmailTo(Collection<Artifact> groups, Artifact user, String subject, String body, boolean bodyIsHtml) throws OseeCoreException {
-      String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.EMAIL, "");
+   private void sendEmailTo(Collection<Artifact> groups, final Artifact user, String subject, String body, boolean bodyIsHtml) throws OseeCoreException {
+      final String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.EMAIL, "");
       if (!EmailUtil.isEmailValid(emailAddress)) {
          println(String.format("The email address \"%s\" for user %s is not valid.", emailAddress, user.getName()));
          return;
       }
-      OseeEmail emailMessage = new OseeEmail(emailAddress, subject, "", BodyType.Html);
+      final OseeEmail emailMessage = new OseeEmail(emailAddress, subject, "", BodyType.Html);
 
       StringBuilder html = new StringBuilder();
 
@@ -105,12 +117,8 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
                group.getName()));
       }
       emailMessage.addHTMLBody(html.toString());
-      try {
-         emailMessage.sendLocalThread();
-      } catch (MessagingException ex) {
-         println(String.format("An exception occured with sending the email for address \"%s\" for user %s.  %s",
-               emailAddress, user.getName(), ex));
-      }
+
+      futures.add(emailTheadPool.submit(new SendEmailCall(user, emailMessage, emailAddress)));
    }
 
    @Override
