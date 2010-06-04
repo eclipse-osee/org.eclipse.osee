@@ -29,6 +29,7 @@ public class AdddistributionStatement extends Rule {
       setFileNamePattern(Pattern.compile(".*\\.java"));
    }
 
+   @Override
    public ChangeSet computeChanges(CharSequence seq) {
       ChangeSet changeSet = new ChangeSet(seq);
 
