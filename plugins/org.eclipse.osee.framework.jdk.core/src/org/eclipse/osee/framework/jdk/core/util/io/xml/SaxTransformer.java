@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.jdk.core.util.io.xml;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * @author Ryan D. Brooks
@@ -22,17 +21,13 @@ public class SaxTransformer extends AbstractSaxHandler {
    protected XMLStreamWriter writer;
 
    @Override
-   public void endElementFound(String uri, String localName, String qName) throws SAXException {
-      try {
-         writer.writeCharacters(getContents());
-         writer.writeEndElement();
-      } catch (XMLStreamException ex) {
-         throw new SAXException(ex);
-      }
+   public void endElementFound(String uri, String localName, String qName) throws XMLStreamException {
+      writer.writeCharacters(getContents());
+      writer.writeEndElement();
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws Exception {
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws XMLStreamException {
       writer.writeStartElement(localName);
       for (int i = 0; i < attributes.getLength(); i++) {
          writer.writeAttribute(attributes.getLocalName(i), attributes.getValue(i));
@@ -49,8 +44,9 @@ public class SaxTransformer extends AbstractSaxHandler {
    }
 
    public void finish() throws XMLStreamException {
-      writer.writeEndDocument();
-      writer.flush();
-      writer.close();
+      if (writer != null) {
+         writer.writeEndDocument();
+         writer.close();
+      }
    }
 }

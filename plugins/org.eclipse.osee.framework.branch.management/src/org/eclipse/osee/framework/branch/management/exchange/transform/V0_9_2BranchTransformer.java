@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Boeing.
+ * Copyright (c) 2010 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.branch.management.exchange.transform;
 
 import java.util.Map;
+import javax.xml.stream.XMLStreamException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 import org.xml.sax.Attributes;
 
@@ -25,7 +26,7 @@ public class V0_9_2BranchTransformer extends SaxTransformer {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws Exception {
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws XMLStreamException {
       super.startElementFound(uri, localName, qName, attributes);
       if (localName.equals("entry")) {
          Integer branchId = Integer.parseInt(attributes.getValue("branch_id"));

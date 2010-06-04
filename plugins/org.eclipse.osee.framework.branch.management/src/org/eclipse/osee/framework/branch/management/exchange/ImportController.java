@@ -92,7 +92,7 @@ public final class ImportController {
    private void setup() throws Exception {
       currentSavePoint = "sourceSetup";
 
-      ExchangeDataProcessor exchangeDataProcessor = new ExchangeDataProcessor(exportDataProvider);
+      exchangeDataProcessor = new ExchangeDataProcessor(exportDataProvider);
       IExchangeTransformProvider transformProvider = new ExchangeTransformProvider(oseeServices.getCachingService());
       exchangeTransformer = new ExchangeTransformer(transformProvider, exchangeDataProcessor);
 
@@ -207,6 +207,7 @@ public final class ImportController {
       handler.setSelectedBranchIds(branchesToImport);
 
       for (final IExportItem item : importItems) {
+         OseeLog.log(Activator.class, Level.INFO, String.format("starting import for [%s]", item));
          currentSavePoint = item.getSource();
          handler.setExportItem(item);
          if (!doesSavePointExist(currentSavePoint)) {
@@ -221,7 +222,7 @@ public final class ImportController {
             };
             importTx.execute();
          } else {
-            OseeLog.log(this.getClass(), Level.INFO, String.format("Save point found for: [%s] - skipping",
+            OseeLog.log(Activator.class, Level.INFO, String.format("Save point found for: [%s] - skipping",
                   item.getSource()));
          }
       }

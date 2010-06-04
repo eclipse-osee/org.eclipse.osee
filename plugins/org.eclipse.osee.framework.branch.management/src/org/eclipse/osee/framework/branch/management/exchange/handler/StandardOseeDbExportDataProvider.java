@@ -29,7 +29,11 @@ public class StandardOseeDbExportDataProvider implements IOseeExchangeDataProvid
 
    @Override
    public File getFile(IExportItem item) {
-      return new File(exportDataRootPath, item.getFileName());
+      return getFile(item.getFileName());
+   }
+
+   public File getFile(String fileName) {
+      return new File(exportDataRootPath, fileName);
    }
 
    @Override

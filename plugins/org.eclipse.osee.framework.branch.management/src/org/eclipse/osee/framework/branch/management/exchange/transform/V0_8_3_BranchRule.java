@@ -7,6 +7,7 @@ package org.eclipse.osee.framework.branch.management.exchange.transform;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.branch.management.exchange.handler.BranchData;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
@@ -36,7 +37,7 @@ public class V0_8_3_BranchRule extends Rule {
          } else if (branchMatcher.group(3).equals(CoreBranches.COMMON.getName())) {
             guid = CoreBranches.COMMON.getGuid();
          }
-         changeSet.insertBefore(branchMatcher.end(1), "branch_guid=\"" + guid + "\" branch_state=\"-1\" ");
+         changeSet.insertBefore(branchMatcher.end(1), BranchData.BRANCH_GUID + "=\"" + guid + "\" branch_state=\"-1\" ");
          ruleWasApplicable = true;
       }
 

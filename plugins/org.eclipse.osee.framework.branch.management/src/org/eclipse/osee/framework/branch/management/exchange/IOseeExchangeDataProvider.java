@@ -23,4 +23,6 @@ public interface IOseeExchangeDataProvider {
    public File getExportedDataRoot();
 
    public File getFile(IExportItem item);
+
+   public File getFile(String fileName);
 }

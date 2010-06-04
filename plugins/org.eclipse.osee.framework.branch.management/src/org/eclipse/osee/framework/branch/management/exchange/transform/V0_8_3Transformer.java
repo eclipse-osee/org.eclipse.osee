@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.transform;
 
+import java.util.regex.Pattern;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.osgi.framework.Version;
 
 /**
@@ -21,9 +24,18 @@ public class V0_8_3Transformer implements IOseeExchangeVersionTransformer {
    private static final Version MAX_VERSION = new Version("0.8.3");
 
    @Override
-   public String applyTransform(ExchangeDataProcessor ruleProcessor) throws OseeCoreException {
-      ruleProcessor.transform(ExportItem.EXPORT_DB_SCHEMA, new V0_8_3_DbSchemaRule());
-      ruleProcessor.transform(ExportItem.OSEE_BRANCH_DATA, new V0_8_3_BranchRule());
+   public String applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
+
+      HashCollection<String, String> tableToColumns = new HashCollection<String, String>();
+      tableToColumns.put("osee_txs", "<column id=\"branch_id\" type=\"INTEGER\" />\n");
+      tableToColumns.put("osee_branch", "<column id=\"branch_guid\" type=\"VARCHAR\" />\n");
+      tableToColumns.put("osee_branch", "<column id=\"branch_state\" type=\"INTEGER\" />\n");
+      processor.transform(ExportItem.EXPORT_DB_SCHEMA, new DbSchemaRuleAddColumn(tableToColumns));
+
+      processor.transform(ExportItem.EXPORT_DB_SCHEMA, new ReplaceAll(
+            Pattern.compile("\\s+<table name=\"osee_\\w+_type\".*?</table>", Pattern.DOTALL), ""));
+
+      processor.transform(ExportItem.OSEE_BRANCH_DATA, new V0_8_3_BranchRule());
       return getMaxVersion().toString();
    }
 

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.branch.management.exchange.transform;
 
 import java.util.HashMap;
+import javax.xml.stream.XMLStreamException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 import org.xml.sax.Attributes;
 
@@ -25,7 +26,7 @@ public class V0_9_0TxsTransformer extends SaxTransformer {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws Exception {
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws NumberFormatException, XMLStreamException {
       super.startElementFound(uri, localName, qName, attributes);
       if (localName.equals("entry")) {
          writer.writeAttribute("branch_id",

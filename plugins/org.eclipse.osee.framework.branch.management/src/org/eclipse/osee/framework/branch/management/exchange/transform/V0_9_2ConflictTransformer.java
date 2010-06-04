@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Boeing.
+ * Copyright (c) 2010 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,43 +17,24 @@ import org.xml.sax.Attributes;
 
 /**
  * @author Roberto E. Escobar
+ * @author Ryan D. Brooks
  */
 public class V0_9_2ConflictTransformer extends SaxTransformer {
-   private final Map<Integer, Long> artIdToNetGammaId;
-   private static final int ARTIFACT_CONFLICT = 3; // DO NOT CHANGE TO USE ENUM
+   private final Map<Long, Long> artifactGammaToNetGammaId;
 
-   public V0_9_2ConflictTransformer(Map<Integer, Long> artIdToNetGammaId) {
-      this.artIdToNetGammaId = artIdToNetGammaId;
+   public V0_9_2ConflictTransformer(Map<Long, Long> artifactGammaToNetGammaId) {
+      this.artifactGammaToNetGammaId = artifactGammaToNetGammaId;
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws Exception {
-      if (localName.equals("entry")) {
-         int conflictType = Integer.parseInt(attributes.getValue("conflict_type"));
-         if (ARTIFACT_CONFLICT == conflictType) {
-            transformEntry(uri, localName, qName, attributes);
-         } else {
-            super.startElementFound(uri, localName, qName, attributes);
-         }
-      } else {
-         super.startElementFound(uri, localName, qName, attributes);
-      }
-
-   }
-
-   private boolean isGammaAttribute(String attributeName) {
-      return attributeName.equalsIgnoreCase("source_gamma_id") || attributeName.equalsIgnoreCase("dest_gamma_id");
-   }
-
-   private void transformEntry(String uri, String localName, String qName, Attributes attributes) throws XMLStreamException {
-      Integer artifactId = Integer.parseInt(attributes.getValue("conflict_id"));
-      String netGamma = String.valueOf(artIdToNetGammaId.get(artifactId));
-
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws XMLStreamException {
       writer.writeStartElement(localName);
       for (int i = 0; i < attributes.getLength(); i++) {
-         String attributeName = attributes.getLocalName(i);
-         if (isGammaAttribute(attributeName)) {
-            writer.writeAttribute(attributeName, netGamma);
+         if (attributes.getLocalName(i).equals("source_gamma_id") || attributes.getLocalName(i).equals("dest_gamma_id")) {
+            Long netGammaId = artifactGammaToNetGammaId.get(Long.valueOf(attributes.getValue(i)));
+            writer.writeAttribute(attributes.getLocalName(i), String.valueOf(netGammaId));
+         } else {
+            writer.writeAttribute(attributes.getLocalName(i), attributes.getValue(i));
          }
       }
    }

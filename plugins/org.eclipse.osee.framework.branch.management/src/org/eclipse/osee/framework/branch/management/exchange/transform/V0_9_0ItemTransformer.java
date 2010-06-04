@@ -14,7 +14,6 @@ import java.util.HashMap;
 import javax.xml.stream.XMLStreamException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * @author Ryan D. Brooks
@@ -29,7 +28,7 @@ public class V0_9_0ItemTransformer extends SaxTransformer {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException, XMLStreamException {
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws XMLStreamException {
       writer.writeStartElement(localName);
       for (int i = 0; i < attributes.getLength(); i++) {
          if (attributes.getLocalName(i).equals(typeIdColumn)) {

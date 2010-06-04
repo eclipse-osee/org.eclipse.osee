@@ -1,8 +1,13 @@
-/*
- * Created on May 24, 2010
+/*******************************************************************************
+ * Copyright (c) 2010 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.transform;
 
 import java.util.ArrayList;
@@ -24,7 +29,7 @@ public class ExchangeTransformProvider implements IExchangeTransformProvider {
 
       IOseeExchangeVersionTransformer[] transforms =
             new IOseeExchangeVersionTransformer[] {new V0_8_3Transformer(), new V0_9_0Transformer(cachingService),
-                  new V0_9_2Transformer()};
+                  new V0_9_2Transformer(), new V0_9_4Transformer()};
 
       for (IOseeExchangeVersionTransformer transformer : transforms) {
          if (isApplicable(transformer.getMaxVersion(), versionToCheck)) {

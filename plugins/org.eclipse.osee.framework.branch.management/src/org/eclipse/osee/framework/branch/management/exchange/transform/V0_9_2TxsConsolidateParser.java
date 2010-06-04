@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Boeing.
+ * Copyright (c) 2010 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,85 +10,79 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.transform;
 
-import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.operation.Address;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * @author Ryan D. Brooks
  */
-public class V0_9_2TxsConsolidateParser extends AbstractSaxHandler {
-   private final int targetBranchId;
-   private final String targetBranchIdStr;
-   private final Set<Long> netGammaIds;
+public class V0_9_2TxsConsolidateParser extends SaxTransformer {
+   private int targetBranchId;
+   private String targetBranchIdStr;
+   private final Map<Long, Long> artifactGammaToNetGammaId;
    private final HashCollection<Long, Address> addressMap;
-   private final XMLStreamWriter writer;
-   private final boolean isWriteAllowed;
-   private final List<Integer> branchIdsToTarget;
-   private boolean deferWrite;
+   private boolean isWriteAllowed = true;
+   private boolean skipWrite;
 
-   public V0_9_2TxsConsolidateParser(XMLStreamWriter writer, int index, List<Integer> branchIdsToTarget, Set<Long> netGammaIds, HashCollection<Long, Address> addressMap) {
-      this.branchIdsToTarget = branchIdsToTarget;
-      this.targetBranchId = branchIdsToTarget.get(index);
-      this.targetBranchIdStr = String.valueOf(targetBranchId);
-      this.netGammaIds = netGammaIds;
+   public V0_9_2TxsConsolidateParser(Map<Long, Long> artifactGammaToNetGammaId, HashCollection<Long, Address> addressMap) {
+      this.artifactGammaToNetGammaId = artifactGammaToNetGammaId;
       this.addressMap = addressMap;
-      this.writer = writer;
-      this.isWriteAllowed = index == 0;
+   }
+
+   public void setBranchId(int targetBranchId) {
+      this.isWriteAllowed = false;
+      this.targetBranchId = targetBranchId;
+      this.targetBranchIdStr = String.valueOf(targetBranchId);
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws Exception {
-      deferWrite = false;
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws XMLStreamException {
+      skipWrite = false;
 
-      if (localName.equals("entry")) {
+      Long gammaId = null;
+      if (isWriteAllowed) {
+         if (localName.equals("entry")) {
+            gammaId = artifactGammaToNetGammaId.get(Long.valueOf(attributes.getValue("gamma_id")));
+         }
+         if (gammaId == null) {
+            super.startElementFound(uri, localName, qName, attributes);
+         } else {
+            skipWrite = true;
+         }
+      } else if (localName.equals("entry")) {
          if (targetBranchIdStr.equals(attributes.getValue("branch_id"))) {
-            long gammaId = Long.parseLong(attributes.getValue("gamma_id"));
-            if (netGammaIds.contains(gammaId)) {
-               int modType = Integer.parseInt(attributes.getValue("mod_type"));
-               ModificationType modificationType = ModificationType.getMod(modType);
-               int transactionId = Integer.parseInt(attributes.getValue("transaction_id"));
-               TxChange txCurrent = TxChange.getChangeType(Integer.parseInt(attributes.getValue("tx_current")));
-
-               Address address =
-                     new Address(false, targetBranchId, -1, transactionId, gammaId, modificationType, txCurrent);
-               addressMap.put(gammaId, address);
-            }
-         } else if (isWriteAllowed) {
-            if (branchIdsToTarget.contains(targetBranchId)) {
-               deferWrite = true;
-            } else {
-               writeToFile(uri, localName, qName, attributes);
+            gammaId = artifactGammaToNetGammaId.get(Long.valueOf(attributes.getValue("gamma_id")));
+            if (gammaId != null) {
+               addressMap.put(gammaId, createAddress(attributes, gammaId));
             }
          }
-      }
-   }
-
-   private void writeToFile(String uri, String localName, String qName, Attributes attributes) throws Exception {
-      writer.writeStartElement(localName);
-      for (int i = 0; i < attributes.getLength(); i++) {
-         writer.writeAttribute(attributes.getLocalName(i), attributes.getValue(i));
       }
    }
 
    @Override
-   public void endElementFound(String uri, String localName, String qName) throws Exception {
-      if (isWriteAllowed && !deferWrite) {
-         try {
-            writer.writeCharacters(getContents());
-            writer.writeEndElement();
-         } catch (XMLStreamException ex) {
-            throw new SAXException(ex);
-         }
+   public void endElementFound(String uri, String localName, String qName) throws XMLStreamException {
+      if (isWriteAllowed && !skipWrite && !localName.equals("data")) {
+         super.endElementFound(uri, localName, qName);
       }
    }
 
+   private Address createAddress(Attributes attributes, long gammaId) throws XMLStreamException {
+      try {
+         int modType = Integer.parseInt(attributes.getValue("mod_type"));
+         ModificationType modificationType = ModificationType.getMod(modType);
+         int transactionId = Integer.parseInt(attributes.getValue("transaction_id"));
+         TxChange txCurrent = TxChange.getChangeType(Integer.parseInt(attributes.getValue("tx_current")));
+
+         return new Address(false, targetBranchId, -1, transactionId, gammaId, modificationType, txCurrent);
+      } catch (OseeCoreException ex) {
+         throw new XMLStreamException(ex);
+      }
+   }
 }
