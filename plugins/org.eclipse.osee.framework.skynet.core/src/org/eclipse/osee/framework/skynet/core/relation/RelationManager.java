@@ -170,8 +170,6 @@ public class RelationManager {
       return relation;
    }
 
-   private static int count = 0;
-
    /**
     * Store the newly instantiated relation from the perspective of relationSide in its appropriate order
     */
