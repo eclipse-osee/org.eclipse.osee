@@ -170,6 +170,8 @@ public class RelationManager {
       return relation;
    }
 
+   private static int count = 0;
+
    /**
     * Store the newly instantiated relation from the perspective of relationSide in its appropriate order
     */
@@ -192,7 +194,7 @@ public class RelationManager {
             if (relation.getAArtifactId() == newRelation.getAArtifactId() && //
             relation.getBArtifactId() == newRelation.getBArtifactId() && //
             relation.getRelationType() == newRelation.getRelationType() && //
-            relation != newRelation && relation.isDeleted() == newRelation.isDeleted()) {
+            relation != newRelation) {
                OseeLog.log(Activator.class, Level.WARNING, String.format(
                      "Duplicate relation objects for same relation for RELATION 1 [%s] RELATION 2 [%s]", relation,
                      newRelation));

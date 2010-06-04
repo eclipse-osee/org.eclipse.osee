@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import java.util.List;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import java.util.logging.Level;
@@ -86,7 +85,7 @@ public class RelationLink {
          System.out.println("RelationLink.getOrCreate relationId == " + RELATION_ID_UNDER_TEST);
       }
 
-      if (relation == null || relation.modificationType != modificationType || relation.getId() != relationId) {
+      if (relation == null) {
          relation =
                new RelationLink(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
                      rationale, modificationType);

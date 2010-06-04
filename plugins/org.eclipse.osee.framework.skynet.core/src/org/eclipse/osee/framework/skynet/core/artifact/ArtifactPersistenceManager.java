@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -149,38 +150,47 @@ public class ArtifactPersistenceManager {
     *           The artifacts to delete.
     */
    public static void deleteArtifact(SkynetTransaction transaction, boolean overrideDeleteCheck, final Artifact... artifacts) throws OseeCoreException {
+      deleteArtifactList(transaction, overrideDeleteCheck, Arrays.asList(artifacts));
+   }
+
+   public static void deleteArtifactList(SkynetTransaction transaction, boolean overrideDeleteCheck, final List<Artifact> artifacts) throws OseeCoreException {
+      if (artifacts.isEmpty()) {
+         return;
+      }
+
       if (!overrideDeleteCheck) {
          performDeleteChecks(artifacts);
       }
-      Collection<Integer> artIds = bulkLoadArtifacts(artifacts);
-      Branch branch = artifacts[0].getBranch();
-      ArtifactQuery.getArtifactListFromIds(artIds, branch);
 
+      bulkLoadRelatives(artifacts);
+
+      boolean reorderRelations = true;
       for (Artifact artifact : artifacts) {
-         deleteTrace(artifact, transaction, true);
+         deleteTrace(artifact, transaction, reorderRelations);
       }
    }
 
-   private static void performDeleteChecks(Artifact... artifacts) throws OseeCoreException {
+   private static void performDeleteChecks(List<Artifact> artifacts) throws OseeCoreException {
       // Confirm artifacts are fit to delete
       for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-         IStatus result = check.isDeleteable(Arrays.asList(artifacts));
+         IStatus result = check.isDeleteable(artifacts);
          if (!result.isOK()) {
             throw new OseeStateException(result.getMessage());
          }
       }
    }
 
-   private static Collection<Integer> bulkLoadArtifacts(Artifact... artifacts) {
-      Collection<Integer> artIds = new LinkedList<Integer>();
+   private static void bulkLoadRelatives(List<Artifact> artifacts) throws OseeCoreException {
+      Collection<Integer> artIds = new HashSet<Integer>();
       for (Artifact artifact : artifacts) {
-         for (RelationLink link : artifact.getRelationsAll(false)) {
-            if (link.getRelationType().isOrdered()) {
-               artIds.add(artifact.getArtId() == link.getAArtifactId() ? link.getBArtifactId() : link.getAArtifactId());
-            }
+         boolean includeDeleted = false;
+         for (RelationLink link : artifact.getRelationsAll(includeDeleted)) {
+            artIds.add(link.getAArtifactId());
+            artIds.add(link.getBArtifactId());
          }
       }
-      return artIds;
+      Branch branch = artifacts.get(0).getBranch();
+      ArtifactQuery.getArtifactListFromIds(artIds, branch);
    }
 
    private static void deleteTrace(Artifact artifact, SkynetTransaction transaction, boolean reorderRelations) throws OseeCoreException {

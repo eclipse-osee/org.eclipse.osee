@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
@@ -58,10 +59,9 @@ public class ArtifactLoaderTest {
 
    private static void testCleanup() throws Exception {
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "ArtifactLoaderTest");
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest",
-            BranchManager.getCommonBranch(), false)) {
-         artifact.deleteAndPersist(transaction);
-      }
+      List<Artifact> artifacts =
+            ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(), false);
+      ArtifactPersistenceManager.deleteArtifactList(transaction, false, artifacts);
       transaction.execute();
    }
 
@@ -110,7 +110,7 @@ public class ArtifactLoaderTest {
       long endTime = new Date().getTime() + (15 * 1000);
       while (true) {
          Thread.sleep(1000);
-         System.out.println("Checking for thread completion..." + numThreadsCompleted + "/7");
+         System.out.println("Checking for thread completion..." + numThreadsCompleted + "/" + TOTAL_THREADS);
          if (numThreadsCompleted == TOTAL_THREADS) {
             break;
          }
