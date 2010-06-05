@@ -6,6 +6,7 @@
 package org.eclipse.osee.framework.access;
 
 import java.util.Collection;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.access.internal.OseeAccessPoint;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -20,5 +21,5 @@ public interface OseeAccessService {
 
    public int getHandlerCount(OseeAccessPoint.Type<?> type);
 
-   public <H extends OseeAccessHandler> IStatus checkAccess(OseeAccessPoint<H> accessPoint);
+   public <H extends OseeAccessHandler> IStatus dispatch(IProgressMonitor monitor, String id, OseeAccessPoint<H> accessPoint);
 }

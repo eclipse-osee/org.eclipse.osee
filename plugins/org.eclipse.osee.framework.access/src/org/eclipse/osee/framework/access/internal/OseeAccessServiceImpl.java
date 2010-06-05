@@ -7,6 +7,7 @@ package org.eclipse.osee.framework.access.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.access.OseeAccessHandler;
 import org.eclipse.osee.framework.access.OseeAccessPolicy;
@@ -35,14 +36,15 @@ public class OseeAccessServiceImpl implements OseeAccessService {
       return (ArrayList<H>) handlersByType.getValues(type);
    }
 
-   public <H extends OseeAccessHandler> IStatus checkAccess(OseeAccessPoint<H> accessPoint) {
+   public <H extends OseeAccessHandler> IStatus dispatch(IProgressMonitor monitor, String id, OseeAccessPoint<H> accessPoint) {
       OseeAccessPoint.Type<H> type = accessPoint.getAssociatedType();
       Collection<H> rawList = get(type);
       if (rawList != null) {
          Collection<H> filtered = policy.getApplicable(accessPoint, rawList);
          for (H handler : filtered) {
             // Populate with data ... and execute... get result continue only if ok.
-            accessPoint.dispatch(handler);
+            IStatus status = accessPoint.dispatch(handler);
+            //            accessPoint.dispatch(handler);
             //            handler.execute();
             //            IStatus interim = null;
             //            if (!interim.isOK()) {

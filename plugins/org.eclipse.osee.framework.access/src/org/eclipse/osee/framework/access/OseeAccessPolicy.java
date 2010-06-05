@@ -12,7 +12,7 @@ public class OseeAccessPolicy {
 
    public <H extends OseeAccessHandler> Collection<H> getApplicable(OseeAccessPoint<H> accessPoint, Collection<H> data) {
       // Filter Out Rules;
-      return null;
+      return data;
    }
 
 }

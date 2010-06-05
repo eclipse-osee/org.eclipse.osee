@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.access.internal;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.access.OseeAccessHandler;
 import org.eclipse.osee.framework.access.OseeAccessService;
 
@@ -37,6 +38,6 @@ public abstract class OseeAccessPoint<H extends OseeAccessHandler> {
    /**
     * Should only be called by {@link OseeAccessService}.
     */
-   protected abstract void dispatch(H handler);
+   protected abstract IStatus dispatch(H handler);
 
 }

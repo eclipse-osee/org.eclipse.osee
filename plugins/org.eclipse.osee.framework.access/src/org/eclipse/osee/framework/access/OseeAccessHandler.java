@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.framework.access;
 
-public interface OseeAccessHandler {
 
+public interface OseeAccessHandler {
 
 }
