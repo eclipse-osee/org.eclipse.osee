@@ -68,12 +68,12 @@ public class AtsXmlSearch {
 
    public String idToXPath(String id) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
-      if (IdUtils.isValidGUID(id)) {
+      if (IdUtils.isValidLegacyId(id)) {
+         builder.append("workflowPcrId=");
+      } else if (IdUtils.isValidGUID(id)) {
          builder.append("workflowId=");
       } else if (IdUtils.isValidHRID(id)) {
          builder.append("workflowHrid=");
-      } else if (IdUtils.isValidLegacyId(id)) {
-         builder.append("workflowPcrId=");
       } else {
          throw new OseeCoreException(String.format("Invalid id [%s]", id));
       }

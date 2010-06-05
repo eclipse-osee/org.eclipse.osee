@@ -11,8 +11,10 @@
 package org.eclipse.osee.framework.manager.servlet.ats;
 
 import java.util.Collection;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.w3c.dom.Node;
 
@@ -48,25 +50,27 @@ public class AtsService {
 
    public void performOperation(IResource resource, HttpServletResponse response) {
       try {
-         OperationData data = OperationData.fromResource(resource);
-         switch (data.getOperationType()) {
-            case GET_BUILDS_BY_PROGRAM_ID:
-               getBuilds(response, data.getProgramId());
-               break;
-            case GET_CHANGE_REPORTS_BY_IDS:
-               getChangeReport(response, data.getItemIds());
-               break;
-            case GET_PROGRAMS:
-               getPrograms(response);
-               break;
-            case GET_WORKFLOWS_BY_IDS:
-               getWorkflowsById(response, data.getItemIds());
-               break;
-            case GET_WORKFLOWS_BY_PROGRAM_AND_BUILD_ID:
-               getWorkflowsByProgramAndBuild(response, data.getProgramId(), data.getBuildId());
-               break;
-            default:
-               throw new UnsupportedOperationException();
+         Collection<OperationData> requests = OperationData.fromResource(resource);
+         for (OperationData data : requests) {
+            switch (data.getOperationType()) {
+               case GET_BUILDS_BY_PROGRAM_ID:
+                  getBuilds(response, data.getProgramId());
+                  break;
+               case GET_CHANGE_REPORTS_BY_IDS:
+                  getChangeReport(response, data.getItemIds());
+                  break;
+               case GET_PROGRAMS:
+                  getPrograms(response);
+                  break;
+               case GET_WORKFLOWS_BY_IDS:
+                  getWorkflowsById(response, data.getItemIds());
+                  break;
+               case GET_WORKFLOWS_BY_PROGRAM_AND_BUILD_ID:
+                  getWorkflowsByProgramAndBuild(response, data.getProgramId(), data.getBuildId());
+                  break;
+               default:
+                  throw new UnsupportedOperationException();
+            }
          }
       } catch (Exception ex) {
          messages.sendError(response, ex);
@@ -74,7 +78,11 @@ public class AtsService {
    }
 
    private IResource getResource(DataTypeEnum fileType) throws OseeCoreException {
-      String urlPath = String.format("%s://%s", AtsResourceLocatorProvider.PROTOCOL, fileType.asFileName());
+      return getResource(fileType.asFileName());
+   }
+
+   private IResource getResource(String resource) throws OseeCoreException {
+      String urlPath = String.format("%s://%s", AtsResourceLocatorProvider.PROTOCOL, resource);
       return resourceProvider.getResource(urlPath);
    }
 
@@ -106,5 +114,29 @@ public class AtsService {
       IResource resource = getResource(DataTypeEnum.WORKFLOW);
       Collection<Node> nodes = xmlSearch.findWorkflowsById(resource, idSearch);
       messages.sendChangeReports(response, nodes);
+   }
+
+   public void sendClient(HttpServletRequest request, HttpServletResponse response) {
+      String urlPath = request.getParameter("url");
+      boolean wasErrorSent = false;
+      IResource resource = null;
+      try {
+         if (Strings.isValid(urlPath)) {
+            resource = resourceProvider.getResource(urlPath);
+         } else {
+            String servletPath = request.getServletPath();
+            urlPath = request.getRequestURI().replace(servletPath, "");
+            resource = getResource(urlPath);
+         }
+      } catch (OseeCoreException ex) {
+         messages.sendError(response, ex);
+         wasErrorSent = true;
+      }
+
+      if (resource == null && !wasErrorSent) {
+         messages.sendError(response, new Exception(String.format("Resource not found - [%s]", urlPath)));
+      } else {
+         messages.sendResource(response, resource.getName(), resource);
+      }
    }
 }

@@ -53,6 +53,11 @@ public class AtsServlet extends OseeHttpServlet {
    }
 
    @Override
+   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      atsService.sendClient(request, response);
+   }
+
+   @Override
    protected void doPost(final HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       IResourceLocator locator = new IResourceLocator() {
 

@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet.ats;
 
-import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import javax.xml.xpath.XPath;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -68,32 +72,38 @@ public final class OperationData {
       return data.get("uniqueIds");
    }
 
-   public static OperationData fromResource(IResource resource) throws OseeCoreException {
-      InputStream inputStream = null;
+   public static Collection<OperationData> fromResource(IResource resource) throws OseeCoreException {
+      Collection<OperationData> toReturn = new ArrayList<OperationData>();
       try {
-         inputStream = resource.getContent();
+         String data = Lib.inputStreamToString(resource.getContent());
+         System.out.println(data);
+         Element rootElement = XmlUtil.readXML(new ByteArrayInputStream(data.getBytes()));
+         XPath xPath = XmlUtil.createXPath();
+         Collection<Node> nodes = XmlUtil.selectNodesViaXPath(xPath, rootElement, "//request");
 
-         Collection<Node> nodes = XmlUtil.findInResource(resource, "//request");
-         OperationData operationData = new OperationData(OperationType.UNKNOWN);
          for (Node node : nodes) {
             if (node instanceof Element) {
+               OperationData operationData = new OperationData(OperationType.UNKNOWN);
+               toReturn.add(operationData);
+
                Element element = (Element) node;
                NodeList list = element.getChildNodes();
                for (int index = 0; index < list.getLength(); index++) {
                   Node childNode = list.item(index);
                   if (childNode instanceof Element) {
                      Element elementNode = (Element) childNode;
-                     operationData.data.put(elementNode.getNodeName(), elementNode.getTextContent());
+                     String name = elementNode.getTagName();
+                     String value = Jaxp.getElementCharacterData(elementNode, true);
+                     if (Strings.isValid(name) && Strings.isValid(value)) {
+                        operationData.data.put(name, value);
+                     }
                   }
                }
-               break;
             }
          }
-         return operationData;
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
-      } finally {
-         Lib.close(inputStream);
       }
+      return toReturn;
    }
 }

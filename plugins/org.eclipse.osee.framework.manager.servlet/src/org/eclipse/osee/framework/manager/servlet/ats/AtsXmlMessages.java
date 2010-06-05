@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.resource.management.IResource;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -42,28 +43,33 @@ public class AtsXmlMessages {
    }
 
    public void sendWorkflows(HttpServletResponse response, Collection<Node> nodes) {
-      for (Node node : nodes) {
-         Element changeReportElement = createChangeReportNode(node);
-         node.appendChild(changeReportElement);
-      }
+      //      for (Node node : nodes) {
+      //         Element changeReportElement = createChangeReportNode(node);
+      //         node.appendChild(changeReportElement);
+      //      }
       messenger.sendMessage(response, "Ats Workflows", "0", nodes);
    }
 
    public void sendChangeReports(HttpServletResponse response, Collection<Node> nodes) {
       List<Node> nodeList = new ArrayList<Node>();
       for (Node node : nodes) {
-         Element changeReportElement = createChangeReportNode(node);
-         nodeList.add(changeReportElement);
+         Element path = Jaxp.getChildDirect((Element) node, "workflowChangeReportPath");
+         //         Element changeReportElement = createChangeReportNode(node);
+         nodeList.add(path);
       }
       messenger.sendMessage(response, "Ats Change Reports", "0", nodeList);
    }
 
-   private Element createChangeReportNode(Node node) {
-      String legacyId = Jaxp.getChildText((Element) node, "workflowPcrId");
-      String changeReportUrl =
-            String.format("%s://changeReports/%s.xml", AtsResourceLocatorProvider.PROTOCOL, legacyId);
-      Element changeReportElement = node.getOwnerDocument().createElement("changeReportUrl");
-      changeReportElement.setTextContent(changeReportUrl);
-      return changeReportElement;
+   //   private Element createChangeReportNode(Node node) {
+   //      String legacyId = Jaxp.getChildText((Element) node, "workflowPcrId");
+   //      String changeReportUrl =
+   //            String.format("%s://changeReports/%s.xml", AtsResourceLocatorProvider.PROTOCOL, legacyId);
+   //      Element changeReportElement = node.getOwnerDocument().createElement("changeReportUrl");
+   //      changeReportElement.setTextContent(changeReportUrl);
+   //      return changeReportElement;
+   //   }
+
+   public void sendResource(HttpServletResponse response, String name, IResource resource) {
+      messenger.sendMessage(response, name, resource, false);
    }
 }
