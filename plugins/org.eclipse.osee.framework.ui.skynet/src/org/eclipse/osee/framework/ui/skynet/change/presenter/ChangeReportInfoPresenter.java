@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -82,7 +83,7 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
          sb.append("<br/>");
          addAssociated(sb);
          try {
-            changeData.getCompareType().getHandler().appendTransactionInfo(sb, changeData);
+            changeData.getCompareType().getHandler().appendTransactionInfoHtml(sb, changeData);
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
@@ -95,8 +96,9 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
    private void addInterpretation(StringBuilder sb) {
       sb.append("<b>Description: </b> ");
       try {
-         sb.append(changeData.getCompareType().getHandler().getScenarioDescription(changeData));
+         sb.append(changeData.getCompareType().getHandler().getScenarioDescriptionHtml(changeData));
       } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          sb.append(changeData.getCompareType().getHandler().getActionDescription());
       }
       sb.append("");
@@ -106,7 +108,7 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
       String message = "";
       Artifact associatedArtifact = changeData.getAssociatedArtifact();
       if (associatedArtifact != null) {
-         message = associatedArtifact.getName();
+         message = AXml.textToXml(associatedArtifact.getName());
       } else {
          message = "Unkown";
       }
@@ -123,8 +125,8 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
       }
       DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
       sb.append(String.format("               <b>On: </b> %s<br/>", dateFormat.format(transaction.getTimeStamp())));
-      sb.append(String.format("               <b>By: </b> %s<br/>", author));
-      sb.append(String.format("               <b>Comment: </b> %s", transaction.getComment()));
+      sb.append(String.format("               <b>By: </b> %s<br/>", AXml.textToXml(author)));
+      sb.append(String.format("               <b>Comment: </b> %s", AXml.textToXml(transaction.getComment())));
    }
 
    @Override

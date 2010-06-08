@@ -4,6 +4,7 @@ import java.text.NumberFormat;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -45,17 +46,18 @@ public final class BaseToHeadHandler implements IChangeReportUiHandler {
    }
 
    @Override
-   public String getScenarioDescription(ChangeUiData changeUiData) throws OseeCoreException {
+   public String getScenarioDescriptionHtml(ChangeUiData changeUiData) throws OseeCoreException {
       TransactionDelta txDelta = changeUiData.getTxDelta();
       NumberFormat formatter = NumberFormat.getInstance();
       return String.format(
             "Shows all changes made to [<b>%s</b>] from when it was created (transaction <b>%s</b>) until it was last modified (transaction <b>%s</b>).",
-            txDelta.getStartTx().getBranch(), formatter.format(txDelta.getStartTx().getId()),
-            formatter.format(txDelta.getEndTx().getId()));
+            AXml.textToXml(txDelta.getStartTx().getBranch().getName()),
+            AXml.textToXml(formatter.format(txDelta.getStartTx().getId())),
+            AXml.textToXml(formatter.format(txDelta.getEndTx().getId())));
    }
 
    @Override
-   public void appendTransactionInfo(StringBuilder sb, ChangeUiData changeUiData) throws OseeCoreException {
+   public void appendTransactionInfoHtml(StringBuilder sb, ChangeUiData changeUiData) throws OseeCoreException {
       TransactionDelta txDelta = changeUiData.getTxDelta();
       sb.append("<b>Created: </b><br/>");
       ChangeReportInfoPresenter.addTransactionInfo(sb, txDelta.getStartTx());

@@ -3,6 +3,7 @@ package org.eclipse.osee.framework.ui.skynet.change.presenter;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.TransactionDelta;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -50,24 +51,26 @@ public final class CurrentsAgainstOtherHandler implements IChangeReportUiHandler
    }
 
    @Override
-   public String getScenarioDescription(ChangeUiData changeUiData) throws OseeCoreException {
+   public String getScenarioDescriptionHtml(ChangeUiData changeUiData) throws OseeCoreException {
       TransactionDelta txDelta = changeUiData.getTxDelta();
       String data;
       if (changeUiData.isMergeBranchValid()) {
          data =
                String.format(
                      "Shows all changes made to [<b>%s</b>], including changes found in the merge branch compared to branch [<b>%s</b>].",
-                     txDelta.getStartTx().getBranch(), txDelta.getEndTx().getBranch());
+                     AXml.textToXml(txDelta.getStartTx().getBranch().getName()),
+                     AXml.textToXml(txDelta.getEndTx().getBranch().getName()));
       } else {
          data =
                String.format("Shows all changes made to [<b>%s</b>] compared to branch [<b>%s</b>].",
-                     txDelta.getStartTx().getBranch(), txDelta.getEndTx().getBranch());
+                     AXml.textToXml(txDelta.getStartTx().getBranch().getName()),
+                     AXml.textToXml(txDelta.getEndTx().getBranch().getName()));
       }
       return data;
    }
 
    @Override
-   public void appendTransactionInfo(StringBuilder sb, ChangeUiData changeUiData) throws OseeCoreException {
+   public void appendTransactionInfoHtml(StringBuilder sb, ChangeUiData changeUiData) throws OseeCoreException {
       TransactionDelta txDelta = changeUiData.getTxDelta();
       sb.append("<b>Branch 1 Last Modified</b>:<br/>");
       ChangeReportInfoPresenter.addTransactionInfo(sb, txDelta.getStartTx());
