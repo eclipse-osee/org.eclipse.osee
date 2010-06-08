@@ -61,11 +61,15 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
    }
 
    private static String getRolesStr(ReviewSMArtifact reviewArt, User user) throws OseeCoreException {
-      String str = "";
+      StringBuilder builder = new StringBuilder();
       for (UserRole role : reviewArt.getUserRoleManager().getUserRoles()) {
-         if (role.getUser().equals(user)) str += role.getRole().name() + ", ";
+         if (role.getUser().equals(user)) {
+            builder.append(role.getRole().name());
+            builder.append(", ");
+         }
       }
-      return str.replaceFirst(", $", "");
+
+      return builder.toString().replaceFirst(", $", "");
    }
 
    public User getUser() {
