@@ -359,65 +359,71 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
       for (Artifact artifact : artifacts) {
 
-         // Test for null attribute values 
-         for (Attribute<?> attr : artifact.getAttributes()) {
-            if (attr.getValue() == null) {
-               testNameToResultsMap.put(
-                     "testAtsAttributeValues",
-                     "Error: Artifact: " + XResultData.getHyperlink(artifact) + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute");
-               if (fixAttributeValues) {
-                  attr.delete();
+         try {
+            // Test for null attribute values 
+            for (Attribute<?> attr : artifact.getAttributes()) {
+               if (attr.getValue() == null) {
+                  testNameToResultsMap.put(
+                        "testAtsAttributeValues",
+                        "Error: Artifact: " + XResultData.getHyperlink(artifact) + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute");
+                  if (fixAttributeValues) {
+                     attr.delete();
+                  }
                }
             }
-         }
 
-         if (artifact instanceof StateMachineArtifact) {
-            checkAndResolveDuplicateAttributesForAttributeNameContains("ats", artifact, fixAttributeValues,
-                  testNameToResultsMap, transaction);
-         }
+            if (artifact instanceof StateMachineArtifact) {
+               checkAndResolveDuplicateAttributesForAttributeNameContains("ats", artifact, fixAttributeValues,
+                     testNameToResultsMap, transaction);
+            }
 
-         // Test for ats.State Completed;;;<num> or Cancelled;;;<num> and cleanup
-         if (artifact instanceof StateMachineArtifact) {
-            XStateDam stateDam = new XStateDam((StateMachineArtifact) artifact);
-            for (SMAState state : stateDam.getStates()) {
+            // Test for ats.State Completed;;;<num> or Cancelled;;;<num> and cleanup
+            if (artifact instanceof StateMachineArtifact) {
+               XStateDam stateDam = new XStateDam((StateMachineArtifact) artifact);
+               for (SMAState state : stateDam.getStates()) {
+                  if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
+                        DefaultTeamState.Cancelled.name())) {
+                     if (state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
+                        testNameToResultsMap.put(
+                              "testAtsAttributeValues",
+                              "Error: ats.State error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
+                        if (fixAttributeValues) {
+                           state.setHoursSpent(0);
+                           state.setPercentComplete(0);
+                           stateDam.setState(state);
+                           testNameToResultsMap.put("testAtsAttributeValues", "Fixed");
+                        }
+                     }
+                  }
+               }
+            }
+
+            // Test for ats.CurrentState Completed;;;<num> or Cancelled;;;<num> and cleanup
+            if (artifact instanceof StateMachineArtifact) {
+               XCurrentStateDam currentStateDam = new XCurrentStateDam((StateMachineArtifact) artifact);
+               SMAState state = currentStateDam.getState();
                if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
                      DefaultTeamState.Cancelled.name())) {
                   if (state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
                      testNameToResultsMap.put(
                            "testAtsAttributeValues",
-                           "Error: ats.State error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
+                           "Error: ats.CurrentState error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
                      if (fixAttributeValues) {
                         state.setHoursSpent(0);
                         state.setPercentComplete(0);
-                        stateDam.setState(state);
+                        currentStateDam.setState(state);
                         testNameToResultsMap.put("testAtsAttributeValues", "Fixed");
                      }
                   }
                }
             }
-         }
-
-         // Test for ats.CurrentState Completed;;;<num> or Cancelled;;;<num> and cleanup
-         if (artifact instanceof StateMachineArtifact) {
-            XCurrentStateDam currentStateDam = new XCurrentStateDam((StateMachineArtifact) artifact);
-            SMAState state = currentStateDam.getState();
-            if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
-                  DefaultTeamState.Cancelled.name())) {
-               if (state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
-                  testNameToResultsMap.put(
-                        "testAtsAttributeValues",
-                        "Error: ats.CurrentState error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
-                  if (fixAttributeValues) {
-                     state.setHoursSpent(0);
-                     state.setPercentComplete(0);
-                     currentStateDam.setState(state);
-                     testNameToResultsMap.put("testAtsAttributeValues", "Fixed");
-                  }
-               }
+            if (artifact.hasDirtyAttributes()) {
+               artifact.persist(transaction);
             }
-         }
-         if (artifact.hasDirtyAttributes()) {
-            artifact.persist(transaction);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            testNameToResultsMap.put("testAtsAttributeValues",
+                  "Error: Artifact: " + XResultData.getHyperlink(artifact) + " Exception: " + ex.getLocalizedMessage());
          }
       }
       transaction.execute();
