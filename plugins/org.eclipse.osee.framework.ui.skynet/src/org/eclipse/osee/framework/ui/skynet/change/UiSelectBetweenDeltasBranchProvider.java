@@ -14,6 +14,8 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
 
 public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvider {
@@ -34,20 +36,22 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
          final Collection<Branch> selectable = new ArrayList<Branch>();
          selectable.add(uiData.getTxDelta().getStartTx().getBranch());
          selectable.add(uiData.getTxDelta().getEndTx().getBranch());
+         IStatus status = executeInUiThread(selectable, selectedBranch);
+         monitor.setCanceled(status.getSeverity() == IStatus.CANCEL);
+      }
+      return selectedBranch[0];
+   }
 
+   private IStatus executeInUiThread(final Collection<Branch> selectable, final Branch[] selectedBranch) throws OseeCoreException {
+      IStatus status = null;
+      Display display = PlatformUI.getWorkbench().getDisplay();
+      if (display.getThread().equals(Thread.currentThread())) {
+         status = getUserSelection(selectable, selectedBranch);
+      } else {
          Job job = new UIJob("Select Branch") {
-
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
-               IStatus status = Status.OK_STATUS;
-               BranchSelectionDialog dialog = new BranchSelectionDialog("Select branch to compare against", selectable);
-               int result = dialog.open();
-               if (result == Window.OK) {
-                  selectedBranch[0] = dialog.getSelected();
-               } else {
-                  status = Status.CANCEL_STATUS;
-               }
-               return status;
+               return getUserSelection(selectable, selectedBranch);
             }
          };
          try {
@@ -55,8 +59,21 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
          } catch (InterruptedException ex) {
             OseeExceptions.wrapAndThrow(ex);
          }
-         monitor.setCanceled(job.getResult().getSeverity() == IStatus.CANCEL);
+         status = job.getResult();
       }
-      return selectedBranch[0];
+      return status;
    }
+
+   private IStatus getUserSelection(Collection<Branch> selectable, Branch[] selectedBranch) {
+      IStatus status = Status.OK_STATUS;
+      BranchSelectionDialog dialog = new BranchSelectionDialog("Select branch to compare against", selectable);
+      int result = dialog.open();
+      if (result == Window.OK) {
+         selectedBranch[0] = dialog.getSelected();
+      } else {
+         status = Status.CANCEL_STATUS;
+      }
+      return status;
+   }
+
 }
