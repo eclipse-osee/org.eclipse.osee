@@ -18,6 +18,7 @@ import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
 
 /** 
@@ -58,6 +59,26 @@ public class BundleInfo {
       this.bundleServerLocation = new URL(bundleServerBaseLocation + symbolicName);
       this.systemLibrary = systemLibrary;
       this.md5Digest = null;
+   }
+   
+   public BundleInfo(URL systemLocation) throws IOException {
+	   File tmpFile;
+	   try {
+		   tmpFile = new File(systemLocation.toURI());
+	   } catch(URISyntaxException ex) {
+		   tmpFile = new File(systemLocation.getPath());
+	   }
+	   this.file = tmpFile;
+
+	   JarFile jarFile = new JarFile(file);
+	   this.manifest = jarFile.getManifest();
+	   this.symbolicName = generateBundleName(manifest);
+	   this.version = manifest.getMainAttributes().getValue("Bundle-Version");
+
+	   this.systemLocation = systemLocation;
+	   this.bundleServerLocation = systemLocation;
+	   this.systemLibrary = true;
+	   this.md5Digest = null;
    }
 
    /**

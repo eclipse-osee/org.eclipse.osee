@@ -120,4 +120,13 @@ public class BundleDescription implements Serializable {
    public byte[] getMd5Digest() {
       return md5Digest;
    }
+   
+   public boolean isLocalFile(){
+	   String protocol = location.getProtocol();
+	   return protocol.equals("file");
+   }
+
+public String getLocation() {
+	return location.toString();
+}
 }

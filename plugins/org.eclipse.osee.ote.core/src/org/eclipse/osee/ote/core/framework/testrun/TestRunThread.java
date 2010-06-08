@@ -62,6 +62,9 @@ public class TestRunThread extends OseeTestThread {
          if (rb.isReturnStatusOK()) {
             List<TestCase> testCases = test.getTestCases();
             for (TestCase testCase : testCases) {
+               if(testCase == null){
+            	   continue;
+               }
                if (abort) {
                   addAbortResult(null);
                   break;

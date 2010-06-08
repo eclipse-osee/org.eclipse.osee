@@ -222,9 +222,14 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
             if (!exists) {
                Bundle bundle = Platform.getBundle(bundleDescription.getSymbolicName());
                if (bundle == null) {
-                  InputStream bundleData = getBundleInputStream(bundleDescription);
-                  Bundle installedBundle = context.installBundle("OTE-" + bundleName, bundleData);
-                  bundleData.close();
+            	   Bundle installedBundle;
+                  if(bundleDescription.isLocalFile()){
+                	  installedBundle = context.installBundle(bundleDescription.getLocation());
+                  } else {
+	            	   InputStream bundleData = getBundleInputStream(bundleDescription);
+	            	   installedBundle = context.installBundle("OTE-" + bundleName, bundleData);
+	                   bundleData.close();
+                  }
                   bundleNameToMd5Map.put(bundleName, bundleDescription.getMd5Digest());
                   installedBundles.add(installedBundle);
                }
