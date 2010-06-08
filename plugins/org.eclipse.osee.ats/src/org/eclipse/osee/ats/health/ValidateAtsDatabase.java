@@ -226,38 +226,45 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private void testArtifactIds(Collection<Artifact> artifacts) throws OseeCoreException {
+   private void testArtifactIds(Collection<Artifact> artifacts) {
       this.hrids.clear();
       this.legacyPcrIdToParentHrid.clear();
       for (Artifact artifact : artifacts) {
-         // Check that HRIDs not duplicated on Common branch
-         if (hrids.contains(artifact.getHumanReadableId())) {
-            testNameToResultsMap.put("testArtifactIds", "Error: Duplicate HRIDs: " + XResultData.getHyperlink(artifact));
-         }
-         // Check that duplicate Legacy PCR IDs team arts do not exist with different parent actions 
-         if (artifact instanceof TeamWorkFlowArtifact) {
-            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-            String legacyPcrId =
-                  artifact.getSoleAttributeValueAsString(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), null);
-            if (legacyPcrId != null) {
-               if (legacyPcrIdToParentHrid.containsKey(legacyPcrId)) {
-                  if (!legacyPcrIdToParentHrid.get(legacyPcrId).equals(
-                        teamArt.getParentActionArtifact().getHumanReadableId())) {
-                     testNameToResultsMap.put("testArtifactIds",
-                           "Error: Duplicate Legacy PCR Ids in Different Actions: " + legacyPcrId);
+         try {
+            // Check that HRIDs not duplicated on Common branch
+            if (hrids.contains(artifact.getHumanReadableId())) {
+               testNameToResultsMap.put("testArtifactIds",
+                     "Error: Duplicate HRIDs: " + XResultData.getHyperlink(artifact));
+            }
+            // Check that duplicate Legacy PCR IDs team arts do not exist with different parent actions 
+            if (artifact instanceof TeamWorkFlowArtifact) {
+               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
+               String legacyPcrId =
+                     artifact.getSoleAttributeValueAsString(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), null);
+               if (legacyPcrId != null) {
+                  if (legacyPcrIdToParentHrid.containsKey(legacyPcrId)) {
+                     if (!legacyPcrIdToParentHrid.get(legacyPcrId).equals(
+                           teamArt.getParentActionArtifact().getHumanReadableId())) {
+                        testNameToResultsMap.put("testArtifactIds",
+                              "Error: Duplicate Legacy PCR Ids in Different Actions: " + legacyPcrId);
+                     }
+                  } else {
+                     legacyPcrIdToParentHrid.put(legacyPcrId, teamArt.getParentActionArtifact().getHumanReadableId());
                   }
-               } else {
-                  legacyPcrIdToParentHrid.put(legacyPcrId, teamArt.getParentActionArtifact().getHumanReadableId());
                }
             }
+         } catch (Exception ex) {
+            testNameToResultsMap.put(
+                  "testArtifactIds",
+                  "Error: " + artifact.getArtifactTypeName() + " " + XResultData.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
          }
       }
    }
 
-   private void testVersionArtifacts(Collection<Artifact> artifacts) throws OseeCoreException {
-      for (Artifact art : artifacts) {
-         if (art instanceof VersionArtifact) {
-            VersionArtifact verArt = (VersionArtifact) art;
+   private void testVersionArtifacts(Collection<Artifact> artifacts) {
+      for (Artifact artifact : artifacts) {
+         if (artifact instanceof VersionArtifact) {
+            VersionArtifact verArt = (VersionArtifact) artifact;
             try {
                String parentBranchGuid =
                      verArt.getSoleAttributeValueAsString(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(),
@@ -274,7 +281,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private void testTeamDefinitions(Collection<Artifact> artifacts) throws OseeCoreException {
+   private void testTeamDefinitions(Collection<Artifact> artifacts) {
       for (Artifact art : artifacts) {
          if (art instanceof TeamDefinitionArtifact) {
             TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) art;
@@ -294,7 +301,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private void testTeamWorkflows(Collection<Artifact> artifacts) throws OseeCoreException {
+   private void testTeamWorkflows(Collection<Artifact> artifacts) {
       for (Artifact art : artifacts) {
          if (art instanceof TeamWorkFlowArtifact) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
@@ -310,34 +317,38 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             } catch (Exception ex) {
                testNameToResultsMap.put(
                      "testTeamWorkflows",
-                     teamArt.getArtifactTypeName() + " " + XResultData.getHyperlink(teamArt) + " exception testing testTeamWorkflows: " + ex.getLocalizedMessage());
+                     teamArt.getArtifactTypeName() + " " + XResultData.getHyperlink(teamArt) + " exception: " + ex.getLocalizedMessage());
             }
          }
       }
    }
 
-   private void validateBranchGuid(Artifact art, String parentBranchGuid) throws OseeCoreException {
+   private void validateBranchGuid(Artifact artifact, String parentBranchGuid) {
       try {
          Branch branch = BranchManager.getBranchByGuid(parentBranchGuid);
          if (branch.getArchiveState().isArchived()) {
             testNameToResultsMap.put("validateBranchGuid", String.format(
                   "Error: Parent Branch Id [%s][%s] can't be Archived branch for [%s][%s]", parentBranchGuid, branch,
-                  art.getHumanReadableId(), art));
+                  artifact.getHumanReadableId(), artifact));
          } else if (branch.getBranchType().isWorkingBranch()) {
             testNameToResultsMap.put(
                   "validateBranchGuid",
                   String.format(
                         "Error: Parent Branch [%s][%s] is WORKING branch and can't be parent branch for [%s][%s]; Switch to BASELINE?",
-                        parentBranchGuid, branch, art.getHumanReadableId(), art));
+                        parentBranchGuid, branch, artifact.getHumanReadableId(), artifact));
          } else if (!branch.getBranchType().isBaselineBranch()) {
             testNameToResultsMap.put("validateBranchGuid", String.format(
                   "Error: Parent Branch Id [%s][%s] must be Baseline branch for [%s][%s]", parentBranchGuid, branch,
-                  art.getHumanReadableId(), art));
+                  artifact.getHumanReadableId(), artifact));
          }
       } catch (BranchDoesNotExist ex) {
          testNameToResultsMap.put("validateBranchGuid", String.format(
                "Error: Parent Branch Id [%s] references non-existant branch for [%s][%s]", parentBranchGuid,
-               art.getHumanReadableId(), art));
+               artifact.getHumanReadableId(), artifact));
+      } catch (Exception ex) {
+         testNameToResultsMap.put(
+               "validateBranchGuid",
+               "Error: " + artifact.getArtifactTypeName() + " " + XResultData.getHyperlink(artifact) + " exception: " + ex.getLocalizedMessage());
       }
    }
 
@@ -355,78 +366,84 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       return Collections.subDivide(artIds, 5000);
    }
 
-   private void testAtsAttributeValues(Collection<Artifact> artifacts) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
-      for (Artifact artifact : artifacts) {
+   private void testAtsAttributeValues(Collection<Artifact> artifacts) {
+      try {
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
+         for (Artifact artifact : artifacts) {
 
-         try {
-            // Test for null attribute values 
-            for (Attribute<?> attr : artifact.getAttributes()) {
-               if (attr.getValue() == null) {
-                  testNameToResultsMap.put(
-                        "testAtsAttributeValues",
-                        "Error: Artifact: " + XResultData.getHyperlink(artifact) + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute");
-                  if (fixAttributeValues) {
-                     attr.delete();
+            try {
+               // Test for null attribute values 
+               for (Attribute<?> attr : artifact.getAttributes()) {
+                  if (attr.getValue() == null) {
+                     testNameToResultsMap.put(
+                           "testAtsAttributeValues",
+                           "Error: Artifact: " + XResultData.getHyperlink(artifact) + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute");
+                     if (fixAttributeValues) {
+                        attr.delete();
+                     }
                   }
                }
-            }
 
-            if (artifact instanceof StateMachineArtifact) {
-               checkAndResolveDuplicateAttributesForAttributeNameContains("ats", artifact, fixAttributeValues,
-                     testNameToResultsMap, transaction);
-            }
+               if (artifact instanceof StateMachineArtifact) {
+                  checkAndResolveDuplicateAttributesForAttributeNameContains("ats", artifact, fixAttributeValues,
+                        testNameToResultsMap, transaction);
+               }
 
-            // Test for ats.State Completed;;;<num> or Cancelled;;;<num> and cleanup
-            if (artifact instanceof StateMachineArtifact) {
-               XStateDam stateDam = new XStateDam((StateMachineArtifact) artifact);
-               for (SMAState state : stateDam.getStates()) {
+               // Test for ats.State Completed;;;<num> or Cancelled;;;<num> and cleanup
+               if (artifact instanceof StateMachineArtifact) {
+                  XStateDam stateDam = new XStateDam((StateMachineArtifact) artifact);
+                  for (SMAState state : stateDam.getStates()) {
+                     if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
+                           DefaultTeamState.Cancelled.name())) {
+                        if (state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
+                           testNameToResultsMap.put(
+                                 "testAtsAttributeValues",
+                                 "Error: ats.State error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
+                           if (fixAttributeValues) {
+                              state.setHoursSpent(0);
+                              state.setPercentComplete(0);
+                              stateDam.setState(state);
+                              testNameToResultsMap.put("testAtsAttributeValues", "Fixed");
+                           }
+                        }
+                     }
+                  }
+               }
+
+               // Test for ats.CurrentState Completed;;;<num> or Cancelled;;;<num> and cleanup
+               if (artifact instanceof StateMachineArtifact) {
+                  XCurrentStateDam currentStateDam = new XCurrentStateDam((StateMachineArtifact) artifact);
+                  SMAState state = currentStateDam.getState();
                   if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
                         DefaultTeamState.Cancelled.name())) {
                      if (state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
                         testNameToResultsMap.put(
                               "testAtsAttributeValues",
-                              "Error: ats.State error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
+                              "Error: ats.CurrentState error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
                         if (fixAttributeValues) {
                            state.setHoursSpent(0);
                            state.setPercentComplete(0);
-                           stateDam.setState(state);
+                           currentStateDam.setState(state);
                            testNameToResultsMap.put("testAtsAttributeValues", "Fixed");
                         }
                      }
                   }
                }
-            }
-
-            // Test for ats.CurrentState Completed;;;<num> or Cancelled;;;<num> and cleanup
-            if (artifact instanceof StateMachineArtifact) {
-               XCurrentStateDam currentStateDam = new XCurrentStateDam((StateMachineArtifact) artifact);
-               SMAState state = currentStateDam.getState();
-               if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
-                     DefaultTeamState.Cancelled.name())) {
-                  if (state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
-                     testNameToResultsMap.put(
-                           "testAtsAttributeValues",
-                           "Error: ats.CurrentState error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
-                     if (fixAttributeValues) {
-                        state.setHoursSpent(0);
-                        state.setPercentComplete(0);
-                        currentStateDam.setState(state);
-                        testNameToResultsMap.put("testAtsAttributeValues", "Fixed");
-                     }
-                  }
+               if (artifact.hasDirtyAttributes()) {
+                  artifact.persist(transaction);
                }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               testNameToResultsMap.put(
+                     "testAtsAttributeValues",
+                     "Error: Artifact: " + XResultData.getHyperlink(artifact) + " Exception: " + ex.getLocalizedMessage());
             }
-            if (artifact.hasDirtyAttributes()) {
-               artifact.persist(transaction);
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            testNameToResultsMap.put("testAtsAttributeValues",
-                  "Error: Artifact: " + XResultData.getHyperlink(artifact) + " Exception: " + ex.getLocalizedMessage());
          }
+         transaction.execute();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         testNameToResultsMap.put("testAtsAttributeValues", "Error: Exception: " + ex.getLocalizedMessage());
       }
-      transaction.execute();
    }
 
    public static void checkAndResolveDuplicateAttributesForAttributeNameContains(String nameContainsStr, Artifact artifact, boolean fixAttributeValues, HashCollection<String, String> resultsMap, SkynetTransaction transaction) throws OseeCoreException {
@@ -469,47 +486,57 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private void testAtsActionsHaveTeamWorkflow(Collection<Artifact> artifacts) throws OseeCoreException {
+   private void testAtsActionsHaveTeamWorkflow(Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
-         if (artifact instanceof ActionArtifact) {
-            if (((ActionArtifact) artifact).getTeamWorkFlowArtifacts().isEmpty()) {
-               testNameToResultsMap.put("testAtsActionsHaveTeamWorkflow",
-                     "Error: Action " + XResultData.getHyperlink(artifact) + " has no Team Workflows\n");
+         try {
+            if (artifact instanceof ActionArtifact) {
+               if (((ActionArtifact) artifact).getTeamWorkFlowArtifacts().isEmpty()) {
+                  testNameToResultsMap.put("testAtsActionsHaveTeamWorkflow",
+                        "Error: Action " + XResultData.getHyperlink(artifact) + " has no Team Workflows\n");
+               }
             }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            testNameToResultsMap.put("testAtsActionsHaveTeamWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
    }
 
-   private void testAtsWorkflowsHaveAction(Collection<Artifact> artifacts) throws OseeCoreException {
+   private void testAtsWorkflowsHaveAction(Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
-         if (artifact instanceof TeamWorkFlowArtifact) {
-            boolean noParent = false;
-            try {
-               if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
+         try {
+            if (artifact instanceof TeamWorkFlowArtifact) {
+               boolean noParent = false;
+               try {
+                  if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
+                     testNameToResultsMap.put("testAtsWorkflowsHaveAction",
+                           "Error: Team " + XResultData.getHyperlink(artifact) + " has no parent Action\n");
+                     noParent = true;
+                  }
+               } catch (Exception ex) {
                   testNameToResultsMap.put("testAtsWorkflowsHaveAction",
-                        "Error: Team " + XResultData.getHyperlink(artifact) + " has no parent Action\n");
+                        "Error: Team " + XResultData.getHyperlink(artifact) + " has no parent Action: exception " + ex);
                   noParent = true;
                }
-            } catch (Exception ex) {
-               testNameToResultsMap.put("testAtsWorkflowsHaveAction",
-                     "Error: Team " + XResultData.getHyperlink(artifact) + " has no parent Action: exception " + ex);
-               noParent = true;
-            }
-            // Create temporary action so these can be either purged or re-assigned
-            if (noParent) {
-               if (tempParentAction == null) {
-                  tempParentAction =
-                        (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action,
-                              AtsUtil.getAtsBranch());
-                  tempParentAction.setName("Temp Parent Action");
-                  testNameToResultsMap.put(
-                        "testAtsWorkflowsHaveAction",
-                        "Error: Temp Parent Action " + XResultData.getHyperlink(tempParentAction) + " created for orphaned teams.");
+               // Create temporary action so these can be either purged or re-assigned
+               if (noParent) {
+                  if (tempParentAction == null) {
+                     tempParentAction =
+                           (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action,
+                                 AtsUtil.getAtsBranch());
+                     tempParentAction.setName("Temp Parent Action");
+                     testNameToResultsMap.put(
+                           "testAtsWorkflowsHaveAction",
+                           "Error: Temp Parent Action " + XResultData.getHyperlink(tempParentAction) + " created for orphaned teams.");
 
+                  }
+                  tempParentAction.addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, artifact);
+                  tempParentAction.persist();
                }
-               tempParentAction.addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, artifact);
-               tempParentAction.persist();
             }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            testNameToResultsMap.put("testAtsWorkflowsHaveAction", "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
       if (tempParentAction != null) {
@@ -517,69 +544,97 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private void testAtsWorkflowsHaveZeroOrOneVersion(Collection<Artifact> artifacts) throws OseeCoreException {
+   private void testAtsWorkflowsHaveZeroOrOneVersion(Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
-         if (artifact instanceof TeamWorkFlowArtifact) {
-            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-            if (teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version).size() > 1) {
-               testNameToResultsMap.put(
-                     "testAtsWorkflowsHaveZeroOrOneVersion",
-                     "Error: Team workflow " + XResultData.getHyperlink(teamArt) + " has " + teamArt.getRelatedArtifacts(
-                           AtsRelationTypes.TeamWorkflowTargetedForVersion_Version).size() + " versions");
-            }
-         }
-      }
-
-   }
-
-   private void testTasksHaveParentWorkflow(Collection<Artifact> artifacts) throws OseeCoreException {
-      Set<Artifact> badTasks = new HashSet<Artifact>(30);
-      for (Artifact artifact : artifacts) {
-         if (artifact instanceof TaskArtifact) {
-            TaskArtifact taskArtifact = (TaskArtifact) artifact;
-            if (taskArtifact.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Sma).size() != 1) {
-               testNameToResultsMap.put(
-                     "testTasksHaveParentWorkflow",
-                     "Error: Task " + XResultData.getHyperlink(taskArtifact) + " has " + taskArtifact.getRelatedArtifacts(
-                           AtsRelationTypes.SmaToTask_Sma).size() + " parents.");
-               badTasks.add(taskArtifact);
-            }
-         }
-      }
-      if (badTasks.size() > 0) {
-         TaskEditor.open(new TaskEditorSimpleProvider("ValidateATSDatabase: Tasks have !=1 parent workflows.", badTasks));
-      }
-   }
-
-   private void testActionableItemToTeamDefinition(Collection<Artifact> artifacts) throws OseeCoreException {
-      for (Artifact artifact : artifacts) {
-         if (artifact instanceof ActionableItemArtifact) {
-            ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
-            if (aia.isActionable()) {
-               if (TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
+         try {
+            if (artifact instanceof TeamWorkFlowArtifact) {
+               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
+               if (teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version).size() > 1) {
                   testNameToResultsMap.put(
-                        "testActionableItemToTeamDefinition",
-                        "Error: ActionableItem " + XResultData.getHyperlink(artifact.getName(), artifact) + " has to related TeamDefinition and is set to Actionable");
+                        "testAtsWorkflowsHaveZeroOrOneVersion",
+                        "Error: Team workflow " + XResultData.getHyperlink(teamArt) + " has " + teamArt.getRelatedArtifacts(
+                              AtsRelationTypes.TeamWorkflowTargetedForVersion_Version).size() + " versions");
                }
             }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            testNameToResultsMap.put("testAtsWorkflowsHaveZeroOrOneVersion",
+                  "Error: Exception: " + ex.getLocalizedMessage());
+         }
+      }
+
+   }
+
+   private void testTasksHaveParentWorkflow(Collection<Artifact> artifacts) {
+      Set<Artifact> badTasks = new HashSet<Artifact>(30);
+      for (Artifact artifact : artifacts) {
+         try {
+            if (artifact instanceof TaskArtifact) {
+               TaskArtifact taskArtifact = (TaskArtifact) artifact;
+               if (taskArtifact.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Sma).size() != 1) {
+                  testNameToResultsMap.put(
+                        "testTasksHaveParentWorkflow",
+                        "Error: Task " + XResultData.getHyperlink(taskArtifact) + " has " + taskArtifact.getRelatedArtifacts(
+                              AtsRelationTypes.SmaToTask_Sma).size() + " parents.");
+                  badTasks.add(taskArtifact);
+               }
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            testNameToResultsMap.put("testTasksHaveParentWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
+         }
+      }
+      try {
+         if (badTasks.size() > 0) {
+            TaskEditor.open(new TaskEditorSimpleProvider("ValidateATSDatabase: Tasks have !=1 parent workflows.",
+                  badTasks));
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         testNameToResultsMap.put("testTasksHaveParentWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
+      }
+   }
+
+   private void testActionableItemToTeamDefinition(Collection<Artifact> artifacts) {
+      for (Artifact artifact : artifacts) {
+         try {
+            if (artifact instanceof ActionableItemArtifact) {
+               ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
+               if (aia.isActionable()) {
+                  if (TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
+                     testNameToResultsMap.put(
+                           "testActionableItemToTeamDefinition",
+                           "Error: ActionableItem " + XResultData.getHyperlink(artifact.getName(), artifact) + " has to related TeamDefinition and is set to Actionable");
+                  }
+               }
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            testNameToResultsMap.put("testActionableItemToTeamDefinition",
+                  "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
    }
 
    private void testTeamDefinitionHasWorkflow(Collection<Artifact> artifacts) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
-         if (artifact instanceof TeamDefinitionArtifact) {
-            TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
-            if (teamDef.isActionable() && teamDef.getWorkFlowDefinition() == null) {
-               testNameToResultsMap.put(
-                     "testTeamDefinitionHasWorkflow",
-                     "Error: TeamDefintion " + XResultData.getHyperlink(artifact.getName(), artifact) + " has no related workflow and is set to Actionable");
+         try {
+            if (artifact instanceof TeamDefinitionArtifact) {
+               TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
+               if (teamDef.isActionable() && teamDef.getWorkFlowDefinition() == null) {
+                  testNameToResultsMap.put(
+                        "testTeamDefinitionHasWorkflow",
+                        "Error: TeamDefintion " + XResultData.getHyperlink(artifact.getName(), artifact) + " has no related workflow and is set to Actionable");
+               }
             }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            testNameToResultsMap.put("testTeamDefinitionHasWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
    }
 
-   private void testReviewsHaveValidDefectAndRoleXml(Collection<Artifact> artifacts) throws OseeCoreException {
+   private void testReviewsHaveValidDefectAndRoleXml(Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
          if (artifact instanceof ReviewSMArtifact) {
             ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
@@ -603,20 +658,25 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private void testReviewsHaveParentWorkflowOrActionableItems(Collection<Artifact> artifacts) throws OseeCoreException {
+   private void testReviewsHaveParentWorkflowOrActionableItems(Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
-         if (artifact instanceof ReviewSMArtifact) {
-            ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
-            if (reviewArtifact.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Team).isEmpty() && reviewArtifact.getActionableItemsDam().getActionableItemGuids().isEmpty()) {
-               testNameToResultsMap.put(
-                     "testReviewsHaveParentWorkflowOrActionableItems",
-                     "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has 0 related parents and 0 actionable items.");
+         try {
+            if (artifact instanceof ReviewSMArtifact) {
+               ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
+               if (reviewArtifact.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Team).isEmpty() && reviewArtifact.getActionableItemsDam().getActionableItemGuids().isEmpty()) {
+                  testNameToResultsMap.put(
+                        "testReviewsHaveParentWorkflowOrActionableItems",
+                        "Error: Review " + XResultData.getHyperlink(reviewArtifact) + " has 0 related parents and 0 actionable items.");
+               }
             }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            testNameToResultsMap.put("testTeamDefinitionHasWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
          }
       }
    }
 
-   private void testAtsLogs(Collection<Artifact> artifacts) throws OseeCoreException {
+   private void testAtsLogs(Collection<Artifact> artifacts) {
       for (Artifact art : artifacts) {
          if (art instanceof StateMachineArtifact) {
             StateMachineArtifact sma = (StateMachineArtifact) art;
@@ -681,9 +741,20 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private void testStateMachineAssignees(Collection<Artifact> artifacts) throws OseeCoreException {
-      User unAssignedUser = UserManager.getUser(SystemUser.UnAssigned);
-      User oseeSystemUser = UserManager.getUser(SystemUser.OseeSystem);
+   private static User unAssignedUser;
+   private static User oseeSystemUser;
+
+   private void testStateMachineAssignees(Collection<Artifact> artifacts) {
+      if (unAssignedUser == null) {
+         try {
+            unAssignedUser = UserManager.getUser(SystemUser.UnAssigned);
+            oseeSystemUser = UserManager.getUser(SystemUser.OseeSystem);
+         } catch (OseeCoreException ex) {
+            testNameToResultsMap.put("testStateMachineAssignees",
+                  "Error: Exception retrieving users: " + ex.getLocalizedMessage());
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
+      }
       for (Artifact art : artifacts) {
          if (art instanceof StateMachineArtifact) {
             try {
