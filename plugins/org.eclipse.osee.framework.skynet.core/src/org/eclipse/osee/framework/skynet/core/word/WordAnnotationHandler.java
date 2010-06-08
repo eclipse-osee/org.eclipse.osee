@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.skynet.core.word;
 public class WordAnnotationHandler {
 
    public static boolean containsWordAnnotations(String wordml) {
-      return (wordml.contains("<w:delText>") || wordml.contains("w:type=\"Word.Insertion\"") || wordml.contains("w:type=\"Word.Formatting\""));
+      return wordml.contains("<w:delText>") || wordml.contains("w:type=\"Word.Insertion\"") || wordml.contains("w:type=\"Word.Formatting\"") || wordml.contains("w:type=\"Word.Deletion\"");
    }
 
    public static String removeAnnotations(String wordml) {
