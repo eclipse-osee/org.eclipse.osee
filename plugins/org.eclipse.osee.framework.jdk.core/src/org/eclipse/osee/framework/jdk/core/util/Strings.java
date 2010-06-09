@@ -28,13 +28,12 @@ public class Strings {
    }
 
    /**
-    * For adjusting '&' containing strings to break the accelerator(a.k.a) mnemonic feature some widgets offer. i.e.
-    * &Test should make Alt+T a shortcut. This method breaks the accelerator by doubling ampersands.
-    * 
-    * @param stringWithAmp
+    * This method adjusts '&'-containing strings to break the keyboard shortcut ("Accelerator")
+    * feature some widgets offer, where &Test will make Alt+T a shortcut. This method breaks the
+    * accelerator by escaping ampersands.
     * @return a string with doubled ampersands.
     */
-   public static String ampersandInsteadOfAccelerator(String stringWithAmp) {
+   public static String escapeAmpersands(String stringWithAmp) {
       if (isValid(stringWithAmp)) {
          return stringWithAmp.replace("&", "&&");
       } else {
