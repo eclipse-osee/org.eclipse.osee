@@ -105,8 +105,8 @@ public class ChangeReportPage extends FormPage implements IChangeReportPreferenc
 
       managedForm.addPart(new EditorSection(infoPresenter, "Info", form.getBody(), managedForm.getToolkit(),
             sectionStyle, false));
-      managedForm.addPart(new EditorSection(changeReportTable, "Changes", form.getBody(), managedForm.getToolkit(),
-            sectionStyle, true));
+      // Can not place table in section or double scroll-bars and maintaining correct table size becomes an issue
+      changeReportTable.onCreate(getManagedForm(), form.getBody());
 
       addToolBar(toolkit, form, true);
       form.reflow(true);
@@ -188,6 +188,7 @@ public class ChangeReportPage extends FormPage implements IChangeReportPreferenc
       for (IFormPart part : getManagedForm().getParts()) {
          part.refresh();
       }
+      changeReportTable.onUpdate();
 
       updateTitle(sForm);
       updateImage(sForm);
@@ -248,7 +249,6 @@ public class ChangeReportPage extends FormPage implements IChangeReportPreferenc
                getEditor().refresh();
                getEditor().getActionBarContributor().getReloadAction().setEnabled(true);
                getEditor().getActionBarContributor().getOpenAssociatedArtifactAction().updateEnablement();
-               changeReportTable.refreshTableHeightHint();
                getManagedForm().getForm().getBody().layout(true);
                getManagedForm().getForm().reflow(true);
                getManagedForm().refresh();

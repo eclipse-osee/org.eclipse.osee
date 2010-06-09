@@ -8,12 +8,9 @@ package org.eclipse.osee.framework.ui.skynet.change.view;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeXViewer;
@@ -21,13 +18,14 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeXViewerFactory
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.XChangeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.XChangeLabelProvider;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -55,7 +53,7 @@ public class ChangeReportTable implements EditorSection.IWidget {
       form.getBody().setLayout(new GridLayout());
       form.getBody().setBackground(parent.getBackground());
 
-      Composite composite = toolkit.createComposite(parent, SWT.NONE);
+      Composite composite = toolkit.createComposite(parent, SWT.BORDER);
 
       GridLayout layout = new GridLayout();
       layout.marginBottom = 5;
@@ -65,6 +63,7 @@ public class ChangeReportTable implements EditorSection.IWidget {
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd.widthHint = 300;
       composite.setLayoutData(gd);
+      toolkit.paintBordersFor(composite);
 
       int viewerStyle = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
       xChangeViewer = new ChangeXViewer(composite, viewerStyle, new ChangeXViewerFactory());
@@ -79,28 +78,21 @@ public class ChangeReportTable implements EditorSection.IWidget {
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
 
-      Label label = xChangeViewer.getStatusLabel();
-      toolkit.adapt(label, false, false);
+      adaptAll(toolkit, composite);
 
       new ChangeDragAndDrop(tree, ChangeXViewerFactory.NAMESPACE);
       onUpdate();
    }
 
-   public void refreshTableHeightHint() {
-      try {
-         int numItems = xChangeViewer.getTree().getItemCount();
-         int heightHint = defaultTableHeightHint;
-         int treeItemHeight = xChangeViewer.getTree().getItemHeight();
-         int calculatedTableHeightHint = treeItemHeight * (numItems + 1);
-         if (calculatedTableHeightHint > defaultTableHeightHint) {
-            heightHint = treeItemHeight * (paddedTableHeightHint + numItems);
+   private void adaptAll(FormToolkit toolkit, Composite composite) {
+      toolkit.adapt(composite);
+      for (Control control : composite.getChildren()) {
+         if (Widgets.isAccessible(control)) {
+            toolkit.adapt(control, false, false);
+            if (control instanceof Composite) {
+               adaptAll(toolkit, (Composite) control);
+            }
          }
-         Tree tree = xChangeViewer.getTree();
-         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-         gridData.heightHint = heightHint > defaultTableHeightHint ? heightHint : defaultTableHeightHint;
-         tree.setLayoutData(gridData);
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString());
       }
    }
 
