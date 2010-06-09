@@ -109,6 +109,7 @@ public class InterArtifactDropTest {
       //Acquire the updated artifact
       Artifact destArtifact =
             ArtifactQuery.getArtifactFromId(updateTestArtifact.getArtId(), sourceArtifact.getBranch());
+      destArtifact.reloadAttributesAndRelations();
       assertTrue(updateTestArtifact.getName().equals(destArtifact.getName()));
    }
 

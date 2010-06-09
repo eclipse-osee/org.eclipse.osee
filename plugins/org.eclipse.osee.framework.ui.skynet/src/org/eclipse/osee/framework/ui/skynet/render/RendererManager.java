@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -152,6 +153,11 @@ public class RendererManager {
    public static void renderAttribute(String attrType, PresentationType presentationType, Artifact artifact, VariableMap options, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
       getBestRenderer(presentationType, artifact, options).renderAttribute(attrType, artifact, presentationType,
             producer, options, attributeElement);
+   }
+
+   public static Collection<AttributeType> getAttributeTypeOrderList(Artifact artifact) throws OseeCoreException {
+      return getBestRenderer(PresentationType.PREVIEW, artifact, null).orderAttributeNames(artifact,
+            artifact.getAttributeTypes());
    }
 
    public static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {

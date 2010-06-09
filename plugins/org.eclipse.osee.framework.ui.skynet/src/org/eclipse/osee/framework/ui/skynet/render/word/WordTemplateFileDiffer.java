@@ -43,8 +43,13 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
  * @author Jeff C. Phillips
  */
 public class WordTemplateFileDiffer {
+   private String nextParagraphNumber;
+   private String outlineType;
 
-   public void generateFileDifferences(String fileName, VariableMap variableMap) throws OseeArgumentException, OseeCoreException {
+   public void generateFileDifferences(String fileName, VariableMap variableMap, String nextParagraphNumber, String outlineType) throws OseeArgumentException, OseeCoreException {
+      this.nextParagraphNumber = nextParagraphNumber;
+      this.outlineType = outlineType;
+
       List<Artifact> newArtifacts = variableMap.getArtifacts("artifacts");
       variableMap.setValue("fileName", fileName);
       variableMap.setValue("diffReportFolderName", ".preview" + fileName);
@@ -113,6 +118,9 @@ public class WordTemplateFileDiffer {
             compareItems.add(new ArtifactDelta(txDelta, start, end));
          }
       }
+      variableMap.setValue("paragraphNumber", nextParagraphNumber);
+      variableMap.setValue("outlineType", outlineType);
+
       Job job = RendererManager.diffInJob(compareItems, variableMap);
       try {
          job.join();

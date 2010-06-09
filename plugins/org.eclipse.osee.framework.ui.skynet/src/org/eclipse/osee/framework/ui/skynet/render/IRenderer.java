@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
@@ -33,37 +35,39 @@ public interface IRenderer {
    public static final int DEFAULT_MATCH = 10;
    public static final int NO_MATCH = -1;
 
-   public abstract List<String> getCommandId(PresentationType presentationType);
+   List<String> getCommandId(PresentationType presentationType);
 
-   public Image getImage(Artifact artifact) throws OseeCoreException;
+   Image getImage(Artifact artifact) throws OseeCoreException;
 
-   public abstract void renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException;
+   void renderAttribute(String attributeTypeName, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException;
 
-   public abstract int minimumRanking() throws OseeCoreException;
+   int minimumRanking() throws OseeCoreException;
 
-   public abstract void open(List<Artifact> artifacts) throws OseeCoreException;
+   void open(List<Artifact> artifacts) throws OseeCoreException;
 
-   public abstract void preview(List<Artifact> artifacts) throws OseeCoreException;
+   void preview(List<Artifact> artifacts) throws OseeCoreException;
 
-   public abstract void print(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException;
+   void print(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException;
 
-   public abstract void print(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException;
+   void print(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException;
 
-   public void openMergeEdit(List<Artifact> artifacts) throws OseeCoreException;
+   void openMergeEdit(List<Artifact> artifacts) throws OseeCoreException;
 
-   public abstract int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException;
+   int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException;
 
-   public abstract String getName();
+   String getName();
 
-   public abstract void setOptions(VariableMap options) throws OseeArgumentException;
+   void setOptions(VariableMap options) throws OseeArgumentException;
 
-   public abstract String getStringOption(String key) throws OseeArgumentException;
+   String getStringOption(String key) throws OseeArgumentException;
 
-   public abstract boolean getBooleanOption(String key) throws OseeArgumentException;
+   boolean getBooleanOption(String key) throws OseeArgumentException;
 
-   public abstract VariableMap getOptions();
+   VariableMap getOptions();
 
-   public abstract IRenderer newInstance() throws OseeCoreException;
+   IRenderer newInstance() throws OseeCoreException;
 
-   public abstract IComparator getComparator();
+   IComparator getComparator();
+
+   List<AttributeType> orderAttributeNames(Artifact artifact, Collection<AttributeType> attributeTypes);
 }

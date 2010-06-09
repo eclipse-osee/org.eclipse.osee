@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -44,7 +45,6 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       Artifact master = getTemplate(variableMap.getString("Master Template"));
       Artifact slave = getTemplate(variableMap.getString("Slave Template"));
       Branch branch = variableMap.getBranch("Branch (If Template specifies Artifacts)");
-      Branch compareBranch = variableMap.getBranch("Compare Against Another Branch");
       List<Artifact> artifacts = variableMap.getArtifacts("Artifacts (If Not Specified in Template)");
       if (artifacts != null && !artifacts.isEmpty()) {
          branch = artifacts.get(0).getBranch();
@@ -54,10 +54,11 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       }
       VariableMap newVariableMap = new VariableMap();
       newVariableMap.setValue("Branch", branch);
+      newVariableMap.setValue("compareBranch", variableMap.getBranch("Compare Against Another Branch"));
       newVariableMap.setValue("Update Paragraph Numbers", updateParagraphNumber);
       newVariableMap.setValue("Publish As Diff", variableMap.getValue("Publish As Diff"));
       //      newVariableMap.setValue("Diff from Baseline", variableMap.getValue("Diff from Baseline"));
-      newVariableMap.setValue("compareBranch", compareBranch);
+      newVariableMap.setValue("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_NAME);
 
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       SkynetTransaction transaction = new SkynetTransaction(branch, "BLAM: Publish with specified template");

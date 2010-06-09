@@ -11,11 +11,14 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
@@ -148,8 +151,8 @@ public class DefaultArtifactRenderer implements IRenderer {
       StringBuilder builder = new StringBuilder();
       ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
       RelationOrderRenderer renderer =
-               new RelationOrderRenderer(SkynetGuiPlugin.getInstance().getOseeCacheService().getRelationTypeCache(),
-                     guidResolver, RelationManager.getSorterProvider());
+            new RelationOrderRenderer(SkynetGuiPlugin.getInstance().getOseeCacheService().getRelationTypeCache(),
+                  guidResolver, RelationManager.getSorterProvider());
 
       WordMLProducer producer = new WordMLProducer(builder);
       RelationOrderData relationOrderData = RelationManager.createRelationOrderData(artifact);
@@ -176,5 +179,24 @@ public class DefaultArtifactRenderer implements IRenderer {
    @Override
    public IComparator getComparator() {
       return DEFAULT_COMPARATOR;
+   }
+
+   public List<AttributeType> orderAttributeNames(Artifact artifact, Collection<AttributeType> attributeTypes) {
+      ArrayList<AttributeType> orderedAttributeTypes = new ArrayList<AttributeType>(attributeTypes.size());
+      AttributeType contentType = null;
+
+      for (AttributeType attributeType : attributeTypes) {
+         if (attributeType.equals(CoreAttributeTypes.WHOLE_WORD_CONTENT) || attributeType.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
+            contentType = attributeType;
+         } else {
+            orderedAttributeTypes.add(attributeType);
+         }
+      }
+
+      Collections.sort(orderedAttributeTypes);
+      if (contentType != null) {
+         orderedAttributeTypes.add(contentType);
+      }
+      return orderedAttributeTypes;
    }
 }

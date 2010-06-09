@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -306,9 +305,10 @@ public class WordTemplateProcessor {
          newVariableMap.setValue("Branch", variableMap.getBranch("Branch"));
          String subDocFileName = subdocumentName + ".xml";
          populateVariableMap(newVariableMap);
+         newVariableMap.setValue("linkType", variableMap.getValue("linkType"));
 
          if (diff) {
-            generateDocumentDiff(newVariableMap, variableMap, subDocFileName);
+            generateDocumentDiff(newVariableMap, variableMap, subDocFileName, nextParagraphNumber, outlineType);
          } else {
             AIFile.writeToFile(folder.getFile(subDocFileName), applyTemplate(newVariableMap, null, slaveTemplate,
                   folder, nextParagraphNumber, outlineType, presentationType));
@@ -320,13 +320,14 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void generateDocumentDiff(VariableMap newVariableMap, VariableMap variableMap, String fileName) throws OseeCoreException {
+   private void generateDocumentDiff(VariableMap newVariableMap, VariableMap variableMap, String fileName, String nextParagraphNumber, String outlineType) throws OseeCoreException {
       newVariableMap.setValue("artifacts", newVariableMap.getArtifacts("srsProducer.objects"));
       newVariableMap.setValue("Diff from Baseline", variableMap.getBoolean("Diff from Baseline"));
       newVariableMap.setValue("compareBranch", variableMap.getBranch("compareBranch"));
       newVariableMap.setValue("template", slaveTemplateName);
+      newVariableMap.setValue("linkType", variableMap.getValue("linkType"));
       WordTemplateFileDiffer templateFileDiffer = new WordTemplateFileDiffer();
-      templateFileDiffer.generateFileDifferences(fileName, newVariableMap);
+      templateFileDiffer.generateFileDifferences(fileName, newVariableMap, nextParagraphNumber, outlineType);
    }
 
    public void populateVariableMap(VariableMap variableMap) throws OseeCoreException {
@@ -407,7 +408,7 @@ public class WordTemplateProcessor {
          String attributeName = attributeElement.getAttributeName();
 
          if (attributeName.equals("*")) {
-            for (AttributeType attributeType : orderAttributeNames(artifact.getAttributeTypes())) {
+            for (AttributeType attributeType : RendererManager.getAttributeTypeOrderList(artifact)) {
                if (!outlining || !attributeType.equals(headingAttributeType)) {
                   processAttribute(variableMap, artifact, wordMl, attributeElement, attributeType, true,
                         presentationType, multipleArtifacts);
@@ -513,24 +514,6 @@ public class WordTemplateProcessor {
             }
          }
       }
-   }
-
-   private List<AttributeType> orderAttributeNames(Collection<AttributeType> attributeTypes) {
-      ArrayList<AttributeType> orderedAttributeTypes = new ArrayList<AttributeType>(attributeTypes.size());
-      AttributeType contentType = null;
-
-      for (AttributeType attributeType : attributeTypes) {
-         if (attributeType.equals(CoreAttributeTypes.WHOLE_WORD_CONTENT) || attributeType.equals(CoreAttributeTypes.WORD_TEMPLATE_CONTENT)) {
-            contentType = attributeType;
-         } else {
-            orderedAttributeTypes.add(attributeType);
-         }
-      }
-      Collections.sort(orderedAttributeTypes);
-      if (contentType != null) {
-         orderedAttributeTypes.add(contentType);
-      }
-      return orderedAttributeTypes;
    }
 
    private void displayNonTemplateArtifacts(final Collection<Artifact> artifacts, final String warningString) {
