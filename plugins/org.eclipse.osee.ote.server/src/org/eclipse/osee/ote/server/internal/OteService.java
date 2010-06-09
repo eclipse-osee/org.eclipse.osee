@@ -172,14 +172,24 @@ public class OteService implements IHostTestEnvironment, IService {
 
 	@Override
 	public void disconnect(UserTestSessionKey key) throws RemoteException {
-		remoteEnvironment.disconnect(key);
-		updateDynamicInfo();		
+		if(remoteEnvironment != null){
+			remoteEnvironment.disconnect(key);
+			updateDynamicInfo();	
+			if(remoteEnvironment.getUserList().size() == 0 && !environmentCreation.isKeepAliveWithNoUsers()){
+				remoteEnvironment = null;
+			}
+		}
 	}
 
 	@Override
 	public void disconnectAll() throws RemoteException {
-		remoteEnvironment.disconnectAll();
-		updateDynamicInfo();		
+		if(remoteEnvironment != null){
+			remoteEnvironment.disconnectAll();
+			updateDynamicInfo();
+			if(!environmentCreation.isKeepAliveWithNoUsers()){
+				remoteEnvironment = null;
+			}
+		}
 	}
 
 	@Override

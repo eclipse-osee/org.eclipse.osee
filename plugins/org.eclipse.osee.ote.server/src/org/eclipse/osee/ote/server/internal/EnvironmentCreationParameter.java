@@ -7,6 +7,7 @@ package org.eclipse.osee.ote.server.internal;
 
 import java.io.Serializable;
 import java.rmi.server.ExportException;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
@@ -84,5 +85,9 @@ class EnvironmentCreationParameter {
 
    public IServiceConnector getServiceConnector() {
       return serviceConnector;
+   }
+   
+   public boolean isKeepAliveWithNoUsers(){
+	   return config.keepEnvAliveWithNoUsers();
    }
 }
