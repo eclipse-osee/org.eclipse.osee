@@ -1077,6 +1077,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
 
    @Override
    public void handleReloadEvent(Sender sender, final Collection<? extends Artifact> artifacts) throws OseeCoreException {
+      if (!Widgets.isAccessible(getTree())) return;
       if (!artifacts.iterator().next().getBranch().equals(AtsUtil.getAtsBranch())) {
          return;
       }
