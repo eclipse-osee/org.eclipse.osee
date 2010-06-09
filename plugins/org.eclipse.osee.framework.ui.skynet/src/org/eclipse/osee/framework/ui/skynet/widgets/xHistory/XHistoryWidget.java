@@ -153,7 +153,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
       });
 
       OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, HistoryView.VIEW_ID,
-            "Hisotry");
+            "Resource History");
 
       new ActionContributionItem(xHistoryViewer.getCustomizeAction()).fill(toolBar, -1);
 
