@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.jdk.core.util;
 /**
  * @author Jeff C. Phillips
  * @author Don Dunne
+ * @author Karol M. Wilk
  */
 public class Strings {
    private final static String EMPTY_STRING = "";
@@ -24,6 +25,21 @@ public class Strings {
 
    public static String emptyString() {
       return EMPTY_STRING;
+   }
+
+   /**
+    * For adjusting '&' containing strings to break the accelerator(a.k.a) mnemonic feature some widgets offer. i.e.
+    * &Test should make Alt+T a shortcut. This method breaks the accelerator by doubling ampersands.
+    * 
+    * @param stringWithAmp
+    * @return a string with doubled ampersands.
+    */
+   public static String ampersandInsteadOfAccelerator(String stringWithAmp) {
+      if (isValid(stringWithAmp)) {
+         return stringWithAmp.replace("&", "&&");
+      } else {
+         return null;
+      }
    }
 
    public static String intern(String str) {
