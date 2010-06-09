@@ -243,7 +243,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          if (editor != null && editor instanceof SMAEditor) {
             currentArtifact = ((SMAEditor) editor).getSma();
             display();
-         } else {
+         } else if (currentArtifact != null && currentArtifact.isDeleted()) {
             super.clear();
          }
       }
