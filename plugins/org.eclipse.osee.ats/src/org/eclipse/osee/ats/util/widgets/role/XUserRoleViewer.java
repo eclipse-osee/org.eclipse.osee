@@ -12,8 +12,10 @@
 package org.eclipse.osee.ats.util.widgets.role;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -49,16 +51,21 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
  * @author Donald G. Dunne
@@ -72,10 +79,8 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
    private static ToolItem newUserRoleItem, deleteUserRoleItem;
    private Label extraInfoLabel;
    private ToolBar toolBar;
+   private static Map<IReviewArtifact, Integer> tableHeight = new HashMap<IReviewArtifact, Integer>();
 
-   /**
-    * @param label
-    */
    public XUserRoleViewer() {
       super("Roles");
 
@@ -93,7 +98,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
          }
       }
 
-      Composite mainComp = new Composite(parent, SWT.BORDER);
+      final Composite mainComp = new Composite(parent, SWT.BORDER);
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
       mainComp.setLayout(ALayout.getZeroMarginLayout());
       if (toolkit != null) {
@@ -103,8 +108,6 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
       createTaskActionBar(mainComp);
 
       xViewer = new UserRoleXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
-      xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-
       xViewer.setContentProvider(new UserRoleContentProvider(xViewer));
       xViewer.setLabelProvider(new UserRoleLabelProvider(xViewer));
       xViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -118,16 +121,67 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
          toolkit.adapt(xViewer.getStatusLabel(), false, false);
       }
 
+      refreshTableSize();
+      // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
+
+      final Sash sash = new Sash(parent, SWT.HORIZONTAL);
+      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      gd.heightHint = 3;
+      sash.setLayoutData(gd);
+      sash.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
+      sash.addListener(SWT.MouseUp, new Listener() {
+         public void handleEvent(Event e) {
+            Rectangle treeRect = xViewer.getTree().getClientArea();
+            int newHeight = treeRect.height + e.y;
+            setTableHeight(newHeight);
+            refreshTableSize();
+            mainComp.layout();
+            xViewer.refresh();
+            if (getForm(mainComp) != null) {
+               getForm(mainComp).reflow(true);
+            }
+         }
+      });
+
+      loadTable();
+   }
+
+   private void refreshTableSize() {
       Tree tree = xViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH);
-      gridData.heightHint = 100;
+      gridData.heightHint = getTableHeight();
       tree.setLayout(ALayout.getZeroMarginLayout());
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
-      // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
+   }
 
-      loadTable();
+   public ScrolledForm getForm(Composite composite) {
+      ScrolledForm form = null;
+      if (composite == null) {
+         return null;
+      }
+      if (composite instanceof ScrolledForm) {
+         return (ScrolledForm) composite;
+      }
+      if (!(composite instanceof ScrolledForm)) {
+         form = getForm(composite.getParent());
+      }
+      return form;
+   }
+
+   private int getTableHeight() {
+      if (reviewArt != null && tableHeight.containsKey(reviewArt)) {
+         return tableHeight.get(reviewArt);
+      }
+      return 100;
+   }
+
+   private void setTableHeight(int newHeight) {
+      if (reviewArt != null) {
+         if (newHeight < 100) newHeight = 100;
+         tableHeight.put(reviewArt, newHeight);
+      }
    }
 
    public void createTaskActionBar(Composite parent) {

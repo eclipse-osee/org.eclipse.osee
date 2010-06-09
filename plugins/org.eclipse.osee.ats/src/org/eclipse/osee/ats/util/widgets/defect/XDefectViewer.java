@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.util.widgets.defect;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -62,10 +63,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
@@ -78,22 +81,17 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 public class XDefectViewer extends XWidget implements IArtifactWidget, IFrameworkTransactionEventListener {
 
    private DefectXViewer xViewer;
-   private static final int defaultTableHeightHint = 100;
-   private static final int paddedTableHeightHint = 2;
    private IDirtiableEditor editor;
    private IReviewArtifact reviewArt;
    public final static String normalColor = "#EEEEEE";
    private static ToolItem newDefectItem, deleteDefectItem;
    private Label extraInfoLabel;
-   private Tree tree;
    private Composite parentComposite;
    private static ToolItem expandDefectItem, collapseDefectItem;
    private static Map<IReviewArtifact, Boolean> mapOfReviewArtifacts = new LinkedHashMap<IReviewArtifact, Boolean>();
    private ToolBar toolBar;
+   private static Map<IReviewArtifact, Integer> tableHeight = new HashMap<IReviewArtifact, Integer>();
 
-   /**
-    * @param label
-    */
    public XDefectViewer() {
       super("Defects");
       OseeEventManager.addListener(this);
@@ -112,7 +110,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          }
       }
 
-      Composite mainComp = new Composite(parent, SWT.BORDER);
+      final Composite mainComp = new Composite(parent, SWT.BORDER);
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
       mainComp.setLayout(ALayout.getZeroMarginLayout());
       if (toolkit != null) {
@@ -134,39 +132,56 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          toolkit.adapt(xViewer.getStatusLabel(), false, false);
       }
 
-      handleExpandCollapseDefectTableList();
-
+      refreshTableSize();
       // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
+
+      final Sash sash = new Sash(parent, SWT.HORIZONTAL);
+      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      gd.heightHint = 3;
+      sash.setLayoutData(gd);
+      sash.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
+      sash.addListener(SWT.MouseUp, new Listener() {
+         public void handleEvent(Event e) {
+            Rectangle treeRect = xViewer.getTree().getClientArea();
+            int newHeight = treeRect.height + e.y;
+            setTableHeight(newHeight);
+            refreshTableSize();
+            mainComp.layout();
+            xViewer.refresh();
+            if (getForm(mainComp) != null) {
+               getForm(mainComp).reflow(true);
+            }
+         }
+      });
+
       loadTable();
    }
 
-   public void setXviewerTree(boolean expand) {
-      tree = xViewer.getTree();
+   private void refreshTableSize() {
+      Tree tree = xViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH);
-      gridData.heightHint = getTableHeightHint(expand);
+      gridData.heightHint = getTableHeight();
       tree.setLayout(ALayout.getZeroMarginLayout());
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
    }
 
-   private int getTableHeightHint(boolean expand) {
-      try {
-         int defectListSize = reviewArt.getDefectManager().getDefectItems().size();
-         int treeItemHeight = tree.getItemHeight();
-         int calculatedTableHeightHint = treeItemHeight * (defectListSize + 1);
-         if (expand && calculatedTableHeightHint > defaultTableHeightHint) {
-            // allow expansion to approximately 50 items 
-            if (defectListSize > defaultTableHeightHint / 2) {
-               return treeItemHeight * (paddedTableHeightHint + defaultTableHeightHint);
-            } else {
-               return treeItemHeight * (paddedTableHeightHint + defectListSize);
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(DefectManager.class, Level.SEVERE, ex.toString());
+   public void setXviewerTree(boolean expand) {
+   }
+
+   private int getTableHeight() {
+      if (reviewArt != null && tableHeight.containsKey(reviewArt)) {
+         return tableHeight.get(reviewArt);
       }
-      return defaultTableHeightHint;
+      return 100;
+   }
+
+   private void setTableHeight(int newHeight) {
+      if (reviewArt != null) {
+         if (newHeight < 100) newHeight = 100;
+         tableHeight.put(reviewArt, newHeight);
+      }
    }
 
    public void createTaskActionBar(Composite parent) {
