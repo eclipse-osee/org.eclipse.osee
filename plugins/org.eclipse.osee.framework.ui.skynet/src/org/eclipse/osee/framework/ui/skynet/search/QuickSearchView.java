@@ -16,8 +16,11 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.IActionable;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
@@ -51,6 +54,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
 
    private static final String ENTRY_SEPARATOR = "##";
    private static final String LAST_QUERY_KEY_ID = "lastQuery";
+   private static final String LAST_BRANCH_GUID = "lastBranch";
    private static final String QUERY_HISTORY_KEY_ID = "queryHistory";
 
    private static final String MAIN_HELP_CONTEXT = "quick_search_text";
@@ -74,6 +78,10 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
       if (memento != null) {
          if (Widgets.isAccessible(searchComposite)) {
             memento.putString(LAST_QUERY_KEY_ID, searchComposite.getQuery());
+            Branch branch = branchSelect.getData();
+            if (branch != null) {
+               memento.putString(LAST_BRANCH_GUID, branch.getGuid());
+            }
             StringBuilder builder = new StringBuilder();
             String[] queries = searchComposite.getQueryHistory();
             for (int index = 0; index < queries.length; index++) {
@@ -114,6 +122,17 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
          }
          if (Widgets.isAccessible(optionsComposite)) {
             optionsComposite.loadState(memento);
+         }
+         if (branchSelect != null) {
+            String guid = memento.getString(LAST_BRANCH_GUID);
+            if (Strings.isValid(guid)) {
+               try {
+                  Branch branch = BranchManager.getBranchByGuid(guid);
+                  branchSelect.setSelection(branch);
+               } catch (OseeCoreException ex) {
+                  // do nothing
+               }
+            }
          }
       }
    }
