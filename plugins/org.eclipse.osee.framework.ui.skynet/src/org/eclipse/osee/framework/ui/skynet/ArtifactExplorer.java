@@ -76,6 +76,7 @@ import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListen
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
+import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -884,18 +885,26 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          public void widgetSelected(SelectionEvent e) {
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             Iterator<?> iterator = selection.iterator();
-
+            Set<Artifact> lockArtifacts = new HashSet<Artifact>();
+            Set<Artifact> unlockArtifacts = new HashSet<Artifact>();
             while (iterator.hasNext()) {
                try {
                   Artifact object = (Artifact) iterator.next();
                   if (new GlobalMenuPermissions(object).isLocked()) {
-                     AccessControlManager.unLockObject(object, UserManager.getUser());
+                     unlockArtifacts.add(object);
                   } else {
-                     AccessControlManager.lockObject(object, UserManager.getUser());
+                     lockArtifacts.add(object);
                   }
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
+            }
+
+            try {
+               AccessControlManager.unLockObjects(unlockArtifacts, UserManager.getUser());
+               AccessControlManager.lockObjects(lockArtifacts, UserManager.getUser());
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
 
@@ -1432,12 +1441,16 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    }
 
    @Override
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifacts) {
+   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
       try {
-         if (loadedArtifacts.isNotForBranch(branch)) {
+         if (!accessControlEvent.isForBranch(branch)) {
             return;
          }
-         if (accessControlEventType == AccessControlEventType.UserAuthenticated || accessControlEventType == AccessControlEventType.ArtifactsUnlocked || accessControlEventType == AccessControlEventType.ArtifactsLocked) {
+         if (accessControlEvent.getEventType() == AccessControlEventType.UserAuthenticated ||
+         //
+         accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked ||
+         //
+         accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {

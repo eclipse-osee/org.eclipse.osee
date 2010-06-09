@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -183,10 +184,10 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       }
 
       @Override
-      public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifacts) {
+      public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
          try {
-            if (accessControlEventType == AccessControlEventType.ArtifactsLocked || accessControlEventType == AccessControlEventType.ArtifactsUnlocked) {
-               if (loadedArtifacts.getLoadedArtifacts().contains(getArtifactFromEditorInput())) {
+            if (accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked || accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked) {
+               if (accessControlEvent.getArtifacts().contains(getArtifactFromEditorInput())) {
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override
                      public void run() {

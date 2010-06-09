@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
@@ -53,6 +54,42 @@ public class InternalEventManager2 {
 
    private static void execute(Runnable runnable) {
       executorService.submit(runnable);
+   }
+
+   /*
+    * Kick LOCAL and REMOTE access control events
+    */
+   static void kickAccessControlArtifactsEvent(final Sender sender, final AccessControlEvent accessControlEvent) {
+      if (sender == null) {
+         throw new IllegalArgumentException("sender can not be null");
+      }
+      if (accessControlEvent.getEventType() == null) {
+         throw new IllegalArgumentException("accessControlEventType can not be null");
+      }
+      if (isDisableEvents()) {
+         return;
+      }
+      OseeEventManager.eventLog("IEM2: kickAccessControlEvent - type: " + accessControlEvent + sender + " artifacts: " + accessControlEvent.getArtifacts());
+      Runnable runnable = new Runnable() {
+         public void run() {
+            try {
+               // Kick LOCAL
+               boolean normalOperation = !enableRemoteEventLoopback;
+               boolean loopbackTestEnabledAndRemoteEventReturned = enableRemoteEventLoopback && sender.isRemote();
+               if ((normalOperation && sender.isLocal()) || loopbackTestEnabledAndRemoteEventReturned) {
+                  FrameworkEventManager.processAccessControlEvent(sender, accessControlEvent);
+               }
+               // Kick REMOTE
+               if (sender.isLocal() && accessControlEvent.getEventType().isRemoteEventType()) {
+                  RemoteEventManager2.getInstance().kick(
+                        FrameworkEventUtil.getRemoteAccessControlEvent(accessControlEvent));
+               }
+            } catch (Exception ex) {
+               OseeEventManager.eventLog("IEM2 kickAccessControlEvent", ex);
+            }
+         }
+      };
+      execute(runnable);
    }
 
    // Kick LOCAL "remote event manager" event

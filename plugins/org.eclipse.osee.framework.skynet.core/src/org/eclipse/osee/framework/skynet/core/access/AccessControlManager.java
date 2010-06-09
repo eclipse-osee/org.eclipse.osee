@@ -17,9 +17,11 @@ import static org.eclipse.osee.framework.core.enums.PermissionEnum.LOCK;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.READ;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -46,6 +48,7 @@ import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListene
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -518,43 +521,57 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       objectToSubjectCache.put(accessObject, subjectId);
    }
 
-   public static void lockObject(Artifact object, Artifact subject) {
-      Integer objectArtId = object.getArtId();
-      Integer subjectArtId = subject.getArtId();
-      Integer objectBranchId = object.getBranch().getId();
+   public static void lockObjects(Collection<Artifact> objects, Artifact subject) {
+      AccessControlEvent event = new AccessControlEvent();
+      event.setEventType(AccessControlEventType.ArtifactsLocked);
+      Set<Artifact> lockedArts = new HashSet<Artifact>();
+      for (Artifact object : objects) {
+         Integer objectArtId = object.getArtId();
+         Integer subjectArtId = subject.getArtId();
+         Integer objectBranchId = object.getBranch().getId();
 
-      if (!objectToBranchLockCache.containsKey(objectArtId)) {
-         AccessObject accessObject = getAccessObject(object);
-         new AccessControlData(subject, accessObject, PermissionEnum.LOCK, true).persist();
-         objectToBranchLockCache.put(objectArtId, objectBranchId);
-         lockedObjectToSubject.put(objectArtId, subjectArtId);
-
-         try {
-            OseeEventManager.kickAccessControlArtifactsEvent(instance, AccessControlEventType.ArtifactsLocked,
-                  new LoadedArtifacts(object));
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         if (!objectToBranchLockCache.containsKey(objectArtId)) {
+            AccessObject accessObject = getAccessObject(object);
+            new AccessControlData(subject, accessObject, PermissionEnum.LOCK, true).persist();
+            objectToBranchLockCache.put(objectArtId, objectBranchId);
+            lockedObjectToSubject.put(objectArtId, subjectArtId);
+            event.getArtifacts().add(object.getBasicGuidArtifact());
+            lockedArts.add(object);
          }
+      }
+      try {
+         OseeEventManager.kickAccessControlArtifactsEvent(instance, event, new LoadedArtifacts(lockedArts));
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
-   public static void unLockObject(Artifact object, Artifact subject) throws OseeDataStoreException, OseeAuthenticationRequiredException {
-      Integer objectArtId = object.getArtId();
-      Integer branchId = object.getBranch().getId();
-      Integer lockedBranchId;
+   public static void unLockObjects(Collection<Artifact> objects, Artifact subject) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+      AccessControlEvent event = new AccessControlEvent();
+      event.setEventType(AccessControlEventType.ArtifactsUnlocked);
+      Set<Artifact> lockedArts = new HashSet<Artifact>();
+      for (Artifact object : objects) {
+         Integer objectArtId = object.getArtId();
+         Integer branchId = object.getBranch().getId();
+         Integer lockedBranchId;
 
-      if (objectToBranchLockCache.containsKey(objectArtId) && canUnlockObject(object, subject)) {
-         lockedBranchId = objectToBranchLockCache.get(objectArtId);
+         if (objectToBranchLockCache.containsKey(objectArtId) && canUnlockObject(object, subject)) {
+            lockedBranchId = objectToBranchLockCache.get(objectArtId);
 
-         if (branchId.equals(lockedBranchId)) {
-            AccessObject accessObject = getAccessObject(object);
-            removeAccessControlDataIf(true, new AccessControlData(subject, accessObject, PermissionEnum.LOCK, false));
-            objectToBranchLockCache.remove(objectArtId);
-            lockedObjectToSubject.remove(objectArtId);
-
-            OseeEventManager.kickAccessControlArtifactsEvent(instance, AccessControlEventType.ArtifactsUnlocked,
-                  new LoadedArtifacts(object));
+            if (branchId.equals(lockedBranchId)) {
+               AccessObject accessObject = getAccessObject(object);
+               removeAccessControlDataIf(true, new AccessControlData(subject, accessObject, PermissionEnum.LOCK, false));
+               objectToBranchLockCache.remove(objectArtId);
+               lockedObjectToSubject.remove(objectArtId);
+               event.getArtifacts().add(object.getBasicGuidArtifact());
+               lockedArts.add(object);
+            }
          }
+      }
+      try {
+         OseeEventManager.kickAccessControlArtifactsEvent(instance, event, new LoadedArtifacts(lockedArts));
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -113,8 +114,9 @@ final class ClientUser {
 
          @Override
          public IStatus run(IProgressMonitor monitor) throws Exception {
-            OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlEventType.UserAuthenticated,
-                  LoadedArtifacts.createEmptyLoadedArtifacts());
+            AccessControlEvent event = new AccessControlEvent();
+            event.setEventType(AccessControlEventType.UserAuthenticated);
+            OseeEventManager.kickAccessControlArtifactsEvent(this, event, LoadedArtifacts.createEmptyLoadedArtifacts());
             return Status.OK_STATUS;
          }
 

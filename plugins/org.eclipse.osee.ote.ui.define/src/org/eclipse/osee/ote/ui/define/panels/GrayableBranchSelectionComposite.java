@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
+import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.panels.BranchSelectSimpleComposite;
 import org.eclipse.swt.SWT;
@@ -62,8 +62,8 @@ public class GrayableBranchSelectionComposite extends Composite implements IAcce
    }
 
    @Override
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlModType, LoadedArtifacts loadedArtifactss) {
-      if (accessControlModType == AccessControlEventType.UserAuthenticated) {
+   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
+      if (accessControlEvent.getEventType() == AccessControlEventType.UserAuthenticated) {
          handleUserAuthenticated();
       }
    }

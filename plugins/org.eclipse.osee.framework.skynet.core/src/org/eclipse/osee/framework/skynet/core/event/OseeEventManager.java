@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
+import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.event2.PersistEvent;
@@ -100,11 +101,14 @@ public class OseeEventManager {
    }
 
    // Kick LOCAL and REMOTE access control events
-   public static void kickAccessControlArtifactsEvent(Object source, final AccessControlEventType accessControlModType, final LoadedArtifacts loadedArtifacts) throws OseeAuthenticationRequiredException {
+   public static void kickAccessControlArtifactsEvent(Object source, AccessControlEvent accessControlEvent, final LoadedArtifacts loadedArtifacts) throws OseeAuthenticationRequiredException {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickAccessControlArtifactsEvent(getSender(source), accessControlModType, loadedArtifacts);
+      InternalEventManager.kickAccessControlArtifactsEvent(getSender(source), accessControlEvent.getEventType(),
+            loadedArtifacts);
+      accessControlEvent.setNetworkSender(getSender(source).getNetworkSender2());
+      InternalEventManager2.kickAccessControlArtifactsEvent(getSender(source), accessControlEvent);
    }
 
    // Kick LOCAL artifact modified event; This event does NOT go external
@@ -155,7 +159,6 @@ public class OseeEventManager {
       for (Integer value : transactionIds) {
          transIds[x++] = value.intValue();
       }
-      //TODO This needs to be converted into the individual artifacts and relations that were deleted/modified
       if (transactionEvent.getEventType() == TransactionEventType.Purged) {
          InternalEventManager.kickTransactionsPurgedEvent(getSender(source), transIds);
       }

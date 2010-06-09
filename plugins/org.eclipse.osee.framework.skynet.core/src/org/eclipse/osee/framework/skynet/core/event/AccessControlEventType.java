@@ -14,11 +14,12 @@ package org.eclipse.osee.framework.skynet.core.event;
  * @author Donald G. Dunne
  */
 public enum AccessControlEventType {
-   ArtifactsLocked(EventType.LocalAndRemote),
-   ArtifactsUnlocked(EventType.LocalAndRemote),
-   UserAuthenticated(EventType.LocalOnly);
+   ArtifactsLocked(EventType.LocalAndRemote, "AAn_QHnJpWky8xcyKEgA"),
+   ArtifactsUnlocked(EventType.LocalAndRemote, "AFRkIPF_y3ExB4XCyPgA"),
+   UserAuthenticated(EventType.LocalOnly, "AFRkIhbm0BbIGKALcKQA");
 
    private final EventType eventType;
+   private final String guid;
 
    public boolean isRemoteEventType() {
       return eventType == EventType.LocalAndRemote || eventType == EventType.RemoteOnly;
@@ -28,10 +29,22 @@ public enum AccessControlEventType {
       return eventType == EventType.LocalAndRemote || eventType == EventType.LocalOnly;
    }
 
-   /**
-    * @param localOnly true if this event type is to be thrown only locally and not to other clients
-    */
-   private AccessControlEventType(EventType eventType) {
+   private AccessControlEventType(EventType eventType, String guid) {
       this.eventType = eventType;
+      this.guid = guid;
    }
+
+   public String getGuid() {
+      return guid;
+   }
+
+   public static AccessControlEventType getByGuid(String guid) {
+      for (AccessControlEventType type : values()) {
+         if (type.guid.equals(guid)) {
+            return type;
+         }
+      }
+      return null;
+   }
+
 }

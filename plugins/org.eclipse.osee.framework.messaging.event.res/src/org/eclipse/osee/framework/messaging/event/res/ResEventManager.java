@@ -12,6 +12,7 @@ import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAccessControlEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBroadcastEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
@@ -70,13 +71,20 @@ public class ResEventManager implements OseeMessagingStatusCallback {
       connectionNode.subscribe(ResMessages.RemotePersistEvent1, new RemotePersistEvent1Listener(), instance);
       connectionNode.subscribe(ResMessages.RemoteBranchEvent1, new RemoteBranchEvent1Listener(), instance);
       connectionNode.subscribe(ResMessages.RemoteBroadcastEvent1, new RemoteBroadcastEvent1Listener(), instance);
+      connectionNode.subscribe(ResMessages.RemoteAccessControlEvent1, new RemoteAccessControlEvent1Listener(), instance);
    }
 
    public void kick(RemoteEvent remoteEvent) throws Exception {
-      if (remoteEvent instanceof RemoteTransactionEvent1) {
+      if (remoteEvent instanceof RemotePersistEvent1) {
+         sendRemoteEvent(ResMessages.RemotePersistEvent1, remoteEvent);
+      } else if (remoteEvent instanceof RemoteTransactionEvent1) {
          sendRemoteEvent(ResMessages.RemoteTransactionEvent1, remoteEvent);
       } else if (remoteEvent instanceof RemoteBranchEvent1) {
          sendRemoteEvent(ResMessages.RemoteBranchEvent1, remoteEvent);
+      } else if (remoteEvent instanceof RemoteBroadcastEvent1) {
+         sendRemoteEvent(ResMessages.RemoteBroadcastEvent1, remoteEvent);
+      } else if (remoteEvent instanceof RemoteAccessControlEvent1) {
+         sendRemoteEvent(ResMessages.RemoteAccessControlEvent1, remoteEvent);
       } else {
          System.out.println("ResEventManager: Unhandled remote event " + remoteEvent);
       }
@@ -108,6 +116,25 @@ public class ResEventManager implements OseeMessagingStatusCallback {
 
    @Override
    public void success() {
+   }
+
+   public class RemoteAccessControlEvent1Listener extends OseeMessagingListener {
+
+      public RemoteAccessControlEvent1Listener() {
+         super(RemoteAccessControlEvent1.class);
+      }
+
+      @Override
+      public void process(final Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
+         RemoteAccessControlEvent1 remoteTransactionEvent1 = (RemoteAccessControlEvent1) message;
+         System.err.println(String.format(getClass().getSimpleName() + " - received [%s]",
+               message.getClass().getSimpleName()));
+         try {
+            frameworkEventListener.onEvent(remoteTransactionEvent1);
+         } catch (RemoteException ex) {
+            System.err.println(getClass().getSimpleName() + " - process: " + ex.getLocalizedMessage());
+         }
+      }
    }
 
    public class RemoteTransactionEvent1Listener extends OseeMessagingListener {

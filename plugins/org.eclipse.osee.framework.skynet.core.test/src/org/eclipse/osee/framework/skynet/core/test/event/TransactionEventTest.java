@@ -12,10 +12,7 @@ package org.eclipse.osee.framework.skynet.core.test.event;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -33,10 +30,6 @@ import org.eclipse.osee.framework.skynet.core.event2.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEventType;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -47,19 +40,8 @@ import org.eclipse.osee.support.test.util.TestUtil;
 public class TransactionEventTest {
 
    private TransactionEvent resultTransEvent = null;
-   final Set<EventBasicGuidArtifact> resultEventArtifacts = new HashSet<EventBasicGuidArtifact>();
-   final Set<EventBasicGuidRelation> resultEventRelations = new HashSet<EventBasicGuidRelation>();
    private Sender resultSender = null;
    public static List<String> ignoreLogging = Arrays.asList("");
-
-   public class ArtifactEventListener implements IArtifactListener {
-      @Override
-      public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Collection<EventBasicGuidRelation> eventRelations, Sender sender) {
-         resultEventArtifacts.addAll(eventArtifacts);
-         resultEventRelations.addAll(eventRelations);
-      }
-   }
-   private ArtifactEventListener artifactEventListener = new ArtifactEventListener();
 
    @org.junit.Test
    public void testRegistration() throws Exception {
@@ -106,20 +88,13 @@ public class TransactionEventTest {
       // Add listener for delete transaction event
       FrameworkEventManager.removeAllListeners();
       FrameworkEventManager.addListener(transEventListener);
-      if (isRemoteTest()) {
-         FrameworkEventManager.addListener(artifactEventListener);
-         Assert.assertEquals(2, FrameworkEventManager.getNumberOfListeners());
-      } else {
-         Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
-      }
-      resultEventArtifacts.clear();
-      resultEventRelations.clear();
+      Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
 
       // Delete it
       IOperation operation = new PurgeTransactionOperation(Activator.getInstance(), false, transIdToDelete);
       Operations.executeAndPend(operation, false);
 
-      Thread.sleep(4000);
+      Thread.sleep(8000);
 
       // Verify that all stuff reverted
       Assert.assertNotNull(resultTransEvent);
@@ -138,18 +113,6 @@ public class TransactionEventTest {
       Assert.assertEquals(BranchManager.getCommonBranch().getGuid(), guidArt.getBranchGuid());
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(CoreArtifactTypes.GeneralData.getGuid(), guidArt.getArtTypeGuid());
-
-      if (isRemoteTest()) {
-         // If remote event; Verify that artifact reload happened
-         Assert.assertEquals(1, resultEventArtifacts.size());
-         Assert.assertEquals("No relations events should be sent", 0, resultEventRelations.size());
-         EventBasicGuidArtifact eventGuidArt = resultEventArtifacts.iterator().next();
-         Assert.assertEquals(newArt.getGuid(), eventGuidArt.getGuid());
-         Assert.assertEquals(newArt.getArtifactType().getGuid(), eventGuidArt.getArtTypeGuid());
-         Assert.assertEquals(newArt.getBranch().getGuid(), eventGuidArt.getBranchGuid());
-         Assert.assertEquals(eventGuidArt.getModType(), EventModType.Reloaded);
-         Assert.assertFalse(newArt.isDirty());
-      }
 
       TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
    }

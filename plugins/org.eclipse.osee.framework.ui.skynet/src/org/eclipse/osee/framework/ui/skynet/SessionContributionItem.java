@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.dialogs.AuthenticationDialog;
@@ -78,8 +79,9 @@ public final class SessionContributionItem extends OseeContributionItem implemen
                      Display.getDefault().asyncExec(new Runnable() {
                         public void run() {
                            try {
-                              OseeEventManager.kickAccessControlArtifactsEvent(this,
-                                    AccessControlEventType.UserAuthenticated,
+                              AccessControlEvent event = new AccessControlEvent();
+                              event.setEventType(AccessControlEventType.UserAuthenticated);
+                              OseeEventManager.kickAccessControlArtifactsEvent(this, event,
                                     LoadedArtifacts.createEmptyLoadedArtifacts());
                            } catch (Exception ex) {
                               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -116,8 +118,8 @@ public final class SessionContributionItem extends OseeContributionItem implemen
    }
 
    @Override
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifactss) {
-      if (accessControlEventType == AccessControlEventType.UserAuthenticated) {
+   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
+      if (accessControlEvent.getEventType() == AccessControlEventType.UserAuthenticated) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {

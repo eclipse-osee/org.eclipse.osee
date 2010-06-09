@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IRemoteEventManagerEventListener;
@@ -97,6 +98,15 @@ public class FrameworkEventManager {
          if (artifactListener != null) {
             // TODO handle filters first
             artifactListener.handleArtifactModified(eventArtifacts, eventRelations, sender);
+         }
+      }
+   }
+
+   public static void processAccessControlEvent(Sender sender, AccessControlEvent accessControlEvent) {
+      OseeEventManager.eventLog(String.format("FEM: processAccessControlEvent [%s]", accessControlEvent));
+      for (IEventListener listener : listeners) {
+         if (listener instanceof IAccessControlEventListener) {
+            ((IAccessControlEventListener) listener).handleAccessControlArtifactsEvent(sender, accessControlEvent);
          }
       }
    }
