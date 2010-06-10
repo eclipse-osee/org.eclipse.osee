@@ -46,6 +46,7 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -556,7 +557,8 @@ public class SMAWorkFlowSection extends SectionPart {
       });
       assigneesLabelLink.setBackground(AtsUtil.ACTIVE_COLOR);
 
-      transitionAssigneesLabel = toolkit.createLabel(comp, sma.getTransitionAssigneesStr());
+      transitionAssigneesLabel =
+            toolkit.createLabel(comp, Strings.truncate(sma.getTransitionAssigneesStr(), 100, true));
       transitionAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       transitionAssigneesLabel.setBackground(AtsUtil.ACTIVE_COLOR);
 

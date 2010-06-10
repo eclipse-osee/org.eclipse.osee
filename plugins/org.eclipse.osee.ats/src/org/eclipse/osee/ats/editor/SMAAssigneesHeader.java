@@ -10,6 +10,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -97,8 +98,9 @@ public class SMAAssigneesHeader extends Composite {
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          value = ex.getLocalizedMessage();
+         valueLabel.setToolTipText(value);
       }
-      valueLabel.setText(value);
+      valueLabel.setText(Strings.truncate(value, 150, true));
       valueLabel.getParent().layout();
    }
 

@@ -192,20 +192,11 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       bComp.setLayout(new GridLayout(2, false));
       bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      Composite leftComp = new Composite(bComp, SWT.NONE);
-      leftComp.setLayout(new GridLayout());
-      leftComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
+      Composite actionComp = new Composite(bComp, SWT.NONE);
+      actionComp.setLayout(new GridLayout());
+      actionComp.setLayoutData(new GridData(GridData.END));
 
-      extraInfoLabel = new Label(leftComp, SWT.NONE);
-      extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      extraInfoLabel.setText("");
-      extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-
-      Composite rightComp = new Composite(bComp, SWT.NONE);
-      rightComp.setLayout(new GridLayout());
-      rightComp.setLayoutData(new GridData(GridData.END));
-
-      toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
+      toolBar = new ToolBar(actionComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
@@ -262,7 +253,17 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          }
       });
 
-      createTaskActionBarPulldown(toolBar, rightComp);
+      createTaskActionBarPulldown(toolBar, actionComp);
+
+      Composite labelComp = new Composite(bComp, SWT.NONE);
+      labelComp.setLayout(new GridLayout());
+      labelComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
+
+      extraInfoLabel = new Label(labelComp, SWT.NONE);
+      extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      extraInfoLabel.setText("");
+      extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+
       refreshActionEnablement();
    }
 
@@ -273,6 +274,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
    public void createTaskActionBarPulldown(final ToolBar toolBar, Composite composite) {
       final ToolItem dropDown = new ToolItem(toolBar, SWT.DROP_DOWN);
+      dropDown.setImage(ImageManager.getImage(FrameworkImage.GEAR));
       final Menu menu = new Menu(composite);
 
       dropDown.addListener(SWT.Selection, new Listener() {

@@ -192,20 +192,11 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
       bComp.setLayout(new GridLayout(2, false));
       bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      Composite leftComp = new Composite(bComp, SWT.NONE);
-      leftComp.setLayout(new GridLayout());
-      leftComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
+      Composite actionComp = new Composite(bComp, SWT.NONE);
+      actionComp.setLayout(new GridLayout());
+      actionComp.setLayoutData(new GridData(GridData.END));
 
-      extraInfoLabel = new Label(leftComp, SWT.NONE);
-      extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      extraInfoLabel.setText("");
-      extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-
-      Composite rightComp = new Composite(bComp, SWT.NONE);
-      rightComp.setLayout(new GridLayout());
-      rightComp.setLayoutData(new GridData(GridData.END));
-
-      toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
+      toolBar = new ToolBar(actionComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
@@ -239,6 +230,15 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
             loadTable();
          }
       });
+
+      Composite labelComp = new Composite(bComp, SWT.NONE);
+      labelComp.setLayout(new GridLayout());
+      labelComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
+
+      extraInfoLabel = new Label(labelComp, SWT.NONE);
+      extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      extraInfoLabel.setText("");
+      extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 
       refreshActionEnablement();
    }
