@@ -14,7 +14,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -1230,14 +1229,14 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public void switchElementAssociation(Collection<U> messages) {
    }
    
-   public Map<DataType, Class<? extends Message>[]> getAssociatedMessages() {
+   public Map<? extends DataType, Class<? extends Message>[]> getAssociatedMessages() {
       return new HashMap<DataType, Class<? extends Message>[]>();
    }
 
    public void postCreateMessageSetup(IMessageManager messageManager, MessageData data) throws Exception {
-      Map<DataType, Class<? extends Message>[]> o = getAssociatedMessages();
+      Map<? extends DataType, Class<? extends Message>[]> o = getAssociatedMessages();
       messageRequestor = messageManager.createMessageRequestor(getName());
-      for (Entry<DataType, Class<? extends Message>[]> entry : o.entrySet()) {
+      for (Entry<? extends DataType, Class<? extends Message>[]> entry : o.entrySet()) {
           if (messageManager.isPhysicalTypeAvailable(entry.getKey())) {
              for (Class<? extends Message> clazz : entry.getValue()) {
                 final Message message;
