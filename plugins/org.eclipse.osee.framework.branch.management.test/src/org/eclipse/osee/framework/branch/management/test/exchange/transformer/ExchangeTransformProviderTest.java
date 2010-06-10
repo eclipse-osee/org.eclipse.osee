@@ -14,13 +14,14 @@ import org.eclipse.osee.framework.branch.management.exchange.transform.IOseeExch
 import org.eclipse.osee.framework.branch.management.exchange.transform.V0_8_3Transformer;
 import org.eclipse.osee.framework.branch.management.exchange.transform.V0_9_0Transformer;
 import org.eclipse.osee.framework.branch.management.exchange.transform.V0_9_2Transformer;
+import org.eclipse.osee.framework.branch.management.exchange.transform.V0_9_4Transformer;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.Version;
 
 /**
  * Test Case for {@link ExchangeTransformProvider}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ExchangeTransformProviderTest {
@@ -34,13 +35,15 @@ public class ExchangeTransformProviderTest {
    @Test
    @SuppressWarnings("unchecked")
    public void testGetApplicableTransforms() {
-      assertApplicable("0.0.0", V0_8_3Transformer.class, V0_9_0Transformer.class, V0_9_2Transformer.class);
-      assertApplicable("0.0.0.v201009081001", V0_8_3Transformer.class, V0_9_0Transformer.class, V0_9_2Transformer.class);
-      assertApplicable("0.8.2.v201009081001", V0_8_3Transformer.class, V0_9_0Transformer.class, V0_9_2Transformer.class);
-      assertApplicable("0.8.3.v201009081001", V0_9_0Transformer.class, V0_9_2Transformer.class);
-      assertApplicable("0.9", V0_9_2Transformer.class);
-      assertApplicable("0.9.1.v201009081001", V0_9_2Transformer.class);
-      assertApplicable("0.9.2");
+      assertApplicable("0.0.0", V0_8_3Transformer.class, V0_9_0Transformer.class, V0_9_2Transformer.class, V0_9_4Transformer.class);
+      assertApplicable("0.0.0.v201009081001", V0_8_3Transformer.class, V0_9_0Transformer.class, V0_9_2Transformer.class, V0_9_4Transformer.class);
+      assertApplicable("0.8.2.v201009081001", V0_8_3Transformer.class, V0_9_0Transformer.class, V0_9_2Transformer.class, V0_9_4Transformer.class);
+      assertApplicable("0.8.3.v201009081001", V0_9_0Transformer.class, V0_9_2Transformer.class, V0_9_4Transformer.class);
+      assertApplicable("0.9", V0_9_2Transformer.class, V0_9_4Transformer.class);
+      assertApplicable("0.9.1.v201009081001", V0_9_2Transformer.class, V0_9_4Transformer.class);
+      assertApplicable("0.9.2", V0_9_4Transformer.class);
+      assertApplicable("0.9.3", V0_9_4Transformer.class);
+      assertApplicable("0.9.4");
       assertApplicable("1");
    }
 
