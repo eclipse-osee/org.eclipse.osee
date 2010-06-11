@@ -105,9 +105,8 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickAccessControlArtifactsEvent(getSender(source), accessControlEvent.getEventType(),
-            loadedArtifacts);
       accessControlEvent.setNetworkSender(getSender(source).getNetworkSender2());
+      InternalEventManager.kickAccessControlArtifactsEvent(getSender(source), accessControlEvent, loadedArtifacts);
       InternalEventManager2.kickAccessControlArtifactsEvent(getSender(source), accessControlEvent);
    }
 

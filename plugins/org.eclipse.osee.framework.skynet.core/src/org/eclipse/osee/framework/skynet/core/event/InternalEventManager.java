@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -235,11 +236,11 @@ public class InternalEventManager {
    /*
     * Kick LOCAL and REMOTE access control events
     */
-   static void kickAccessControlArtifactsEvent(final Sender sender, final AccessControlEventType accessControlEventType, final LoadedArtifacts loadedArtifacts) {
+   static void kickAccessControlArtifactsEvent(final Sender sender, final AccessControlEvent accessControlEvent, final LoadedArtifacts loadedArtifacts) {
       if (sender == null) {
          throw new IllegalArgumentException("sender can not be null");
       }
-      if (accessControlEventType == null) {
+      if (accessControlEvent.getEventType() == null) {
          throw new IllegalArgumentException("accessControlEventType can not be null");
       }
       if (loadedArtifacts == null) {
@@ -248,17 +249,17 @@ public class InternalEventManager {
       if (isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM1: kickAccessControlEvent - type: " + accessControlEventType + sender + " loadedArtifacts: " + loadedArtifacts);
+      OseeEventManager.eventLog("IEM1: kickAccessControlEvent - type: " + accessControlEvent.getEventType() + sender + " loadedArtifacts: " + loadedArtifacts);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
-            if (accessControlEventType.isLocalEventType()) {
+            if (accessControlEvent.getEventType().isLocalEventType()) {
                safelyInvokeListeners(IAccessControlEventListener.class, "handleAccessControlArtifactsEvent", sender,
-                     accessControlEventType, loadedArtifacts);
+                     accessControlEvent);
             }
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
-               if (sender.isLocal() && accessControlEventType.isRemoteEventType()) {
+               if (sender.isLocal() && accessControlEvent.getEventType().isRemoteEventType()) {
                   Integer branchId = null;
                   if (loadedArtifacts != null && !loadedArtifacts.getLoadedArtifacts().isEmpty()) {
                      branchId = loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getId();
@@ -272,8 +273,9 @@ public class InternalEventManager {
                      artifactIds = Collections.emptyList();
                      artifactTypeIds = Collections.emptyList();
                   }
-                  RemoteEventManager.kick(new NetworkAccessControlArtifactsEvent(accessControlEventType.name(),
-                        branchId == null ? -1 : branchId, artifactIds, artifactTypeIds, sender.getNetworkSender()));
+                  RemoteEventManager.kick(new NetworkAccessControlArtifactsEvent(
+                        accessControlEvent.getEventType().name(), branchId == null ? -1 : branchId, artifactIds,
+                        artifactTypeIds, sender.getNetworkSender()));
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
