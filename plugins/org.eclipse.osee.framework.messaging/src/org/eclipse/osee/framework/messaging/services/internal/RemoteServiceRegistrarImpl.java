@@ -12,12 +12,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.services.BaseMessages;
+import org.eclipse.osee.framework.messaging.services.RegisteredServiceReference;
 import org.eclipse.osee.framework.messaging.services.RemoteServiceRegistrar;
 import org.eclipse.osee.framework.messaging.services.ServiceInfoPopulator;
-import org.eclipse.osee.framework.messaging.services.RegisteredServiceReference;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -45,7 +46,7 @@ public class RemoteServiceRegistrarImpl implements RemoteServiceRegistrar {
    }
 
    public void stop() {
-      connectionNode.subscribe(BaseMessages.ServiceHealthRequest, healthRequestListener, new OseeMessagingStatusImpl("Failed to subscribe to " + BaseMessages.ServiceHealthRequest.getName(), RemoteServiceRegistrarImpl.class));
+      connectionNode.unsubscribe(BaseMessages.ServiceHealthRequest, healthRequestListener, new OseeMessagingStatusImpl("Failed to subscribe to " + BaseMessages.ServiceHealthRequest.getName(), RemoteServiceRegistrarImpl.class));
    }
 
    @Override

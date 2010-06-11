@@ -8,6 +8,7 @@ package org.eclipse.osee.framework.messaging.services.internal;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.MessageService;
@@ -29,6 +30,7 @@ public class ServiceLookupAndRegistrarLifeCycle extends ServiceTracker {
 	private ServiceRegistration lookupRegistration;
 	private ServiceRegistration registrarRegistration;
 	private ClassLoader contextClassLoader;
+	private RemoteServiceLookupImpl lookup;
 	/**
 	 * @param context
 	 * @param filter
@@ -51,11 +53,11 @@ public class ServiceLookupAndRegistrarLifeCycle extends ServiceTracker {
 		   OseeLog.log(Activator.class, Level.FINEST, String.format("set context classloader"));
 			Thread.currentThread().setContextClassLoader(contextClassLoader);
 			OseeLog.log(Activator.class, Level.FINEST, String.format("done set context classloader"));
-			RemoteServiceRegistrar registrar = new RemoteServiceRegistrarImpl(messageService.getDefault(), executor);
+			registrar = new RemoteServiceRegistrarImpl(messageService.getDefault(), executor);
 			OseeLog.log(Activator.class, Level.FINEST, String.format("Getting ready to start %s.", RemoteServiceRegistrarImpl.class.getName()));
 			registrar.start();
 			OseeLog.log(Activator.class, Level.FINEST, String.format("started %s.", RemoteServiceRegistrarImpl.class.getName()));
-			RemoteServiceLookup lookup = new RemoteServiceLookupImpl(messageService.getDefault(), executor);
+			lookup = new RemoteServiceLookupImpl(messageService.getDefault(), executor);
 			OseeLog.log(Activator.class, Level.FINEST, String.format("Getting ready to start %s.", RemoteServiceLookupImpl.class.getName()));
 			lookup.start();
 			OseeLog.log(Activator.class, Level.FINEST, String.format("started %s.", RemoteServiceLookupImpl.class.getName()));
@@ -72,10 +74,29 @@ public class ServiceLookupAndRegistrarLifeCycle extends ServiceTracker {
 
 	@Override
 	public void removedService(ServiceReference reference, Object service) {
-		lookupRegistration.unregister();
-		registrarRegistration.unregister();
-		registrar.stop();
+		commonShutdown();
 		super.removedService(reference, service);
 	}
 
+	@Override
+	public void close() {
+		commonShutdown();
+		super.close();
+	}
+
+	private void commonShutdown(){
+		if(lookupRegistration != null){
+			lookupRegistration.unregister();
+			lookupRegistration = null;
+			lookup.stop();
+		}
+		if(registrarRegistration != null){
+			registrarRegistration.unregister();
+			registrarRegistration = null;
+			registrar.stop();
+		}
+		
+	}
+	
+	
 }

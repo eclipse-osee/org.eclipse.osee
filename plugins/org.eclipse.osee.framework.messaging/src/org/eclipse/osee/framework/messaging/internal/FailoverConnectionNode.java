@@ -9,9 +9,12 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
 import javax.jms.JMSException;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionListener;
@@ -34,6 +37,7 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
    private ScheduledExecutorService scheduledExecutor;
    private boolean lastConnectedState = false;
    private OseeExceptionListener exceptionListener;
+private ScheduledFuture<?> itemToCancel;
    
    public FailoverConnectionNode(ConnectionNodeFailoverSupport connectionNode, ScheduledExecutorService scheduledExecutor, OseeExceptionListener exceptionListener) {
       this.connectionNode = connectionNode;
@@ -42,7 +46,7 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
       savedSubscribes = new CopyOnWriteArrayList<SavedSubscribe>();
       connectionListeners = new CopyOnWriteArrayList<ConnectionListener>();
       this.scheduledExecutor = scheduledExecutor;
-      this.scheduledExecutor.scheduleAtFixedRate(this, 60, 15, TimeUnit.SECONDS);
+      itemToCancel = this.scheduledExecutor.scheduleAtFixedRate(this, 60, 15, TimeUnit.SECONDS);
    }
 
    @Override
@@ -73,6 +77,7 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
 
    @Override
    public void stop() {
+	  itemToCancel.cancel(false);
       connectionNode.stop();
    }
 

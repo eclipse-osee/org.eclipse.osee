@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
+
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.ExceptionListener;
@@ -25,6 +26,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -235,13 +237,12 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
             for(Entry<MessageConsumer, OseeMessagingListener> entry:listeners.entrySet()){
                if(entry.getValue().equals(listener)){
                   entry.getKey().setMessageListener(null);
-                  entry.getKey().close();
                   consumersToRemove.add(entry.getKey());
                }
             }
             for(MessageConsumer messageConsumer: consumersToRemove){
-               messageConsumer.setMessageListener(null);
-               messageConsumer.close();
+            	messageConsumer.setMessageListener(null);
+               	messageConsumer.close();
             }
          }catch (JMSException ex) {
             statusCallback.fail(ex);
