@@ -38,6 +38,7 @@ public class ExchangeTransformProviderTest {
       assertApplicable("0.0.0", V0_8_3Transformer.class, V0_9_0Transformer.class, V0_9_2Transformer.class, V0_9_4Transformer.class);
       assertApplicable("0.0.0.v201009081001", V0_8_3Transformer.class, V0_9_0Transformer.class, V0_9_2Transformer.class, V0_9_4Transformer.class);
       assertApplicable("0.8.2.v201009081001", V0_8_3Transformer.class, V0_9_0Transformer.class, V0_9_2Transformer.class, V0_9_4Transformer.class);
+      assertApplicable("0.8.3",V0_9_0Transformer.class, V0_9_2Transformer.class, V0_9_4Transformer.class);
       assertApplicable("0.8.3.v201009081001", V0_9_0Transformer.class, V0_9_2Transformer.class, V0_9_4Transformer.class);
       assertApplicable("0.9", V0_9_2Transformer.class, V0_9_4Transformer.class);
       assertApplicable("0.9.1.v201009081001", V0_9_2Transformer.class, V0_9_4Transformer.class);
