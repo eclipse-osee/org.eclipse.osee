@@ -437,8 +437,10 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          if (executeOperation(new CompositeOperation("Extracting data from source", SkynetGuiPlugin.PLUGIN_ID, ops))) {
             artifactTypeSelectPanel.setAllowedArtifactTypes(selectedArtifactTypes);
             try {
-               attributeTypeSelectPanel.setAllowedAttributeTypes(getArtifactType().getAttributeTypes(
-                     getDestinationArtifact().getBranch()));
+               if (getArtifactType() != null) {
+                  attributeTypeSelectPanel.setAllowedAttributeTypes(getArtifactType().getAttributeTypes(
+                        getDestinationArtifact().getBranch()));
+               }
             } catch (Exception ex) {
             }
          }
