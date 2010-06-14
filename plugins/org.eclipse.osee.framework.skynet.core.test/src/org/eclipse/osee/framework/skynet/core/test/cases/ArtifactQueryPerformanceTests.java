@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.cases;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
@@ -24,8 +23,6 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder;
-import org.eclipse.osee.framework.skynet.core.artifact.search.QueryType;
 
 /**
  * @author Andrew M Finkbeiner
@@ -69,9 +66,8 @@ public class ArtifactQueryPerformanceTests {
    public void testGetArtifactByHRID() throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
       Artifact art = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(common);
-      ArtifactQueryBuilder builder = new ArtifactQueryBuilder(art.getHumanReadableId(), common, true, FULL);
       long startTime = System.currentTimeMillis();
-      Artifact result = builder.getOrCheckArtifact(QueryType.GET);
+      Artifact result = ArtifactQuery.getArtifactFromId(art.getHumanReadableId(), common, true);
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testGetArtifactByHRID took %dms", elapsedTime));
       assertNotNull("No artifact found", result);
@@ -88,9 +84,8 @@ public class ArtifactQueryPerformanceTests {
       for (Artifact child : children) {
          hrids.add(child.getHumanReadableId());
       }
-      ArtifactQueryBuilder builder = new ArtifactQueryBuilder(hrids, common, true, FULL);
       long startTime = System.currentTimeMillis();
-      List<Artifact> result = builder.getArtifacts(children.size() + 1, null);
+      List<Artifact> result = ArtifactQuery.getArtifactListFromIds(hrids, common, true);
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testGetArtifactsByHRID took %dms for %d artifacts", elapsedTime, result.size()));
       assertTrue("No artifacts found", result.size() > 0);
@@ -107,9 +102,8 @@ public class ArtifactQueryPerformanceTests {
       for (Artifact child : children) {
          hrids.add(child.getHumanReadableId());
       }
-      ArtifactQueryBuilder builder = new ArtifactQueryBuilder(hrids, common, false, FULL);
       long startTime = System.currentTimeMillis();
-      List<Artifact> result = builder.getArtifacts(children.size() + 1, null);
+      List<Artifact> result = ArtifactQuery.getArtifactListFromIds(hrids, common, false);
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testGetArtifactsByHRIDNoDeleted took %dms for %d artifacts", elapsedTime,
             result.size()));
@@ -164,9 +158,8 @@ public class ArtifactQueryPerformanceTests {
    @org.junit.Test
    public void testLoadAllBranch() throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
-      ArtifactQueryBuilder builder = new ArtifactQueryBuilder(common, FULL, false);
       long startTime = System.currentTimeMillis();
-      List<Artifact> result = builder.getArtifacts(50000, null);
+      List<Artifact> result = ArtifactQuery.getArtifactListFromBranch(common, false);
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("loadAllBranch took %dms for %d artifacts", elapsedTime, result.size()));
       assertTrue("No artifacts found", result.size() > 0);
