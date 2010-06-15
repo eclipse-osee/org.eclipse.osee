@@ -22,6 +22,7 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.MessageCoverageItem;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -95,6 +96,9 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
       }
       if (xCol.equals(CoverageXViewerFactory.Location)) {
          return coverage.getLocation();
+      }
+      if (xCol.equals(CoverageXViewerFactory.Full_Path)) {
+         return CoverageUtil.getFullPath(coverage);
       }
       if (xCol.equals(CoverageXViewerFactory.Namespace)) {
          return coverage.getNamespace();
