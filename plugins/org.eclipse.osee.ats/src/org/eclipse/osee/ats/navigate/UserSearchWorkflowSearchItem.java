@@ -50,9 +50,10 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
 
    private XHyperlabelTeamDefinitionSelection teamCombo = null;
    private XCombo versionCombo = null;
-   private XMembersCombo assigneeCombo;
+   private XMembersCombo userCombo;
    private XCheckBox includeCancelledCheckbox;
    private XCheckBox includeCompletedCheckbox;
+   private XCheckBox assigneeCheckbox;
    private XCheckBox favoriteCheckbox;
    private XCheckBox subscribedCheckbox;
    private XCheckBox originatorCheckbox;
@@ -81,7 +82,9 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    public String getParameterXWidgetXml() throws OseeCoreException {
       return "<xWidgets>" +
       //
-      "<XWidget xwidgetType=\"XMembersCombo\" beginComposite=\"14\" displayName=\"Assignee\" horizontalLabel=\"true\"/>" +
+      "<XWidget xwidgetType=\"XMembersCombo\" beginComposite=\"14\" displayName=\"User\" horizontalLabel=\"true\"/>" +
+      //
+      "<XWidget displayName=\"Assignee\" xwidgetType=\"XCheckBox\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Originated\" xwidgetType=\"XCheckBox\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
@@ -113,6 +116,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
             getSelectedTeamDefinitions(),
             (getSelectedVersionArtifact() != null ? Collections.singleton(getSelectedVersionArtifact()) : null),
             //
+            (isAssigneeCheckbox() ? UserSearchOption.Assignee : UserSearchOption.None),
             (isFavoritesCheckbox() ? UserSearchOption.Favorites : UserSearchOption.None),
             (isOriginatedCheckbox() ? UserSearchOption.Originator : UserSearchOption.None),
             (isSubscribedCheckbox() ? UserSearchOption.Subscribed : UserSearchOption.None),
@@ -137,13 +141,16 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
          sb.append(" - Version: " + getSelectedVersionArtifact());
       }
       if (getSelectedUser() != null) {
-         sb.append(" - Assignee: " + getSelectedUser());
+         sb.append(" - User: " + getSelectedUser());
       }
       if (isIncludeCancelledCheckbox()) {
          sb.append(" - Include Cancelled");
       }
       if (isIncludeCompletedCheckbox()) {
          sb.append(" - Include Completed");
+      }
+      if (isAssigneeCheckbox()) {
+         sb.append(" - Assignee");
       }
       if (isOriginatedCheckbox()) {
          sb.append(" - Originated");
@@ -168,14 +175,17 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
 
    @Override
    public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
-      if (widget.getLabel().equals("Assignee")) {
-         assigneeCombo = (XMembersCombo) widget;
+      if (widget.getLabel().equals("User")) {
+         userCombo = (XMembersCombo) widget;
       }
       if (widget.getLabel().equals("Include Completed")) {
          includeCompletedCheckbox = (XCheckBox) widget;
       }
       if (widget.getLabel().equals("Include Cancelled")) {
          includeCancelledCheckbox = (XCheckBox) widget;
+      }
+      if (widget.getLabel().equals("Assignee")) {
+         assigneeCheckbox = (XCheckBox) widget;
       }
       if (widget.getLabel().equals("Favorites")) {
          favoriteCheckbox = (XCheckBox) widget;
@@ -235,16 +245,18 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    private User getSelectedUser() {
-      if (assigneeCombo == null) return null;
-      return assigneeCombo.getUser();
+      if (userCombo == null) return null;
+      return userCombo.getUser();
    }
 
    public void setSelectedUser(User user) {
-      if (assigneeCombo != null) assigneeCombo.set(user);
+      if (userCombo != null) userCombo.set(user);
    }
 
    public void setSelected(UserSearchOption userSearchOption, boolean set) {
-      if (userSearchOption == UserSearchOption.Favorites) {
+      if (userSearchOption == UserSearchOption.Assignee) {
+         assigneeCheckbox.set(set);
+      } else if (userSearchOption == UserSearchOption.Favorites) {
          favoriteCheckbox.set(set);
       } else if (userSearchOption == UserSearchOption.Subscribed) {
          subscribedCheckbox.set(set);
@@ -273,6 +285,11 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    private boolean isIncludeCancelledCheckbox() {
       if (includeCancelledCheckbox == null) return false;
       return includeCancelledCheckbox.isSelected();
+   }
+
+   private boolean isAssigneeCheckbox() {
+      if (assigneeCheckbox == null) return false;
+      return assigneeCheckbox.isSelected();
    }
 
    private boolean isFavoritesCheckbox() {
@@ -364,7 +381,10 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       try {
          User user = getSelectedUser();
          if (user == null) {
-            return new Result("You must select at Assignee.");
+            return new Result("You must select at User.");
+         }
+         if (!isAssigneeCheckbox() && !isSubscribedCheckbox() && !isOriginatedCheckbox() && !isFavoritesCheckbox()) {
+            return new Result("You must select one or more of Assigneed, Originated, Subscribed or Favorites");
          }
          if (!isTeamWorkflowsCheckbox() && !isReviewsCheckbox() && !isTasksCheckbox()) {
             return new Result("You must select one or more of Team Workflows, Reviews or Tasks");

@@ -45,6 +45,7 @@ public class UserWorldSearchItem {
 
    public static enum UserSearchOption {
       None,
+      Assignee,
       Favorites,
       Subscribed,
       Originator,
@@ -70,7 +71,7 @@ public class UserWorldSearchItem {
          searchArts.addAll(getSubscribedArtifacts());
       } else if (options.contains(UserSearchOption.Favorites)) {
          searchArts.addAll(getFavoritesArtifacts());
-      } else {
+      } else if (options.contains(UserSearchOption.Assignee)) {
          searchArts.addAll(SMAUtil.getSMAs(RelationManager.getRelatedArtifacts(Arrays.asList(user), 1,
                CoreRelationTypes.Users_Artifact)));
          // If include cancelled or completed, need to perform extra search
@@ -95,8 +96,7 @@ public class UserWorldSearchItem {
       Collection<StateMachineArtifact> filteredArts = SMAUtil.filterOutTypes(searchArts, filterClasses);
 
       if (teamDefs != null && teamDefs.size() > 0) {
-         filteredArts =
-               SMAUtil.getTeamDefinitionWorkflows(filteredArts, teamDefs);
+         filteredArts = SMAUtil.getTeamDefinitionWorkflows(filteredArts, teamDefs);
       }
 
       if (versions != null && versions.size() > 0) {
