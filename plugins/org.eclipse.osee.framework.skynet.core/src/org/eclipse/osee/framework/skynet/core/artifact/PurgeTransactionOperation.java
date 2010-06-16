@@ -72,7 +72,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    private final static String DELETE_TXS = "delete from osee_txs where transaction_id = ?";
 
    private final static String TRANSACATION_GAMMA_IN_USE =
-         "SELECT txs1.transaction_id FROM osee_txs txs1, osee_txs txs2, osee_join_transaction jn where txs1.transaction_id = jn.transaction_id AND txs1.gamma_id = txs2.gamma_id and txs2.transaction_id != txs1.transaction_id AND jn.query_id = ?";
+         "SELECT txs2.transaction_id FROM osee_txs txs1, osee_txs txs2, osee_join_transaction jn where txs1.transaction_id = jn.transaction_id AND txs1.gamma_id = txs2.gamma_id and txs2.transaction_id != txs1.transaction_id AND jn.query_id = ?";
 
    private final static String LOAD_ARTIFACTS =
          "INSERT INTO osee_join_artifact (query_id, art_id, branch_id, insert_time) (SELECT ?, art_id, txs.branch_id, CURRENT_TIMESTAMP from osee_txs txs, osee_attribute att, osee_join_transaction tran where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id) UNION (SELECT ?, art_id, txs.branch_id, CURRENT_TIMESTAMP FROM osee_txs txs, osee_artifact art, osee_join_transaction tran WHERE tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = art.gamma_id) UNION (SELECT ?, a_art_id as art_id, txs.branch_id, CURRENT_TIMESTAMP FROM osee_txs txs, osee_relation_link rel, osee_join_transaction tran WHERE tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id) UNION (SELECT ?, b_art_id as art_id, txs.branch_id, CURRENT_TIMESTAMP FROM osee_txs txs, osee_relation_link rel, osee_join_transaction tran WHERE tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id)";
@@ -131,7 +131,9 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    }
 
    public static void handleRemotePurgeTransactionEvent(TransactionEvent transEvent) {
-      if (transEvent.getEventType() != TransactionEventType.Purged) return;
+      if (transEvent.getEventType() != TransactionEventType.Purged) {
+         return;
+      }
 
       Set<Artifact> artifactsInCache = new HashSet<Artifact>();
       for (TransactionChange transChange : transEvent.getTransactions()) {
@@ -304,7 +306,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
             ConnectionHandler.runPreparedQueryFetchInt(connection, 0, TRANSACATION_GAMMA_IN_USE, queryId);
       if (transaction_id > 0 && !force) {
          throw new OseeCoreException(
-               "The Transaction " + transaction_id + " holds a Gamma that is in use on other transactions.  In order to delete this Transaction you will need to select the force check box.\n\nNO TRANSACTIONS WERE DELETED.");
+               "The Transaction " + transaction_id + " holds a Gamma that is in use in other transactions.  In order to delete this Transaction you will need to select the force check box.\n\nNO TRANSACTIONS WERE DELETED.");
       }
    }
 
