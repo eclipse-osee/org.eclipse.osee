@@ -59,9 +59,10 @@ public final class ArtifactLoader {
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate, false);
       selectArtifacts(queryId, insertParameters, sql, queryParameters, artifactCountEstimate, transactionId);
+      boolean historical = transactionId != null;
       List<Artifact> artifacts =
             loadArtifacts(queryId, loadLevel, confirmer, new ArrayList<Object[]>(insertParameters.values()), reload,
-                  transactionId != null, allowDeleted);
+                  historical, allowDeleted);
       return artifacts;
    }
 
@@ -142,7 +143,7 @@ public final class ArtifactLoader {
    public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, ArtifactLoad loadLevel, TransactionRecord transactionId, boolean reload) throws OseeCoreException {
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 
-      if (!artIds.isEmpty()) {
+      if (artIds != null && !artIds.isEmpty()) {
          int queryId = ArtifactLoader.getNewQueryId();
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
          boolean historical = transactionId != null;

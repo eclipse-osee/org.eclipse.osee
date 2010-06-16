@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -25,11 +22,8 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.ArtifactChangeAcquirer;
@@ -49,8 +43,8 @@ public final class RevisionChangeLoader {
    }
 
    /**
-    * @param artifact 
-    * @param monitor 
+    * @param artifact
+    * @param monitor
     * @return Returns artifact, relation and attribute changes from a specific artifact
     * @throws OseeCoreException
     */
@@ -122,34 +116,27 @@ public final class RevisionChangeLoader {
       monitor.beginTask("Find Changes", 100);
 
       ArtifactChangeAcquirer artifactChangeAcquirer =
-         new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
-               newAndDeletedArtifactIds);
+            new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
+                  newAndDeletedArtifactIds);
       changeBuilders = artifactChangeAcquirer.acquireChanges();
 
       AttributeChangeAcquirer attributeChangeAcquirer =
-         new AttributeChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
-               newAndDeletedArtifactIds);
+            new AttributeChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
+                  newAndDeletedArtifactIds);
       changeBuilders = attributeChangeAcquirer.acquireChanges();
 
       RelationChangeAcquirer relationChangeAcquirer =
-         new RelationChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
-               newAndDeletedArtifactIds);
+            new RelationChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
+                  newAndDeletedArtifactIds);
       changeBuilders = relationChangeAcquirer.acquireChanges();
 
       monitor.subTask("Loading Artifacts from the Database");
       Branch branch = historical ? transactionId.getBranch() : sourceBranch;
 
-      if (!artIds.isEmpty()) {
-         int queryId = ArtifactLoader.getNewQueryId();
-         Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-
-         List<Object[]> insertParameters = new LinkedList<Object[]>();
-         for (int artId : artIds) {
-            insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getId(),
-                  historical ? transactionId.getId() : SQL3DataType.INTEGER});
-         }
-         bulkLoadedArtifacts =
-            ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, true);
+      if (historical) {
+         bulkLoadedArtifacts = ArtifactQuery.getHistoricalArtifactListFromIds(artIds, transactionId, true);
+      } else {
+         bulkLoadedArtifacts = ArtifactQuery.getArtifactListFromIds(artIds, branch, true);
       }
 
       //We build the changes after the artifact loader has been run so we can take advantage of bulk loading.

@@ -11,15 +11,11 @@
 
 package org.eclipse.osee.define.blam.operation;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
@@ -31,18 +27,17 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
@@ -211,39 +206,17 @@ public class PublishRequirements extends AbstractBlam {
 
    private ArrayList<Artifact> getOlderArtifacts(List<Artifact> artifacts, int transactionId, int branchId) throws OseeCoreException {
       ArrayList<Artifact> historicArtifacts = new ArrayList<Artifact>(artifacts.size());
-      int queryId = ArtifactLoader.getNewQueryId();
-      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-
-      Set<Artifact> artifactSet = new HashSet<Artifact>(artifacts);
-      List<Object[]> insertParameters = new LinkedList<Object[]>();
-      for (Artifact artifact : artifactSet) {
-         insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branchId, transactionId});
-      }
+      TransactionRecord txRecord = TransactionManager.getTransactionId(transactionId);
+      boolean allowDeleted = true;
 
       @SuppressWarnings("unused")
       Collection<Artifact> bulkLoadedArtifacts =
-            ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, true, true);
+            ArtifactQuery.getHistoricalArtifactListFromIds(Artifacts.toGuids(artifacts), txRecord, allowDeleted);
 
       for (Artifact artifact : artifacts) {
          historicArtifacts.add(ArtifactCache.getHistorical(artifact.getArtId(), transactionId));
       }
       return historicArtifacts;
-   }
-
-   private ArrayList<Artifact> buildRecursiveList(ArrayList<Artifact> artifacts) throws OseeCoreException {
-      ArrayList<Artifact> artifactWithChildren = new ArrayList<Artifact>(artifacts.size());
-      for (Artifact artifact : artifacts) {
-         artifactWithChildren.add(artifact);
-         addChildren(artifactWithChildren, artifact);
-      }
-      return artifactWithChildren;
-   }
-
-   private void addChildren(ArrayList<Artifact> artifacts, Artifact artifact) throws OseeCoreException {
-      for (Artifact loopArtifact : artifact.getChildren(true)) {
-         artifacts.add(loopArtifact);
-         addChildren(artifacts, loopArtifact);
-      }
    }
 
    @Override

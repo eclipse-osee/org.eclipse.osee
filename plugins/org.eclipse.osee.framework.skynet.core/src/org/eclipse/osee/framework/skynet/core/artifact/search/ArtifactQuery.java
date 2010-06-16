@@ -190,6 +190,15 @@ public class ArtifactQuery {
    }
 
    /**
+    * search for artifacts with any of the given artifact ids
+    *
+    * @return a collection of the artifacts found or an empty collection if none are found
+    */
+   public static List<Artifact> getArtifactListFromIds(Collection<Integer> artifactIds, IOseeBranch branch, boolean allowDeleted) throws OseeCoreException {
+      return ArtifactLoader.loadArtifacts(artifactIds, branch, ArtifactLoad.FULL, allowDeleted);
+   }
+
+   /**
     * search for artifacts with any of the given artifact hrids or guids
     * 
     * @return a collection of the artifacts found or an empty collection if none are found
@@ -204,6 +213,10 @@ public class ArtifactQuery {
 
    public static List<Artifact> getHistoricalArtifactListFromIds(List<String> guidOrHrids, TransactionRecord transactionId, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(guidOrHrids, transactionId, allowDeleted, FULL).getArtifacts(30, null);
+   }
+
+   public static List<Artifact> getHistoricalArtifactListFromIds(Collection<Integer> artifactIds, TransactionRecord transactionId, boolean allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(artifactIds, transactionId, allowDeleted, FULL).getArtifacts(30, null);
    }
 
    public static Artifact getHistoricalArtifactFromId(int artifactId, TransactionRecord transactionId, boolean allowDeleted) throws OseeCoreException {

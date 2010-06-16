@@ -35,9 +35,9 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflictBuilder;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflictBuilder;
@@ -171,24 +171,13 @@ public class ConflictManagerInternal {
       return conflict;
    }
 
-   private static Collection<Artifact> preloadConflictArtifacts(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<Integer> artIdSet, IProgressMonitor monitor) throws OseeCoreException {
-      Collection<Artifact> artifacts = null;
-
+   private static Collection<Artifact> preloadConflictArtifacts(Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIdSet, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Preloading Artifacts Associated with the Conflicts");
-      if (artIdSet != null && !artIdSet.isEmpty()) {
-         int queryId = ArtifactLoader.getNewQueryId();
-         Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
-         List<Object[]> insertParameters = new LinkedList<Object[]>();
-         for (int artId : artIdSet) {
-            insertParameters.add(new Object[] {queryId, insertTime, artId, sourceBranch.getId(), SQL3DataType.INTEGER});
-            insertParameters.add(new Object[] {queryId, insertTime, artId, destinationBranch.getId(),
-                  SQL3DataType.INTEGER});
-            insertParameters.add(new Object[] {queryId, insertTime, artId, mergeBranch.getId(), SQL3DataType.INTEGER});
-         }
-         artifacts =
-               ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, false, true);
-      }
+      Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIdSet, sourceBranch, true);
+      artifacts.addAll(ArtifactQuery.getArtifactListFromIds(artIdSet, destBranch, true));
+      artifacts.addAll(ArtifactQuery.getArtifactListFromIds(artIdSet, mergeBranch, true));
+
       monitor.worked(25);
       return artifacts;
    }

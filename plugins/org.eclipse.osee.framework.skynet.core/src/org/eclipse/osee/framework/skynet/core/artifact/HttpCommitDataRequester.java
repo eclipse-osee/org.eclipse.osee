@@ -21,10 +21,13 @@ import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
@@ -52,26 +55,44 @@ public class HttpCommitDataRequester {
                   CoreTranslatorId.BRANCH_COMMIT_REQUEST, requestData, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
 
       if (response != null) {
-         TransactionRecord newTransaction = response.getTransaction();
-         AccessControlManager.removeAllPermissionsFromBranch(null, sourceBranch);
-         // Update commit artifact cache with new information
-         if (sourceBranch.getAssociatedArtifact().getArtId() > 0) {
-            TransactionManager.cacheCommittedArtifactTransaction((IArtifact) sourceBranch.getAssociatedArtifact(),
-                  newTransaction);
-         }
-         BranchManager.getCache().reloadCache();
-         // reload the committed artifacts since the commit changed them on the destination branch
-         Object[] queryData =
-               new Object[] {newTransaction.getBranchId(), newTransaction.getId(), newTransaction.getBranchId(),
-                     newTransaction.getId(), newTransaction.getBranchId(), newTransaction.getId()};
-         ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, queryData, 400, ArtifactLoad.FULL, true, null, true);
-         try {
-            // Kick commit event
-            OseeEventManager.kickBranchEvent(HttpCommitDataRequester.class, new BranchEvent(BranchEventType.Committed,
-                  sourceBranch.getGuid()), sourceBranch.getId());
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
-         }
+         handleResponse(response, sourceBranch);
+      }
+   }
+
+   private static void handleResponse(BranchCommitResponse response, Branch sourceBranch) throws OseeCoreException {
+      TransactionRecord newTransaction = response.getTransaction();
+      AccessControlManager.removeAllPermissionsFromBranch(null, sourceBranch);
+      // Update commit artifact cache with new information
+      if (sourceBranch.getAssociatedArtifact().getArtId() > 0) {
+         TransactionManager.cacheCommittedArtifactTransaction((IArtifact) sourceBranch.getAssociatedArtifact(),
+               newTransaction);
+      }
+      BranchManager.getCache().reloadCache();
+
+      reloadCommittedArtifacts(newTransaction);
+      kickCommitEvent(sourceBranch);
+   }
+
+   private static void reloadCommittedArtifacts(TransactionRecord newTransaction) throws OseeCoreException {
+      Branch txBranch = BranchManager.getBranch(newTransaction.getBranchId());
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      Object[] queryData =
+            new Object[] {newTransaction.getBranchId(), newTransaction.getId(), newTransaction.getBranchId(),
+                  newTransaction.getId(), newTransaction.getBranchId(), newTransaction.getId()};
+      chStmt.runPreparedQuery(ARTIFACT_CHANGES, queryData);
+      while (chStmt.next()) {
+         int artId = chStmt.getInt("art_id");
+         ArtifactQuery.reloadArtifactFromId(artId, txBranch);
+      }
+
+   }
+
+   private static void kickCommitEvent(Branch sourceBranch) {
+      try {
+         OseeEventManager.kickBranchEvent(HttpCommitDataRequester.class, new BranchEvent(BranchEventType.Committed,
+               sourceBranch.getGuid()), sourceBranch.getId());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
       }
    }
 }

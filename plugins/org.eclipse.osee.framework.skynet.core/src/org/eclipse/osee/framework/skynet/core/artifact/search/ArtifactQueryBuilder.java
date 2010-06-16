@@ -101,6 +101,11 @@ public class ArtifactQueryBuilder {
       emptyCriteria = guidOrHrids.isEmpty();
    }
 
+   public ArtifactQueryBuilder(Collection<Integer> artifactIds, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel) throws OseeCoreException {
+      this(artifactIds, 0, null, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel, true);
+      emptyCriteria = artifactIds.isEmpty();
+   }
+
    public ArtifactQueryBuilder(int artifactId, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel) throws OseeCoreException {
       this(null, artifactId, null, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel, true);
    }

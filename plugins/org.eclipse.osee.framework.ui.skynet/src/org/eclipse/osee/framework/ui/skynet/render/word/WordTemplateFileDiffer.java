@@ -11,13 +11,9 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.data.TransactionDelta;
@@ -26,15 +22,13 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -131,22 +125,12 @@ public class WordTemplateFileDiffer {
 
    private List<Artifact> getStartArtifacts(List<Artifact> artifacts, int transactionId, int branchId) throws OseeCoreException {
       List<Artifact> historicArtifacts = new ArrayList<Artifact>(artifacts.size());
-      int queryId = ArtifactLoader.getNewQueryId();
-      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-
-      Set<Artifact> artifactSet = new HashSet<Artifact>(artifacts);
-      List<Object[]> insertParameters = new LinkedList<Object[]>();
-      for (Artifact artifact : artifactSet) {
-         insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branchId, transactionId});
-      }
-
       @SuppressWarnings("unused")
       Collection<Artifact> bulkLoadedArtifacts =
-      //            ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, true, true);
-            ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, false, true);
+            ArtifactQuery.getHistoricalArtifactListFromIds(Artifacts.toGuids(artifacts),
+                  TransactionManager.getTransactionId(transactionId), true);
 
       for (Artifact artifact : artifacts) {
-         //         historicArtifacts.add(ArtifactCache.getHistorical(artifact.getArtId(), transactionId));
          historicArtifacts.add(ArtifactCache.getActive(artifact.getArtId(), branchId));
       }
       return historicArtifacts;
