@@ -34,9 +34,10 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class ArtifactImportOperationFactory {
+public final class ArtifactImportOperationFactory {
 
    private ArtifactImportOperationFactory() {
+      super();
    }
 
    public static IOperation createOperation(File sourceFile, Artifact destinationArtifact, IArtifactExtractor extractor, IArtifactImportResolver resolver, boolean stopOnError) throws OseeCoreException {
