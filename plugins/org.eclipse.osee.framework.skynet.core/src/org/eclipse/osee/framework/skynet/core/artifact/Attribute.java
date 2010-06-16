@@ -289,7 +289,7 @@ public abstract class Attribute<T> {
 
    public boolean canDelete() {
       try {
-         return getArtifact().getAttributeCount(attributeType.getName()) > attributeType.getMinOccurrences();
+         return getArtifact().getAttributeCount(attributeType) > attributeType.getMinOccurrences();
       } catch (OseeCoreException ex) {
          return false;
       }

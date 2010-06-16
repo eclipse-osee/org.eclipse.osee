@@ -544,6 +544,18 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    /**
     * The use of this method is discouraged since it directly returns Attributes.
     * 
+    * @param <T>
+    * @param attributeTypeName
+    * @param value
+    * @throws OseeCoreException
+    */
+   public <T> List<Attribute<T>> getAttributes(IAttributeType attributeType, Object value) throws OseeCoreException {
+      return getAttributes(attributeType.getName(), value);
+   }
+
+   /**
+    * The use of this method is discouraged since it directly returns Attributes.
+    * 
     * @return attributes All attributes including deleted and artifact deleted
     * @throws OseeCoreException
     */
@@ -851,8 +863,20 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
       }
    }
 
+   public void deleteSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
+      deleteSoleAttribute(attributeType.getName());
+   }
+
    public void deleteAttribute(String attributeTypeName, Object value) throws OseeCoreException {
       for (Attribute<Object> attribute : getAttributes(attributeTypeName)) {
+         if (attribute.getValue().equals(value)) {
+            attribute.delete();
+         }
+      }
+   }
+
+   public void deleteAttribute(IAttributeType attributeType, Object value) throws OseeCoreException {
+      for (Attribute<Object> attribute : getAttributes(attributeType.getName())) {
          if (attribute.getValue().equals(value)) {
             attribute.delete();
          }
@@ -920,7 +944,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     * @param newValues
     * @throws OseeCoreException
     */
-   public void setAttributeValues(AttributeType attributeType, Collection<String> newValues) throws OseeCoreException {
+   public void setAttributeValues(IAttributeType attributeType, Collection<String> newValues) throws OseeCoreException {
       setAttributeValues(attributeType.getName(), newValues);
    }
 
@@ -1849,12 +1873,17 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    }
 
    public int getRemainingAttributeCount(AttributeType attributeType) throws OseeCoreException {
-      return attributeType.getMaxOccurrences() - getAttributeCount(attributeType.getName());
+      return attributeType.getMaxOccurrences() - getAttributeCount(attributeType);
    }
 
    public int getAttributeCount(String attributeTypeName) throws OseeCoreException {
       ensureAttributesLoaded();
       return getAttributes(attributeTypeName).size();
+   }
+
+   public int getAttributeCount(IAttributeType attributeType) throws OseeCoreException {
+      ensureAttributesLoaded();
+      return getAttributes(attributeType).size();
    }
 
    void setArtId(int artifactId) {
@@ -1956,7 +1985,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
          return;
       }
       for (AttributeType attributeType : getAttributeTypes()) {
-         int missingCount = attributeType.getMinOccurrences() - getAttributeCount(attributeType.getName());
+         int missingCount = attributeType.getMinOccurrences() - getAttributeCount(attributeType);
          for (int i = 0; i < missingCount; i++) {
             initializeAttribute(attributeType, ModificationType.NEW, isNewArtifact, true);
          }
