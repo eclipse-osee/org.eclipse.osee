@@ -21,7 +21,7 @@
       <import feature="de.itemis.xtext.antlr.feature" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.xtext.sdk" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.xtext.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.emf.compare.all" version="1.0.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.emf.compare.sdk" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.mwe.ui" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.mwe2.runtime.sdk" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.mwe2.language.sdk" version="1.0.0" match="greaterOrEqual"/>
