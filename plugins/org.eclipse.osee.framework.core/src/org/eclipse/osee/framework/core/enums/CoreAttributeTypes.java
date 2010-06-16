@@ -56,6 +56,8 @@ public class CoreAttributeTypes extends NamedIdentity implements IAttributeType 
    public static final CoreAttributeTypes SAFETY_CRITICALITY =
          new CoreAttributeTypes("AAMFERg99R51HIz45HAA", "Safety Criticality");
 
+   public static final CoreAttributeTypes Description = new CoreAttributeTypes("AAMFEcK+kyOhG8GYvPgA", "Description");
+
    private CoreAttributeTypes(String guid, String name) {
       super(guid, name);
    }
