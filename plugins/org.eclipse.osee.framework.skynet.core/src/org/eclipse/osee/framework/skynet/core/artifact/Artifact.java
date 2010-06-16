@@ -1731,13 +1731,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    public String getSafeName() {
       String elementName = safeNamePattern.matcher(getName()).replaceAll("_");
 
-      // Ensure the name did not end up empty
-      if (elementName.equals("")) {
-         elementName = "nameless";
-      }
-
-      // Fix the first character if it is a number by replacing it with its
-      // name
+      // Fix the first character if it is a number by replacing it with its name
       char firstChar = elementName.charAt(0);
       if (firstChar >= '0' && firstChar <= '9') {
          elementName = NUMBER[firstChar - '0'] + elementName.substring(1);
