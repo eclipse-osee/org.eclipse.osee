@@ -310,11 +310,11 @@ public class RelationLink {
       String artBName = "Unloaded";
       Artifact artA = ArtifactCache.getActive(getAArtifactId(), getABranch());
       if (artA != null) {
-         artAName = artA.getSafeName();
+         artAName = artA.getName();
       }
       Artifact artB = ArtifactCache.getActive(getBArtifactId(), getBBranch());
       if (artB != null) {
-         artBName = artB.getSafeName();
+         artBName = artB.getName();
       }
 
       return String.format("type[%s] id[%d] modType[%s] [%s]: aName[%s] aId[%d] <--> bName[%s] bId[%s]",
@@ -404,12 +404,12 @@ public class RelationLink {
       if (obj instanceof RelationLink) {
          RelationLink other = (RelationLink) obj;
          boolean result = aArtifactId == other.aArtifactId && aBranch.equals(other.aBranch) &&
-         //
-         bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
-         //
-         other.modificationType == modificationType &&
-         //
-         relationType.equals(other.relationType);
+               //
+               bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
+               //
+               other.modificationType == modificationType &&
+               //
+               relationType.equals(other.relationType);
 
          // This should eventually be removed once DB cleanup occurs
          return result && relationId == other.relationId;
@@ -425,12 +425,12 @@ public class RelationLink {
       if (obj instanceof RelationLink) {
          RelationLink other = (RelationLink) obj;
          boolean result = aArtifactId == other.aArtifactId && aBranch.equals(other.aBranch) &&
-         //
-         bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
-         //
-         other.modificationType == modificationType &&
-         //
-         relationType.equals(other.relationType);
+               //
+               bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
+               //
+               other.modificationType == modificationType &&
+               //
+               relationType.equals(other.relationType);
 
          return result;
       }
