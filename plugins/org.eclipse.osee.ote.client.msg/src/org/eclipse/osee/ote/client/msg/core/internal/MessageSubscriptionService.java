@@ -188,7 +188,7 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 
       int port = PortUtil.getInstance().getConsecutiveValidPorts(availableTypes.size());
       for (DataType type : availableTypes) {
-         final ChannelProcessor handler = new ChannelProcessor(type.getToolingDepth(), type.getToolingBufferSize(), threadPool, msgDatabase, type);
+         final ChannelProcessor handler = new ChannelProcessor(1, type.getToolingBufferSize(), threadPool, msgDatabase, type);
 	  
          dispatcher.addChannel(localAddress, port, type, handler);
          port++;

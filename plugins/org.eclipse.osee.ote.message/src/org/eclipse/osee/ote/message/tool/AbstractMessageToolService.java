@@ -20,7 +20,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -67,7 +66,12 @@ import org.eclipse.osee.ote.message.tool.rec.MessageRecorder;
  */
 public class AbstractMessageToolService implements IRemoteMessageService {
 
-   private static final boolean debugEnabled = false;
+   /**
+	 * 
+	 */
+	private static final int SEND_BUFFER_SIZE = 1024 * 512;
+
+private static final boolean debugEnabled = false;
 
    private final HashMap<String, Throwable> cancelledSubscriptions = new HashMap<String, Throwable>(40);
    private final DatagramChannel channel;
@@ -346,6 +350,11 @@ public class AbstractMessageToolService implements IRemoteMessageService {
    public AbstractMessageToolService(IMessageManager messageManager) throws IOException {
 
       channel = DatagramChannel.open();
+      if (channel.socket().getSendBufferSize() < SEND_BUFFER_SIZE)  {
+    	  channel.socket().setSendBufferSize(SEND_BUFFER_SIZE);
+    	  OseeLog.log(AbstractMessageToolService.class, Level.INFO, "message tooling service send buffer size is now " + channel.socket().getSendBufferSize());
+      }
+      
       channel.socket().bind(new InetSocketAddress(InetAddress.getLocalHost(), PortUtil.getInstance().getValidPort()));
       channel.configureBlocking(true);
       recorderOutputChannel = DatagramChannel.open();

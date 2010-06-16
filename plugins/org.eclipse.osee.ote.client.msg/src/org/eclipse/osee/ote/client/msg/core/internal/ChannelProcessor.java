@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
 import org.eclipse.osee.ote.client.msg.core.db.MessageInstance;
@@ -71,7 +72,6 @@ final public class ChannelProcessor {
 				OseeLog.log(Activator.class, Level.SEVERE, "failed to process message update", ex);
 			}
 		}
-
 	}
 
 	public ChannelProcessor(int depth, int bufferSize, ExecutorService threadPool, AbstractMessageDataBase msgDb, DataType memType) {
