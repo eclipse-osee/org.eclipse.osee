@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * Utility methods for common tasks performed on Artifact's.
- * 
+ *
  * @author Robert A. Fisher
  * @author Donald G. Dunne
  */
@@ -41,6 +41,14 @@ public final class Artifacts {
 
    private Artifacts() {
       // This constructor is private because there is no reason to instantiate this class
+   }
+
+   public static Collection<Integer> toIds(Collection<? extends IArtifact> artifacts) {
+      Set<Integer> toReturn = new HashSet<Integer>(artifacts.size());
+      for (IArtifact artifact : artifacts) {
+         toReturn.add(artifact.getArtId());
+      }
+      return toReturn;
    }
 
    public static List<String> toGuids(Collection<? extends IArtifact> artifacts) {
@@ -106,7 +114,7 @@ public final class Artifacts {
 
    /**
     * Recurses default hierarchy and collections children of parentArtifact that are of type class
-    * 
+    *
     * @param <A>
     * @param parentArtifact
     * @param children
@@ -167,7 +175,7 @@ public final class Artifacts {
          details.put("Historical", String.valueOf(artifact.isHistorical()));
          details.put("Deleted", String.valueOf(artifact.isDeleted()));
          details.put("Revision",
-               (String.valueOf(artifact.isInDb() ? String.valueOf(artifact.getTransactionNumber()) : "Not In Db")));
+               String.valueOf(artifact.isInDb() ? String.valueOf(artifact.getTransactionNumber()) : "Not In Db"));
          details.put("Read Only", String.valueOf(artifact.isReadOnly()));
          details.put("Last Modified", (artifact.isInDb() ? String.valueOf(artifact.getLastModified()) : "Not In Db"));
          try {
