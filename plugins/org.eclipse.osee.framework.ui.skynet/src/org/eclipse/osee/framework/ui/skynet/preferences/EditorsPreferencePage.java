@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.preferences;
 
 import java.util.logging.Level;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -94,7 +95,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
          if (previewOnDoubleClickForWordArtifacts.getSelection()) {
             StaticIdManager.setSingletonAttributeValue(user, PreviewOnDoubleClickForWordArtifacts);
          } else {
-            user.deleteAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, PreviewOnDoubleClickForWordArtifacts);
+            user.deleteAttribute(CoreAttributeTypes.STATIC_ID, PreviewOnDoubleClickForWordArtifacts);
          }
 
          boolean result = closeChangeReportEditorsOnShutdown.getSelection();
