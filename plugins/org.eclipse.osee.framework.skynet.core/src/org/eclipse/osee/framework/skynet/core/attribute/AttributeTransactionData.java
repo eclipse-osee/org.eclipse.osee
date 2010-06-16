@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -21,7 +22,6 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event2.PersistEvent;
@@ -65,7 +65,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    protected void internalUpdate(TransactionRecord transactionId) throws OseeCoreException {
       attribute.internalSetGammaId(getGammaId());
 
-      if (attribute.isOfType(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
+      if (attribute.isOfType(CoreAttributeTypes.STATIC_ID)) {
          ArtifactCache.cacheByStaticId((String) attribute.getValue(), attribute.getArtifact());
       }
 

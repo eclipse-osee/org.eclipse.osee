@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -34,6 +35,7 @@ public final class ArtifactCache {
    private static final ActiveArtifactCache ACTIVE_CACHE = new ActiveArtifactCache(2000);
 
    private ArtifactCache() {
+      super();
    }
 
    private static AbstractArtifactCache getCache(Artifact artifact) throws OseeCoreException {
@@ -88,7 +90,7 @@ public final class ArtifactCache {
 
    static void cachePostAttributeLoad(Artifact artifact) throws OseeCoreException {
       if (!artifact.isHistorical()) {
-         for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
+         for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)) {
             cacheByStaticId(staticId, artifact);
          }
       }
@@ -114,7 +116,7 @@ public final class ArtifactCache {
    }
 
    public static void cacheByStaticId(Artifact artifact) throws OseeCoreException {
-      for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
+      for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)) {
          ACTIVE_CACHE.cacheByStaticId(staticId, artifact);
       }
    }

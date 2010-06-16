@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -29,17 +30,14 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Donald G. Dunne
  */
 public class StaticIdManager {
-
-   public static String STATIC_ID_ATTRIBUTE = "Static Id";
-
    /**
     * Will add the single static id value if it does not already exist. Will also cleanup if more than one exists with
     * same staticId.
     */
    public static void setSingletonAttributeValue(Artifact artifact, String staticId) throws OseeCoreException {
-      List<Attribute<String>> attributes = artifact.getAttributes(STATIC_ID_ATTRIBUTE, staticId);
+      List<Attribute<String>> attributes = artifact.getAttributes(CoreAttributeTypes.STATIC_ID, staticId);
       if (attributes.isEmpty()) {
-         artifact.addAttribute(STATIC_ID_ATTRIBUTE, staticId);
+         artifact.addAttribute(CoreAttributeTypes.STATIC_ID, staticId);
       } else if (attributes.size() > 1) {
          // keep one of the attributes
          for (int x = 1; x < attributes.size(); x++) {
@@ -51,7 +49,7 @@ public class StaticIdManager {
    }
 
    public static void deletedStaticIdAttribute(Artifact artifact, String staticId) throws OseeCoreException {
-      List<Attribute<String>> attributes = artifact.getAttributes(STATIC_ID_ATTRIBUTE, staticId);
+      List<Attribute<String>> attributes = artifact.getAttributes(CoreAttributeTypes.STATIC_ID, staticId);
       for (Attribute<String> attr : attributes) {
          attr.delete();
       }
@@ -59,7 +57,7 @@ public class StaticIdManager {
    }
 
    public static boolean hasValue(Artifact artifact, String staticId) throws OseeCoreException {
-      return artifact.getAttributesToStringList(STATIC_ID_ATTRIBUTE).contains(staticId);
+      return artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID).contains(staticId);
    }
 
    /**
@@ -68,7 +66,8 @@ public class StaticIdManager {
    public static Set<Artifact> getArtifactsFromArtifactQuery(IArtifactType artifactType, String staticId, IOseeBranch branch) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       // Retrieve database artifacts if cache has none
-      artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactType, STATIC_ID_ATTRIBUTE, staticId,
+      artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactType, CoreAttributeTypes.STATIC_ID,
+            staticId,
             branch));
       return artifacts;
    }
