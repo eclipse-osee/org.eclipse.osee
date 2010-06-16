@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -51,11 +52,11 @@ public class StaticIdManagerTest {
 
    @BeforeClass
    @AfterClass
-   public static void testCleanupForReRun() throws OseeCoreException, InterruptedException {
+   public static void testCleanupForReRun() throws OseeCoreException {
       SkynetTransaction transaction =
             new SkynetTransaction(BranchManager.getCommonBranch(), "Static ID Manager test cleanup for re-run");
       for (String staticIdValue : ALL_STATIC_IDS) {
-         for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE,
+         for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.STATIC_ID,
                staticIdValue, BranchManager.getCommonBranch())) {
             artifact.deleteAndPersist(transaction);
             System.out.println("Deleting " + artifact.getGuid());
@@ -85,7 +86,7 @@ public class StaticIdManagerTest {
       Collection<Artifact> artifacts = ArtifactCache.getArtifactsByStaticId(staticId);
       assertTrue("Should be 0; Returned " + artifacts.size(), artifacts.isEmpty());
       Artifact art = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
-      art.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, staticId);
+      art.addAttribute(CoreAttributeTypes.STATIC_ID, staticId);
       art.persist();
 
       artifacts = ArtifactCache.getArtifactsByStaticId(staticId);
@@ -123,12 +124,12 @@ public class StaticIdManagerTest {
     * @throws InterruptedException
     */
    @org.junit.Test
-   public void testSetSingletonAttributeValue() throws OseeCoreException, InterruptedException {
+   public void testSetSingletonAttributeValue() throws OseeCoreException {
       // create artifact with two of same static id values
       Artifact artifact =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
-      artifact.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, STATIC_ID_BBB);
-      artifact.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, STATIC_ID_BBB);
+      artifact.addAttribute(CoreAttributeTypes.STATIC_ID, STATIC_ID_BBB);
+      artifact.addAttribute(CoreAttributeTypes.STATIC_ID, STATIC_ID_BBB);
       artifact.persist();
 
       // call to search for artifact with STATIC_ID_BBB
@@ -138,17 +139,17 @@ public class StaticIdManagerTest {
       assertNotNull(artifactWithDoubleBbb);
 
       // should be two static id attributes
-      int count = artifactWithDoubleBbb.getAttributes(StaticIdManager.STATIC_ID_ATTRIBUTE).size();
+      int count = artifactWithDoubleBbb.getAttributes(CoreAttributeTypes.STATIC_ID).size();
       assertTrue("Expected 2 attributes; Returned " + count, count == 2);
 
-      count = artifactWithDoubleBbb.getAttributeCount(StaticIdManager.STATIC_ID_ATTRIBUTE);
+      count = artifactWithDoubleBbb.getAttributeCount(CoreAttributeTypes.STATIC_ID);
       assertTrue("Expected 2 attributes; Returned " + count, count == 2);
 
       // call to set singleton which should resolve duplicates
       StaticIdManager.setSingletonAttributeValue(artifactWithDoubleBbb, STATIC_ID_BBB);
 
       // should now be only one static id attributes
-      count = artifactWithDoubleBbb.getAttributeCount(StaticIdManager.STATIC_ID_ATTRIBUTE);
+      count = artifactWithDoubleBbb.getAttributeCount(CoreAttributeTypes.STATIC_ID);
       assertTrue("Expected 1 attributes; Returned " + count, count == 1);
 
       deleteArtifacts(Arrays.asList(artifact), STATIC_ID_BBB);

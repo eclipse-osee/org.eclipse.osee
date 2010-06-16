@@ -17,12 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
@@ -37,7 +37,7 @@ import org.junit.BeforeClass;
  * This test is intended to be run against a demo database. It tests the purge logic by counting the rows of the version
  * and txs tables, creating artifacts, changing them and then purging them. If it works properly, all rows should be
  * equal.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class ArtifactPurgeTest {
@@ -110,7 +110,7 @@ public class ArtifactPurgeTest {
 
       // make more changes to artifacts
       for (Artifact softArt : softArts) {
-         softArt.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, getClass().getSimpleName());
+         softArt.addAttribute(CoreAttributeTypes.STATIC_ID, getClass().getSimpleName());
          softArt.persist();
       }
 

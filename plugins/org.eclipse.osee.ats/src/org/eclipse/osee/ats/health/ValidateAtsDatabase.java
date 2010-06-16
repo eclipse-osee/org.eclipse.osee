@@ -183,7 +183,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             int x = 0;
             for (Artifact art : artifactsTemp) {
                artifacts.add(art);
-               if (x++ > 20) break;
+               if (x++ > 20) {
+                  break;
+               }
             }
          } else {
             artifacts.addAll(artifactsTemp);
@@ -449,7 +451,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    public static void checkAndResolveDuplicateAttributesForAttributeNameContains(String nameContainsStr, Artifact artifact, boolean fixAttributeValues, HashCollection<String, String> resultsMap, SkynetTransaction transaction) throws OseeCoreException {
       for (AttributeType attrType : AttributeTypeManager.getAllTypes()) {
          if (attrType.getName().contains(nameContainsStr)) {
-            int count = artifact.getAttributeCount(attrType.getName());
+            int count = artifact.getAttributeCount(attrType);
             if (count > attrType.getMaxOccurrences()) {
                String result =
                      String.format(

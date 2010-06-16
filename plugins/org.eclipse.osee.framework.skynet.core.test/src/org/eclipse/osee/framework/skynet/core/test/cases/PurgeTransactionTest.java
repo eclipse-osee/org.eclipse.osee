@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionOperation;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -94,7 +94,7 @@ public class PurgeTransactionTest {
       DbUtil.getTableRowCounts(preModifyCount, tables);
       modifyTransaction = new SkynetTransaction(branch, "Purge Transaction Test");
       for (Artifact softArt : softArts) {
-         softArt.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, getClass().getSimpleName());
+         softArt.addAttribute(CoreAttributeTypes.STATIC_ID, getClass().getSimpleName());
          softArt.persist(modifyTransaction);
       }
       modifyId = modifyTransaction.getTransactionNumber();

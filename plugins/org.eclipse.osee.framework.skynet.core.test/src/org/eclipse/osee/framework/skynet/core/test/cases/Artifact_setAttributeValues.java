@@ -16,13 +16,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.AfterClass;
@@ -51,48 +51,48 @@ public class Artifact_setAttributeValues {
       Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
       Assert.assertNotNull(branch);
       Artifact artifact = ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName());
-      artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, firstSet);
+      artifact.setAttributeValues(CoreAttributeTypes.STATIC_ID, firstSet);
       artifact.persist();
 
-      assertTrue(Collections.isEqual(firstSet, artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)));
+      assertTrue(Collections.isEqual(firstSet, artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)));
    }
 
    @org.junit.Test
    public void testSetAttributeValuesAddOne() throws Exception {
       Artifact artifact = getArtifact();
-      artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, addOneSet);
+      artifact.setAttributeValues(CoreAttributeTypes.STATIC_ID, addOneSet);
       artifact.persist();
 
-      assertTrue(Collections.isEqual(addOneSet, artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)));
+      assertTrue(Collections.isEqual(addOneSet, artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)));
    }
 
    @org.junit.Test
    public void testSetAttributeValuesAddOneRemoveOne() throws Exception {
       Artifact artifact = getArtifact();
-      artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, addOneRemoveOneSet);
+      artifact.setAttributeValues(CoreAttributeTypes.STATIC_ID, addOneRemoveOneSet);
       artifact.persist();
 
       assertTrue(Collections.isEqual(addOneRemoveOneSet,
-            artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)));
+            artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)));
    }
 
    @org.junit.Test
    public void testSetAttributeValuesRemoveAll() throws Exception {
       Artifact artifact = getArtifact();
-      artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, emptySet);
+      artifact.setAttributeValues(CoreAttributeTypes.STATIC_ID, emptySet);
       artifact.persist();
 
-      assertTrue(artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).isEmpty());
+      assertTrue(artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID).isEmpty());
    }
 
    @org.junit.Test
    public void testSetAttributeValuesWithDuplicates() throws Exception {
       Artifact artifact = getArtifact();
-      artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, addDuplicates_set);
+      artifact.setAttributeValues(CoreAttributeTypes.STATIC_ID, addDuplicates_set);
       artifact.persist();
 
       assertTrue(Collections.isEqual(addDuplicates_result,
-            artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)));
+            artifact.getAttributesToStringList(CoreAttributeTypes.STATIC_ID)));
    }
 
    @AfterClass
