@@ -1,8 +1,3 @@
-package org.eclipse.osee.framework.lifecycle;
-
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-
 /*******************************************************************************
  * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
@@ -13,6 +8,11 @@ import org.osgi.framework.BundleContext;
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+package org.eclipse.osee.framework.lifecycle;
+
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
 /**
  * @author Roberto E. Escobar
  * @author Jeff C. Phillips

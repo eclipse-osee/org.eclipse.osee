@@ -1,10 +1,3 @@
-package org.eclipse.osee.framework.lifecycle.test.mock.access;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.lifecycle.LifecycleOpHandler;
-
 /*******************************************************************************
  * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
@@ -15,6 +8,15 @@ import org.eclipse.osee.framework.lifecycle.LifecycleOpHandler;
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+package org.eclipse.osee.framework.lifecycle.test.mock.access;
+
+import java.util.Collection;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
+import org.eclipse.osee.framework.lifecycle.LifecycleOpHandler;
+
 /**
  * @author Roberto E. Escobar
  * @author Jeff C. Phillips
@@ -22,8 +24,26 @@ import org.eclipse.osee.framework.lifecycle.LifecycleOpHandler;
 public class AccessHandler implements LifecycleOpHandler {
    private final IStatus status = Status.OK_STATUS;
 
+   public static interface AccessDataProvider {
+
+   }
+
+   private IBasicArtifact<?> userArtifact;
+   private Collection<IBasicArtifact<?>> artsToCheck;
+   private final AccessDataProvider dataProvider;
+
+   public AccessHandler(AccessDataProvider dataProvider) {
+      this.dataProvider = dataProvider;
+   }
+
+   public void setData(IBasicArtifact<?> userArtifact, Collection<IBasicArtifact<?>> artsToCheck) {
+      this.userArtifact = userArtifact;
+      this.artsToCheck = artsToCheck;
+   }
+
    @Override
    public IStatus onCheck(IProgressMonitor monitor) {
+      //      dataProvider;
       return status;
    }
 

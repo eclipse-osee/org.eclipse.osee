@@ -8,16 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-/**
- * @author Roberto E. Escobar
- * @author Jeff C. Phillips
- */
+
 package org.eclipse.osee.framework.lifecycle;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.lifecycle.internal.OperationPointId;
 
+/**
+ * @author Roberto E. Escobar
+ * @author Jeff C. Phillips
+ */
 public abstract class AbstractLifecycleOperation extends AbstractOperation {
 
    private final LifecycleService service;

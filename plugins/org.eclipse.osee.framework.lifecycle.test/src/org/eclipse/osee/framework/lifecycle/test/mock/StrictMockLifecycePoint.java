@@ -1,12 +1,3 @@
-/*
- * Created on Jun 17, 2010
- *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
-package org.eclipse.osee.framework.lifecycle.test.mock;
-
-import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
-
 /*******************************************************************************
  * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
@@ -17,6 +8,10 @@ import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+package org.eclipse.osee.framework.lifecycle.test.mock;
+
+import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
+
 /**
  * @author Roberto E. Escobar
  * @author Jeff C. Phillips

@@ -1,5 +1,3 @@
-package org.eclipse.osee.framework.lifecycle.internal;
-
 /*******************************************************************************
  * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
@@ -10,6 +8,8 @@ package org.eclipse.osee.framework.lifecycle.internal;
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+package org.eclipse.osee.framework.lifecycle.internal;
+
 /**
  * @author Roberto E. Escobar
  * @author Jeff C. Phillips

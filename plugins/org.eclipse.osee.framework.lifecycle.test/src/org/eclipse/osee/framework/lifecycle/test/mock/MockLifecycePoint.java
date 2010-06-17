@@ -1,9 +1,3 @@
-package org.eclipse.osee.framework.lifecycle.test.mock;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
-
 /*******************************************************************************
  * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
@@ -14,6 +8,12 @@ import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+package org.eclipse.osee.framework.lifecycle.test.mock;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
+
 /**
  * @author Roberto E. Escobar
  * @author Jeff C. Phillips
