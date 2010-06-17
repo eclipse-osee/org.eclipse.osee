@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.lifecycle.test.internal;
 
-import org.eclipse.core.runtime.IProgressMonitor;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.data.DefaultBasicArtifact;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
@@ -19,8 +22,9 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleOperation;
 import org.eclipse.osee.framework.lifecycle.LifecycleService;
 import org.eclipse.osee.framework.lifecycle.LifecycleServiceImpl;
-import org.eclipse.osee.framework.lifecycle.test.mock.MockHandler;
-import org.eclipse.osee.framework.lifecycle.test.mock.StrictMockLifecycePoint;
+import org.eclipse.osee.framework.lifecycle.test.mock.access.ChangeMgmtChkPoint;
+import org.eclipse.osee.framework.lifecycle.test.mock.access.ChangeMgmtHandler;
+import org.eclipse.osee.framework.lifecycle.test.mock.access.OnEditOperation;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,31 +34,25 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  * @author Jeff C. Phillips
  */
-public class TestLifecycleOperation {
+public class TestOnEditOperation {
 
    @Test
    public void testOperation() throws OseeCoreException {
       LifecycleService service = new LifecycleServiceImpl();
 
-      service.addHandler(StrictMockLifecycePoint.TYPE, new MockHandler());
+      service.addHandler(ChangeMgmtChkPoint.TYPE, new ChangeMgmtHandler());
 
-      IOperation op = new MockLifecycleOperation(service, "a string", "b string");
+      Assert.assertEquals(1, service.getHandlerCount(ChangeMgmtChkPoint.TYPE));
+      Assert.assertFalse(service.getHandlerTypes().isEmpty());
+
+      IBasicArtifact<?> user = new DefaultBasicArtifact(0, "1", "user");
+      List<IBasicArtifact<?>> artsToChk = new ArrayList<IBasicArtifact<?>>();
+      artsToChk.add(new DefaultBasicArtifact(1, "2", "check me out"));
+      IOperation op = new OnEditOperation(service, user, artsToChk);
       Operations.executeWork(op, new LogProgressMonitor(), -1.0);
 
       IStatus status = op.getStatus();
       Assert.assertTrue(status.isOK());
+
    }
-
-   private static class MockLifecycleOperation extends AbstractLifecycleOperation {
-
-      public MockLifecycleOperation(LifecycleService service, String a, String b) {
-         super(service, new StrictMockLifecycePoint(a, b), "Mock Op", "TestBundle");
-      }
-
-      @Override
-      protected void doCoreWork(IProgressMonitor monitor) throws Exception {
-         System.out.println("I am working here ...");
-      }
-   }
-
 }

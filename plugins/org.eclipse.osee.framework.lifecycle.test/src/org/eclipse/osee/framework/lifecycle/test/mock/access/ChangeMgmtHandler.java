@@ -24,16 +24,22 @@ import org.eclipse.osee.framework.lifecycle.LifecycleOpHandler;
 public class ChangeMgmtHandler implements LifecycleOpHandler {
    private final IStatus status = Status.OK_STATUS;
 
-   public static interface AccessDataProvider {
+   public static interface IAccessDataProvider {
+      public boolean canEdit(IBasicArtifact<?> user, IBasicArtifact<?> artTcheck);
+   }
 
+   private class AccessDataProvider implements IAccessDataProvider {
+      public boolean canEdit(IBasicArtifact<?> user, IBasicArtifact<?> artTcheck) {
+         return true;
+      }
    }
 
    private IBasicArtifact<?> userArtifact;
    private Collection<IBasicArtifact<?>> artsToCheck;
    private final AccessDataProvider dataProvider;
 
-   public ChangeMgmtHandler(AccessDataProvider dataProvider) {
-      this.dataProvider = dataProvider;
+   public ChangeMgmtHandler() {
+      this.dataProvider = new AccessDataProvider();
    }
 
    public void setData(IBasicArtifact<?> userArtifact, Collection<IBasicArtifact<?>> artsToCheck) {
@@ -43,8 +49,15 @@ public class ChangeMgmtHandler implements LifecycleOpHandler {
 
    @Override
    public IStatus onCheck(IProgressMonitor monitor) {
-      //      dataProvider;
-      return status;
+      IStatus statusToReturn = status;
+
+      for (IBasicArtifact<?> artifactToChk : artsToCheck) {
+         if (!dataProvider.canEdit(userArtifact, artifactToChk)) {
+            statusToReturn = Status.CANCEL_STATUS;
+            break;
+         }
+      }
+      return statusToReturn;
    }
 
    @Override
