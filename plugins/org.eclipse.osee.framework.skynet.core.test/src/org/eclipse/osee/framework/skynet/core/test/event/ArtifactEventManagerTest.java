@@ -61,7 +61,7 @@ public class ArtifactEventManagerTest {
    final Set<EventBasicGuidArtifact> resultEventArtifacts = new HashSet<EventBasicGuidArtifact>();
    final Set<EventBasicGuidRelation> resultEventRelations = new HashSet<EventBasicGuidRelation>();
    public static Sender resultSender = null;
-   public static List<String> ignoreLogging =
+   public static List<String> ignoreLoggingRemote =
          Arrays.asList("OEM: PersistEvent Loopback enabled", "OEM: kickArtifactReloadEvent Loopback enabled",
                "OEM2: PersistEvent Loopback enabled", "OEM2: kickArtifactReloadEvent Loopback enabled");
    public static int incrementingGammaId = 2231;
@@ -136,7 +136,8 @@ public class ArtifactEventManagerTest {
       remoteInjection_relations_addNewRelationWithRationale(rootArt, injectArt);
       remoteInjection_relations_modifyRelationRationale(rootArt, injectArt);
 
-      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
+      TestUtil.severeLoggingEnd(monitorLog,
+            (isRemoteTest() ? ignoreLoggingRemote : Arrays.asList("Duplicate relation objects")));
    }
 
    @org.junit.Test
@@ -155,7 +156,7 @@ public class ArtifactEventManagerTest {
       testArtifactRelationEvents__modifyRelation(newArt);
       testArtifactRelationEvents__deleteArtifact(newArt);
 
-      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
+      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLoggingRemote : new ArrayList<String>()));
    }
 
    private Artifact testArtifactRelationEvents__addArtifact() throws Exception {
@@ -679,7 +680,7 @@ public class ArtifactEventManagerTest {
       Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
       Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
 
-      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
+      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLoggingRemote : new ArrayList<String>()));
    }
 
    protected boolean isRemoteTest() {
@@ -721,7 +722,7 @@ public class ArtifactEventManagerTest {
          Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
          Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
       }
-      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
+      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLoggingRemote : new ArrayList<String>()));
    }
 
    @org.junit.Test
@@ -765,7 +766,7 @@ public class ArtifactEventManagerTest {
       Artifact changedArt = ArtifactQuery.getArtifactFromId(newArt.getGuid(), newArt.getBranch());
       Assert.assertEquals(CoreArtifactTypes.Heading.getGuid(), changedArt.getArtifactType().getGuid());
 
-      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLogging : new ArrayList<String>()));
+      TestUtil.severeLoggingEnd(monitorLog, (isRemoteTest() ? ignoreLoggingRemote : new ArrayList<String>()));
    }
 
    /**
