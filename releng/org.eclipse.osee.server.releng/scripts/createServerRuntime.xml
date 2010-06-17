@@ -9,10 +9,11 @@
 			<patternset includes="plugins/*" excludes="features/*,*.jar,*.xml,**/*source_*" />
 		</unzip>
 
-		<mkdir dir="${tempAppServerFolder}/configuration" />
 		<property name="configFolder" value="${tempAppServerFolder}/configuration" />
 		<property name="pluginsFolder" value="${tempAppServerFolder}/plugins" />
-
+		
+		<mkdir dir="${configFolder}" />
+		
 		<pathconvert property="launcherBundlePath" setonempty="false">
 			<path>
 				<fileset dir="${pluginsFolder}">
