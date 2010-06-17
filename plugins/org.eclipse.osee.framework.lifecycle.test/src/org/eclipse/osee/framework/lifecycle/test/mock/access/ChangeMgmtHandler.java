@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.lifecycle.LifecycleOpHandler;
  * @author Roberto E. Escobar
  * @author Jeff C. Phillips
  */
-public class AccessHandler implements LifecycleOpHandler {
+public class ChangeMgmtHandler implements LifecycleOpHandler {
    private final IStatus status = Status.OK_STATUS;
 
    public static interface AccessDataProvider {
@@ -32,7 +32,7 @@ public class AccessHandler implements LifecycleOpHandler {
    private Collection<IBasicArtifact<?>> artsToCheck;
    private final AccessDataProvider dataProvider;
 
-   public AccessHandler(AccessDataProvider dataProvider) {
+   public ChangeMgmtHandler(AccessDataProvider dataProvider) {
       this.dataProvider = dataProvider;
    }
 

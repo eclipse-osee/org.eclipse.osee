@@ -16,16 +16,16 @@ import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
  * @author Roberto E. Escobar
  * @author Jeff C. Phillips
  */
-public class AccessLifecyclePoint extends AbstractLifecyclePoint<AccessHandler> {
+public class AccessLifecyclePoint extends AbstractLifecyclePoint<ChangeMgmtHandler> {
 
-   public static final Type<AccessHandler> TYPE = new Type<AccessHandler>();
+   public static final Type<ChangeMgmtHandler> TYPE = new Type<ChangeMgmtHandler>();
 
    @Override
-   protected void initializeHandlerData(AccessHandler handler) {
+   protected void initializeHandlerData(ChangeMgmtHandler handler) {
    }
 
    @Override
-   public org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor.Type<AccessHandler> getAssociatedType() {
+   public org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor.Type<ChangeMgmtHandler> getAssociatedType() {
       return TYPE;
    }
 

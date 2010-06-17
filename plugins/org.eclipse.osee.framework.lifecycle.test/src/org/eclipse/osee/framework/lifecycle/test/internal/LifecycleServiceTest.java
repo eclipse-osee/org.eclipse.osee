@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
 import org.eclipse.osee.framework.lifecycle.LifecycleService;
 import org.eclipse.osee.framework.lifecycle.LifecycleServiceImpl;
+import org.eclipse.osee.framework.lifecycle.test.mock.AnotherMockHandler;
 import org.eclipse.osee.framework.lifecycle.test.mock.MockHandler;
 import org.eclipse.osee.framework.lifecycle.test.mock.MockLifecycePoint;
 import org.junit.Assert;
@@ -35,10 +36,11 @@ public class LifecycleServiceTest {
       Assert.assertTrue(lifecycleServices.getHandlerTypes().isEmpty());
 
       MockHandler handler = new MockHandler();
-
+      AnotherMockHandler anotherMockHandler = new AnotherMockHandler();
       lifecycleServices.addHandler(MockLifecycePoint.TYPE, handler);
+      lifecycleServices.addHandler(MockLifecycePoint.TYPE, anotherMockHandler);
 
-      Assert.assertEquals(1, lifecycleServices.getHandlerCount(MockLifecycePoint.TYPE));
+      Assert.assertEquals(2, lifecycleServices.getHandlerCount(MockLifecycePoint.TYPE));
       Assert.assertFalse(lifecycleServices.getHandlerTypes().isEmpty());
 
       AbstractLifecycleVisitor<?> accessPoint = new MockLifecycePoint("one", "two");
@@ -46,8 +48,8 @@ public class LifecycleServiceTest {
       Assert.assertTrue(status.isOK());
 
       lifecycleServices.removeHandler(MockLifecycePoint.TYPE, handler);
+      lifecycleServices.removeHandler(MockLifecycePoint.TYPE, anotherMockHandler);
       Assert.assertTrue(lifecycleServices.getHandlerTypes().isEmpty());
       Assert.assertEquals(0, lifecycleServices.getHandlerCount(MockLifecycePoint.TYPE));
-
    }
 }

@@ -68,4 +68,8 @@ public class MockHandler implements LifecycleOpHandler {
       System.out.println("on pre");
       return status;
    }
+
+   public void doSomething() {
+      System.out.println("I am the mocker");
+   }
 }

@@ -39,7 +39,7 @@ public class MockLifecycePoint extends AbstractLifecycleVisitor<MockHandler> {
    @Override
    protected IStatus dispatch(IProgressMonitor monitor, MockHandler handler, String sourceId) {
       handler.setData(a, b);
-      System.out.println("Do something good");
+      handler.doSomething();
       return handler.getStatus();
    }
 }
