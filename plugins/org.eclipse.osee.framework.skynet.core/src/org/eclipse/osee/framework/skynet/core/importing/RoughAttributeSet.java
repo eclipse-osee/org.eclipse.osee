@@ -31,7 +31,7 @@ public class RoughAttributeSet {
    }
 
    public void add(String name, String value) {
-      attributes.put(name, value);
+      attributes.put(name.toUpperCase(), value);
    }
 
    public String getName() {
@@ -39,12 +39,15 @@ public class RoughAttributeSet {
    }
 
    public Collection<String> getAttributeValueList(String typeName) {
-      return attributes.getValues(typeName);
+      return attributes.getValues(typeName.toUpperCase());
    }
 
    public String getSoleAttributeValue(String typeName) {
       Collection<String> valueAsCollection = getAttributeValueList(typeName);
-      return valueAsCollection.toArray(new String[1])[0];
+      if (valueAsCollection == null) {
+         return null;
+      }
+      return valueAsCollection.iterator().next();
    }
 
    public Collection<String> getKeys() {

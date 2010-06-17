@@ -43,6 +43,11 @@ public class RoughArtifactCollector {
       roughArtifacts.add(roughArtifact);
    }
 
+   public void addChildRoughArtifact(RoughArtifact roughArtifact) {
+      parentRoughArtifact.addChild(roughArtifact);
+      addRoughArtifact(roughArtifact);
+   }
+
    public void addRoughRelation(RoughRelation roughRelation) {
       roughRelations.add(roughRelation);
    }

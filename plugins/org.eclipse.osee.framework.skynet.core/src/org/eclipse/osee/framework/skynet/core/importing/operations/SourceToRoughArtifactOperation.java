@@ -59,7 +59,7 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
             processFile(file, collector, parentArtifact);
          } else if (file.isDirectory()) {
             RoughArtifact directoryArtifact = new RoughArtifact(RoughArtifactKind.CONTAINER, file.getName());
-            collector.addRoughArtifact(directoryArtifact);
+            collector.addChildRoughArtifact(directoryArtifact);
             File[] subFiles = file.listFiles(extractor.getFileFilter());
             if (files.length > 0) {
                double subPercentage = workPercentage / subFiles.length;
@@ -76,8 +76,6 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
       RoughArtifactCollector tempCollector = new RoughArtifactCollector(parent);
       try {
          extractor.process(file.toURI(), tempCollector);
-      } catch (OseeCoreException ex) {
-         throw ex;
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
