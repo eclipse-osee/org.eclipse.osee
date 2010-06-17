@@ -79,6 +79,7 @@ public class SkynetTransaction extends DbTransaction {
 
    // Used to avoid garbage collection of artifacts until the transaction has been committed;
    private final Set<Artifact> artifactReferences = new HashSet<Artifact>();
+   private final Set<Artifact> alreadyProcessedArtifacts = new HashSet<Artifact>();
 
    private final Branch branch;
    private boolean madeChanges = false;
@@ -336,16 +337,9 @@ public class SkynetTransaction extends DbTransaction {
          link.internalSetRelationId(ConnectionHandler.getSequence().getNextRelationId());
          modificationType = ModificationType.NEW;
       }
-      /**
-       * Always want to persist artifacts on other side of dirty relation. This is necessary for ordering attribute to
-       * be persisted and desired for other cases.
-       */
-      if (aArtifact != null) {
-         aArtifact.persist(this);
-      }
-      if (bArtifact != null) {
-         bArtifact.persist(this);
-      }
+
+      persitRelatedArtifact(aArtifact);
+      persitRelatedArtifact(bArtifact);
 
       BaseTransactionData txItem = transactionDataItems.get(RelationTransactionData.class, link.getId());
       if (txItem == null) {
@@ -353,6 +347,21 @@ public class SkynetTransaction extends DbTransaction {
          transactionDataItems.put(RelationTransactionData.class, link.getId(), txItem);
       } else {
          updateTxItem(txItem, modificationType);
+      }
+   }
+
+   /**
+    * Always want to persist artifacts on other side of dirty relation. This is necessary for ordering attribute to be
+    * persisted and desired for other cases.
+    * 
+    * @throws OseeCoreException
+    */
+   private void persitRelatedArtifact(Artifact artifact) throws OseeCoreException {
+      if (artifact != null) {
+         if (!alreadyProcessedArtifacts.contains(artifact)) {
+            alreadyProcessedArtifacts.add(artifact);
+            artifact.persist(this);
+         }
       }
    }
 
