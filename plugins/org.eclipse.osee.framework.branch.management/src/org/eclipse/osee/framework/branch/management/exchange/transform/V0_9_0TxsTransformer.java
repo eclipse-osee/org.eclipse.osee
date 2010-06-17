@@ -29,8 +29,10 @@ public class V0_9_0TxsTransformer extends SaxTransformer {
    public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws NumberFormatException, XMLStreamException {
       super.startElementFound(uri, localName, qName, attributes);
       if (localName.equals("entry")) {
-         writer.writeAttribute("branch_id",
-               String.valueOf(branchIdMap.get(Integer.parseInt(attributes.getValue("transaction_id")))));
+         if (attributes.getIndex("branch_id") == -1) {
+            writer.writeAttribute("branch_id",
+                  String.valueOf(branchIdMap.get(Integer.parseInt(attributes.getValue("transaction_id")))));
+         }
       }
    }
 }

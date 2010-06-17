@@ -47,8 +47,10 @@ public class DbSchemaRuleAddColumn extends Rule {
          Collection<String> columns = tableToColumns.getValues(tableMatcher.group(1));
          if (columns != null) {
             for (String column : columns) {
-               changeSet.insertBefore(tableMatcher.end(2), column);
-               ruleWasApplicable = true;
+               if (!tableMatcher.group(2).contains(column)) {
+                  changeSet.insertBefore(tableMatcher.end(2), column);
+                  ruleWasApplicable = true;
+               }
             }
          }
       }
