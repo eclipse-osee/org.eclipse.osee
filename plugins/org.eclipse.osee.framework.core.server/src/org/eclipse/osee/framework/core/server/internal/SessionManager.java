@@ -15,13 +15,13 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.data.IOseeUserInfo;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSession;
@@ -61,7 +61,7 @@ public class SessionManager implements ISessionManager {
 
    public SessionManager() {
       this.typeIdentifier = new BuildTypeIdentifier(new BuildTypeDataProvider());
-      this.sessionCache = Collections.synchronizedMap(new HashMap<String, SessionData>());
+      this.sessionCache = new ConcurrentHashMap<String, SessionData>();
       this.updateTimer = new Timer("Persist Session Data Timer");
       updateTimer.scheduleAtFixedRate(new UpdateDataStore(), DATASTORE_UPDATE, DATASTORE_UPDATE);
    }
@@ -69,13 +69,11 @@ public class SessionManager implements ISessionManager {
    @Override
    public List<SessionData> getSessionByClientAddress(String clientAddress) {
       List<SessionData> toReturn = new ArrayList<SessionData>();
-      synchronized (sessionCache) {
          for (SessionData sessionData : sessionCache.values()) {
             if (sessionData.getSession().getClientAddress().equals(clientAddress)) {
                toReturn.add(sessionData);
             }
          }
-      }
       return toReturn;
    }
 
@@ -105,9 +103,7 @@ public class SessionManager implements ISessionManager {
       if (includeNonServerManagedSessions) {
          toReturn = SessionDataStore.getAllSessions();
       } else {
-         synchronized (sessionCache) {
             toReturn = new ArrayList<SessionData>(sessionCache.values());
-         }
       }
       return toReturn;
    }
@@ -118,9 +114,7 @@ public class SessionManager implements ISessionManager {
       if (includeNonServerManagedSessions) {
          sessions = SessionDataStore.getAllSessions();
       } else {
-         synchronized (sessionCache) {
             sessions = sessionCache.values();
-         }
       }
       List<SessionData> toReturn = new ArrayList<SessionData>();
       for (SessionData sessionData : sessions) {
@@ -207,11 +201,9 @@ public class SessionManager implements ISessionManager {
    public void releaseSessionImmediate(String... sessionIds) throws OseeCoreException {
       if (sessionIds != null && sessionIds.length > 0) {
          SessionDataStore.deleteSession(sessionIds);
-         synchronized (sessionCache) {
             for (String session : sessionIds) {
                sessionCache.remove(session);
             }
-         }
       }
    }
 
@@ -235,7 +227,6 @@ public class SessionManager implements ISessionManager {
          List<String> deleteIds = new ArrayList<String>();
          List<OseeSession> createData = new ArrayList<OseeSession>();
          List<OseeSession> updateData = new ArrayList<OseeSession>();
-         synchronized (sessionCache) {
             for (SessionData sessionData : sessionCache.values()) {
                if (sessionData != null) {
                   switch (sessionData.getSessionState()) {
@@ -257,7 +248,6 @@ public class SessionManager implements ISessionManager {
             createItems(createData);
             updateItems(updateData);
             deleteItems(deleteIds);
-         }
       }
 
       private void recoverSessions() {
