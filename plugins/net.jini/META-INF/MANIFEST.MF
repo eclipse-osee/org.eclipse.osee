@@ -127,4 +127,3 @@ Export-Package: com.sun.jini.action,
  net.jini.url.httpmd,
  net.jini.url.https
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.eclipse.osgi
