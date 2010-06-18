@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IBasicGuidArtifact;
+import org.eclipse.osee.framework.core.data.IBasicGuidRelation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -152,6 +153,38 @@ public final class ArtifactCache {
 
    public static Artifact getActive(DefaultBasicGuidArtifact guidArt) throws OseeCoreException {
       return getActive(guidArt.getGuid(), BranchManager.getBranch(guidArt));
+   }
+
+   public static Artifact getActiveA(IBasicGuidRelation guidRel) throws OseeCoreException {
+      return getActive(guidRel.getArtA().getGuid(), BranchManager.getBranch(guidRel.getArtA()));
+   }
+
+   public static Artifact getActiveB(IBasicGuidRelation guidRel) throws OseeCoreException {
+      return getActive(guidRel.getArtB().getGuid(), BranchManager.getBranch(guidRel.getArtB()));
+   }
+
+   /**
+    * Returns loaded artifacts from either side of the relation
+    */
+   public static Collection<Artifact> getActive(IBasicGuidRelation guidRel) throws OseeCoreException {
+      return getActive(guidRel, null);
+   }
+
+   /**
+    * Returns loaded artifacts from either side of the relation of type clazz
+    */
+   @SuppressWarnings("unchecked")
+   public static <A extends Artifact> Collection<A> getActive(IBasicGuidRelation guidRel, Class<A> clazz) throws OseeCoreException {
+      List<A> arts = new ArrayList<A>();
+      Artifact artA = getActiveA(guidRel);
+      if (artA != null) {
+         if (clazz == null || clazz.isInstance(artA)) arts.add((A) artA);
+      }
+      Artifact artB = getActiveB(guidRel);
+      if (artB != null) {
+         if (clazz == null || clazz.isInstance(artB)) arts.add((A) artB);
+      }
+      return arts;
    }
 
    public static Artifact getActive(Integer artId, IOseeBranch branch) throws OseeCoreException {

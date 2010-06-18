@@ -821,7 +821,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactListen
             try {
                // If related review has made a change, redraw
                for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
-                  // TODO put this back in with relation changes
+                  // TODO addt his back in when relation events propogated
                   //                  if (transData.isHasEvent(reviewArt)) {
                   //                     Displays.ensureInDisplayThread(new Runnable() {
                   //                        @Override

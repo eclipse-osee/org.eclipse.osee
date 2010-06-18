@@ -19,6 +19,8 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -27,15 +29,25 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
+import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.FilteredEventListener;
+import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -51,11 +63,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
  * TeamDefinitionArtifact<br>
  * VersionArtifact<br>
  * ActionableItemArtifact<br>
- * All other artifact types will silently not cached
+ * All other artifact types will silently not cached<br>
+ * <REM2>
  * 
  * @author Donald G. Dunne
  */
-public class AtsCacheManager implements IArtifactsPurgedEventListener, IFrameworkTransactionEventListener {
+public class AtsCacheManager implements IArtifactListener, IArtifactsPurgedEventListener, IFrameworkTransactionEventListener {
 
    private static Map<TaskableStateMachineArtifact, Collection<TaskArtifact>> teamTasksCache =
          new HashMap<TaskableStateMachineArtifact, Collection<TaskArtifact>>();
@@ -66,6 +79,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
 
    private AtsCacheManager() {
       OseeEventManager.addPriorityListener(this);
+      FrameworkEventManager.addPriorityListener(new FilteredEventListener(this, AtsUtil.getCommonBranchFilter()));
    }
 
    public static synchronized void decacheTaskArtifacts(TaskableStateMachineArtifact sma) throws OseeCoreException {
@@ -199,6 +213,105 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkFlowDefinition(artifact), artifact);
          }
+      }
+   }
+
+   @Override
+   public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Collection<EventBasicGuidRelation> eventRelations, Sender sender) {
+      if (DbUtil.isDbInit()) {
+         OseeEventManager.removeListener(this);
+         return;
+      }
+      try {
+         for (EventBasicGuidArtifact guidArt : eventArtifacts) {
+            try {
+               if (guidArt.is(EventModType.Deleted, EventModType.Purged)) {
+                  if (guidArt.is(CoreArtifactTypes.WorkRuleDefinition, CoreArtifactTypes.WorkPageDefinition,
+                        CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.WorkWidgetDefinition)) {
+                     WorkItemDefinitionFactory.deCache(guidArt);
+                  }
+                  if (guidArt.is(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted)) {
+                     Artifact artifact = ArtifactCache.getActive(guidArt);
+                     if (artifact != null) {
+                        teamTasksCache.remove(artifact.getParent());
+                     }
+                  }
+                  Artifact artifact = ArtifactCache.getActive(guidArt);
+                  if (artifact != null && artifact instanceof TaskableStateMachineArtifact) {
+                     teamTasksCache.remove(artifact);
+                  }
+               }
+               if (guidArt.is(EventModType.Added, EventModType.Modified)) {
+                  if (guidArt.is(CoreArtifactTypes.WorkRuleDefinition, CoreArtifactTypes.WorkPageDefinition,
+                        CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.WorkWidgetDefinition)) {
+                     // Must load these cause they are config artifacts
+                     Artifact artifact = ArtifactQuery.getArtifactFromToken(guidArt);
+                     if (artifact != null) {
+                        if (guidArt.is(CoreArtifactTypes.WorkRuleDefinition)) {
+                           WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+                                 new WorkRuleDefinition(artifact), artifact);
+                        } else if (artifact.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
+                           WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+                                 new WorkPageDefinition(artifact), artifact);
+                        } else if (artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
+                           WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+                                 new WorkWidgetDefinition(artifact), artifact);
+                        } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
+                           WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+                                 new WorkFlowDefinition(artifact), artifact);
+                        }
+                     }
+                  }
+                  // Only process if in cache
+                  Artifact artifact = ArtifactCache.getActive(guidArt);
+                  if (artifact != null && guidArt.is(EventModType.Added)) {
+                     if (artifact instanceof TaskArtifact) {
+                        teamTasksCache.remove(artifact.getParent());
+                     }
+                     if (artifact instanceof TaskableStateMachineArtifact) {
+                        teamTasksCache.remove(artifact);
+                     }
+                  }
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+            }
+         }
+         for (EventBasicGuidRelation guidRel : eventRelations) {
+            try {
+               if (guidRel.is(AtsRelationTypes.SmaToTask_Task)) {
+                  for (TaskArtifact taskArt : ArtifactCache.getActive(guidRel, TaskArtifact.class)) {
+                     teamTasksCache.remove(taskArt.getParent());
+                  }
+                  for (Artifact artifact : ArtifactCache.getActive(guidRel)) {
+                     if (artifact instanceof TaskableStateMachineArtifact) {
+                        teamTasksCache.remove(artifact);
+                     }
+                  }
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+            }
+         }
+         for (Artifact artifact : FrameworkEventUtil.getArtifactsInRelations(CoreRelationTypes.WorkItem__Child,
+               eventRelations, RelationEventType.Added, RelationEventType.Undeleted)) {
+            if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
+               WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkRuleDefinition(
+                     artifact), artifact);
+            } else if (artifact.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
+               WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkPageDefinition(
+                     artifact), artifact);
+            } else if (artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
+               WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkWidgetDefinition(
+                     artifact), artifact);
+            } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
+               WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkFlowDefinition(
+                     artifact), artifact);
+            }
+         }
+
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
    }
 }

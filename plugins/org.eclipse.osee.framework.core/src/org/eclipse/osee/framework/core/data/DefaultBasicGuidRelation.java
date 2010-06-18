@@ -112,4 +112,11 @@ public class DefaultBasicGuidRelation implements IBasicGuidRelation {
       this.relationId = relationId;
    }
 
+   public boolean is(IRelationType... relationTypes) {
+      for (IRelationType relType : relationTypes) {
+         if (relType.getGuid().equals(getRelTypeGuid())) return true;
+      }
+      return false;
+   }
+
 }

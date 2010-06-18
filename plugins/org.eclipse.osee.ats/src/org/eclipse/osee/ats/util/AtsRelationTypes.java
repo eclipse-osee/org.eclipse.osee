@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -17,7 +18,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 /**
  * @author Donald G. Dunne
  */
-public class AtsRelationTypes extends NamedIdentity implements IRelationEnumeration {
+public class AtsRelationTypes extends NamedIdentity implements IRelationEnumeration, IRelationType {
    private final RelationSide relationSide;
 
    public static final AtsRelationTypes ActionToWorkflow_Action =

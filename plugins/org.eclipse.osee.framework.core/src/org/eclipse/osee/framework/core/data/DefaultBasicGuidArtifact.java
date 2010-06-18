@@ -81,4 +81,11 @@ public class DefaultBasicGuidArtifact implements Identity, IBasicGuidArtifact {
       this.artGuid = guid;
    }
 
+   public boolean is(IArtifactType... artifactTypes) {
+      for (IArtifactType artifactType : artifactTypes) {
+         if (artifactType.getGuid().equals(getArtTypeGuid())) return true;
+      }
+      return false;
+   }
+
 }

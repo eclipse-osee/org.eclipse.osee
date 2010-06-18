@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -33,12 +34,22 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 
 /**
  * @author Ryan D. Brooks
  */
 public class ArtifactQuery {
+
+   public static Artifact getArtifactFromToken(EventBasicGuidArtifact guidArt) throws OseeCoreException {
+      return getArtifactFromId(guidArt.getGuid(), BranchManager.getBranchByGuid(guidArt.getBranchGuid()));
+   }
+
+   public static Artifact getArtifactFromToken(IBasicGuidArtifact guidArt) throws OseeCoreException {
+      return getArtifactFromId(guidArt.getGuid(), BranchManager.getBranchByGuid(guidArt.getBranchGuid()));
+   }
 
    /**
     * search for exactly one artifact by one its id - otherwise throw an exception

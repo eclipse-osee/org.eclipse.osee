@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
@@ -39,6 +40,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -49,17 +51,21 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
- * Provides access control for OSEE.
+ * Provides access control for OSEE. <REM2>
  * 
  * @author Jeff C. Phillips
  */
 
-public class AccessControlManager implements IBranchEventListener, IArtifactsPurgedEventListener {
+public class AccessControlManager implements IBranchEventListener, IArtifactsPurgedEventListener, IArtifactListener {
    private static final String INSERT_INTO_ARTIFACT_ACL =
          "INSERT INTO OSEE_ARTIFACT_ACL (art_id, permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?, ?)";
    private static final String INSERT_INTO_BRANCH_ACL =
@@ -95,14 +101,17 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    private static final AccessControlManager instance = new AccessControlManager();
 
    private AccessControlManager() {
+      reload();
+      OseeEventManager.addListener(this);
+   }
+
+   private void reload() {
       initializeCaches();
       try {
          populateAccessControlLists();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-
-      OseeEventManager.addListener(this);
    }
 
    private static void initializeCaches() {
@@ -668,6 +677,30 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
             }
          }
          System.out.println();
+      }
+   }
+
+   @Override
+   public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Collection<EventBasicGuidRelation> eventRelations, Sender sender) {
+      for (EventBasicGuidArtifact guidArt : eventArtifacts) {
+         if (guidArt.is(EventModType.Added) && guidArt.is(CoreArtifactTypes.User)) {
+            reload();
+         }
+         if (guidArt.is(EventModType.Purged)) {
+            try {
+               Artifact cacheArt = ArtifactCache.getActive(guidArt);
+               if (cacheArt != null) {
+                  ArtifactAccessObject artifactAccessObject = ArtifactAccessObject.getArtifactAccessObject(cacheArt);
+                  List<AccessControlData> acl = generateAccessControlList(artifactAccessObject);
+                  for (AccessControlData accessControlData : acl) {
+                     AccessControlManager.removeAccessControlDataIf(sender.isLocal(), accessControlData);
+                  }
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+
+         }
       }
    }
 }

@@ -91,4 +91,11 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
       return String.format("[%s - G:%s - B:%s - A:%s]", eventModType, getGuid(), getBranchGuid(), getArtTypeGuid());
    }
 
+   public boolean is(EventModType... eventModTypes) {
+      for (EventModType eventModType : eventModTypes) {
+         if (this.eventModType == eventModType) return true;
+      }
+      return false;
+   }
+
 }

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 
@@ -53,6 +54,15 @@ public class WorkItemDefinitionFactory {
                deCache(entry.getKey());
                return;
             }
+         }
+      }
+   }
+
+   public static void deCache(EventBasicGuidArtifact guidArt) {
+      for (Entry<String, Artifact> entry : itemIdToWidArtifact.entrySet()) {
+         if (entry.getValue().getGuid().equals(guidArt.getGuid())) {
+            deCache(entry.getKey());
+            return;
          }
       }
    }

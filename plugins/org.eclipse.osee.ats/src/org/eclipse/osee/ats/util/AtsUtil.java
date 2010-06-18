@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -92,6 +93,7 @@ public final class AtsUtil {
    public static int MILLISECS_PER_DAY = 1000 * 60 * 60 * 24;
    public final static String normalColor = "#FFFFFF";
    public final static String activeColor = "#EEEEEE";
+   public static BranchGuidEventFilter branchGuidEventFilter;
 
    private AtsUtil() {
       super();
@@ -435,5 +437,16 @@ public final class AtsUtil {
          }
       }
       return results;
+   }
+
+   public static BranchGuidEventFilter getCommonBranchFilter() {
+      if (branchGuidEventFilter == null) {
+         try {
+            branchGuidEventFilter = new BranchGuidEventFilter(AtsUtil.getAtsBranch());
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         }
+      }
+      return branchGuidEventFilter;
    }
 }
