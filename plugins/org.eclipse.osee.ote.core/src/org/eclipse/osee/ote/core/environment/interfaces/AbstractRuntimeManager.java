@@ -399,21 +399,28 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
 
       // Make sure that all installed bundles have been resolved so that
       // the export class loader has access to their classes if necessary.
-      resolveBundles();
+   	  try{
+   		  resolveBundles();
+   	  } catch (Throwable th){
+   		  th.printStackTrace();
+   		  OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE, th);
+   	  }
 
       while (iter.hasNext()) {
          Bundle bundle = iter.next();
 
          try {
             String oteActivationPolicy = (String) bundle.getHeaders().get(OTE_ACTIVATION_POLICY);
-            if ("early".equalsIgnoreCase(oteActivationPolicy)) {
-               bundle.start();
-            }
+//            if ("early".equalsIgnoreCase(oteActivationPolicy)) {
+//               bundle.start();
+//            }
+            bundle.start();
 
             // We got here because bundle.start did not exception
             runningBundles.add(bundle);
          } catch (BundleException ex) {
-            throw new BundleException("Error trying to start bundle " + bundle.getSymbolicName() + ": " + ex, ex);
+        	OseeLog.log(AbstractRuntimeManager.class, Level.SEVERE, ex);
+//            throw new BundleException("Error trying to start bundle " + bundle.getSymbolicName() + ": " + ex, ex);
          } finally {
             iter.remove();
          }
