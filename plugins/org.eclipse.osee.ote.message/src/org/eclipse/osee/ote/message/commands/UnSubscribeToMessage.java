@@ -11,8 +11,9 @@
 package org.eclipse.osee.ote.message.commands;
 
 import java.io.Serializable;
+import java.net.InetSocketAddress;
+
 import org.eclipse.osee.ote.message.enums.DataType;
-import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
 
@@ -30,7 +31,7 @@ public class UnSubscribeToMessage implements Serializable {
    private static final long serialVersionUID = -1140091630056507142L;
    private final String messageName;
    private final MessageMode mode;
-   private final IMsgToolServiceClient client;
+   private final InetSocketAddress address;
    private final DataType memTypeOrdinal;
    /**
     * Creates a new unsubscribe command.
@@ -39,10 +40,10 @@ public class UnSubscribeToMessage implements Serializable {
     * @param address the address of the client.
     */
    public UnSubscribeToMessage(final String messageName, final MessageMode mode, 
-         final DataType memTypeOrdinal, IMsgToolServiceClient client) {
+         final DataType memTypeOrdinal, InetSocketAddress address) {
       this.messageName = messageName;
       this.mode = mode;
-      this.client = client;
+      this.address = address;
       this.memTypeOrdinal = memTypeOrdinal;
    }
    
@@ -50,8 +51,8 @@ public class UnSubscribeToMessage implements Serializable {
       return messageName;
    }
    
-   public IMsgToolServiceClient getClient() {
-      return client;
+   public InetSocketAddress getAddress() {
+      return address;
    }
    
    public DataType getMemTypeOrdinal() {

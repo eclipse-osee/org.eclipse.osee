@@ -37,7 +37,6 @@ import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 import org.eclipse.osee.ote.message.commands.RecordCommand;
 import org.eclipse.osee.ote.message.commands.SetElementValue;
-import org.eclipse.osee.ote.message.commands.SetMessageModeCmd;
 import org.eclipse.osee.ote.message.commands.SubscribeToMessage;
 import org.eclipse.osee.ote.message.commands.UnSubscribeToMessage;
 import org.eclipse.osee.ote.message.commands.ZeroizeElement;
@@ -87,11 +86,16 @@ private static final boolean debugEnabled = false;
       private final IMsgToolServiceClient remoteReference;
 
       private final InetSocketAddress ipAddress;
-
+ 
+      private final int hashcode;
       public ClientInfo(final IMsgToolServiceClient remoteReference, final InetSocketAddress ipAddress) {
          super();
+         if (ipAddress == null) {
+        	 throw new IllegalArgumentException("ip address is null");
+         }
          this.remoteReference = remoteReference;
          this.ipAddress = ipAddress;
+         hashcode = 31 * (31 + ipAddress.hashCode());
       }
 
       public InetSocketAddress getIpAddress() {
@@ -104,13 +108,13 @@ private static final boolean debugEnabled = false;
 
       @Override
       public int hashCode() {
-         return ipAddress.hashCode() ^ remoteReference.hashCode();
+         return hashcode;
       }
 
       @Override
       public boolean equals(Object obj) {
          ClientInfo client = (ClientInfo) obj;
-         return ipAddress.equals(client.ipAddress) && remoteReference.equals(client.remoteReference);
+         return ipAddress.equals(client.ipAddress);
       }
 
    }
@@ -232,9 +236,9 @@ private static final boolean debugEnabled = false;
       //         return null;
       //      }
 
-      public synchronized ClientInfo findClient(IMsgToolServiceClient client) {
+      public synchronized ClientInfo findClient(InetSocketAddress address) {
          for (ClientInfo clientInfo : clients) {
-            if (clientInfo.remoteReference.equals(client)) {
+            if (clientInfo.ipAddress.equals(address)) {
                return clientInfo;
             }
          }
@@ -634,16 +638,17 @@ private static final boolean debugEnabled = false;
                type.name()));
       }
       final SubscriptionRecord record = modeMap.get(cmd.getMode());
-      ClientInfo client = record.findClient(cmd.getClient());
-      OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, String.format(
-            "client at %s is unsubscribing to the %s for %s(%s)", client.ipAddress.toString(), cmd.getMode(), name,
-            type));
+      ClientInfo client = record.findClient(cmd.getAddress());
+
 
       if (record != null) {
          /* remove the client address from the listener's client list */
 
          record.removeClient(client);
 
+         OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, String.format(
+                 "client at %s is unsubscribing to the %s for %s(%s)", client.ipAddress.toString(), cmd.getMode(), name,
+                 type));
          /*
           * if the listener has no more clients then remove the listener and unregister the listener
           * for message updates.
@@ -863,66 +868,6 @@ private static final boolean debugEnabled = false;
    public Set<DataType> getAvailablePhysicalTypes() {
       final Set<DataType> available = new HashSet<DataType>(((MessageSystemTestEnvironment) Activator.getTestEnvironment()).getDataTypes());
       return available;
-   }
-
-   public synchronized SubscriptionDetails setReaderWriterMode(SetMessageModeCmd cmd) throws RemoteException {
-      final String name = cmd.getName();
-
-      try {
-         final Map<DataType, EnumMap<MessageMode, SubscriptionRecord>> memToModeMap = messageMap.get(name);
-         if (memToModeMap == null) {
-            throw new IllegalStateException("No subscriptions registered for message " + name);
-         }
-         final EnumMap<MessageMode, SubscriptionRecord> modeMap = memToModeMap.get(cmd.getType());
-         if (modeMap == null) {
-            throw new IllegalStateException("Could not find record for Mem Type of " + cmd.getType() + " for message ");
-         }
-         final SubscriptionRecord record = modeMap.get(cmd.getOldMode());
-         if (record == null) {
-            throw new IllegalStateException("Could not find record for " + cmd.getOldMode() + " of the message ");
-         }
-         ClientInfo client = record.findClient(cmd.getClient());
-         record.removeClient(client);
-         final InetSocketAddress address = client.ipAddress;
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, String.format(
-               "Client at %s is changing message mode for %s from %s to %s", address.toString(), name,
-               cmd.getOldMode(), cmd.getNewMode()));
-         if (record.clients.isEmpty()) {
-            record.unregister();
-            messageRequestor.remove(record.msg);
-            modeMap.remove(cmd.getOldMode());
-         }
-         SubscriptionRecord newRecord = modeMap.get(cmd.getNewMode());
-         if (newRecord == null) {
-            final Class<?> msgWriterClass =
-                  Activator.getTestEnvironment().getRuntimeManager().loadFromRuntimeLibraryLoader(name);
-            /* check to see if an instance of a writer for the specified message exists */
-            Message<?, ?, ?> newMsg =
-                  cmd.getNewMode() == MessageMode.WRITER ? messageRequestor.getMessageWriter(msgWriterClass) : messageRequestor.getMessageReader(msgWriterClass);
-            if (newMsg == null) {
-               throw new ClassNotFoundException(
-                     "Could not find class for the " + cmd.getNewMode().toString() + " of the message");
-            }
-            OseeLog.log(
-                  MessageSystemTestEnvironment.class,
-                  Level.INFO,
-                  "Adding a subscription to: " + newMsg.getName() + " type[" + record.key.getType() + "] mode[" + cmd.getNewMode() + "]");
-            newRecord = new SubscriptionRecord(newMsg, record.key.getType(), cmd.getNewMode(), client);
-            newMsg.setMemTypeActive(record.key.getType());
-            modeMap.put(cmd.getNewMode(), newRecord);
-         } else {
-            newRecord.addClient(client);
-         }
-
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO,
-               "success changing reader/writer mode. New mode = " + newRecord.key.getMode());
-         return new SubscriptionDetails(newRecord.key, newRecord.msg.getActiveDataSource(cmd.getType()).toByteArray(),
-               newRecord.msg.getAvailableMemTypes());
-      } catch (Throwable t) {
-         String title = "Could not set reader/writer for message " + name;
-         OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, t.getMessage(), t);
-         throw new RemoteException(title, t);
-      }
    }
 
    public Map<String, Throwable> getCancelledSubscriptions() {

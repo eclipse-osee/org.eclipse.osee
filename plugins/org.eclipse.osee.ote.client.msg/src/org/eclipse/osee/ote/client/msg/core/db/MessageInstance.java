@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.client.msg.core.db;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.commands.SubscribeToMessage;
 import org.eclipse.osee.ote.message.commands.UnSubscribeToMessage;
@@ -74,7 +75,7 @@ public class MessageInstance {
 
    public void detachService(IRemoteMessageService service, IMsgToolServiceClient client) throws Exception {
       if (service != null) {
-         service.unsubscribeToMessage(new UnSubscribeToMessage(msg.getClass().getName(), mode, type, client));
+         service.unsubscribeToMessage(new UnSubscribeToMessage(msg.getClass().getName(), mode, type, client.getAddressByType(msg.getClass().getName(), type)));
       }
       availableTypes.clear();
       serverSubscriptionKey = null;

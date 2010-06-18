@@ -18,7 +18,6 @@ import java.util.Set;
 
 import org.eclipse.osee.ote.message.commands.RecordCommand;
 import org.eclipse.osee.ote.message.commands.SetElementValue;
-import org.eclipse.osee.ote.message.commands.SetMessageModeCmd;
 import org.eclipse.osee.ote.message.commands.SubscribeToMessage;
 import org.eclipse.osee.ote.message.commands.UnSubscribeToMessage;
 import org.eclipse.osee.ote.message.commands.ZeroizeElement;
@@ -54,8 +53,6 @@ public interface IRemoteMessageService extends Remote {
     * @throws RemoteException
     */
    SubscriptionDetails subscribeToMessage(SubscribeToMessage cmd) throws RemoteException;
-
-   SubscriptionDetails setReaderWriterMode(SetMessageModeCmd cmd) throws RemoteException;
 
    Set<? extends DataType> getAvailablePhysicalTypes() throws RemoteException;
 

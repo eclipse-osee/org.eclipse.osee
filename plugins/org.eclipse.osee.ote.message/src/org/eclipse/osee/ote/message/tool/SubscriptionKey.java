@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.message.tool;
 
 import java.io.Serializable;
+
 import org.eclipse.osee.ote.message.enums.DataType;
 
 /**
@@ -50,4 +51,5 @@ public final class SubscriptionKey implements Serializable {
    public String getMessageClassName() {
       return messageClassName;
    }
+   
 }

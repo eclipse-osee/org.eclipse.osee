@@ -11,8 +11,9 @@
 package org.eclipse.osee.ote.message.commands;
 
 import java.io.Serializable;
+import java.net.InetSocketAddress;
+
 import org.eclipse.osee.ote.message.enums.DataType;
-import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
 
@@ -27,14 +28,14 @@ public class SetMessageModeCmd implements Serializable{
    private final DataType type;
    private final MessageMode oldMode;
    private final MessageMode newMode;
-   private final IMsgToolServiceClient client;
+   private final InetSocketAddress address;
    
-   public SetMessageModeCmd(String name, DataType type, MessageMode oldMode, MessageMode newMode, IMsgToolServiceClient client) {
+   public SetMessageModeCmd(String name, DataType type, MessageMode oldMode, MessageMode newMode, InetSocketAddress address) {
       this.name = name;
       this.type = type;
       this.oldMode = oldMode;
       this.newMode = newMode;
-      this.client = client;
+      this.address = address;
    }
 
    /**
@@ -68,8 +69,8 @@ public class SetMessageModeCmd implements Serializable{
    /**
     * @return Returns the client.
     */
-   public IMsgToolServiceClient getClient() {
-      return client;
+   public InetSocketAddress getAddress() {
+      return address;
    }
 
    /**

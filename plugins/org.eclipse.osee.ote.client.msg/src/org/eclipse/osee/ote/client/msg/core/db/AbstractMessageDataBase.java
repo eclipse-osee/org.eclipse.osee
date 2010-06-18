@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.client.msg.core.internal.MessageReference;
 import org.eclipse.osee.ote.message.Message;
@@ -126,12 +127,11 @@ public abstract class AbstractMessageDataBase {
    }
 
    public void detachService(IRemoteMessageService service) {
-      this.service = null;
-      this.client = null;
       for (MessageInstance instance : referenceToMsgMap.values()) {
          doInstanceDetach(instance, service);
       }
-
+      this.service = null;
+      this.client = null;
    }
 
    public MessageInstance findById(int id) {
