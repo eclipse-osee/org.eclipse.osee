@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.IServiceLookupListener;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
@@ -99,20 +98,20 @@ public class RemoteEventManager {
 
    private RemoteEventManager() {
       super();
-      if (OseeProperties.isNewEvents()) {
-         OseeEventManager.eventLog("REM1 Disabled");
-         internalSkynetEventManager = null;
-         clientEventListener = null;
-      } else {
+      if (OseeEventManager.isOldEvents()) {
          OseeEventManager.eventLog("REM1 Enabled");
          internalSkynetEventManager = new InternalSkynetEventManager();
          clientEventListener = new EventListener();
          checkJiniRegistration();
+      } else {
+         OseeEventManager.eventLog("REM1 Disabled");
+         internalSkynetEventManager = null;
+         clientEventListener = null;
       }
    }
 
    private void checkJiniRegistration() {
-      if (OseeProperties.isNewEvents()) return;
+      if (OseeEventManager.isOldEvents()) return;
       if (clientEventListenerRemoteReference == null) {
          try {
             // We need to trigger authentication before attempting to get database information from client session manager.
@@ -143,7 +142,7 @@ public class RemoteEventManager {
    }
 
    public static void deregisterFromRemoteEventManager() {
-      if (OseeProperties.isNewEvents()) return;
+      if (OseeEventManager.isNewEvents()) return;
       ServiceDataStore.getEclipseInstance(EclipseJiniClassloader.getInstance()).removeListener(getEventServiceManager());
       getEventServiceManager().reset();
    }
@@ -153,11 +152,11 @@ public class RemoteEventManager {
    }
 
    public static boolean isConnected() {
-      return !OseeProperties.isNewEvents() && getEventServiceManager().isValid();
+      return OseeEventManager.isOldEvents() && getEventServiceManager().isValid();
    }
 
    public static void kick(final ISkynetEvent... events) {
-      if (isConnected()) {
+      if (OseeEventManager.isOldEvents() && isConnected()) {
          Job job = new Job("Send Event") {
             @Override
             protected IStatus run(IProgressMonitor monitor) {
@@ -251,7 +250,7 @@ public class RemoteEventManager {
       }
 
       private void disconnectService(Exception e) {
-         if (OseeProperties.isNewEvents()) return;
+         if (OseeEventManager.isNewEvents()) return;
          OseeLog.log(Activator.class, Level.WARNING, "Skynet Event Service connection lost\n" + e.toString(), e);
          setEventService(null);
          try {
@@ -262,7 +261,7 @@ public class RemoteEventManager {
       }
 
       private void connectToService(ISkynetEventService service) {
-         if (OseeProperties.isNewEvents()) return;
+         if (OseeEventManager.isNewEvents()) return;
          try {
             ISkynetEventListener clientListener = getClientEventListenerRemoteReference();
             if (clientListener != null) {
@@ -280,7 +279,7 @@ public class RemoteEventManager {
       }
 
       public void serviceAdded(ServiceItem serviceItem) {
-         if (OseeProperties.isNewEvents()) return;
+         if (OseeEventManager.isNewEvents()) return;
          if (serviceItem.service instanceof ISkynetEventService) {
             ISkynetEventService service = (ISkynetEventService) serviceItem.service;
             if (isValidService(service)) {

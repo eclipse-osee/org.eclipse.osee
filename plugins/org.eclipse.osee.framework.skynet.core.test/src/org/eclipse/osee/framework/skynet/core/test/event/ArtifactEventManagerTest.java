@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.test.event;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAttributeChange1;
@@ -37,9 +35,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRela
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModifiedBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
@@ -62,22 +62,22 @@ public class ArtifactEventManagerTest {
    final Set<EventBasicGuidRelation> resultEventRelations = new HashSet<EventBasicGuidRelation>();
    public static Sender resultSender = null;
    public static List<String> ignoreLoggingRemote =
-         Arrays.asList("OEM: PersistEvent Loopback enabled", "OEM: kickArtifactReloadEvent Loopback enabled",
-               "OEM2: PersistEvent Loopback enabled", "OEM2: kickArtifactReloadEvent Loopback enabled");
+         Arrays.asList("OEM: ArtifactEvent Loopback enabled", "OEM: kickArtifactReloadEvent Loopback enabled",
+               "OEM2: ArtifactEvent Loopback enabled", "OEM2: kickArtifactReloadEvent Loopback enabled");
    public static int incrementingGammaId = 2231;
 
-   public class ArtifactEventListener implements IArtifactListener {
+   public class ArtifactEventListener implements IArtifactEventListener {
       @Override
-      public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Collection<EventBasicGuidRelation> eventRelations, Sender sender) {
-         resultEventArtifacts.addAll(eventArtifacts);
-         resultEventRelations.addAll(eventRelations);
+      public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+         resultEventArtifacts.addAll(artifactEvent.getArtifacts());
+         resultEventRelations.addAll(artifactEvent.getRelations());
          resultSender = sender;
       }
    }
 
    @org.junit.Before
    public void setUpTest() {
-      OseeProperties.setNewEvents(true);
+      OseeEventManager.setNewEvents(true);
    }
 
    // artifact listener create for use by all tests to just capture result eventArtifacts for query

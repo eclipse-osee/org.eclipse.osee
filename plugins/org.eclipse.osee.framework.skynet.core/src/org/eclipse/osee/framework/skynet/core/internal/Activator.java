@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -24,9 +25,11 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IWorkbenchUserService;
 import org.eclipse.osee.framework.skynet.core.WorkbenchUserService;
 import org.eclipse.osee.framework.skynet.core.attribute.HttpAttributeTagger;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
 import org.osgi.framework.Bundle;
@@ -73,6 +76,9 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
       createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
 
       RemoteEventManager2.getInstance().registerForRemoteEvents();
+      if (!OseeEventManager.isNewEvents() && !OseeEventManager.isOldEvents()) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Neither Event System Enabled - This is a problem.");
+      }
    }
 
    @Override

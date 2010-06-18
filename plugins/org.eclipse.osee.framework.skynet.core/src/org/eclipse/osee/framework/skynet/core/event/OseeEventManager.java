@@ -25,9 +25,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
-import org.eclipse.osee.framework.skynet.core.event2.PersistEvent;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEventType;
@@ -62,8 +62,10 @@ public class OseeEventManager {
       if (InternalEventManager.isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickRemoteEventManagerEvent(getSender(source), remoteEventServiceEventType);
-      InternalEventManager2.kickLocalRemEvent(getSender(source), remoteEventServiceEventType);
+      if (OseeEventManager.isOldEvents()) InternalEventManager.kickRemoteEventManagerEvent(getSender(source),
+            remoteEventServiceEventType);
+      if (OseeEventManager.isNewEvents()) InternalEventManager2.kickLocalRemEvent(getSender(source),
+            remoteEventServiceEventType);
    }
 
    // Kick LOCAL and REMOTE broadcast event
@@ -71,10 +73,10 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickBroadcastEvent(getSender(source), broadcastEvent.getBroadcastEventType(),
-            broadcastEvent.getUsers().toArray(new String[broadcastEvent.getUsers().size()]),
-            broadcastEvent.getMessage());
-      InternalEventManager2.kickBroadcastEvent(getSender(source), broadcastEvent);
+      if (OseeEventManager.isOldEvents()) InternalEventManager.kickBroadcastEvent(getSender(source),
+            broadcastEvent.getBroadcastEventType(), broadcastEvent.getUsers().toArray(
+                  new String[broadcastEvent.getUsers().size()]), broadcastEvent.getMessage());
+      if (OseeEventManager.isNewEvents()) InternalEventManager2.kickBroadcastEvent(getSender(source), broadcastEvent);
    }
 
    //Kick LOCAL and REMOTE branch events
@@ -86,9 +88,10 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickBranchEvent(getSender(source), branchEvent.getEventType(), branchId);
+      if (OseeEventManager.isOldEvents()) InternalEventManager.kickBranchEvent(getSender(source),
+            branchEvent.getEventType(), branchId);
       branchEvent.setNetworkSender(getSender(source).getNetworkSender2());
-      InternalEventManager2.kickBranchEvent(getSender(source), branchEvent);
+      if (OseeEventManager.isNewEvents()) InternalEventManager2.kickBranchEvent(getSender(source), branchEvent);
    }
 
    // Kick LOCAL and REMOTE branch events
@@ -96,7 +99,8 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickMergeBranchEvent(getSender(source), branchEventType, branchId);
+      if (OseeEventManager.isOldEvents()) InternalEventManager.kickMergeBranchEvent(getSender(source), branchEventType,
+            branchId);
       // Handled by kickMergeBranchEvent for new Events
    }
 
@@ -106,8 +110,10 @@ public class OseeEventManager {
          return;
       }
       accessControlEvent.setNetworkSender(getSender(source).getNetworkSender2());
-      InternalEventManager.kickAccessControlArtifactsEvent(getSender(source), accessControlEvent, loadedArtifacts);
-      InternalEventManager2.kickAccessControlArtifactsEvent(getSender(source), accessControlEvent);
+      if (OseeEventManager.isOldEvents()) InternalEventManager.kickAccessControlArtifactsEvent(getSender(source),
+            accessControlEvent, loadedArtifacts);
+      if (OseeEventManager.isNewEvents()) InternalEventManager2.kickAccessControlArtifactsEvent(getSender(source),
+            accessControlEvent);
    }
 
    // Kick LOCAL artifact modified event; This event does NOT go external
@@ -115,7 +121,8 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickArtifactModifiedEvent(getSender(source), artifactModType, artifact);
+      if (OseeEventManager.isOldEvents()) InternalEventManager.kickArtifactModifiedEvent(getSender(source),
+            artifactModType, artifact);
    }
 
    // Kick LOCAL relation modified event; This event does NOT go external
@@ -123,7 +130,8 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickRelationModifiedEvent(getSender(source), relationEventType, link, branch, relationType);
+      if (OseeEventManager.isOldEvents()) InternalEventManager.kickRelationModifiedEvent(getSender(source),
+            relationEventType, link, branch, relationType);
    }
 
    // Kick LOCAL and REMOTE purged event depending on sender
@@ -131,7 +139,8 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickArtifactsPurgedEvent(getSender(source), loadedArtifacts);
+      if (OseeEventManager.isOldEvents()) InternalEventManager.kickArtifactsPurgedEvent(getSender(source),
+            loadedArtifacts);
       // Handled by kickTransactionEvent for new Events
    }
 
@@ -140,7 +149,8 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickArtifactsChangeTypeEvent(getSender(source), toArtifactTypeId, loadedArtifacts);
+      if (OseeEventManager.isOldEvents()) InternalEventManager.kickArtifactsChangeTypeEvent(getSender(source),
+            toArtifactTypeId, loadedArtifacts);
       // Handled by kickTransactionEvent for new Events
    }
 
@@ -158,23 +168,24 @@ public class OseeEventManager {
       for (Integer value : transactionIds) {
          transIds[x++] = value.intValue();
       }
-      if (transactionEvent.getEventType() == TransactionEventType.Purged) {
+      if (transactionEvent.getEventType() == TransactionEventType.Purged && OseeEventManager.isOldEvents()) {
          InternalEventManager.kickTransactionsPurgedEvent(getSender(source), transIds);
       }
       transactionEvent.setNetworkSender(getSender(source).getNetworkSender2());
-      InternalEventManager2.kickTransactionEvent(getSender(source), transactionEvent);
+      if (OseeEventManager.isNewEvents()) InternalEventManager2.kickTransactionEvent(getSender(source),
+            transactionEvent);
    }
 
    // Kick LOCAL and REMOTE transaction event
-   public static void kickPersistEvent(Object source, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents, PersistEvent persistEvent) throws OseeAuthenticationRequiredException {
+   public static void kickPersistEvent(Object source, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents, ArtifactEvent artifactEvent) throws OseeAuthenticationRequiredException {
       if (isDisableEvents()) {
          return;
       }
-      if (xModifiedEvents != null) {
+      if (xModifiedEvents != null && OseeEventManager.isOldEvents()) {
          InternalEventManager.kickPersistEvent(getSender(source), xModifiedEvents);
       }
-      persistEvent.setNetworkSender(getSender(source).getNetworkSender2());
-      InternalEventManager2.kickPersistEvent(getSender(source), persistEvent);
+      artifactEvent.setNetworkSender(getSender(source).getNetworkSender2());
+      if (OseeEventManager.isNewEvents()) InternalEventManager2.kickPersistEvent(getSender(source), artifactEvent);
    }
 
    // Kick LOCAL transaction event
@@ -182,9 +193,11 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      InternalEventManager.kickArtifactReloadEvent(getSender(source), artifacts);
-      InternalEventManager2.kickLocalArtifactReloadEvent(getSender(source), EventBasicGuidArtifact.get(
-            EventModType.Reloaded, artifacts));
+      if (OseeEventManager.isOldEvents()) InternalEventManager.kickArtifactReloadEvent(getSender(source), artifacts);
+      ArtifactEvent artifactEvent = new ArtifactEvent();
+      artifactEvent.getArtifacts().addAll(EventBasicGuidArtifact.get(EventModType.Reloaded, artifacts));
+      if (OseeEventManager.isNewEvents()) InternalEventManager2.kickLocalArtifactReloadEvent(getSender(source),
+            artifactEvent);
    }
 
    /**
@@ -192,15 +205,15 @@ public class OseeEventManager {
     * listeners are called.
     */
    public static void addPriorityListener(IEventListener listener) {
-      InternalEventManager.addPriorityListener(listener);
+      if (OseeEventManager.isOldEvents()) InternalEventManager.addPriorityListener(listener);
    }
 
    public static void addListener(IEventListener listener) {
-      InternalEventManager.addListener(listener);
+      if (OseeEventManager.isOldEvents()) InternalEventManager.addListener(listener);
    }
 
    public static void removeListener(IEventListener listener) {
-      InternalEventManager.removeListeners(listener);
+      if (OseeEventManager.isOldEvents()) InternalEventManager.removeListeners(listener);
    }
 
    public static boolean isDisableEvents() {
@@ -215,7 +228,9 @@ public class OseeEventManager {
 
    // Return report showing all listeners registered
    public static String getListenerReport() {
-      return InternalEventManager.getListenerReport();
+      if (OseeEventManager.isOldEvents()) return InternalEventManager.getListenerReport();
+      if (OseeEventManager.isNewEvents()) return InternalEventManager2.getListenerReport();
+      return "Neither event system is active";
    }
 
    // Registration for branch events; for test only
@@ -234,6 +249,26 @@ public class OseeEventManager {
    public static boolean isEventDebugErrorLog() {
       if (!Strings.isValid(System.getProperty("eventDebug"))) return false;
       return System.getProperty("eventDebug").equals("log") || "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Events"));
+   }
+
+   /**
+    * If old event kicks and listens should be used
+    */
+   public static boolean isOldEvents() {
+      if (!Strings.isValid(System.getProperty("eventSystem"))) return true;
+      return System.getProperty("eventSystem").equals("old");
+   }
+
+   /**
+    * If new event kicks and listens should be used
+    */
+   public static boolean isNewEvents() {
+      if (!Strings.isValid(System.getProperty("eventSystem"))) return false;
+      return System.getProperty("eventSystem").equals("new");
+   }
+
+   public static void setNewEvents(boolean enabled) {
+      System.setProperty("eventSystem", enabled ? "new" : "old");
    }
 
    public static void eventLog(String output) {

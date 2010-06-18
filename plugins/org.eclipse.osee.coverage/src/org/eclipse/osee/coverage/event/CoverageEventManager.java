@@ -6,7 +6,6 @@
 package org.eclipse.osee.coverage.event;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -22,11 +21,11 @@ import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event2.filter.FilteredEventListener;
 import org.eclipse.ui.PlatformUI;
@@ -34,7 +33,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEventManager implements IArtifactListener, OseeMessagingStatusCallback {
+public class CoverageEventManager implements IArtifactEventListener, OseeMessagingStatusCallback {
 
    private static CoverageEventManager instance;
    private List<CoverageEditor> editors = new ArrayList<CoverageEditor>();
@@ -129,10 +128,10 @@ public class CoverageEventManager implements IArtifactListener, OseeMessagingSta
    }
 
    @Override
-   public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Collection<EventBasicGuidRelation> eventRelations, Sender sender) {
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       for (CoverageEditor editor : editors) {
          try {
-            for (EventBasicGuidArtifact eventArt : eventArtifacts) {
+            for (EventBasicGuidArtifact eventArt : artifactEvent.getArtifacts()) {
                if (editor.getCoverageEditorInput().getCoveragePackageArtifact() == null) return;
                if (editor.getCoverageEditorInput().getCoveragePackageArtifact().getBranch().getGuid() != eventArt.getBranchGuid()) return;
                if (eventArt.getModType() == EventModType.Deleted || eventArt.getModType() == EventModType.ChangeType || eventArt.getModType() == EventModType.Purged) {

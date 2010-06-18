@@ -390,7 +390,7 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   // Kick LOCAL and REMOTE PersistEvent
+   // Kick LOCAL and REMOTE ArtifactEvent
    static void kickPersistEvent(final Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       if (isDisableEvents()) {
          return;
@@ -409,7 +409,7 @@ public class InternalEventManager {
                   OseeLog.log(
                         InternalEventManager.class,
                         Level.WARNING,
-                        "IEM1: PersistEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+                        "IEM1: ArtifactEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
                // Kick LOCAL

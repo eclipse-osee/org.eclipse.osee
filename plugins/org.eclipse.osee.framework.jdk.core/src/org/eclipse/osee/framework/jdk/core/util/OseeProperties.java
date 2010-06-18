@@ -128,14 +128,6 @@ public class OseeProperties {
       System.setProperty("osee.isInTest", String.valueOf(isInTest));
    }
 
-   public static boolean isNewEvents() {
-      return Boolean.valueOf(System.getProperty("osee.isNewEvents"));
-   }
-
-   public static void setNewEvents(boolean enabled) {
-      System.setProperty("osee.isNewEvents", String.valueOf(enabled));
-   }
-
    private void toStringHelper(List<String> list, Class<?> clazz) {
       Field[] fields = clazz.getDeclaredFields();
       for (Field field : fields) {

@@ -51,10 +51,10 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -65,7 +65,7 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
  * @author Jeff C. Phillips
  */
 
-public class AccessControlManager implements IBranchEventListener, IArtifactsPurgedEventListener, IArtifactListener {
+public class AccessControlManager implements IBranchEventListener, IArtifactsPurgedEventListener, IArtifactEventListener {
    private static final String INSERT_INTO_ARTIFACT_ACL =
          "INSERT INTO OSEE_ARTIFACT_ACL (art_id, permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?, ?)";
    private static final String INSERT_INTO_BRANCH_ACL =
@@ -681,8 +681,8 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    }
 
    @Override
-   public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Collection<EventBasicGuidRelation> eventRelations, Sender sender) {
-      for (EventBasicGuidArtifact guidArt : eventArtifacts) {
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
          if (guidArt.is(EventModType.Added) && guidArt.is(CoreArtifactTypes.User)) {
             reload();
          }

@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
@@ -39,9 +38,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
-import org.eclipse.osee.framework.skynet.core.event2.PersistEvent;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
@@ -98,7 +97,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                   if (remoteEvent instanceof RemotePersistEvent1) {
                      try {
                         RemotePersistEvent1 event1 = (RemotePersistEvent1) remoteEvent;
-                        PersistEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
+                        ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
                         updateArtifacts(sender, transEvent);
                         updateRelations(sender, transEvent);
                         InternalEventManager2.kickPersistEvent(sender, transEvent);
@@ -163,7 +162,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
    /**
     * Updates local cache
     **/
-   private static void updateArtifacts(Sender sender, PersistEvent transEvent) {
+   private static void updateArtifacts(Sender sender, ArtifactEvent transEvent) {
       // Don't crash on any one artifact update problem (no update method throughs exceptions)
       for (EventBasicGuidArtifact guidArt : transEvent.getArtifacts()) {
          OseeEventManager.eventLog(String.format("REM2: updateArtifact -> [%s]", guidArt));
@@ -192,7 +191,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       }
    }
 
-   private static void updateRelations(Sender sender, PersistEvent transEvent) {
+   private static void updateRelations(Sender sender, ArtifactEvent transEvent) {
       for (EventBasicGuidRelation guidArt : transEvent.getRelations()) {
          // Don't crash on any one relation update problem
          try {
@@ -340,7 +339,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
    }
 
    public void registerForRemoteEvents() throws OseeCoreException {
-      if (OseeProperties.isNewEvents()) {
+      if (OseeEventManager.isNewEvents()) {
          ResEventManager.getInstance().start(this);
          OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem2_Connected);
          OseeEventManager.eventLog("REM2: Enabled");
@@ -350,7 +349,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
    }
 
    public boolean isConnected() {
-      return OseeProperties.isNewEvents() && ResEventManager.getInstance().isConnected();
+      return OseeEventManager.isNewEvents() && ResEventManager.getInstance().isConnected();
    }
 
    /**
@@ -361,7 +360,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
     * ui. SessionId needs to be modified so this client doesn't think the events came from itself.
     */
    public void kick(final RemoteEvent remoteEvent) {
-      if (OseeProperties.isNewEvents() && isConnected()) {
+      if (OseeEventManager.isNewEvents() && isConnected()) {
          OseeEventManager.eventLog(String.format("REM2: kick - [%s]", remoteEvent));
          Job job =
                new Job(String.format("[%s] - sending [%s]", getClass().getSimpleName(),

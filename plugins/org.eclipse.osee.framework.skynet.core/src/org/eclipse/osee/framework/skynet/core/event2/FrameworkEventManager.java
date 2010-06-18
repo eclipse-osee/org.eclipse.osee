@@ -17,9 +17,8 @@ import org.eclipse.osee.framework.skynet.core.event.IRemoteEventManagerEventList
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.FilteredEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 
@@ -37,6 +36,7 @@ public class FrameworkEventManager {
       }
       if (!listeners.contains(listener)) {
          listeners.add(listener);
+         OseeEventManager.eventLog("FEM: addListener (" + priorityListeners.size() + ") " + listener);
       }
    }
 
@@ -51,7 +51,7 @@ public class FrameworkEventManager {
       if (!priorityListeners.contains(listener)) {
          priorityListeners.add(listener);
       }
-      OseeEventManager.eventLog("IEM1: addPriorityListener (" + priorityListeners.size() + ") " + listener);
+      OseeEventManager.eventLog("FEM: addPriorityListener (" + priorityListeners.size() + ") " + listener);
    }
 
    public static void removeListener(IEventListener listener) {
@@ -69,7 +69,7 @@ public class FrameworkEventManager {
    }
 
    public static boolean isHandledBy(IEventListener event) {
-      return event instanceof IArtifactListener || (event instanceof FilteredEventListener && ((FilteredEventListener) event).isOfType(IArtifactListener.class));
+      return event instanceof IArtifactEventListener || (event instanceof FilteredEventListener && ((FilteredEventListener) event).isOfType(IArtifactEventListener.class));
    }
 
    public static void processBranchEvent(Sender sender, BranchEvent branchEvent) {
@@ -98,38 +98,29 @@ public class FrameworkEventManager {
       }
    }
 
-   public static void processEventArtifactsAndRelations(Sender sender, PersistEvent transEvent) {
-      processEventArtifactsAndRelations(sender, transEvent.getArtifacts(), transEvent.getRelations());
-   }
-
-   public static void processEventArtifactsAndRelations(Sender sender, Collection<EventBasicGuidArtifact> eventArtifacts) {
-      processEventArtifactsAndRelations(sender, eventArtifacts, EMPTY_EVENT_RELATIONS);
-   }
-
-   public static void processEventArtifactsAndRelations(Sender sender, Collection<EventBasicGuidArtifact> eventArtifacts, Collection<EventBasicGuidRelation> eventRelations) {
-      OseeEventManager.eventLog(String.format("FEM: processArtsAndRels arts[%s] rels[%s]", eventArtifacts,
-            eventRelations));
+   public static void processEventArtifactsAndRelations(Sender sender, ArtifactEvent artifactEvent) {
+      OseeEventManager.eventLog(String.format("FEM: processArtsAndRels [%s]", artifactEvent));
       for (IEventListener listener : priorityListeners) {
-         processEventArtifactsAndRelationsListener(listener, sender, eventArtifacts, eventRelations);
+         processEventArtifactsAndRelationsListener(listener, artifactEvent, sender);
       }
       for (IEventListener listener : listeners) {
-         processEventArtifactsAndRelationsListener(listener, sender, eventArtifacts, eventRelations);
+         processEventArtifactsAndRelationsListener(listener, artifactEvent, sender);
       }
    }
 
-   private static void processEventArtifactsAndRelationsListener(IEventListener listener, Sender sender, Collection<EventBasicGuidArtifact> eventArtifacts, Collection<EventBasicGuidRelation> eventRelations) {
-      IArtifactListener artifactListener = null;
+   private static void processEventArtifactsAndRelationsListener(IEventListener listener, ArtifactEvent artifactEvent, Sender sender) {
+      IArtifactEventListener artifactEventListener = null;
       Collection<IEventFilter> eventFilters = null;
-      if (listener instanceof IArtifactListener) {
-         artifactListener = (IArtifactListener) listener;
+      if (listener instanceof IArtifactEventListener) {
+         artifactEventListener = (IArtifactEventListener) listener;
          eventFilters = Collections.emptyList();
-      } else if (listener instanceof FilteredEventListener && ((FilteredEventListener) listener).getEventListener() instanceof IArtifactListener) {
-         artifactListener = (IArtifactListener) ((FilteredEventListener) listener).getEventListener();
+      } else if (listener instanceof FilteredEventListener && ((FilteredEventListener) listener).getEventListener() instanceof IArtifactEventListener) {
+         artifactEventListener = (IArtifactEventListener) ((FilteredEventListener) listener).getEventListener();
          eventFilters = ((FilteredEventListener) listener).getEventFilters();
       }
-      if (artifactListener != null) {
+      if (artifactEventListener != null) {
          // TODO handle filters first
-         artifactListener.handleArtifactModified(eventArtifacts, eventRelations, sender);
+         artifactEventListener.handleArtifactEvent(artifactEvent, sender);
       }
    }
 

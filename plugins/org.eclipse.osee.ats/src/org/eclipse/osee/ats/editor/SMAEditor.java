@@ -58,13 +58,11 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event2.filter.FilteredEventListener;
@@ -110,7 +108,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Donald G. Dunne
  */
-public class SMAEditor extends AbstractArtifactEditor implements IArtifactListener, ISelectedAtsArtifacts, IDirtiableEditor, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
+public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventListener, ISelectedAtsArtifacts, IDirtiableEditor, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private StateMachineArtifact sma;
    private int workFlowPageIndex, metricsPageIndex, attributesPageIndex;
@@ -155,6 +153,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactListen
          sma.setEditor(this);
 
          OseeEventManager.addListener(this);
+         registerForEvents();
+
          updatePartName();
 
          setContentDescription(priviledgedEditModeEnabled ? " PRIVILEGED EDIT MODE ENABLED" : "");
@@ -181,7 +181,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactListen
       }
 
       enableGlobalPrint();
-      registerForEvents();
    }
    private ArtifactTypeEventFilter artifactTypeEventFilter;
    private FilteredEventListener filteredEventListener;
@@ -792,58 +791,55 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactListen
    }
 
    @Override
-   public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Collection<EventBasicGuidRelation> eventRelations, Sender sender) {
-      System.out.println("SMAEditor: handleArtifactModified called " + sender);
-      if (RemoteEventManager2.getInstance().isConnected()) {
-         if (sma.isInTransition()) {
-            return;
-         }
-         if (FrameworkEventUtil.isDeletedPurged(sma, eventArtifacts)) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  closeEditor();
-               }
-            });
-         } else if (FrameworkEventUtil.isModified(sma, eventArtifacts)) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  try {
-                     refreshPages();
-                     onDirtied();
-                  } catch (Exception ex) {
-                     // do nothing
-                  }
-               }
-            });
-         } else if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
-            try {
-               // If related review has made a change, redraw
-               for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
-                  // TODO addt his back in when relation events propogated
-                  //                  if (transData.isHasEvent(reviewArt)) {
-                  //                     Displays.ensureInDisplayThread(new Runnable() {
-                  //                        @Override
-                  //                        public void run() {
-                  //                           try {
-                  //                              refreshPages();
-                  //                              onDirtied();
-                  //                           } catch (Exception ex) {
-                  //                              // do nothing
-                  //                           }
-                  //                        }
-                  //                     });
-                  //                     // Only refresh editor for first review that has event
-                  //                     break;
-                  //                  }
-               }
-            } catch (Exception ex) {
-               // do nothings
-            }
-         }
-         onDirtied();
-
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      System.out.println("SMAEditor: handleArtifactModified called [" + artifactEvent + "] - sender " + sender + "");
+      if (sma.isInTransition()) {
+         return;
       }
+      if (FrameworkEventUtil.isDeletedPurged(sma, artifactEvent.getArtifacts())) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               closeEditor();
+            }
+         });
+      } else if (FrameworkEventUtil.isModified(sma, artifactEvent.getArtifacts())) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               try {
+                  refreshPages();
+                  onDirtied();
+               } catch (Exception ex) {
+                  // do nothing
+               }
+            }
+         });
+      } else if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
+         try {
+            // If related review has made a change, redraw
+            for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
+               // TODO addt his back in when relation events propogated
+               //                  if (transData.isHasEvent(reviewArt)) {
+               //                     Displays.ensureInDisplayThread(new Runnable() {
+               //                        @Override
+               //                        public void run() {
+               //                           try {
+               //                              refreshPages();
+               //                              onDirtied();
+               //                           } catch (Exception ex) {
+               //                              // do nothing
+               //                           }
+               //                        }
+               //                     });
+               //                     // Only refresh editor for first review that has event
+               //                     break;
+               //                  }
+            }
+         } catch (Exception ex) {
+            // do nothings
+         }
+      }
+      onDirtied();
    }
 }

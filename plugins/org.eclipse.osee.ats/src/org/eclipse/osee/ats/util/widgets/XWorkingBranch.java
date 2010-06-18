@@ -279,4 +279,8 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       return deleteBranchButton;
    }
 
+   public String toString() {
+      return String.format("%s", getLabel());
+   }
+
 }

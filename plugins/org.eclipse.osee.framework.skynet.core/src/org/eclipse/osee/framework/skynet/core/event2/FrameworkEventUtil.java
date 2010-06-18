@@ -193,7 +193,7 @@ public class FrameworkEventUtil {
       return event;
    }
 
-   public static RemotePersistEvent1 getRemotePersistEvent(PersistEvent transEvent) {
+   public static RemotePersistEvent1 getRemotePersistEvent(ArtifactEvent transEvent) {
       RemotePersistEvent1 event = new RemotePersistEvent1();
       event.setNetworkSender(getRemoteNetworkSender(transEvent.getNetworkSender()));
       event.setBranchGuid(transEvent.getBranchGuid());
@@ -221,8 +221,8 @@ public class FrameworkEventUtil {
       return event;
    }
 
-   public static PersistEvent getPersistEvent(RemotePersistEvent1 remEvent) {
-      PersistEvent event = new PersistEvent();
+   public static ArtifactEvent getPersistEvent(RemotePersistEvent1 remEvent) {
+      ArtifactEvent event = new ArtifactEvent();
       event.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
       event.setBranchGuid(remEvent.getBranchGuid());
       event.setTransactionId(remEvent.getTransactionId());

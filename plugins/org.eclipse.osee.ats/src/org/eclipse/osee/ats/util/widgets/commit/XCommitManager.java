@@ -405,4 +405,8 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       return labelWidget;
    }
 
+   public String toString() {
+      return String.format("%s", getLabel());
+   }
+
 }

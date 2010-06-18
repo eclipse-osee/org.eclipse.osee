@@ -18,12 +18,12 @@ import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionOperation;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.ITransactionEventListener;
@@ -132,7 +132,7 @@ public class TransactionEventTest {
 
    @org.junit.Before
    public void setUpTest() {
-      OseeProperties.setNewEvents(true);
+      OseeEventManager.setNewEvents(true);
    }
 
    // artifact listener create for use by all tests to just capture result eventArtifacts for query

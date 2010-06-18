@@ -40,12 +40,13 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactListener;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.FilteredEventListener;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
@@ -68,7 +69,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
  * 
  * @author Donald G. Dunne
  */
-public class AtsCacheManager implements IArtifactListener, IArtifactsPurgedEventListener, IFrameworkTransactionEventListener {
+public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurgedEventListener, IFrameworkTransactionEventListener {
 
    private static Map<TaskableStateMachineArtifact, Collection<TaskArtifact>> teamTasksCache =
          new HashMap<TaskableStateMachineArtifact, Collection<TaskArtifact>>();
@@ -217,13 +218,13 @@ public class AtsCacheManager implements IArtifactListener, IArtifactsPurgedEvent
    }
 
    @Override
-   public void handleArtifactModified(Collection<EventBasicGuidArtifact> eventArtifacts, Collection<EventBasicGuidRelation> eventRelations, Sender sender) {
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       if (DbUtil.isDbInit()) {
          OseeEventManager.removeListener(this);
          return;
       }
       try {
-         for (EventBasicGuidArtifact guidArt : eventArtifacts) {
+         for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
             try {
                if (guidArt.is(EventModType.Deleted, EventModType.Purged)) {
                   if (guidArt.is(CoreArtifactTypes.WorkRuleDefinition, CoreArtifactTypes.WorkPageDefinition,
@@ -277,7 +278,7 @@ public class AtsCacheManager implements IArtifactListener, IArtifactsPurgedEvent
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
             }
          }
-         for (EventBasicGuidRelation guidRel : eventRelations) {
+         for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
             try {
                if (guidRel.is(AtsRelationTypes.SmaToTask_Task)) {
                   for (TaskArtifact taskArt : ArtifactCache.getActive(guidRel, TaskArtifact.class)) {
@@ -294,7 +295,7 @@ public class AtsCacheManager implements IArtifactListener, IArtifactsPurgedEvent
             }
          }
          for (Artifact artifact : FrameworkEventUtil.getArtifactsInRelations(CoreRelationTypes.WorkItem__Child,
-               eventRelations, RelationEventType.Added, RelationEventType.Undeleted)) {
+               artifactEvent.getRelations(), RelationEventType.Added, RelationEventType.Undeleted)) {
             if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
                WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkRuleDefinition(
                      artifact), artifact);

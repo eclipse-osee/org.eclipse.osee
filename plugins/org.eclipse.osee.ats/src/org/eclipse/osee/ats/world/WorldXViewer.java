@@ -225,9 +225,11 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
 
    @Override
    protected void createSupportWidgets(Composite parent) {
+      final WorldXViewer fWorldXViewer = this;
       super.createSupportWidgets(parent);
       parent.addDisposeListener(new DisposeListener() {
          public void widgetDisposed(DisposeEvent e) {
+            OseeEventManager.removeListener(fWorldXViewer);
             ((WorldContentProvider) getContentProvider()).clear(false);
          }
       });
@@ -753,7 +755,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListener(this);
       // Dispose of the table objects is done through separate dispose listener off tree
       // Tell the label provider to release its resources
       getLabelProvider().dispose();

@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event2.PersistEvent;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -77,12 +77,12 @@ public class ChangeArtifactType {
             artifactType.getGuid(), new LoadedArtifacts(artifactsUserAccepted), artifactChanges);
 
       // New Events
-      PersistEvent persistEvent = new PersistEvent();
-      persistEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());
+      ArtifactEvent artifactEvent = new ArtifactEvent();
+      artifactEvent.setBranchGuid(artifactChanges.iterator().next().getBranchGuid());
       for (EventBasicGuidArtifact guidArt : artifactChanges) {
-         persistEvent.getArtifacts().add(guidArt);
+         artifactEvent.getArtifacts().add(guidArt);
       }
-      OseeEventManager.kickPersistEvent(ChangeArtifactType.class, null, persistEvent);
+      OseeEventManager.kickPersistEvent(ChangeArtifactType.class, null, artifactEvent);
 
    }
 
