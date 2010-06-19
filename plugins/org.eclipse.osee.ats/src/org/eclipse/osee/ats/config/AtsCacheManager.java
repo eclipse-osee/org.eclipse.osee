@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -66,7 +66,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
  * ActionableItemArtifact<br>
  * All other artifact types will silently not cached<br>
  * <REM2>
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurgedEventListener, IFrameworkTransactionEventListener {
