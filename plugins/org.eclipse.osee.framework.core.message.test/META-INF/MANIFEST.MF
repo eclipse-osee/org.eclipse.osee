@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Core Message Test
+Bundle-SymbolicName: org.eclipse.osee.framework.core.message.test;singleton:=true
+Bundle-Version: 0.9.5.qualifier
+Bundle-Vendor: Eclipse.org
+Fragment-Host: org.eclipse.osee.framework.core.message;bundle-version="0.9.5"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit4;bundle-version="4.5.0"
+Export-Package: org.eclipse.osee.framework.core.message.test,
+ org.eclipse.osee.framework.core.message.test.mocks
+Import-Package: org.eclipse.osee.framework.core.model.test.mocks,
+ org.eclipse.osee.framework.jdk.core.util
