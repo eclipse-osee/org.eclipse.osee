@@ -24,14 +24,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.RelationType;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.IServiceLookupListener;
@@ -83,7 +83,7 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
 
 /**
  * Manages remote events from the SkynetEventService.
- * 
+ *
  * @author Jeff C. Phillips
  * @author Donald G. Dunne
  */
@@ -111,7 +111,9 @@ public class RemoteEventManager {
    }
 
    private void checkJiniRegistration() {
-      if (OseeEventManager.isOldEvents()) return;
+      if (OseeEventManager.isOldEvents()) {
+         return;
+      }
       if (clientEventListenerRemoteReference == null) {
          try {
             // We need to trigger authentication before attempting to get database information from client session manager.
@@ -142,7 +144,9 @@ public class RemoteEventManager {
    }
 
    public static void deregisterFromRemoteEventManager() {
-      if (OseeEventManager.isNewEvents()) return;
+      if (OseeEventManager.isNewEvents()) {
+         return;
+      }
       ServiceDataStore.getEclipseInstance(EclipseJiniClassloader.getInstance()).removeListener(getEventServiceManager());
       getEventServiceManager().reset();
    }
@@ -250,7 +254,9 @@ public class RemoteEventManager {
       }
 
       private void disconnectService(Exception e) {
-         if (OseeEventManager.isNewEvents()) return;
+         if (OseeEventManager.isNewEvents()) {
+            return;
+         }
          OseeLog.log(Activator.class, Level.WARNING, "Skynet Event Service connection lost\n" + e.toString(), e);
          setEventService(null);
          try {
@@ -261,7 +267,9 @@ public class RemoteEventManager {
       }
 
       private void connectToService(ISkynetEventService service) {
-         if (OseeEventManager.isNewEvents()) return;
+         if (OseeEventManager.isNewEvents()) {
+            return;
+         }
          try {
             ISkynetEventListener clientListener = getClientEventListenerRemoteReference();
             if (clientListener != null) {
@@ -279,7 +287,9 @@ public class RemoteEventManager {
       }
 
       public void serviceAdded(ServiceItem serviceItem) {
-         if (OseeEventManager.isNewEvents()) return;
+         if (OseeEventManager.isNewEvents()) {
+            return;
+         }
          if (serviceItem.service instanceof ISkynetEventService) {
             ISkynetEventService service = (ISkynetEventService) serviceItem.service;
             if (isValidService(service)) {
@@ -520,7 +530,7 @@ public class RemoteEventManager {
 
       /**
        * Updates local cache
-       * 
+       *
        * @param event
        */
       private static void updateArtifacts(Sender sender, ISkynetArtifactEvent event, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
