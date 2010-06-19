@@ -2,7 +2,7 @@ package org.eclipse.osee.framework.skynet.core.event2;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender;
 
 public class TransactionEvent extends FrameworkEvent {
