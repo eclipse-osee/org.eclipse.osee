@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Core Message
+Bundle-SymbolicName: org.eclipse.osee.framework.core.message;singleton:=true
+Bundle-Version: 0.9.5.qualifier
+Bundle-Activator: org.eclipse.osee.framework.core.message.internal.Activator
+Bundle-Vendor: Eclipse.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.core.runtime,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.model,
+ org.eclipse.osee.framework.core.model.cache,
+ org.eclipse.osee.framework.core.model.type,
+ org.eclipse.osee.framework.core.services,
+ org.eclipse.osee.framework.core.translation,
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.osgi.framework,
+ org.osgi.util.tracker
+Export-Package: org.eclipse.osee.framework.core.message
+Bundle-ActivationPolicy: lazy
+Eclipse-ExtensibleAPI: true
