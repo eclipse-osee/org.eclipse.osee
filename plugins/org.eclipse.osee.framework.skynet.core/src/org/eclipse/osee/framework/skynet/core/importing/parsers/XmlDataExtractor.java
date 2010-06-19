@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.InputStreamReader;
 import java.net.URI;
-import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;

@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.types;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 

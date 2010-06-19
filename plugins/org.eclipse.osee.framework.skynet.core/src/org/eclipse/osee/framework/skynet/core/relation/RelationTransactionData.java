@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.util.Collection;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.DefaultBasicGuidRelation;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.logging.OseeLog;

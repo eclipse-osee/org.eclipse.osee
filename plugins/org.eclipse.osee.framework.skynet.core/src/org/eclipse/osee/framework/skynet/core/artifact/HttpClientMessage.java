@@ -9,8 +9,8 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IDataTranslationService;
-import org.eclipse.osee.framework.core.services.ITranslatorId;
+import org.eclipse.osee.framework.core.translation.IDataTranslationService;
+import org.eclipse.osee.framework.core.translation.ITranslatorId;
 import org.eclipse.osee.framework.core.util.HttpMessage;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 

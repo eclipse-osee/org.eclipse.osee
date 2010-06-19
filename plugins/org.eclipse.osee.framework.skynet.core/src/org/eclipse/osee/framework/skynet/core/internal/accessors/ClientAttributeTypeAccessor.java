@@ -14,14 +14,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.cache.IOseeCache;
-import org.eclipse.osee.framework.core.data.AttributeTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.AttributeType;
-import org.eclipse.osee.framework.core.model.AttributeTypeFactory;
-import org.eclipse.osee.framework.core.model.OseeEnumType;
+import org.eclipse.osee.framework.core.message.AttributeTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.model.cache.IOseeCache;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
+import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 
 /**

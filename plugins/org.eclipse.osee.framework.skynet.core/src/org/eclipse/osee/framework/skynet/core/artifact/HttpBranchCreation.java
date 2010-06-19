@@ -12,14 +12,14 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.BranchCreationRequest;
-import org.eclipse.osee.framework.core.data.BranchCreationResponse;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.message.BranchCreationRequest;
+import org.eclipse.osee.framework.core.message.BranchCreationResponse;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;

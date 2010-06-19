@@ -8,10 +8,10 @@ package org.eclipse.osee.framework.skynet.core.event2.artifact;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.data.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
+import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 

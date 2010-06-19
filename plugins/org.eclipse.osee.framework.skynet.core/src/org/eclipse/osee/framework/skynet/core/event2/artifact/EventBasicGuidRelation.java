@@ -5,8 +5,8 @@
  */
 package org.eclipse.osee.framework.skynet.core.event2.artifact;
 
-import org.eclipse.osee.framework.core.data.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.data.DefaultBasicGuidRelation;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 
 /**

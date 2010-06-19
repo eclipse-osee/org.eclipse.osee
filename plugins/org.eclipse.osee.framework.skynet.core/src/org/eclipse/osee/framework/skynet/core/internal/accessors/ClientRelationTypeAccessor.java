@@ -13,15 +13,15 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.cache.IOseeCache;
-import org.eclipse.osee.framework.core.data.RelationTypeCacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.RelationTypeCacheUpdateResponse.RelationTypeRow;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.ArtifactType;
-import org.eclipse.osee.framework.core.model.RelationType;
-import org.eclipse.osee.framework.core.model.RelationTypeFactory;
+import org.eclipse.osee.framework.core.message.RelationTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.message.RelationTypeCacheUpdateResponse.RelationTypeRow;
+import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.model.cache.IOseeCache;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 
 /**

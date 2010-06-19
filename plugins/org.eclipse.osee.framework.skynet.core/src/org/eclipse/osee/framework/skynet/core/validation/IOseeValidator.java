@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.validation;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public interface IOseeValidator {

@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal;
 
-import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.cache.BranchCache;
-import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
-import org.eclipse.osee.framework.core.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
+import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
+import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientArtifactTypeAccessor;

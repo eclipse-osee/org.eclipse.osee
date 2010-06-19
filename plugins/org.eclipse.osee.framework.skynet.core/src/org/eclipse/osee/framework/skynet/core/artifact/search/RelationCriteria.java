@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.RelationType;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
