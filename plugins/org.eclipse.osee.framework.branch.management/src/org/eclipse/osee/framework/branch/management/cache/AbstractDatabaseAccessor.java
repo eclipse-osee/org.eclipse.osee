@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.cache;
 
-import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
+import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;

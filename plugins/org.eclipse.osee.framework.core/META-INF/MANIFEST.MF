@@ -23,12 +23,10 @@ Import-Package: com.lowagie.text;version="2.1.7",
  org.osgi.framework,
  org.osgi.util.tracker
 Eclipse-ExtensibleAPI: true
-Export-Package: org.eclipse.osee.framework.core.cache,
- org.eclipse.osee.framework.core.data,
+Export-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.operation,
- org.eclipse.osee.framework.core.services,
+ org.eclipse.osee.framework.core.translation,
  org.eclipse.osee.framework.core.util
 Bundle-ActivationPolicy: lazy

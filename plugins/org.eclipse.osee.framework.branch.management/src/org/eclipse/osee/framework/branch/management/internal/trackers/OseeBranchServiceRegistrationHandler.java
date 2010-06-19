@@ -11,10 +11,10 @@
 package org.eclipse.osee.framework.branch.management.internal.trackers;
 
 import java.util.Map;
+import org.eclipse.osee.framework.branch.management.IOseeBranchService;
 import org.eclipse.osee.framework.branch.management.internal.OseeBranchService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.services.IOseeBranchService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;

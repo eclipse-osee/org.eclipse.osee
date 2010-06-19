@@ -16,24 +16,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
+import org.eclipse.osee.framework.branch.management.IOseeBranchService;
+import org.eclipse.osee.framework.branch.management.IOseeBranchServiceProvider;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.message.IOseeModelingService;
+import org.eclipse.osee.framework.core.message.IOseeModelingServiceProvider;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServiceTracker;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
-import org.eclipse.osee.framework.core.services.IDataTranslationService;
-import org.eclipse.osee.framework.core.services.IOseeBranchService;
-import org.eclipse.osee.framework.core.services.IOseeBranchServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
-import org.eclipse.osee.framework.core.services.IOseeDataTranslationProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.core.services.IOseeModelingService;
-import org.eclipse.osee.framework.core.services.IOseeModelingServiceProvider;
+import org.eclipse.osee.framework.core.translation.IDataTranslationService;
+import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.manager.servlet.ArtifactFileServlet;
@@ -62,7 +62,7 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Donald G. Dunne
  */
-public class Activator implements BundleActivator, IOseeCachingServiceProvider, IOseeModelFactoryServiceProvider, IOseeModelingServiceProvider, IOseeBranchServiceProvider, IOseeDataTranslationProvider, IOseeDatabaseServiceProvider {
+public class Activator implements BundleActivator, IOseeCachingServiceProvider, IOseeModelFactoryServiceProvider, IOseeModelingServiceProvider, IOseeBranchServiceProvider, IDataTranslationServiceProvider, IOseeDatabaseServiceProvider {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.manager.servlet";
 
    private static Activator instance;
@@ -173,7 +173,7 @@ public class Activator implements BundleActivator, IOseeCachingServiceProvider, 
    }
 
    @Override
-   public IDataTranslationService getTranslatorService() throws OseeCoreException {
+   public IDataTranslationService getTranslationService() throws OseeCoreException {
       return getTracker(OseeServiceTrackerId.TRANSLATION_SERVICE, IDataTranslationService.class);
    }
 

@@ -8,7 +8,8 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
 Import-Package: org.eclipse.core.runtime,
- org.eclipse.osee.framework.core.cache,
+ org.eclipse.osee.framework.core.model.cache,
+ org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,

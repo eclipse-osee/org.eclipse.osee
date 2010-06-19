@@ -8,17 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.test;
+package org.eclipse.osee.framework.branch.management;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {//
-})
 /**
- * @author Roberto E. Escobar
+ * @author Jeff C. Phillips
  */
-public class FrameworkCoreTestSuite {
+public interface IOseeBranchServiceProvider {
+
+   public IOseeBranchService getBranchService() throws OseeCoreException;
 
 }

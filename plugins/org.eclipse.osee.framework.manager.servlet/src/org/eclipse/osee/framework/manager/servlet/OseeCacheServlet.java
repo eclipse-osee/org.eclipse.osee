@@ -19,19 +19,6 @@ import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.osee.framework.core.cache.BranchCache;
-import org.eclipse.osee.framework.core.cache.TransactionCache;
-import org.eclipse.osee.framework.core.data.ArtifactTypeCacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.AttributeTypeCacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.BranchCacheStoreRequest;
-import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
-import org.eclipse.osee.framework.core.data.DefaultBasicArtifact;
-import org.eclipse.osee.framework.core.data.IArtifactFactory;
-import org.eclipse.osee.framework.core.data.IBasicArtifact;
-import org.eclipse.osee.framework.core.data.OseeEnumTypeCacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.RelationTypeCacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
@@ -39,16 +26,29 @@ import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.message.ArtifactTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.message.AttributeTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.message.BranchCacheStoreRequest;
+import org.eclipse.osee.framework.core.message.BranchCacheUpdateResponse;
+import org.eclipse.osee.framework.core.message.BranchCacheUpdateUtil;
+import org.eclipse.osee.framework.core.message.CacheUpdateRequest;
+import org.eclipse.osee.framework.core.message.OseeEnumTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.message.RelationTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.message.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
+import org.eclipse.osee.framework.core.model.IArtifactFactory;
+import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
-import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
-import org.eclipse.osee.framework.core.services.IOseeDataTranslationProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.ITranslatorId;
-import org.eclipse.osee.framework.core.util.BranchCacheUpdateUtil;
+import org.eclipse.osee.framework.core.translation.IDataTranslationService;
+import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
+import org.eclipse.osee.framework.core.translation.ITranslatorId;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -61,10 +61,10 @@ import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 public class OseeCacheServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = 6693534844874109524L;
-   private final IOseeDataTranslationProvider dataTransalatorProvider;
+   private final IDataTranslationServiceProvider dataTransalatorProvider;
    private final IOseeCachingServiceProvider cachingProvider;
 
-   public OseeCacheServlet(IOseeDataTranslationProvider dataTransalatorProvider, IOseeCachingServiceProvider cachingProvider) {
+   public OseeCacheServlet(IDataTranslationServiceProvider dataTransalatorProvider, IOseeCachingServiceProvider cachingProvider) {
       super();
       this.dataTransalatorProvider = dataTransalatorProvider;
       this.cachingProvider = cachingProvider;
@@ -79,7 +79,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
       OseeCacheEnum cacheId = OseeCacheEnum.valueOf(req.getParameter("cacheId"));
       try {
          IOseeCachingService caching = cachingProvider.getOseeCachingService();
-         IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
+         IDataTranslationService service = dataTransalatorProvider.getTranslationService();
          Pair<Object, ITranslatorId> pair = createResponse(true, new CacheUpdateRequest(cacheId), caching);
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");
@@ -125,7 +125,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
    }
 
    private void storeUpdates(boolean isCompatible, HttpServletRequest req, HttpServletResponse resp) throws OseeCoreException {
-      IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
+      IDataTranslationService service = dataTransalatorProvider.getTranslationService();
       IOseeCachingService caching = cachingProvider.getOseeCachingService();
       TransactionCache txCache = caching.getTransactionCache();
 
@@ -172,7 +172,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
    }
 
    private void sendUpdates(boolean isCompatible, HttpServletRequest req, HttpServletResponse resp) throws OseeCoreException {
-      IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
+      IDataTranslationService service = dataTransalatorProvider.getTranslationService();
       IOseeCachingService caching = cachingProvider.getOseeCachingService();
 
       CacheUpdateRequest updateRequest = null;

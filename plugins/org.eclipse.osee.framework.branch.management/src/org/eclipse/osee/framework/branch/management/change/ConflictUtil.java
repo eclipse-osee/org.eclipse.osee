@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.change;
 
-import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
-import org.eclipse.osee.framework.core.data.AttributeChangeItem;
-import org.eclipse.osee.framework.core.data.ChangeItem;
-import org.eclipse.osee.framework.core.data.RelationChangeItem;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.message.ArtifactChangeItem;
+import org.eclipse.osee.framework.core.message.AttributeChangeItem;
+import org.eclipse.osee.framework.core.message.ChangeItem;
+import org.eclipse.osee.framework.core.message.RelationChangeItem;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 
 /**

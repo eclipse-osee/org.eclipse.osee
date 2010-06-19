@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
-import org.eclipse.osee.framework.core.services.ITranslatorId;
+import org.eclipse.osee.framework.core.translation.ITranslatorId;
 
 /**
  * @author Megumi Telles

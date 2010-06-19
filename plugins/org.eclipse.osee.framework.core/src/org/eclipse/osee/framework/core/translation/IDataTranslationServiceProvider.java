@@ -8,17 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.test;
+package org.eclipse.osee.framework.core.translation;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {//
-})
 /**
  * @author Roberto E. Escobar
  */
-public class FrameworkCoreTestSuite {
+public interface IDataTranslationServiceProvider {
 
+   IDataTranslationService getTranslationService() throws OseeCoreException;
 }

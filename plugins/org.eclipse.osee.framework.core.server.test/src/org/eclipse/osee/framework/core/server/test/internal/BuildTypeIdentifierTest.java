@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.internal.BuildInfo;
 import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier;
 import org.eclipse.osee.framework.core.server.test.mocks.MockBuildTypeDataProvider;
-import org.eclipse.osee.framework.core.util.Compare;
+import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -17,13 +17,13 @@ import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.branch.management.IOseeBranchServiceProvider;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
-import org.eclipse.osee.framework.core.services.IOseeBranchServiceProvider;
-import org.eclipse.osee.framework.core.services.IOseeDataTranslationProvider;
+import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.function.ChangeBranchArchiveStateFunction;
@@ -43,9 +43,9 @@ public class BranchManagerServlet extends OseeHttpServlet {
    private static final long serialVersionUID = 226986283540461526L;
 
    private final IOseeBranchServiceProvider branchServiceProvider;
-   private final IOseeDataTranslationProvider dataTransalatorProvider;
+   private final IDataTranslationServiceProvider dataTransalatorProvider;
 
-   public BranchManagerServlet(IOseeBranchServiceProvider branchServiceProvider, IOseeDataTranslationProvider dataTransalatorProvider) {
+   public BranchManagerServlet(IOseeBranchServiceProvider branchServiceProvider, IDataTranslationServiceProvider dataTransalatorProvider) {
       this.branchServiceProvider = branchServiceProvider;
       this.dataTransalatorProvider = dataTransalatorProvider;
    }

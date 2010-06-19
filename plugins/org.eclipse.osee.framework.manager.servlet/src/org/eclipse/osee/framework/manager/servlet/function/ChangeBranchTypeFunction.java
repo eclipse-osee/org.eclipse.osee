@@ -14,12 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.core.data.ChangeBranchTypeRequest;
+import org.eclipse.osee.framework.branch.management.IOseeBranchServiceProvider;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
+import org.eclipse.osee.framework.core.message.ChangeBranchTypeRequest;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.services.IDataTranslationService;
-import org.eclipse.osee.framework.core.services.IOseeBranchServiceProvider;
-import org.eclipse.osee.framework.core.services.IOseeDataTranslationProvider;
+import org.eclipse.osee.framework.core.translation.IDataTranslationService;
+import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 
 /**
@@ -29,9 +29,9 @@ public class ChangeBranchTypeFunction extends AbstractOperation {
    private final HttpServletRequest req;
    private final HttpServletResponse resp;
    private final IOseeBranchServiceProvider branchServiceProvider;
-   private final IOseeDataTranslationProvider dataTransalatorProvider;
+   private final IDataTranslationServiceProvider dataTransalatorProvider;
 
-   public ChangeBranchTypeFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchServiceProvider branchServiceProvider, IOseeDataTranslationProvider dataTransalatorProvider) {
+   public ChangeBranchTypeFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchServiceProvider branchServiceProvider, IDataTranslationServiceProvider dataTransalatorProvider) {
       super("Update Branch Type", Activator.PLUGIN_ID);
       this.req = req;
       this.resp = resp;
@@ -41,7 +41,7 @@ public class ChangeBranchTypeFunction extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
+      IDataTranslationService service = dataTransalatorProvider.getTranslationService();
       ChangeBranchTypeRequest request = service.convert(req.getInputStream(), CoreTranslatorId.CHANGE_BRANCH_TYPE);
       branchServiceProvider.getBranchService().updateBranchType(new NullProgressMonitor(), request);
 

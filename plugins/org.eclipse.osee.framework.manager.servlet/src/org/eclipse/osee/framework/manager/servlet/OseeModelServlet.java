@@ -18,15 +18,15 @@ import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.osee.framework.core.data.OseeImportModelRequest;
-import org.eclipse.osee.framework.core.data.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.message.IOseeModelingService;
+import org.eclipse.osee.framework.core.message.OseeImportModelRequest;
+import org.eclipse.osee.framework.core.message.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
-import org.eclipse.osee.framework.core.services.IDataTranslationService;
-import org.eclipse.osee.framework.core.services.IOseeDataTranslationProvider;
-import org.eclipse.osee.framework.core.services.IOseeModelingService;
+import org.eclipse.osee.framework.core.translation.IDataTranslationService;
+import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
@@ -37,9 +37,9 @@ import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 public class OseeModelServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = -2639113870500561780L;
-   private final IOseeDataTranslationProvider dataTransalatorProvider;
+   private final IDataTranslationServiceProvider dataTransalatorProvider;
 
-   public OseeModelServlet(IOseeDataTranslationProvider dataTransalatorProvider) {
+   public OseeModelServlet(IDataTranslationServiceProvider dataTransalatorProvider) {
       super();
       this.dataTransalatorProvider = dataTransalatorProvider;
    }
@@ -84,7 +84,7 @@ public class OseeModelServlet extends OseeHttpServlet {
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
       try {
-         IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
+         IDataTranslationService service = dataTransalatorProvider.getTranslationService();
          OseeImportModelRequest modelRequest =
                service.convert(req.getInputStream(), CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
 

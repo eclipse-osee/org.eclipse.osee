@@ -12,12 +12,12 @@ package org.eclipse.osee.framework.branch.management.change;
 
 import java.util.HashMap;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
-import org.eclipse.osee.framework.core.data.AttributeChangeItem;
-import org.eclipse.osee.framework.core.data.ChangeItem;
-import org.eclipse.osee.framework.core.data.RelationChangeItem;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.message.ArtifactChangeItem;
+import org.eclipse.osee.framework.core.message.AttributeChangeItem;
+import org.eclipse.osee.framework.core.message.ChangeItem;
+import org.eclipse.osee.framework.core.message.RelationChangeItem;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;

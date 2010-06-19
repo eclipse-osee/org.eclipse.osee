@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.branch.management.exchange.transform;
 
 import java.util.HashMap;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;

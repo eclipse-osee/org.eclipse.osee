@@ -5,17 +5,17 @@
  */
 package org.eclipse.osee.framework.manager.servlet;
 
-import org.eclipse.osee.framework.core.data.ArtifactTypeCacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.AttributeTypeCacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.BranchRow;
-import org.eclipse.osee.framework.core.data.OseeEnumTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.OseeSession;
-import org.eclipse.osee.framework.core.data.RelationTypeCacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.ArtifactTypeCacheUpdateResponse.ArtifactTypeRow;
-import org.eclipse.osee.framework.core.data.RelationTypeCacheUpdateResponse.RelationTypeRow;
 import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.message.ArtifactTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.message.AttributeTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.message.BranchCacheUpdateResponse;
+import org.eclipse.osee.framework.core.message.BranchRow;
+import org.eclipse.osee.framework.core.message.OseeEnumTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.message.RelationTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.message.ArtifactTypeCacheUpdateResponse.ArtifactTypeRow;
+import org.eclipse.osee.framework.core.message.RelationTypeCacheUpdateResponse.RelationTypeRow;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SessionData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;

@@ -16,12 +16,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
-import org.eclipse.osee.framework.core.data.AttributeChangeItem;
-import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.message.ArtifactChangeItem;
+import org.eclipse.osee.framework.core.message.AttributeChangeItem;
+import org.eclipse.osee.framework.core.message.ChangeItem;
+import org.eclipse.osee.framework.core.message.ChangeItemUtil;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.util.ChangeItemUtil;
 
 public class AddArtifactChangeData extends AbstractOperation {
    private final List<ChangeItem> changeItems;

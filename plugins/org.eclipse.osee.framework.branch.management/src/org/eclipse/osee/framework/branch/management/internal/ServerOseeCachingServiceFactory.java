@@ -18,21 +18,21 @@ import org.eclipse.osee.framework.branch.management.cache.DatabaseBranchAccessor
 import org.eclipse.osee.framework.branch.management.cache.DatabaseOseeEnumTypeAccessor;
 import org.eclipse.osee.framework.branch.management.cache.DatabaseRelationTypeAccessor;
 import org.eclipse.osee.framework.branch.management.cache.DatabaseTransactionRecordAccessor;
-import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.cache.BranchCache;
-import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
-import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
-import org.eclipse.osee.framework.core.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.cache.TransactionCache;
-import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
+import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
+import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
+import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookupProvider;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
-import org.eclipse.osee.framework.core.services.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 
 /**

@@ -21,12 +21,12 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.branch.management.change.ComputeNetChangeOperation;
-import org.eclipse.osee.framework.core.data.ChangeItem;
-import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.message.ChangeItem;
+import org.eclipse.osee.framework.core.message.ChangeVersion;
+import org.eclipse.osee.framework.core.message.test.mocks.ChangeTestUtility;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.test.data.ChangeTestUtility;
 import org.junit.Assert;
 import org.junit.Test;
 
