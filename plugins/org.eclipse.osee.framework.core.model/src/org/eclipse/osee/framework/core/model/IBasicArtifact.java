@@ -1,0 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2009 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.core.model;
+
+import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.core.data.Named;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public interface IBasicArtifact<T> extends Named, Identity {
+
+   int getArtId();
+
+   Branch getBranch();
+
+   ArtifactType getArtifactType();
+
+   T getFullArtifact() throws OseeCoreException;
+}
