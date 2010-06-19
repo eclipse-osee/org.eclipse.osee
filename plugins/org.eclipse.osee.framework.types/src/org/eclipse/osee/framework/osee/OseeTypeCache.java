@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.osee;
 
-import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
-import org.eclipse.osee.framework.core.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
+import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 
 /**
  * @author Roberto E. Escobar

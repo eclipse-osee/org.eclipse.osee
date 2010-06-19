@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.ote.define,
  org.eclipse.osee.framework.svn,
- org.eclipse.nebula.widgets.xviewer
+ org.eclipse.nebula.widgets.xviewer,
+ org.eclipse.osee.framework.core.model
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ote.ui.define,
  org.eclipse.osee.ote.ui.define.dialogs,
@@ -40,6 +41,7 @@ Import-Package: com.lowagie.text;version="2.1.7",
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,
+ org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,

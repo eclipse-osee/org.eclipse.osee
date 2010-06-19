@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.types;
 
-import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.junit.Test;
 
 /**

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.swt.graphics.Image;
 
 /**

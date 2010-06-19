@@ -16,5 +16,7 @@ plugin@org.eclipse.osee.framework.types=SVN,,http://dev.eclipse.org/svnroot/tech
 
 feature@org.eclipse.osee.core.feature=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,features/org.eclipse.osee.core.feature
 plugin@org.eclipse.osee.framework.core=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core
+plugin@org.eclipse.osee.framework.core.model=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.model
+plugin@org.eclipse.osee.framework.core.message=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.message
 plugin@org.eclipse.osee.framework.jdk.core=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.jdk.core
 plugin@org.eclipse.osee.framework.logging=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.logging

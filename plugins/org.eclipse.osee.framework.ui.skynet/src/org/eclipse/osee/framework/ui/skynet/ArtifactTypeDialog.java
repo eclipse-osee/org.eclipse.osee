@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IconAndMessageDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.ui.plugin.util.ObjectList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
