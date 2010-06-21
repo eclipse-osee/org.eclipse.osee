@@ -31,7 +31,7 @@ public class GuidBasedArtifactResolver extends NewArtifactImportResolver {
    private boolean guidsMatch(RoughArtifact roughArt, Artifact realArt) {
       String roughGuid = roughArt.getGuid();
       String realGuid = realArt.getGuid();
-         return realGuid.equals(roughGuid);
+      return realGuid.equals(roughGuid);
    }
 
    @Override
@@ -41,7 +41,7 @@ public class GuidBasedArtifactResolver extends NewArtifactImportResolver {
 
       for (Artifact artifact : descendants) {
          if (guidsMatch(roughArtifact, artifact)) {
-            translateAttributes(roughArtifact, artifact);
+            roughArtifact.translateAttributes(artifact);
             return artifact;
          }
       }

@@ -10,15 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.util.Collection;
-import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -26,7 +19,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
-import org.eclipse.osee.framework.skynet.core.importing.RoughAttributeSet;
 
 /**
  * @author Ryan D. Brooks
@@ -40,6 +32,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       this.secondaryArtifactType = secondaryArtifactType;
    }
 
+   @Override
    public Artifact resolve(final RoughArtifact roughArtifact, final Branch branch, Artifact realParent, Artifact root) throws OseeCoreException {
       ArtifactType artifactType = getArtifactType(roughArtifact.getRoughArtifactKind());
 
@@ -48,7 +41,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
                   roughArtifact.getHumanReadableId(), new ArtifactProcessor() {
                      @Override
                      public void run(Artifact artifact) throws OseeCoreException {
-                        translateAttributes(roughArtifact, artifact);
+                        roughArtifact.translateAttributes(artifact);
                      }
                   });
 
@@ -67,25 +60,4 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       }
    }
 
-   protected void translateAttributes(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
-      RoughAttributeSet roughAttributes = roughArtifact.getAttributes();
-      for (String attrType : roughAttributes.getKeys()) {
-         Collection<String> values = roughAttributes.getAttributeValueList(attrType);
-         artifact.setAttributeValues(attrType, values);
-      }
-      transferBinaryAttributes(roughArtifact, artifact);
-   }
-
-   private void transferBinaryAttributes(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
-      for (Entry<String, URI> entry : roughArtifact.getURIAttributes().entrySet()) {
-         try {
-            artifact.setSoleAttributeFromStream(entry.getKey(), new BufferedInputStream(
-                  entry.getValue().toURL().openStream()));
-         } catch (MalformedURLException ex) {
-            OseeExceptions.wrapAndThrow(ex);
-         } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
-         }
-      }
-   }
 }

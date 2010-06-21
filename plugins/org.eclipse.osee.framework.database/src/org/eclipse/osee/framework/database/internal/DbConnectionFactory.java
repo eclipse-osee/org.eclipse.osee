@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.database.internal;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
 
@@ -29,9 +30,9 @@ public class DbConnectionFactory implements IDbConnectionFactory {
 
    @Override
    public IConnectionFactory get(String driver) throws OseeCoreException {
-      for (IConnectionFactory connection : connectionProviders) {
-         if (connection.getDriver().equals(driver)) {
-            return connection;
+      for (IConnectionFactory connectionFactory : connectionProviders) {
+         if (connectionFactory.getDriver().equals(driver)) {
+            return connectionFactory;
          }
       }
       return null;

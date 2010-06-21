@@ -11,10 +11,12 @@
 package org.eclipse.osee.framework.skynet.core.importing.operations;
 
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -65,7 +67,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       int unitOfWork = calculateWork((double) totalItems / getTotalWorkUnits());
 
       for (RoughArtifact roughArtifact : rawData.getParentRoughArtifact().getChildren()) {
-         Artifact child = createArtifact(monitor, roughToRealArtifact, roughArtifact, destinationArtifact);
+         Artifact child = createArtifact(monitor, roughArtifact, destinationArtifact);
          if (child != null && !child.hasParent()) {
             destinationArtifact.addChild(importArtifactOrder, child);
          }
@@ -87,7 +89,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       }
    }
 
-   private Artifact createArtifact(IProgressMonitor monitor, Map<RoughArtifact, Artifact> roughToRealArtifact, RoughArtifact roughArtifact, Artifact realParent) throws OseeCoreException {
+   private Artifact createArtifact(IProgressMonitor monitor, RoughArtifact roughArtifact, Artifact realParent) throws OseeCoreException {
       Artifact realArtifact = roughToRealArtifact.get(roughArtifact);
       if (realArtifact != null) {
          return realArtifact;
@@ -97,7 +99,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       unmatchedArtifacts.remove(realArtifact);
 
       for (RoughArtifact childRoughArtifact : roughArtifact.getChildren()) {
-         Artifact childArtifact = createArtifact(monitor, roughToRealArtifact, childRoughArtifact, realArtifact);
+         Artifact childArtifact = createArtifact(monitor, childRoughArtifact, realArtifact);
          if (areValid(realArtifact, childArtifact)) {
             removeOtherParent(childArtifact, realArtifact);
             if (!childArtifact.hasParent()) {

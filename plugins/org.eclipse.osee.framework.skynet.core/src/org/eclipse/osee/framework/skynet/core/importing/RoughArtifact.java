@@ -13,13 +13,15 @@ package org.eclipse.osee.framework.skynet.core.importing;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
 /**
@@ -33,12 +35,11 @@ public class RoughArtifact {
    private String humandReadableId;
    private RoughArtifactKind roughArtifactKind;
    private final RoughAttributeSet attributes;
-   private final Map<String, URI> uriAttributes;
    private final Collection<RoughArtifact> children;
    private ArtifactType primaryArtifactType;
 
    public RoughArtifact(RoughArtifactKind roughArtifactKind) {
-      this.uriAttributes = new HashMap<String, URI>(2, 1);
+
       this.attributes = new RoughAttributeSet();
       this.children = new ArrayList<RoughArtifact>();
       this.roughArtifactKind = roughArtifactKind;
@@ -47,7 +48,6 @@ public class RoughArtifact {
    public void clear() {
       this.attributes.clear();
       this.children.clear();
-      this.uriAttributes.clear();
       humandReadableId = null;
       guid = null;
       number = null;
@@ -58,6 +58,10 @@ public class RoughArtifact {
    public RoughArtifact(RoughArtifactKind roughArtifactKind, String name) {
       this(roughArtifactKind);
       addAttribute("Name", name);
+   }
+
+   public Set<String> getAttributeTypeNames() {
+      return attributes.getAttributeTypeNames();
    }
 
    public boolean hasHierarchicalRelation() {
@@ -77,8 +81,8 @@ public class RoughArtifact {
       return roughParent;
    }
 
-   public void addURIAttribute(String name, URI file) {
-      uriAttributes.put(name, file);
+   public void addURIAttribute(String name, URI url) {
+      attributes.addURIAttribute(name, url);
    }
 
    public void addURIAttribute(IAttributeType attributeType, URI file) {
@@ -109,7 +113,7 @@ public class RoughArtifact {
    }
 
    public Map<String, URI> getURIAttributes() {
-      return uriAttributes;
+      return getURIAttributes();
    }
 
    public boolean isChild(RoughArtifact otherArtifact) {
@@ -158,7 +162,7 @@ public class RoughArtifact {
    }
 
    public String getName() {
-      return attributes.getName();
+      return attributes.getSoleAttributeValue(CoreAttributeTypes.NAME.getName());
    }
 
    public String getRoughAttribute(String attributeName) {
@@ -173,4 +177,7 @@ public class RoughArtifact {
       this.primaryArtifactType = primaryArtifactType;
    }
 
+   public void translateAttributes(Artifact artifact) throws OseeCoreException {
+      attributes.translateAttributes(artifact);
+   }
 }

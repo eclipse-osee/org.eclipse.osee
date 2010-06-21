@@ -10,18 +10,33 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing;
 
+import java.io.BufferedInputStream;
+import java.net.URI;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
-public class RoughAttributeSet {
-   private HashCollection<String, String> attributes = new HashCollection<String, String>();
+public final class RoughAttributeSet {
+   private HashCollection<CharSequence, String> attributes = new HashCollection<CharSequence, String>();
+   private final Map<String, URI> uriAttributes;
 
    public RoughAttributeSet() {
-      attributes = new HashCollection<String, String>();
+      attributes = new HashCollection<CharSequence, String>();
+      this.uriAttributes = new HashMap<String, URI>(2, 1);
    }
 
    public void clear() {
-      attributes = new HashCollection<String, String>();
+      attributes.clear();
+      uriAttributes.clear();
    }
 
    public void addMultiple(String name, String[] values) {
@@ -31,15 +46,11 @@ public class RoughAttributeSet {
    }
 
    public void add(String name, String value) {
-      attributes.put(name.toUpperCase(), value);
+      attributes.put(new CaseInsensitiveString(name), value);
    }
 
-   public String getName() {
-      return getSoleAttributeValue("Name");
-   }
-
-   public Collection<String> getAttributeValueList(String typeName) {
-      return attributes.getValues(typeName.toUpperCase());
+   public Collection<String> getAttributeValueList(String attributeTypeName) {
+      return attributes.getValues(attributeTypeName);
    }
 
    public String getSoleAttributeValue(String typeName) {
@@ -50,12 +61,16 @@ public class RoughAttributeSet {
       return valueAsCollection.iterator().next();
    }
 
-   public Collection<String> getKeys() {
-      return attributes.keySet();
+   public Collection<String> getAttributeValueList(IAttributeType attributeType) {
+      return getAttributeValueList(attributeType.getName());
    }
 
-   public HashCollection<String, String> getAllEntries() {
-      return attributes;
+   public void addURIAttribute(String name, URI url) {
+      uriAttributes.put(name, url);
+   }
+
+   Map<String, URI> getURIAttributes() {
+      return uriAttributes;
    }
 
    @Override
@@ -75,5 +90,33 @@ public class RoughAttributeSet {
    @Override
    public String toString() {
       return attributes.toString();
+   }
+
+   protected void translateAttributes(Artifact artifact) throws OseeCoreException {
+      for (CharSequence attrTypeName : attributes.keySet()) {
+         Collection<String> values = attributes.getValues(attrTypeName);
+         artifact.setAttributeValues(attrTypeName.toString(), values);
+      }
+      transferBinaryAttributes(artifact);
+   }
+
+   private void transferBinaryAttributes(Artifact artifact) throws OseeCoreException {
+      for (Entry<String, URI> entry : getURIAttributes().entrySet()) {
+         try {
+            artifact.setSoleAttributeFromStream(entry.getKey(), new BufferedInputStream(
+                     entry.getValue().toURL().openStream()));
+         } catch (Exception ex) {
+            OseeExceptions.wrapAndThrow(ex);
+         }
+      }
+   }
+
+   public Set<String> getAttributeTypeNames() {
+      Set<String> typeNames = new HashSet<String>();
+      typeNames.addAll(uriAttributes.keySet());
+      for (CharSequence attrTypeName : attributes.keySet()) {
+         typeNames.add(attrTypeName.toString());
+      }
+      return typeNames;
    }
 }

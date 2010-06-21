@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
@@ -42,11 +41,10 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
 
    private boolean attributeValuesMatch(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
       RoughAttributeSet roughAttributeSet = roughArtifact.getAttributes();
-      HashCollection<String, String> roughAttributeMap = roughAttributeSet.getAllEntries();
 
       for (AttributeType attributeType : nonChangingAttributes) {
-         Collection<String> attributeValues = artifact.getAttributesToStringList(attributeType.getName());
-         Collection<String> roughAttributes = roughAttributeMap.getValues(attributeType.getName());
+         Collection<String> attributeValues = artifact.getAttributesToStringList(attributeType);
+         Collection<String> roughAttributes = roughAttributeSet.getAttributeValueList(attributeType);
 
          if (roughAttributes == null) {
             roughAttributes = Collections.emptyList();
@@ -91,7 +89,7 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
 
          if (candidates.size() == 1) {
             realArtifact = candidates.iterator().next();
-            translateAttributes(roughArtifact, realArtifact);
+            roughArtifact.translateAttributes(realArtifact);
          } else {
             String output =
                   String.format("Found %s candidates during reuse import for \"%s\"", candidates.size(),
