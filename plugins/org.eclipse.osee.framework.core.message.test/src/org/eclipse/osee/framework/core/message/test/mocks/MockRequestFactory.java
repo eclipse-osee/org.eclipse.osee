@@ -16,6 +16,14 @@ import org.eclipse.osee.framework.core.message.BranchCreationRequest;
 import org.eclipse.osee.framework.core.message.BranchCreationResponse;
 import org.eclipse.osee.framework.core.message.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.message.ChangeVersion;
+import org.eclipse.osee.framework.core.model.BranchFactory;
+import org.eclipse.osee.framework.core.model.OseeModelFactoryService;
+import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.model.type.ArtifactTypeFactory;
+import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
+import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
+import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
@@ -23,8 +31,13 @@ public final class MockRequestFactory {
    private MockRequestFactory() {
    }
 
-   public static IOseeModelFactoryServiceProvider createFactoryProvider(){
-      return new MockOseeModelFactoryServiceProvider(null);
+   public static IOseeModelFactoryServiceProvider createFactoryProvider() {
+      return new MockOseeModelFactoryServiceProvider(createFactoryService());
+   }
+
+   private static IOseeModelFactoryService createFactoryService() {
+      return new OseeModelFactoryService(new BranchFactory(), new TransactionRecordFactory(),
+            new ArtifactTypeFactory(), new AttributeTypeFactory(), new RelationTypeFactory(), new OseeEnumTypeFactory());
    }
 
    public static ArtifactChangeItem createArtifactChangeItem() throws OseeArgumentException {
