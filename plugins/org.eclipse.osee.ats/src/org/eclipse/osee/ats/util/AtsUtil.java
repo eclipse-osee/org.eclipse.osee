@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -441,11 +442,7 @@ public final class AtsUtil {
 
    public static BranchGuidEventFilter getCommonBranchFilter() {
       if (branchGuidEventFilter == null) {
-         try {
-            branchGuidEventFilter = new BranchGuidEventFilter(AtsUtil.getAtsBranch());
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-         }
+         branchGuidEventFilter = new BranchGuidEventFilter(CoreBranches.COMMON);
       }
       return branchGuidEventFilter;
    }

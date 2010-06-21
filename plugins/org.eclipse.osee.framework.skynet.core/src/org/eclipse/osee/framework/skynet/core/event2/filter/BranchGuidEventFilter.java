@@ -7,6 +7,7 @@ package org.eclipse.osee.framework.skynet.core.event2.filter;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 
 /**
@@ -14,14 +15,21 @@ import org.eclipse.osee.framework.core.model.Branch;
  */
 public class BranchGuidEventFilter implements IEventFilter {
 
-   private final Collection<String> branchGuids;
+   private Collection<String> branchGuids;
+   private final IOseeBranch branchToken;
 
    public BranchGuidEventFilter(String branchGuid) {
       this.branchGuids = Arrays.asList(branchGuid);
+      this.branchToken = null;
    }
 
    public BranchGuidEventFilter(Collection<String> branchGuids) {
       this.branchGuids = branchGuids;
+      this.branchToken = null;
+   }
+
+   public BranchGuidEventFilter(IOseeBranch branchToken) {
+      this.branchToken = branchToken;
    }
 
    public BranchGuidEventFilter(Branch branch) {
@@ -29,7 +37,14 @@ public class BranchGuidEventFilter implements IEventFilter {
    }
 
    public boolean isFiltered(String branchGuid) {
-      return this.branchGuids.contains(branchGuid);
+      if (branchGuids != null) {
+         if (this.branchGuids.contains(branchGuid)) {
+            return true;
+         }
+      }
+      if (branchToken != null) {
+         if (branchToken.getGuid().equals(branchGuid)) return true;
+      }
+      return false;
    }
-
 }
