@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.translation;
+package org.eclipse.osee.framework.core.message;
 
 import java.util.List;
 import java.util.Map;

@@ -17,11 +17,11 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.AttributeTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.message.TranslationUtil;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.translation.ITranslator;
-import org.eclipse.osee.framework.core.translation.TranslationUtil;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**

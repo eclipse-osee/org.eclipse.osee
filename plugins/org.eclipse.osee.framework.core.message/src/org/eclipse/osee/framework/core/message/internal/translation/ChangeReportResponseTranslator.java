@@ -15,9 +15,9 @@ import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ChangeItem;
 import org.eclipse.osee.framework.core.message.ChangeReportResponse;
+import org.eclipse.osee.framework.core.message.TranslationUtil;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
-import org.eclipse.osee.framework.core.translation.TranslationUtil;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
