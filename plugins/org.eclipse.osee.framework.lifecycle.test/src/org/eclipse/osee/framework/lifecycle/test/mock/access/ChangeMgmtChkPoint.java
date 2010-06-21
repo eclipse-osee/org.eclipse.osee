@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.lifecycle.test.mock.access;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IBasicArtifact;
+import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
 
 /**

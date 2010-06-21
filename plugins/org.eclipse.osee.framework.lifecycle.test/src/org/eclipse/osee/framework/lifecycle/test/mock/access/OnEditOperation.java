@@ -7,7 +7,7 @@ package org.eclipse.osee.framework.lifecycle.test.mock.access;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IBasicArtifact;
+import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleOperation;
 import org.eclipse.osee.framework.lifecycle.LifecycleService;
 

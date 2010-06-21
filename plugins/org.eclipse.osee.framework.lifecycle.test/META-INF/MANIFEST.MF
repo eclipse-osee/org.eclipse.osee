@@ -7,4 +7,5 @@ Bundle-Vendor: Eclispe.org
 Fragment-Host: org.eclipse.osee.framework.lifecycle;bundle-version="0.9.5"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit4
-Import-Package: org.eclipse.osee.framework.core.data
+Import-Package: org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.model
