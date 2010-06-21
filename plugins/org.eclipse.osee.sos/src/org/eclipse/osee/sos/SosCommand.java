@@ -26,7 +26,7 @@ public class SosCommand implements CommandProvider {
    private void specifyRequiredBundles() {
       requiredBundles = new HashSet<String>();
       requiredBundles.add("com.google.collect");
-      requiredBundles.add("com.google.guice");
+      requiredBundles.add("com.google.inject");
       requiredBundles.add("com.ibm.icu");
       requiredBundles.add("com.lowagie.text");
       requiredBundles.add("javax.servlet");
