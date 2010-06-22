@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.core.framework.saxparse;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Actual;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.AdditionalInfo;
@@ -65,6 +66,7 @@ import org.eclipse.osee.ote.core.framework.saxparse.elements.Time;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.TimeSummary;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Tracability;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Trace;
+import org.eclipse.osee.ote.core.framework.saxparse.elements.TraceEnd;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Type;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.User;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Value;
@@ -142,6 +144,7 @@ public class OteSaxHandler extends AbstractSaxHandler {
       addHandlers(new TimeSummary());
       addHandlers(new Tracability());
       addHandlers(new Trace());
+      addHandlers(new TraceEnd());
       addHandlers(new Type());
       addHandlers(new User());
       addHandlers(new Value());

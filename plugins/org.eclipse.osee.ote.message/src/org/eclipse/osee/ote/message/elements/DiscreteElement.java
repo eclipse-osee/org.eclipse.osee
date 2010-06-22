@@ -1520,7 +1520,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public T get(ITestEnvironmentAccessor accessor) {
       accessor.getLogger().methodCalled(accessor, new MethodFormatter());
       T v = getValue();
-      accessor.getLogger().methodEnded(accessor);
+      MethodFormatter methodFormatter = new MethodFormatter();
+      methodFormatter.add(v);
+      accessor.getLogger().methodEnded(accessor, methodFormatter);
       return v;
    }
 

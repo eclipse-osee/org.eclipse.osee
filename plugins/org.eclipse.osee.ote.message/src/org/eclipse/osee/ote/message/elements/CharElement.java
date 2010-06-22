@@ -335,10 +335,6 @@ public class CharElement extends DiscreteElement<Character> {
       return passFail.isPass();
    }
 
-   public Character get(ITestEnvironmentAccessor accessor) {
-      return (Character) this.getValue();
-   }
-
    /**
     * Returns the string of length "stringLength" starting as the position of the element.
     * 

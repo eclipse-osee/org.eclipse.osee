@@ -93,10 +93,6 @@ public class StringElement extends DiscreteElement<String> {
       return mem.getASCIIString(byteOffset, msb, lsb);
    }
 
-   public String get(ITestEnvironmentAccessor accessor) {
-      return getValue();
-   }
-
    /**
     * Verifies that the element is set to "value" within the number of "milliseconds" passed.
     * 

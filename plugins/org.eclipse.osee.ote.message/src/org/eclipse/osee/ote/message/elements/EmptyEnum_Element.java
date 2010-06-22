@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MemoryResource;
@@ -86,16 +87,6 @@ public class EmptyEnum_Element extends DiscreteElement<EmptyEnum> {
    public void setAndSend(ITestEnvironmentAccessor accessor, EmptyEnum enumeration) {
       this.set(accessor, enumeration);
       super.sendMessage();
-   }
-
-   /**
-    * Returns the current value of the element.
-    * 
-    * @return The current value of the element.
-    */
-   @Override
-   public EmptyEnum get(ITestEnvironmentAccessor accessor) {
-      return getValue();
    }
 
    @Override

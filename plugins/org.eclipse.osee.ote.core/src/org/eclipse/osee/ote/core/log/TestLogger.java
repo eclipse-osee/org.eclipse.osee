@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.core.log;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.TestCase;
@@ -28,6 +29,7 @@ import org.eclipse.osee.ote.core.log.record.SupportRecord;
 import org.eclipse.osee.ote.core.log.record.TestPointRecord;
 import org.eclipse.osee.ote.core.log.record.TestRecord;
 import org.eclipse.osee.ote.core.log.record.TraceRecord;
+import org.eclipse.osee.ote.core.log.record.TraceRecordEnd;
 import org.eclipse.osee.ote.core.log.record.WarningRecord;
 
 /**
@@ -147,9 +149,12 @@ public class TestLogger extends Logger implements ITestLogger {
     * @param methodArguments
     * @param startFlag
     */
-   public void trace(ITestEnvironmentAccessor source, String objectName, String methodName, MethodFormatter methodArguments,
-         boolean startFlag) {
-      log(new TraceRecord(source, objectName, methodName, methodArguments, startFlag));
+   public void trace(ITestEnvironmentAccessor source, String objectName, String methodName, MethodFormatter methodArguments) {
+      log(new TraceRecord(source, objectName, methodName, methodArguments));
+   }
+   
+   public void endtrace(ITestEnvironmentAccessor source, MethodFormatter methodArguments) {
+	      log(new TraceRecordEnd(source, methodArguments));
    }
 
    /**
@@ -200,7 +205,7 @@ public class TestLogger extends Logger implements ITestLogger {
     */
    public void methodCalled(ITestEnvironmentAccessor source, MethodFormatter arguments, int methodCount) {
       String methodName = (new Exception()).getStackTrace()[methodCount].getMethodName();
-      trace(source, "", methodName, arguments, true);
+      trace(source, "", methodName, arguments);
    }
 
    /**
@@ -249,7 +254,7 @@ public class TestLogger extends Logger implements ITestLogger {
          int methodCount) {
 
       String methodName = (new Exception()).getStackTrace()[methodCount].getMethodName();
-      trace(source, objectName, methodName, arguments, true);
+      trace(source, objectName, methodName, arguments);
    }
 
    /**
@@ -258,7 +263,11 @@ public class TestLogger extends Logger implements ITestLogger {
     * @param source The object requesting the logging (Usually "this" is passed in).
     */
    public void methodEnded(ITestEnvironmentAccessor source) {
-      trace(source, "", "", new MethodFormatter(), false);
+      endtrace(source, new MethodFormatter());
+   }
+   
+   public void methodEnded(ITestEnvironmentAccessor source, MethodFormatter methodFormatter) {
+      endtrace(source, methodFormatter);
    }
 
    public void log(TestRecord record) {

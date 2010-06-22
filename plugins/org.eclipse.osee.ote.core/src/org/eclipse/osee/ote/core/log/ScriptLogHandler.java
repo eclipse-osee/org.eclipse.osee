@@ -19,10 +19,12 @@ import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
 import org.apache.xml.serialize.OutputFormat;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,6 +34,7 @@ import org.eclipse.osee.ote.core.log.record.ScriptResultRecord;
 import org.eclipse.osee.ote.core.log.record.TestCaseRecord;
 import org.eclipse.osee.ote.core.log.record.TestRecord;
 import org.eclipse.osee.ote.core.log.record.TraceRecord;
+import org.eclipse.osee.ote.core.log.record.TraceRecordEnd;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.ProcessingInstruction;
@@ -151,19 +154,14 @@ public class ScriptLogHandler extends Handler {
                      parent = testScriptElement;
                   }
                } else {
-
-                  if (record instanceof TraceRecord) {
-                     if (((TraceRecord) record).getStartFlag()) { // method began
-                        parent.appendChild(child);
-                        parent = child;
-                     } else { // method ended
-                        if (parent.getParentNode() != null) {
-                           parent = (Element) parent.getParentNode();
-                        }
-                     }
-                  } else {
-                     parent.appendChild(child);
-                  }
+            	  parent.appendChild(child);
+                  if (record instanceof TraceRecord) {// method began
+                      parent = child;
+                  } else if (record instanceof TraceRecordEnd){// method ended
+                	  if (parent.getParentNode() != null) {
+                         parent = (Element) parent.getParentNode();
+                      }
+                  } 
                }
             }
          } else {

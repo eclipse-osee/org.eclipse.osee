@@ -119,15 +119,6 @@ public class IntegerElement extends NumericElement<Integer> {
    }
 
    /**
-    * Returns the current value of the element.
-    * 
-    * @return The current value of the element.
-    */
-   public Integer get(ITestEnvironmentAccessor accessor) {
-      return this.getValue();
-   }
-
-   /**
     * Sets the element to the "value" passed.
     * 
     * @param accessor
