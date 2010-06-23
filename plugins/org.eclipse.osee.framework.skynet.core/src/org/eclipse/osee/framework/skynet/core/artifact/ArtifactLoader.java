@@ -66,14 +66,6 @@ public final class ArtifactLoader {
       return artifacts;
    }
 
-   /**
-    * (re)loads the artifacts selected by sql and then returns them in a list
-    */
-   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, TransactionRecord transactionId, boolean allowDeleted) throws OseeCoreException {
-      return getArtifacts(sql, queryParameters, artifactCountEstimate, loadLevel, reload, null, transactionId,
-            allowDeleted);
-   }
-
    public static List<Artifact> loadArtifactsFromQueryId(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
       List<Artifact> loadedItems = new ArrayList<Artifact>(fetchSize);
       loadArtifactsFromQueryId(loadedItems, queryId, loadLevel, confirmer, fetchSize, reload, historical, allowDeleted);

@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -35,17 +32,15 @@ import org.eclipse.osee.framework.core.message.ChangeReportRequest;
 import org.eclipse.osee.framework.core.message.ChangeReportResponse;
 import org.eclipse.osee.framework.core.message.ChangeVersion;
 import org.eclipse.osee.framework.core.message.RelationChangeItem;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -205,18 +200,12 @@ public class ChangeDataLoader extends AbstractOperation {
    }
 
    private static void preloadArtifacts(Collection<Artifact> bulkLoaded, Collection<Integer> artIds, TransactionRecord tx, boolean isHistorical) throws OseeCoreException {
-      int queryId = ArtifactLoader.getNewQueryId();
-      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-
-      Integer branchId = tx.getBranchId();
-      Object txId = isHistorical ? tx.getId() : SQL3DataType.INTEGER;
-
-      List<Object[]> insertParameters = new LinkedList<Object[]>();
-      for (Integer artId : artIds) {
-         insertParameters.add(new Object[] {queryId, insertTime, artId, branchId, txId});
+      Branch branch = BranchManager.getBranch(tx.getBranchId());
+      if (isHistorical) {
+         bulkLoaded.addAll(ArtifactQuery.getHistoricalArtifactListFromIds(artIds, tx, true));
+      } else {
+         bulkLoaded.addAll(ArtifactQuery.getArtifactListFromIds(artIds, branch, true));
       }
-      ArtifactLoader.loadArtifacts(bulkLoaded, queryId, ArtifactLoad.ALL_CURRENT, null, insertParameters, true,
-            isHistorical, true);
    }
 
    private static Set<Integer> asArtIds(Collection<ChangeItem> changeItems) {
