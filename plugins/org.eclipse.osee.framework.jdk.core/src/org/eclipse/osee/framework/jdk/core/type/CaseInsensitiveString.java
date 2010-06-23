@@ -14,48 +14,51 @@ package org.eclipse.osee.framework.jdk.core.type;
  * @author Ryan D. Brooks
  */
 public class CaseInsensitiveString implements CharSequence {
-	private String string;
+   private final String originalString;
+   private final String upperCaseString;
 
-	public CaseInsensitiveString(String string) {
-		this.string = string;
-	}
+   public CaseInsensitiveString(String string) {
+      this.originalString = string;
+      upperCaseString = string.toUpperCase();
+   }
 
-	@Override
-	public String toString() {
-		return string;
-	}
+   @Override
+   public String toString() {
+      return originalString;
+   }
 
-	@Override
-	public int hashCode() {
-		return  ((string == null) ? 0 : string.hashCode());
-	}
+   @Override
+   public int hashCode() {
+      return ((upperCaseString == null) ? 0 : upperCaseString.hashCode());
+   }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof CaseInsensitiveString) {
-			if (string == null) {
-				return string == ((CaseInsensitiveString) obj).string;
-			} else {
-				return string.equalsIgnoreCase(((CaseInsensitiveString) obj).string);
-			}
-		} else if (obj instanceof String) {
-			return string.equalsIgnoreCase(((String) obj));
-		}
-		return false;
-	}
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof CaseInsensitiveString) {
+         CaseInsensitiveString other = ((CaseInsensitiveString) obj);
+         if (upperCaseString == null) {
+            return other.upperCaseString == null;
+         } else {
+            return upperCaseString.equals(other.upperCaseString);
+         }
+      } else if (obj instanceof String) {
+         return upperCaseString.equalsIgnoreCase(((String) obj));
+      }
+      return false;
+   }
 
-	@Override
-	public int length() {
-		return string == null ? 0 : string.length();
-	}
+   @Override
+   public int length() {
+      return originalString == null ? 0 : originalString.length();
+   }
 
-	@Override
-	public char charAt(int index) {
-		return string.charAt(index);
-	}
+   @Override
+   public char charAt(int index) {
+      return originalString.charAt(index);
+   }
 
-	@Override
-	public CharSequence subSequence(int beginIndex, int endIndex) {
-		return string.subSequence(beginIndex, endIndex);
-	}
+   @Override
+   public CharSequence subSequence(int beginIndex, int endIndex) {
+      return originalString.subSequence(beginIndex, endIndex);
+   }
 }

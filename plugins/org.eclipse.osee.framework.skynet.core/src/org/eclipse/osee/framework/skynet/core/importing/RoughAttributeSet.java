@@ -26,13 +26,9 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public final class RoughAttributeSet {
-   private HashCollection<CharSequence, String> attributes = new HashCollection<CharSequence, String>();
-   private final Map<String, URI> uriAttributes;
-
-   public RoughAttributeSet() {
-      attributes = new HashCollection<CharSequence, String>();
-      this.uriAttributes = new HashMap<String, URI>(2, 1);
-   }
+   private final HashCollection<CaseInsensitiveString, String> attributes =
+         new HashCollection<CaseInsensitiveString, String>();
+   private final Map<CaseInsensitiveString, URI> uriAttributes = new HashMap<CaseInsensitiveString, URI>(2, 1);
 
    public void clear() {
       attributes.clear();
@@ -50,7 +46,7 @@ public final class RoughAttributeSet {
    }
 
    public Collection<String> getAttributeValueList(String attributeTypeName) {
-      return attributes.getValues(attributeTypeName);
+      return attributes.getValues(new CaseInsensitiveString(attributeTypeName));
    }
 
    public String getSoleAttributeValue(String typeName) {
@@ -66,11 +62,7 @@ public final class RoughAttributeSet {
    }
 
    public void addURIAttribute(String name, URI url) {
-      uriAttributes.put(name, url);
-   }
-
-   Map<String, URI> getURIAttributes() {
-      return uriAttributes;
+      uriAttributes.put(new CaseInsensitiveString(name), url);
    }
 
    @Override
@@ -93,7 +85,7 @@ public final class RoughAttributeSet {
    }
 
    protected void translateAttributes(Artifact artifact) throws OseeCoreException {
-      for (CharSequence attrTypeName : attributes.keySet()) {
+      for (CaseInsensitiveString attrTypeName : attributes.keySet()) {
          Collection<String> values = attributes.getValues(attrTypeName);
          artifact.setAttributeValues(attrTypeName.toString(), values);
       }
@@ -101,9 +93,9 @@ public final class RoughAttributeSet {
    }
 
    private void transferBinaryAttributes(Artifact artifact) throws OseeCoreException {
-      for (Entry<String, URI> entry : getURIAttributes().entrySet()) {
+      for (Entry<CaseInsensitiveString, URI> entry : uriAttributes.entrySet()) {
          try {
-            artifact.setSoleAttributeFromStream(entry.getKey(), new BufferedInputStream(
+            artifact.setSoleAttributeFromStream(entry.getKey().toString(), new BufferedInputStream(
                      entry.getValue().toURL().openStream()));
          } catch (Exception ex) {
             OseeExceptions.wrapAndThrow(ex);
@@ -113,8 +105,10 @@ public final class RoughAttributeSet {
 
    public Set<String> getAttributeTypeNames() {
       Set<String> typeNames = new HashSet<String>();
-      typeNames.addAll(uriAttributes.keySet());
       for (CharSequence attrTypeName : attributes.keySet()) {
+         typeNames.add(attrTypeName.toString());
+      }
+      for (CharSequence attrTypeName : uriAttributes.keySet()) {
          typeNames.add(attrTypeName.toString());
       }
       return typeNames;
