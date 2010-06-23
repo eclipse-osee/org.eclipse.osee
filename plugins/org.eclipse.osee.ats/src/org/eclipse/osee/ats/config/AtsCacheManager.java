@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
-import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
@@ -66,7 +65,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
  * ActionableItemArtifact<br>
  * All other artifact types will silently not cached<br>
  * <REM2>
- *
+ * 
  * @author Donald G. Dunne
  */
 public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurgedEventListener, IFrameworkTransactionEventListener {
@@ -294,8 +293,8 @@ public class AtsCacheManager implements IArtifactEventListener, IArtifactsPurged
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
             }
          }
-         for (Artifact artifact : FrameworkEventUtil.getArtifactsInRelations(CoreRelationTypes.WorkItem__Child,
-               artifactEvent.getRelations(), RelationEventType.Added, RelationEventType.Undeleted)) {
+         for (Artifact artifact : artifactEvent.getArtifactsInRelations(CoreRelationTypes.WorkItem__Child,
+               RelationEventType.Added, RelationEventType.Undeleted)) {
             if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
                WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkRuleDefinition(
                      artifact), artifact);

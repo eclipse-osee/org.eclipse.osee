@@ -88,4 +88,11 @@ public class EventBasicGuidRelation extends DefaultBasicGuidRelation {
       this.rationale = rationale;
    }
 
+   public boolean is(RelationEventType... relationEventTypes) {
+      for (RelationEventType eventModType : relationEventTypes) {
+         if (this.relationEventType == eventModType) return true;
+      }
+      return false;
+   }
+
 }

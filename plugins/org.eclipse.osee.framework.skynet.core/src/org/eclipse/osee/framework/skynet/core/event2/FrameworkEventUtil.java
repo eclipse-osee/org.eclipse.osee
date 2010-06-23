@@ -6,17 +6,12 @@
 package org.eclipse.osee.framework.skynet.core.event2;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,12 +27,9 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionChan
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
 import org.eclipse.osee.framework.skynet.core.event.msgs.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
@@ -52,26 +44,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
  * @author Donald G. Dunne
  */
 public class FrameworkEventUtil {
-
-   public static boolean isEvent(Artifact artifact, Collection<EventBasicGuidArtifact> eventGuidArts, Collection<EventModType> eventModTypes) {
-      for (EventBasicGuidArtifact guidArt : eventGuidArts) {
-         if (eventModTypes.contains(guidArt.getModType())) {
-            if (artifact.equals(guidArt)) {
-               return true;
-            }
-         }
-      }
-      return false;
-   }
-
-   public static boolean isDeletedPurged(Artifact artifact, Collection<EventBasicGuidArtifact> eventGuidArts) {
-      return FrameworkEventUtil.isEvent(artifact, eventGuidArts, Arrays.asList(EventModType.Deleted,
-            EventModType.Purged));
-   }
-
-   public static boolean isModified(Artifact artifact, Collection<EventBasicGuidArtifact> eventGuidArts) {
-      return FrameworkEventUtil.isEvent(artifact, eventGuidArts, Arrays.asList(EventModType.Modified));
-   }
 
    public static RemoteAccessControlEvent1 getRemoteAccessControlEvent(AccessControlEvent accessControlEvent) {
       RemoteAccessControlEvent1 event = new RemoteAccessControlEvent1();
@@ -379,20 +351,6 @@ public class FrameworkEventUtil {
       networkSender.setPort(localSender.getPort());
       networkSender.setClientVersion(localSender.getClientVersion());
       return networkSender;
-   }
-
-   /**
-    * Returns cached artifacts given type
-    */
-   public static Collection<Artifact> getArtifactsInRelations(IRelationType relationType, Collection<EventBasicGuidRelation> eventRelations, RelationEventType... relationEventTypes) throws OseeCoreException {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
-      Collection<RelationEventType> modTypes = Collections.getAggregate(relationEventTypes);
-      for (EventBasicGuidRelation guidRel : eventRelations) {
-         if (modTypes.contains(ChangeType.All) || modTypes.contains(guidRel.getModType())) {
-            artifacts.addAll(ArtifactCache.getActive(guidRel));
-         }
-      }
-      return artifacts;
    }
 
 }

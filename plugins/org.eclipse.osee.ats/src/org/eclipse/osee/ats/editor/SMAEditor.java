@@ -61,7 +61,6 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
-import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
@@ -796,14 +795,14 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventL
       if (sma.isInTransition()) {
          return;
       }
-      if (FrameworkEventUtil.isDeletedPurged(sma, artifactEvent.getArtifacts())) {
+      if (artifactEvent.isDeletedPurged(sma)) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
                closeEditor();
             }
          });
-      } else if (FrameworkEventUtil.isModified(sma, artifactEvent.getArtifacts())) {
+      } else if (artifactEvent.isChanged(sma)) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
@@ -819,22 +818,22 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventL
          try {
             // If related review has made a change, redraw
             for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
-               // TODO addt his back in when relation events propogated
-               //                  if (transData.isHasEvent(reviewArt)) {
-               //                     Displays.ensureInDisplayThread(new Runnable() {
-               //                        @Override
-               //                        public void run() {
-               //                           try {
-               //                              refreshPages();
-               //                              onDirtied();
-               //                           } catch (Exception ex) {
-               //                              // do nothing
-               //                           }
-               //                        }
-               //                     });
-               //                     // Only refresh editor for first review that has event
-               //                     break;
-               //                  }
+               // TODO addt his back in when relation events propagated
+               if (artifactEvent.isHasEvent(reviewArt)) {
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        try {
+                           refreshPages();
+                           onDirtied();
+                        } catch (Exception ex) {
+                           // do nothing
+                        }
+                     }
+                  });
+                  // Only refresh editor for first review that has event
+                  break;
+               }
             }
          } catch (Exception ex) {
             // do nothings
