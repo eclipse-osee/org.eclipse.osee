@@ -22,6 +22,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.TestCase;
@@ -160,10 +161,6 @@ public class UnitTestAccessor implements ITestEnvironmentMessageSystemAccessor, 
       @Override
       public void testpoint(TestPointRecord record) {
 
-      }
-
-      @Override
-      public void trace(ITestEnvironmentAccessor source, String objectName, String methodName, MethodFormatter methodArguments, boolean startFlag) {
       }
 
       @Override
