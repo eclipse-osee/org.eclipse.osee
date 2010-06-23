@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.message.elements;
 
 import org.eclipse.osee.ote.core.MethodFormatter;
+import org.eclipse.osee.ote.core.ReturnFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
@@ -1520,9 +1521,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public T get(ITestEnvironmentAccessor accessor) {
       accessor.getLogger().methodCalled(accessor, new MethodFormatter());
       T v = getValue();
-      MethodFormatter methodFormatter = new MethodFormatter();
-      methodFormatter.add(v);
-      accessor.getLogger().methodEnded(accessor, methodFormatter);
+      ReturnFormatter returnFormatter = new ReturnFormatter();
+      returnFormatter.add(v);
+      accessor.getLogger().methodEnded(accessor, returnFormatter);
       return v;
    }
 

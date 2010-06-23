@@ -13,7 +13,7 @@ package org.eclipse.osee.ote.core.log.record;
 import java.util.ArrayList;
 
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
-import org.eclipse.osee.ote.core.MethodFormatter;
+import org.eclipse.osee.ote.core.ReturnFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.log.TestLevel;
 import org.w3c.dom.Document;
@@ -22,14 +22,14 @@ import org.w3c.dom.Element;
 public class TraceRecordEnd extends TestRecord implements Xmlizable {
 
 	private static final long serialVersionUID = 8567378567805515775L;
-   private MethodFormatter methodArguments;
+   private ReturnFormatter returnFormatter;
    private ArrayList<Xmlizable> additionalElements;
 
    private static final String additionalString = "AdditionalInfo";
 
-   public TraceRecordEnd(ITestEnvironmentAccessor source, MethodFormatter methodArguments) {
+   public TraceRecordEnd(ITestEnvironmentAccessor source, ReturnFormatter returnFormatter) {
       super(source, TestLevel.TRACE, "", true);
-      this.methodArguments = methodArguments;
+      this.returnFormatter = returnFormatter;
       this.additionalElements = new ArrayList<Xmlizable>();
    }
 
@@ -45,7 +45,7 @@ public class TraceRecordEnd extends TestRecord implements Xmlizable {
     */
    public Element toXml(Document doc) {
       Element trElement = doc.createElement("TraceEnd");
-      trElement.appendChild(methodArguments.toXml(doc));
+      trElement.appendChild(returnFormatter.toXml(doc));
       if (!additionalElements.isEmpty()) {
          Element additional = doc.createElement(additionalString);
          trElement.appendChild(additional);
@@ -53,7 +53,6 @@ public class TraceRecordEnd extends TestRecord implements Xmlizable {
             additional.appendChild(object.toXml(doc));
          }
       }
-      trElement.appendChild(getLocation(doc));
       return trElement;
    }
 }

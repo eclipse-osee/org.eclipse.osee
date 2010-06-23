@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.ote.core.MethodFormatter;
+import org.eclipse.osee.ote.core.ReturnFormatter;
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
@@ -153,7 +154,7 @@ public class TestLogger extends Logger implements ITestLogger {
       log(new TraceRecord(source, objectName, methodName, methodArguments));
    }
    
-   public void endtrace(ITestEnvironmentAccessor source, MethodFormatter methodArguments) {
+   public void endtrace(ITestEnvironmentAccessor source, ReturnFormatter methodArguments) {
 	      log(new TraceRecordEnd(source, methodArguments));
    }
 
@@ -263,11 +264,11 @@ public class TestLogger extends Logger implements ITestLogger {
     * @param source The object requesting the logging (Usually "this" is passed in).
     */
    public void methodEnded(ITestEnvironmentAccessor source) {
-      endtrace(source, new MethodFormatter());
+      endtrace(source, new ReturnFormatter());
    }
    
-   public void methodEnded(ITestEnvironmentAccessor source, MethodFormatter methodFormatter) {
-      endtrace(source, methodFormatter);
+   public void methodEnded(ITestEnvironmentAccessor source, ReturnFormatter returnFormatter) {
+      endtrace(source, returnFormatter);
    }
 
    public void log(TestRecord record) {

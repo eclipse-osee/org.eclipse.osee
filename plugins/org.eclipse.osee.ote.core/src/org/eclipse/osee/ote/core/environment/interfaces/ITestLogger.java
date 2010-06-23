@@ -15,6 +15,7 @@ import java.util.logging.Level;
 
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.ote.core.MethodFormatter;
+import org.eclipse.osee.ote.core.ReturnFormatter;
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.log.record.TestPointRecord;
@@ -33,7 +34,7 @@ public interface ITestLogger {
    public void methodCalledOnObject(ITestEnvironmentAccessor source, String objectName, MethodFormatter methodFormat);
    public void methodCalledOnObject(ITestEnvironmentAccessor source, String objectName, MethodFormatter methodFormat, Xmlizable xmlObject);
    public void methodEnded(ITestEnvironmentAccessor source);
-   public void methodEnded(ITestEnvironmentAccessor source, MethodFormatter methodFormat);
+   public void methodEnded(ITestEnvironmentAccessor source, ReturnFormatter returnFormatter);
    public void removeHandler(Handler handler);
    public void support(ITestEnvironmentAccessor source, String message);
    public void severe(ITestEnvironmentAccessor source, String message);

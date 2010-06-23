@@ -47,6 +47,7 @@ import org.eclipse.osee.ote.core.framework.saxparse.elements.Qualification;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Requirement;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Result;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.RetryGroup;
+import org.eclipse.osee.ote.core.framework.saxparse.elements.ReturnValue;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.RuntimeVersions;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.ScriptInit;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.ScriptName;
@@ -125,6 +126,7 @@ public class OteSaxHandler extends AbstractSaxHandler {
       addHandlers(new Requirement());
       addHandlers(new Result());
       addHandlers(new RetryGroup());
+      addHandlers(new ReturnValue());
       addHandlers(new RuntimeVersions());
       addHandlers(new ScriptInit());
       addHandlers(new ScriptName());
