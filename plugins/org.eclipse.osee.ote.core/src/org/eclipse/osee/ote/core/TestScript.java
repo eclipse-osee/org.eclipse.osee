@@ -21,6 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.logging.ILoggerFilter;
@@ -314,6 +315,7 @@ public abstract class TestScript implements ITimeout {
 
          try {
             final String returnValue;
+            String logOutput;
             final TestRecord testRecord;
             final IServiceConnector connector = environment.getConnector();
             switch (prompt.getType()) {
@@ -338,18 +340,29 @@ public abstract class TestScript implements ITimeout {
                         new ScriptPausePromptImpl(connector, this, "", prompt.toString());
                   returnValue = scriptPausePrompt.open(promptInitWorker);
                   scriptPausePrompt.close();
+                  if(returnValue != null && returnValue.length() > 0){
+                	  logOutput = String.format("PROMPT [%s]\n{%s}\n\tRETURN VALUE : %s", PromptResponseType.SCRIPT_PAUSE.name(), prompt.toString(), returnValue);
+                  } else {
+                	  logOutput = String.format("PROMPT [%s]\n{%s}\n", PromptResponseType.SCRIPT_PAUSE.name(), prompt.toString());
+                  }
+                  
                   testRecord =
                         new AttentionRecord(getTestEnvironment(),
-                              PromptResponseType.SCRIPT_PAUSE.name() + " : " + prompt.toString(), true);
+                        		logOutput, true);
                   ;
                   break;
                case USER_INPUT:
                   UserInputPromptImpl userInputPrompt = new UserInputPromptImpl(connector, this, "", prompt.toString());
                   returnValue = userInputPrompt.open(promptInitWorker);
                   userInputPrompt.close();
+                  if(returnValue != null && returnValue.length() > 0){
+                	  logOutput = String.format("PROMPT [%s]\n{%s}\n\tRETURN VALUE : %s", PromptResponseType.USER_INPUT.name(), prompt.toString(), returnValue);
+                  } else {
+                	  logOutput = String.format("PROMPT [%s]\n{%s}\n", PromptResponseType.USER_INPUT.name(), prompt.toString());
+                  }
                   testRecord =
                         new AttentionRecord(getTestEnvironment(),
-                              PromptResponseType.USER_INPUT.name() + " : " + prompt.toString(), true);
+                        		logOutput, true);
                   break;
                case SCRIPT_STEP:
                   returnValue = "";
