@@ -44,7 +44,7 @@ public abstract class AbstractLifecycleVisitor<H extends LifecycleHandler> {
    public abstract Type<H> getAssociatedType();
 
    /**
-    * Should only be called by {@link LifecycleService}.
+    * Should only be called by {@link ILifecycleService}.
     */
    protected abstract IStatus dispatch(IProgressMonitor monitor, H handler, String sourceId);
 

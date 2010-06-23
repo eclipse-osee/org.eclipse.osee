@@ -17,6 +17,7 @@ public class AnotherMockHandler extends MockHandler {
 
    @Override
    public void doSomething() {
+      hasRan = true;
       System.out.println("I am another guy");
    }
 }

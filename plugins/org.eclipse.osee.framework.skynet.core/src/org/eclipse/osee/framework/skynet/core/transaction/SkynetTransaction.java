@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -28,14 +30,23 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.DbTransaction;
+import org.eclipse.osee.framework.database.core.DatabaseTransactions;
+import org.eclipse.osee.framework.database.core.IDbTransactionWork;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.lifecycle.AbstractLifecycleOperation;
+import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
+import org.eclipse.osee.framework.lifecycle.ChangeMgmtChkPoint;
+import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -61,8 +72,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
  * @author Ryan D. Brooks
  * @author Jeff C. Phillips
  */
-public class SkynetTransaction extends DbTransaction {
-   private static final TransactionMonitor txMonitor = new TransactionMonitor();
+public class SkynetTransaction extends AbstractOperation {
 
    private static final String UPDATE_TXS_NOT_CURRENT =
          "UPDATE osee_txs txs1 SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
@@ -86,7 +96,10 @@ public class SkynetTransaction extends DbTransaction {
    private boolean executedWithException = false;
    private final String comment;
 
+   private final TransactionMonitor txMonitor = new TransactionMonitor();
+
    public SkynetTransaction(Branch branch, String comment) {
+      super(comment, Activator.PLUGIN_ID);
       this.branch = branch;
       this.comment = comment;
       txMonitor.reportTxCreation(this, branch, comment);
@@ -164,60 +177,9 @@ public class SkynetTransaction extends DbTransaction {
       }
    }
 
-   private void fetchTxNotCurrent(OseeConnection connection, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
-      try {
-         String query = ClientSessionManager.getSql(transactionData.getSelectTxNotCurrentSql());
-         chStmt.runPreparedQuery(query, transactionData.getItemId(), branch.getId());
-         while (chStmt.next()) {
-            results.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
-         }
-      } finally {
-         chStmt.close();
-      }
-   }
-
-   private void executeTransactionDataItems(OseeConnection connection) throws OseeCoreException {
-      if (transactionDataItems.isEmpty()) {
-         return;
-      }
-
-      List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
-      for (BaseTransactionData transactionData : transactionDataItems.values()) {
-         // Collect inserts for attribute, relation, artifact, and artifact version tables
-         transactionData.addInsertToBatch(this);
-
-         // Collect stale tx currents for batch update
-         fetchTxNotCurrent(connection, transactionData, txNotCurrentData);
-      }
-
-      // Insert into data tables - i.e. attribute, relation and artifact version tables
-      List<Integer> keys = new ArrayList<Integer>(dataInsertOrder.keySet());
-      Collections.sort(keys);
-      for (int priority : keys) {
-         String sqlKey = dataInsertOrder.get(priority);
-         ConnectionHandler.runBatchUpdate(connection, sqlKey, (List<Object[]>) dataItemInserts.getValues(sqlKey));
-      }
-
-      // Set stale tx currents in txs table
-      ConnectionHandler.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
-   }
-
    void internalAddInsertToBatch(int insertPriority, String insertSql, Object... data) {
       dataItemInserts.put(insertSql, data);
       dataInsertOrder.put(insertPriority, insertSql);
-   }
-
-   @Override
-   public void execute() throws OseeCoreException {
-      try {
-         txMonitor.reportTxStart(this, getBranch());
-         if (madeChanges) {
-            super.execute();
-         }
-      } finally {
-         txMonitor.reportTxEnd(this, getBranch());
-      }
    }
 
    /**
@@ -225,6 +187,9 @@ public class SkynetTransaction extends DbTransaction {
     * <br>
     * IF transaction has not been executed, this is the transactionId that will be used.<br>
     * ELSE this is next transaction to be used upon execute
+    * 
+    * @return
+    * @throws OseeCoreException
     */
    public int getTransactionNumber() throws OseeCoreException {
       return internalGetTransactionRecord().getId();
@@ -378,24 +343,110 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    @Override
-   protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-      lastTransactionId = internalGetTransactionRecord();
-      TransactionManager.internalPersist(connection, internalGetTransactionRecord());
-      executeTransactionDataItems(connection);
-      if (branch.getBranchState() == BranchState.CREATED) {
-         branch.setBranchState(BranchState.MODIFIED);
-         BranchManager.persist(branch);
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      try {
+         txMonitor.reportTxStart(SkynetTransaction.this, getBranch());
+         if (madeChanges) {
+            IOperation subOp = createLifeCycleOp();
+            doSubWork(subOp, monitor, -1.0);
+         }
+      } finally {
+         txMonitor.reportTxEnd(SkynetTransaction.this, getBranch());
       }
    }
 
-   @Override
-   protected void handleTxException(Exception ex) {
-      executedWithException = true;
-      for (BaseTransactionData transactionData : transactionDataItems.values()) {
+   //TODO this method needs to be removed
+   public void execute() throws OseeCoreException {
+      Operations.executeWorkAndCheckStatus(this, new NullProgressMonitor(), -1.0);
+   }
+
+   private IOperation createLifeCycleOp() throws OseeCoreException {
+      ILifecycleService service = Activator.getInstance().getLifecycleServices();
+      AbstractLifecyclePoint<?> lifecyclePoint =
+            new ChangeMgmtChkPoint(UserManager.getUser(), new ArrayList<IBasicArtifact<?>>(artifactReferences));
+      return new LifecycleOperation(this, service, lifecyclePoint, getName());
+   }
+
+   private final class LifecycleOperation extends AbstractLifecycleOperation implements IDbTransactionWork {
+      private final SkynetTransaction skynetTransaction;
+
+      public LifecycleOperation(SkynetTransaction skynetTransaction, ILifecycleService service, AbstractLifecyclePoint<?> lifecyclePoint, String operationName) {
+         super(service, lifecyclePoint, operationName, Activator.PLUGIN_ID);
+         this.skynetTransaction = skynetTransaction;
+      }
+
+      @Override
+      protected void doCoreWork(IProgressMonitor monitor) throws Exception {
+         DatabaseTransactions.execute(this);
+      }
+
+      @Override
+      public void handleTxWork(OseeConnection connection) throws OseeCoreException {
+         lastTransactionId = internalGetTransactionRecord();
+         TransactionManager.internalPersist(connection, internalGetTransactionRecord());
+         executeTransactionDataItems(connection);
+         if (branch.getBranchState() == BranchState.CREATED) {
+            branch.setBranchState(BranchState.MODIFIED);
+            BranchManager.persist(branch);
+         }
+      }
+
+      @Override
+      public void handleTxException(Exception ex) {
+         executedWithException = true;
+         for (BaseTransactionData transactionData : transactionDataItems.values()) {
+            try {
+               transactionData.internalOnRollBack();
+            } catch (OseeCoreException ex1) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex1);
+            }
+         }
+      }
+
+      @Override
+      public void handleTxFinally() throws OseeCoreException {
+         if (!executedWithException) {
+            updateModifiedCachedObject();
+         }
+         reset();
+      }
+
+      private void executeTransactionDataItems(OseeConnection connection) throws OseeCoreException {
+         if (transactionDataItems.isEmpty()) {
+            return;
+         }
+
+         List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
+         for (BaseTransactionData transactionData : transactionDataItems.values()) {
+            // Collect inserts for attribute, relation, artifact, and artifact version tables
+            transactionData.addInsertToBatch(skynetTransaction);
+
+            // Collect stale tx currents for batch update
+            fetchTxNotCurrent(connection, transactionData, txNotCurrentData);
+         }
+
+         // Insert into data tables - i.e. attribute, relation and artifact version tables
+         List<Integer> keys = new ArrayList<Integer>(dataInsertOrder.keySet());
+         Collections.sort(keys);
+         for (int priority : keys) {
+            String sqlKey = dataInsertOrder.get(priority);
+            ConnectionHandler.runBatchUpdate(connection, sqlKey, (List<Object[]>) dataItemInserts.getValues(sqlKey));
+         }
+
+         // Set stale tx currents in txs table
+         ConnectionHandler.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
+      }
+
+      private void fetchTxNotCurrent(OseeConnection connection, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
+         IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
          try {
-            transactionData.internalOnRollBack();
-         } catch (OseeCoreException ex1) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex1);
+            String query = ClientSessionManager.getSql(transactionData.getSelectTxNotCurrentSql());
+            chStmt.runPreparedQuery(query, transactionData.getItemId(), branch.getId());
+            while (chStmt.next()) {
+               results.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
+            }
+         } finally {
+            chStmt.close();
          }
       }
    }
@@ -441,11 +492,4 @@ public class SkynetTransaction extends DbTransaction {
       }
    }
 
-   @Override
-   protected void handleTxFinally() throws OseeCoreException {
-      if (!executedWithException) {
-         updateModifiedCachedObject();
-      }
-      reset();
-   }
 }

@@ -9,3 +9,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit4
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.model
+Export-Package: org.eclipse.osee.framework.lifecycle.test

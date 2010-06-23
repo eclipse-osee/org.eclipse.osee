@@ -8,14 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.lifecycle.test.mock.access;
+package org.eclipse.osee.framework.lifecycle;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.lifecycle.LifecycleOpHandler;
 
 /**
  * @author Roberto E. Escobar
@@ -53,7 +52,7 @@ public class ChangeMgmtHandler implements LifecycleOpHandler {
 
       for (IBasicArtifact<?> artifactToChk : artsToCheck) {
          if (!dataProvider.canEdit(userArtifact, artifactToChk)) {
-            statusToReturn = Status.CANCEL_STATUS;
+            statusToReturn = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error");
             break;
          }
       }

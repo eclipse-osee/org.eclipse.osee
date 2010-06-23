@@ -15,7 +15,6 @@ import java.util.WeakHashMap;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -26,7 +25,9 @@ public class TransactionMonitor {
 
    private String lastComment;
    private enum TxState {
-      CREATED, RUNNING, ENDED;
+      CREATED,
+      RUNNING,
+      ENDED;
    }
 
    private final Map<Object, TxOperation> txMap;
@@ -35,7 +36,7 @@ public class TransactionMonitor {
       this.txMap = new WeakHashMap<Object, TxOperation>();
    }
 
-   public synchronized void reportTxCreation(final DbTransaction transaction, Object key, String comment) {
+   public synchronized void reportTxCreation(final Object transaction, Object key, String comment) {
       TxOperation currentTx = txMap.get(key);
       if (currentTx != null) {
          // This log is to support debugging the case where osee transactions are nested and should
@@ -49,7 +50,7 @@ public class TransactionMonitor {
       txMap.put(key, new TxOperation(transaction));
    }
 
-   public synchronized void reportTxStart(final DbTransaction transaction, Object key) throws OseeWrappedException, OseeStateException {
+   public synchronized void reportTxStart(final Object transaction, Object key) throws OseeWrappedException, OseeStateException {
       TxOperation currentTx = txMap.get(key);
       if (currentTx == null) {
          throw new OseeStateException(
@@ -66,7 +67,7 @@ public class TransactionMonitor {
       }
    }
 
-   public synchronized void reportTxEnd(final DbTransaction transaction, Object key) throws OseeWrappedException, OseeStateException {
+   public synchronized void reportTxEnd(final Object transaction, Object key) throws OseeWrappedException, OseeStateException {
       TxOperation currentTx = txMap.get(key);
       if (currentTx == null) {
          throw new OseeStateException(
@@ -83,18 +84,18 @@ public class TransactionMonitor {
    }
 
    private static final class TxOperation {
-      private final DbTransaction tx;
+      private final Object tx;
       private final Throwable throwable;
       private TxState txState;
 
-      public TxOperation(DbTransaction tx) {
+      public TxOperation(Object tx) {
          this.tx = tx;
          this.txState = TxState.CREATED;
          // Not null for stack trace purposes;
          this.throwable = new Exception();
       }
 
-      public DbTransaction getTransaction() {
+      public Object getTransaction() {
          return tx;
       }
 

@@ -25,9 +25,11 @@ public class MockHandler implements LifecycleOpHandler {
    private String a;
    private String b;
    private IStatus status;
+   boolean hasRan;
 
    public MockHandler() {
       this.status = Status.OK_STATUS;
+      this.hasRan = false;
    }
 
    public void setData(String a, String b) {
@@ -53,23 +55,27 @@ public class MockHandler implements LifecycleOpHandler {
 
    @Override
    public IStatus onCheck(IProgressMonitor monitor) {
-      System.out.println("check");
+      hasRan = true;
       return status;
    }
 
    @Override
    public IStatus onPostCondition(IProgressMonitor monitor) {
-      System.out.println("on post");
+      hasRan = true;
       return status;
    }
 
    @Override
    public IStatus onPreCondition(IProgressMonitor monitor) {
-      System.out.println("on pre");
+      hasRan = true;
       return status;
    }
 
    public void doSomething() {
-      System.out.println("I am the mocker");
+      hasRan = true;
+   }
+
+   public boolean hasRan() {
+      return hasRan;
    }
 }

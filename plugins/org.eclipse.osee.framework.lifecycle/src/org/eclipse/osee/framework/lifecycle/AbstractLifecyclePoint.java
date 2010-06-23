@@ -25,7 +25,7 @@ public abstract class AbstractLifecyclePoint<H extends LifecycleOpHandler> exten
    }
 
    /**
-    * Should only be called by {@link LifecycleService}.
+    * Should only be called by {@link ILifecycleService}.
     */
    @Override
    final protected IStatus dispatch(IProgressMonitor monitor, H handler, String sourceId) {

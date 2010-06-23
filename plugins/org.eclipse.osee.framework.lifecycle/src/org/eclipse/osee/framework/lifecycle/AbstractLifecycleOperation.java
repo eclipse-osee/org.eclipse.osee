@@ -21,10 +21,10 @@ import org.eclipse.osee.framework.lifecycle.internal.OperationPointId;
  */
 public abstract class AbstractLifecycleOperation extends AbstractOperation {
 
-   private final LifecycleService service;
+   private final ILifecycleService service;
    private final AbstractLifecyclePoint<?> lifecyclepoint;
 
-   public AbstractLifecycleOperation(LifecycleService service, AbstractLifecyclePoint<?> lifecyclePoint, String operationName, String pluginId) {
+   public AbstractLifecycleOperation(ILifecycleService service, AbstractLifecyclePoint<?> lifecyclePoint, String operationName, String pluginId) {
       super(operationName, pluginId);
       this.service = service;
       this.lifecyclepoint = lifecyclePoint;

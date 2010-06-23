@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleOperation;
-import org.eclipse.osee.framework.lifecycle.LifecycleService;
+import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.lifecycle.LifecycleServiceImpl;
 import org.eclipse.osee.framework.lifecycle.test.mock.MockHandler;
 import org.eclipse.osee.framework.lifecycle.test.mock.StrictMockLifecycePoint;
@@ -30,11 +30,11 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  * @author Jeff C. Phillips
  */
-public class TestLifecycleOperation {
+public class LifecycleOperationTest {
 
    @Test
    public void testOperation() throws OseeCoreException {
-      LifecycleService service = new LifecycleServiceImpl();
+      ILifecycleService service = new LifecycleServiceImpl();
 
       service.addHandler(StrictMockLifecycePoint.TYPE, new MockHandler());
 
@@ -47,7 +47,7 @@ public class TestLifecycleOperation {
 
    private static class MockLifecycleOperation extends AbstractLifecycleOperation {
 
-      public MockLifecycleOperation(LifecycleService service, String a, String b) {
+      public MockLifecycleOperation(ILifecycleService service, String a, String b) {
          super(service, new StrictMockLifecycePoint(a, b), "Mock Op", "TestBundle");
       }
 

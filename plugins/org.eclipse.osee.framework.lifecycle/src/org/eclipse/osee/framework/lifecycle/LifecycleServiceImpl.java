@@ -22,10 +22,11 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 
-public class LifecycleServiceImpl implements LifecycleService {
+public class LifecycleServiceImpl implements ILifecycleService {
 
    private final HashCollection<AbstractLifecycleVisitor.Type<?>, LifecycleHandler> handlersByType =
          new HashCollection<AbstractLifecycleVisitor.Type<?>, LifecycleHandler>();
+   private final HashCollection<String, LifecycleHandler> handlersById = new HashCollection<String, LifecycleHandler>();
 
    public LifecycleServiceImpl() {
    }
@@ -63,6 +64,8 @@ public class LifecycleServiceImpl implements LifecycleService {
       Conditions.checkNotNull(type, "handler type");
       Conditions.checkNotNull(handler, "handler");
       handlersByType.put(type, handler);
+
+      handlersById.put("", handler);
    }
 
    public <H extends LifecycleHandler> void removeHandler(AbstractLifecycleVisitor.Type<H> type, final H handler) throws OseeCoreException {

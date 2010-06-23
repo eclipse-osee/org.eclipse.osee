@@ -13,12 +13,14 @@ package org.eclipse.osee.framework.skynet.core;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -70,7 +72,8 @@ final class ClientUser {
                         new SkynetTransaction(BranchManager.getCommonBranch(), "Populate current user");
                   UserManager.createMainUser(ClientSessionManager.getCurrentUserInfo(), transaction);
                   setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));
-                  transaction.execute();
+                  Operations.executeWorkAndCheckStatus(transaction, new NullProgressMonitor(), -1.0);
+
                   ClientSessionManager.clearUserCreationRequired();
                } else {
                   setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));

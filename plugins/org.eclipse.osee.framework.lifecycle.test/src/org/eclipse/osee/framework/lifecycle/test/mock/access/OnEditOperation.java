@@ -9,11 +9,12 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleOperation;
-import org.eclipse.osee.framework.lifecycle.LifecycleService;
+import org.eclipse.osee.framework.lifecycle.ChangeMgmtChkPoint;
+import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 
 public class OnEditOperation extends AbstractLifecycleOperation {
 
-   public OnEditOperation(LifecycleService service, IBasicArtifact<?> userArtifact, Collection<IBasicArtifact<?>> artsToCheck) {
+   public OnEditOperation(ILifecycleService service, IBasicArtifact<?> userArtifact, Collection<IBasicArtifact<?>> artsToCheck) {
       super(service, new ChangeMgmtChkPoint(userArtifact, artsToCheck), "On Edit Op", "TestBundle");
    }
 

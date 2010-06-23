@@ -20,10 +20,10 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleOperation;
-import org.eclipse.osee.framework.lifecycle.LifecycleService;
+import org.eclipse.osee.framework.lifecycle.ChangeMgmtChkPoint;
+import org.eclipse.osee.framework.lifecycle.ChangeMgmtHandler;
+import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.lifecycle.LifecycleServiceImpl;
-import org.eclipse.osee.framework.lifecycle.test.mock.access.ChangeMgmtChkPoint;
-import org.eclipse.osee.framework.lifecycle.test.mock.access.ChangeMgmtHandler;
 import org.eclipse.osee.framework.lifecycle.test.mock.access.OnEditOperation;
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,11 +34,11 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  * @author Jeff C. Phillips
  */
-public class TestOnEditOperation {
+public class OnEditOperationTest {
 
    @Test
    public void testOperation() throws OseeCoreException {
-      LifecycleService service = new LifecycleServiceImpl();
+      ILifecycleService service = new LifecycleServiceImpl();
 
       service.addHandler(ChangeMgmtChkPoint.TYPE, new ChangeMgmtHandler());
 

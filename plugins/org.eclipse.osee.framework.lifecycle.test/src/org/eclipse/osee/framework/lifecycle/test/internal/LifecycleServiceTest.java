@@ -14,11 +14,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
-import org.eclipse.osee.framework.lifecycle.LifecycleService;
+import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.lifecycle.LifecycleServiceImpl;
 import org.eclipse.osee.framework.lifecycle.test.mock.AnotherMockHandler;
+import org.eclipse.osee.framework.lifecycle.test.mock.AnotherMockLifecycePoint;
 import org.eclipse.osee.framework.lifecycle.test.mock.MockHandler;
 import org.eclipse.osee.framework.lifecycle.test.mock.MockLifecycePoint;
+import org.eclipse.osee.framework.lifecycle.test.mock.NonRunHandler;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,23 +34,37 @@ public class LifecycleServiceTest {
 
    @Test
    public void testAccess() throws OseeCoreException {
-      LifecycleService lifecycleServices = new LifecycleServiceImpl();
+      ILifecycleService lifecycleServices = new LifecycleServiceImpl();
       Assert.assertTrue(lifecycleServices.getHandlerTypes().isEmpty());
 
-      MockHandler handler = new MockHandler();
+      MockHandler mockHandler = new MockHandler();
       AnotherMockHandler anotherMockHandler = new AnotherMockHandler();
-      lifecycleServices.addHandler(MockLifecycePoint.TYPE, handler);
+      NonRunHandler nonRunHandler = new NonRunHandler();
+
+      lifecycleServices.addHandler(MockLifecycePoint.TYPE, mockHandler);
       lifecycleServices.addHandler(MockLifecycePoint.TYPE, anotherMockHandler);
+      lifecycleServices.addHandler(AnotherMockLifecycePoint.TYPE, nonRunHandler);
 
       Assert.assertEquals(2, lifecycleServices.getHandlerCount(MockLifecycePoint.TYPE));
       Assert.assertFalse(lifecycleServices.getHandlerTypes().isEmpty());
 
+      Assert.assertFalse(mockHandler.hasRan());
+      Assert.assertFalse(anotherMockHandler.hasRan());
+      Assert.assertFalse(nonRunHandler.hasRan());
+
+      //Execute the handlers
       AbstractLifecycleVisitor<?> accessPoint = new MockLifecycePoint("one", "two");
       IStatus status = lifecycleServices.dispatch(new NullProgressMonitor(), accessPoint, "");
       Assert.assertTrue(status.isOK());
 
-      lifecycleServices.removeHandler(MockLifecycePoint.TYPE, handler);
+      Assert.assertTrue(mockHandler.hasRan());
+      Assert.assertTrue(anotherMockHandler.hasRan());
+      Assert.assertFalse(nonRunHandler.hasRan());
+
+      lifecycleServices.removeHandler(MockLifecycePoint.TYPE, mockHandler);
       lifecycleServices.removeHandler(MockLifecycePoint.TYPE, anotherMockHandler);
+      lifecycleServices.removeHandler(AnotherMockLifecycePoint.TYPE, nonRunHandler);
+      //Check that everything cleaned up
       Assert.assertTrue(lifecycleServices.getHandlerTypes().isEmpty());
       Assert.assertEquals(0, lifecycleServices.getHandlerCount(MockLifecycePoint.TYPE));
    }

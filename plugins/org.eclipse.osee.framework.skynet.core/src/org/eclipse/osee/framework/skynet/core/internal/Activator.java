@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.lifecycle.ILifecycleService;
+import org.eclipse.osee.framework.lifecycle.ILifecycleServiceProvider;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IWorkbenchUserService;
 import org.eclipse.osee.framework.skynet.core.WorkbenchUserService;
@@ -41,7 +43,7 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Ryan D. Brooks
  */
-public class Activator implements BundleActivator, IOseeModelFactoryServiceProvider, IOseeDatabaseServiceProvider {
+public class Activator implements BundleActivator, IOseeModelFactoryServiceProvider, IOseeDatabaseServiceProvider, ILifecycleServiceProvider {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.skynet.core";
 
    private static Activator instance;
@@ -74,6 +76,7 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
       createServiceTracker(context, IDataTranslationService.class, OseeServiceTrackerId.TRANSLATION_SERVICE);
       createServiceTracker(context, IOseeModelFactoryService.class, OseeServiceTrackerId.OSEE_FACTORY_SERVICE);
       createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
+      createServiceTracker(context, ILifecycleService.class, OseeServiceTrackerId.LIFECYCLE_SERVER);
 
       RemoteEventManager2.getInstance().registerForRemoteEvents();
       if (!OseeEventManager.isNewEvents() && !OseeEventManager.isOldEvents()) {
@@ -129,6 +132,11 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
    @Override
    public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
       return getTracker(OseeServiceTrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
+   }
+
+   @Override
+   public ILifecycleService getLifecycleServices() throws OseeCoreException {
+      return getTracker(OseeServiceTrackerId.LIFECYCLE_SERVER, ILifecycleService.class);
    }
 
    private <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz) {

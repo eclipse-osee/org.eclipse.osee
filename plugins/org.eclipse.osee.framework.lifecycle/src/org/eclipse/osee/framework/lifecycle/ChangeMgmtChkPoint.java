@@ -8,11 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.lifecycle.test.mock.access;
+package org.eclipse.osee.framework.lifecycle;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
 
 /**
  * @author Roberto E. Escobar
@@ -36,7 +35,7 @@ public class ChangeMgmtChkPoint extends AbstractLifecyclePoint<ChangeMgmtHandler
    }
 
    @Override
-   public org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor.Type<ChangeMgmtHandler> getAssociatedType() {
+   public Type<ChangeMgmtHandler> getAssociatedType() {
       return TYPE;
    }
 

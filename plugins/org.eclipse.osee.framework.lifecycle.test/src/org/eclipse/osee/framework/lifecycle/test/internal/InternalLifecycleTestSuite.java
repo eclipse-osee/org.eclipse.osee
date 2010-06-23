@@ -6,6 +6,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { //
 LifecycleServiceTest.class, //
+      LifecycleOperationTest.class, //
+      OnEditOperationTest.class, //
 })
 public class InternalLifecycleTestSuite {
 
