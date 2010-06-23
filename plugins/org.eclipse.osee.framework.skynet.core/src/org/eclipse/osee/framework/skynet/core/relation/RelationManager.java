@@ -378,13 +378,17 @@ public class RelationManager {
          String sql = String.format(GET_DELETED_ARTIFACT, formatArgs);
 
          IOseeStatement chStmt = ConnectionHandler.getStatement();
-         chStmt.runPreparedQuery(sql, artifact.getBranch().getId(), relationType.getId(), artifact.getArtId());
+         try {
+            chStmt.runPreparedQuery(sql, artifact.getBranch().getId(), relationType.getId(), artifact.getArtId());
 
-         while (chStmt.next()) {
-            int artId = chStmt.getInt(formatArgs[0] + "_art_id");
-            int branchId = chStmt.getInt("branch_id");
-            ConnectionHandler.runPreparedUpdate(JOIN_TABLE_INSERT, queryId, GlobalTime.GreenwichMeanTimestamp(), artId,
-                  branchId, SQL3DataType.INTEGER);
+            while (chStmt.next()) {
+               int artId = chStmt.getInt(formatArgs[0] + "_art_id");
+               int branchId = chStmt.getInt("branch_id");
+               ConnectionHandler.runPreparedUpdate(JOIN_TABLE_INSERT, queryId, GlobalTime.GreenwichMeanTimestamp(),
+                     artId, branchId, SQL3DataType.INTEGER);
+            }
+         } finally {
+            chStmt.close();
          }
 
          List<Artifact> deletedArtifacts =

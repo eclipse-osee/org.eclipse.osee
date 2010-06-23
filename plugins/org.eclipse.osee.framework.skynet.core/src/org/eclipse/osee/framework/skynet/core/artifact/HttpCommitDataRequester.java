@@ -76,13 +76,17 @@ public class HttpCommitDataRequester {
    private static void reloadCommittedArtifacts(TransactionRecord newTransaction) throws OseeCoreException {
       Branch txBranch = BranchManager.getBranch(newTransaction.getBranchId());
       IOseeStatement chStmt = ConnectionHandler.getStatement();
-      Object[] queryData =
-            new Object[] {newTransaction.getBranchId(), newTransaction.getId(), newTransaction.getBranchId(),
-                  newTransaction.getId(), newTransaction.getBranchId(), newTransaction.getId()};
-      chStmt.runPreparedQuery(ARTIFACT_CHANGES, queryData);
-      while (chStmt.next()) {
-         int artId = chStmt.getInt("art_id");
-         ArtifactQuery.reloadArtifactFromId(artId, txBranch);
+      try {
+         Object[] queryData =
+               new Object[] {newTransaction.getBranchId(), newTransaction.getId(), newTransaction.getBranchId(),
+                     newTransaction.getId(), newTransaction.getBranchId(), newTransaction.getId()};
+         chStmt.runPreparedQuery(ARTIFACT_CHANGES, queryData);
+         while (chStmt.next()) {
+            int artId = chStmt.getInt("art_id");
+            ArtifactQuery.reloadArtifactFromId(artId, txBranch);
+         }
+      } finally {
+         chStmt.close();
       }
 
    }
