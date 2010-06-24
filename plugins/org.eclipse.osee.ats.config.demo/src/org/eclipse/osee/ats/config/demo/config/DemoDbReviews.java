@@ -56,7 +56,7 @@ public class DemoDbReviews {
     * 2) Decision in ReWork state w Joe Smith assignee and 2 reviewers<br>
     * 3) Decision in Complete state w Joe Smith assignee and completed<br>
     * <br>
-    * 
+    *
     * @param transaction
     * @param codeWorkflows
     * @throws Exception
@@ -112,7 +112,7 @@ public class DemoDbReviews {
     * 2) PeerToPeer in Review state w Joe Smith assignee and 2 reviewers<br>
     * 3) PeerToPeer in Prepare state w Joe Smith assignee and completed<br>
     * <br>
-    * 
+    *
     * @param transaction
     * @param codeWorkflows
     * @throws Exception

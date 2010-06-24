@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.config.demo.config;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.config.demo.DemoCISBuilds;
+import org.eclipse.osee.ats.config.demo.DemoSubsystems;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
@@ -38,14 +40,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
-import org.eclipse.osee.support.test.util.DemoCISBuilds;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
-import org.eclipse.osee.support.test.util.DemoSubsystems;
 import org.eclipse.osee.support.test.util.DemoUsers;
 
 /**
  * Initialization class that will load configuration information for a sample DB.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitializationTask {

@@ -49,9 +49,10 @@ public class DemoDbTasks {
          return Arrays.asList("Look into Graph View.", "Redesign how view shows values.",
                "Discuss new design with Senior Engineer", "Develop prototype", "Show prototype to management",
                "Create development plan", "Create test plan", "Make changes");
-      } else
+      } else {
          return Arrays.asList("Document how Graph View works", "Update help contents", "Review new documentation",
                "Publish documentation to website", "Remove old viewer", "Deploy release");
+      }
    }
 
    public static int getNumTasks() {

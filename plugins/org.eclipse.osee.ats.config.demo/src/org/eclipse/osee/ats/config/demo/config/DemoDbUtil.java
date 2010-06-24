@@ -66,8 +66,10 @@ public class DemoDbUtil {
    }
 
    public static Result isDbPopulatedWithDemoData(Branch branch) throws OseeCoreException {
-      if (DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Robot, branch).size() != 6) return new Result(
-            "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
+      if (DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Robot, branch).size() != 6) {
+         return new Result(
+               "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
+      }
       return Result.TrueResult;
    }
 
