@@ -5,10 +5,8 @@
  */
 package org.eclipse.osee.ats.world.search;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,15 +22,14 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.LegacyPCRActions;
+import org.eclipse.osee.ats.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.world.WorldEditor;
-import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
+import org.eclipse.osee.ats.world.WorldEditorOperationProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
@@ -40,61 +37,58 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecoratorPreferences;
-import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.ListDialog;
 
 /**
  * @author Donald G. Dunne
  */
-public class MultipleHridSearchOperation extends AbstractOperation {
-   private String enteredIds = "";
-   private boolean includeArtIds = false;
-   private Branch branch;
-   private final List<String> ids = new ArrayList<String>();
+public class MultipleHridSearchOperation extends AbstractOperation implements IWorldEditorConsumer {
    private final Set<Artifact> resultAtsArts = new HashSet<Artifact>();
    private final Set<Artifact> resultNonAtsArts = new HashSet<Artifact>();
    private final Set<Artifact> artifacts = new HashSet<Artifact>();
-   private final AtsEditor atsEditor;
+   private final MultipleHridSearchData data;
 
-   public MultipleHridSearchOperation(String operationName, AtsEditor atsEditor) {
-      super(operationName, AtsPlugin.PLUGIN_ID);
-      this.atsEditor = atsEditor;
+   public MultipleHridSearchOperation(MultipleHridSearchData data) {
+      super(data.getName(), AtsPlugin.PLUGIN_ID);
+      this.data = data;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      if (getUserEntry()) {
-         extractIds();
-         if (ids.isEmpty()) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Must Enter Valid Id");
-            return;
-         }
-         searchAndSplitResults();
-         if (resultAtsArts.isEmpty() && resultNonAtsArts.isEmpty()) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
-                  "Invalid HRID/Guid/Legacy PCR Id(s): " + Collections.toString(ids, ", "));
-            return;
-         }
-         if (resultNonAtsArts.size() > 0) {
-            ArtifactEditor.editArtifacts(resultNonAtsArts);
-         }
-         if (resultAtsArts.size() > 0) {
-            if (atsEditor == AtsEditor.WorkflowEditor) {
+      if (!data.hasValidInput()) {
+         MultipleHridSearchUi ui = new MultipleHridSearchUi(data);
+         if (!ui.getInput()) return;
+      }
+      if (data.getIds().isEmpty()) {
+         AWorkbench.popup("Must Enter Valid Id");
+         return;
+      }
+      searchAndSplitResults();
+      if (resultAtsArts.isEmpty() && resultNonAtsArts.isEmpty()) {
+         AWorkbench.popup("Invalid HRID/Guid/Legacy PCR Id(s): " + Collections.toString(data.getIds(), ", "));
+         return;
+      }
+      if (resultNonAtsArts.size() > 0) {
+         ArtifactEditor.editArtifacts(resultNonAtsArts);
+      }
+      if (resultAtsArts.size() > 0) {
+         // If requested world editor and it's already been opened there, don't process other arts in editors
+         if (data.getWorldEditor() != null && data.getAtsEditor() == AtsEditor.WorldEditor) {
+            data.getWorldEditor().getWorldComposite().load(getName(), resultAtsArts, TableLoadOption.None);
+         } else {
+            if (data.getAtsEditor() == AtsEditor.WorkflowEditor) {
                openWorkflowEditor(resultAtsArts);
-            } else if (atsEditor == AtsEditor.ChangeReport) {
-               openChangeReport(resultAtsArts, enteredIds);
+            } else if (data.getAtsEditor() == AtsEditor.ChangeReport) {
+               openChangeReport(resultAtsArts, data.getEnteredIds());
             } else {
-               WorldEditor.open(new WorldEditorSimpleProvider(getWorldViewName(), resultAtsArts));
+               WorldEditor.open(new WorldEditorOperationProvider(this));
             }
          }
       }
@@ -193,17 +187,18 @@ public class MultipleHridSearchOperation extends AbstractOperation {
    }
 
    private void searchAndSplitResults() throws OseeCoreException {
-      resultAtsArts.addAll(LegacyPCRActions.getTeamsTeamWorkflowArtifacts(ids,
+      resultAtsArts.addAll(LegacyPCRActions.getTeamsTeamWorkflowArtifacts(data.getIds(),
             (Collection<TeamDefinitionArtifact>) null));
 
       // This does artId search
-      if (includeArtIds && branch != null) {
-         for (Artifact art : ArtifactQuery.getArtifactListFromIds(Lib.stringToIntegerList(enteredIds), branch)) {
+      if (data.isIncludeArtIds() && data.getBranchForIncludeArtIds() != null) {
+         for (Artifact art : ArtifactQuery.getArtifactListFromIds(Lib.stringToIntegerList(data.getEnteredIds()),
+               data.getBranchForIncludeArtIds())) {
             artifacts.add(art);
          }
       }
       // This does hrid/guid search
-      for (Artifact art : ArtifactQuery.getArtifactListFromIds(ids, AtsUtil.getAtsBranch())) {
+      for (Artifact art : ArtifactQuery.getArtifactListFromIds(data.getIds(), AtsUtil.getAtsBranch())) {
          artifacts.add(art);
       }
 
@@ -216,74 +211,22 @@ public class MultipleHridSearchOperation extends AbstractOperation {
       }
    }
 
-   private void extractIds() {
-      for (String str : enteredIds.split(",")) {
-         str = str.replaceAll("^\\s+", "");
-         str = str.replaceAll("\\s+$", "");
-         if (!str.equals("")) {
-            ids.add(str);
-         }
-         // allow for lower case hrids
-         if (str.length() == 5) {
-            if (!ids.contains(str.toUpperCase())) {
-               ids.add(str.toUpperCase());
-            }
-         }
-      }
+   @Override
+   public void setWorldEditor(WorldEditor worldEditor) {
+      data.setWorldEditor(worldEditor);
    }
 
-   private String getWorldViewName() throws OseeCoreException {
-      return String.format(getName() + " - %s", enteredIds);
+   @Override
+   public WorldEditor getWorldEditor() {
+      return data.getWorldEditor();
    }
 
-   private boolean getUserEntry() throws OseeCoreException {
-      EntryJob job = new EntryJob();
-      Displays.ensureInDisplayThread(job, true);
-      return job.isValid();
-   }
-
-   public class EntryJob implements Runnable {
-      boolean valid = false;
-
-      @Override
-      public void run() {
-         EntryDialog ed = null;
-         if (AtsUtil.isAtsAdmin()) {
-            ed = new EntryCheckDialog(getName(), "Enter Legacy ID, Guid or HRID (comma separated)", "Include ArtIds");
-         } else {
-            ed =
-                  new EntryDialog(Display.getCurrent().getActiveShell(), getName(), null,
-                        "Enter Legacy ID, Guid or HRID (comma separated)", MessageDialog.QUESTION, new String[] {"OK",
-                              "Cancel"}, 0);
-         }
-         int response = ed.open();
-         if (response == 0) {
-            enteredIds = ed.getEntry();
-            if (ed instanceof EntryCheckDialog) {
-               includeArtIds = ((EntryCheckDialog) ed).isChecked();
-               if (includeArtIds) {
-                  branch = BranchSelectionDialog.getBranchFromUser();
-               }
-               valid = true;
-            }
-            if (!Strings.isValid(enteredIds)) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Must Enter Valid Id");
-            } else {
-               if (enteredIds.equals("oseerocks") || enteredIds.equals("osee rocks")) {
-                  AWorkbench.popup("Confirmation", "Confirmed!  Osee Rocks!");
-               } else if (enteredIds.equals("purple icons")) {
-                  AWorkbench.popup("Confirmation", "Yeehaw, Purple Icons Rule!!");
-                  ArtifactImageManager.setOverrideImageEnum(FrameworkImage.PURPLE);
-               } else {
-                  valid = true;
-               }
-            }
-         }
+   @Override
+   public String getName() {
+      if (Strings.isValid(data.getEnteredIds())) {
+         return String.format("%s - [%s]", super.getName(), data.getEnteredIds());
       }
-
-      public boolean isValid() {
-         return valid;
-      }
+      return super.getName();
    }
 
 }

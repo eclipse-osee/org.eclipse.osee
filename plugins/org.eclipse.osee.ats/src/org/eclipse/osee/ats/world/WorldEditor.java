@@ -147,6 +147,9 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
          OseeContributionItem.addTo(this, true);
 
          IWorldEditorProvider provider = getWorldEditorProvider();
+         if (provider instanceof IWorldEditorConsumer) {
+            ((IWorldEditorConsumer) provider).setWorldEditor(this);
+         }
 
          createMainTab();
          createMetricsTab();

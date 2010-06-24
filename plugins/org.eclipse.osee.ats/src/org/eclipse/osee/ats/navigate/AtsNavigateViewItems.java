@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
 import org.eclipse.osee.ats.world.search.GoalSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
+import org.eclipse.osee.ats.world.search.MultipleHridSearchData;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchOperation;
 import org.eclipse.osee.ats.world.search.MyFavoritesGoalsSearchItem;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
@@ -344,8 +345,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
       @Override
       public IOperation createOperation() {
-         return new MultipleHridSearchOperation(operationName, atsEditor);
+         return new MultipleHridSearchOperation(new MultipleHridSearchData(operationName, atsEditor));
       }
-
    }
 }

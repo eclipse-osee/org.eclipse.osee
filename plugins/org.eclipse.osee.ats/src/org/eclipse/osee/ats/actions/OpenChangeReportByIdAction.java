@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.util.AtsEditor;
+import org.eclipse.osee.ats.world.search.MultipleHridSearchData;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -34,7 +35,8 @@ public class OpenChangeReportByIdAction extends Action {
 
    @Override
    public void run() {
-      Operations.executeAsJob(new MultipleHridSearchOperation(getText(), AtsEditor.ChangeReport), true);
+      Operations.executeAsJob(new MultipleHridSearchOperation(new MultipleHridSearchData(getText(),
+            AtsEditor.ChangeReport)), true);
    }
 
    @Override
