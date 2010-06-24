@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.ui;
 
 import java.rmi.RemoteException;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.util.IConsoleInputListener;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -81,7 +82,9 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
       try {
          env = event.getEnvironment();
          remoteConsole = env.getCommandConsole();
-         getOteConsole().addInputListener(this);
+         if (isOteConsoleServiceAvailable()) {
+        	 getOteConsole().addInputListener(this);
+         }
       } catch (RemoteException e) {
          OseeLog.log(TestCoreGuiPlugin.class, Level.SEVERE, "exception acquiring remote console", e);
       }
