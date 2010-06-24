@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="core.osee.schema.resource">
+	<implementation class="org.eclipse.osee.framework.core.datastore.internal.CoreOseeSchemaResource"/>
+	<service>
+  		<provide interface="org.eclipse.osee.framework.core.datastore.IOseeSchemaResource"/>
+	</service>	
+</component>
