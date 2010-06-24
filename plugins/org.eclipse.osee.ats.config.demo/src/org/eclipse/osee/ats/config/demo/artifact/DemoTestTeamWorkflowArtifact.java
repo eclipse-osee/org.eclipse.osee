@@ -15,21 +15,21 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
-import org.eclipse.osee.support.test.util.TestUtil;
+import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 
 /**
  * @author Donald G. Dunne
  */
 public class DemoTestTeamWorkflowArtifact extends TeamWorkFlowArtifact {
 
-   public static String ARTIFACT_NAME = TestUtil.DEMO_TEST_TEAM_WORKFLOW_ARTIFACT;
+   public static String ARTIFACT_NAME = DemoArtifactTypes.DemoTestTeamWorkflow.getName();
 
    /**
     * @param parentFactory
     * @param guid
     * @param humanReadableId
     * @param branch
- * @throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     */
    public DemoTestTeamWorkflowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
