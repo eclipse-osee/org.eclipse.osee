@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.internal.trackers.OseeBranchExchangeServiceRegistrationHandler;
 import org.eclipse.osee.framework.branch.management.internal.trackers.OseeBranchServiceRegistrationHandler;
-import org.eclipse.osee.framework.branch.management.internal.trackers.OseeCachingServiceRegistrationHandler;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.osgi.framework.BundleActivator;
@@ -30,7 +29,6 @@ public class Activator implements BundleActivator {
    }
 
    public void start(BundleContext context) throws Exception {
-      createService(context, new OseeCachingServiceRegistrationHandler());
       createService(context, new OseeBranchServiceRegistrationHandler());
       createService(context, new OseeBranchExchangeServiceRegistrationHandler());
    }

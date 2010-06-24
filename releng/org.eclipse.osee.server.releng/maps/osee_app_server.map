@@ -3,6 +3,7 @@ feature@org.eclipse.osee.server.feature=SVN,,http://dev.eclipse.org/svnroot/tech
 feature@org.eclipse.osee.framework.server.feature=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,features/org.eclipse.osee.framework.server.feature
 plugin@org.eclipse.osee.demo.db.connection=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.demo.db.connection
 plugin@org.eclipse.osee.framework.branch.management=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.branch.management
+plugin@org.eclipse.osee.framework.core.datastore=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.datastore
 plugin@org.eclipse.osee.framework.core.server=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.server
 plugin@org.eclipse.osee.framework.database=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.database
 plugin@org.eclipse.osee.framework.derby=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.derby

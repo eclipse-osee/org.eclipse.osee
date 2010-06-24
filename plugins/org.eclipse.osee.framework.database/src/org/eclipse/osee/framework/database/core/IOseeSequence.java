@@ -67,4 +67,6 @@ public interface IOseeSequence {
    int getNextImportId() throws OseeDataStoreException;
 
    int getNextImportMappedIndexId() throws OseeDataStoreException;
+
+   void clear() throws OseeDataStoreException;
 }

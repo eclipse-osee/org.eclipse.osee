@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.message.internal.translation.ChangeItemTr
 import org.eclipse.osee.framework.core.message.internal.translation.ChangeReportRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.ChangeReportResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.ChangeVersionTranslator;
+import org.eclipse.osee.framework.core.message.internal.translation.DatastoreInitRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeEnumTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelResponseTranslator;
@@ -43,7 +44,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link DataTranslationServiceFactory}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class DataTranslationServiceFactoryTest {
@@ -83,6 +84,7 @@ public class DataTranslationServiceFactoryTest {
       checkExists(srvc, OseeImportModelResponseTranslator.class, CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);
       checkExists(srvc, TableDataTranslator.class, CoreTranslatorId.TABLE_DATA);
 
+      checkExists(srvc, DatastoreInitRequestTranslator.class, CoreTranslatorId.OSEE_DATASTORE_INIT_REQUEST);
       //      checkExists(srvc, BasicArtifactTranslator.class, CoreTranslatorId.ARTIFACT_METADATA);
       //      checkExists(srvc, BranchTranslator.class, CoreTranslatorId.BRANCH);
       //      checkExists(srvc, ArtifactTypeTranslator.class, CoreTranslatorId.ARTIFACT_TYPE);

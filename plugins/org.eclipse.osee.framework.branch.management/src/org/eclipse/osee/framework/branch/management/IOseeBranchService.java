@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.message.ChangeBranchTypeRequest;
 import org.eclipse.osee.framework.core.message.ChangeReportRequest;
 import org.eclipse.osee.framework.core.message.ChangeReportResponse;
 import org.eclipse.osee.framework.core.message.PurgeBranchRequest;
+import org.eclipse.osee.framework.core.operation.IOperation;
 
 /**
  * @author Jeff C. Phillips
@@ -30,15 +31,17 @@ import org.eclipse.osee.framework.core.message.PurgeBranchRequest;
 public interface IOseeBranchService {
    void commitBranch(IProgressMonitor monitor, BranchCommitRequest branchCommitData, BranchCommitResponse response) throws OseeCoreException;
 
-   void getChanges(IProgressMonitor monitor, ChangeReportRequest request, ChangeReportResponse response) throws OseeCoreException;
+   IOperation getChanges(IProgressMonitor monitor, ChangeReportRequest request, ChangeReportResponse response) throws OseeCoreException;
 
-   void createBranch(IProgressMonitor monitor, BranchCreationRequest request, BranchCreationResponse response) throws OseeCoreException;
+   IOperation createBranch(IProgressMonitor monitor, BranchCreationRequest request, BranchCreationResponse response) throws OseeCoreException;
 
-   void purge(IProgressMonitor monitor, PurgeBranchRequest request) throws OseeCoreException;
+   IOperation purge(IProgressMonitor monitor, PurgeBranchRequest request) throws OseeCoreException;
 
-   void updateBranchType(IProgressMonitor monitor, ChangeBranchTypeRequest request) throws OseeCoreException;
+   IOperation updateBranchType(IProgressMonitor monitor, ChangeBranchTypeRequest request) throws OseeCoreException;
 
-   void updateBranchState(IProgressMonitor monitor, ChangeBranchStateRequest request) throws OseeCoreException;
+   IOperation updateBranchState(IProgressMonitor monitor, ChangeBranchStateRequest request) throws OseeCoreException;
 
-   void updateBranchArchiveState(IProgressMonitor monitor, ChangeBranchArchiveStateRequest request) throws OseeCoreException;
+   IOperation updateBranchArchiveState(IProgressMonitor monitor, ChangeBranchArchiveStateRequest request) throws OseeCoreException;
+
+   IOperation createSystemRootBranch(IProgressMonitor monitor) throws OseeCoreException;
 }

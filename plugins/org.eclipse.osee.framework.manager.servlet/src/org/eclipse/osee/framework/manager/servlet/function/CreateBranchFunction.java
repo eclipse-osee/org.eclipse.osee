@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.BranchCreationRequest;
 import org.eclipse.osee.framework.core.message.BranchCreationResponse;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
@@ -50,13 +51,16 @@ public class CreateBranchFunction extends AbstractOperation {
             service.convert(req.getInputStream(), CoreTranslatorId.BRANCH_CREATION_REQUEST);
 
       BranchCreationResponse creationResponse = new BranchCreationResponse(-1);
-
-      branchServiceProvider.getBranchService().createBranch(new LogProgressMonitor(), creationRequest, creationResponse);
+      IOperation subOp =
+            branchServiceProvider.getBranchService().createBranch(new LogProgressMonitor(), creationRequest,
+                  creationResponse);
+      doSubWork(subOp, monitor, 0.80);
 
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       resp.setContentType("text/xml");
       resp.setCharacterEncoding("UTF-8");
       InputStream inputStream = service.convertToStream(creationResponse, CoreTranslatorId.BRANCH_CREATION_RESPONSE);
       Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
+      monitor.worked(calculateWork(0.20));
    }
 }

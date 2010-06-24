@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.ChangeReportRequest;
 import org.eclipse.osee.framework.core.message.ChangeReportResponse;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -47,12 +48,14 @@ public class ChangeReportFunction extends AbstractOperation {
       ChangeReportRequest request = service.convert(req.getInputStream(), CoreTranslatorId.CHANGE_REPORT_REQUEST);
 
       ChangeReportResponse response = new ChangeReportResponse();
-      branchServiceProvider.getBranchService().getChanges(monitor, request, response);
+      IOperation subOp = branchServiceProvider.getBranchService().getChanges(monitor, request, response);
+      doSubWork(subOp, monitor, 0.90);
 
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       resp.setContentType("text/xml");
       resp.setCharacterEncoding("UTF-8");
       InputStream inputStream = service.convertToStream(response, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
       Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
+      monitor.worked(calculateWork(0.10));
    }
 }

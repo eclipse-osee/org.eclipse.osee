@@ -27,6 +27,5 @@ Import-Package: org.eclipse.core.runtime,
  org.osgi.framework,
  org.osgi.util.tracker
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Service-Component: OSGI-INF/uri.connection.contributor.xml,
- OSGI-INF/db.connection.consumer.xml,
- OSGI-INF/db.connection.contributor.consumer.xml
+Service-Component: OSGI-INF/uri.connection.contributor.xml
+Require-Bundle: org.eclipse.equinox.ds

@@ -13,11 +13,11 @@ package org.eclipse.osee.framework.manager.servlet.function;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.branch.management.IOseeBranchServiceProvider;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.ChangeBranchArchiveStateRequest;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
@@ -44,12 +44,15 @@ public class ChangeBranchArchiveStateFunction extends AbstractOperation {
       IDataTranslationService service = dataTransalatorProvider.getTranslationService();
       ChangeBranchArchiveStateRequest request =
             service.convert(req.getInputStream(), CoreTranslatorId.CHANGE_BRANCH_ARCHIVE_STATE);
-      branchServiceProvider.getBranchService().updateBranchArchiveState(new NullProgressMonitor(), request);
+
+      IOperation subOp = branchServiceProvider.getBranchService().updateBranchArchiveState(monitor, request);
+      doSubWork(subOp, monitor, 0.90);
 
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       resp.setContentType("text/plain");
       resp.setCharacterEncoding("UTF-8");
       resp.getWriter().write("Purge was successful");
       resp.getWriter().flush();
+      monitor.worked(calculateWork(0.10));
    }
 }

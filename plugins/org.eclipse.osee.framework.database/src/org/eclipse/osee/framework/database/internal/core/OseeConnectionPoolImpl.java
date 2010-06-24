@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.internal.Activator;
-import org.eclipse.osee.framework.database.internal.IDbConnectionFactory;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 public class OseeConnectionPoolImpl {
@@ -28,10 +27,10 @@ public class OseeConnectionPoolImpl {
    private final List<OseeConnectionImpl> connections = new CopyOnWriteArrayList<OseeConnectionImpl>();
    private final String dbUrl;
    private final Properties properties;
-   private final IDbConnectionFactory connectionFactory;
+   private final ConnectionFactoryProvider connectionFactory;
    private final String driver;
 
-   public OseeConnectionPoolImpl(IDbConnectionFactory connectionFactory, String driver, String dbUrl, Properties properties) {
+   public OseeConnectionPoolImpl(ConnectionFactoryProvider connectionFactory, String driver, String dbUrl, Properties properties) {
       this.connectionFactory = connectionFactory;
       this.driver = driver;
       this.dbUrl = dbUrl;

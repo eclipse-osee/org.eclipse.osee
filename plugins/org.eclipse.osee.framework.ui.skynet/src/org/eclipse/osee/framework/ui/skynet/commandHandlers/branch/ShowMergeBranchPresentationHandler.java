@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchViewPresentationPreferences;
@@ -35,11 +36,12 @@ import org.eclipse.ui.menus.UIElement;
 public class ShowMergeBranchPresentationHandler extends AbstractHandler implements IElementUpdater {
    public static String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.showMergeBranches";
    boolean itemChk;
-   private ICommandService service;
+   private final ICommandService service;
 
-   public ShowMergeBranchPresentationHandler(){
+   public ShowMergeBranchPresentationHandler() {
       this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
    }
+
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       ((BranchView) HandlerUtil.getActivePartChecked(event)).changeMergeBranchPresentation(!itemChk);
@@ -48,7 +50,9 @@ public class ShowMergeBranchPresentationHandler extends AbstractHandler implemen
 
    @Override
    public void updateElement(UIElement element, Map parameters) {
-      itemChk = Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(BranchViewPresentationPreferences.SHOW_MERGE_BRANCHES, false);
+      itemChk =
+            Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(
+                  BranchViewPresentationPreferences.SHOW_MERGE_BRANCHES, false);
       element.setChecked(itemChk);
    }
 
@@ -56,13 +60,14 @@ public class ShowMergeBranchPresentationHandler extends AbstractHandler implemen
    public boolean isEnabled() {
       boolean isValid = false;
       service.refreshElements(COMMAND_ID, null);
-      
-      try {
-         isValid = AccessControlManager.isOseeAdmin();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+
+      if (!DbUtil.isDbInit()) {
+         try {
+            isValid = AccessControlManager.isOseeAdmin();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
       }
-      
       return isValid;
    }
 }

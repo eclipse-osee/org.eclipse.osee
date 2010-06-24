@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.internal;
 
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.internal.trackers.OseeDatabaseServiceRegistrationHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -20,43 +22,47 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Roberto E. Escobar
  */
-public class Activator implements BundleActivator {
+public class Activator implements BundleActivator, IOseeDatabaseServiceProvider {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.database";
 
    private static Activator instance = null;
 
    private ServiceDependencyTracker databaseServiceTracker;
    private ServiceTracker dbTracker;
-   private ServiceTracker infoTracker;
+   private DatabaseInfoProvider databaseInfoProvider;
 
    public Activator() {
    }
 
-   public void start(BundleContext context) throws Exception {
+   public void start(BundleContext bundleContext) throws Exception {
       instance = this;
+      databaseInfoProvider = new DatabaseInfoProvider(bundleContext);
 
-      databaseServiceTracker = new ServiceDependencyTracker(context, new OseeDatabaseServiceRegistrationHandler());
+      databaseServiceTracker =
+            new ServiceDependencyTracker(bundleContext, new OseeDatabaseServiceRegistrationHandler());
       databaseServiceTracker.open();
 
-      dbTracker = new ServiceTracker(context, IOseeDatabaseService.class.getName(), null);
-      dbTracker.open();
-
-      infoTracker = new ServiceTracker(context, IDbConnectionInformation.class.getName(), null);
-      infoTracker.open();
+      dbTracker = new ServiceTracker(bundleContext, IOseeDatabaseService.class.getName(), null);
+      dbTracker.open(true);
    }
 
-   public IDbConnectionInformation getConnectionInfos() {
-      return (IDbConnectionInformation) infoTracker.getService();
+   public DatabaseInfoProvider getDatabaseInfoProvider() {
+      return databaseInfoProvider;
    }
 
-   public IOseeDatabaseService getOseeDatabaseService() {
-      return (IOseeDatabaseService) dbTracker.getService();
+   @Override
+   public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
+      IOseeDatabaseService databaseService = (IOseeDatabaseService) dbTracker.getService();
+      if (databaseService == null) {
+         throw new OseeDataStoreException("OseeDatabaseService not found");
+      }
+      return databaseService;
    }
 
    public void stop(BundleContext context) throws Exception {
       databaseServiceTracker.close();
       dbTracker.close();
-      infoTracker.close();
+      databaseInfoProvider = null;
       instance = null;
    }
 

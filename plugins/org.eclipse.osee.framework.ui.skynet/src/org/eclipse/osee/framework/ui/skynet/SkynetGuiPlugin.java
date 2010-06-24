@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.osee.framework.ui.skynet.ats.IOseeAtsService;
@@ -96,10 +97,12 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
 
             @Override
             public boolean preShutdown(IWorkbench workbench, boolean forced) {
-               try {
-                  UserManager.getUser().saveSettings();
-               } catch (Throwable th) {
-                  th.printStackTrace();
+               if (!DbUtil.isDbInit()) {
+                  try {
+                     UserManager.getUser().saveSettings();
+                  } catch (Throwable th) {
+                     th.printStackTrace();
+                  }
                }
                return true;
             }

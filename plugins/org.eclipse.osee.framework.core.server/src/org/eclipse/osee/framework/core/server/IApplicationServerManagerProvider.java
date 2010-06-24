@@ -8,22 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+package org.eclipse.osee.framework.core.server;
 
-package org.eclipse.osee.framework.database.internal;
-
-import org.eclipse.osee.framework.core.data.IDatabaseInfo;
-import org.eclipse.osee.framework.database.core.IDbConnectionInformationContributor;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
- * @author Andrew M. Finkbeiner
+ * @author Roberto E. Escobar
  */
-public interface IDbConnectionInformation {
+public interface IApplicationServerManagerProvider {
 
-   public IDatabaseInfo getDatabaseInfo(String servicesId);
-
-   public IDatabaseInfo getSelectedDatabaseInfo();
-
-   void bind(IDbConnectionInformationContributor contributor);
-
-   void unbind(IDbConnectionInformationContributor contributor);
+   IApplicationServerManager getApplicationServerManager() throws OseeCoreException;
 }

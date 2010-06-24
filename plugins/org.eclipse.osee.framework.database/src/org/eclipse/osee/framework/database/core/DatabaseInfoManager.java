@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.internal.Activator;
 import org.eclipse.osee.framework.database.internal.parser.DbConfigParser;
@@ -28,11 +29,11 @@ public class DatabaseInfoManager {
    }
 
    public static IDatabaseInfo getDefault() throws OseeDataStoreException {
-      return Activator.getInstance().getConnectionInfos().getSelectedDatabaseInfo();
+      return Activator.getInstance().getDatabaseInfoProvider().getSelectedDatabaseInfo();
    }
 
-   public static IDatabaseInfo getDataStoreById(String id) throws OseeDataStoreException {
-      return Activator.getInstance().getConnectionInfos().getDatabaseInfo(id);
+   public static IDatabaseInfo getDataStoreById(String id) throws OseeCoreException {
+      return Activator.getInstance().getDatabaseInfoProvider().getDatabaseInfo(id);
    }
 
    public static IDatabaseInfo[] readFromXml(InputStream inputStream) throws IOException, ParserConfigurationException, SAXException {

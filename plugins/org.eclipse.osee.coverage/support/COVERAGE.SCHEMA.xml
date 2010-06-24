@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<TableConfig>
-	<Table name="OSEE_CVG_TESTUNITS">
-		<Column id="NAME_ID" limits="8,0" type="DECIMAL" />
-		<Column id="NAME" limits="255" type="VARCHAR" />
-      <Constraint schema="OSEE" id="CVG_NAME_ID_PK" type="UNIQUE" appliesTo="NAME_ID" />
-	</Table>
-</TableConfig>
-

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.message.ChangeBranchStateRequest;
 import org.eclipse.osee.framework.core.message.ChangeBranchTypeRequest;
 import org.eclipse.osee.framework.core.message.ChangeItem;
 import org.eclipse.osee.framework.core.message.ChangeVersion;
+import org.eclipse.osee.framework.core.message.DatastoreInitRequest;
 import org.eclipse.osee.framework.core.message.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.message.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.message.PurgeBranchRequest;
@@ -277,5 +278,11 @@ public final class DataAsserts {
          Assert.assertEquals(expected.getBranchId(), actual.getBranchId());
          Assert.assertEquals(expected.getState(), actual.getState());
       }
+   }
+
+   public static void assertEquals(DatastoreInitRequest expected, DatastoreInitRequest actual) {
+      Assert.assertEquals(expected.getIndexDataSpace(), actual.getIndexDataSpace());
+      Assert.assertEquals(expected.getTableDataSpace(), actual.getTableDataSpace());
+      Assert.assertEquals(expected.isUseFileSpecifiedSchemas(), actual.isUseFileSpecifiedSchemas());
    }
 }

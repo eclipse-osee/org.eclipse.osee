@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.internal.Activator;
-import org.eclipse.osee.framework.database.internal.IDbConnectionFactory;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -34,10 +33,10 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
          new HashMap<String, OseeConnectionPoolImpl>();
 
    private final IOseeSequence oseeSequence;
-   private final IDbConnectionFactory dbConnectionFactory;
+   private final ConnectionFactoryProvider dbConnectionFactory;
    private final IDatabaseInfoProvider dbInfoProvider;
 
-   public OseeDatabaseServiceImpl(IDatabaseInfoProvider dbInfoProvider, IDbConnectionFactory dbConnectionFactory) {
+   public OseeDatabaseServiceImpl(IDatabaseInfoProvider dbInfoProvider, ConnectionFactoryProvider dbConnectionFactory) {
       this.oseeSequence = new OseeSequenceImpl(this);
       this.dbInfoProvider = dbInfoProvider;
       this.dbConnectionFactory = dbConnectionFactory;

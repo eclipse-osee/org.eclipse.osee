@@ -29,7 +29,7 @@ public class OseeServerContext {
    public static final String CLIENT_LOOPBACK_CONTEXT = asAbsoluteContext("client/loopback");
    public static final String ARTIFACT_CONTEXT = asAbsoluteContext("artifact");
    public static final String OSEE_MODEL_CONTEXT = asAbsoluteContext("model");
-
+   public static final String OSEE_CONFIGURE_CONTEXT = asAbsoluteContext("configure");
    public static final String CACHE_CONTEXT = asAbsoluteContext("cache");
 
    private static final String asAbsoluteContext(String value) {

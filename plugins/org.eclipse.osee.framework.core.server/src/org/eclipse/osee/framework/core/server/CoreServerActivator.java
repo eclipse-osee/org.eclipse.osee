@@ -31,14 +31,16 @@ public class CoreServerActivator implements BundleActivator {
 
    private static List<ServiceRegistration> services;
    private static CoreServerActivator instance;
+   private ApplicationServerManager serverManager;
 
    public void start(BundleContext context) throws Exception {
       instance = this;
       services = new ArrayList<ServiceRegistration>();
 
       services.add(context.registerService(IDatabaseInfoProvider.class.getName(), new ServerDatabaseProvider(), null));
-      services.add(context.registerService(IApplicationServerManager.class.getName(), new ApplicationServerManager(),
-            null));
+
+      serverManager = new ApplicationServerManager();
+      services.add(context.registerService(IApplicationServerManager.class.getName(), serverManager, null));
 
       applicationManagerTracker = new ServiceTracker(context, IApplicationServerManager.class.getName(), null);
       applicationManagerTracker.open();
@@ -121,21 +123,7 @@ public class CoreServerActivator implements BundleActivator {
       return getApplicationServerManager().createNewThreadFactory(name, Thread.NORM_PRIORITY);
    }
 
-   public static ThreadFactory createNewThreadFactory(String name, int priority) {
-      return getApplicationServerManager().createNewThreadFactory(name, priority);
-   }
-
    public static IApplicationServerManager getApplicationServerManager() {
-      if (instance != null && instance.applicationManagerTracker != null) {
-         return (IApplicationServerManager) instance.applicationManagerTracker.getService();
-      }
-      return null;
-   }
-
-   public static IApplicationServerLookup getApplicationServerLookup() {
-      if (instance != null && instance.applicationLookupTracker != null) {
-         return (IApplicationServerLookup) instance.applicationLookupTracker.getService();
-      }
-      return null;
+      return instance != null ? instance.serverManager : null;
    }
 }

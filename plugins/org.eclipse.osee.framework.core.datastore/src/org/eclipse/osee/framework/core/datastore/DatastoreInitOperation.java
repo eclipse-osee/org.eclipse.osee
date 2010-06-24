@@ -60,6 +60,9 @@ public class DatastoreInitOperation extends AbstractOperation {
 
       IOperation subOp = OperationFactory.createDbSchema(dbService, schemaProvider, options);
       doSubWork(subOp, monitor, 0.30);
+
+      dbService.getOseeDatabaseService().getSequence().clear();
+
       appServerManager.executeLookupRegistration();
 
       deleteBinaryBackingData();

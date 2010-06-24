@@ -101,13 +101,17 @@ public class OseeTypesImportOperation extends AbstractOperation {
          cacheService.getRelationTypeCache().reloadCache();
       }
 
-      openTabReport(response.getReportData());
+      if (createTypeChangeReport) {
+         openTabReport(response.getReportData());
+      }
 
-      String compareName = response.getComparisonSnapshotModelName();
-      String compareData = response.getComparisonSnapshotModel();
-      if (Strings.isValid(compareData) && Strings.isValid(compareName)) {
-         ComparisonSnapshot snapshot = ModelUtil.loadComparisonSnapshot(compareName, compareData);
-         openCompareEditor(snapshot);
+      if (createCompareReport) {
+         String compareName = response.getComparisonSnapshotModelName();
+         String compareData = response.getComparisonSnapshotModel();
+         if (Strings.isValid(compareData) && Strings.isValid(compareName)) {
+            ComparisonSnapshot snapshot = ModelUtil.loadComparisonSnapshot(compareName, compareData);
+            openCompareEditor(snapshot);
+         }
       }
    }
 

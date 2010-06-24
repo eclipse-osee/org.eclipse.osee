@@ -43,14 +43,6 @@
                classname="org.eclipse.osee.framework.skynet.core.artifact.factory.UserArtifactFactory">
          </ArtifactFactory>
       </extension>
-      <extension
-            id="SkynetSchemaDefinition"
-            name="SkynetSchemaDefinition"
-            point="org.eclipse.osee.framework.skynet.core.OseeDbSchema">
-         <Schema
-               SchemaFile="dbschemas/SKYNET.VERSIONING.SCHEMA.xml">
-         </Schema>
-      </extension>
 
       <extension
             id="BooleanAttribute"

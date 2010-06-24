@@ -21,8 +21,9 @@ BranchCommitRequestTranslatorTest.class, //
       BranchCreationResponseTranslatorTest.class, //
       CacheUpdateRequestTranslatorTest.class, //
       ChangeItemTranslatorTest.class, //
-      ChangeVersionTranslatorTest.class, //
       ChangeReportResponseTranslatorTest.class,//
+      ChangeVersionTranslatorTest.class, //
+      DatastoreInitRequestTranslatorTest.class, //
       DataTranslationServiceFactoryTest.class, //
       DataTranslationServiceTest.class, //
       OseeImportModelRequestTranslatorTest.class, //
@@ -32,7 +33,7 @@ BranchCommitRequestTranslatorTest.class, //
       TransactionRecordTranslatorTest.class, //
       PurgeBranchRequestTranslatorTest.class, //
       BranchChangeTypeRequestTranslatorTest.class, //
-      BranchChangeStateRequestTranslatorTest.class, // 
+      BranchChangeStateRequestTranslatorTest.class, //
       BranchChangeArchivedStateRequestTranslatorTest.class//
 })
 /**

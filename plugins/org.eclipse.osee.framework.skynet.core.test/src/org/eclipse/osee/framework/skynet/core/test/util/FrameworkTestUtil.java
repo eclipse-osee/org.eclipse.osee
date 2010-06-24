@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.support.test.util.DemoSubsystems;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -47,7 +46,7 @@ public class FrameworkTestUtil {
    public static Artifact createSimpleArtifact(IArtifactType artifactType, String name, Branch branch) throws OseeCoreException {
       Artifact softArt = ArtifactTypeManager.addArtifact(artifactType, branch);
       softArt.setName(name);
-      softArt.addAttribute("Subsystem", DemoSubsystems.Electrical.name());
+      softArt.addAttribute("Subsystem", "Electrical");
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
       rootArtifact.addRelation(CoreRelationTypes.Default_Hierarchical__Child, softArt);
       return softArt;

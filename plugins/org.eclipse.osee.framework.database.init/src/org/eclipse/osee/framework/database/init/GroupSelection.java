@@ -46,7 +46,7 @@ public class GroupSelection {
          wasInitialized = true;
          ExtensionDefinedObjects<IAddDbInitChoice> contributions =
                new ExtensionDefinedObjects<IAddDbInitChoice>(
-                     DatabaseInitActivator.getBundle().getSymbolicName() + ".DatabaseInitializationConfiguration",
+                     DatabaseInitActivator.PLUGIN_ID + ".DatabaseInitializationConfiguration",
                      "DatabaseInitializationConfiguration", "classname");
          for (IAddDbInitChoice dbInitChoice : contributions.getObjects()) {
             dbInitChoice.addDbInitChoice(this);

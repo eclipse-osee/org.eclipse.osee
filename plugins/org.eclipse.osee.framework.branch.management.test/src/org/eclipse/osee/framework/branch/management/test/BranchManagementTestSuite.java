@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.test;
 
-import org.eclipse.osee.framework.branch.management.test.cache.CacheAccessorSuite;
 import org.eclipse.osee.framework.branch.management.test.change.ChangeTestSuite;
 import org.eclipse.osee.framework.branch.management.test.commit.CommitTestSuite;
 import org.eclipse.osee.framework.branch.management.test.exchange.ExchangeTestSuite;
@@ -19,8 +18,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {//
-CacheAccessorSuite.class, //
-      ChangeTestSuite.class, //
+ChangeTestSuite.class, //
       CommitTestSuite.class, //
       ExchangeTestSuite.class,//
 })

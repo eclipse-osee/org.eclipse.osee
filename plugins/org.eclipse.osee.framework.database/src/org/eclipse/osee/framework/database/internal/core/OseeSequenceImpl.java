@@ -48,6 +48,11 @@ public class OseeSequenceImpl implements IOseeSequence {
       return range;
    }
 
+   @Override
+   public synchronized void clear() throws OseeDataStoreException {
+      sequences.clear();
+   }
+
    @SuppressWarnings("unchecked")
    public synchronized long getNextSequence(String sequenceName) throws OseeDataStoreException {
       SequenceRange range = getRange(sequenceName);
@@ -176,5 +181,7 @@ public class OseeSequenceImpl implements IOseeSequence {
          }
       }
    }
+
+
 
 }

@@ -17,27 +17,6 @@
       	   classname="org.eclipse.osee.framework.database.init.AddCommonBranch">
    	</DatabaseInitializationTask>
 	</extension>
-   <extension
-   		id="BackupTableData"
-         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-      <DatabaseInitializationTask
-            classname="org.eclipse.osee.framework.database.init.BackupTableData">
-      </DatabaseInitializationTask>
-   </extension>
-   <extension
-   		id="RestoreTableData"
-         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-   	<DatabaseInitializationTask
-      	   classname="org.eclipse.osee.framework.database.init.RestoreTableData">
-   	</DatabaseInitializationTask>
-	</extension>
-	<extension
-			id="ImportDataFromDbService"
-   	   point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-   	<DatabaseInitializationTask
-         	classname="org.eclipse.osee.framework.database.init.ImportDataFromDbService">
-      </DatabaseInitializationTask>
-	</extension>	
 	<extension
 			id="PostDatabaseInitialization"
       	point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
@@ -50,20 +29,6 @@
          point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
    	<DatabaseInitializationTask
       	   classname="org.eclipse.osee.framework.database.init.PostDbUserCleanUp">
-   	</DatabaseInitializationTask>
-	</extension>
-	<extension
-			id="PrintTables"
-         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-   	<DatabaseInitializationTask
-      	   classname="org.eclipse.osee.framework.database.init.PrintTables">
-   	</DatabaseInitializationTask>
-	</extension>
-	<extension
-			id="RestoreTableData"
-         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
-   	<DatabaseInitializationTask
-      	   classname="org.eclipse.osee.framework.database.init.RestoreTableData">
    	</DatabaseInitializationTask>
 	</extension>
 	<extension
@@ -93,6 +58,5 @@
           classname="org.eclipse.osee.framework.database.init.AddBaseDbInitChoice">
     </DatabaseInitializationConfiguration>
  </extension>
-
 </plugin>
  

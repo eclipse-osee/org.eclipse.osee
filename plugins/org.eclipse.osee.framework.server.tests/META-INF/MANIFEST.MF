@@ -7,12 +7,12 @@ Bundle-Activator: org.eclipse.osee.framework.server.tests.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.branch.management.test,
+ org.eclipse.osee.framework.core.datastore.test,
  org.eclipse.osee.framework.core.message.test,
  org.eclipse.osee.framework.core.model.test,
  org.eclipse.osee.framework.core.server.test,
  org.eclipse.osee.framework.core.test,
  org.eclipse.osee.framework.jdk.core.test,
- org.eclipse.osee.framework.lifecycle,
  org.eclipse.osee.framework.lifecycle.test,
  org.eclipse.osee.framework.resource.locator.attribute.test,
  org.eclipse.osee.framework.resource.management.test,

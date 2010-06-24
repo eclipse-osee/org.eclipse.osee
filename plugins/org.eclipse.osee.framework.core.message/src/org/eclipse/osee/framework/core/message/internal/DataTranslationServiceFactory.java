@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.message.internal.translation.ChangeItemTr
 import org.eclipse.osee.framework.core.message.internal.translation.ChangeReportRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.ChangeReportResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.ChangeVersionTranslator;
+import org.eclipse.osee.framework.core.message.internal.translation.DatastoreInitRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeEnumTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelResponseTranslator;
@@ -109,6 +110,8 @@ public class DataTranslationServiceFactory {
       service.addTranslator(new OseeImportModelRequestTranslator(), CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
       service.addTranslator(new OseeImportModelResponseTranslator(service), CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);
       service.addTranslator(new TableDataTranslator(), CoreTranslatorId.TABLE_DATA);
+
+      service.addTranslator(new DatastoreInitRequestTranslator(), CoreTranslatorId.OSEE_DATASTORE_INIT_REQUEST);
       return service;
    }
 }

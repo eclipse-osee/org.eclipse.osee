@@ -5,11 +5,11 @@ Bundle-SymbolicName: org.eclipse.osee.ats.test;singleton:=true
 Bundle-Version: 0.9.5.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.ats
-Require-Bundle: org.junit4,
- org.eclipse.osee.support.test.util
+Require-Bundle: org.junit4
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.model.type,
- org.eclipse.osee.framework.ui.skynet.test.cases
+ org.eclipse.osee.framework.ui.skynet.test.cases,
+ org.eclipse.osee.support.test.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.ats.test,
  org.eclipse.osee.ats.test.cases,

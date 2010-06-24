@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +29,8 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -38,20 +39,25 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
-import org.eclipse.osee.support.test.util.TestUtil;
+import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
  * This test must be run against a demo database. It tests the case where a team workflow or action is deleted or purged
  * and makes sure that all expected related ats objects are deleted also.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsDeleteManagerTest {
 
    private enum TestNames {
-      TeamArtDeleteOneWorkflow, TeamArtDeleteWithTwoWorkflows, TeamArtPurge, ActionDelete, ActionPurge
+      TeamArtDeleteOneWorkflow,
+      TeamArtDeleteWithTwoWorkflows,
+      TeamArtPurge,
+      ActionDelete,
+      ActionPurge
    };
 
    @BeforeClass
@@ -204,27 +210,23 @@ public class AtsDeleteManagerTest {
       verifyExists(TestNames.ActionPurge, 0, 0, 0, 0, 0);
    }
 
-   private void verifyExists(TestNames testName, int numActions, int numCodeWorkflows, int numReqWorkflows, int numTasks, int numReviews) throws OseeCoreException {
+   private void verifyExists(TestNames testName, int expectedNumActions, int expectedNumCodeWorkflows, int expectedNumReqWorkflows, int expectedNumTasks, int expectedNumReviews) throws OseeCoreException {
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(testName + "%", AtsUtil.getAtsBranch(), false);
-
-      CountingMap<String> numArts = new CountingMap<String>();
+      CountingMap<IArtifactType> countMap = new CountingMap<IArtifactType>();
       for (Artifact artifact : artifacts) {
-         numArts.put(artifact.getArtifactTypeName());
+         countMap.put(artifact.getArtifactType());
       }
-      assertTrue(
-            "Should be " + numActions + " ActionArtifact, found " + numArts.get(AtsArtifactTypes.Action.getName()),
-            numArts.get(AtsArtifactTypes.Action.getName()) == numActions);
-      assertTrue(
-            "Should be " + numCodeWorkflows + " Demo Code Workflow, found " + numArts.get(TestUtil.DEMO_CODE_TEAM_WORKFLOW_ARTIFACT),
-            numArts.get(TestUtil.DEMO_CODE_TEAM_WORKFLOW_ARTIFACT) == numCodeWorkflows);
-      assertTrue(
-            "Should be " + numReqWorkflows + " Demo Req Workflow, found " + numArts.get(TestUtil.DEMO_REQ_TEAM_WORKFLOW_ARTIFACT),
-            numArts.get(TestUtil.DEMO_REQ_TEAM_WORKFLOW_ARTIFACT) == numReqWorkflows);
-      assertTrue("Should be " + numTasks + " TaskArtifacts, found " + numArts.get(AtsArtifactTypes.Task.getName()),
-            numArts.get(AtsArtifactTypes.Task.getName()) == numTasks);
-      assertTrue(
-            "Should be " + numReviews + " DecisionReviewArtifact, found " + numArts.get(AtsArtifactTypes.DecisionReview.getName()),
-            numArts.get(AtsArtifactTypes.DecisionReview.getName()) == numReviews);
+      checkExpectedCount(countMap, AtsArtifactTypes.Action, expectedNumActions);
+      checkExpectedCount(countMap, DemoArtifactTypes.DemoCodeTeamWorkflow, expectedNumCodeWorkflows);
+      checkExpectedCount(countMap, DemoArtifactTypes.DemoReqTeamWorkflow, expectedNumReqWorkflows);
+      checkExpectedCount(countMap, AtsArtifactTypes.Task, expectedNumTasks);
+      checkExpectedCount(countMap, AtsArtifactTypes.DecisionReview, expectedNumReviews);
+   }
+
+   private <T extends Named> void checkExpectedCount(CountingMap<T> map, T key, int expectedCount) {
+      int actualCount = map.get(key);
+      String message = String.format("%s expected[%s] actual[%s]", key.getName(), expectedCount, actualCount);
+      Assert.assertEquals(message, expectedCount, actualCount);
    }
 
    private TeamWorkFlowArtifact createAction(TestNames testName, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {

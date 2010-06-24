@@ -14,7 +14,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
-import org.eclipse.osee.framework.database.internal.IDbConnectionFactory;
+import org.eclipse.osee.framework.database.internal.core.ConnectionFactoryProvider;
 import org.eclipse.osee.framework.database.internal.core.OseeDatabaseServiceImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -24,8 +24,7 @@ import org.osgi.framework.ServiceRegistration;
  */
 public final class OseeDatabaseServiceRegistrationHandler extends AbstractTrackingHandler {
 
-   private final static Class<?>[] SERVICE_DEPENDENCIES =
-         new Class<?>[] {IDbConnectionFactory.class, IDatabaseInfoProvider.class};
+   private final static Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {IDatabaseInfoProvider.class};
 
    private ServiceRegistration serviceRegistration;
 
@@ -40,8 +39,9 @@ public final class OseeDatabaseServiceRegistrationHandler extends AbstractTracki
 
    @Override
    public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
-      IDbConnectionFactory dbConnectionFactory = getService(IDbConnectionFactory.class, services);
       IDatabaseInfoProvider dbInfoProvider = getService(IDatabaseInfoProvider.class, services);
+
+      ConnectionFactoryProvider dbConnectionFactory = new ConnectionFactoryProvider(context);
       IOseeDatabaseService databaseService = new OseeDatabaseServiceImpl(dbInfoProvider, dbConnectionFactory);
       serviceRegistration = context.registerService(IOseeDatabaseService.class.getName(), databaseService, null);
    }

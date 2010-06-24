@@ -107,20 +107,5 @@
       <Renderer
             classname="org.eclipse.osee.coverage.editor.CoverageRenderer">
       </Renderer>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.skynet.core.OseeDbSchema">
-      <Schema
-            SchemaFile="support/COVERAGE.SCHEMA.xml">
-      </Schema>
-   </extension>
-   <extension
-         id="id1"
-         name="name"
-         point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-      <OseeTypes
-            resource="support/COVERAGE.SCHEMA.xml">
-      </OseeTypes>
-   </extension>
-      
+   </extension>     
 </plugin>

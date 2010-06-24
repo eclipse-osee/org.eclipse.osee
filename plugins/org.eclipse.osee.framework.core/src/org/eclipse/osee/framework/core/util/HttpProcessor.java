@@ -18,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
@@ -157,11 +158,11 @@ public class HttpProcessor {
          httpInputStream = method.getResponseBodyAsStream();
          result.setContentType(getContentType(method));
          result.setEncoding(method.getResponseCharSet());
-         if (statusCode != HttpStatus.SC_ACCEPTED) {
+         if (statusCode == HttpStatus.SC_ACCEPTED || statusCode == HttpStatus.SC_OK) {
+            Lib.inputStreamToOutputStream(httpInputStream, outputStream);
+         } else {
             String exceptionString = Lib.inputStreamToString(httpInputStream);
             throw new OseeCoreException(exceptionString);
-         } else {
-            Lib.inputStreamToOutputStream(httpInputStream, outputStream);
          }
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
@@ -219,11 +220,15 @@ public class HttpProcessor {
    }
 
    private static String getContentType(HttpMethodBase method) {
-      String contentType = method.getResponseHeader(CONTENT_TYPE).getValue();
-      if (Strings.isValid(contentType)) {
-         int index = contentType.indexOf(';');
-         if (index > 0) {
-            contentType = contentType.substring(0, index);
+      String contentType = null;
+      Header header = method.getResponseHeader(CONTENT_TYPE);
+      if (header != null) {
+         contentType = header.getValue();
+         if (Strings.isValid(contentType)) {
+            int index = contentType.indexOf(';');
+            if (index > 0) {
+               contentType = contentType.substring(0, index);
+            }
          }
       }
       return contentType;

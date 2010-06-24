@@ -28,9 +28,6 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
  */
 public class TestUtil {
    private static final String DEMO_DB_TYPE = "demo";
-   public static final String DEMO_CODE_TEAM_WORKFLOW_ARTIFACT = "Demo Code Team Workflow";
-   public static final String DEMO_REQ_TEAM_WORKFLOW_ARTIFACT = "Demo Req Team Workflow";
-   public static final String DEMO_TEST_TEAM_WORKFLOW_ARTIFACT = "Demo Test Team Workflow";
    public static final Collection<String> ignoreLogging =
          Arrays.asList("No image was defined for art type", "Unable to load the image for [SAVED]");
    public static boolean isInTest = false;

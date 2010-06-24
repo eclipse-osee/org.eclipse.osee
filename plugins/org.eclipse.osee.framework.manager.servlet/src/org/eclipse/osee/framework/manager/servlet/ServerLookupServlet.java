@@ -19,7 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.server.CoreServerActivator;
+import org.eclipse.osee.framework.core.server.IApplicationServerLookupProvider;
+import org.eclipse.osee.framework.core.server.IApplicationServerManagerProvider;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -33,9 +34,18 @@ public class ServerLookupServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = -7055381632202456561L;
 
+   private final IApplicationServerLookupProvider lookupProvider;
+   private final IApplicationServerManagerProvider managerProvider;
+
+   public ServerLookupServlet(IApplicationServerLookupProvider lookupProvider, IApplicationServerManagerProvider managerProvider) {
+      this.lookupProvider = lookupProvider;
+      this.managerProvider = managerProvider;
+
+   }
+
    @Override
    protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-      // Allow access to all 
+      // Allow access to all
    }
 
    @Override
@@ -47,7 +57,7 @@ public class ServerLookupServlet extends OseeHttpServlet {
          OseeServerInfo info = null;
          if (Strings.isValid(version)) {
             version = version.trim();
-            info = CoreServerActivator.getApplicationServerLookup().getServerInfoBy(version);
+            info = lookupProvider.getApplicationServerLookupService().getServerInfoBy(version);
          } else {
             wasBadRequest = true;
          }
@@ -83,7 +93,7 @@ public class ServerLookupServlet extends OseeHttpServlet {
       try {
          boolean isRegistrationToLookupTableRequested = Boolean.valueOf(request.getParameter("registerToLookup"));
          if (isRegistrationToLookupTableRequested) {
-            boolean wasSuccessful = CoreServerActivator.getApplicationServerManager().executeLookupRegistration();
+            boolean wasSuccessful = managerProvider.getApplicationServerManager().executeLookupRegistration();
             response.setStatus(wasSuccessful ? HttpServletResponse.SC_ACCEPTED : HttpServletResponse.SC_CONFLICT);
             response.setContentType("txt/plain");
             response.getWriter().write(

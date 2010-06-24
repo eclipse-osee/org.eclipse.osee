@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.server.tests;
 
 import org.eclipse.osee.framework.branch.management.test.BranchManagementTestSuite;
+import org.eclipse.osee.framework.core.datastore.test.AllCoreDatastoreTestSuite;
 import org.eclipse.osee.framework.core.message.test.AllCoreMessageTestSuite;
 import org.eclipse.osee.framework.core.model.test.AllCoreModelTestSuite;
 import org.eclipse.osee.framework.core.server.test.CoreServerTestSuite;
@@ -33,6 +34,7 @@ import org.junit.runners.Suite;
 JdkCoreTestSuite.class, //
       FrameworkCoreTestSuite.class, //
       AllCoreModelTestSuite.class, //
+      AllCoreDatastoreTestSuite.class, //
       AllCoreMessageTestSuite.class, //
       CoreServerTestSuite.class, //
       BranchManagementTestSuite.class, //

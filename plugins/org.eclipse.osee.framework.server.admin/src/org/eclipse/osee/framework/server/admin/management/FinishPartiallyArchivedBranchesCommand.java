@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.server.admin.management;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.branch.management.cache.BranchMoveOperation;
+import org.eclipse.osee.framework.core.datastore.BranchMoveOperation;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;

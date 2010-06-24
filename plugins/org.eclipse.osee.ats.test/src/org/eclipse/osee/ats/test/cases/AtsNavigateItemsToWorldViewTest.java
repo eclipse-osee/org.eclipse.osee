@@ -246,7 +246,7 @@ public class AtsNavigateItemsToWorldViewTest {
 
    @org.junit.Test
    public void testMyRecentlyVisited() throws Exception {
-      // Load Recently Visited      
+      // Load Recently Visited
       runGeneralLoadingTest("My Recently Visited", TeamWorkFlowArtifact.class, 3, null);
    }
 
@@ -538,7 +538,7 @@ public class AtsNavigateItemsToWorldViewTest {
       TreeItem[] treeItem = getXViewer().getTree().getItems();
       NavigateTestUtil.getAllArtifactChildren(treeItem, arts);
       NavigateTestUtil.testExpectedVersusActual("Number of Artifacts - ", expected, arts.size());
-      // are we running the fault case?      
+      // are we running the fault case?
       if (testTaskTab) {
          getXViewer().expandAll();
          arts.clear();
@@ -583,7 +583,7 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    public void handleTableCustomization() throws OseeCoreException {
-      // add all columns      
+      // add all columns
       CustomizeDemoTableTestUtil cdialog = new CustomizeDemoTableTestUtil(getXViewer());
       cdialog.createDialogArea(getSingleEditorOrFail().getWorldComposite());
       cdialog.handleAddAllItemButtonClick();
@@ -605,7 +605,7 @@ public class AtsNavigateItemsToWorldViewTest {
          runGeneralXColTest(20, true, attributeToDelete, false);
       } finally {
          transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Navigate Test");
-         // restore the attribute to leave the demo db back in its original state      
+         // restore the attribute to leave the demo db back in its original state
          for (Artifact art : arts) {
             art.setSoleAttributeValue(attributeToDelete, attributeValues.get(art));
             art.persist(transaction);
