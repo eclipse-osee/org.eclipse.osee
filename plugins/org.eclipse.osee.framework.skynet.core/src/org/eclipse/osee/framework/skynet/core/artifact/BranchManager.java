@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -60,12 +59,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * Provides access to all branches as well as support for creating branches of all types
- * 
+ *
  * @author Ryan D. Brooks
  */
 public class BranchManager {
-   private static final int NULL_PARENT_BRANCH_ID = -1;
-
    private static final BranchManager instance = new BranchManager();
 
    private static final String LAST_DEFAULT_BRANCH = "LastDefaultBranch";
@@ -203,7 +200,7 @@ public class BranchManager {
 
    /**
     * Update branch
-    * 
+    *
     * @param Job
     */
    public static Job updateBranch(final Branch branch, final ConflictResolverOperation resolver) {
@@ -214,7 +211,7 @@ public class BranchManager {
    /**
     * Completes the update branch operation by committing latest parent based branch with branch with changes. Then
     * swaps branches so we are left with the most current branch containing latest changes.
-    * 
+    *
     * @param Job
     */
    public static Job completeUpdateBranch(final ConflictManagerExternal conflictManager, final boolean archiveSourceBranch, final boolean overwriteUnresolvedConflicts) {
@@ -247,7 +244,7 @@ public class BranchManager {
    /**
     * Delete a branch from the system. (This operation will set the branch state to deleted. This operation is
     * undo-able)
-    * 
+    *
     * @param branchId
     */
    public static Job deleteBranch(final Branch branch) {
@@ -257,7 +254,7 @@ public class BranchManager {
    /**
     * Commit the net changes from the source branch into the destination branch. If there are conflicts between the two
     * branches, the source branch changes will override those on the destination branch.
-    * 
+    *
     * @param monitor
     * @param conflictManager
     * @param archiveSourceBranch
@@ -289,7 +286,7 @@ public class BranchManager {
 
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    * 
+    *
     * @param transactionIdNumber
     */
    public static void purgeTransactions(final int... transactionIdNumbers) {
@@ -298,7 +295,7 @@ public class BranchManager {
 
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    * 
+    *
     * @param transactionIdNumber
     */
    public static void purgeTransactions(IJobChangeListener jobChangeListener, final int... transactionIdNumbers) {
@@ -307,7 +304,7 @@ public class BranchManager {
 
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    * 
+    *
     * @param transactionIdNumber
     */
    public static Job purgeTransactions(IJobChangeListener jobChangeListener, boolean force, final int... transactionIdNumbers) {
@@ -361,7 +358,7 @@ public class BranchManager {
 
    /**
     * Creates a new Branch based on the transaction number selected and the parent branch.
-    * 
+    *
     * @param parentTransactionId
     * @param childBranchName
     * @throws OseeCoreException
@@ -380,7 +377,7 @@ public class BranchManager {
 
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
-    * 
+    *
     * @param parentTransactionId
     * @param childBranchName
     * @throws OseeCoreException
@@ -397,7 +394,7 @@ public class BranchManager {
 
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
-    * 
+    *
     * @param parentTransactionId
     * @param childBranchName
     * @throws OseeCoreException
@@ -412,7 +409,7 @@ public class BranchManager {
 
    /**
     * Creates a new root branch, imports skynet types and initializes.
-    * 
+    *
     * @param branchName
     * @param initializeArtifacts adds common artifacts needed by most normal root branches
     * @throws Exception
@@ -424,15 +421,6 @@ public class BranchManager {
 
    public static Branch createTopLevelBranch(final String branchName) throws OseeCoreException {
       return createTopLevelBranch(new CoreBranches(GUID.create(), branchName));
-   }
-
-   public static Branch createSystemRootBranch() throws OseeCoreException {
-      if (branchExists(CoreBranches.SYSTEM_ROOT)) {
-         throw new OseeStateException("System Root branch already exists");
-      }
-      return HttpBranchCreation.createBranch(BranchType.SYSTEM_ROOT, 1, NULL_PARENT_BRANCH_ID,
-            CoreBranches.SYSTEM_ROOT.getName(), CoreBranches.SYSTEM_ROOT.getGuid(), null,
-            CoreBranches.SYSTEM_ROOT.getName() + " Creation", -1, -1);
    }
 
    public static List<Branch> getBaselineBranches() throws OseeCoreException {
