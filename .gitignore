@@ -1,3 +1,11 @@
+plugins/jms.libraries/bin/
+plugins/org.eclipse.osee.ats.help.ui/bin/
+plugins/org.eclipse.osee.coverage.help.ui/bin/
+plugins/org.eclipse.osee.define.help.ui/bin/
+plugins/org.eclipse.osee.framework.dev.help.ui/bin/
+plugins/org.eclipse.osee.framework.templates/bin/
+plugins/org.eclipse.osee.framework.ui.product/bin/
+plugins/org.eclipse.osee.support.build/bin/
 plugins/org.eclipse.osee.framework.core.message.test/bin/
 plugins/org.eclipse.osee.framework.core.message/bin/
 plugins/org.eclipse.osee.framework.core.model.test/bin/
