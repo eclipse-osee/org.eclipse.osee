@@ -57,7 +57,7 @@
    <extension
          point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">
       <ArtifactImageProvider
-            class="org.eclipse.osee.ats.config.demo.DemoArtifactImageProvider">
+            class="org.eclipse.osee.ats.config.demo.artifact.DemoArtifactImageProvider">
       </ArtifactImageProvider>
    </extension>
 

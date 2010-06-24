@@ -15,9 +15,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.plugin,
- org.junit4,
- org.eclipse.ui.forms;bundle-version="3.3.101",
- org.eclipse.osee.support.test.util
+ org.eclipse.ui.forms
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.data,
@@ -28,10 +26,8 @@ Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.database.init,
  org.eclipse.osee.framework.logging,
- org.eclipse.osee.framework.ui.swt
+ org.eclipse.osee.framework.ui.swt,
+ org.eclipse.osee.support.test.util
 Export-Package: 
- org.eclipse.osee.ats.config.demo.artifact,
- org.eclipse.osee.ats.config.demo.config,
- org.eclipse.osee.ats.config.demo.navigate,
- org.eclipse.osee.ats.config.demo.util
+ org.eclipse.osee.ats.config.demo
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
