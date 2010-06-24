@@ -6,6 +6,9 @@ plugins/org.eclipse.osee.framework.dev.help.ui/bin/
 plugins/org.eclipse.osee.framework.templates/bin/
 plugins/org.eclipse.osee.framework.ui.product/bin/
 plugins/org.eclipse.osee.support.build/bin/
+plugins/org.eclipse.osee.client.integration.tests/bin/
+plugins/org.eclipse.osee.framework.core.datastore.test/bin/
+plugins/org.eclipse.osee.framework.core.datastore/bin/
 plugins/org.eclipse.osee.framework.core.message.test/bin/
 plugins/org.eclipse.osee.framework.core.message/bin/
 plugins/org.eclipse.osee.framework.core.model.test/bin/
