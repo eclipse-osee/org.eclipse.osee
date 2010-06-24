@@ -5,12 +5,16 @@
  */
 package org.eclipse.osee.framework.messaging.internal.activemq;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.messaging.internal.JAXBUtil;
@@ -42,6 +46,8 @@ class ActiveMqUtil {
          byte[] bytes = new byte[length];
          ((BytesMessage)message).readBytes(bytes);
          messageBody = bytes;
+      } else if(message instanceof ObjectMessage){
+    	 messageBody = ((ObjectMessage)message).getObject();  
       }
       return messageBody;
    }
@@ -54,6 +60,8 @@ class ActiveMqUtil {
          BytesMessage byteMessage = session.createBytesMessage();
          byteMessage.writeBytes((byte[]) body);
          return byteMessage;
+      } else if (body instanceof Serializable){
+    	 return session.createObjectMessage((Serializable)body);
       } else {
          throw new OseeCoreException(String.format("Unsupported java type [%s]", body.getClass().getName()));
       }
