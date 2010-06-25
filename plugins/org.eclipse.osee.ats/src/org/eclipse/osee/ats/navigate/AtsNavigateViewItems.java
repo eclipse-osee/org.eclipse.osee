@@ -82,6 +82,7 @@ import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XViewerExample;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUserGroups;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
 import org.osgi.framework.Bundle;
 
 /**
@@ -152,6 +153,21 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          items.add(new XNavigateItemOperation(null, AtsImage.WORKFLOW_CONFIG, "Search by ID(s) - Open Workflow Editor",
                new MultipleHridSearchOperationFactory("Search by ID(s) - Open Workflow Editor",
                      AtsEditor.WorkflowEditor)));
+         items.add(new XNavigateItemOperation(null, AtsImage.GLOBE, "Quick Search", new IOperationFactory() {
+
+            @Override
+            public IOperation createOperation() {
+               EntryCheckDialog dialog =
+                     new EntryCheckDialog("Search by Strings", "Enter search strings",
+                           "Include Completed/Cancelled Workflows");
+               if (dialog.open() == 0) {
+                  return new AtsQuickSearchOperation(new AtsQuickSearchData("Search by Strings", dialog.getEntry(),
+                        dialog.isChecked()));
+               }
+               return null;
+            }
+         }));
+
          items.add(new ArtifactImpactToActionSearchItem(null));
 
          XNavigateItem reportItems = new XNavigateItem(null, "Reports", AtsImage.REPORT);
