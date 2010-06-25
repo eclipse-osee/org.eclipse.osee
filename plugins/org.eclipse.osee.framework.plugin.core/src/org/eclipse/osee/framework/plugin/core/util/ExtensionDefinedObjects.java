@@ -104,7 +104,7 @@ public class ExtensionDefinedObjects<T> {
                try {
                   Method getInstance = taskClass.getMethod("getInstance", new Class[] {});
                   object = (T) getInstance.invoke(null, new Object[] {});
-               } catch (Exception ex) {
+               } catch (NoSuchMethodException ex) {
                   object = (T) taskClass.newInstance();
                }
                if (object != null) {
@@ -114,6 +114,9 @@ public class ExtensionDefinedObjects<T> {
             } catch (Exception ex) {
                OseeLog.log(OseeActivator.class, Level.SEVERE, String.format("Unable to Load: [%s - %s]", bundleName,
                      className), ex);
+            } catch (LinkageError er) {
+               OseeLog.log(OseeActivator.class, Level.SEVERE, String.format("Unable to Load: [%s - %s]", bundleName,
+                     className), er);
             }
          }
       }
