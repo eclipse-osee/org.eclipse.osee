@@ -295,7 +295,7 @@ oseeEnumType "enum.ats.point" {
    entry "40" entryGuid "AYyqLiFHxD1XUanPXBwA"
    entry "80" entryGuid "AYyqLkUSERzIljDD4agA"
    entry "150" entryGuid "AYyqLmlTUi3u7Eg8CdgA"
-   entry "300" entryGuid "AYyqLo2M7zr1nj1mFfQA"
+   entry "Epic" entryGuid "AYyqLo2M7zr1nj1mFfQA"
 }
 attributeType "ats.Points" extends EnumeratedAttribute {
    guid "AY2EeqhzcDEGtXtREkAA"
