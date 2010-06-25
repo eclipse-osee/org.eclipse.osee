@@ -34,8 +34,8 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.Overview;
-import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
+import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -1748,4 +1748,15 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
       return details;
    }
+
+   protected void addPriviledgedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<User> users) throws OseeCoreException {
+      users.addAll(tda.getLeads());
+      users.addAll(tda.getPrivilegedMembers());
+
+      // Walk up tree to get other editors
+      if (tda.getParent() != null && tda.getParent() instanceof TeamDefinitionArtifact) {
+         addPriviledgedUsersUpTeamDefinitionTree((TeamDefinitionArtifact) tda.getParent(), users);
+      }
+   }
+
 }

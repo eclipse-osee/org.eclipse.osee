@@ -11,9 +11,6 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -21,7 +18,6 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -44,19 +40,6 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
    @Override
    public String getHelpContext() {
       return "decisionReview";
-   }
-
-   @Override
-   public Set<User> getPrivilegedUsers() throws OseeCoreException {
-      Set<User> users = new HashSet<User>();
-      if (getParentTeamWorkflow() != null)
-         users.addAll(getParentTeamWorkflow().getPrivilegedUsers());
-      else {
-         if (AtsUtil.isAtsAdmin()) {
-            users.add(UserManager.getUser());
-         }
-      }
-      return users;
    }
 
    @Override

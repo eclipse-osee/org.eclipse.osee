@@ -11,12 +11,9 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
@@ -26,7 +23,6 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -68,19 +64,6 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    @Override
    public String getHelpContext() {
       return "peerToPeerReview";
-   }
-
-   @Override
-   public Set<User> getPrivilegedUsers() throws OseeCoreException {
-      Set<User> users = new HashSet<User>();
-      if (getParentTeamWorkflow() != null)
-         users.addAll(getParentTeamWorkflow().getPrivilegedUsers());
-      else {
-         if (AtsUtil.isAtsAdmin()) {
-            users.add(UserManager.getUser());
-         }
-      }
-      return users;
    }
 
    @Override

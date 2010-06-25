@@ -21,16 +21,19 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
-import org.eclipse.osee.ats.util.widgets.role.UserRoleManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
+import org.eclipse.osee.ats.util.widgets.role.UserRoleManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -58,6 +61,21 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       super.onInitializationComplete();
       initializeSMA();
    };
+
+   @Override
+   public Set<User> getPrivilegedUsers() throws OseeCoreException {
+      Set<User> users = new HashSet<User>();
+      if (getParentTeamWorkflow() != null) users.addAll(getParentTeamWorkflow().getPrivilegedUsers());
+      for (ActionableItemArtifact aia : getActionableItemsDam().getActionableItems()) {
+         for (TeamDefinitionArtifact teamDef : aia.getImpactedTeamDefs()) {
+            addPriviledgedUsersUpTeamDefinitionTree(teamDef, users);
+         }
+      }
+      if (AtsUtil.isAtsAdmin()) {
+         users.add(UserManager.getUser());
+      }
+      return users;
+   }
 
    @Override
    public void onAttributePersist(SkynetTransaction transaction) throws OseeCoreException {
