@@ -8,10 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.lifecycle;
+package org.eclipse.osee.framework.lifecycle.access;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
+import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
 
 /**
  * @author Roberto E. Escobar

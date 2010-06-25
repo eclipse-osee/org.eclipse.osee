@@ -9,8 +9,8 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleOperation;
-import org.eclipse.osee.framework.lifecycle.ChangeMgmtChkPoint;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
+import org.eclipse.osee.framework.lifecycle.access.ChangeMgmtChkPoint;
 
 public class OnEditOperation extends AbstractLifecycleOperation {
 
