@@ -241,8 +241,14 @@ public class CoverageUtil {
    }
 
    public static String getPercentString(double percent, int complete, int total, boolean showZero) {
-      if (!showZero && percent == 0 && complete == 0) {
+      if (!showZero && percent == 0.0 && complete == 0) {
          return "0%";
+      }
+      if (percent == 100.0) {
+         return String.format("100%% - %d / %d", complete, total);
+      }
+      if (percent == 0.0) {
+         return String.format("0%% - %d / %d", complete, total);
       }
       return String.format("%2.2f%% - %d / %d", percent, complete, total);
    }

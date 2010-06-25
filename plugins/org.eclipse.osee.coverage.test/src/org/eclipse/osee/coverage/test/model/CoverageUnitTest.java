@@ -374,10 +374,10 @@ public class CoverageUnitTest {
       CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Not_Covered, true);
       Assert.assertFalse(cu.isCovered());
       Assert.assertEquals(0.0, cu.getCoveragePercent());
-      Assert.assertEquals("0.00% - 0 / 4", cu.getCoveragePercentStr());
+      Assert.assertEquals("0% - 0 / 4", cu.getCoveragePercentStr());
       CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Test_Unit, true);
       Assert.assertEquals(100.0, cu.getCoveragePercent());
-      Assert.assertEquals("100.00% - 4 / 4", cu.getCoveragePercentStr());
+      Assert.assertEquals("100% - 4 / 4", cu.getCoveragePercentStr());
    }
 
    /**
