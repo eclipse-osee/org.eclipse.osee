@@ -56,7 +56,7 @@ public class MergeItemGroup extends MergeItemBase {
    }
 
    @Override
-   public int getCoveragePercent() {
+   public Double getCoveragePercent() {
       Collection<? extends ICoverage> children = getChildren(true);
       Set<ICoverage> covered = new HashSet<ICoverage>();
       for (ICoverage coverage : children) {

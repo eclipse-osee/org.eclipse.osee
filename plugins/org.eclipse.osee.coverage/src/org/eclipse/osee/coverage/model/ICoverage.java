@@ -41,7 +41,7 @@ public interface ICoverage extends Named, Identity {
 
    public String getNamespace();
 
-   public int getCoveragePercent();
+   public Double getCoveragePercent();
 
    public String getCoveragePercentStr();
 

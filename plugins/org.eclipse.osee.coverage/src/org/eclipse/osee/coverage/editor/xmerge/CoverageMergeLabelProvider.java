@@ -139,7 +139,7 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
       }
       ICoverage coverageItem = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
-         return coverageItem.getCoveragePercent();
+         return coverageItem.getCoveragePercent().intValue();
       }
       return 0;
    }

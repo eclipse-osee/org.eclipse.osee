@@ -102,7 +102,7 @@ public class VectorCastImportTest {
 
       // Check import results
       Assert.assertEquals(12, coverageImport.getCoverageItems().size());
-      Assert.assertEquals(58, coverageImport.getCoveragePercent());
+      Assert.assertEquals(58, coverageImport.getCoveragePercent().intValue());
       Assert.assertEquals(7, coverageImport.getCoverageItemsCovered().size());
       Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
@@ -181,7 +181,7 @@ public class VectorCastImportTest {
 
       // CoveragePackage should now have imported results
       Assert.assertEquals(12, coveragePackage.getCoverageItems().size());
-      Assert.assertEquals(58, coveragePackage.getCoveragePercent());
+      Assert.assertEquals(58, coveragePackage.getCoveragePercent().intValue());
       Assert.assertEquals(7, coveragePackage.getCoverageItemsCovered().size());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
@@ -211,7 +211,7 @@ public class VectorCastImportTest {
       }
 
       Assert.assertEquals(12, loadedCp.getCoverageItems().size());
-      Assert.assertEquals(58, loadedCp.getCoveragePercent());
+      Assert.assertEquals(58, loadedCp.getCoveragePercent().intValue());
       Assert.assertEquals(7, loadedCp.getCoverageItemsCovered().size());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());

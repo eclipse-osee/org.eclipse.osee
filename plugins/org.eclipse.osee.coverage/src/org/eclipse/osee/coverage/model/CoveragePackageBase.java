@@ -65,7 +65,7 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitPro
       return CoverageUtil.getPercent(getCoverageItemsCovered().size(), getCoverageItems().size(), true).getSecond();
    }
 
-   public int getCoveragePercent() {
+   public Double getCoveragePercent() {
       return CoverageUtil.getPercent(getCoverageItemsCovered().size(), getCoverageItems().size(), true).getFirst();
    }
 

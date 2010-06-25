@@ -230,22 +230,21 @@ public class CoverageUtil {
       return items;
    }
 
-   public static Pair<Integer, String> getPercent(int complete, int total, boolean showZero) {
+   public static Pair<Double, String> getPercent(int complete, int total, boolean showZero) {
       if (total == 0 || complete == 0) {
-         return new Pair<Integer, String>(0, getPercentString(0, complete, total, showZero));
+         return new Pair<Double, String>(0.0, getPercentString(0, complete, total, showZero));
       }
       Double percent = new Double(complete);
       percent = percent / total;
       percent = percent * 100;
-      return new Pair<Integer, String>(percent.intValue(), getPercentString(percent.intValue(), complete, total,
-            showZero));
+      return new Pair<Double, String>(percent, getPercentString(percent, complete, total, showZero));
    }
 
-   public static String getPercentString(int percent, int complete, int total, boolean showZero) {
+   public static String getPercentString(double percent, int complete, int total, boolean showZero) {
       if (!showZero && percent == 0 && complete == 0) {
          return "0%";
       }
-      return String.format("%d%% - %d / %d", percent, complete, total);
+      return String.format("%2.2f%% - %d / %d", percent, complete, total);
    }
 
    public static boolean isAllCoverageItems(Collection<? extends ICoverage> coverages) throws OseeCoreException {

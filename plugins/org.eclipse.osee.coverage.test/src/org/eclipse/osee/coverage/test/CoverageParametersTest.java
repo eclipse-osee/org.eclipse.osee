@@ -194,7 +194,7 @@ public class CoverageParametersTest {
       // Check import results
       Assert.assertEquals(60, coverageImport.getCoverageItemsCovered().size());
       Assert.assertEquals(122, coverageImport.getCoverageItems().size());
-      Assert.assertEquals(49, coverageImport.getCoveragePercent());
+      Assert.assertEquals(49, coverageImport.getCoveragePercent().intValue());
       Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
       Assert.assertEquals(0, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
       Assert.assertEquals(60, coverageImport.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());

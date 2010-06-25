@@ -199,8 +199,8 @@ public class CoverageItem implements ICoverage {
    }
 
    @Override
-   public int getCoveragePercent() {
-      return isCovered() ? 100 : 0;
+   public Double getCoveragePercent() {
+      return isCovered() ? 100.0 : 0.0;
    }
 
    @Override

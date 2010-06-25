@@ -257,7 +257,7 @@ public class CoverageItemTest {
     */
    @Test
    public void testGetCoveragePercent() {
-      Assert.assertEquals(100, ci1.getCoveragePercent());
+      Assert.assertEquals(100.0, ci1.getCoveragePercent());
    }
 
    /**

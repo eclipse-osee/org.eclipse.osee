@@ -231,7 +231,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
       }
       ICoverage coverageItem = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
-         return coverageItem.getCoveragePercent();
+         return coverageItem.getCoveragePercent().intValue();
       }
       return 0;
    }

@@ -54,9 +54,9 @@ public class MergeItem extends MergeItemBase {
    }
 
    @Override
-   public int getCoveragePercent() {
+   public Double getCoveragePercent() {
       if (importItem != null) return importItem.getCoveragePercent();
-      return 0;
+      return 0.0;
    }
 
    @Override

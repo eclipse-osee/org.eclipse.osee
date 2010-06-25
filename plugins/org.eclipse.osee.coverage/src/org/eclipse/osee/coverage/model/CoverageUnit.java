@@ -349,7 +349,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       return CoverageUtil.getPercent(getCoverageItemsCovered(true).size(), getCoverageItems(true).size(), true).getSecond();
    }
 
-   public int getCoveragePercent() {
+   public Double getCoveragePercent() {
       return CoverageUtil.getPercent(getCoverageItemsCovered(true).size(), getCoverageItems(true).size(), true).getFirst();
    }
 

@@ -44,8 +44,8 @@ public class MessageCoverageItem implements ICoverage {
    }
 
    @Override
-   public int getCoveragePercent() {
-      return 0;
+   public Double getCoveragePercent() {
+      return 0.0;
    }
 
    @Override
