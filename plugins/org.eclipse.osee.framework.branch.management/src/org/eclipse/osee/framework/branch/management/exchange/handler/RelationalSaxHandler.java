@@ -22,7 +22,9 @@ import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.IOseeExchangeDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.OseeServices;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryResource;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.enums.ConflictType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -68,7 +70,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
       super.store(this.getConnection());
    }
 
-   private String importBinaryContent(String uriValue, String gammaId) throws Exception {
+   private String importBinaryContent(String uriValue, String gammaId) throws OseeCoreException {
       String relativePath = Lib.isWindows() ? uriValue : uriValue.replaceAll("\\\\", File.separator);
       String entrySearch = ExportImportXml.RESOURCE_FOLDER_NAME + File.separator + relativePath;
       if (exportDataProvider.getExportedDataRoot() != null) {
@@ -94,7 +96,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
    }
 
    @Override
-   protected void processData(Map<String, String> fieldMap) throws Exception {
+   protected void processData(Map<String, String> fieldMap) throws OseeCoreException {
       boolean process = true;
       try {
          if (!branchesToImport.isEmpty()) {
@@ -171,9 +173,11 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
                }
             }
          }
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          cleanUpBinaryContent();
-         throw new Exception(String.format("Error processing in [%s]", getMetaData().getTableName()), ex);
+         OseeLog.log(Activator.class, Level.SEVERE,
+               String.format("Error processing in [%s]", getMetaData().getTableName()), ex);
+         throw ex;
       }
    }
 

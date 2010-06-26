@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -47,7 +48,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    }
 
    @Override
-   protected void processData(Map<String, String> dataMap) throws Exception {
+   protected void processData(Map<String, String> dataMap) throws OseeArgumentException {
       BranchData branchData = new BranchData();
       for (String columnName : getMetaData().getColumnNames()) {
          String value = dataMap.get(columnName);
@@ -56,7 +57,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       this.idToImportFileBranchData.put(branchData.getId(), branchData);
    }
 
-   private Object toObject(String key, String value) {
+   private Object toObject(String key, String value) throws OseeArgumentException {
       Object toReturn = null;
       if (Strings.isValid(value)) {
          Class<?> clazz = getMetaData().toClass(key);

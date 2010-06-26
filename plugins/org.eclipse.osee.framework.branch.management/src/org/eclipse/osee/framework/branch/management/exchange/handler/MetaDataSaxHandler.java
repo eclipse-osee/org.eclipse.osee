@@ -71,13 +71,9 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
    }
 
    @Override
-   public void endElementFound(String uri, String localName, String name) throws SAXException {
-      try {
-         if (localName.equalsIgnoreCase(ExportImportXml.TABLE)) {
-            this.currentMetadata = null;
-         }
-      } catch (Exception ex) {
-         throw new IllegalStateException(ex);
+   public void endElementFound(String uri, String localName, String name) throws Exception {
+      if (localName.equalsIgnoreCase(ExportImportXml.TABLE)) {
+         this.currentMetadata = null;
       }
    }
 

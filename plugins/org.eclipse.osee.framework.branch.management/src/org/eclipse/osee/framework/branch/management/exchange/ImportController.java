@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeT
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeTransformer;
 import org.eclipse.osee.framework.branch.management.exchange.transform.IExchangeTransformProvider;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -193,10 +194,10 @@ public final class ImportController {
       }
    }
 
-   private MetaData checkMetadata(IExportItem importFile) {
+   private MetaData checkMetadata(IExportItem importFile) throws OseeArgumentException {
       MetaData metadata = metadataHandler.getMetadata(importFile.getSource());
       if (metadata == null) {
-         throw new IllegalStateException(String.format("Invalid metadata for [%s]", importFile.getSource()));
+         throw new OseeArgumentException(String.format("Invalid metadata for [%s]", importFile.getSource()));
       }
       return metadata;
    }

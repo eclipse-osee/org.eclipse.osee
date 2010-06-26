@@ -123,7 +123,7 @@ public class ExchangeIntegrity {
       }
 
       @Override
-      protected void processData(Map<String, String> fieldMap) throws Exception {
+      protected void processData(Map<String, String> fieldMap) {
          String conflictId = fieldMap.get(ExchangeDb.CONFLICT_ID);
          String conflictType = fieldMap.get(ExchangeDb.CONFLICT_TYPE);
          if (Strings.isValid(conflictId) && Strings.isValid(conflictType)) {

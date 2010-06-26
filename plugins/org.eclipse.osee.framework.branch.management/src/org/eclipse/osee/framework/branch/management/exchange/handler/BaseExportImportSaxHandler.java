@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.xml.sax.Attributes;
@@ -44,23 +45,19 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
    }
 
    @Override
-   public void endElementFound(String uri, String localName, String name) throws SAXException {
-      try {
-         if (localName.equalsIgnoreCase(ExportImportXml.STRING_CONTENT)) {
-            finishStringContent(ExportImportXml.STRING_CONTENT);
-         } else if (localName.equalsIgnoreCase(ExportImportXml.OSEE_COMMENT)) {
-            finishStringContent(ExportImportXml.OSEE_COMMENT);
-         } else if (localName.equalsIgnoreCase(ExportImportXml.BRANCH_NAME)) {
-            finishStringContent(ExportImportXml.BRANCH_NAME);
-         } else if (localName.equalsIgnoreCase(ExportImportXml.RATIONALE)) {
-            finishStringContent(ExportImportXml.RATIONALE);
-         } else if (localName.equalsIgnoreCase(ExportImportXml.ENTRY)) {
-            finishEntry();
-         } else if (localName.equalsIgnoreCase(ExportImportXml.DATA)) {
-            finishData();
-         }
-      } catch (Exception ex) {
-         throw new IllegalStateException(ex);
+   public void endElementFound(String uri, String localName, String name) throws Exception {
+      if (localName.equalsIgnoreCase(ExportImportXml.STRING_CONTENT)) {
+         finishStringContent(ExportImportXml.STRING_CONTENT);
+      } else if (localName.equalsIgnoreCase(ExportImportXml.OSEE_COMMENT)) {
+         finishStringContent(ExportImportXml.OSEE_COMMENT);
+      } else if (localName.equalsIgnoreCase(ExportImportXml.BRANCH_NAME)) {
+         finishStringContent(ExportImportXml.BRANCH_NAME);
+      } else if (localName.equalsIgnoreCase(ExportImportXml.RATIONALE)) {
+         finishStringContent(ExportImportXml.RATIONALE);
+      } else if (localName.equalsIgnoreCase(ExportImportXml.ENTRY)) {
+         finishEntry();
+      } else if (localName.equalsIgnoreCase(ExportImportXml.DATA)) {
+         finishData();
       }
    }
 
@@ -87,7 +84,7 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
       this.dataMap.put(BINARY_CONTENT_LOCATION, attributes.getValue("location"));
    }
 
-   private void finishEntry() throws Exception {
+   private void finishEntry() throws OseeCoreException {
       if (this.dataMap.isEmpty() != true) {
          processData(this.dataMap);
       }
@@ -98,5 +95,5 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
       this.dataMap.put(name, getContents());
    }
 
-   protected abstract void processData(Map<String, String> dataMap) throws Exception;
+   protected abstract void processData(Map<String, String> dataMap) throws OseeCoreException;
 }

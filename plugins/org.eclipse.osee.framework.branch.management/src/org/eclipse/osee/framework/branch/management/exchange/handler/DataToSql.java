@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 import java.lang.reflect.Method;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.exchange.TranslationManager;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -42,7 +43,7 @@ public class DataToSql {
       return notNullCount > 0 ? data : null;
    }
 
-   public static Object[] toDataArray(OseeConnection connection, MetaData metadata, TranslationManager translator, Map<String, String> fieldMap) throws OseeDataStoreException {
+   public static Object[] toDataArray(OseeConnection connection, MetaData metadata, TranslationManager translator, Map<String, String> fieldMap) throws OseeArgumentException, OseeDataStoreException {
       int notNullCount = 0;
       Object[] data = new Object[metadata.getColumnSize()];
       int index = 0;
@@ -68,7 +69,7 @@ public class DataToSql {
       return notNullCount > 0 ? data : null;
    }
 
-   public static Object stringToObject(Class<?> clazz, String columnName, String value) {
+   public static Object stringToObject(Class<?> clazz, String columnName, String value) throws OseeArgumentException {
       Object convertedObject = null;
       if (clazz != null) {
          try {
@@ -79,7 +80,7 @@ public class DataToSql {
                Method mainMethod = clazz.getMethod("valueOf", new Class[] {Object.class});
                convertedObject = mainMethod.invoke(null, value);
             } catch (Exception ex1) {
-               throw new IllegalStateException(String.format(
+               throw new OseeArgumentException(String.format(
                      "Unable to convert from string to object for - attribute [%s] to class [%s]", columnName,
                      clazz.getName()));
             }
