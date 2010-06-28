@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.IExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
-import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
+import org.eclipse.osee.framework.branch.management.exchange.handler.DbTableSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeDataProcessor;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -111,7 +111,7 @@ public class ExchangeIntegrity {
       }
    }
 
-   private final class CheckSaxHandler extends RelationalSaxHandler {
+   private final class CheckSaxHandler extends DbTableSaxHandler {
       private final List<IndexCollector> checkList;
       private final String fileBeingProcessed;
 

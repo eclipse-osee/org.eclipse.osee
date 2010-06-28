@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.IExportItem
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaData;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaDataSaxHandler;
-import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
+import org.eclipse.osee.framework.branch.management.exchange.handler.DbTableSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeDataProcessor;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeTransformProvider;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeTransformer;
@@ -203,8 +203,8 @@ public final class ImportController {
    }
 
    private void processImportFiles(Collection<IExportItem> importItems) throws Exception {
-      final RelationalSaxHandler handler =
-            RelationalSaxHandler.createWithLimitedCache(oseeServices, exportDataProvider, 50000);
+      final DbTableSaxHandler handler =
+            DbTableSaxHandler.createWithLimitedCache(oseeServices, exportDataProvider, 50000);
       handler.setSelectedBranchIds(branchesToImport);
 
       for (final IExportItem item : importItems) {

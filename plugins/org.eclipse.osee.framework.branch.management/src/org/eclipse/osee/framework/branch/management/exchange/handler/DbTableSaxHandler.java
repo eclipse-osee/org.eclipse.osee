@@ -37,10 +37,10 @@ import org.eclipse.osee.framework.resource.management.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class RelationalSaxHandler extends BaseDbSaxHandler {
+public class DbTableSaxHandler extends BaseDbSaxHandler {
 
-   public static RelationalSaxHandler createWithLimitedCache(OseeServices services, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
-      return new RelationalSaxHandler(services, exportDataProvider, false, cacheLimit);
+   public static DbTableSaxHandler createWithLimitedCache(OseeServices services, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
+      return new DbTableSaxHandler(services, exportDataProvider, false, cacheLimit);
    }
 
    private final List<IResourceLocator> transferredBinaryContent;
@@ -49,7 +49,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
    private final OseeServices services;
    private IExportItem exportItem;
 
-   protected RelationalSaxHandler(OseeServices services, IOseeExchangeDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
+   protected DbTableSaxHandler(OseeServices services, IOseeExchangeDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
       super(services.getDatabaseService(), isCacheAll, cacheLimit);
       this.branchesToImport = new HashSet<Integer>();
       this.transferredBinaryContent = new ArrayList<IResourceLocator>();

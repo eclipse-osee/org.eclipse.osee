@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.resource.management.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class RelationalExportItem extends AbstractDbExportItem {
+public class DbTableExportItem extends AbstractDbExportItem {
    private final String query;
    private final StringBuffer binaryContentBuffer;
    private final StringBuffer stringContentBuffer;
@@ -41,7 +41,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
    private final StringBuffer rationaleBuffer;
    private final OseeServices services;
 
-   public RelationalExportItem(OseeServices services, ExportItem id, String query) {
+   public DbTableExportItem(OseeServices services, ExportItem id, String query) {
       super(id);
       this.services = services;
       this.query = query;

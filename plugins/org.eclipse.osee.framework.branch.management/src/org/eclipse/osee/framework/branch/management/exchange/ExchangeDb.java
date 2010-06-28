@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.ManifestExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.MetadataExportItem;
-import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItem;
+import org.eclipse.osee.framework.branch.management.exchange.export.DbTableExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
@@ -126,17 +126,17 @@ public class ExchangeDb {
       List<AbstractExportItem> items = new ArrayList<AbstractExportItem>();
       items.add(new ManifestExportItem(items));
       items.add(new MetadataExportItem(items));
-      items.add(new RelationalExportItem(services, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY));
-      items.add(new RelationalExportItem(services, ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY));
-      items.add(new RelationalExportItem(services, ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY));
-      items.add(new RelationalExportItem(services, ExportItem.OSEE_TXS_ARCHIVED_DATA, TXS_ARCHIVE_TABLE_QUERY));
-      items.add(new RelationalExportItem(services, ExportItem.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY));
-      items.add(new RelationalExportItem(services, ExportItem.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY));
-      items.add(new RelationalExportItem(services, ExportItem.OSEE_RELATION_LINK_DATA, RELATION_LINK_TABLE_QUERY));
-      items.add(new RelationalExportItem(services, ExportItem.OSEE_MERGE_DATA, MERGE_TABLE_QUERY));
-      items.add(new RelationalExportItem(services, ExportItem.OSEE_CONFLICT_DATA, CONFLICT_TABLE_QUERY));
-      items.add(new RelationalExportItem(services, ExportItem.OSEE_BRANCH_ACL_DATA, BRANCH_ACL_QUERY));
-      items.add(new RelationalExportItem(services, ExportItem.OSEE_ARTIFACT_ACL_DATA, ARTIFACT_ACL_QUERY));
+      items.add(new DbTableExportItem(services, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY));
+      items.add(new DbTableExportItem(services, ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY));
+      items.add(new DbTableExportItem(services, ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY));
+      items.add(new DbTableExportItem(services, ExportItem.OSEE_TXS_ARCHIVED_DATA, TXS_ARCHIVE_TABLE_QUERY));
+      items.add(new DbTableExportItem(services, ExportItem.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY));
+      items.add(new DbTableExportItem(services, ExportItem.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY));
+      items.add(new DbTableExportItem(services, ExportItem.OSEE_RELATION_LINK_DATA, RELATION_LINK_TABLE_QUERY));
+      items.add(new DbTableExportItem(services, ExportItem.OSEE_MERGE_DATA, MERGE_TABLE_QUERY));
+      items.add(new DbTableExportItem(services, ExportItem.OSEE_CONFLICT_DATA, CONFLICT_TABLE_QUERY));
+      items.add(new DbTableExportItem(services, ExportItem.OSEE_BRANCH_ACL_DATA, BRANCH_ACL_QUERY));
+      items.add(new DbTableExportItem(services, ExportItem.OSEE_ARTIFACT_ACL_DATA, ARTIFACT_ACL_QUERY));
 
       return items;
    }
