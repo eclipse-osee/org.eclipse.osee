@@ -98,6 +98,10 @@ public class CheckPoint implements ITestPoint {
 
       return checkPointElement;
    }
+   
+   public String getTestPointName() {
+	   return testPointName;
+   }
 
    /**
     * @return the elpasedTime
