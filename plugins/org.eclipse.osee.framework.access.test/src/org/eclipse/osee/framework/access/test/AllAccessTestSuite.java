@@ -13,6 +13,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( { //
 InternalAccessTestSuite.class, //
 })
-public class AccessTestSuite {
+public class AllAccessTestSuite {
 
 }
