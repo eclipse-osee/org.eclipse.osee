@@ -206,7 +206,18 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromIds(Collection<Integer> artifactIds, IOseeBranch branch, boolean allowDeleted) throws OseeCoreException {
-      return ArtifactLoader.loadArtifacts(artifactIds, branch, ArtifactLoad.FULL, allowDeleted);
+      boolean reload = false;
+      List<Artifact> toReturn = ArtifactLoader.loadArtifacts(artifactIds, branch, ArtifactLoad.FULL, reload);
+      if (!allowDeleted) {
+         for (int i = 0; i < toReturn.size(); i++) {
+            if (toReturn.get(i).isDeleted()) {
+               toReturn.remove(i);
+               i--;
+            }
+         }
+      }
+
+      return toReturn;
    }
 
    /**

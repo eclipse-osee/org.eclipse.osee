@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -35,18 +32,15 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactKey;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
@@ -66,8 +60,6 @@ public class RelationManager {
 
    private static final String GET_DELETED_ARTIFACT =
          "SELECT DISTINCT %s_art_id, txs.branch_id FROM osee_txs txs, osee_relation_link rel WHERE txs.branch_id = ? AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND %s_art_id = ? AND txs.tx_current in (2,3)";
-   private static final String JOIN_TABLE_INSERT =
-         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) VALUES (?, ?, ?, ?, ?)";
 
    private static RelationSorterProvider relationSorterProvider = new RelationSorterProvider();
    private static RelationOrderFactory relationOrderFactory = new RelationOrderFactory();
@@ -239,6 +231,7 @@ public class RelationManager {
       return getRelatedArtifacts(artifact, relationType, relationSide, true);
    }
 
+   @SuppressWarnings("unused")
    private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide, boolean sort) throws OseeCoreException {
       if (relationSide == null) {
          throw new OseeArgumentException("RelationSide cannot be null");
@@ -254,24 +247,11 @@ public class RelationManager {
          return Collections.emptyList();
       }
 
-      int queryId = ArtifactLoader.getNewQueryId();
-      int mapCapacity = (int) (selectedRelations.size() * 1.25) + 1;
-      List<Object[]> insertParameters = new ArrayList<Object[]>(mapCapacity);
-      HashMap<Integer, Branch> insertMap = new HashMap<Integer, Branch>(mapCapacity);
+      Collection<Artifact> bulkLoadedArtifacts =
+            ArtifactQuery.getArtifactListFromIds(getRelatedArtifactIds(selectedRelations, relationSide),
+                  artifact.getBranch());
+
       List<Artifact> relatedArtifacts = new ArrayList<Artifact>(selectedRelations.size());
-
-      addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, insertMap, selectedRelations,
-            relationSide);
-
-      // This is for bulk loading so we do not lose our references
-      @SuppressWarnings("unused")
-      Collection<Artifact> bulkLoadedArtifacts;
-      if (insertParameters.size() > 0) {
-         bulkLoadedArtifacts =
-               ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, false, false);
-      }
-
-      //now that bulk loading is done, put the artifacts in the right order and return them
       relatedArtifacts.clear();
       for (RelationLink relation : selectedRelations) {
          if (!relation.isDeleted()) {
@@ -291,34 +271,14 @@ public class RelationManager {
       return relatedArtifacts;
    }
 
-   private static void addRelatedArtifactIds(int queryId, Artifact artifact, Collection<Artifact> relatedArtifacts, List<Object[]> insertParameters, HashMap<Integer, Branch> insertMap, List<RelationLink> relations, RelationSide side) {
-      if (relations == null) {
-         return;
-      }
-      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-
-      for (RelationLink relation : relations) {
-         if (!relation.isDeleted()) {
-            RelationSide resolvedSide = null;
-            if (relation.getSide(artifact) != side) {
-               resolvedSide = side;
-            }
-            if (resolvedSide != null) {
-               int artId = relation.getArtifactId(resolvedSide);
-               Branch branch = relation.getBranch(resolvedSide);
-               Artifact relatedArtifact = ArtifactCache.getActive(artId, branch.getId());
-               if (relatedArtifact == null) {
-                  if (!branch.equals(insertMap.get(artId))) {
-                     insertMap.put(artId, branch);
-                     insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getId(),
-                           SQL3DataType.INTEGER});
-                  }
-               } else {
-                  relatedArtifacts.add(relatedArtifact);
-               }
-            }
+   private static Collection<Integer> getRelatedArtifactIds(List<RelationLink> relations, RelationSide side) {
+      Collection<Integer> ret = new HashSet<Integer>();
+      if (relations != null) {
+         for (RelationLink rel : relations) {
+            ret.add(rel.getArtifactId(side));
          }
       }
+      return ret;
    }
 
    public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, IRelationEnumeration... relationEnums) throws OseeCoreException {
@@ -326,88 +286,70 @@ public class RelationManager {
    }
 
    public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, boolean allowDeleted, IRelationEnumeration... relationEnums) throws OseeCoreException {
-      int queryId = ArtifactLoader.getNewQueryId();
-      List<Object[]> insertParameters = new ArrayList<Object[]>(artifacts.size() * 8);
-      HashMap<Integer, Branch> insertMap = new HashMap<Integer, Branch>(artifacts.size() * 8);
       Set<Artifact> relatedArtifacts = new HashSet<Artifact>(artifacts.size() * 8);
       Collection<Artifact> newArtifactsToSearch = new ArrayList<Artifact>(artifacts);
       Collection<Artifact> newArtifacts = new ArrayList<Artifact>();
-      int oldArtifactCount = -1;
-      for (int i = 0; i < depth && oldArtifactCount != relatedArtifacts.size(); i++) {
-         oldArtifactCount = relatedArtifacts.size();
-         insertParameters.clear();
-         newArtifacts.clear();
+      Collection<Integer> relatedArtIds = new ArrayList<Integer>();
+      if (artifacts.isEmpty()) {
+         return relatedArtifacts;
+      }
+
+      for (int i = 0; i < depth && !newArtifactsToSearch.isEmpty(); i++) {
          for (Artifact artifact : newArtifactsToSearch) {
             List<RelationLink> selectedRelations = null;
-
             if (relationEnums.length == 0) {
                selectedRelations = getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
-               addRelatedArtifactIds(queryId, artifact, newArtifacts, insertParameters, insertMap, selectedRelations,
-                     RelationSide.SIDE_B);
+               relatedArtIds.addAll(getRelatedArtifactIds(selectedRelations, RelationSide.SIDE_B));
             } else {
                for (IRelationEnumeration relationEnum : relationEnums) {
                   selectedRelations =
                         relationsByType.get(threadLocalKey.get().getKey(artifact),
                               RelationTypeManager.getType(relationEnum));
-                  addRelatedArtifactIds(queryId, artifact, newArtifacts, insertParameters, insertMap,
-                        selectedRelations, relationEnum.getSide());
+                  relatedArtIds.addAll(getRelatedArtifactIds(selectedRelations, relationEnum.getSide()));
                }
             }
          }
 
-         if (insertParameters.size() > 0) {
-            newArtifacts.addAll(ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false,
-                  false, allowDeleted));
+         if (relatedArtIds.size() > 0) {
+            Branch branch = (artifacts.toArray(new Artifact[0]))[0].getBranch();
+            newArtifacts = ArtifactQuery.getArtifactListFromIds(relatedArtIds, branch, allowDeleted);
          }
          newArtifactsToSearch.clear();
          newArtifactsToSearch.addAll(newArtifacts);
          relatedArtifacts.addAll(newArtifacts);
       }
-
       return relatedArtifacts;
    }
 
-   @SuppressWarnings("unchecked")
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum, boolean includeDeleted) throws OseeCoreException {
       RelationType relationType = RelationTypeManager.getType(relationEnum);
+      List<Artifact> artifacts = getRelatedArtifacts(artifact, relationType, relationEnum.getSide());
+      Collection<Integer> artIds = new ArrayList<Integer>();
+
       if (includeDeleted) {
-         List<Artifact> artifacts = getRelatedArtifacts(artifact, relationType, relationEnum.getSide());
-         int queryId = ArtifactLoader.getNewQueryId();
-
          Object[] formatArgs = relationEnum.getSide().isSideA() ? new Object[] {"a", "b"} : new Object[] {"b", "a"};
-         String sql = String.format(GET_DELETED_ARTIFACT, formatArgs);
-
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
+            String sql = String.format(GET_DELETED_ARTIFACT, formatArgs);
             chStmt.runPreparedQuery(sql, artifact.getBranch().getId(), relationType.getId(), artifact.getArtId());
-
             while (chStmt.next()) {
                int artId = chStmt.getInt(formatArgs[0] + "_art_id");
-               int branchId = chStmt.getInt("branch_id");
-               ConnectionHandler.runPreparedUpdate(JOIN_TABLE_INSERT, queryId, GlobalTime.GreenwichMeanTimestamp(),
-                     artId, branchId, SQL3DataType.INTEGER);
+               artIds.add(artId);
             }
          } finally {
             chStmt.close();
          }
 
-         List<Artifact> deletedArtifacts =
-               ArtifactLoader.loadArtifactsFromQueryId(queryId, ArtifactLoad.FULL, null, 4, false, false, true);
+         List<Artifact> deletedArtifacts = ArtifactQuery.getArtifactListFromIds(artIds, artifact.getBranch(), true);
 
-         if (artifacts.isEmpty()) {
-            artifacts = new LinkedList<Artifact>();
-         }
-         for (Artifact artifactLoop : deletedArtifacts) {
-            if (artifactLoop.isDeleted()) {
-               artifacts.add(artifactLoop);
+         for (Artifact art : deletedArtifacts) {
+            if (art.isDeleted()) {
+               artifacts.add(art);
             }
          }
-
-         return artifacts;
-      } else {
-         return getRelatedArtifacts(artifact, relationType, relationEnum.getSide());
       }
 
+      return artifacts;
    }
 
    public static List<Artifact> getRelatedArtifactsUnSorted(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
