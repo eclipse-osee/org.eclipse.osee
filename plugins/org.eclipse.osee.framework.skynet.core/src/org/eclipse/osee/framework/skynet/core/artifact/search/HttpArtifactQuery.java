@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
+import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.MatchLocation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.XmlArtifactSearchResult;
 import org.xml.sax.InputSource;
@@ -106,7 +107,7 @@ final class HttpArtifactQuery {
       return backedInputStream;
    }
 
-   public List<Artifact> getArtifacts(ArtifactLoad loadLevel, ISearchConfirmer confirmer, boolean reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
+   public List<Artifact> getArtifacts(ArtifactLoad loadLevel, ISearchConfirmer confirmer, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
       List<Artifact> toReturn = null;
       Pair<String, ByteArrayOutputStream> data = executeSearch(false, false);
       if (data != null) {
@@ -131,7 +132,7 @@ final class HttpArtifactQuery {
       return toReturn;
    }
 
-   public List<ArtifactMatch> getArtifactsWithMatches(ArtifactLoad loadLevel, ISearchConfirmer confirmer, boolean reload, boolean historical, DeletionFlag allowDeleted, boolean findAllMatchLocations) throws OseeCoreException {
+   public List<ArtifactMatch> getArtifactsWithMatches(ArtifactLoad loadLevel, ISearchConfirmer confirmer, LoadType reload, boolean historical, DeletionFlag allowDeleted, boolean findAllMatchLocations) throws OseeCoreException {
       List<ArtifactMatch> toReturn = new ArrayList<ArtifactMatch>();
       Pair<String, ByteArrayOutputStream> data = executeSearch(true, findAllMatchLocations);
       if (data != null) {

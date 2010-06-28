@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.INCLUDE_CACHE;
+import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.RELOAD_CACHE;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
+import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
 
 /**
  * @author Ryan D. Brooks
@@ -428,18 +431,18 @@ public class ArtifactQueryBuilder {
    }
 
    public List<Artifact> getArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer) throws OseeCoreException {
-      return internalGetArtifacts(artifactCountEstimate, confirmer, false);
+      return internalGetArtifacts(artifactCountEstimate, confirmer, INCLUDE_CACHE);
    }
 
    public List<Artifact> reloadArtifacts(int artifactCountEstimate) throws OseeCoreException {
-      return internalGetArtifacts(artifactCountEstimate, null, true);
+      return internalGetArtifacts(artifactCountEstimate, null, RELOAD_CACHE);
    }
 
    public Artifact reloadArtifact() throws OseeCoreException {
       if (emptyCriteria) {
          throw new ArtifactDoesNotExist("received an empty list in the criteria for this search");
       }
-      Collection<Artifact> artifacts = internalGetArtifacts(1, null, true);
+      Collection<Artifact> artifacts = internalGetArtifacts(1, null, RELOAD_CACHE);
 
       if (artifacts.isEmpty()) {
          throw new ArtifactDoesNotExist(getSoleExceptionMessage(artifacts.size()));
@@ -450,7 +453,7 @@ public class ArtifactQueryBuilder {
       return artifacts.iterator().next();
    }
 
-   private List<Artifact> internalGetArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer, boolean reload) throws OseeCoreException {
+   private List<Artifact> internalGetArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer, LoadType reload) throws OseeCoreException {
       if (emptyCriteria) {
          return java.util.Collections.emptyList();
       }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.INCLUDE_CACHE;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -139,7 +140,7 @@ public class ArtifactPersistenceManager {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
       queryParameters.add(branch.getId());
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT, queryParameters, branch),
-            queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer, null, EXCLUDE_DELETED);
+            queryParameters.toArray(), 100, ArtifactLoad.FULL, INCLUDE_CACHE, confirmer, null, EXCLUDE_DELETED);
    }
 
    /**

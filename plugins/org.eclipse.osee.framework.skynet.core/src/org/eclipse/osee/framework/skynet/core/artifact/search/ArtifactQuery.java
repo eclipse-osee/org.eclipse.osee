@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.INCLUDE_CACHE;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -200,7 +201,7 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromIds(Collection<Integer> artifactIds, IOseeBranch branch) throws OseeCoreException {
-      return ArtifactLoader.loadArtifacts(artifactIds, branch, ArtifactLoad.FULL, false);
+      return ArtifactLoader.loadArtifacts(artifactIds, branch, ArtifactLoad.FULL, INCLUDE_CACHE);
    }
 
    /**
@@ -209,8 +210,7 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromIds(Collection<Integer> artifactIds, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
-      boolean reload = false;
-      List<Artifact> toReturn = ArtifactLoader.loadArtifacts(artifactIds, branch, ArtifactLoad.FULL, reload);
+      List<Artifact> toReturn = ArtifactLoader.loadArtifacts(artifactIds, branch, ArtifactLoad.FULL, INCLUDE_CACHE);
       if (allowDeleted == EXCLUDE_DELETED) {
          for (int i = 0; i < toReturn.size(); i++) {
             if (toReturn.get(i).isDeleted()) {
@@ -502,7 +502,7 @@ public class ArtifactQuery {
     */
    public static List<Artifact> getArtifactListFromAttributeKeywords(IOseeBranch branch, String queryString, boolean matchWordOrder, DeletionFlag allowDeleted, boolean isCaseSensitive, IAttributeType... attributeTypes) throws OseeCoreException {
       return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, isCaseSensitive, attributeTypes).getArtifacts(
-            FULL, null, false, false, allowDeleted);
+            FULL, null, INCLUDE_CACHE, false, allowDeleted);
    }
 
    /**
@@ -515,7 +515,7 @@ public class ArtifactQuery {
     */
    public static List<ArtifactMatch> getArtifactMatchesFromAttributeKeywords(IOseeBranch branch, String queryString, boolean matchWordOrder, DeletionFlag allowDeleted, boolean findAllMatchLocations, boolean isCaseSensitive, IAttributeType... attributeTypes) throws OseeCoreException {
       return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, isCaseSensitive, attributeTypes).getArtifactsWithMatches(
-            FULL, null, false, false, allowDeleted, findAllMatchLocations);
+            FULL, null, INCLUDE_CACHE, false, allowDeleted, findAllMatchLocations);
    }
 
    public static Artifact reloadArtifactFromId(int artId, IOseeBranch branch) throws OseeCoreException {
