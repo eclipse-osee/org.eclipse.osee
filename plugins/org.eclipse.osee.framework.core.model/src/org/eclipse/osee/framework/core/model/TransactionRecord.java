@@ -100,7 +100,6 @@ public final class TransactionRecord implements IAdaptable {
       return false;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter != null && getClass().isAssignableFrom(adapter)) {

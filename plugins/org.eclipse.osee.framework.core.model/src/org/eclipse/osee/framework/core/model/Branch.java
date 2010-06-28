@@ -149,6 +149,7 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAda
       return getName();
    }
 
+   @Override
    public int compareTo(Branch other) {
       int result = -1;
       if (other != null && other.getName() != null && getName() != null) {
@@ -197,7 +198,7 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAda
       return ancestors;
    }
 
-   @SuppressWarnings("unchecked")
+   @Override
    public Object getAdapter(Class adapter) {
       if (adapter == null) {
          throw new IllegalArgumentException("adapter can not be null");
