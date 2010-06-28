@@ -18,7 +18,6 @@ public enum ResMessages implements MessageID {
    private Class<?> clazz;
    boolean isReplyRequired;
    private String guid;
-   private String destination;
    private boolean isTopic;
 
    ResMessages(boolean isTopic, String guid, String name, Class<?> clazz, boolean isReplyRequired) {
@@ -27,11 +26,6 @@ public enum ResMessages implements MessageID {
       this.clazz = clazz;
       this.isReplyRequired = isReplyRequired;
       this.isTopic = isTopic;
-      if (isTopic) {
-         destination = "topic:" + guid;
-      } else {
-         destination = guid;
-      }
    }
 
    @Override
@@ -50,13 +44,8 @@ public enum ResMessages implements MessageID {
    }
 
    @Override
-   public String getGuid() {
+   public String getId() {
       return guid;
-   }
-
-   @Override
-   public String getMessageDestination() {
-      return destination;
    }
 
    public boolean isTopic() {

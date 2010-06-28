@@ -14,7 +14,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
-
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.ExceptionListener;
@@ -26,7 +25,6 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
-
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -166,7 +164,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
             destination = getOrCreateTopic(messageId);
             MessageConsumer consumer = session.createConsumer(destination);
             consumer.setMessageListener(new ActiveMqMessageListenerWrapper(activeMqUtil, replyProducer, session, listener));
-            regularListeners.put(messageId.getGuid(), consumer, listener);
+            regularListeners.put(messageId.getId(), consumer, listener);
             statusCallback.success();
          } else {
             statusCallback.fail(new OseeCoreException("This connection is not started."));
@@ -186,7 +184,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
             destination = getOrCreateTopic(messageId);
             MessageConsumer consumer = session.createConsumer(destination, selector);
             consumer.setMessageListener(new ActiveMqMessageListenerWrapper(activeMqUtil, replyProducer, session, listener));
-            regularListeners.put(messageId.getGuid(), consumer, listener);
+            regularListeners.put(messageId.getId(), consumer, listener);
             statusCallback.success();
          } else {
             statusCallback.fail(new OseeCoreException("This connection is not started."));
@@ -199,10 +197,10 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    }
 
    private Topic getOrCreateTopic(MessageID messageId) throws JMSException {
-      Topic topic = topicCache.get(messageId.getGuid());
+      Topic topic = topicCache.get(messageId.getId());
       if (topic == null) {
-         topic = session.createTopic(messageId.getGuid());
-         topicCache.put(messageId.getGuid(), topic);
+         topic = session.createTopic(messageId.getId());
+         topicCache.put(messageId.getId(), topic);
       }
       return topic;
    }
@@ -224,13 +222,13 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
 
    @Override
    public boolean subscribeToReply(MessageID messageId, OseeMessagingListener listener) {
-      replyListeners.put(messageId.getGuid(), listener);
+      replyListeners.put(messageId.getId(), listener);
       return true;
    }
 
    @Override
    public void unsubscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
-      Map<MessageConsumer, OseeMessagingListener> listeners = regularListeners.getKeyedValues(messageId.getGuid());
+      Map<MessageConsumer, OseeMessagingListener> listeners = regularListeners.getKeyedValues(messageId.getId());
       List<MessageConsumer> consumersToRemove = new ArrayList<MessageConsumer>();
       if (listeners != null) {
          try{ 
@@ -253,7 +251,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
 
    @Override
    public boolean unsubscribteToReply(MessageID messageId, OseeMessagingListener listener) {
-      replyListeners.remove(messageId.getGuid());
+      replyListeners.remove(messageId.getId());
       return true;
    }
 

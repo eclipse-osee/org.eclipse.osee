@@ -24,18 +24,12 @@ public enum TestMessages implements MessageID {
 	private Class<?> clazz;
 	boolean isReplyRequired;
 	private String guid;	
-	private String destination;
 	
 	TestMessages(boolean isTopic, String guid, String name, Class<?> clazz, boolean isReplyRequired){
 		this.guid = guid;
 		this.name = name;
 		this.clazz = clazz;
 		this.isReplyRequired = isReplyRequired;
-		if(isTopic){
-			destination = "topic:"+guid;
-		} else {
-			destination = guid;
-		}
 	}
 	
 	TestMessages(boolean isTopic, String guid,String name, Class<?> clazz){
@@ -43,11 +37,6 @@ public enum TestMessages implements MessageID {
 		this.clazz = clazz;
 		this.isReplyRequired = false;
 		this.guid = guid;
-		if(isTopic){
-			destination = "topic:"+guid;
-		} else {
-			destination = guid;
-		}
 	}
 	
 	@Override
@@ -66,15 +55,10 @@ public enum TestMessages implements MessageID {
 	}
 
 	@Override
-	public String getGuid() {
+	public String getId() {
 		return guid;
 	}
 
-	@Override
-	public String getMessageDestination() {
-		return destination;
-	}
-	
    @Override
    public boolean isTopic() {
       return true;

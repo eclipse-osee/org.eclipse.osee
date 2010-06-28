@@ -48,13 +48,8 @@ public enum OteBaseMessages implements MessageID {
 	}
 
 	@Override
-	public String getGuid() {
+	public String getId() {
 		return guid;
-	}
-
-	@Override
-	public String getMessageDestination() {
-		return destination;
 	}
 
    @Override

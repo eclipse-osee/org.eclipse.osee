@@ -10,7 +10,7 @@ package org.eclipse.osee.framework.messaging;
  */
 public enum SystemTopic implements MessageID {
 
-	JMS_HEALTH_STATUS("topic:jms.health.status"),
+	JMS_HEALTH_STATUS("jms.health.status"),
 	KILL_TEST_JMS_BROKER("jms.kill.broker");
 
 	private String name;
@@ -25,11 +25,6 @@ public enum SystemTopic implements MessageID {
 	}
 
 	@Override
-	public String getMessageDestination() {
-		return name;
-	}
-
-	@Override
 	public Class<?> getSerializationClass() {
 		return null;
 	}
@@ -40,7 +35,7 @@ public enum SystemTopic implements MessageID {
 	}
 
 	@Override
-	public String getGuid() {
+	public String getId() {
 		return name;
 	}
 

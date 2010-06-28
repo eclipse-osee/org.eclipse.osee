@@ -15,16 +15,15 @@ import org.eclipse.osee.framework.messaging.services.messages.Synch;
  *
  */
 public enum BaseMessages implements MessageID {
-	ServiceHealth(true, "ABjyjamBQRvvAGcWpRQA", "topic:osee.message.core.ServiceHealth", ServiceHealth.class, false),
-	ServiceHealthRequest(true, "ABkAHOSFQ3VUZcfzsAgA", "topic:osee.message.core.ServiceHealthRequest", ServiceHealthRequest.class, true),
-	Synch(true, "ABkweOSFQ3yuZcfzsAgA", "topic:osee.message.core.ServiceHealthRequest", Synch.class, true);
+	ServiceHealth(true, "ABjyjamBQRvvAGcWpRQA", "osee.message.core.ServiceHealth", ServiceHealth.class, false),
+	ServiceHealthRequest(true, "ABkAHOSFQ3VUZcfzsAgA", "osee.message.core.ServiceHealthRequest", ServiceHealthRequest.class, true),
+	Synch(true, "ABkweOSFQ3yuZcfzsAgA", "osee.message.core.ServiceHealthRequest", Synch.class, true);
 	
 	private String name;
 	private Class<?> clazz;
 	boolean isReplyRequired;
-	private String guid;	
-	private String destination;
    private boolean isTopic;
+   private String guid;
 	
 	BaseMessages(boolean isTopic, String guid, String name, Class<?> clazz, boolean isReplyRequired){
 		this.guid = guid;
@@ -32,11 +31,6 @@ public enum BaseMessages implements MessageID {
 		this.clazz = clazz;
 		this.isReplyRequired = isReplyRequired;
 		this.isTopic = isTopic;
-		if(isTopic){
-			destination = "topic:"+guid;
-		} else {
-			destination = guid;
-		}
 	}
 	
 	@Override
@@ -55,16 +49,12 @@ public enum BaseMessages implements MessageID {
 	}
 
 	@Override
-	public String getGuid() {
-		return guid;
-	}
-
-	@Override
-	public String getMessageDestination() {
-		return destination;
-	}
-	
 	public boolean isTopic(){
 	   return isTopic;
 	}
+
+   @Override
+   public String getId() {
+      return guid;
+   }
 }
