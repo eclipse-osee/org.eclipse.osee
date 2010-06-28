@@ -108,8 +108,7 @@ public class ArtifactLoaderTest {
          thread.start();
       }
 
-      // stop after 10 seconds
-      long endTime = new Date().getTime() + (15 * 1000);
+      long endTime = new Date().getTime() + (45 * 1000);
       while (true) {
          Thread.sleep(1000);
          System.out.println("Checking for thread completion..." + numThreadsCompleted + "/" + TOTAL_THREADS);
