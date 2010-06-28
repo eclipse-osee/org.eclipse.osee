@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,7 +56,7 @@ public final class ArtifactLoader {
    /**
     * (re)loads the artifacts selected by sql and then returns them in a list
     */
-   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, ISearchConfirmer confirmer, TransactionRecord transactionId, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, ISearchConfirmer confirmer, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       int queryId = getNewQueryId();
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate, false);
@@ -66,18 +68,18 @@ public final class ArtifactLoader {
       return artifacts;
    }
 
-   public static List<Artifact> loadArtifactsFromQueryId(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> loadArtifactsFromQueryId(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
       List<Artifact> loadedItems = new ArrayList<Artifact>(fetchSize);
       loadArtifactsFromQueryId(loadedItems, queryId, loadLevel, confirmer, fetchSize, reload, historical, allowDeleted);
       return loadedItems;
    }
 
-   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
+   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
       try {
          OseeSql sqlKey;
          if (historical) {
             sqlKey = OseeSql.LOAD_HISTORICAL_ARTIFACTS;
-         } else if (allowDeleted) {
+         } else if (allowDeleted == INCLUDE_DELETED) {
             sqlKey = OseeSql.LOAD_CURRENT_ARTIFACTS_WITH_DELETED;
          } else {
             sqlKey = OseeSql.LOAD_CURRENT_ARTIFACTS;
@@ -98,7 +100,7 @@ public final class ArtifactLoader {
                // assumption: sql is returning rows ordered by branch_id, art_id, transaction_id in descending order
                if (previousArtId != artId || previousBranchId != branchId) {
                   // assumption: sql is returning unwanted deleted artifacts only in the historical case
-                  if (!historical || allowDeleted || ModificationType.getMod(chStmt.getInt("mod_type")) != ModificationType.DELETED) {
+                  if (!historical || allowDeleted == INCLUDE_DELETED || ModificationType.getMod(chStmt.getInt("mod_type")) != ModificationType.DELETED) {
                      loadedItems.add(retrieveShallowArtifact(chStmt, reload, historical));
                   }
                }
@@ -147,7 +149,8 @@ public final class ArtifactLoader {
                   historical ? transactionId.getId() : SQL3DataType.INTEGER});
          }
 
-         for (Artifact artifact : loadArtifacts(queryId, loadLevel, null, insertParameters, reload, historical, true)) {
+         for (Artifact artifact : loadArtifacts(queryId, loadLevel, null, insertParameters, reload, historical,
+               INCLUDE_DELETED)) {
             artifacts.add(artifact);
          }
       }
@@ -157,13 +160,13 @@ public final class ArtifactLoader {
    /**
     * loads or reloads artifacts based on artifact ids and branch ids in the insertParameters
     */
-   public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, boolean reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
       List<Artifact> loadedItems = new ArrayList<Artifact>(insertParameters.size());
       loadArtifacts(loadedItems, queryId, loadLevel, confirmer, insertParameters, reload, historical, allowDeleted);
       return loadedItems;
    }
 
-   public static void loadArtifacts(Collection<Artifact> loadedItems, int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
+   public static void loadArtifacts(Collection<Artifact> loadedItems, int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, boolean reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
       if (!insertParameters.isEmpty()) {
          Collection<Artifact> data;
          if (loadedItems.isEmpty()) {
@@ -296,13 +299,14 @@ public final class ArtifactLoader {
 
          List<Artifact> artifacts = new ArrayList<Artifact>(1);
          artifacts.add(artifact);
-         loadArtifactsData(queryId, artifacts, loadLevel, false, false, artifact.isDeleted());
+         loadArtifactsData(queryId, artifacts, loadLevel, false, false,
+               artifact.isDeleted() ? INCLUDE_DELETED : EXCLUDE_DELETED);
       } finally {
          clearQuery(queryId);
       }
    }
 
-   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
+   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel, boolean reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
       if (reload) {
          for (Artifact artifact : artifacts) {
             artifact.prepareForReload();

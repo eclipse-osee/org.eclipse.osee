@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.test.cases;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +39,7 @@ public class AtsNotifyUsersTest {
    @AfterClass
    public static void cleanup() throws OseeCoreException {
       for (Artifact artifact : ArtifactQuery.getArtifactListFromName(AtsNotifyUsersTest.class.getSimpleName(),
-            AtsUtil.getAtsBranch(), false)) {
+            AtsUtil.getAtsBranch(), EXCLUDE_DELETED)) {
          artifact.delete();
       }
    }

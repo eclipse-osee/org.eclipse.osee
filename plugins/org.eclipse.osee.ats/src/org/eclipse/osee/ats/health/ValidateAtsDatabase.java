@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.health;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -359,7 +360,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          xResultData = new XResultData();
       }
       xResultData.log(monitor, "testLoadAllCommonArtifactIds - Started " + XDate.getDateNow(XDate.MMDDYYHHMM));
-      List<Integer> artIds = ArtifactQuery.selectArtifactListFromBranch(AtsUtil.getAtsBranch(), false);
+      List<Integer> artIds = ArtifactQuery.selectArtifactListFromBranch(AtsUtil.getAtsBranch(), EXCLUDE_DELETED);
 
       if (artIds.isEmpty()) {
          xResultData.logError("Error: Artifact load returned 0 artifacts to check");

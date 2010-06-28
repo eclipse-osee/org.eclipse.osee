@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
@@ -61,7 +62,7 @@ public abstract class Conflict implements IAdaptable {
 
    public Artifact getArtifact() throws OseeCoreException {
       if (artifact == null) {
-         artifact = ArtifactQuery.getArtifactFromId(artId, mergeBranch, true);
+         artifact = ArtifactQuery.getArtifactFromId(artId, mergeBranch, INCLUDE_DELETED);
       }
       return artifact;
    }
@@ -69,9 +70,10 @@ public abstract class Conflict implements IAdaptable {
    public Artifact getSourceArtifact() throws OseeCoreException {
       if (sourceArtifact == null) {
          if (commitTransactionId == null) {
-            sourceArtifact = ArtifactQuery.getArtifactFromId(artId, sourceBranch, true);
+            sourceArtifact = ArtifactQuery.getArtifactFromId(artId, sourceBranch, INCLUDE_DELETED);
          } else {
-            sourceArtifact = ArtifactQuery.getHistoricalArtifactFromId(artId, mergeBranch.getBaseTransaction(), true);
+            sourceArtifact =
+                  ArtifactQuery.getHistoricalArtifactFromId(artId, mergeBranch.getBaseTransaction(), INCLUDE_DELETED);
          }
       }
       return sourceArtifact;
@@ -80,11 +82,11 @@ public abstract class Conflict implements IAdaptable {
    public Artifact getDestArtifact() throws OseeCoreException {
       if (destArtifact == null) {
          if (commitTransactionId == null) {
-            destArtifact = ArtifactQuery.getArtifactFromId(artId, destBranch, true);
+            destArtifact = ArtifactQuery.getArtifactFromId(artId, destBranch, INCLUDE_DELETED);
          } else {
             destArtifact =
                   ArtifactQuery.getHistoricalArtifactFromId(artId,
-                        TransactionManager.getPriorTransaction(commitTransactionId), true);
+                        TransactionManager.getPriorTransaction(commitTransactionId), INCLUDE_DELETED);
 
          }
       }

@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -255,7 +256,7 @@ public class ArtifactTypeManager {
    public static void purgeArtifactTypesWithCheck(Collection<ArtifactType> purgeArtifactTypes, ArtifactType newArtifactType) throws OseeCoreException {
       for (ArtifactType purgeArtifactType : purgeArtifactTypes) {
          // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
-         List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(purgeArtifactType, true);
+         List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(purgeArtifactType, INCLUDE_DELETED);
          if (artifacts.size() > 0) {
             HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
             for (Artifact artifact : artifacts) {
@@ -288,7 +289,7 @@ public class ArtifactTypeManager {
       try {
          for (ArtifactType purgeArtifactType : purgeArtifactTypes) {
             // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
-            List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(purgeArtifactType, true);
+            List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(purgeArtifactType, INCLUDE_DELETED);
             if (artifacts.size() > 0) {
                HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
                for (Artifact artifact : artifacts) {

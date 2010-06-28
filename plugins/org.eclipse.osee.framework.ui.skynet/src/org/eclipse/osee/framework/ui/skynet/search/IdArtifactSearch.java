@@ -10,23 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Roberto E. Escobar
  */
 final class IdArtifactSearch extends AbstractLegacyArtifactSearchQuery {
-   private List<String> idsToSearch;
-   private Branch branchToSearch;
-   private boolean allowDeleted;
+   private final List<String> idsToSearch;
+   private final Branch branchToSearch;
+   private final DeletionFlag allowDeleted;
 
-   IdArtifactSearch(String searchString, Branch branchToSearch, boolean allowDeleted) {
+   IdArtifactSearch(String searchString, Branch branchToSearch, DeletionFlag allowDeleted) {
       super();
       this.idsToSearch = new ArrayList<String>();
       this.branchToSearch = branchToSearch;
@@ -42,6 +44,7 @@ final class IdArtifactSearch extends AbstractLegacyArtifactSearchQuery {
 
    @Override
    public String getCriteriaLabel() {
-      return String.format("%s%s", idsToSearch.toString(), allowDeleted ? " - Options:[Include Deleted]" : "");
+      return String.format("%s%s", idsToSearch.toString(),
+            allowDeleted == INCLUDE_DELETED ? " - Options:[Include Deleted]" : "");
    }
 }

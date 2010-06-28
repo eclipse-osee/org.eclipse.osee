@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.RELATION;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.SHALLOW;
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
  */
 public class AttributeLoader {
 
-   static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical, boolean allowDeletedArtifacts, ArtifactLoad loadLevel) throws OseeCoreException {
+   static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical, DeletionFlag allowDeletedArtifacts, ArtifactLoad loadLevel) throws OseeCoreException {
       if (loadLevel == SHALLOW || loadLevel == RELATION) {
          return;
       }
@@ -184,13 +185,13 @@ public class AttributeLoader {
       artifact.setTransactionId(maxTransactionId);
    }
 
-   private static String getSql(boolean allowDeletedArtifacts, ArtifactLoad loadLevel, boolean historical) throws OseeCoreException {
+   private static String getSql(DeletionFlag allowDeletedArtifacts, ArtifactLoad loadLevel, boolean historical) throws OseeCoreException {
       OseeSql sqlKey;
       if (historical) {
          sqlKey = OseeSql.LOAD_HISTORICAL_ATTRIBUTES;
       } else if (loadLevel == ArtifactLoad.ALL_CURRENT) {
          sqlKey = OseeSql.LOAD_ALL_CURRENT_ATTRIBUTES;
-      } else if (allowDeletedArtifacts) {
+      } else if (allowDeletedArtifacts == INCLUDE_DELETED) {
          sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES_WITH_DELETED;
       } else {
          sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES;

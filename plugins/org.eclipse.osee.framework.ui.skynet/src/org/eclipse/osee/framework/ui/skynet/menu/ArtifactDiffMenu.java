@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.menu;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -130,8 +131,10 @@ public final class ArtifactDiffMenu {
             int artId = changeA.getArtId();
             TransactionDelta txDelta = asTxDelta(changeA, changeB);
 
-            Artifact startArtifact = ArtifactQuery.getHistoricalArtifactFromId(artId, txDelta.getStartTx(), true);
-            Artifact endArtifact = ArtifactQuery.getHistoricalArtifactFromId(artId, txDelta.getEndTx(), true);
+            Artifact startArtifact =
+                  ArtifactQuery.getHistoricalArtifactFromId(artId, txDelta.getStartTx(), INCLUDE_DELETED);
+            Artifact endArtifact =
+                  ArtifactQuery.getHistoricalArtifactFromId(artId, txDelta.getEndTx(), INCLUDE_DELETED);
             toReturn = new ArtifactDelta(txDelta, startArtifact, endArtifact);
          }
          return toReturn;
@@ -142,7 +145,7 @@ public final class ArtifactDiffMenu {
          TransactionRecord endTx = second.getChangeArtifact().getTransactionRecord();
          if (startTx.getId() > endTx.getId()) {
             startTx = second.getChangeArtifact().getTransactionRecord();
-            endTx =  first.getChangeArtifact().getTransactionRecord();
+            endTx = first.getChangeArtifact().getTransactionRecord();
          }
          return new TransactionDelta(startTx, endTx);
       }

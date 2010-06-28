@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -174,9 +175,9 @@ public class ConflictManagerInternal {
    private static Collection<Artifact> preloadConflictArtifacts(Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIdSet, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Preloading Artifacts Associated with the Conflicts");
 
-      Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIdSet, sourceBranch, true);
-      artifacts.addAll(ArtifactQuery.getArtifactListFromIds(artIdSet, destBranch, true));
-      artifacts.addAll(ArtifactQuery.getArtifactListFromIds(artIdSet, mergeBranch, true));
+      Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIdSet, sourceBranch, INCLUDE_DELETED);
+      artifacts.addAll(ArtifactQuery.getArtifactListFromIds(artIdSet, destBranch, INCLUDE_DELETED));
+      artifacts.addAll(ArtifactQuery.getArtifactListFromIds(artIdSet, mergeBranch, INCLUDE_DELETED));
 
       monitor.worked(25);
       return artifacts;

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.net.HttpURLConnection;
 import java.util.Map;
 import org.eclipse.osee.framework.core.client.server.HttpResponse;
@@ -18,6 +20,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -30,6 +33,7 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
       final String branchId = parameters.get("branchId");
       final String guid = parameters.get("guid");
       final boolean isDeleted = Boolean.valueOf(parameters.get("isDeleted"));
+      final DeletionFlag searchDeleted = isDeleted ? INCLUDE_DELETED : EXCLUDE_DELETED;
       final String transactionIdStr = parameters.get("transactionId");
 
       if (!Strings.isValid(branchId) || !Strings.isValid(guid)) {
@@ -43,10 +47,10 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
                int transactionNumber = Integer.parseInt(transactionIdStr);
                TransactionRecord transactionId = TransactionManager.getTransactionId(transactionNumber);
                branch = transactionId.getBranch();
-               artifact = ArtifactQuery.getHistoricalArtifactFromId(guid, transactionId, isDeleted);
+               artifact = ArtifactQuery.getHistoricalArtifactFromId(guid, transactionId, searchDeleted);
             } else {
                branch = BranchManager.getBranch(Integer.parseInt(branchId));
-               artifact = ArtifactQuery.getArtifactFromId(guid, branch, isDeleted);
+               artifact = ArtifactQuery.getArtifactFromId(guid, branch, searchDeleted);
             }
             if (artifact == null) {
                httpResponse.outputStandardError(HttpURLConnection.HTTP_NOT_FOUND, String.format(

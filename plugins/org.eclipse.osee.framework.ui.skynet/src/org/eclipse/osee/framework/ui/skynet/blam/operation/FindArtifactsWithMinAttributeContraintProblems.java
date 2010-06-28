@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,9 +29,10 @@ public class FindArtifactsWithMinAttributeContraintProblems extends AbstractBlam
       return "Find Artifacts With MinAttribute Contraint Problems";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch branch = variableMap.getBranch("Parent Branch");
-      ArtifactQuery.getArtifactListFromBranch(branch, false);
+      ArtifactQuery.getArtifactListFromBranch(branch, EXCLUDE_DELETED);
    }
 
    @Override
@@ -38,6 +40,7 @@ public class FindArtifactsWithMinAttributeContraintProblems extends AbstractBlam
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Branch List\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Parent Branch\" /></xWidgets>";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin.Health");
    }

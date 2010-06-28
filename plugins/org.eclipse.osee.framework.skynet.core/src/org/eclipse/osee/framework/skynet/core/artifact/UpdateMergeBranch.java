@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,7 +83,8 @@ public class UpdateMergeBranch extends DbTransaction {
       Collection<Integer> allMergeBranchArtifacts = getAllMergeArtifacts(mergeBranch);
       long time = System.currentTimeMillis();
       Collection<Integer> allMergeBranchArtifactsCopy = new HashSet<Integer>(allMergeBranchArtifacts);
-      Collection<Artifact> goodMergeBranchArtifacts = ArtifactQuery.getArtifactListFromBranch(mergeBranch, true);
+      Collection<Artifact> goodMergeBranchArtifacts =
+            ArtifactQuery.getArtifactListFromBranch(mergeBranch, INCLUDE_DELETED);
 
       if (DEBUG) {
          System.out.println(String.format("        Get artifacts on branch took %s", Lib.getElapseString(time)));

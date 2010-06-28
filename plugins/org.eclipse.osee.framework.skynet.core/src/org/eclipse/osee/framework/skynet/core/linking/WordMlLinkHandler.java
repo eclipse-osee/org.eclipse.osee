@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.linking;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -166,9 +167,10 @@ public class WordMlLinkHandler {
    private static List<Artifact> findArtifacts(TransactionRecord transactionId, Branch branch, boolean isHistorical, List<String> guidsFromLinks) throws OseeCoreException {
       List<Artifact> artifactsFromSearch;
       if (isHistorical) {
-         artifactsFromSearch = ArtifactQuery.getHistoricalArtifactListFromIds(guidsFromLinks, transactionId, true);
+         artifactsFromSearch =
+               ArtifactQuery.getHistoricalArtifactListFromIds(guidsFromLinks, transactionId, INCLUDE_DELETED);
       } else {
-         artifactsFromSearch = ArtifactQuery.getArtifactListFromIds(guidsFromLinks, branch, true);
+         artifactsFromSearch = ArtifactQuery.getArtifactListFromIds(guidsFromLinks, branch, INCLUDE_DELETED);
       }
       return artifactsFromSearch;
    }

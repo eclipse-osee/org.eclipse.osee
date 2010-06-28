@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -36,7 +37,7 @@ public class CheckDefaulHierarchy extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch branch = variableMap.getBranch("Branch");
       ArtifactType artifactType = variableMap.getArtifactType("Artifact Type");
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(artifactType, branch, false);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(artifactType, branch, EXCLUDE_DELETED);
       for (Artifact artifact : artifacts) {
          try {
             if (!artifact.hasParent()) {

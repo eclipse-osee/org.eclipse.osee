@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -172,7 +173,8 @@ public class MergeUtility {
             return null;
          }
          TransactionRecord baseTransaction = conflict.getSourceBranch().getBaseTransaction();
-         return ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), baseTransaction, true);
+         return ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), baseTransaction,
+               INCLUDE_DELETED);
       } catch (OseeCoreException ex) {
          OseeLog.log(MergeUtility.class, Level.SEVERE, ex);
       }

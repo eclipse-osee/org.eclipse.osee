@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Collection;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -36,7 +37,7 @@ public class ArtifactTypeWithInheritenceSearchItem extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      return ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType, AtsUtil.getAtsBranch(), false);
+      return ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType, AtsUtil.getAtsBranch(), EXCLUDE_DELETED);
    }
 
    @Override

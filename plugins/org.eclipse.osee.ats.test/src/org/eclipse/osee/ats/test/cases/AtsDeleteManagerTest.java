@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,11 +54,7 @@ import org.junit.BeforeClass;
 public class AtsDeleteManagerTest {
 
    private enum TestNames {
-      TeamArtDeleteOneWorkflow,
-      TeamArtDeleteWithTwoWorkflows,
-      TeamArtPurge,
-      ActionDelete,
-      ActionPurge
+      TeamArtDeleteOneWorkflow, TeamArtDeleteWithTwoWorkflows, TeamArtPurge, ActionDelete, ActionPurge
    };
 
    @BeforeClass
@@ -211,7 +208,8 @@ public class AtsDeleteManagerTest {
    }
 
    private void verifyExists(TestNames testName, int expectedNumActions, int expectedNumCodeWorkflows, int expectedNumReqWorkflows, int expectedNumTasks, int expectedNumReviews) throws OseeCoreException {
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(testName + "%", AtsUtil.getAtsBranch(), false);
+      List<Artifact> artifacts =
+            ArtifactQuery.getArtifactListFromName(testName + "%", AtsUtil.getAtsBranch(), EXCLUDE_DELETED);
       CountingMap<IArtifactType> countMap = new CountingMap<IArtifactType>();
       for (Artifact artifact : artifacts) {
          countMap.put(artifact.getArtifactType());

@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.test.cases;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import java.util.Collection;
@@ -67,7 +68,7 @@ public class CsvArtifactTest {
 
    private void cleanup() throws Exception {
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactListFromName(id, BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), false);
+            ArtifactQuery.getArtifactListFromName(id, BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1), EXCLUDE_DELETED);
       new PurgeArtifacts(arts).execute();
    }
 }

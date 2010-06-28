@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -129,7 +130,8 @@ public class ViewWordChangeAndDiffTest {
    }
 
    private static Artifact loadHistorical(Artifact artifact) throws OseeCoreException {
-      return ArtifactQuery.getHistoricalArtifactFromId(artifact.getArtId(), artifact.getTransactionRecord(), true);
+      return ArtifactQuery.getHistoricalArtifactFromId(artifact.getArtId(), artifact.getTransactionRecord(),
+            INCLUDE_DELETED);
    }
 
    private static void checkPermissions(List<Artifact> artifacts) throws OseeCoreException {

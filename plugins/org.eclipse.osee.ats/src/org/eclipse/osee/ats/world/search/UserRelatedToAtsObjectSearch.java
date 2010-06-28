@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -52,10 +53,10 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
       List<Artifact> arts = new ArrayList<Artifact>();
       if (activeObjectsOnly) {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), user.getUserId(),
-               false, false, false, AtsAttributeTypes.AtsCurrentState));
+               false, EXCLUDE_DELETED, false, AtsAttributeTypes.AtsCurrentState));
       } else {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), user.getUserId(),
-               false, false, false, AtsAttributeTypes.AtsCurrentState, AtsAttributeTypes.AtsState,
+               false, EXCLUDE_DELETED, false, AtsAttributeTypes.AtsCurrentState, AtsAttributeTypes.AtsState,
                AtsAttributeTypes.AtsLog));
       }
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamLead_Team));

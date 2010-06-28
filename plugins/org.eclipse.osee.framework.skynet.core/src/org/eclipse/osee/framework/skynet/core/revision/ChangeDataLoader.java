@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -96,9 +97,9 @@ public class ChangeDataLoader extends AbstractOperation {
    private Artifact getArtifactAtTx(int artId, TransactionRecord transaction) throws OseeCoreException {
       Artifact artifactAtTransaction = null;
       if (txDelta.areOnTheSameBranch()) {
-         artifactAtTransaction = ArtifactQuery.checkHistoricalArtifactFromId(artId, transaction, true);
+         artifactAtTransaction = ArtifactQuery.checkHistoricalArtifactFromId(artId, transaction, INCLUDE_DELETED);
       } else {
-         artifactAtTransaction = ArtifactQuery.checkArtifactFromId(artId, transaction.getBranch(), true);
+         artifactAtTransaction = ArtifactQuery.checkArtifactFromId(artId, transaction.getBranch(), INCLUDE_DELETED);
       }
       return artifactAtTransaction;
    }
@@ -113,7 +114,7 @@ public class ChangeDataLoader extends AbstractOperation {
          } else {
             startTxArtifact =
                   ArtifactQuery.checkHistoricalArtifactFromId(artId,
-                        txDelta.getStartTx().getBranch().getBaseTransaction(), true);
+                        txDelta.getStartTx().getBranch().getBaseTransaction(), INCLUDE_DELETED);
          }
          Artifact endTxArtifact;
          if (txDelta.areOnTheSameBranch()) {
@@ -202,9 +203,9 @@ public class ChangeDataLoader extends AbstractOperation {
    private static void preloadArtifacts(Collection<Artifact> bulkLoaded, Collection<Integer> artIds, TransactionRecord tx, boolean isHistorical) throws OseeCoreException {
       Branch branch = BranchManager.getBranch(tx.getBranchId());
       if (isHistorical) {
-         bulkLoaded.addAll(ArtifactQuery.getHistoricalArtifactListFromIds(artIds, tx, true));
+         bulkLoaded.addAll(ArtifactQuery.getHistoricalArtifactListFromIds(artIds, tx, INCLUDE_DELETED));
       } else {
-         bulkLoaded.addAll(ArtifactQuery.getArtifactListFromIds(artIds, branch, true));
+         bulkLoaded.addAll(ArtifactQuery.getArtifactListFromIds(artIds, branch, INCLUDE_DELETED));
       }
    }
 

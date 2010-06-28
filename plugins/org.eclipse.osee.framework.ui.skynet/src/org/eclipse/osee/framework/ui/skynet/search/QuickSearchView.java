@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -21,6 +23,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
@@ -237,14 +240,15 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
          if (branch == null) {
             branchLabel.setText("Error: Must Select a Branch");
          } else if (Widgets.isAccessible(searchComposite) && searchComposite.isExecuteSearchEvent(event) && Widgets.isAccessible(optionsComposite)) {
+            DeletionFlag allowDeleted =
+                  optionsComposite.isIncludeDeletedEnabled() ? INCLUDE_DELETED : EXCLUDE_DELETED;
             NewSearchUI.activateSearchResultView();
             if (optionsComposite.isSearchByIdEnabled()) {
-               NewSearchUI.runQueryInBackground(new IdArtifactSearch(searchComposite.getQuery(), branch,
-                     optionsComposite.isIncludeDeletedEnabled()));
+               NewSearchUI.runQueryInBackground(new IdArtifactSearch(searchComposite.getQuery(), branch, allowDeleted));
             } else {
                NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(), //
                      branch, //
-                     optionsComposite.isIncludeDeletedEnabled(), //
+                     allowDeleted, //
                      optionsComposite.isMatchWordOrderEnabled(), //
                      optionsComposite.isMatchAllLocationsEnabled(),//
                      optionsComposite.isCaseSensitiveEnabled(),//

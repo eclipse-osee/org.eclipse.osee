@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -128,7 +130,7 @@ public class WordTemplateFileDiffer {
       @SuppressWarnings("unused")
       Collection<Artifact> bulkLoadedArtifacts =
             ArtifactQuery.getHistoricalArtifactListFromIds(Artifacts.toGuids(artifacts),
-                  TransactionManager.getTransactionId(transactionId), true);
+                  TransactionManager.getTransactionId(transactionId), INCLUDE_DELETED);
 
       for (Artifact artifact : artifacts) {
          historicArtifacts.add(ArtifactCache.getActive(artifact.getArtId(), branchId));
@@ -148,7 +150,7 @@ public class WordTemplateFileDiffer {
       String name = variableMap.getString("Name");
       Branch branch = variableMap.getBranch("Branch");
 
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(name, branch, false);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(name, branch, EXCLUDE_DELETED);
       variableMap.setValue("srsProducer.objects", artifacts);
    }
 }

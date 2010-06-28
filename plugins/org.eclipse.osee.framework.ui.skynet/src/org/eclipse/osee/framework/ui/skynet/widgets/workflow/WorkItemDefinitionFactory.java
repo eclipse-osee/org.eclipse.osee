@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -82,7 +83,7 @@ public class WorkItemDefinitionFactory {
 
          // This load is faster than loading each by artifact type
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.WorkItemDefinition,
-               BranchManager.getCommonBranch(), false)) {
+               BranchManager.getCommonBranch(), EXCLUDE_DELETED)) {
             if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
                addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
             } else if (art.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {

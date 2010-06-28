@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -44,7 +45,8 @@ public class PurgeDeletedAttributes extends AbstractBlam {
       Collection<AttributeType> purgeAttributeTypes =
             variableMap.getCollection(AttributeType.class, "Attribute Type(s) to purge");
 
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(branch, ArtifactLoad.ALL_CURRENT, true);
+      List<Artifact> artifacts =
+            ArtifactQuery.getArtifactListFromBranch(branch, ArtifactLoad.ALL_CURRENT, INCLUDE_DELETED);
 
       StringBuilder strB = new StringBuilder();
 

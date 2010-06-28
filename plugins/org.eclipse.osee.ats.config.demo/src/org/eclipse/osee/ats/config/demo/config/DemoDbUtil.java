@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.config;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -44,7 +45,8 @@ public class DemoDbUtil {
          for (String actionName : new String[] {"SAW (committed) Reqt Changes for Diagram View",
                "SAW (uncommitted) More Reqt Changes for Diagram View"}) {
             DemoCodeTeamWorkflowArtifact codeArt = null;
-            for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtil.getAtsBranch(), false)) {
+            for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtil.getAtsBranch(),
+                  EXCLUDE_DELETED)) {
                if (art instanceof DemoCodeTeamWorkflowArtifact) {
                   codeArt = (DemoCodeTeamWorkflowArtifact) art;
                   codeArts.add(codeArt);

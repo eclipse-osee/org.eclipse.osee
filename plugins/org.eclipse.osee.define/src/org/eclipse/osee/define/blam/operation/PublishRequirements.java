@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.define.blam.operation;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -88,7 +89,8 @@ public class PublishRequirements extends AbstractBlam {
       } else {
          linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
       }
-      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationTypes.Default_Hierarchical__Child);
+      RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
+            CoreRelationTypes.Default_Hierarchical__Child);
 
       SkynetTransaction transaction = new SkynetTransaction(artifacts.get(0).getBranch(), getName());
       String templateOption;
@@ -207,11 +209,10 @@ public class PublishRequirements extends AbstractBlam {
    private ArrayList<Artifact> getOlderArtifacts(List<Artifact> artifacts, int transactionId, int branchId) throws OseeCoreException {
       ArrayList<Artifact> historicArtifacts = new ArrayList<Artifact>(artifacts.size());
       TransactionRecord txRecord = TransactionManager.getTransactionId(transactionId);
-      boolean allowDeleted = true;
 
       @SuppressWarnings("unused")
       Collection<Artifact> bulkLoadedArtifacts =
-            ArtifactQuery.getHistoricalArtifactListFromIds(Artifacts.toGuids(artifacts), txRecord, allowDeleted);
+            ArtifactQuery.getHistoricalArtifactListFromIds(Artifacts.toGuids(artifacts), txRecord, INCLUDE_DELETED);
 
       for (Artifact artifact : artifacts) {
          historicArtifacts.add(ArtifactCache.getHistorical(artifact.getArtId(), transactionId));

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Collection;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -41,7 +42,7 @@ public class ArtifactTypesSearchItem extends WorldUISearchItem {
       if (artifactTypes == null || artifactTypes.isEmpty()) {
          throw new OseeArgumentException("Inavlid search \"" + getName() + "\"");
       }
-      return ArtifactQuery.getArtifactListFromTypes(artifactTypes, AtsUtil.getAtsBranch(), false);
+      return ArtifactQuery.getArtifactListFromTypes(artifactTypes, AtsUtil.getAtsBranch(), EXCLUDE_DELETED);
    }
 
    @Override

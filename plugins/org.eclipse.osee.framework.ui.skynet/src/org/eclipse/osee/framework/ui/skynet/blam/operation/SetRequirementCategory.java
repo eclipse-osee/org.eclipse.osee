@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -57,7 +58,7 @@ public class SetRequirementCategory extends AbstractBlam {
 
       if (bulkLoad) {
          for (Artifact req : ArtifactQuery.getArtifactListFromTypeWithInheritence(
-               CoreArtifactTypes.AbstractSoftwareRequirement, branch, false)) {
+               CoreArtifactTypes.AbstractSoftwareRequirement, branch, EXCLUDE_DELETED)) {
             reqs.put(req.getName().trim(), req);
          }
       }

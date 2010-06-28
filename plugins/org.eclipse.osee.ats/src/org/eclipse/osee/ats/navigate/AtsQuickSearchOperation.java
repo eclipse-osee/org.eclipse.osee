@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -60,7 +61,7 @@ public class AtsQuickSearchOperation extends AbstractOperation implements IWorld
          }
       }
       for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(),
-            data.getSearchStr(), false, false, false)) {
+            data.getSearchStr(), false, EXCLUDE_DELETED, false)) {
          // only ATS Artifacts
          if (art instanceof StateMachineArtifact) {
             StateMachineArtifact sma = (StateMachineArtifact) art;

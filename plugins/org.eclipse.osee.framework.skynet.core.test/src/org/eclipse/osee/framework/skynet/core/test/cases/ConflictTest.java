@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.cases;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -260,7 +261,7 @@ public class ConflictTest {
          Branch mergeBranch =
                BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
          assertFalse(mergeBranch == null);
-         Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(mergeBranch, true);
+         Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(mergeBranch, INCLUDE_DELETED);
          if (DEBUG) {
             System.out.println("Found the following Artifacts on the branch ");
             System.out.print("     ");

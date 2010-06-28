@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -89,7 +90,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
                artifactGuids.add(attrData.getArtifactGuid());
             }
 
-            ArtifactQuery.getArtifactListFromIds(artifactGuids, branch, false); // bulk load for speed
+            ArtifactQuery.getArtifactListFromIds(artifactGuids, branch, EXCLUDE_DELETED); // bulk load for speed
             SkynetTransaction transaction =
                   new SkynetTransaction(branch, "Delete Repeat Attribute Values for" + branch.getShortName());
             for (AttrData attrData : attributeData) {

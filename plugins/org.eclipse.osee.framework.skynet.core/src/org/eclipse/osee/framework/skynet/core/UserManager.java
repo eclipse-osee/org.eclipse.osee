@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -196,7 +197,7 @@ public final class UserManager {
    private static synchronized void ensurePopulated() throws OseeCoreException {
       if (!userCacheIsLoaded) {
          List<Artifact> artifactsFound =
-               ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON, false);
+               ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON, EXCLUDE_DELETED);
          for (Artifact artifact : artifactsFound) {
             User user = (User) artifact;
             User cachedUser = cacheByUserId(user);

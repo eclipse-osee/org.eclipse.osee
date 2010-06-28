@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.define.traceability.data;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,7 +49,7 @@ public class RequirementData extends BaseTraceDataCache {
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
       List<Artifact> allSwRequirements =
             ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.AbstractSoftwareRequirement,
-                  getBranch(), false);
+                  getBranch(), EXCLUDE_DELETED);
       populateTraceMap(monitor, allSwRequirements, allSwRequirementsMap);
 
       for (Artifact requirement : getAllSwRequirements()) {

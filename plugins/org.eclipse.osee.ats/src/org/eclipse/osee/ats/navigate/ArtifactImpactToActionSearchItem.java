@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -94,7 +95,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
       private void getMatrixItems() throws OseeCoreException {
          final Collection<Artifact> srchArts =
-               ArtifactQuery.getArtifactListFromName("%" + artifactName + "%", branch, true);
+               ArtifactQuery.getArtifactListFromName("%" + artifactName + "%", branch, INCLUDE_DELETED);
          final Set<Artifact> processArts = new HashSet<Artifact>();
          if (srchArts.isEmpty()) {
             return;

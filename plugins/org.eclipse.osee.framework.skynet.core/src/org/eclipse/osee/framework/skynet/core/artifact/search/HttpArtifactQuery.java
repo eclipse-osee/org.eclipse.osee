@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.MatchLocation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.XmlArtifactSearchResult;
@@ -56,11 +58,11 @@ final class HttpArtifactQuery {
    private final String queryString;
    private final boolean matchWordOrder;
    private final IAttributeType[] attributeTypes;
-   private final boolean includeDeleted;
+   private final DeletionFlag includeDeleted;
    private final IOseeBranch branch;
    private final boolean isCaseSensitive;
 
-   protected HttpArtifactQuery(IOseeBranch branch, String queryString, boolean matchWordOrder, boolean includeDeleted, boolean isCaseSensitive, IAttributeType... attributeTypes) {
+   protected HttpArtifactQuery(IOseeBranch branch, String queryString, boolean matchWordOrder, DeletionFlag includeDeleted, boolean isCaseSensitive, IAttributeType... attributeTypes) {
       this.branch = branch;
       this.matchWordOrder = matchWordOrder;
       this.includeDeleted = includeDeleted;
@@ -81,12 +83,12 @@ final class HttpArtifactQuery {
       PropertyStore propertyStore = new PropertyStore(sessionId);
       propertyStore.put("branchId", BranchManager.getBranchId(branch));
       propertyStore.put("query", queryString);
-      propertyStore.put("include deleted", includeDeleted);
+      propertyStore.put("include deleted", includeDeleted == INCLUDE_DELETED ? true : false);
       propertyStore.put("match word order", matchWordOrder);
 
       String[] attributeTypeGuids = new String[attributeTypes.length];
       int index = 0;
-      for (IAttributeType attributeType: attributeTypes) {
+      for (IAttributeType attributeType : attributeTypes) {
          attributeTypeGuids[index++] = attributeType.getGuid();
       }
       propertyStore.put("attributeType", attributeTypeGuids);
@@ -104,7 +106,7 @@ final class HttpArtifactQuery {
       return backedInputStream;
    }
 
-   public List<Artifact> getArtifacts(ArtifactLoad loadLevel, ISearchConfirmer confirmer, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
+   public List<Artifact> getArtifacts(ArtifactLoad loadLevel, ISearchConfirmer confirmer, boolean reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
       List<Artifact> toReturn = null;
       Pair<String, ByteArrayOutputStream> data = executeSearch(false, false);
       if (data != null) {
@@ -129,7 +131,7 @@ final class HttpArtifactQuery {
       return toReturn;
    }
 
-   public List<ArtifactMatch> getArtifactsWithMatches(ArtifactLoad loadLevel, ISearchConfirmer confirmer, boolean reload, boolean historical, boolean allowDeleted, boolean findAllMatchLocations) throws OseeCoreException {
+   public List<ArtifactMatch> getArtifactsWithMatches(ArtifactLoad loadLevel, ISearchConfirmer confirmer, boolean reload, boolean historical, DeletionFlag allowDeleted, boolean findAllMatchLocations) throws OseeCoreException {
       List<ArtifactMatch> toReturn = new ArrayList<ArtifactMatch>();
       Pair<String, ByteArrayOutputStream> data = executeSearch(true, findAllMatchLocations);
       if (data != null) {

@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
@@ -337,7 +338,7 @@ public class WordTemplateProcessor {
 
       String name = variableMap.getString("Name");
       Branch branch = variableMap.getBranch("Branch");
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(name, branch, false);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(name, branch, EXCLUDE_DELETED);
       variableMap.setValue("srsProducer.objects", artifacts);
    }
 

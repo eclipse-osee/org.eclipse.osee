@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.coverage.test;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.Collection;
 import junit.framework.Assert;
 import org.eclipse.osee.coverage.merge.IMergeItem;
@@ -77,8 +78,9 @@ public class CoveragePackageImportTest {
       if (testWithDb) {
          CoverageUtil.setNavigatorSelectedBranch(commonBranch);
          CoverageTestUtil.cleanupCoverageTests();
-      } else
+      } else {
          System.err.println("Test with Db Disabled...re-inenable");
+      }
    }
 
    @Test
@@ -726,12 +728,13 @@ public class CoveragePackageImportTest {
       Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
       int numDelete = 0, numMoveDueToDelete = 0;
       for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems()) {
-         if (mergeItem.getMergeType() == MergeType.Delete)
+         if (mergeItem.getMergeType() == MergeType.Delete) {
             numDelete++;
-         else if (mergeItem.getMergeType() == MergeType.Moved_Due_To_Delete)
+         } else if (mergeItem.getMergeType() == MergeType.Moved_Due_To_Delete) {
             numMoveDueToDelete++;
-         else
+         } else {
             throw new OseeStateException("Unexpected merge type for Delete" + mergeItem.getMergeType());
+         }
       }
       Assert.assertEquals(1, numDelete);
       Assert.assertEquals(3, numMoveDueToDelete);
@@ -836,7 +839,8 @@ public class CoveragePackageImportTest {
       } catch (ArtifactDoesNotExist ex) {
          // do nothing, this exception should have been thrown
       }
-      Artifact clearArt = ArtifactQuery.getArtifactFromId(clearCoverageUnitForDeletion.getGuid(), commonBranch, true);
+      Artifact clearArt =
+            ArtifactQuery.getArtifactFromId(clearCoverageUnitForDeletion.getGuid(), commonBranch, INCLUDE_DELETED);
       Assert.assertNotNull("clear CoverageUnit should exist if search for deleted == true", clearArt);
 
    }
@@ -893,11 +897,12 @@ public class CoveragePackageImportTest {
       Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
       int numRename = 0;
       for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems()) {
-         if (mergeItem.getMergeType() == MergeType.CI_Renamed)
+         if (mergeItem.getMergeType() == MergeType.CI_Renamed) {
             numRename++;
-         else
+         } else {
             throw new OseeStateException(String.format("Unexpected merge type [%s] for Delete_And_Reorder group",
                   mergeItem.getMergeType()));
+         }
       }
       Assert.assertEquals(2, numRename);
 
@@ -1040,13 +1045,14 @@ public class CoveragePackageImportTest {
       Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
       int numRename = 0, numDeleted = 0;
       for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems()) {
-         if (mergeItem.getMergeType() == MergeType.CI_Renamed)
+         if (mergeItem.getMergeType() == MergeType.CI_Renamed) {
             numRename++;
-         else if (mergeItem.getMergeType() == MergeType.CI_Delete)
+         } else if (mergeItem.getMergeType() == MergeType.CI_Delete) {
             numDeleted++;
-         else
+         } else {
             throw new OseeStateException(String.format("Unexpected merge type [%s] for CI_Changes group",
                   mergeItem.getMergeType()));
+         }
       }
       Assert.assertEquals(2, numRename);
       Assert.assertEquals(1, numDeleted);
@@ -1164,11 +1170,12 @@ public class CoveragePackageImportTest {
       Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
       int numUpdateMethod = 0;
       for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems()) {
-         if (mergeItem.getMergeType() == MergeType.CI_Method_Update)
+         if (mergeItem.getMergeType() == MergeType.CI_Method_Update) {
             numUpdateMethod++;
-         else
+         } else {
             throw new OseeStateException(String.format("Unexpected merge type [%s] for CI_Changes group",
                   mergeItem.getMergeType()));
+         }
       }
       Assert.assertEquals(2, numUpdateMethod);
 

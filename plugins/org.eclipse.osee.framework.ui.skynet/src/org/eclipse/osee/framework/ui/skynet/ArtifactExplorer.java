@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.RootArtifact;
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1560,7 +1561,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          } else {
             if (artifact.isHistorical()) {
                artifactData.setArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), artifact.getBranch(),
-                     false));
+                     EXCLUDE_DELETED));
             }
 
             Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch());

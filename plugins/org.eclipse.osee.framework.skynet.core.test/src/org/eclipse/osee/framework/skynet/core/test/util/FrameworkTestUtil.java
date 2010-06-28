@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.util;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -91,7 +92,7 @@ public class FrameworkTestUtil {
    public static void cleanupSimpleTest(Branch branch, Collection<String> titles) throws Exception {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       for (String title : titles) {
-         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title + "%", branch, false));
+         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title + "%", branch, EXCLUDE_DELETED));
       }
       new PurgeArtifacts(artifacts).execute();
       TestUtil.sleep(4000);

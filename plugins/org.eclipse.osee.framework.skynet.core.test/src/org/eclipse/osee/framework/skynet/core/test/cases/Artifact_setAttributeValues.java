@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.test.cases;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
@@ -103,14 +104,15 @@ public class Artifact_setAttributeValues {
    private Artifact getArtifact() throws Exception {
       Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
       Assert.assertNotNull(branch);
-      return ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(), branch, false).iterator().next();
+      return ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(), branch, EXCLUDE_DELETED).iterator().next();
    }
 
    private static void cleanup() throws Exception {
       Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
       Assert.assertNotNull(branch);
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactListFromName(Artifact_setAttributeValues.class.getSimpleName(), branch, false);
+            ArtifactQuery.getArtifactListFromName(Artifact_setAttributeValues.class.getSimpleName(), branch,
+                  EXCLUDE_DELETED);
       new PurgeArtifacts(arts).execute();
    }
 }

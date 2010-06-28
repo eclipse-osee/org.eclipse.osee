@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.cases;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -36,7 +37,8 @@ public class ArtifactQueryTestDemo {
       Assert.assertNotNull(searchedArtifact);
 
       // Should exist with allowDeleted
-      searchedArtifact = ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(), true);
+      searchedArtifact =
+            ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(), INCLUDE_DELETED);
       Assert.assertNotNull(searchedArtifact);
 
       newArtifact.deleteAndPersist();
@@ -57,7 +59,8 @@ public class ArtifactQueryTestDemo {
       }
 
       // Should still exist with allowDeleted
-      searchedArtifact = ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(), true);
+      searchedArtifact =
+            ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(), INCLUDE_DELETED);
       Assert.assertNotNull(searchedArtifact);
 
    }

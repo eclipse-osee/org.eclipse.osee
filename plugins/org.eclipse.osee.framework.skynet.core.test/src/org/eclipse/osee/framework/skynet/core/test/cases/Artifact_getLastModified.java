@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.test.cases;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Collection;
 import java.util.Date;
 import junit.framework.Assert;
@@ -76,15 +77,14 @@ public class Artifact_getLastModified {
    }
 
    private void assertBefore(Date previousModifyDate, Artifact artifact) throws OseeCoreException {
-      Assert.assertTrue(
-            String.format("expected %tc to be before %tc", previousModifyDate, artifact.getLastModified()),
+      Assert.assertTrue(String.format("expected %tc to be before %tc", previousModifyDate, artifact.getLastModified()),
             previousModifyDate.before(artifact.getLastModified()));
    }
 
    private static void cleanup() throws Exception {
       Collection<Artifact> arts =
             ArtifactQuery.getArtifactListFromName(Artifact_getLastModified.class.getSimpleName(),
-                  BranchManager.getCommonBranch(), false);
+                  BranchManager.getCommonBranch(), EXCLUDE_DELETED);
       new PurgeArtifacts(arts).execute();
    }
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactMatch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.MatchLocation;
@@ -44,13 +46,13 @@ import org.eclipse.search.ui.text.Match;
 final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
    private final String queryString;
    private final IAttributeType[] attributeTypes;
-   private final boolean includeDeleted;
+   private final DeletionFlag includeDeleted;
    private final boolean matchWordOrder;
    private final Branch branch;
    private final boolean findAllMatchLocations;
    private final boolean isCaseSensitive;
 
-   RemoteArtifactSearch(String queryString, Branch branch, boolean includeDeleted, boolean matchWordOrder, boolean findAllMatchLocations, boolean isCaseSensitive, IAttributeType... attributeTypes) {
+   RemoteArtifactSearch(String queryString, Branch branch, DeletionFlag includeDeleted, boolean matchWordOrder, boolean findAllMatchLocations, boolean isCaseSensitive, IAttributeType... attributeTypes) {
       this.branch = branch;
       this.includeDeleted = includeDeleted;
       this.attributeTypes = attributeTypes;
@@ -63,7 +65,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
    @Override
    public String getCriteriaLabel() {
       List<String> optionsList = new ArrayList<String>();
-      if (includeDeleted) {
+      if (includeDeleted == INCLUDE_DELETED) {
          optionsList.add("Include Deleted");
       }
 

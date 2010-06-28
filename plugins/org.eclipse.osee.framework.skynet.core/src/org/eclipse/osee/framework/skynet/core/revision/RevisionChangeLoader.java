@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -134,9 +135,9 @@ public final class RevisionChangeLoader {
       Branch branch = historical ? transactionId.getBranch() : sourceBranch;
 
       if (historical) {
-         bulkLoadedArtifacts = ArtifactQuery.getHistoricalArtifactListFromIds(artIds, transactionId, true);
+         bulkLoadedArtifacts = ArtifactQuery.getHistoricalArtifactListFromIds(artIds, transactionId, INCLUDE_DELETED);
       } else {
-         bulkLoadedArtifacts = ArtifactQuery.getArtifactListFromIds(artIds, branch, true);
+         bulkLoadedArtifacts = ArtifactQuery.getArtifactListFromIds(artIds, branch, INCLUDE_DELETED);
       }
 
       //We build the changes after the artifact loader has been run so we can take advantage of bulk loading.

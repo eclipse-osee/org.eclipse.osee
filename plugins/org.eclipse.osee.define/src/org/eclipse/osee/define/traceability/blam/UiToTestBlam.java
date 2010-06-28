@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability.blam;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -98,7 +99,7 @@ public class UiToTestBlam extends AbstractBlam {
          if (Strings.isValid(input)) {
             for (String ui : input.split("\n")) {
                String toGet = ui.trim();
-               toTrace.addAll(ArtifactQuery.getArtifactListFromName(toGet, branch, false));
+               toTrace.addAll(ArtifactQuery.getArtifactListFromName(toGet, branch, EXCLUDE_DELETED));
             }
          } else {
             RequirementData requirements = new RequirementData(branch);
@@ -225,13 +226,7 @@ public class UiToTestBlam extends AbstractBlam {
    }
 
    private static enum Column {
-      UI_Title,
-      Requirement_Type,
-      Relates_To_Test_Unit,
-      Test_Unit_Name,
-      Test_Unit_Type,
-      Verified_By,
-      Validated_By,
+      UI_Title, Requirement_Type, Relates_To_Test_Unit, Test_Unit_Name, Test_Unit_Type, Verified_By, Validated_By,
       Used_By;
    }
 

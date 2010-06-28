@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.blam.operation;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -198,7 +199,8 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    private void initLowLevelRequirements(List<Artifact> artifacts) throws OseeCoreException {
-      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationTypes.Default_Hierarchical__Child);
+      RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
+            CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
          if (!artifact.isOfType(CoreArtifactTypes.Folder)) {
             lowLevelReqs.add(artifact);
@@ -208,7 +210,8 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    private void initAllocationComponents(List<Artifact> artifacts) throws OseeCoreException {
-      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationTypes.Default_Hierarchical__Child);
+      RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
+            CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
          if (!artifact.isOfType(CoreArtifactTypes.Folder)) {
             components.add(artifact);

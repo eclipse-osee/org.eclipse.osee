@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.cases;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import static org.junit.Assert.assertFalse;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,7 +61,8 @@ public class ArtifactLoaderTest {
    private static void testCleanup() throws Exception {
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "ArtifactLoaderTest");
       List<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(), false);
+            ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(),
+                  EXCLUDE_DELETED);
       ArtifactPersistenceManager.deleteArtifactList(transaction, false, artifacts);
       transaction.execute();
    }
@@ -120,7 +122,9 @@ public class ArtifactLoaderTest {
       }
 
       // Load and check artifacts
-      artifacts = ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(), false);
+      artifacts =
+            ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(),
+                  EXCLUDE_DELETED);
       Assert.assertEquals(NUM_ARTIFACTS, artifacts.size());
 
       for (Artifact artifact : artifacts) {
@@ -141,7 +145,8 @@ public class ArtifactLoaderTest {
          try {
             System.out.println("Running " + getName());
             List<Artifact> artifacts =
-                  ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(), false);
+                  ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(),
+                        EXCLUDE_DELETED);
             if (artifacts.size() != NUM_ARTIFACTS) {
                throw new OseeStateException("Should have loaded " + NUM_ARTIFACTS + "; only got " + artifacts.size());
             }

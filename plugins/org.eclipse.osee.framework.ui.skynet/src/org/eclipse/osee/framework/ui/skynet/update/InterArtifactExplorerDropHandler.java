@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.update;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -158,7 +159,8 @@ public class InterArtifactExplorerDropHandler {
 
    private Artifact getParent(Artifact sourceArtifact, Artifact destinationArtifact) throws OseeCoreException {
       Artifact reflectedArtifact =
-            ArtifactQuery.checkArtifactFromId(sourceArtifact.getArtId(), destinationArtifact.getBranch(), true);
+            ArtifactQuery.checkArtifactFromId(sourceArtifact.getArtId(), destinationArtifact.getBranch(),
+                  INCLUDE_DELETED);
       Artifact newDestinationArtifact = destinationArtifact;
 
       if (reflectedArtifact != null) {

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.cases;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
@@ -67,7 +69,7 @@ public class ArtifactQueryPerformanceTests {
       Branch common = BranchManager.getCommonBranch();
       Artifact art = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(common);
       long startTime = System.currentTimeMillis();
-      Artifact result = ArtifactQuery.getArtifactFromId(art.getHumanReadableId(), common, true);
+      Artifact result = ArtifactQuery.getArtifactFromId(art.getHumanReadableId(), common, INCLUDE_DELETED);
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testGetArtifactByHRID took %dms", elapsedTime));
       assertNotNull("No artifact found", result);
@@ -85,7 +87,7 @@ public class ArtifactQueryPerformanceTests {
          hrids.add(child.getHumanReadableId());
       }
       long startTime = System.currentTimeMillis();
-      List<Artifact> result = ArtifactQuery.getArtifactListFromIds(hrids, common, true);
+      List<Artifact> result = ArtifactQuery.getArtifactListFromIds(hrids, common, INCLUDE_DELETED);
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testGetArtifactsByHRID took %dms for %d artifacts", elapsedTime, result.size()));
       assertTrue("No artifacts found", result.size() > 0);
@@ -103,7 +105,7 @@ public class ArtifactQueryPerformanceTests {
          hrids.add(child.getHumanReadableId());
       }
       long startTime = System.currentTimeMillis();
-      List<Artifact> result = ArtifactQuery.getArtifactListFromIds(hrids, common, false);
+      List<Artifact> result = ArtifactQuery.getArtifactListFromIds(hrids, common, EXCLUDE_DELETED);
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("testGetArtifactsByHRIDNoDeleted took %dms for %d artifacts", elapsedTime,
             result.size()));
@@ -138,7 +140,7 @@ public class ArtifactQueryPerformanceTests {
                   CoreArtifactTypes.WorkRuleDefinition);
 
       long startTime = System.currentTimeMillis();
-      List<Artifact> result = ArtifactQuery.getArtifactListFromTypes(artTypes, common, false);
+      List<Artifact> result = ArtifactQuery.getArtifactListFromTypes(artTypes, common, EXCLUDE_DELETED);
       long elapsedTime = System.currentTimeMillis() - startTime;
 
       System.out.println(String.format("testGetArtifactsByArtTypes took %dms for %d artifacts", elapsedTime,
@@ -159,7 +161,7 @@ public class ArtifactQueryPerformanceTests {
    public void testLoadAllBranch() throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
       long startTime = System.currentTimeMillis();
-      List<Artifact> result = ArtifactQuery.getArtifactListFromBranch(common, false);
+      List<Artifact> result = ArtifactQuery.getArtifactListFromBranch(common, EXCLUDE_DELETED);
       long elapsedTime = System.currentTimeMillis() - startTime;
       System.out.println(String.format("loadAllBranch took %dms for %d artifacts", elapsedTime, result.size()));
       assertTrue("No artifacts found", result.size() > 0);

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.config;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -95,7 +96,8 @@ public class DemoDbReviews {
          reviewTestArts = new ArrayList<DemoTestTeamWorkflowArtifact>();
          for (String actionName : new String[] {"Button W doesn't work on%", "%Diagram Tree"}) {
             DemoTestTeamWorkflowArtifact testArt = null;
-            for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtil.getAtsBranch(), false)) {
+            for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtil.getAtsBranch(),
+                  EXCLUDE_DELETED)) {
                if (art instanceof DemoTestTeamWorkflowArtifact) {
                   testArt = (DemoTestTeamWorkflowArtifact) art;
                   reviewTestArts.add(testArt);
@@ -149,8 +151,8 @@ public class DemoDbReviews {
       // Create a PeerToPeer review and transition to Completed
       reviewArt =
             ReviewManager.createNewPeerToPeerReview(secondCodeArt, "Review new logic",
-                  firstCodeArt.getStateMgr().getCurrentStateName(),
-                  DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones), new Date(), transaction);
+                  firstCodeArt.getStateMgr().getCurrentStateName(), DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones),
+                  new Date(), transaction);
       roles = new ArrayList<UserRole>();
       roles.add(new UserRole(Role.Author, DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones), 2.3, true));
       roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith), 4.5, true));
