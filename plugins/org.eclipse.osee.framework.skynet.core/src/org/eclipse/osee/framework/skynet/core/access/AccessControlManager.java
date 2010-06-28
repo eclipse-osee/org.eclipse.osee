@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -31,11 +33,16 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.lifecycle.AbstractLifecycleOperation;
+import org.eclipse.osee.framework.lifecycle.ILifecycleService;
+import org.eclipse.osee.framework.lifecycle.access.AccessManagerChkPoint;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -61,7 +68,7 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
  * Provides access control for OSEE. <REM2>
- *
+ * 
  * @author Jeff C. Phillips
  */
 
@@ -239,7 +246,7 @@ public class AccessControlManager {
       return hasPermission(UserManager.getUser(), object, permission);
    }
 
-   public static PermissionEnum getObjectPermission(Artifact subject, Object object) {
+   public static PermissionEnum getObjectPermission(Artifact subject, Object object) throws OseeCoreException {
       for (PermissionEnum permissionEnum : PermissionEnum.values()) {
          boolean result = hasPermission(subject, object, permissionEnum);
          System.out.println("subject " + subject + " object " + object + " permission " + permissionEnum.name() + " -> " + result);
@@ -250,35 +257,12 @@ public class AccessControlManager {
       return FULLACCESS;
    }
 
-   private static boolean hasPermission(Artifact subject, Object object, PermissionEnum permission) {
-      PermissionEnum userPermission = null;
-      PermissionEnum branchPermission = null;
-      Branch branch = null;
-
-      if (object instanceof Artifact) {
-         Artifact artifact = (Artifact) object;
-         branch = artifact.getBranch();
-         userPermission = getArtifactPermission(subject, (Artifact) object, permission);
-      } else if (object instanceof Branch) {
-         branch = (Branch) object;
-      } else {
-         throw new IllegalStateException("Unhandled object type for access control - " + object);
-      }
-
-      branchPermission = getBranchPermission(subject, branch, permission);
-
-      if (branchPermission == DENY || userPermission == null) {
-         userPermission = branchPermission;
-      }
-
-      if (permission == READ && userPermission == LOCK) {
-         return true;
-      }
-
-      if (userPermission == null || userPermission == LOCK) {
-         return false;
-      }
-      return userPermission.getRank() >= permission.getRank() && !userPermission.equals(DENY);
+   private static boolean hasPermission(Artifact subject, Object object, PermissionEnum permission) throws OseeCoreException {
+      ILifecycleService service = Activator.getInstance().getLifecycleServices();
+      AccessCheckOperation accessCheckOperation = new AccessCheckOperation(service, subject, object, permission);
+      Operations.executeWork(accessCheckOperation, new LogProgressMonitor(), -1.0);
+      IStatus status = accessCheckOperation.getStatus();
+      return accessCheckOperation.hasPermission();
    }
 
    private static PermissionEnum getBranchPermission(Artifact subject, Branch branch, PermissionEnum permission) {
@@ -716,4 +700,53 @@ public class AccessControlManager {
       }
    }
 
+   private static class AccessCheckOperation extends AbstractLifecycleOperation {
+      private boolean hasPermission;
+      private final Artifact subject;
+      private final Object object;
+      private final PermissionEnum permission;
+
+      public AccessCheckOperation(ILifecycleService service, Artifact subject, Object object, PermissionEnum permission) {
+         super(service, new AccessManagerChkPoint(null, null), "Check access control", Activator.PLUGIN_ID);
+         this.hasPermission = false;
+         this.subject = subject;
+         this.object = object;
+         this.permission = permission;
+      }
+
+      public boolean hasPermission() {
+         return hasPermission;
+      }
+
+      @Override
+      protected void doCoreWork(IProgressMonitor monitor) throws Exception {
+         PermissionEnum userPermission = null;
+         PermissionEnum branchPermission = null;
+         Branch branch = null;
+
+         if (object instanceof Artifact) {
+            Artifact artifact = (Artifact) object;
+            branch = artifact.getBranch();
+            userPermission = getArtifactPermission(subject, (Artifact) object, permission);
+         } else if (object instanceof Branch) {
+            branch = (Branch) object;
+         } else {
+            throw new IllegalStateException("Unhandled object type for access control - " + object);
+         }
+
+         branchPermission = getBranchPermission(subject, branch, permission);
+
+         if (branchPermission == DENY || userPermission == null) {
+            userPermission = branchPermission;
+         }
+
+         if (permission == READ && userPermission == LOCK) {
+            hasPermission = true;
+         } else if (userPermission == null || userPermission == LOCK) {
+            hasPermission = false;
+         } else {
+            hasPermission = userPermission.getRank() >= permission.getRank() && !userPermission.equals(DENY);
+         }
+      }
+   }
 }
