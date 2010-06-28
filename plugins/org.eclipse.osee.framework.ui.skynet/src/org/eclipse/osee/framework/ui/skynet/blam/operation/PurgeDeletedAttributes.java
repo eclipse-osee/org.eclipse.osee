@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
+import org.eclipse.osee.framework.skynet.core.artifact.LoadLevel;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -46,7 +46,7 @@ public class PurgeDeletedAttributes extends AbstractBlam {
             variableMap.getCollection(AttributeType.class, "Attribute Type(s) to purge");
 
       List<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromBranch(branch, ArtifactLoad.ALL_CURRENT, INCLUDE_DELETED);
+            ArtifactQuery.getArtifactListFromBranch(branch, LoadLevel.ALL_CURRENT, INCLUDE_DELETED);
 
       StringBuilder strB = new StringBuilder();
 

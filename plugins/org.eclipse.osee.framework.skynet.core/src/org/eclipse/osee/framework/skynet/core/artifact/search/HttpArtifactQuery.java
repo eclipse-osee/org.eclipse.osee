@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
+import org.eclipse.osee.framework.skynet.core.artifact.LoadLevel;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag;
@@ -107,7 +107,7 @@ final class HttpArtifactQuery {
       return backedInputStream;
    }
 
-   public List<Artifact> getArtifacts(ArtifactLoad loadLevel, ISearchConfirmer confirmer, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
+   public List<Artifact> getArtifacts(LoadLevel loadLevel, ISearchConfirmer confirmer, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
       List<Artifact> toReturn = null;
       Pair<String, ByteArrayOutputStream> data = executeSearch(false, false);
       if (data != null) {
@@ -132,7 +132,7 @@ final class HttpArtifactQuery {
       return toReturn;
    }
 
-   public List<ArtifactMatch> getArtifactsWithMatches(ArtifactLoad loadLevel, ISearchConfirmer confirmer, LoadType reload, boolean historical, DeletionFlag allowDeleted, boolean findAllMatchLocations) throws OseeCoreException {
+   public List<ArtifactMatch> getArtifactsWithMatches(LoadLevel loadLevel, ISearchConfirmer confirmer, LoadType reload, boolean historical, DeletionFlag allowDeleted, boolean findAllMatchLocations) throws OseeCoreException {
       List<ArtifactMatch> toReturn = new ArrayList<ArtifactMatch>();
       Pair<String, ByteArrayOutputStream> data = executeSearch(true, findAllMatchLocations);
       if (data != null) {

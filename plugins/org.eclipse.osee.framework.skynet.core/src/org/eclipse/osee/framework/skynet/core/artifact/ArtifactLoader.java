@@ -58,7 +58,7 @@ public final class ArtifactLoader {
    /**
     * (re)loads the artifacts selected by sql and then returns them in a list
     */
-   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, LoadType reload, ISearchConfirmer confirmer, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, LoadLevel loadLevel, LoadType reload, ISearchConfirmer confirmer, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       int queryId = getNewQueryId();
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate, false);
@@ -70,13 +70,13 @@ public final class ArtifactLoader {
       return artifacts;
    }
 
-   public static List<Artifact> loadArtifactsFromQueryId(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static List<Artifact> loadArtifactsFromQueryId(int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, int fetchSize, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
       List<Artifact> loadedItems = new ArrayList<Artifact>(fetchSize);
       loadArtifactsFromQueryId(loadedItems, queryId, loadLevel, confirmer, fetchSize, reload, historical, allowDeleted);
       return loadedItems;
    }
 
-   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
+   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, int fetchSize, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
       try {
          OseeSql sqlKey;
          if (historical) {
@@ -129,14 +129,14 @@ public final class ArtifactLoader {
       }
    }
 
-   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, ArtifactLoad loadLevel, LoadType reload) throws OseeCoreException {
+   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, LoadType reload) throws OseeCoreException {
       return loadArtifacts(artIds, branch, loadLevel, null, reload);
    }
 
    /**
     * loads or reloads artifacts based on artifact ids and branch ids
     */
-   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, ArtifactLoad loadLevel, TransactionRecord transactionId, LoadType reload) throws OseeCoreException {
+   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, TransactionRecord transactionId, LoadType reload) throws OseeCoreException {
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 
       if (artIds != null && !artIds.isEmpty()) {
@@ -162,13 +162,13 @@ public final class ArtifactLoader {
    /**
     * loads or reloads artifacts based on artifact ids and branch ids in the insertParameters
     */
-   public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static List<Artifact> loadArtifacts(int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
       List<Artifact> loadedItems = new ArrayList<Artifact>(insertParameters.size());
       loadArtifacts(loadedItems, queryId, loadLevel, confirmer, insertParameters, reload, historical, allowDeleted);
       return loadedItems;
    }
 
-   public static void loadArtifacts(Collection<Artifact> loadedItems, int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static void loadArtifacts(Collection<Artifact> loadedItems, int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
       if (!insertParameters.isEmpty()) {
          Collection<Artifact> data;
          if (loadedItems.isEmpty()) {
@@ -291,7 +291,7 @@ public final class ArtifactLoader {
       return artifact;
    }
 
-   static void loadArtifactData(Artifact artifact, ArtifactLoad loadLevel) throws OseeCoreException {
+   static void loadArtifactData(Artifact artifact, LoadLevel loadLevel) throws OseeCoreException {
       int queryId = getNewQueryId();
       Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
@@ -308,7 +308,7 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
+   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, boolean historical, DeletionFlag allowDeleted) throws OseeCoreException {
       if (reload == RELOAD_CACHE) {
          for (Artifact artifact : artifacts) {
             artifact.prepareForReload();

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
+import static org.eclipse.osee.framework.skynet.core.artifact.LoadLevel.FULL;
 import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
 import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.INCLUDE_CACHE;
@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
+import org.eclipse.osee.framework.skynet.core.artifact.LoadLevel;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -201,7 +201,7 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromIds(Collection<Integer> artifactIds, IOseeBranch branch) throws OseeCoreException {
-      return ArtifactLoader.loadArtifacts(artifactIds, branch, ArtifactLoad.FULL, INCLUDE_CACHE);
+      return ArtifactLoader.loadArtifacts(artifactIds, branch, LoadLevel.FULL, INCLUDE_CACHE);
    }
 
    /**
@@ -210,7 +210,7 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromIds(Collection<Integer> artifactIds, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
-      List<Artifact> toReturn = ArtifactLoader.loadArtifacts(artifactIds, branch, ArtifactLoad.FULL, INCLUDE_CACHE);
+      List<Artifact> toReturn = ArtifactLoader.loadArtifacts(artifactIds, branch, LoadLevel.FULL, INCLUDE_CACHE);
       if (allowDeleted == EXCLUDE_DELETED) {
          for (int i = 0; i < toReturn.size(); i++) {
             if (toReturn.get(i).isDeleted()) {
@@ -325,7 +325,7 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(branch, FULL, allowDeleted).selectArtifacts(10000);
    }
 
-   public static List<Artifact> getArtifactListFromBranch(IOseeBranch branch, ArtifactLoad loadLevel, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromBranch(IOseeBranch branch, LoadLevel loadLevel, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, loadLevel, allowDeleted).getArtifacts(10000, null);
    }
 

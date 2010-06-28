@@ -665,7 +665,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
 
    private void ensureAttributesLoaded() throws OseeCoreException {
       if (!isAttributesLoaded() && isInDb()) {
-         ArtifactLoader.loadArtifactData(this, ArtifactLoad.ATTRIBUTE);
+         ArtifactLoader.loadArtifactData(this, LoadLevel.ATTRIBUTE);
       }
    }
 

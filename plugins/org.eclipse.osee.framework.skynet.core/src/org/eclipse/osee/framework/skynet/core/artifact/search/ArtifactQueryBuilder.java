@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
+import org.eclipse.osee.framework.skynet.core.artifact.LoadLevel;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -63,7 +63,7 @@ public class ArtifactQueryBuilder {
    private Collection<Integer> artifactIds;
    private final Collection<? extends IArtifactType> artifactTypes;
    private final DeletionFlag allowDeleted;
-   private final ArtifactLoad loadLevel;
+   private final LoadLevel loadLevel;
    private boolean count = false;
    private boolean emptyCriteria = false;
    private boolean firstTable = true;
@@ -76,7 +76,7 @@ public class ArtifactQueryBuilder {
     * @param branch
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
-   public ArtifactQueryBuilder(int artId, IOseeBranch branch, DeletionFlag allowDeleted, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(int artId, IOseeBranch branch, DeletionFlag allowDeleted, LoadLevel loadLevel) {
       this(null, artId, null, null, null, branch, null, allowDeleted, loadLevel, true);
    }
 
@@ -87,74 +87,74 @@ public class ArtifactQueryBuilder {
     * @param branch
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
-   public ArtifactQueryBuilder(Collection<Integer> artifactIds, IOseeBranch branch, DeletionFlag allowDeleted, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(Collection<Integer> artifactIds, IOseeBranch branch, DeletionFlag allowDeleted, LoadLevel loadLevel) {
       this(artifactIds, 0, null, null, null, branch, null, allowDeleted, loadLevel, true);
       emptyCriteria = artifactIds.isEmpty();
    }
 
-   public ArtifactQueryBuilder(List<String> guidOrHrids, IOseeBranch branch, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(List<String> guidOrHrids, IOseeBranch branch, LoadLevel loadLevel) {
       this(null, 0, guidOrHrids, null, null, branch, null, EXCLUDE_DELETED, loadLevel, true);
       emptyCriteria = guidOrHrids.isEmpty();
    }
 
-   public ArtifactQueryBuilder(List<String> guidOrHrids, IOseeBranch branch, DeletionFlag allowDeleted, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(List<String> guidOrHrids, IOseeBranch branch, DeletionFlag allowDeleted, LoadLevel loadLevel) {
       this(null, 0, guidOrHrids, null, null, branch, null, allowDeleted, loadLevel, true);
       emptyCriteria = guidOrHrids.isEmpty();
    }
 
-   public ArtifactQueryBuilder(List<String> guidOrHrids, TransactionRecord transactionId, DeletionFlag allowDeleted, ArtifactLoad loadLevel) throws OseeCoreException {
+   public ArtifactQueryBuilder(List<String> guidOrHrids, TransactionRecord transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
       this(null, 0, guidOrHrids, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel, true);
       emptyCriteria = guidOrHrids.isEmpty();
    }
 
-   public ArtifactQueryBuilder(Collection<Integer> artifactIds, TransactionRecord transactionId, DeletionFlag allowDeleted, ArtifactLoad loadLevel) throws OseeCoreException {
+   public ArtifactQueryBuilder(Collection<Integer> artifactIds, TransactionRecord transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
       this(artifactIds, 0, null, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel, true);
       emptyCriteria = artifactIds.isEmpty();
    }
 
-   public ArtifactQueryBuilder(int artifactId, TransactionRecord transactionId, DeletionFlag allowDeleted, ArtifactLoad loadLevel) throws OseeCoreException {
+   public ArtifactQueryBuilder(int artifactId, TransactionRecord transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
       this(null, artifactId, null, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel, true);
    }
 
-   public ArtifactQueryBuilder(String guidOrHrid, IOseeBranch branch, DeletionFlag allowDeleted, ArtifactLoad loadLevel) throws OseeCoreException {
+   public ArtifactQueryBuilder(String guidOrHrid, IOseeBranch branch, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
       this(null, 0, null, ensureValid(guidOrHrid), null, branch, null, allowDeleted, loadLevel, true);
    }
 
-   public ArtifactQueryBuilder(IArtifactType artifactType, IOseeBranch branch, ArtifactLoad loadLevel, DeletionFlag allowDeleted) {
+   public ArtifactQueryBuilder(IArtifactType artifactType, IOseeBranch branch, LoadLevel loadLevel, DeletionFlag allowDeleted) {
       this(null, 0, null, null, Arrays.asList(artifactType), branch, null, allowDeleted, loadLevel, true);
    }
 
-   public ArtifactQueryBuilder(Collection<? extends IArtifactType> artifactTypes, IOseeBranch branch, ArtifactLoad loadLevel, DeletionFlag allowDeleted) {
+   public ArtifactQueryBuilder(Collection<? extends IArtifactType> artifactTypes, IOseeBranch branch, LoadLevel loadLevel, DeletionFlag allowDeleted) {
       this(null, 0, null, null, artifactTypes, branch, null, allowDeleted, loadLevel, true);
       emptyCriteria = artifactTypes.isEmpty();
    }
 
-   public ArtifactQueryBuilder(IOseeBranch branch, ArtifactLoad loadLevel, DeletionFlag allowDeleted) {
+   public ArtifactQueryBuilder(IOseeBranch branch, LoadLevel loadLevel, DeletionFlag allowDeleted) {
       this(null, 0, null, null, null, branch, null, allowDeleted, loadLevel, false);
    }
 
-   public ArtifactQueryBuilder(IOseeBranch branch, ArtifactLoad loadLevel, DeletionFlag allowDeleted, AbstractArtifactSearchCriteria... criteria) {
+   public ArtifactQueryBuilder(IOseeBranch branch, LoadLevel loadLevel, DeletionFlag allowDeleted, AbstractArtifactSearchCriteria... criteria) {
       this(null, 0, null, null, null, branch, null, allowDeleted, loadLevel, true, criteria);
       emptyCriteria = criteria.length == 0;
    }
 
-   public ArtifactQueryBuilder(IOseeBranch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
+   public ArtifactQueryBuilder(IOseeBranch branch, LoadLevel loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
       this(null, 0, null, null, null, branch, null, EXCLUDE_DELETED, loadLevel, true, toArray(criteria));
       emptyCriteria = criteria.isEmpty();
    }
 
-   public ArtifactQueryBuilder(IArtifactType artifactType, IOseeBranch branch, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
+   public ArtifactQueryBuilder(IArtifactType artifactType, IOseeBranch branch, LoadLevel loadLevel, AbstractArtifactSearchCriteria... criteria) {
       this(null, 0, null, null, Arrays.asList(artifactType), branch, null, EXCLUDE_DELETED, loadLevel, true, criteria);
       emptyCriteria = criteria.length == 0;
    }
 
-   public ArtifactQueryBuilder(IArtifactType artifactType, IOseeBranch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
+   public ArtifactQueryBuilder(IArtifactType artifactType, IOseeBranch branch, LoadLevel loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
       this(null, 0, null, null, Arrays.asList(artifactType), branch, null, EXCLUDE_DELETED, loadLevel, true,
             toArray(criteria));
       emptyCriteria = criteria.isEmpty();
    }
 
-   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<? extends IArtifactType> artifactTypes, IOseeBranch branch, TransactionRecord transactionId, DeletionFlag allowDeleted, ArtifactLoad loadLevel, boolean tableOrderForward, AbstractArtifactSearchCriteria... criteria) {
+   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<? extends IArtifactType> artifactTypes, IOseeBranch branch, TransactionRecord transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel, boolean tableOrderForward, AbstractArtifactSearchCriteria... criteria) {
       this.artifactTypes = artifactTypes;
       this.branch = branch;
       this.criteria = criteria;
