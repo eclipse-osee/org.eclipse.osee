@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.database.operation.Address;
 import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 import org.osgi.framework.Version;
 
 /**
@@ -59,8 +58,6 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    public String applyTransform(ExchangeDataProcessor processor) throws OseeCoreException {
       List<Integer> branchIds = convertBranchTable(processor);
 
-      repairPreviuosExport(processor);
-
       Map<Long, Long> artifactGammaToNetGammaId = convertArtifactAndConflicts(processor);
       consolidateTxsAddressing(processor, ExportItem.OSEE_TXS_DATA, branchIds, artifactGammaToNetGammaId);
 
@@ -73,17 +70,6 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
             "<entry id=\"osee.artifact.version.data.xml[^<]+", ""));
       processor.deleteExportItem("osee.artifact.version.data.xml");
       return getMaxVersion().toString();
-   }
-
-   private void repairPreviuosExport(ExchangeDataProcessor processor) throws OseeCoreException {
-      processor.transform(ExportItem.EXPORT_DB_SCHEMA, new DbSchemaRuleAddColumn("osee_txs",
-            "<column id=\"branch_id\" type=\"INTEGER\" />\n"));
-
-      V0_9_0TxDetailsHandler txdHandler = new V0_9_0TxDetailsHandler();
-      processor.parse(ExportItem.OSEE_TX_DETAILS_DATA, txdHandler);
-
-      SaxTransformer txsTransformer = new V0_9_0TxsTransformer(txdHandler.getBranchIdMap());
-      processor.transform(ExportItem.OSEE_TXS_DATA, txsTransformer);
    }
 
    @Override
