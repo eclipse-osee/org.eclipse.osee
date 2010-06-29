@@ -67,12 +67,12 @@ public class WholeDocumentRenderer extends WordRenderer {
 
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
-      Artifact artifact = artifacts.iterator().next();
       InputStream stream = null;
       try {
-         if (artifact == null) {
+         if (artifacts.isEmpty()) {
             stream = Streams.convertStringToInputStream(WordWholeDocumentAttribute.getEmptyDocumentContent(), "UTF-8");
          } else {
+            Artifact artifact = artifacts.iterator().next();
             String content = artifact.getOrInitializeSoleAttributeValue(CoreAttributeTypes.WHOLE_WORD_CONTENT);
             if (presentationType == PresentationType.DIFF && WordAnnotationHandler.containsWordAnnotations(content)) {
                throw new OseeStateException(
