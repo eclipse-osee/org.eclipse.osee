@@ -33,18 +33,17 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.JoinUtility.CharJoinQuery;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.LoadLevel;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
+import org.eclipse.osee.framework.skynet.core.artifact.LoadLevel;
 import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
 
 /**
@@ -82,7 +81,7 @@ public class ArtifactQueryBuilder {
 
    /**
     * search for artifacts with the given ids
-    *
+    * 
     * @param artifactIds list of artifact ids
     * @param branch
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
@@ -480,12 +479,6 @@ public class ArtifactQueryBuilder {
             critiri.cleanUp();
          }
       }
-   }
-
-   public void selectArtifacts(int queryId, int artifactCountEstimate, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, TransactionRecord transactionId) throws OseeCoreException {
-      ArtifactLoader.selectArtifacts(queryId, insertParameters, getArtifactSelectSql(), queryParameters.toArray(),
-            artifactCountEstimate, transactionId);
-      cleanup();
    }
 
    public List<Integer> selectArtifacts(int artifactCountEstimate) throws OseeCoreException {
