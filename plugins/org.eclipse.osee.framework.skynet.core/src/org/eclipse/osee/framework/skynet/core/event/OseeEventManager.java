@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
+import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEventType;
@@ -74,8 +75,9 @@ public class OseeEventManager {
          return;
       }
       if (OseeEventManager.isOldEvents()) InternalEventManager.kickBroadcastEvent(getSender(source),
-            broadcastEvent.getBroadcastEventType(), broadcastEvent.getUsers().toArray(
-                  new String[broadcastEvent.getUsers().size()]), broadcastEvent.getMessage());
+            broadcastEvent.getBroadcastEventType(),
+            broadcastEvent.getUsers().toArray(new String[broadcastEvent.getUsers().size()]),
+            broadcastEvent.getMessage());
       if (OseeEventManager.isNewEvents()) InternalEventManager2.kickBroadcastEvent(getSender(source), broadcastEvent);
    }
 
@@ -206,14 +208,17 @@ public class OseeEventManager {
     */
    public static void addPriorityListener(IEventListener listener) {
       if (OseeEventManager.isOldEvents()) InternalEventManager.addPriorityListener(listener);
+      if (OseeEventManager.isNewEvents()) FrameworkEventManager.addPriorityListener(listener);
    }
 
    public static void addListener(IEventListener listener) {
       if (OseeEventManager.isOldEvents()) InternalEventManager.addListener(listener);
+      if (OseeEventManager.isNewEvents()) FrameworkEventManager.addListener(listener);
    }
 
    public static void removeListener(IEventListener listener) {
       if (OseeEventManager.isOldEvents()) InternalEventManager.removeListeners(listener);
+      if (OseeEventManager.isNewEvents()) FrameworkEventManager.removeListeners(listener);
    }
 
    public static boolean isDisableEvents() {
@@ -229,7 +234,7 @@ public class OseeEventManager {
    // Return report showing all listeners registered
    public static String getListenerReport() {
       if (OseeEventManager.isOldEvents()) return InternalEventManager.getListenerReport();
-      if (OseeEventManager.isNewEvents()) return InternalEventManager2.getListenerReport();
+      if (OseeEventManager.isNewEvents()) return FrameworkEventManager.getListenerReport();
       return "Neither event system is active";
    }
 

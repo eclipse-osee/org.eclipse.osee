@@ -50,12 +50,15 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeGroup;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -94,7 +97,9 @@ public final class AtsUtil {
    public static int MILLISECS_PER_DAY = 1000 * 60 * 60 * 24;
    public final static String normalColor = "#FFFFFF";
    public final static String activeColor = "#EEEEEE";
-   public static BranchGuidEventFilter branchGuidEventFilter;
+   private static BranchGuidEventFilter branchGuidEventFilter;
+   private static ArtifactTypeEventFilter artifactTypeEventFilter;
+   private static List<IEventFilter> atsObjectEventFilter;
 
    private AtsUtil() {
       super();
@@ -445,5 +450,50 @@ public final class AtsUtil {
          branchGuidEventFilter = new BranchGuidEventFilter(CoreBranches.COMMON);
       }
       return branchGuidEventFilter;
+   }
+
+   public static List<IEventFilter> getAtsObjectEventFilters() {
+      try {
+         if (atsObjectEventFilter == null) {
+            atsObjectEventFilter = new ArrayList<IEventFilter>(2);
+            atsObjectEventFilter.add(getCommonBranchFilter());
+            atsObjectEventFilter.add(getAtsObjectArtifactTypeEventFilter());
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return atsObjectEventFilter;
+   }
+
+   public static ArtifactTypeEventFilter getAtsObjectArtifactTypeEventFilter() {
+      if (artifactTypeEventFilter == null) {
+         artifactTypeEventFilter =
+               new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action,
+                     AtsArtifactTypes.Task, AtsArtifactTypes.Goal, AtsArtifactTypes.PeerToPeerReview,
+                     AtsArtifactTypes.DecisionReview);
+      }
+      return artifactTypeEventFilter;
+   }
+
+   public static Set<Artifact> getAssigned(User user) throws OseeCoreException {
+      return StateManager.getAssigned(user);
+   }
+
+   /**
+    * return currently assigned state machine artifacts that match clazz
+    * 
+    * @param clazz to match or all if null
+    */
+   public static Set<Artifact> getAssigned(User user, Class<?> clazz) throws OseeCoreException {
+      return StateManager.getAssigned(user, clazz);
+   }
+
+   /**
+    * return currently assigned state machine artifacts that match clazz
+    * 
+    * @param clazz to match or all if null
+    */
+   public static Set<Artifact> getAssigned(String userId, Class<?> clazz) throws OseeCoreException {
+      return StateManager.getAssigned(userId, clazz);
    }
 }

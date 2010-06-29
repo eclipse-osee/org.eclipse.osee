@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
@@ -69,6 +70,9 @@ import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListene
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -92,9 +96,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
 /**
+ * <REM2>
+ * 
  * @author Donald G. Dunne
  */
-public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArtifactsPurgedEventListener, IArtifactReloadEventListener, IArtifactsChangeTypeEventListener, IFrameworkTransactionEventListener {
+public class WorldXViewer extends XViewer implements IArtifactEventListener, ISelectedAtsArtifacts, IArtifactsPurgedEventListener, IArtifactReloadEventListener, IArtifactsChangeTypeEventListener, IFrameworkTransactionEventListener {
    private String title;
    private String extendedStatusString = "";
    public static final String MENU_GROUP_ATS_WORLD_EDIT = "ATS WORLD EDIT";
@@ -897,6 +903,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             arts.add((Artifact) obj);
          }
       }
+
       setInput(arts);
    }
 
@@ -1123,4 +1130,62 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       super.doUpdateItem(item, element);
    }
 
+   @Override
+   public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
+      if (thisXViewer.getTree().isDisposed()) {
+         OseeEventManager.removeListener(this);
+         return;
+      }
+      if (getContentProvider() == null) {
+         return;
+      }
+      final Collection<Artifact> modifiedArts = artifactEvent.getModifiedCacheArtifacts();
+      final Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            IContentProvider contentProvider = getContentProvider();
+            if (contentProvider instanceof WorldContentProvider) {
+               remove(artifactEvent.getDeletedPurged().toArray());
+            }
+
+            update(modifiedArts.toArray(), null);
+            for (Artifact art : modifiedArts) {
+               if (art instanceof IWorldViewArtifact) {
+                  // If parent is loaded and child changed, refresh parent
+                  try {
+                     if (art instanceof StateMachineArtifact && ((StateMachineArtifact) art).getParentAtsArtifact() instanceof IWorldViewArtifact) {
+                        update(((StateMachineArtifact) art).getParentAtsArtifact(), null);
+                     }
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  }
+               }
+            }
+
+            for (Artifact art : relModifiedArts) {
+               // Don't refresh deleted artifacts
+               if (art.isDeleted()) {
+                  continue;
+               }
+               if (art instanceof IWorldViewArtifact) {
+                  refresh(art);
+                  // If parent is loaded and child changed, refresh parent
+                  try {
+                     if (art instanceof StateMachineArtifact && ((StateMachineArtifact) art).getParentAtsArtifact() instanceof IWorldViewArtifact) {
+                        refresh(((StateMachineArtifact) art).getParentAtsArtifact());
+                     }
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  }
+               }
+            }
+         }
+      });
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return AtsUtil.getAtsObjectEventFilters();
+   }
 }

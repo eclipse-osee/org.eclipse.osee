@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -34,7 +35,6 @@ import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
 import org.eclipse.osee.ats.task.TaskComposite;
 import org.eclipse.osee.ats.task.TaskTabXWidgetActionPage;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
@@ -60,11 +60,8 @@ import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListen
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
-import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
-import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
-import org.eclipse.osee.framework.skynet.core.event2.filter.FilteredEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -105,6 +102,8 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
+ * <REM2>
+ * 
  * @author Donald G. Dunne
  */
 public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventListener, ISelectedAtsArtifacts, IDirtiableEditor, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
@@ -152,7 +151,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventL
          sma.setEditor(this);
 
          OseeEventManager.addListener(this);
-         registerForEvents();
 
          updatePartName();
 
@@ -180,39 +178,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventL
       }
 
       enableGlobalPrint();
-   }
-   private ArtifactTypeEventFilter artifactTypeEventFilter;
-   private FilteredEventListener filteredEventListener;
-   private BranchGuidEventFilter branchGuidEventFilter;
-
-   private void registerForEvents() {
-      try {
-         if (filteredEventListener == null) {
-            filteredEventListener = new FilteredEventListener(this);
-            filteredEventListener.addFilter(createBranchGuidEventFilter());
-            filteredEventListener.addFilter(createArtifactTypeEventFilter());
-         }
-         FrameworkEventManager.addListener(filteredEventListener);
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-   }
-
-   private BranchGuidEventFilter createBranchGuidEventFilter() throws OseeCoreException {
-      if (branchGuidEventFilter == null) {
-         branchGuidEventFilter = new BranchGuidEventFilter(AtsUtil.getAtsBranch());
-      }
-      return branchGuidEventFilter;
-   }
-
-   private ArtifactTypeEventFilter createArtifactTypeEventFilter() {
-      if (artifactTypeEventFilter == null) {
-         artifactTypeEventFilter =
-               new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action,
-                     AtsArtifactTypes.Task, AtsArtifactTypes.Goal, AtsArtifactTypes.PeerToPeerReview,
-                     AtsArtifactTypes.DecisionReview);
-      }
-      return artifactTypeEventFilter;
    }
 
    private void createTaskTab() throws OseeCoreException, PartInitException {
@@ -452,9 +417,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventL
    }
 
    public static void editArtifact(final StateMachineArtifact sma) {
-      if (sma == null) {
-         return;
-      }
       if (sma == null) {
          return;
       }
@@ -790,6 +752,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventL
    }
 
    @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return AtsUtil.getAtsObjectEventFilters();
+   }
+
+   @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       System.out.println("SMAEditor: handleArtifactModified called [" + artifactEvent + "] - sender " + sender + "");
       if (sma.isInTransition()) {
@@ -814,11 +781,15 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventL
                }
             }
          });
+      } else if (isReloaded(artifactEvent)) {
+         SMAEditor.close(Collections.singleton(sma), false);
+         if (!sma.isDeleted()) {
+            SMAEditor.editArtifact(sma);
+         }
       } else if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
          try {
             // If related review has made a change, redraw
             for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
-               // TODO addt his back in when relation events propagated
                if (artifactEvent.isHasEvent(reviewArt)) {
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override
@@ -841,4 +812,27 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventL
       }
       onDirtied();
    }
+
+   private boolean isReloaded(ArtifactEvent artifactEvent) {
+      try {
+         if (artifactEvent.isReloaded(sma)) {
+            return true;
+         }
+         if (sma instanceof TaskableStateMachineArtifact) {
+            for (TaskArtifact taskArt : ((TaskableStateMachineArtifact) sma).getTaskArtifacts()) {
+               if (artifactEvent.isReloaded(taskArt)) return true;
+            }
+         }
+         if (sma.isTeamWorkflow()) {
+            for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
+               if (artifactEvent.isReloaded(reviewArt)) return true;
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         return false;
+      }
+      return false;
+   }
+
 }

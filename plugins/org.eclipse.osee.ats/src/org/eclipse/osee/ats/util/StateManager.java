@@ -16,9 +16,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
@@ -30,6 +31,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
@@ -347,4 +350,38 @@ public class StateManager {
       if (logItem == null) return 0;
       return (new Date()).getTime() - logItem.getDate().getTime();
    }
+
+   /**
+    * return currently assigned state machine artifacts
+    */
+   public static Set<Artifact> getAssigned(User user) throws OseeCoreException {
+      return getAssigned(user, null);
+   }
+
+   /**
+    * return currently assigned state machine artifacts that match clazz
+    * 
+    * @param clazz to match or all if null
+    */
+   public static Set<Artifact> getAssigned(User user, Class<?> clazz) throws OseeCoreException {
+      return getAssigned(user.getUserId(), clazz);
+   }
+
+   /**
+    * return currently assigned state machine artifacts that match clazz
+    * 
+    * @param clazz to match or all if null
+    */
+   public static Set<Artifact> getAssigned(String userId, Class<?> clazz) throws OseeCoreException {
+      Set<Artifact> assigned = new HashSet<Artifact>();
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(
+            ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), "%<" + userId + ">%", AtsUtil.getAtsBranch())) {
+         if (clazz == null || clazz.isInstance(artifact)) {
+            assigned.add(artifact);
+         }
+      }
+      return assigned;
+
+   }
+
 }

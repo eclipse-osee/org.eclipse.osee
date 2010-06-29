@@ -6,20 +6,21 @@
 package org.eclipse.osee.framework.skynet.core.event2;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IEventFilteredListener;
 import org.eclipse.osee.framework.skynet.core.event.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IRemoteEventManagerEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
-import org.eclipse.osee.framework.skynet.core.event2.filter.FilteredEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 
 /**
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 public class FrameworkEventManager {
    private static final List<IEventListener> priorityListeners = new CopyOnWriteArrayList<IEventListener>();
    private static final List<IEventListener> listeners = new CopyOnWriteArrayList<IEventListener>();
-   private static List<EventBasicGuidRelation> EMPTY_EVENT_RELATIONS = new ArrayList<EventBasicGuidRelation>();
 
    public static void addListener(IEventListener listener) {
       if (listener == null) {
@@ -59,6 +59,12 @@ public class FrameworkEventManager {
       priorityListeners.remove(listener);
    }
 
+   public static void removeListeners(IEventListener listener) {
+      OseeEventManager.eventLog("IEM1: removeListener: (" + listeners.size() + ") " + listener);
+      listeners.remove(listener);
+      priorityListeners.remove(listener);
+   }
+
    public static void removeAllListeners() {
       listeners.clear();
       priorityListeners.clear();
@@ -66,10 +72,6 @@ public class FrameworkEventManager {
 
    public static int getNumberOfListeners() {
       return listeners.size();
-   }
-
-   public static boolean isHandledBy(IEventListener event) {
-      return event instanceof IArtifactEventListener || (event instanceof FilteredEventListener && ((FilteredEventListener) event).isOfType(IArtifactEventListener.class));
    }
 
    public static void processBranchEvent(Sender sender, BranchEvent branchEvent) {
@@ -83,17 +85,16 @@ public class FrameworkEventManager {
    }
 
    private static void processBranchEventListener(IEventListener listener, Sender sender, BranchEvent branchEvent) {
-      IBranchListener branchListner = null;
-      Collection<IEventFilter> eventFilters = null;
-      if (listener instanceof IBranchListener) {
-         branchListner = (IBranchListener) listener;
-         eventFilters = Collections.emptyList();
-      } else if (listener instanceof FilteredEventListener && ((FilteredEventListener) listener).getEventListener() instanceof IBranchListener) {
-         branchListner = (IBranchListener) ((FilteredEventListener) listener).getEventListener();
-         eventFilters = ((FilteredEventListener) listener).getEventFilters();
+      // If true, listener will be called
+      boolean match = true;
+      if (listener instanceof BranchGuidEventFilter) {
+         // If this branch doesn't match, don't pass events through
+         if (!((BranchGuidEventFilter) listener).isMatch(branchEvent.getBranchGuid())) {
+            match = false;
+         }
       }
-      if (branchListner != null) {
-         // TODO handle filters first
+      // Call listener if we matched any of the filters
+      if (match) {
          ((IBranchListener) listener).handleBranchEvent(sender, branchEvent);
       }
    }
@@ -109,18 +110,36 @@ public class FrameworkEventManager {
    }
 
    private static void processEventArtifactsAndRelationsListener(IEventListener listener, ArtifactEvent artifactEvent, Sender sender) {
-      IArtifactEventListener artifactEventListener = null;
-      Collection<IEventFilter> eventFilters = null;
-      if (listener instanceof IArtifactEventListener) {
-         artifactEventListener = (IArtifactEventListener) listener;
-         eventFilters = Collections.emptyList();
-      } else if (listener instanceof FilteredEventListener && ((FilteredEventListener) listener).getEventListener() instanceof IArtifactEventListener) {
-         artifactEventListener = (IArtifactEventListener) ((FilteredEventListener) listener).getEventListener();
-         eventFilters = ((FilteredEventListener) listener).getEventFilters();
+      System.out.println("processing " + listener);
+      if (listener != null && !(listener instanceof IArtifactEventListener)) return;
+      // If true, listener will be called
+      boolean match = false;
+      if (listener instanceof IEventFilteredListener) {
+         // If no filters, this is a match
+         if (((IEventFilteredListener) listener).getEventFilters() == null || ((IEventFilteredListener) listener).getEventFilters().isEmpty()) {
+            match = true;
+         }
+         // Loop through filters and see if anything matches what's desired
+         for (IEventFilter filter : ((IEventFilteredListener) listener).getEventFilters()) {
+            for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
+               if (filter.isMatch(guidArt)) match = true;
+               break;
+            }
+            if (match) break;
+            for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
+               if (filter.isMatch(guidRel)) match = true;
+               break;
+            }
+            if (match) break;
+         }
       }
-      if (artifactEventListener != null) {
-         // TODO handle filters first
-         artifactEventListener.handleArtifactEvent(artifactEvent, sender);
+      // If no filters, this is a match
+      else {
+         match = true;
+      }
+      // Call listener if we matched any of the filters
+      if (match) {
+         ((IArtifactEventListener) listener).handleArtifactEvent(artifactEvent, sender);
       }
    }
 
@@ -180,4 +199,26 @@ public class FrameworkEventManager {
          }
       }
    }
+
+   public static String getListenerReport() {
+      List<String> listenerStrs = new ArrayList<String>();
+      for (IEventListener listener : priorityListeners) {
+         listenerStrs.add("Priority: " + getObjectSafeName(listener));
+      }
+      for (IEventListener listener : listeners) {
+         listenerStrs.add(getObjectSafeName(listener));
+      }
+      String[] listArr = listenerStrs.toArray(new String[listenerStrs.size()]);
+      Arrays.sort(listArr);
+      return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", (Object[]) listArr);
+   }
+
+   public static String getObjectSafeName(Object object) {
+      try {
+         return object.toString();
+      } catch (Exception ex) {
+         return object.getClass().getSimpleName() + " - exception on toString: " + ex.getLocalizedMessage();
+      }
+   }
+
 }

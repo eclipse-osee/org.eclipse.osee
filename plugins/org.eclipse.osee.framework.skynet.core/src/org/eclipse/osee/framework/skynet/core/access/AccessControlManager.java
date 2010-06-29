@@ -62,6 +62,7 @@ import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -94,12 +95,7 @@ public class AccessControlManager {
          "SELECT b_art_id FROM osee_relation_link WHERE a_art_id =? AND rel_link_type_id =? ORDER BY b_art_id";
 
    public static enum ObjectTypeEnum {
-      ALL,
-      BRANCH,
-      REL_TYPE,
-      ART_TYPE,
-      ATTR_TYPE,
-      ART;
+      ALL, BRANCH, REL_TYPE, ART_TYPE, ATTR_TYPE, ART;
    }
 
    private static DoubleKeyHashMap<Integer, AccessObject, PermissionEnum> accessControlListCache;
@@ -201,8 +197,8 @@ public class AccessControlManager {
 
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
-            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, RelationTypeManager.getType(
-                  CoreRelationTypes.Users_User).getId());
+            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId,
+                  RelationTypeManager.getType(CoreRelationTypes.Users_User).getId());
 
             // get group members and populate subjectToGroupCache
             while (chStmt.next()) {
@@ -263,7 +259,7 @@ public class AccessControlManager {
       Operations.executeWork(accessCheckOperation, new LogProgressMonitor(), -1.0);
       IStatus status = accessCheckOperation.getStatus();
       return accessCheckOperation.hasPermission();
-   }
+      }
 
    private static PermissionEnum getBranchPermission(Artifact subject, Branch branch, PermissionEnum permission) {
       PermissionEnum userPermission = null;
@@ -680,6 +676,11 @@ public class AccessControlManager {
 
             }
          }
+      }
+
+      @Override
+      public List<? extends IEventFilter> getEventFilters() {
+         return null;
       }
    }
 

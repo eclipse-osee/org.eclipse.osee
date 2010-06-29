@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.framework.skynet.core.event2.artifact;
 
-import org.eclipse.osee.framework.skynet.core.event.IEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IEventFilteredListener;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 
@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
  * 
  * @author Donald G. Dunne
  */
-public interface IArtifactEventListener extends IEventListener {
+public interface IArtifactEventListener extends IEventFilteredListener {
 
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender);
 

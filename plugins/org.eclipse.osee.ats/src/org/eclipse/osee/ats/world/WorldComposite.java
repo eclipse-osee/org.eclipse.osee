@@ -140,10 +140,8 @@ public class WorldComposite extends ScrolledComposite implements IOpenNewAtsWorl
             } else {
                setTableTitle(name, false);
             }
-            //            ElapsedTime elapsedTime = new ElapsedTime("WorldComposite - setInput");
             worldXViewer.setInput(worldArts);
             worldXViewer.updateStatusLabel();
-            //            elapsedTime.end();
             if (otherArts.size() > 0) {
                if (MessageDialog.openConfirm(
                      Display.getCurrent().getActiveShell(),

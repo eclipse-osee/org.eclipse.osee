@@ -40,8 +40,7 @@ public class WorldEditorInput implements IEditorInput {
 
    @Override
    public boolean equals(Object obj) {
-      if (!(obj instanceof WorldEditorInput))
-         return false;
+      if (!(obj instanceof WorldEditorInput)) return false;
       WorldEditorInput castObj = (WorldEditorInput) obj;
       return castObj.iWorldEditorProvider.equals(this.iWorldEditorProvider);
    }
@@ -67,8 +66,8 @@ public class WorldEditorInput implements IEditorInput {
       }
    }
 
-   @SuppressWarnings("unchecked")
    @Override
+   @SuppressWarnings("rawtypes")
    public Object getAdapter(Class adapter) {
       return null;
    }

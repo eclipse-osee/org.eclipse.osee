@@ -603,8 +603,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       try {
          FormsUtil.createLabelText(toolkit, topLineComp, "Current State: ", sma.getStateMgr().getCurrentStateName());
-         FormsUtil.createLabelText(toolkit, topLineComp, "Created: ", XDate.getDateStr(sma.getLog().getCreationDate(),
-               XDate.MMDDYYHHMM));
+         FormsUtil.createLabelText(toolkit, topLineComp, "Created: ",
+               XDate.getDateStr(sma.getLog().getCreationDate(), XDate.MMDDYYHHMM));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
@@ -670,11 +670,15 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    public void refresh() throws OseeCoreException {
       if (sma.getEditor() != null && !sma.isInTransition()) {
-         //         System.out.println("SMAWorkFlowTab refresh...");
+         System.out.println("refreshing...");
+         // remove all pages
          for (SMAWorkFlowSection section : sections) {
             section.dispose();
          }
+         // add pages back
          refreshData();
+      } else {
+         System.out.println("not refreshing...");
       }
    }
 

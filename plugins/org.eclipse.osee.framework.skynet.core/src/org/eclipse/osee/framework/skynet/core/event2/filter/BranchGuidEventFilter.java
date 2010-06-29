@@ -5,46 +5,41 @@
  */
 package org.eclipse.osee.framework.skynet.core.event2.filter;
 
-import java.util.Arrays;
-import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
+import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 
 /**
  * @author Donald G. Dunne
  */
 public class BranchGuidEventFilter implements IEventFilter {
 
-   private Collection<String> branchGuids;
    private final IOseeBranch branchToken;
 
-   public BranchGuidEventFilter(String branchGuid) {
-      this.branchGuids = Arrays.asList(branchGuid);
-      this.branchToken = null;
-   }
-
-   public BranchGuidEventFilter(Collection<String> branchGuids) {
-      this.branchGuids = branchGuids;
-      this.branchToken = null;
-   }
-
+   /**
+    * Provide branch of events that should be passed through. All other branches will be ignored.
+    */
    public BranchGuidEventFilter(IOseeBranch branchToken) {
       this.branchToken = branchToken;
    }
 
-   public BranchGuidEventFilter(Branch branch) {
-      this(branch.getGuid());
-   }
-
-   public boolean isFiltered(String branchGuid) {
-      if (branchGuids != null) {
-         if (this.branchGuids.contains(branchGuid)) {
-            return true;
-         }
-      }
+   public boolean isMatch(String branchGuid) {
       if (branchToken != null) {
          if (branchToken.getGuid().equals(branchGuid)) return true;
       }
       return false;
    }
+
+   @Override
+   public boolean isMatch(IBasicGuidArtifact guidArt) {
+      return branchToken.getGuid().equals(guidArt.getBranchGuid());
+   }
+
+   @Override
+   public boolean isMatch(IBasicGuidRelation relArt) {
+      return branchToken.getGuid().equals(relArt.getArtA().getBranchGuid()) ||
+      //
+      branchToken.getGuid().equals(relArt.getArtB().getBranchGuid());
+   }
+
 }

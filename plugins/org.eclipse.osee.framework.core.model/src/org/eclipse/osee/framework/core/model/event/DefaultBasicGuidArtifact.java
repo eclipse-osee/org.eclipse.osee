@@ -55,16 +55,16 @@ public class DefaultBasicGuidArtifact implements Identity, IBasicGuidArtifact {
    @Override
    public boolean equals(Object obj) {
       if (this == obj) return true;
-      DefaultBasicGuidArtifact other = (DefaultBasicGuidArtifact) obj;
+      IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
       if (artTypeGuid == null) {
-         if (other.artTypeGuid != null) return false;
-      } else if (!artTypeGuid.equals(other.artTypeGuid)) return false;
+         if (other.getArtTypeGuid() != null) return false;
+      } else if (!artTypeGuid.equals(other.getArtTypeGuid())) return false;
       if (branchGuid == null) {
-         if (other.branchGuid != null) return false;
-      } else if (!branchGuid.equals(other.branchGuid)) return false;
+         if (other.getBranchGuid() != null) return false;
+      } else if (!branchGuid.equals(other.getBranchGuid())) return false;
       if (artGuid == null) {
-         if (other.artGuid != null) return false;
-      } else if (!artGuid.equals(other.artGuid)) return false;
+         if (other.getGuid() != null) return false;
+      } else if (!artGuid.equals(other.getGuid())) return false;
       return true;
    }
 

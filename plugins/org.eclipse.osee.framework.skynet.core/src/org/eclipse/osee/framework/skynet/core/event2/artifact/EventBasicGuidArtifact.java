@@ -70,15 +70,18 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
 
    @Override
    public int hashCode() {
-      final int prime = 31;
       int result = super.hashCode();
-      result = prime * result + ((eventModType == null) ? 0 : eventModType.hashCode());
       return result;
    }
 
    @Override
    public boolean equals(Object obj) {
       if (this == obj) return true;
+      if (obj instanceof IBasicGuidArtifact) {
+         IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
+         return other.getGuid().equals(getGuid()) && other.getBranchGuid().equals(getBranchGuid()) && other.getArtTypeGuid().equals(
+               getArtTypeGuid());
+      }
       if (!super.equals(obj)) return false;
       EventBasicGuidArtifact other = (EventBasicGuidArtifact) obj;
       if (eventModType == null) {

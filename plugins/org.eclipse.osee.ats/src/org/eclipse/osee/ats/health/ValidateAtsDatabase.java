@@ -28,6 +28,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ATSLog;
+import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.LogItem;
@@ -36,9 +37,8 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
@@ -74,8 +74,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.util.ElapsedTime;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUtil;
@@ -132,8 +132,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             rd.report(getName());
             if (Strings.isValid(emailOnComplete)) {
                String html = rd.getReport(getName()).getManipulatedHtml();
-               EmailUtil.emailHtml(java.util.Collections.singleton(emailOnComplete), String.format("Sync - %s [%s]",
-                     XDate.getDateNow(), getName()), html);
+               EmailUtil.emailHtml(java.util.Collections.singleton(emailOnComplete),
+                     String.format("Sync - %s [%s]", XDate.getDateNow(), getName()), html);
             }
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -796,7 +796,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                List<Artifact> relationAssigned = art.getRelatedArtifacts(CoreRelationTypes.Users_User, Artifact.class);
                if ((sma.isCompleted() || sma.isCancelled()) && relationAssigned.size() > 0) {
                   testNameToResultsMap.put(
-                        "testStateMachineAssignees",
+                        "testStateMachineAssignees (remove after 0.9.5)",
                         "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " cancel/complete with related assignees");
                   if (fixAssignees) {
                      try {

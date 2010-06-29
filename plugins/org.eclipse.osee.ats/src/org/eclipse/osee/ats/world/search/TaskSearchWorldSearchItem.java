@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorParameterSearchItem;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -151,10 +152,8 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
 
    private Collection<TaskArtifact> getUserAssignedTaskArtifacts() throws OseeCoreException {
       Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
-      for (Artifact art : getSelectedUser().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
-         if (art instanceof TaskArtifact) {
-            tasks.add((TaskArtifact) art);
-         }
+      for (Artifact art : AtsUtil.getAssigned(getSelectedUser(), TaskArtifact.class)) {
+         tasks.add((TaskArtifact) art);
       }
       return tasks;
    }

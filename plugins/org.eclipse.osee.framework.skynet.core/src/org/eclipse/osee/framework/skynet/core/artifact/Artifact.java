@@ -102,8 +102,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    public static final String AFTER_GUID_STRING = "/AfterGUID";
    public static final int TRANSACTION_SENTINEL = -1;
 
-   private final HashCollection<String, Attribute<?>> attributes =
-         new HashCollection<String, Attribute<?>>(false, LinkedList.class, 12);
+   private final HashCollection<String, Attribute<?>> attributes = new HashCollection<String, Attribute<?>>(false,
+         LinkedList.class, 12);
    private final Branch branch;
    private final String guid;
    private String humanReadableId;
@@ -1719,8 +1719,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
    }
 
    private static final Pattern safeNamePattern = Pattern.compile("[^A-Za-z0-9 ]");
-   private static final String[] NUMBER =
-         new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
+   private static final String[] NUMBER = new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
+         "Eight", "Nine"};
 
    /**
     * Since artifact names are free text it is important to reformat the name to ensure it is suitable as an element
@@ -1841,6 +1841,16 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
     */
    @Override
    public final boolean equals(Object obj) {
+      if (obj instanceof IBasicGuidArtifact) {
+         IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
+         boolean result = getGuid().equals(other.getGuid());
+         if (result) {
+            if (getBranchGuid() != null && other.getBranchGuid() != null) {
+               result = getBranchGuid().equals(other.getBranchGuid());
+            }
+         }
+         return result;
+      }
       if (obj instanceof IArtifact) {
          IArtifact other = (IArtifact) obj;
          boolean result = getArtId() == other.getArtId();
@@ -1849,16 +1859,6 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, Na
                result = getBranch().equals(other.getBranch());
             } else {
                result = getBranch() == null && other.getBranch() == null;
-            }
-         }
-         return result;
-      }
-      if (obj instanceof IBasicGuidArtifact) {
-         IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
-         boolean result = getGuid().equals(other.getGuid());
-         if (result) {
-            if (getBranchGuid() != null && other.getBranchGuid() != null) {
-               result = getBranchGuid().equals(other.getBranchGuid());
             }
          }
          return result;

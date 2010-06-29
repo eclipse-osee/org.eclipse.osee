@@ -89,20 +89,20 @@ public class DefaultBasicGuidRelation implements IBasicGuidRelation {
       if (this == obj) return true;
       if (obj == null) return false;
       if (getClass() != obj.getClass()) return false;
-      DefaultBasicGuidRelation other = (DefaultBasicGuidRelation) obj;
+      IBasicGuidRelation other = (IBasicGuidRelation) obj;
       if (artA == null) {
-         if (other.artA != null) return false;
-      } else if (!artA.equals(other.artA)) return false;
+         if (other.getArtA() != null) return false;
+      } else if (!artA.equals(other.getArtA())) return false;
       if (artB == null) {
-         if (other.artB != null) return false;
-      } else if (!artB.equals(other.artB)) return false;
+         if (other.getArtB() != null) return false;
+      } else if (!artB.equals(other.getArtB())) return false;
       if (branchGuid == null) {
-         if (other.branchGuid != null) return false;
-      } else if (!branchGuid.equals(other.branchGuid)) return false;
-      if (gammaId != other.gammaId) return false;
+         if (other.getBranchGuid() != null) return false;
+      } else if (!branchGuid.equals(other.getBranchGuid())) return false;
+      if (gammaId != other.getGammaId()) return false;
       if (relTypeGuid == null) {
-         if (other.relTypeGuid != null) return false;
-      } else if (!relTypeGuid.equals(other.relTypeGuid)) return false;
+         if (other.getRelTypeGuid() != null) return false;
+      } else if (!relTypeGuid.equals(other.getRelTypeGuid())) return false;
       return true;
    }
 

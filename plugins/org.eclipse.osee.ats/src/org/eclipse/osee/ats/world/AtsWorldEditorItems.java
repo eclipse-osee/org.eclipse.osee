@@ -29,7 +29,6 @@ public class AtsWorldEditorItems {
 
    private static List<IAtsWorldEditorItem> items = new ArrayList<IAtsWorldEditorItem>();
 
-   @SuppressWarnings( {"unchecked"})
    private static void loadAllStateItems() {
       if (items.size() > 0) return;
       IExtensionPoint point =
@@ -50,6 +49,7 @@ public class AtsWorldEditorItems {
                if (classname != null && bundleName != null) {
                   Bundle bundle = Platform.getBundle(bundleName);
                   try {
+                     @SuppressWarnings("rawtypes")
                      Class taskClass = bundle.loadClass(classname);
                      Object obj = taskClass.newInstance();
                      if (obj == null) {

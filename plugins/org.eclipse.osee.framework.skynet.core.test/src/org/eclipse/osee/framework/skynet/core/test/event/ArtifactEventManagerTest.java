@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.skynet.core.event2.artifact.EventChangeTypeBas
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
@@ -61,9 +62,9 @@ public class ArtifactEventManagerTest {
    final Set<EventBasicGuidArtifact> resultEventArtifacts = new HashSet<EventBasicGuidArtifact>();
    final Set<EventBasicGuidRelation> resultEventRelations = new HashSet<EventBasicGuidRelation>();
    public static Sender resultSender = null;
-   public static List<String> ignoreLoggingRemote =
-         Arrays.asList("OEM: ArtifactEvent Loopback enabled", "OEM: kickArtifactReloadEvent Loopback enabled",
-               "OEM2: ArtifactEvent Loopback enabled", "OEM2: kickArtifactReloadEvent Loopback enabled");
+   public static List<String> ignoreLoggingRemote = Arrays.asList("OEM: ArtifactEvent Loopback enabled",
+         "OEM: kickArtifactReloadEvent Loopback enabled", "OEM2: ArtifactEvent Loopback enabled",
+         "OEM2: kickArtifactReloadEvent Loopback enabled");
    public static int incrementingGammaId = 2231;
 
    public class ArtifactEventListener implements IArtifactEventListener {
@@ -72,6 +73,11 @@ public class ArtifactEventManagerTest {
          resultEventArtifacts.addAll(artifactEvent.getArtifacts());
          resultEventRelations.addAll(artifactEvent.getRelations());
          resultSender = sender;
+      }
+
+      @Override
+      public List<? extends IEventFilter> getEventFilters() {
+         return null;
       }
    }
 
@@ -552,8 +558,8 @@ public class ArtifactEventManagerTest {
       Assert.assertEquals(Arrays.asList(GENERAL_DATA_STRING, ""), remAttrChg.getData());
 
       // Validate that artifact was updated
-      Assert.assertEquals(GENERAL_DATA_STRING, injectArt.getSoleAttributeValueAsString(
-            CoreAttributeTypes.GENERAL_STRING_DATA, ""));
+      Assert.assertEquals(GENERAL_DATA_STRING,
+            injectArt.getSoleAttributeValueAsString(CoreAttributeTypes.GENERAL_STRING_DATA, ""));
       Assert.assertFalse(injectArt.isDirty());
       return injectArt;
    }

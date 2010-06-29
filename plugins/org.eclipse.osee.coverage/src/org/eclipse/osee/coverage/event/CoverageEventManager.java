@@ -6,6 +6,7 @@
 package org.eclipse.osee.coverage.event;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -27,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArti
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
-import org.eclipse.osee.framework.skynet.core.event2.filter.FilteredEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -38,7 +39,6 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
    private static CoverageEventManager instance;
    private List<CoverageEditor> editors = new ArrayList<CoverageEditor>();
    private ArtifactTypeEventFilter artifactTypeEventFilter;
-   private FilteredEventListener filteredEventListener;
    private ConnectionNode connectionNode;
    private OseeMessagingTracker oseeMessagingTracker;
 
@@ -63,17 +63,11 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
    }
 
    private void stopListeneingForFrameworkEvents() {
-      if (filteredEventListener != null) {
-         FrameworkEventManager.removeListener(filteredEventListener);
-      }
+      FrameworkEventManager.removeListener(this);
    }
 
    private void startListeningForFrameworkEvents() {
-      if (filteredEventListener == null) {
-         filteredEventListener = new FilteredEventListener(this);
-         filteredEventListener.addFilter(createArtifactTypeEventFilter());
-      }
-      FrameworkEventManager.addListener(filteredEventListener);
+      FrameworkEventManager.addListener(this);
    }
 
    private ArtifactTypeEventFilter createArtifactTypeEventFilter() {
@@ -172,6 +166,11 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
             }
          });
       }
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return Arrays.asList(createArtifactTypeEventFilter());
    }
 
 }

@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
@@ -214,13 +215,7 @@ public class SMAUtil {
    }
 
    public static Collection<StateMachineArtifact> getSMAs(Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      List<StateMachineArtifact> smas = new ArrayList<StateMachineArtifact>();
-      for (Artifact artifact : artifacts) {
-         if (artifact instanceof StateMachineArtifact) {
-            smas.add((StateMachineArtifact) artifact);
-         }
-      }
-      return smas;
+      return Collections.castMatching(StateMachineArtifact.class, artifacts);
    }
 
 }

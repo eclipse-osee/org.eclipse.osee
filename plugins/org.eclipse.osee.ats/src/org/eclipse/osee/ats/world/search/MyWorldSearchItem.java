@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -19,11 +18,10 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
  * @author Donald G. Dunne
@@ -48,8 +46,7 @@ public class MyWorldSearchItem extends UserSearchItem {
 
    @Override
    public Collection<Artifact> searchIt(User user) throws OseeCoreException {
-      Set<Artifact> assigned =
-            RelationManager.getRelatedArtifacts(Arrays.asList(user), 1, CoreRelationTypes.Users_Artifact);
+      Set<Artifact> assigned = AtsUtil.getAssigned(user);
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(assigned.size());
       for (Artifact artifact : assigned) {

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +21,6 @@ import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -53,8 +51,7 @@ public class MyGoalWorkflowItem extends UserSearchItem {
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
 
-      Set<Artifact> assigned =
-            RelationManager.getRelatedArtifacts(Arrays.asList(user), 1, CoreRelationTypes.Users_Artifact);
+      Set<Artifact> assigned = AtsUtil.getAssigned(user);
       Set<Artifact> artifacts = new HashSet<Artifact>(50);
       // Because user can be assigned directly to review or through being assigned to task, add in
       // all the original artifacts.
