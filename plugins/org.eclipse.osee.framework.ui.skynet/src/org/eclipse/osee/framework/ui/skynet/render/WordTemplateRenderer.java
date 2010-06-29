@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 import javax.xml.namespace.QName;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -49,9 +48,6 @@ import org.w3c.dom.Element;
  * @author Jeff C. Phillips
  */
 public class WordTemplateRenderer extends WordRenderer implements ITemplateRenderer {
-   private static final Pattern pattern =
-         Pattern.compile("<v:imagedata[^>]*src=\"wordml://(\\d+\\.\\w+)\"[^>]*>",
-               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    public static final String RENDERER_EXTENSION = "org.eclipse.osee.framework.ui.skynet.word";
    public static final String DEFAULT_SET_NAME = "Default";
    public static final String ARTIFACT_NAME = "Word Renderer";
@@ -108,6 +104,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       if (!artifacts.isEmpty()) {
          Displays.ensureInDisplayThread(new Runnable() {
 
+            @Override
             public void run() {
                WordUiUtil.displayUnhandledArtifacts(artifacts, warningString);
             }
