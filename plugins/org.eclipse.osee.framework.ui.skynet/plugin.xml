@@ -1673,7 +1673,7 @@
        <statusHandler
              class="org.eclipse.osee.framework.ui.skynet.handler.RemoveTrackChangesHandler"
              code="256"
-             id="org.eclipse.osee.framework.ui.skynet.ArtifactChangeHandler"
+             id="RemoveTrackChangesHandler"
              plugin="org.eclipse.osee.framework.skynet.core">
        </statusHandler>
        <statusHandler
