@@ -31,7 +31,6 @@
       <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.5" match="greaterOrEqual"/>
    </requires>
 
-
    <plugin
          id="org.eclipse.osee.framework.skynet.core"
          download-size="0"
@@ -111,6 +110,13 @@
 
    <plugin
          id="org.eclipse.osee.framework.messaging.event.res"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.access"
          download-size="0"
          install-size="0"
          version="0.0.0"
