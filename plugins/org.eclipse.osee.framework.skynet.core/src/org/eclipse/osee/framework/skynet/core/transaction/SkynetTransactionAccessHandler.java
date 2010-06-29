@@ -8,23 +8,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.access.internal;
+package org.eclipse.osee.framework.skynet.core.transaction;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.access.AccessControlService;
-import org.eclipse.osee.framework.access.AccessData;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionHandler;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AccessData;
+import org.eclipse.osee.framework.core.services.IAccessControlService;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Jeff C. Phillips
  */
 public class SkynetTransactionAccessHandler extends SkynetTransactionHandler {
 
-   public final AccessControlService service;
+   public final IAccessControlService service;
 
-   public SkynetTransactionAccessHandler(AccessControlService service) {
+   public SkynetTransactionAccessHandler(IAccessControlService service) {
       super();
       this.service = service;
    }
@@ -32,10 +33,11 @@ public class SkynetTransactionAccessHandler extends SkynetTransactionHandler {
    @Override
    public IStatus onCheck(IProgressMonitor monitor) {
       IStatus status = Status.OK_STATUS;
-
-      AccessData accessData = service.getAccessData(getUserArtifact(), getItemsToPersist());
-
-      status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error");
+      try {
+         AccessData accessData = service.getAccessData(getUserArtifact(), getItemsToPersist());
+      } catch (OseeCoreException ex) {
+         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error");
+      }
       return status;
    }
 }

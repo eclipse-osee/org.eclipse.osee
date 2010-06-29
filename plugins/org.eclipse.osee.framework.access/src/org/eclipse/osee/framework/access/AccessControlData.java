@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * A data object in an access control list. Contains a subject (user artifact) and object (what the subject is trying to
  * access) and a permission level
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class AccessControlData implements Comparable<AccessControlData> {
@@ -102,14 +102,6 @@ public class AccessControlData implements Comparable<AccessControlData> {
 
    public boolean isBirth() {
       return birth;
-   }
-
-   public void persist() {
-      AccessControlService.persistPermission(this, false);
-   }
-
-   public void persist(boolean recurse) {
-      AccessControlService.persistPermission(this, recurse);
    }
 
    public int compareTo(AccessControlData data) {

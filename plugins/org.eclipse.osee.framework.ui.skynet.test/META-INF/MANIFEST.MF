@@ -9,6 +9,7 @@ Export-Package: org.eclipse.osee.framework.ui.skynet.test,
  org.eclipse.osee.framework.ui.skynet.test.cases
 Import-Package: com.lowagie.text.pdf;version="2.1.7",
  com.lowagie.text.rtf;version="2.1.7",
+ org.eclipse.osee.framework.access,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.model.test.mocks,
  org.eclipse.osee.framework.jdk.core.util.windows,

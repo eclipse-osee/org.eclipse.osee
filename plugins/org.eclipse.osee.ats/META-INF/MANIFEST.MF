@@ -68,6 +68,7 @@ Export-Package: org.eclipse.osee.ats,
  org.eclipse.osee.ats.world.search
 Import-Package: javax.mail,
  javax.mail.internet,
+ org.eclipse.osee.framework.access,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server,
  org.eclipse.osee.framework.core.data,
@@ -82,4 +83,4 @@ Import-Package: javax.mail,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.framework.ui.ws
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+ndle-RequiredExecutionEnvironment: JavaSE-1.6

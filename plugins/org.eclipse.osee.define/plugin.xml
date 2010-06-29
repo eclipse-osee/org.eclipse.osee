@@ -66,13 +66,6 @@
          </perspectiveExtension>
       </extension>
    <extension
-         id="AddEveryoneGroupToBranches"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.define.blam.operation.AddEveryoneGroupToBranches">
-      </Operation>
-   </extension>
-   <extension
       id="org.eclipse.osee.ats"
       name="OSEE"
       point="org.eclipse.ui.views">

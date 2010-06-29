@@ -5,13 +5,13 @@
  */
 package org.eclipse.osee.coverage.model;
 
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -60,7 +60,9 @@ public class CoveragePreferences {
     * Return global CoverageOptions or null if none available
     */
    public String getCoverageOptions() throws OseeCoreException {
-      if (getArtifact() == null) return null;
+      if (getArtifact() == null) {
+         return null;
+      }
       KeyValueArtifact keyValueArt =
             new KeyValueArtifact(getArtifact(), CoreAttributeTypes.GENERAL_STRING_DATA.getName());
       return keyValueArt.getValue("CoverageOptions");

@@ -10,13 +10,13 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePreferences;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -39,7 +39,7 @@ public class CoverageOptionManagerStore {
                   CoverageAttributes.COVERAGE_OPTIONS.getStoreName(), null);
       if (!Strings.isValid(coverageOptions)) {
          coverageOptions =
-               (new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch())).getCoverageOptions();
+               new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch()).getCoverageOptions();
       }
       return coverageOptions;
    }
@@ -50,21 +50,21 @@ public class CoverageOptionManagerStore {
    }
 
    private String getGlobalCoverageOptions() throws OseeCoreException {
-      return (new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch())).getCoverageOptions();
+      return new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch()).getCoverageOptions();
    }
 
    public Result isSaveable() throws OseeCoreException {
       StoreLocation location = getStoreLocation();
-      if (location == StoreLocation.None)
+      if (location == StoreLocation.None) {
          return Result.TrueResult;
-      else if (location == StoreLocation.Local) {
+      } else if (location == StoreLocation.Local) {
          if (!AccessControlManager.hasPermission(oseeCoveragePackageStore.getArtifact(true), PermissionEnum.WRITE)) {
             return new Result(String.format("You do not have permissions to change coverage options on [%s]",
                   oseeCoveragePackageStore.getArtifact(true)));
          }
          return Result.TrueResult;
       } else if (location == StoreLocation.Global) {
-         CoveragePreferences prefs = (new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch()));
+         CoveragePreferences prefs = new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch());
          if (prefs.isSaveable().isFalse()) {
             return new Result(String.format("You do not have permissions to change coverage options on [%s]",
                   oseeCoveragePackageStore.getArtifact(true)));
@@ -78,8 +78,12 @@ public class CoverageOptionManagerStore {
    }
 
    public StoreLocation getStoreLocation() throws OseeCoreException {
-      if (Strings.isValid(getLocalCoverageOptions())) return StoreLocation.Local;
-      if (Strings.isValid(getGlobalCoverageOptions())) return StoreLocation.Global;
+      if (Strings.isValid(getLocalCoverageOptions())) {
+         return StoreLocation.Local;
+      }
+      if (Strings.isValid(getGlobalCoverageOptions())) {
+         return StoreLocation.Global;
+      }
       return StoreLocation.None;
    }
 
@@ -92,8 +96,10 @@ public class CoverageOptionManagerStore {
    }
 
    public void store(CoverageOptionManager coverageOptionManager, StoreLocation storeLocation) throws OseeCoreException {
-      if (storeLocation == StoreLocation.None) throw new OseeArgumentException(
-            "No Valid Store Location selected for Coverage Options");
+      if (storeLocation == StoreLocation.None) {
+         throw new OseeArgumentException(
+               "No Valid Store Location selected for Coverage Options");
+      }
       store(coverageOptionManager.toXml(), storeLocation);
    }
 
@@ -103,9 +109,10 @@ public class CoverageOptionManagerStore {
                CoverageAttributes.COVERAGE_OPTIONS.getStoreName(), coverageOptions);
          oseeCoveragePackageStore.getArtifact(true).persist();
       } else if (storeLocation == StoreLocation.Global) {
-         (new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch())).setCoverageOptions(coverageOptions);
-      } else
+         new CoveragePreferences(oseeCoveragePackageStore.getArtifact(true).getBranch()).setCoverageOptions(coverageOptions);
+      } else {
          throw new OseeArgumentException("No Valid Store Location selected for Coverage Options");
+      }
 
    }
 }

@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.access;
 
 import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
+import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**

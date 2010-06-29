@@ -16,14 +16,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.osee.framework.access.AccessControlData;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * GUI that is used to maintain an <Code>Artifact</Code> access control list.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class PolicyDialog extends Dialog {
@@ -155,7 +155,7 @@ public class PolicyDialog extends Dialog {
       cmbPermissionLevel = new Combo(composite, SWT.NONE);
       btnAdd = new Button(composite, SWT.PUSH);
       btnAdd.setText("Add");
-      (new Label(composite, SWT.NONE)).setText("  NOTE: Higher permission rank overrides lower rank.");
+      new Label(composite, SWT.NONE).setText("  NOTE: Higher permission rank overrides lower rank.");
 
       chkChildrenPermission = new Button(mainComposite, SWT.CHECK);
       chkChildrenPermission.setText("Set permission for artifact's default hierarchy descendents.");
@@ -191,7 +191,10 @@ public class PolicyDialog extends Dialog {
    @Override
    protected void okPressed() {
       for (AccessControlData data : policyTableViewer.getAccessControlList().values()) {
-         if (data.isDirty()) data.persist(chkChildrenPermission.getSelection());
+         if (data.isDirty()) {
+            boolean isRecursionAllowed = chkChildrenPermission.getSelection();
+            AccessControlManager.persistPermission(data, isRecursionAllowed);
+         }
       }
       super.okPressed();
    }

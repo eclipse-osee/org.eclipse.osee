@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.lifecycle.access;
+package org.eclipse.osee.framework.lifecycle;
 
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 

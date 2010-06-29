@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleOperation;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
-import org.eclipse.osee.framework.lifecycle.access.ChangeMgmtChkPoint;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -187,7 +186,7 @@ public class SkynetTransaction extends AbstractOperation {
     * <br>
     * IF transaction has not been executed, this is the transactionId that will be used.<br>
     * ELSE this is next transaction to be used upon execute
-    * 
+    *
     * @return
     * @throws OseeCoreException
     */
@@ -318,7 +317,7 @@ public class SkynetTransaction extends AbstractOperation {
    /**
     * Always want to persist artifacts on other side of dirty relation. This is necessary for ordering attribute to be
     * persisted and desired for other cases.
-    * 
+    *
     * @throws OseeCoreException
     */
    private void persitRelatedArtifact(Artifact artifact) throws OseeCoreException {
@@ -363,7 +362,7 @@ public class SkynetTransaction extends AbstractOperation {
    private IOperation createLifeCycleOp() throws OseeCoreException {
       ILifecycleService service = Activator.getInstance().getLifecycleServices();
       AbstractLifecyclePoint<?> lifecyclePoint =
-            new ChangeMgmtChkPoint(UserManager.getUser(), new ArrayList<IBasicArtifact<?>>(artifactReferences));
+            new SkynetTransactionCheckPoint(UserManager.getUser(), new ArrayList<IBasicArtifact<?>>(artifactReferences));
       return new LifecycleOperation(this, service, lifecyclePoint, getName());
    }
 

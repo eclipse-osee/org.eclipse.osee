@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.update;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.swt.SWT;

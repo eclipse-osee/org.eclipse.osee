@@ -8,35 +8,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.lifecycle.access;
+package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
+import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
+import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor.Type;
 
 /**
  * @author Roberto E. Escobar
  * @author Jeff C. Phillips
  */
-public class ChangeMgmtChkPoint extends AbstractLifecyclePoint<ChangeMgmtHandler> {
+public class SkynetTransactionCheckPoint extends AbstractLifecyclePoint<SkynetTransactionHandler> {
 
-   public static final Type<ChangeMgmtHandler> TYPE = new Type<ChangeMgmtHandler>();
+   public static final Type<SkynetTransactionHandler> TYPE = new Type<SkynetTransactionHandler>();
    private final IBasicArtifact<?> userArtifact;
    private final Collection<IBasicArtifact<?>> artsToCheck;
 
-   public ChangeMgmtChkPoint(IBasicArtifact<?> userArtifact, Collection<IBasicArtifact<?>> artsToCheck) {
+   public SkynetTransactionCheckPoint(IBasicArtifact<?> userArtifact, Collection<IBasicArtifact<?>> artsToCheck) {
       super();
       this.userArtifact = userArtifact;
       this.artsToCheck = artsToCheck;
    }
 
    @Override
-   protected void initializeHandlerData(ChangeMgmtHandler handler) {
+   protected void initializeHandlerData(SkynetTransactionHandler handler) {
       handler.setData(userArtifact, artsToCheck);
    }
 
    @Override
-   public Type<ChangeMgmtHandler> getAssociatedType() {
+   public Type<SkynetTransactionHandler> getAssociatedType() {
       return TYPE;
    }
 

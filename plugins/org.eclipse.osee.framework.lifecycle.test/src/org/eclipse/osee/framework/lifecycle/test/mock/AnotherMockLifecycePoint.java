@@ -22,15 +22,6 @@ public class AnotherMockLifecycePoint extends AbstractLifecycleVisitor<NonRunHan
 
    public static final Type<NonRunHandler> TYPE = new Type<NonRunHandler>();
 
-   private final String a;
-   private final String b;
-
-   public AnotherMockLifecycePoint(String a, String b) {
-      super();
-      this.a = a;
-      this.b = b;
-   }
-
    @Override
    public Type<NonRunHandler> getAssociatedType() {
       return TYPE;

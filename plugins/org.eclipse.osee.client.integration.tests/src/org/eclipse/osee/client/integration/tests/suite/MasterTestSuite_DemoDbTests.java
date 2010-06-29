@@ -39,17 +39,17 @@ JdkCoreTestSuite.class, //
 /**
  * This suite should contain all cases and suites that can be run against a Demo Db Init and Demo Populated osee
  * database.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class MasterTestSuite_DemoDbTests {
    @BeforeClass
    public static void setUp() throws Exception {
-      assertTrue("Should be run on demo datbase.", TestUtil.isDemoDb());
       assertTrue("Demo Application Server must be running.",
             ClientSessionManager.getAuthenticationProtocols().contains("demo"));
       assertTrue("Client must authenticate using demo protocol",
             ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+      assertTrue("Should be run on demo database.", TestUtil.isDemoDb());
       ArtifactSaveNotificationHandler.setNoPopUp(true);
       TestUtil.setIsInTest(true);
    }

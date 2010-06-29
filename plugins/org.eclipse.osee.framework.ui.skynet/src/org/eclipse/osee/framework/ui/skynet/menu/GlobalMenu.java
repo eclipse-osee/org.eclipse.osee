@@ -22,10 +22,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -47,7 +47,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * Provided so all OSEE context menus (and programatic manipulations) can share the same menu items, dialogs,
  * permissions checks and code.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class GlobalMenu {
@@ -248,7 +248,7 @@ public class GlobalMenu {
    /**
     * This method is provided for programatic access to delete artifact. No permissions are checked. Preferred use is by
     * adding item as menu item.
-    * 
+    *
     * @return the deleteArtifactAction
     */
    public Action getDeleteArtifactAction() {

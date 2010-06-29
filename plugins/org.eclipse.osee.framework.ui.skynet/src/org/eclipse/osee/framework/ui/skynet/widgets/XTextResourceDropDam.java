@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit;
 
 import java.util.List;
-
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;

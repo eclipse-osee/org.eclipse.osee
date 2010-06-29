@@ -25,10 +25,10 @@ public enum PermissionEnum {
    // keeping this in sync with the number of permissions will ensure optimal memory usage
    private static final int COUNT = 4;
 
-   private static final Map<Integer, PermissionEnum> rankToPermissionHash =
-         new HashMap<Integer, PermissionEnum>((int) (COUNT / .75) + 1, .75f);
-   private static final Map<String, PermissionEnum> NameToPermissionHash =
-         new HashMap<String, PermissionEnum>((int) (COUNT / .75) + 1, .75f);
+   private static final Map<Integer, PermissionEnum> rankToPermissionHash = new HashMap<Integer, PermissionEnum>(
+         (int) (COUNT / .75) + 1, .75f);
+   private static final Map<String, PermissionEnum> NameToPermissionHash = new HashMap<String, PermissionEnum>(
+         (int) (COUNT / .75) + 1, .75f);
    private static final String[] NAME_ARRAY;
 
    static {
@@ -65,6 +65,19 @@ public enum PermissionEnum {
 
    public static PermissionEnum getPermission(String name) {
       return NameToPermissionHash.get(name);
+   }
+
+   public boolean matches(PermissionEnum toMatch) {
+      boolean hasPermission = false;
+
+      if (toMatch == PermissionEnum.READ && this == PermissionEnum.LOCK) {
+         hasPermission = true;
+      } else if (this == null || this == PermissionEnum.LOCK) {
+         hasPermission = false;
+      } else {
+         hasPermission = this.getRank() >= toMatch.getRank() && !this.equals(PermissionEnum.DENY);
+      }
+      return hasPermission;
    }
 
    public static String[] getPermissionNames() {

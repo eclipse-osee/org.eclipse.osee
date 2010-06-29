@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.menu;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -29,12 +29,12 @@ public class GlobalMenuPermissions {
    private boolean readPermission;
    private boolean fullAccess;
    private String subjectFromLockedObjectName;
-   private boolean hasArtifacts;
+   private final boolean hasArtifacts;
 
    /**
     * Return permission set. This is a one-shot deal at the time of instantiation. Permissions are not kept up to date
     * with changes to getSelectedArtifacts in given globalMenuHelper. Must be called again to get refreshed permissions.
-    * 
+    *
     * @param globalMenuHelper
     */
    public GlobalMenuPermissions(IGlobalMenuHelper globalMenuHelper) throws OseeCoreException {
@@ -43,7 +43,7 @@ public class GlobalMenuPermissions {
 
    /**
     * Return permission set for given artifact.
-    * 
+    *
     * @param artifact
     */
    public GlobalMenuPermissions(Artifact artifact) throws OseeCoreException {
@@ -52,7 +52,7 @@ public class GlobalMenuPermissions {
 
    /**
     * Return permission set for given artifacts.
-    * 
+    *
     * @param artifacts
     */
    public GlobalMenuPermissions(Collection<Artifact> artifacts) throws OseeCoreException {

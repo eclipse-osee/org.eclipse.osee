@@ -15,14 +15,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
+import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
+import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
@@ -34,9 +38,13 @@ import org.eclipse.osee.framework.skynet.core.attribute.HttpAttributeTagger;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager2;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionAccessHandler;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionCheckPoint;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionHandler;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -50,6 +58,7 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
    private final Map<OseeServiceTrackerId, ServiceTracker> mappedTrackers;
    private final List<ServiceRegistration> services;
    private BundleContext context;
+   private ServiceDependencyTracker dependencyTracker;
 
    public Activator() {
       this.mappedTrackers = new HashMap<OseeServiceTrackerId, ServiceTracker>();
@@ -77,6 +86,10 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
       createServiceTracker(context, IOseeModelFactoryService.class, OseeServiceTrackerId.OSEE_FACTORY_SERVICE);
       createServiceTracker(context, IOseeDatabaseService.class, OseeServiceTrackerId.OSEE_DATABASE_SERVICE);
       createServiceTracker(context, ILifecycleService.class, OseeServiceTrackerId.LIFECYCLE_SERVER);
+      createServiceTracker(context, IAccessControlService.class, OseeServiceTrackerId.OSEE_ACCESS_CONTROL_SERVICE);
+
+      dependencyTracker = new ServiceDependencyTracker(context, new TrackingHandler());
+      dependencyTracker.open();
 
       RemoteEventManager2.getInstance().registerForRemoteEvents();
       if (!OseeEventManager.isNewEvents() && !OseeEventManager.isOldEvents()) {
@@ -88,6 +101,10 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
    public void stop(BundleContext context) throws Exception {
       HttpAttributeTagger.getInstance().deregisterFromEventManager();
       RemoteEventManager.deregisterFromRemoteEventManager();
+
+      if (dependencyTracker != null) {
+         dependencyTracker.close();
+      }
 
       for (ServiceRegistration service : services) {
          service.unregister();
@@ -143,5 +160,54 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
       ServiceTracker tracker = mappedTrackers.get(trackerId);
       Object service = tracker.getService();
       return clazz.cast(service);
+   }
+
+   public IAccessControlService getAccessControlService() throws OseeCoreException {
+      try {
+         Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.access");
+         if (bundle.getState() != Bundle.ACTIVE) {
+            bundle.start();
+         }
+      } catch (BundleException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return getTracker(OseeServiceTrackerId.OSEE_ACCESS_CONTROL_SERVICE, IAccessControlService.class);
+   }
+
+   private static final class TrackingHandler extends AbstractTrackingHandler {
+
+      private static final Class<?>[] DEPENDENCIES = new Class[] {ILifecycleService.class, IAccessControlService.class};
+
+      private SkynetTransactionHandler handler;
+      private ILifecycleService lifecycleService;
+      private IAccessControlService accessService;
+
+      @Override
+      public Class<?>[] getDependencies() {
+         return DEPENDENCIES;
+      }
+
+      @Override
+      public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
+         lifecycleService = (ILifecycleService) services.get(ILifecycleService.class);
+         accessService = (IAccessControlService) services.get(IAccessControlService.class);
+         try {
+            handler = new SkynetTransactionAccessHandler(accessService);
+            lifecycleService.addHandler(SkynetTransactionCheckPoint.TYPE, handler);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+
+      @Override
+      public void onDeActivate() {
+         if (handler != null) {
+            try {
+               lifecycleService.removeHandler(SkynetTransactionCheckPoint.TYPE, handler);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      }
    }
 }

@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -58,7 +59,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -241,7 +241,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    /**
     * Override to apply different algorithm to current section expansion.
-    * 
+    *
     * @param page
     * @return true if section should be expanded
     * @throws OseeCoreException
@@ -572,12 +572,16 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public double getEstimatedHoursFromTasks(String relatedToState) throws OseeCoreException {
-      if (!(this instanceof TaskableStateMachineArtifact)) return 0;
+      if (!(this instanceof TaskableStateMachineArtifact)) {
+         return 0;
+      }
       return ((TaskableStateMachineArtifact) this).getEstimatedHoursFromTasks(relatedToState);
    }
 
    public double getEstimatedHoursFromTasks() throws OseeCoreException {
-      if (!(this instanceof TaskableStateMachineArtifact)) return 0;
+      if (!(this instanceof TaskableStateMachineArtifact)) {
+         return 0;
+      }
       return ((TaskableStateMachineArtifact) this).getEstimatedHoursFromTasks();
    }
 
@@ -636,7 +640,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public double getRemainFromTasks() throws OseeCoreException {
-      if (!(this instanceof TaskableStateMachineArtifact)) return 0;
+      if (!(this instanceof TaskableStateMachineArtifact)) {
+         return 0;
+      }
       return ((TaskableStateMachineArtifact) this).getRemainHoursFromTasks();
    }
 
@@ -772,7 +778,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public String getWorldViewNumberOfTasks() throws OseeCoreException {
-      if (!(this instanceof TaskableStateMachineArtifact)) return "";
+      if (!(this instanceof TaskableStateMachineArtifact)) {
+         return "";
+      }
       int num = ((TaskableStateMachineArtifact) this).getTaskArtifacts().size();
       if (num == 0) {
          return "";
@@ -794,7 +802,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    /**
     * Return true if this artifact, it's ATS relations and any of the other side artifacts are dirty
-    * 
+    *
     * @return true if any object in SMA tree is dirty
     */
    public Result isSMAEditorDirty() {
@@ -862,7 +870,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       }
       if (getParentSMA() != null) {
          Date parentDate = getParentSMA().getWorldViewEstimatedCompletionDate();
-         if (parentDate != null) return parentDate;
+         if (parentDate != null) {
+            return parentDate;
+         }
       }
       date = getWorldViewEstimatedReleaseDate();
       if (date != null) {
@@ -897,7 +907,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    /**
     * Called at the end of a transition just before transaction manager persist. SMAs can override to perform tasks due
     * to transition.
-    * 
+    *
     * @throws Exception
     */
    public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
@@ -1030,7 +1040,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * Return hours spent working ONLY on tasks related to stateName
     */
    public double getHoursSpentSMAStateTasks(String stateName) throws OseeCoreException {
-      if (!(this instanceof TaskableStateMachineArtifact)) return 0;
+      if (!(this instanceof TaskableStateMachineArtifact)) {
+         return 0;
+      }
       return ((TaskableStateMachineArtifact) this).getHoursSpentFromTasks(stateName);
    }
 
@@ -1078,7 +1090,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * Return Percent Complete ONLY on tasks related to stateName. Total Percent / # Tasks
     */
    public int getPercentCompleteSMAStateTasks(String stateName) throws OseeCoreException {
-      if (!(this instanceof TaskableStateMachineArtifact)) return 0;
+      if (!(this instanceof TaskableStateMachineArtifact)) {
+         return 0;
+      }
       return ((TaskableStateMachineArtifact) this).getPercentCompleteFromTasks(stateName);
    }
 
@@ -1389,7 +1403,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    /**
     * Return true if sma is TeamWorkflowArtifact and it's TeamDefinitionArtifact has rule set
-    * 
+    *
     * @param ruleId
     * @return if has rule
     * @throws OseeCoreException
@@ -1595,7 +1609,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public boolean isTargetedVersionable() throws OseeCoreException {
-      if (!(isTeamWorkflow())) {
+      if (!isTeamWorkflow()) {
          return false;
       }
       return ((TeamWorkFlowArtifact) this).getTeamDefinition().getTeamDefinitionHoldingVersions() != null && ((TeamWorkFlowArtifact) this).getTeamDefinition().getTeamDefinitionHoldingVersions().isTeamUsesVersions();

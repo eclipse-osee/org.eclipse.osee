@@ -8,8 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.lifecycle;
+package org.eclipse.osee.framework.lifecycle.internal;
 
+import org.eclipse.osee.framework.lifecycle.ILifecycleService;
+import org.eclipse.osee.framework.lifecycle.LifecycleServiceImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
