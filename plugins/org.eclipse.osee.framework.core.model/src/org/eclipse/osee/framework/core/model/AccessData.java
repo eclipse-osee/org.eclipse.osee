@@ -35,7 +35,8 @@ public class AccessData {
    public boolean matches(PermissionEnum permissionEnum) {
       boolean matches = false;
       for (Object object : permissions.keySet()) {
-         if (permissions.get(object).getRank() >= permissionEnum.getRank()) {
+         PermissionEnum objectPermission = permissions.get(object);
+         if (objectPermission.getRank() >= permissionEnum.getRank() && !objectPermission.equals(PermissionEnum.DENY) && !objectPermission.equals(PermissionEnum.LOCK)) {
             matches = true;
          } else {
             matches = false;

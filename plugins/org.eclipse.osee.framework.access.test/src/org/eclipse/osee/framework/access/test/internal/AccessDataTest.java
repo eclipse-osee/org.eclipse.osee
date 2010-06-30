@@ -29,12 +29,25 @@ public class AccessDataTest {
       AccessData accessData = new AccessData();
       Assert.assertFalse(accessData.matches(PermissionEnum.READ));
 
-      IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "Name");
-      accessData.add(basicArtifact, PermissionEnum.READ);
       IBasicArtifact<?> basicArtifact2 = new DefaultBasicArtifact(2, "2", "Name2");
       accessData.add(basicArtifact2, PermissionEnum.WRITE);
+      IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "Name");
+      accessData.add(basicArtifact, PermissionEnum.READ);
 
       Assert.assertTrue(accessData.matches(PermissionEnum.READ));
       Assert.assertFalse(accessData.matches(PermissionEnum.WRITE));
+   }
+
+   @Test
+   public void testObjectBaseDeny() {
+      AccessData accessData = new AccessData();
+      Assert.assertFalse(accessData.matches(PermissionEnum.READ));
+
+      IBasicArtifact<?> basicArtifact2 = new DefaultBasicArtifact(2, "2", "Name2");
+      accessData.add(basicArtifact2, PermissionEnum.DENY);
+      IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "Name");
+      accessData.add(basicArtifact, PermissionEnum.READ);
+
+      Assert.assertFalse(accessData.matches(PermissionEnum.READ));
    }
 }
