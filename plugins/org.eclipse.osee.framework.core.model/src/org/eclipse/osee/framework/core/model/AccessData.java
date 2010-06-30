@@ -38,6 +38,7 @@ public class AccessData {
          if (permissions.get(object).getRank() >= permissionEnum.getRank()) {
             matches = true;
          } else {
+            matches = false;
             break;
          }
       }
