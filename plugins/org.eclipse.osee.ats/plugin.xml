@@ -382,8 +382,8 @@
       <wizard
             category="org.eclipse.osee.framework.ui.skynet.export"
             class="org.eclipse.osee.ats.export.AtsExportWizard"
-            icon="images/export2.gif"
-            id="org.eclipse.osee.ats.exportWwizard"
+            icon="images/export.gif"
+            id="org.eclipse.osee.ats.exportWizard"
             name="OSEE ATS Export">
       </wizard>
    </extension>
