@@ -51,7 +51,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public class WorldComposite extends ScrolledComposite implements IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IRefreshActionHandler {
+public class WorldComposite extends ScrolledComposite implements IWorldEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IRefreshActionHandler {
 
    private final WorldXViewer worldXViewer;
    private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
@@ -94,6 +94,7 @@ public class WorldComposite extends ScrolledComposite implements IOpenNewAtsWorl
       setExpandVertical(true);
       layout();
 
+      WorldViewerEventManager.add(this);
    }
 
    public double getManHoursPerDayPreference() throws OseeCoreException {
@@ -214,11 +215,9 @@ public class WorldComposite extends ScrolledComposite implements IOpenNewAtsWorl
       if (worldXViewer != null && !worldXViewer.getTree().isDisposed()) {
          worldXViewer.dispose();
       }
+      WorldViewerEventManager.remove(this);
    }
 
-   /**
-    * @return the xViewer
-    */
    public WorldXViewer getXViewer() {
       return worldXViewer;
    }
@@ -245,6 +244,17 @@ public class WorldComposite extends ScrolledComposite implements IOpenNewAtsWorl
    @Override
    public ArrayList<Artifact> getSelectedArtifacts() throws OseeCoreException {
       return worldXViewer.getSelectedArtifacts();
+   }
+
+   @Override
+   public void removeItems(Collection<? extends Object> objects) {
+      // remove from model
+      worldArts.removeAll(objects);
+   }
+
+   @Override
+   public WorldXViewer getWorldXViewer() {
+      return worldXViewer;
    }
 
 }

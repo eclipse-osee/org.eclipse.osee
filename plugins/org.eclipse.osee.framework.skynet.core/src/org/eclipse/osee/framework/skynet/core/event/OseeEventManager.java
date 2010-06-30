@@ -283,7 +283,7 @@ public class OseeEventManager {
    public static void eventLog(String output, Exception ex) {
       try {
          if (isEventDebugConsole()) {
-            System.err.println(output + (ex != null ? " <<ERROR>> " + ex.getLocalizedMessage() : ""));
+            System.err.println(output + (ex != null ? " <<ERROR>> " + ex.toString() : ""));
          } else if (isEventDebugErrorLog()) {
             if (ex != null) {
                OseeLog.log(Activator.class, Level.SEVERE, output, ex);

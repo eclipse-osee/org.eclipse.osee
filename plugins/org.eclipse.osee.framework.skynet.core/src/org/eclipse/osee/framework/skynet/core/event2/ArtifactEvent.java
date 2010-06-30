@@ -264,4 +264,5 @@ public class ArtifactEvent extends FrameworkEvent {
       }
       return false;
    }
+
 }

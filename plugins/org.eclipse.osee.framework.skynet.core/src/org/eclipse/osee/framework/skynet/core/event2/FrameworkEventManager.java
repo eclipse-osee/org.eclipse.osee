@@ -118,19 +118,20 @@ public class FrameworkEventManager {
          // If no filters, this is a match
          if (((IEventFilteredListener) listener).getEventFilters() == null || ((IEventFilteredListener) listener).getEventFilters().isEmpty()) {
             match = true;
-         }
-         // Loop through filters and see if anything matches what's desired
-         for (IEventFilter filter : ((IEventFilteredListener) listener).getEventFilters()) {
-            for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
-               if (filter.isMatch(guidArt)) match = true;
-               break;
+         } else {
+            // Loop through filters and see if anything matches what's desired
+            for (IEventFilter filter : ((IEventFilteredListener) listener).getEventFilters()) {
+               for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
+                  if (filter.isMatch(guidArt)) match = true;
+                  break;
+               }
+               if (match) break;
+               for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
+                  if (filter.isMatch(guidRel)) match = true;
+                  break;
+               }
+               if (match) break;
             }
-            if (match) break;
-            for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
-               if (filter.isMatch(guidRel)) match = true;
-               break;
-            }
-            if (match) break;
          }
       }
       // If no filters, this is a match

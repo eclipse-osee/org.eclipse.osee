@@ -46,26 +46,32 @@ public class DefaultBasicGuidArtifact implements Identity, IBasicGuidArtifact {
 
    @Override
    public int hashCode() {
-      final int prime = 31;
-      int result = prime * ((artTypeGuid == null) ? 0 : artTypeGuid.hashCode());
-      result = prime * result + ((branchGuid == null) ? 0 : branchGuid.hashCode());
-      return result;
+      // NOTE This hashcode MUST match that of Artifact class
+      int hashCode = 11;
+      hashCode = hashCode * 37 + getGuid().hashCode();
+      hashCode = hashCode * 37 + getBranchGuid().hashCode();
+      return hashCode;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
-      if (artTypeGuid == null) {
-         if (other.getArtTypeGuid() != null) return false;
-      } else if (!artTypeGuid.equals(other.getArtTypeGuid())) return false;
-      if (branchGuid == null) {
-         if (other.getBranchGuid() != null) return false;
-      } else if (!branchGuid.equals(other.getBranchGuid())) return false;
-      if (artGuid == null) {
-         if (other.getGuid() != null) return false;
-      } else if (!artGuid.equals(other.getGuid())) return false;
-      return true;
+      boolean equals = false;
+      if (this == obj) equals = true;
+      if (!equals && obj instanceof IBasicGuidArtifact) {
+         IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
+
+         if (artTypeGuid == null || other.getArtTypeGuid() == null) equals = false;
+         equals = artTypeGuid.equals(other.getArtTypeGuid());
+
+         if (equals && branchGuid == null || other.getBranchGuid() == null)
+            equals = false;
+         else if (equals) equals = branchGuid.equals(other.getBranchGuid());
+
+         if (equals && artGuid == null || other.getGuid() == null)
+            equals = false;
+         else if (equals) equals = artGuid.equals(other.getGuid());
+      }
+      return equals;
    }
 
    public String getGuid() {

@@ -135,7 +135,7 @@ public class InternalEventManager2 {
     */
    static void kickBranchEvent(final Sender sender, final BranchEvent branchEvent) {
       if (branchEvent.getNetworkSender() == null) {
-         OseeEventManager.eventLog("IEM2: kickTransactionEvent <<ERROR>> networkSender can't be null.");
+         OseeEventManager.eventLog("IEM2: kickBranchEvent - ERROR networkSender can't be null.");
          return;
       }
       if (isDisableEvents()) {
@@ -173,7 +173,7 @@ public class InternalEventManager2 {
    // Kick LOCAL and REMOTE ArtifactEvent
    static void kickPersistEvent(final Sender sender, final ArtifactEvent artifactEvent) {
       if (artifactEvent.getNetworkSender() == null) {
-         OseeEventManager.eventLog("IEM2: kickPersistEvent <<ERROR>> networkSender can't be null.");
+         OseeEventManager.eventLog("IEM2: kickPersistEvent - ERROR networkSender can't be null.");
          return;
       }
       if (isDisableEvents()) {
@@ -211,7 +211,7 @@ public class InternalEventManager2 {
    // Kick LOCAL and REMOTE ArtifactEvent
    static void kickTransactionEvent(final Sender sender, final TransactionEvent transEvent) {
       if (transEvent.getNetworkSender() == null) {
-         OseeEventManager.eventLog("IEM2: kickTransactionEvent <<ERROR>> networkSender can't be null.");
+         OseeEventManager.eventLog("IEM2: kickTransactionEvent - ERROR networkSender can't be null.");
          return;
       }
       if (isDisableEvents()) {

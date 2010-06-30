@@ -76,18 +76,18 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (obj instanceof IBasicGuidArtifact) {
-         IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
-         return other.getGuid().equals(getGuid()) && other.getBranchGuid().equals(getBranchGuid()) && other.getArtTypeGuid().equals(
-               getArtTypeGuid());
+      boolean equals = false;
+      if (this == obj) equals = true;
+      if (!equals) {
+         equals = super.equals(obj);
       }
-      if (!super.equals(obj)) return false;
-      EventBasicGuidArtifact other = (EventBasicGuidArtifact) obj;
-      if (eventModType == null) {
-         if (other.eventModType != null) return false;
-      } else if (!eventModType.equals(other.eventModType)) return false;
-      return true;
+      if (equals && obj instanceof EventBasicGuidArtifact) {
+         EventBasicGuidArtifact other = (EventBasicGuidArtifact) obj;
+         if (eventModType != other.getModType()) {
+            equals = false;
+         }
+      }
+      return equals;
    }
 
    public String toString() {

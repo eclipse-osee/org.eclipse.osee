@@ -14,7 +14,9 @@ package org.eclipse.osee.ats.task;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
@@ -29,8 +31,11 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.world.IWorldEventHandler;
 import org.eclipse.osee.ats.world.WorldContentProvider;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
+import org.eclipse.osee.ats.world.WorldViewerEventManager;
+import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -66,11 +71,12 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSelectedHandler, ITaskDeleteActionHandler, ITaskAddActionHandler, IOpenNewAtsTaskEditorHandler, IRefreshActionHandler {
+public class TaskComposite extends Composite implements IWorldEventHandler, IOpenNewAtsTaskEditorSelectedHandler, ITaskDeleteActionHandler, ITaskAddActionHandler, IOpenNewAtsTaskEditorHandler, IRefreshActionHandler {
 
    private TaskXViewer taskXViewer;
    private final IXTaskViewer iXTaskViewer;
    protected Label showReleaseMetricsLabel;
+   private final Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>(200);
 
    public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style) throws OseeCoreException {
       this(iXTaskViewer, parent, style, null);
@@ -112,6 +118,8 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
 
          setupDragAndDropSupport();
          parent.layout();
+
+         WorldViewerEventManager.add(this);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -121,31 +129,25 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
       if (taskXViewer != null && !taskXViewer.getTree().isDisposed()) {
          taskXViewer.dispose();
       }
+      WorldViewerEventManager.remove(this);
    }
 
    public IXTaskViewer getIXTaskViewer() {
       return iXTaskViewer;
    }
 
-   @SuppressWarnings("unchecked")
-   public void add(Collection<TaskArtifact> taskArts) {
-      if (getTaskXViewer().getInput() == null) {
-         getTaskXViewer().setInput(Collections.singleton(taskArts));
-      } else {
-         Collection<TaskArtifact> currTaskArts = (Collection<TaskArtifact>) getTaskXViewer().getInput();
-         for (TaskArtifact taskArt : taskArts) {
-            if (!currTaskArts.contains(taskArt)) {
-               currTaskArts.add(taskArt);
-            }
-         }
+   public void add(Collection<TaskArtifact> newTasks) {
+      this.taskArts.addAll(newTasks);
+      if (getTaskXViewer().getInput() != this.taskArts) {
+         getTaskXViewer().setInput(this.taskArts);
       }
       taskXViewer.refresh();
       taskXViewer.getTree().setFocus();
    }
 
    public void loadTable() throws OseeCoreException {
-      getTaskXViewer().setInput(iXTaskViewer.getTaskArtifacts(""));
-      taskXViewer.getTree().setFocus();
+      this.taskArts.clear();
+      add(iXTaskViewer.getTaskArtifacts(""));
    }
 
    public void handleDeleteTask() {
@@ -190,7 +192,8 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
                }
             }
             transaction.execute();
-            taskXViewer.remove(items);
+            taskXViewer.remove(items.toArray(new Object[items.size()]));
+            taskArts.removeAll(items);
 
             if (tasksNotInDb.size() > 0) {
                new PurgeArtifacts(tasksNotInDb).execute();
@@ -213,7 +216,6 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
             taskArt = ((TaskableStateMachineArtifact) iXTaskViewer.getSma()).createNewTask(ed.getEntry());
             iXTaskViewer.getEditor().onDirtied();
             add(Collections.singleton(taskArt));
-            taskXViewer.getTree().setFocus();
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -351,5 +353,15 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
    @Override
    public void taskDeleteActionHandler() {
       handleDeleteTask();
+   }
+
+   @Override
+   public WorldXViewer getWorldXViewer() {
+      return taskXViewer;
+   }
+
+   @Override
+   public void removeItems(Collection<? extends Object> objects) {
+      taskArts.removeAll(objects);
    }
 }
