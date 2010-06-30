@@ -33,7 +33,15 @@ public class AccessData {
    }
 
    public boolean matches(PermissionEnum permissionEnum) {
-      return false;
+      boolean matches = false;
+      for (Object object : permissions.keySet()) {
+         if (permissions.get(object).getRank() >= permissionEnum.getRank()) {
+            matches = true;
+         } else {
+            break;
+         }
+      }
+      return matches;
    }
 
    //   public boolean matches(IBasicArtifact<?> artifact, IAttributeType type, PermissionEnum permissionEnum) {
