@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
 import java.util.HashMap;
-
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 
@@ -108,8 +107,8 @@ public class RecordMap<T extends RecordElement> extends RecordElement{
    @Override
    public void zeroize() {
 	   super.zeroize();
-	   for (RecordElement element : this.records.values()) {
-		   element.zeroize();
+	   for(int i = 0; i < length(); i++){
+	      get(i).zeroize();
 	   }
    }
    
