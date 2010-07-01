@@ -33,6 +33,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 /**
+ * <REM2> handled through SMAEditorEventManager
+ * 
  * @author Donald G. Dunne
  */
 public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTransactionEventListener {

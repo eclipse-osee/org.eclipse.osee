@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -33,10 +34,10 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
  */
 public class WorldViewerEventManager implements IArtifactEventListener {
 
-   List<IWorldEventHandler> handlers = new ArrayList<IWorldEventHandler>();
+   List<IWorldViewerEventHandler> handlers = new ArrayList<IWorldViewerEventHandler>();
    static WorldViewerEventManager instance;
 
-   public static void add(IWorldEventHandler iWorldEventHandler) {
+   public static void add(IWorldViewerEventHandler iWorldEventHandler) {
       if (instance == null) {
          instance = new WorldViewerEventManager();
          OseeEventManager.addListener(instance);
@@ -44,7 +45,7 @@ public class WorldViewerEventManager implements IArtifactEventListener {
       instance.handlers.add(iWorldEventHandler);
    }
 
-   public static void remove(IWorldEventHandler iWorldEventHandler) {
+   public static void remove(IWorldViewerEventHandler iWorldEventHandler) {
       if (instance != null) {
          instance.handlers.remove(iWorldEventHandler);
       }
@@ -52,7 +53,7 @@ public class WorldViewerEventManager implements IArtifactEventListener {
 
    @Override
    public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
-      for (IWorldEventHandler handler : new CopyOnWriteArrayList<IWorldEventHandler>(handlers)) {
+      for (IWorldViewerEventHandler handler : new CopyOnWriteArrayList<IWorldViewerEventHandler>(handlers)) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
          }
@@ -65,15 +66,17 @@ public class WorldViewerEventManager implements IArtifactEventListener {
       } catch (OseeCoreException ex) {
          return;
       }
-      final Collection<Artifact> modifiedArts = artifactEvent.getModifiedCacheArtifacts();
+      final Collection<Artifact> modifiedArts =
+            artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
       final Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
-      final Collection<EventBasicGuidArtifact> deletedPurgedArts = artifactEvent.getDeletedPurged();
+      final Collection<EventBasicGuidArtifact> deletedPurgedArts =
+            artifactEvent.get(EventModType.Deleted, EventModType.Purged);
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
             if (!deletedPurgedArts.isEmpty()) {
-               for (IWorldEventHandler handler : handlers) {
+               for (IWorldViewerEventHandler handler : handlers) {
                   if (!handler.isDisposed()) {
                      // allow handler to remove from model
                      handler.removeItems(deletedPurgedArts);
@@ -86,7 +89,7 @@ public class WorldViewerEventManager implements IArtifactEventListener {
                   }
                }
             }
-            for (IWorldEventHandler handler : handlers) {
+            for (IWorldViewerEventHandler handler : handlers) {
                if (!handler.isDisposed()) {
                   for (Artifact artifact : modifiedArts) {
                      try {

@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.world.IWorldEventHandler;
+import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.world.WorldContentProvider;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
 import org.eclipse.osee.ats.world.WorldViewerEventManager;
@@ -71,7 +71,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class TaskComposite extends Composite implements IWorldEventHandler, IOpenNewAtsTaskEditorSelectedHandler, ITaskDeleteActionHandler, ITaskAddActionHandler, IOpenNewAtsTaskEditorHandler, IRefreshActionHandler {
+public class TaskComposite extends Composite implements IWorldViewerEventHandler, IOpenNewAtsTaskEditorSelectedHandler, ITaskDeleteActionHandler, ITaskAddActionHandler, IOpenNewAtsTaskEditorHandler, IRefreshActionHandler {
 
    private TaskXViewer taskXViewer;
    private final IXTaskViewer iXTaskViewer;

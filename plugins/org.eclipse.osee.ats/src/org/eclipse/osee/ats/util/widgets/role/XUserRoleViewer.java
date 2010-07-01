@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.util.widgets.role;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +37,9 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -68,9 +72,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
+ * <REM2>
+ * 
  * @author Donald G. Dunne
  */
-public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFrameworkTransactionEventListener {
+public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifactEventListener, IFrameworkTransactionEventListener {
 
    private UserRoleXViewer xViewer;
    private IDirtiableEditor editor;
@@ -488,6 +494,31 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
    @Override
    public Control getErrorMessageControl() {
       return labelWidget;
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return Arrays.asList(AtsUtil.getCommonBranchFilter(), AtsUtil.getReviewArtifactTypeEventFilter());
+   }
+
+   @Override
+   public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
+      if (!artifactEvent.isHasEvent(reviewArt.getArtifact())) {
+         return;
+      }
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
+               return;
+            }
+            if (artifactEvent.isRelAddedChangedDeleted(reviewArt.getArtifact())) {
+               loadTable();
+            } else {
+               refresh();
+            }
+         }
+      });
    }
 
 }

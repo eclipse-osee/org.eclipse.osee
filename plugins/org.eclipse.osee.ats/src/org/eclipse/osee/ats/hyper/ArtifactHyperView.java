@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.hyper;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -24,6 +25,7 @@ import org.eclipse.osee.ats.actions.wizard.ArtifactSelectWizard;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -34,6 +36,9 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -53,7 +58,12 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-public class ArtifactHyperView extends HyperView implements IFrameworkTransactionEventListener, IPartListener, IActionable, IPerspectiveListener2 {
+/**
+ * <REM2>
+ * 
+ * @author Donald G. Dunne
+ */
+public class ArtifactHyperView extends HyperView implements IArtifactEventListener, IFrameworkTransactionEventListener, IPartListener, IActionable, IPerspectiveListener2 {
 
    public static String VIEW_ID = "org.eclipse.osee.ats.hyper.ArtifactHyperView";
    public static ArtifactHyperItem topAHI;
@@ -346,6 +356,46 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
             }
          });
       }
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return null;
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      try {
+         if (sender.isRemote()) {
+            return;
+         }
+      } catch (OseeAuthenticationRequiredException ex) {
+         return;
+      }
+      if (currentArtifact == null) {
+         return;
+      }
+      if (currentArtifact.getBranchGuid().equals(artifactEvent.getBranchGuid())) {
+         return;
+      }
+
+      if (artifactEvent.isDeletedPurged(currentArtifact)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               clear();
+            }
+         });
+      }
+      if (artifactEvent.isRelAddedChangedDeleted(currentArtifact)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               display();
+            }
+         });
+      }
+
    }
 
 }

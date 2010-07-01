@@ -36,6 +36,9 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -54,7 +57,12 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-public class ActionHyperView extends HyperView implements IPartListener, IActionable, IFrameworkTransactionEventListener, IPerspectiveListener2 {
+/**
+ * <REM2>
+ * 
+ * @author Donald G. Dunne
+ */
+public class ActionHyperView extends HyperView implements IPartListener, IActionable, IArtifactEventListener, IFrameworkTransactionEventListener, IPerspectiveListener2 {
 
    public static String VIEW_ID = "org.eclipse.osee.ats.hyper.ActionHyperView";
    private static String HELP_CONTEXT_ID = "atsActionView";
@@ -315,6 +323,32 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          return;
       }
       if (transData.isDeleted(currentArtifact)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               clear();
+            }
+         });
+      }
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            display();
+         }
+      });
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return AtsUtil.getAtsObjectEventFilters();
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      if (currentArtifact == null) {
+         return;
+      }
+      if (artifactEvent.isDeletedPurged(currentArtifact)) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {

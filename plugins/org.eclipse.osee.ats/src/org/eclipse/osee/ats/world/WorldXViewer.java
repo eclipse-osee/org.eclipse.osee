@@ -231,12 +231,12 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       super.createSupportWidgets(parent);
       parent.addDisposeListener(new DisposeListener() {
          public void widgetDisposed(DisposeEvent e) {
-            OseeEventManager.removeListener(fWorldXViewer);
+            OseeEventManager.removeListener(fWorldXViewer); // <REM2> Don't need this cause handled through IWorldViewerEventHandler
             ((WorldContentProvider) getContentProvider()).clear(false);
          }
       });
       createMenuActions();
-      OseeEventManager.addListener(this);
+      OseeEventManager.addListener(this); // <REM2> Don't need this cause handled through IWorldViewerEventHandler
    }
 
    Action editStatusAction, editNotesAction, editResolutionAction, editEstimateAction, editChangeTypeAction,

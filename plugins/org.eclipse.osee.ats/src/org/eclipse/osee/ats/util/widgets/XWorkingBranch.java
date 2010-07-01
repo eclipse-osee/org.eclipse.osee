@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
+import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -25,6 +27,9 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
@@ -45,10 +50,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
 /**
+ * <REM2>
+ * 
  * @author Megumi Telles
  * @author Donald G. Dunne
  */
-public class XWorkingBranch extends XWidget implements IArtifactWidget, IFrameworkTransactionEventListener, IBranchEventListener {
+public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifactEventListener, IFrameworkTransactionEventListener, IBranchEventListener {
 
    private TeamWorkFlowArtifact teamArt;
    private Button createBranchButton;
@@ -281,6 +288,16 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    public String toString() {
       return String.format("%s", getLabel());
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return AtsUtil.getAtsObjectEventFilters();
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      refreshOnBranchEvent();
    }
 
 }

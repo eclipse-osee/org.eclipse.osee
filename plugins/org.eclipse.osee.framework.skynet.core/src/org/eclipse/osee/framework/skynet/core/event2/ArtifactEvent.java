@@ -82,7 +82,7 @@ public class ArtifactEvent extends FrameworkEvent {
    }
 
    public boolean isHasEvent(IBasicGuidArtifact guidArt) {
-      return isChanged(guidArt) || isDeletedPurged(guidArt) || isRelChange(guidArt) || isRelDeletedPurged(guidArt) || isRelAdded(guidArt);
+      return isModified(guidArt) || isDeletedPurged(guidArt) || isRelChange(guidArt) || isRelDeletedPurged(guidArt) || isRelAdded(guidArt);
    }
 
    public boolean isDeletedPurged(Artifact artifact) {
@@ -96,23 +96,6 @@ public class ArtifactEvent extends FrameworkEvent {
          }
       }
       return false;
-   }
-
-   public Collection<EventBasicGuidArtifact> getDeletedPurged() {
-      return get(EventModType.Deleted, EventModType.Purged);
-   }
-
-   public Collection<EventBasicGuidArtifact> getModified() {
-      return get(EventModType.Modified, EventModType.Reloaded);
-   }
-
-   public Collection<Artifact> getModifiedCacheArtifacts() {
-      try {
-         return ArtifactCache.getActive(getModified());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return java.util.Collections.emptyList();
    }
 
    public Collection<Artifact> getRelModifiedCacheArtifacts() {
@@ -130,6 +113,15 @@ public class ArtifactEvent extends FrameworkEvent {
          return ArtifactCache.getActive(getRelationsArts(RelationEventType.ModifiedRationale,
                RelationEventType.ReOrdered, RelationEventType.Added, RelationEventType.Deleted,
                RelationEventType.Purged, RelationEventType.Undeleted));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return java.util.Collections.emptyList();
+   }
+
+   public Collection<Artifact> getCacheArtifacts(EventModType... eventModTypes) {
+      try {
+         return ArtifactCache.getActive(get(eventModTypes));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -159,7 +151,7 @@ public class ArtifactEvent extends FrameworkEvent {
 
    public Collection<EventBasicGuidRelation> getRelations(RelationEventType... eventModTypes) {
       Set<EventBasicGuidRelation> guidRels = new HashSet<EventBasicGuidRelation>();
-      for (EventBasicGuidRelation guidRel : guidRels) {
+      for (EventBasicGuidRelation guidRel : relations) {
          for (RelationEventType modType : eventModTypes) {
             if (guidRel.getModType() == modType) {
                guidRels.add(guidRel);
@@ -177,11 +169,19 @@ public class ArtifactEvent extends FrameworkEvent {
       return get(EventModType.Reloaded).contains(guidArt);
    }
 
-   public boolean isChanged(Artifact artifact) {
-      return isChanged(artifact.getBasicGuidArtifact());
+   public boolean isModified(Artifact artifact) {
+      return isModified(artifact.getBasicGuidArtifact());
    }
 
-   public boolean isChanged(IBasicGuidArtifact guidArt) {
+   public boolean isModified(IBasicGuidArtifact guidArt) {
+      return get(EventModType.Modified).contains(guidArt);
+   }
+
+   public boolean isModifiedReloaded(Artifact artifact) {
+      return isModifiedReloaded(artifact.getBasicGuidArtifact());
+   }
+
+   public boolean isModifiedReloaded(IBasicGuidArtifact guidArt) {
       return get(EventModType.Modified, EventModType.Reloaded).contains(guidArt);
    }
 

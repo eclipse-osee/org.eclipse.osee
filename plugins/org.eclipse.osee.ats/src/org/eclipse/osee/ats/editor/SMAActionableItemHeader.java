@@ -35,6 +35,8 @@ import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
+ * <REM2> handled through SMAEditorEventManager
+ * 
  * @author Donald G. Dunne
  */
 public class SMAActionableItemHeader extends Composite implements IFrameworkTransactionEventListener {

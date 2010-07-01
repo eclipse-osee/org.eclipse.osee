@@ -98,7 +98,8 @@ public final class AtsUtil {
    public final static String normalColor = "#FFFFFF";
    public final static String activeColor = "#EEEEEE";
    private static BranchGuidEventFilter branchGuidEventFilter;
-   private static ArtifactTypeEventFilter artifactTypeEventFilter;
+   private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter, reviewArtifactTypesFilter,
+         teamWorkflowArtifactTypesFilter, workItemArtifactTypesFilter;
    private static List<IEventFilter> atsObjectEventFilter;
 
    private AtsUtil() {
@@ -466,13 +467,35 @@ public final class AtsUtil {
    }
 
    public static ArtifactTypeEventFilter getAtsObjectArtifactTypeEventFilter() {
-      if (artifactTypeEventFilter == null) {
-         artifactTypeEventFilter =
+      if (atsObjectArtifactTypesFilter == null) {
+         atsObjectArtifactTypesFilter =
                new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action,
                      AtsArtifactTypes.Task, AtsArtifactTypes.Goal, AtsArtifactTypes.PeerToPeerReview,
                      AtsArtifactTypes.DecisionReview);
       }
-      return artifactTypeEventFilter;
+      return atsObjectArtifactTypesFilter;
+   }
+
+   public static ArtifactTypeEventFilter getTeamWorkflowArtifactTypeEventFilter() {
+      if (teamWorkflowArtifactTypesFilter == null) {
+         teamWorkflowArtifactTypesFilter = new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow);
+      }
+      return teamWorkflowArtifactTypesFilter;
+   }
+
+   public static ArtifactTypeEventFilter getReviewArtifactTypeEventFilter() {
+      if (reviewArtifactTypesFilter == null) {
+         reviewArtifactTypesFilter =
+               new ArtifactTypeEventFilter(AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
+      }
+      return reviewArtifactTypesFilter;
+   }
+
+   public static ArtifactTypeEventFilter getWorkItemArtifactTypeEventFilter() {
+      if (workItemArtifactTypesFilter == null) {
+         workItemArtifactTypesFilter = new ArtifactTypeEventFilter(CoreArtifactTypes.WorkItemDefinition);
+      }
+      return workItemArtifactTypesFilter;
    }
 
    public static Set<Artifact> getAssigned(User user) throws OseeCoreException {

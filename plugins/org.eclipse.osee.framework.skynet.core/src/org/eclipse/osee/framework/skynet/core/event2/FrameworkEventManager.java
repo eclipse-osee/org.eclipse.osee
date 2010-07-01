@@ -110,7 +110,7 @@ public class FrameworkEventManager {
    }
 
    private static void processEventArtifactsAndRelationsListener(IEventListener listener, ArtifactEvent artifactEvent, Sender sender) {
-      System.out.println("processing " + listener);
+      System.out.println("FEM Processing " + listener);
       if (listener != null && !(listener instanceof IArtifactEventListener)) return;
       // If true, listener will be called
       boolean match = false;

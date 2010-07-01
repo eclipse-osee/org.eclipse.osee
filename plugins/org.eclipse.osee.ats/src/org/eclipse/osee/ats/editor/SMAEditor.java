@@ -14,7 +14,6 @@ package org.eclipse.osee.ats.editor;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -59,9 +58,6 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
-import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -106,7 +102,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  * 
  * @author Donald G. Dunne
  */
-public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventListener, ISelectedAtsArtifacts, IDirtiableEditor, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
+public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEventHandler, ISelectedAtsArtifacts, IDirtiableEditor, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private StateMachineArtifact sma;
    private int workFlowPageIndex, metricsPageIndex, attributesPageIndex;
@@ -150,7 +146,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventL
       try {
          sma.setEditor(this);
 
-         OseeEventManager.addListener(this);
+         OseeEventManager.addListener(this); // <REM2> Don't need this cause handled through SMAEditorEventManager
+         SMAEditorEventManager.add(this);
 
          updatePartName();
 
@@ -253,7 +250,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventL
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListener(this);
+      OseeEventManager.removeListener(this); // <REM2> Don't need this cause handled through SMAEditorEventManager
+      SMAEditorEventManager.remove(this);
       if (sma != null && !sma.isDeleted() && sma.isSMAEditorDirty().isTrue()) {
          sma.revertSMA();
       }
@@ -387,18 +385,22 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventL
       return toolBar;
    }
 
-   public void refreshPages() throws OseeCoreException {
-      if (getContainer() == null || getContainer().isDisposed()) {
-         return;
+   public void refreshPages() {
+      try {
+         if (getContainer() == null || getContainer().isDisposed()) {
+            return;
+         }
+         if (workFlowTab != null) {
+            workFlowTab.refresh();
+         }
+         if (attributesComposite != null) {
+            attributesComposite.refreshArtifact(sma);
+         }
+         sma.getEditor().onDirtied();
+         updatePartName();
+      } catch (Exception ex) {
+         // do nothing
       }
-      if (workFlowTab != null) {
-         workFlowTab.refresh();
-      }
-      if (attributesComposite != null) {
-         attributesComposite.refreshArtifact(sma);
-      }
-      sma.getEditor().onDirtied();
-      updatePartName();
    }
 
    public static void editArtifact(Artifact artifact) {
@@ -752,87 +754,13 @@ public class SMAEditor extends AbstractArtifactEditor implements IArtifactEventL
    }
 
    @Override
-   public List<? extends IEventFilter> getEventFilters() {
-      return AtsUtil.getAtsObjectEventFilters();
+   public SMAEditor getSMAEditor() {
+      return this;
    }
 
    @Override
-   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      System.out.println("SMAEditor: handleArtifactModified called [" + artifactEvent + "] - sender " + sender + "");
-      if (sma.isInTransition()) {
-         return;
-      }
-      if (artifactEvent.isDeletedPurged(sma)) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               closeEditor();
-            }
-         });
-      } else if (artifactEvent.isChanged(sma)) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               try {
-                  refreshPages();
-                  onDirtied();
-               } catch (Exception ex) {
-                  // do nothing
-               }
-            }
-         });
-      } else if (isReloaded(artifactEvent)) {
-         SMAEditor.close(Collections.singleton(sma), false);
-         if (!sma.isDeleted()) {
-            SMAEditor.editArtifact(sma);
-         }
-      } else if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
-         try {
-            // If related review has made a change, redraw
-            for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
-               if (artifactEvent.isHasEvent(reviewArt)) {
-                  Displays.ensureInDisplayThread(new Runnable() {
-                     @Override
-                     public void run() {
-                        try {
-                           refreshPages();
-                           onDirtied();
-                        } catch (Exception ex) {
-                           // do nothing
-                        }
-                     }
-                  });
-                  // Only refresh editor for first review that has event
-                  break;
-               }
-            }
-         } catch (Exception ex) {
-            // do nothings
-         }
-      }
-      onDirtied();
-   }
-
-   private boolean isReloaded(ArtifactEvent artifactEvent) {
-      try {
-         if (artifactEvent.isReloaded(sma)) {
-            return true;
-         }
-         if (sma instanceof TaskableStateMachineArtifact) {
-            for (TaskArtifact taskArt : ((TaskableStateMachineArtifact) sma).getTaskArtifacts()) {
-               if (artifactEvent.isReloaded(taskArt)) return true;
-            }
-         }
-         if (sma.isTeamWorkflow()) {
-            for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
-               if (artifactEvent.isReloaded(reviewArt)) return true;
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-         return false;
-      }
-      return false;
+   public boolean isDisposed() {
+      return getContainer() == null || getContainer().isDisposed();
    }
 
 }

@@ -51,7 +51,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public class WorldComposite extends ScrolledComposite implements IWorldEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IRefreshActionHandler {
+public class WorldComposite extends ScrolledComposite implements IWorldViewerEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IRefreshActionHandler {
 
    private final WorldXViewer worldXViewer;
    private final Set<Artifact> worldArts = new HashSet<Artifact>(200);

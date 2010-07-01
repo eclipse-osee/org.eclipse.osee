@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor;
 
+import java.util.Arrays;
 import java.util.EventObject;
 import java.util.HashSet;
 import java.util.List;
@@ -59,6 +60,10 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -76,11 +81,12 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
- * A graphical editor for the configuration of ATS workflows
+ * A graphical editor for the configuration of ATS workflows<br>
+ * <REM2>
  * 
  * @author Donald G. Dunne
  */
-public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette implements IFrameworkTransactionEventListener {
+public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette implements IArtifactEventListener, IFrameworkTransactionEventListener {
 
    /** This is the root of the editor's model. */
    private WorkflowDiagram diagram;
@@ -420,6 +426,27 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
          }
       }
       System.out.println("Add refresh of editor if workflow mod");
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return Arrays.asList(AtsUtil.getCommonBranchFilter(), AtsUtil.getWorkItemArtifactTypeEventFilter());
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      try {
+         for (Artifact delArt : artifactEvent.getCacheArtifacts(EventModType.Deleted)) {
+            if (delArt.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
+               if (delArt.getName().equals(getPartName())) {
+                  closeEditor();
+               }
+            }
+         }
+         System.out.println("Add refresh of editor if workflow mod");
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
    }
 
 }

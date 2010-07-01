@@ -10,7 +10,7 @@ import java.util.Collection;
 /**
  * @author Donald G. Dunne
  */
-public interface IWorldEventHandler {
+public interface IWorldViewerEventHandler {
 
    public WorldXViewer getWorldXViewer();
 

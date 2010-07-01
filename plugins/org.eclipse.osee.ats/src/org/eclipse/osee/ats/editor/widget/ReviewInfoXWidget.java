@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.actions.NewDecisionReviewJob;
 import org.eclipse.osee.ats.actions.NewPeerToPeerReviewJob;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -59,6 +59,8 @@ import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
+ * <REM2> handled through SMAEditorEventManager
+ * 
  * @author Donald G. Dunne
  */
 public class ReviewInfoXWidget extends XLabelValueBase implements IFrameworkTransactionEventListener {

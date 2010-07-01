@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.hyper;
 
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -30,6 +31,9 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptions;
@@ -47,9 +51,11 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 
 /**
+ * <REM2>
+ * 
  * @author Donald G. Dunne
  */
-public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IActionable, IFrameworkTransactionEventListener, IPerspectiveListener2 {
+public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IActionable, IArtifactEventListener, IFrameworkTransactionEventListener, IPerspectiveListener2 {
 
    public static final String VIEW_ID = "org.eclipse.osee.ats.hyper.ActionSkyWalker";
 
@@ -232,6 +238,43 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
 
    public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, IWorkbenchPartReference partRef, String changeId) {
       processWindowActivated();
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return AtsUtil.getAtsObjectEventFilters();
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      try {
+         if (sender.isRemote()) {
+            return;
+         }
+      } catch (OseeCoreException ex) {
+         return;
+      }
+      if (getOptions().getArtifact() == null) {
+         return;
+      }
+      if (artifactEvent.isDeletedPurged(getOptions().getArtifact())) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               clear();
+            }
+         });
+      }
+      if (artifactEvent.isModifiedReloaded(getOptions().getArtifact()) ||
+      //
+      artifactEvent.isRelAddedChangedDeleted(getOptions().getArtifact())) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               explore(getOptions().getArtifact());
+            }
+         });
+      }
    }
 
 }
