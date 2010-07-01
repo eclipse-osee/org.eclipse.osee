@@ -51,16 +51,16 @@ public class ChangeData {
    }
 
    public Collection<Change> getArtifactChangesByName(String name) throws OseeCoreException {
-      Collection<Change> changes = new HashSet<Change>();
+      Collection<Change> foundChanges = new HashSet<Change>();
       try {
          for (Change change : changes) {
             if (change instanceof ArtifactChange) {
                if (change.getArtifactName().equals(name)) {
-                  changes.add(change);
+                  foundChanges.add(change);
                }
             }
          }
-         return changes;
+         return foundChanges;
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }
