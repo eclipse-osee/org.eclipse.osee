@@ -16,8 +16,7 @@ public class AttributeTypeEditPresenter {
    public static interface Display {
 
       public static enum OperationType {
-         ADD_ITEM,
-         REMOVE_ITEM,
+         ADD_ITEM, REMOVE_ITEM,
       }
 
       void showInformation(String title, String message);
@@ -65,9 +64,10 @@ public class AttributeTypeEditPresenter {
    public void onRemoveAttributeType() throws OseeCoreException {
       Artifact artifact = model.getArtifact();
       AttributeType[] types = AttributeTypeUtil.getTypesWithData(artifact);
+      Collection<AttributeType> validTypesPerBranch = artifact.getAttributeTypes();
       List<AttributeType> input = new ArrayList<AttributeType>(Arrays.asList(types));
       for (AttributeType type : types) {
-         if (artifact.getAttributes(type).size() - 1 < type.getMinOccurrences()) {
+         if (validTypesPerBranch.contains(type) && artifact.getAttributes(type).size() - 1 < type.getMinOccurrences()) {
             input.remove(type);
          }
       }
