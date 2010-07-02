@@ -23,6 +23,8 @@ import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
@@ -303,9 +305,9 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                            attribute.internalSetGammaId(attrChange.getGammaId());
                            attribute.setNotDirty();
                         } catch (OseeCoreException ex) {
-                           OseeEventManager.eventLog(String.format(
-                                 "REM2: Exception updating %s's attribute %d [/n%s/n].", artifact.getSafeName(),
-                                 attribute.getId(), attribute.toString()), ex);
+                           OseeEventManager.eventLog(
+                                 String.format("REM2: Exception updating %s's attribute %d [/n%s/n].",
+                                       artifact.getSafeName(), attribute.getId(), attribute.toString()), ex);
                         }
                      }
                      // Otherwise, attribute needs creation
@@ -317,8 +319,8 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
                            continue;
                         }
                         artifact.internalInitializeAttribute(attributeType, attrChange.getAttributeId(),
-                              attrChange.getGammaId(), modificationType, false, attrChange.getData().toArray(
-                                    new Object[attrChange.getData().size()]));
+                              attrChange.getGammaId(), modificationType, false,
+                              attrChange.getData().toArray(new Object[attrChange.getData().size()]));
                      }
                   } catch (OseeCoreException ex) {
                      OseeEventManager.eventLog(String.format(
@@ -342,9 +344,9 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       if (OseeEventManager.isNewEvents()) {
          ResEventManager.getInstance().start(this);
          OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem2_Connected);
-         OseeEventManager.eventLog("REM2: Enabled");
+         OseeLog.log(Activator.class, OseeLevel.INFO, "REM2: Enabled");
       } else {
-         OseeEventManager.eventLog("REM2: Disabled");
+         OseeLog.log(Activator.class, OseeLevel.INFO, "REM2: Disabled");
       }
    }
 

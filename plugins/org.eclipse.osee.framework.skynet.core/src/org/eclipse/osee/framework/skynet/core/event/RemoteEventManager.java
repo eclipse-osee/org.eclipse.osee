@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.jini.discovery.IServiceLookupListener;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
 import org.eclipse.osee.framework.jini.service.core.SimpleFormattedEntry;
 import org.eclipse.osee.framework.jini.util.OseeJini;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.ASkynetEventListener;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetArtifactEvent;
@@ -99,12 +100,12 @@ public class RemoteEventManager {
    private RemoteEventManager() {
       super();
       if (OseeEventManager.isOldEvents()) {
-         OseeEventManager.eventLog("REM1 Enabled");
+         OseeLog.log(Activator.class, OseeLevel.INFO, "REM1 Enabled");
          internalSkynetEventManager = new InternalSkynetEventManager();
          clientEventListener = new EventListener();
          checkJiniRegistration();
       } else {
-         OseeEventManager.eventLog("REM1 Disabled");
+         OseeLog.log(Activator.class, OseeLevel.INFO, "REM1 Disabled");
          internalSkynetEventManager = null;
          clientEventListener = null;
       }
