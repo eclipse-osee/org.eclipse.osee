@@ -537,9 +537,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
     */
    public void setPriviledgedEditMode(boolean enabled) throws OseeCoreException {
       this.priviledgedEditModeEnabled = enabled;
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Workflow Editor - Save");
-      sma.saveSMA(transaction);
-      transaction.execute();
+      doSave(null);
       workFlowTab.refresh();
    }
 
