@@ -89,7 +89,7 @@ public class InternalEventManager2 {
       if (isDisableEvents()) {
          return;
       }
-      OseeEventManager.eventLog("IEM1: kickLocalRemEvent: type: " + remoteEventServiceEventType + " - " + sender);
+      OseeEventManager.eventLog("IEM2: kickLocalRemEvent: type: " + remoteEventServiceEventType + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
@@ -256,7 +256,7 @@ public class InternalEventManager2 {
       }
 
       if (!broadcastEvent.getBroadcastEventType().isPingOrPong()) {
-         OseeEventManager.eventLog("IEM1: kickBroadcastEvent: type: " + broadcastEvent.getBroadcastEventType().name() + " message: " + broadcastEvent.getMessage() + " - " + sender);
+         OseeEventManager.eventLog("IEM2: kickBroadcastEvent: type: " + broadcastEvent.getBroadcastEventType().name() + " message: " + broadcastEvent.getMessage() + " - " + sender);
       }
       Runnable runnable = new Runnable() {
          public void run() {

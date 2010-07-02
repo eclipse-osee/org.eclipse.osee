@@ -72,7 +72,7 @@ public class TaskInfoXWidget extends XLabelValueBase implements IFrameworkTransa
 
    @Override
    public void refresh() {
-      if (labelWidget == null || !labelWidget.isDisposed() || managedForm == null || managedForm.getForm() == null || managedForm.getForm().isDisposed()) {
+      if (labelWidget == null || labelWidget.isDisposed() || managedForm == null || managedForm.getForm() == null || managedForm.getForm().isDisposed()) {
          dispose();
       }
       try {

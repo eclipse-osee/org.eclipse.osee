@@ -60,7 +60,7 @@ public class FrameworkEventManager {
    }
 
    public static void removeListeners(IEventListener listener) {
-      OseeEventManager.eventLog("IEM1: removeListener: (" + listeners.size() + ") " + listener);
+      OseeEventManager.eventLog("FEM: removeListener: (" + listeners.size() + ") " + listener);
       listeners.remove(listener);
       priorityListeners.remove(listener);
    }
