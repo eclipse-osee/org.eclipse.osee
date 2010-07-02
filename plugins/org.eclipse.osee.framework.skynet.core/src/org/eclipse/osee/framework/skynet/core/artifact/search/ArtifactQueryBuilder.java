@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.JoinUtility.CharJoinQuery;
 import org.eclipse.osee.framework.database.core.OseeSql;
+import org.eclipse.osee.framework.database.core.JoinUtility.CharJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -209,10 +209,19 @@ public class ArtifactQueryBuilder {
       //      sql.delete(0, sql.length());
       //      firstTable = true;
       //      queryParameters.clear();
+      boolean isHistorical = transactionId != null;
       if (count) {
-         sql.append("SELECT%s count(%s.art_id) FROM ");
+         if (isHistorical) {
+            throw new OseeCoreException("Count historical is not supported.");
+         } else {
+            sql.append("SELECT%s count(%s.art_id) FROM ");
+         }
       } else {
-         sql.append("SELECT%s %s.art_id, %s.branch_id FROM ");
+         if (isHistorical) {
+            sql.append("SELECT%s  Max(transaction_id), %s.art_id, %s.branch_id FROM ");
+         } else {
+            sql.append("SELECT%s %s.art_id, %s.branch_id FROM ");
+         }
       }
 
       if (criteria.length > 0) {
@@ -319,7 +328,7 @@ public class ArtifactQueryBuilder {
       sql.append(txsAlias);
       sql.append(".gamma_id AND ");
 
-      if (transactionId != null) {
+      if (isHistorical) {
          sql.append(txsAlias);
          sql.append(".transaction_id <= ?");
          addParameter(transactionId.getId());
@@ -341,6 +350,10 @@ public class ArtifactQueryBuilder {
 
       sql.append(" AND ");
       addBranchTxSql(txsAlias);
+
+      if (isHistorical) {
+         sql.append(" group by art_id, branch_id ");
+      }
 
       List<String> paramList = new ArrayList<String>();
       paramList.add(ClientSessionManager.getSql(OseeSql.QUERY_BUILDER));
