@@ -83,7 +83,7 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
 
 /**
  * Manages remote events from the SkynetEventService.
- *
+ * 
  * @author Jeff C. Phillips
  * @author Donald G. Dunne
  */
@@ -111,7 +111,7 @@ public class RemoteEventManager {
    }
 
    private void checkJiniRegistration() {
-      if (OseeEventManager.isOldEvents()) {
+      if (OseeEventManager.isNewEvents()) {
          return;
       }
       if (clientEventListenerRemoteReference == null) {
@@ -530,7 +530,7 @@ public class RemoteEventManager {
 
       /**
        * Updates local cache
-       *
+       * 
        * @param event
        */
       private static void updateArtifacts(Sender sender, ISkynetArtifactEvent event, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
@@ -567,9 +567,11 @@ public class RemoteEventManager {
                               try {
                                  ModificationType modificationType = skynetAttributeChange.getModificationType();
                                  if (modificationType == null) {
-                                    OseeLog.log(Activator.class, Level.SEVERE, String.format(
-                                          "MOD1: Can't get mod type for %s's attribute %d.",
-                                          artifact.getArtifactTypeName(), skynetAttributeChange.getAttributeId()));
+                                    OseeLog.log(
+                                          Activator.class,
+                                          Level.SEVERE,
+                                          String.format("MOD1: Can't get mod type for %s's attribute %d.",
+                                                artifact.getArtifactTypeName(), skynetAttributeChange.getAttributeId()));
                                     continue;
                                  }
                                  if (modificationType.isDeleted()) {
@@ -580,9 +582,9 @@ public class RemoteEventManager {
                                  attribute.internalSetGammaId(skynetAttributeChange.getGammaId());
                                  attribute.setNotDirty();
                               } catch (OseeCoreException ex) {
-                                 OseeEventManager.eventLog(String.format(
-                                       "Exception updating %s's attribute %d [/n%s/n].", artifact.getSafeName(),
-                                       attribute.getId(), attribute.toString()), ex);
+                                 OseeEventManager.eventLog(
+                                       String.format("Exception updating %s's attribute %d [/n%s/n].",
+                                             artifact.getSafeName(), attribute.getId(), attribute.toString()), ex);
                               }
                            }
                            // Otherwise, attribute needs creation
@@ -590,9 +592,11 @@ public class RemoteEventManager {
                            else {
                               ModificationType modificationType = skynetAttributeChange.getModificationType();
                               if (modificationType == null) {
-                                 OseeLog.log(Activator.class, Level.SEVERE, String.format(
-                                       "MOD2: Can't get mod type for %s's attribute %d.",
-                                       artifact.getArtifactTypeName(), skynetAttributeChange.getAttributeId()));
+                                 OseeLog.log(
+                                       Activator.class,
+                                       Level.SEVERE,
+                                       String.format("MOD2: Can't get mod type for %s's attribute %d.",
+                                             artifact.getArtifactTypeName(), skynetAttributeChange.getAttributeId()));
                                  continue;
                               }
                               artifact.internalInitializeAttribute(
