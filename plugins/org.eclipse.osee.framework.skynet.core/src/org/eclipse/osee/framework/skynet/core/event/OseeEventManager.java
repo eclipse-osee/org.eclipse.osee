@@ -179,12 +179,12 @@ public class OseeEventManager {
    }
 
    // Kick LOCAL and REMOTE transaction event
-   public static void kickPersistEvent(Object source, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents, ArtifactEvent artifactEvent) throws OseeAuthenticationRequiredException {
+   public static void kickPersistEvent(Object source, ArtifactEvent artifactEvent) throws OseeAuthenticationRequiredException {
       if (isDisableEvents()) {
          return;
       }
-      if (xModifiedEvents != null && OseeEventManager.isOldEvents()) {
-         InternalEventManager.kickPersistEvent(getSender(source), xModifiedEvents);
+      if (artifactEvent.getSkynetTransactionDetails() != null && OseeEventManager.isOldEvents()) {
+         InternalEventManager.kickPersistEvent(getSender(source), artifactEvent.getSkynetTransactionDetails());
       }
       artifactEvent.setNetworkSender(getSender(source).getNetworkSender2());
       if (OseeEventManager.isNewEvents()) InternalEventManager2.kickPersistEvent(getSender(source), artifactEvent);

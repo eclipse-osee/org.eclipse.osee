@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -20,7 +19,6 @@ import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -85,11 +83,12 @@ public class RelationTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events, ArtifactEvent artifactEvent) throws OseeCoreException {
+   protected void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException {
       RelationEventType relationEventType =
             getModificationType().isDeleted() ? RelationEventType.Deleted : RelationEventType.Added;
-      events.add(new RelationModifiedEvent(new Sender(this.getClass().getName()), relationEventType, relation,
-            relation.getBranch(), relation.getRelationType().getName()));
+      artifactEvent.getSkynetTransactionDetails().add(
+            new RelationModifiedEvent(new Sender(this.getClass().getName()), relationEventType, relation,
+                  relation.getBranch(), relation.getRelationType().getName()));
       DefaultBasicGuidRelation defaultBasicGuidRelation =
             new DefaultBasicGuidRelation(relation.getBranch().getGuid(), relation.getRelationType().getGuid(),
                   relation.getId(), relation.getGammaId(), relation.getArtifactA().getBasicGuidArtifact(),

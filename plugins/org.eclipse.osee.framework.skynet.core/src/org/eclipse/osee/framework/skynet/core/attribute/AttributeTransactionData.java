@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -23,7 +22,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
-import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -138,6 +136,6 @@ public class AttributeTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalAddToEvents(Collection<ArtifactTransactionModifiedEvent> events, ArtifactEvent artifactEvent) throws OseeCoreException {
+   protected void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException {
    }
 }

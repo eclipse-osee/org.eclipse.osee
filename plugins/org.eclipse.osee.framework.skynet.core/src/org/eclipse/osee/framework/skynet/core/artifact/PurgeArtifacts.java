@@ -178,7 +178,7 @@ public class PurgeArtifacts extends DbTransaction {
          for (EventBasicGuidArtifact guidArt : artifactChanges) {
             artifactEvent.getArtifacts().add(guidArt);
          }
-         OseeEventManager.kickPersistEvent(PurgeArtifacts.class, null, artifactEvent);
+         OseeEventManager.kickPersistEvent(PurgeArtifacts.class, artifactEvent);
 
       } finally {
          ArtifactLoader.clearQuery(connection, queryId);

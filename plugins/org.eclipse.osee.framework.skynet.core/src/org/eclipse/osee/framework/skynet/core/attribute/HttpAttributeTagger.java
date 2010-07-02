@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -39,13 +40,18 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
+ * <REM2>
+ * 
  * @author Roberto E. Escobar
  */
 public class HttpAttributeTagger {
@@ -109,8 +115,8 @@ public class HttpAttributeTagger {
                   HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_TAGGING_CONTEXT,
                         parameters);
             response.append(HttpProcessor.put(new URL(url), inputStream, "application/xml", "UTF-8"));
-            OseeLog.log(Activator.class, Level.FINEST, String.format("Transmitted to Tagger in [%d ms]",
-                  System.currentTimeMillis() - start));
+            OseeLog.log(Activator.class, Level.FINEST,
+                  String.format("Transmitted to Tagger in [%d ms]", System.currentTimeMillis() - start));
          } catch (Exception ex) {
             if (response.length() > 0) {
                response.append("\n");
@@ -130,7 +136,7 @@ public class HttpAttributeTagger {
       }
    }
 
-   private final class EventRelay implements IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, ITransactionEventListener, ITransactionsDeletedEventListener {
+   private final class EventRelay implements IArtifactEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, ITransactionEventListener, ITransactionsDeletedEventListener {
       @Override
       public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       }
@@ -194,6 +200,43 @@ public class HttpAttributeTagger {
                   OseeLog.log(Activator.class, Level.SEVERE, "Error while waiting for tagger to complete.", ex);
                }
             }
+         }
+      }
+
+      @Override
+      public List<? extends IEventFilter> getEventFilters() {
+         return null;
+      }
+
+      @Override
+      public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+         try {
+            if (sender.isRemote()) {
+               return;
+            }
+            TagService taggingInfo = new TagService();
+            for (ArtifactTransactionModifiedEvent event : artifactEvent.getSkynetTransactionDetails()) {
+               if (event instanceof ArtifactModifiedEvent) {
+                  for (SkynetAttributeChange change : ((ArtifactModifiedEvent) event).getAttributeChanges()) {
+                     if (AttributeTypeManager.getType(change.getTypeId()).isTaggable()) {
+                        taggingInfo.add(change.getGammaId());
+                     }
+                  }
+               }
+            }
+            if (taggingInfo.size() > 0) {
+               Future<?> future = executor.submit(taggingInfo);
+               if (DbUtil.isDbInit()) {
+                  try {
+                     future.get();
+                  } catch (Exception ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, "Error while waiting for tagger to complete.", ex);
+                  }
+               }
+            }
+         } catch (OseeCoreException ex1) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex1);
+            return;
          }
       }
 

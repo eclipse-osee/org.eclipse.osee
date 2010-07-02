@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,7 +55,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -186,7 +184,7 @@ public class SkynetTransaction extends AbstractOperation {
     * <br>
     * IF transaction has not been executed, this is the transactionId that will be used.<br>
     * ELSE this is next transaction to be used upon execute
-    *
+    * 
     * @return
     * @throws OseeCoreException
     */
@@ -317,7 +315,7 @@ public class SkynetTransaction extends AbstractOperation {
    /**
     * Always want to persist artifacts on other side of dirty relation. This is necessary for ordering attribute to be
     * persisted and desired for other cases.
-    *
+    * 
     * @throws OseeCoreException
     */
    private void persitRelatedArtifact(Artifact artifact) throws OseeCoreException {
@@ -451,7 +449,6 @@ public class SkynetTransaction extends AbstractOperation {
    }
 
    private void updateModifiedCachedObject() throws OseeCoreException {
-      Collection<ArtifactTransactionModifiedEvent> xModifiedEvents = new ArrayList<ArtifactTransactionModifiedEvent>();
       ArtifactEvent artifactEvent = new ArtifactEvent();
       artifactEvent.setTransactionId(lastTransactionId.getId());
 
@@ -462,14 +459,14 @@ public class SkynetTransaction extends AbstractOperation {
 
       // Collect events before clearing any dirty flags
       for (BaseTransactionData transactionData : transactionDataItems.values()) {
-         transactionData.internalAddToEvents(xModifiedEvents, artifactEvent);
+         transactionData.internalAddToEvents(artifactEvent);
       }
 
       for (Artifact artifact : artifactReferences) {
          if (artifact.hasDirtyAttributes()) {
-            xModifiedEvents.add(new ArtifactModifiedEvent(new Sender(this.getClass().getName()),
-                  ArtifactModType.Changed, artifact, artifact.getTransactionNumber(),
-                  artifact.getDirtySkynetAttributeChanges()));
+            artifactEvent.getSkynetTransactionDetails().add(
+                  new ArtifactModifiedEvent(new Sender(this.getClass().getName()), ArtifactModType.Changed, artifact,
+                        artifact.getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
             EventModifiedBasicGuidArtifact guidArt =
                   new EventModifiedBasicGuidArtifact(artifact.getBranch().getGuid(),
                         artifact.getArtifactType().getGuid(), artifact.getGuid(),
@@ -485,9 +482,8 @@ public class SkynetTransaction extends AbstractOperation {
          transactionData.internalClearDirtyState();
       }
 
-      if (xModifiedEvents.size() > 0) {
-         OseeEventManager.kickPersistEvent(this, xModifiedEvents, artifactEvent);
-         xModifiedEvents.clear();
+      if (artifactEvent.getSkynetTransactionDetails().size() > 0) {
+         OseeEventManager.kickPersistEvent(this, artifactEvent);
       }
    }
 

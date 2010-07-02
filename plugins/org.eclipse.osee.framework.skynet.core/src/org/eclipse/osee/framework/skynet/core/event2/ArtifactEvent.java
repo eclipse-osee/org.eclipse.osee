@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.Activator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
 import org.eclipse.osee.framework.skynet.core.event.msgs.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
@@ -30,6 +31,8 @@ public class ArtifactEvent extends FrameworkEvent {
    private List<EventBasicGuidArtifact> artifacts;
    private List<EventBasicGuidRelation> relations;
    private NetworkSender networkSender;
+   private Collection<ArtifactTransactionModifiedEvent> skynetTransactionDetails =
+         new ArrayList<ArtifactTransactionModifiedEvent>();
 
    public String getBranchGuid() {
       return branchGuid;
@@ -263,6 +266,14 @@ public class ArtifactEvent extends FrameworkEvent {
          }
       }
       return false;
+   }
+
+   /**
+    * Return details of artifact and relation changes for artifact and relation events that occurred as part of a
+    * SkynetTransaction
+    */
+   public Collection<ArtifactTransactionModifiedEvent> getSkynetTransactionDetails() {
+      return skynetTransactionDetails;
    }
 
 }

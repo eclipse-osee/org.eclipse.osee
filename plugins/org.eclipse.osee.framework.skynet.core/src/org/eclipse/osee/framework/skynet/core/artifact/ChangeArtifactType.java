@@ -82,7 +82,7 @@ public class ChangeArtifactType {
       for (EventBasicGuidArtifact guidArt : artifactChanges) {
          artifactEvent.getArtifacts().add(guidArt);
       }
-      OseeEventManager.kickPersistEvent(ChangeArtifactType.class, null, artifactEvent);
+      OseeEventManager.kickPersistEvent(ChangeArtifactType.class, artifactEvent);
 
    }
 
