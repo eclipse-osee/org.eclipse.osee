@@ -20,7 +20,6 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -51,7 +50,7 @@ public class XButton extends XWidget {
    }
 
    @Override
-   public Control getControl() {
+   public Label getControl() {
       return button;
    }
 
