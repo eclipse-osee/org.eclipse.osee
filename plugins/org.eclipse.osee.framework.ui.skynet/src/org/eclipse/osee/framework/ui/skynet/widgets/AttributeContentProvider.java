@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -41,6 +42,9 @@ public class AttributeContentProvider implements ITreeContentProvider {
          }
          return descriptors.toArray();
 
+      }
+      if (parentElement instanceof Collection) {
+         return ((Collection<?>) parentElement).toArray(new Object[((Collection<?>) parentElement).size()]);
       }
       return null;
    }

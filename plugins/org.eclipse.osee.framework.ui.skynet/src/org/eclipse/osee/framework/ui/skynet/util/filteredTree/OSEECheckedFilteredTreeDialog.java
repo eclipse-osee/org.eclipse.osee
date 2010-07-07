@@ -42,8 +42,7 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
    private final ViewerSorter viewerSorter;
 
    public OSEECheckedFilteredTreeDialog(String dialogTitle, String dialogMessage, PatternFilter patternFilter, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter) {
-      super(new Shell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
-            "OK", "Cancel"}, 0);
+      super(new Shell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {"OK", "Cancel"}, 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
       this.patternFilter = patternFilter;
@@ -95,7 +94,9 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
       treeViewer =
             new OSEECheckedFilteredTree(aiComp,
                   SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
-      treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gd.heightHint = 500;
+      treeViewer.getViewer().getTree().setLayoutData(gd);
       treeViewer.getViewer().setContentProvider(contentProvider);
       treeViewer.getViewer().setLabelProvider(labelProvider);
       treeViewer.getViewer().setSorter(viewerSorter);

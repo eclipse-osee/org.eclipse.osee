@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeCheckTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeFilteredCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.ui.progress.UIJob;
@@ -318,30 +318,35 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                   IStatus status = Status.OK_STATUS;
                   try {
                      Branch branch = branchProvider.getBranch(monitor);
-                     Collection<AttributeType> selectableTypes = AttributeTypeManager.getValidAttributeTypes(branch);
-                     AttributeTypeCheckTreeDialog dialog = new AttributeTypeCheckTreeDialog(selectableTypes);
-                     dialog.setTitle("Select Attribute Types");
-                     dialog.setMessage("Select attribute types to display.");
+                     if (branch == null) {
+                        status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Branch not selected");
+                     } else {
+                        Collection<AttributeType> selectableTypes = AttributeTypeManager.getValidAttributeTypes(branch);
+                        AttributeTypeFilteredCheckTreeDialog dialog =
+                              new AttributeTypeFilteredCheckTreeDialog("Select Attribute Types",
+                                    "Select attribute types to display.");
+                        dialog.setSelectableTypes(selectableTypes);
 
-                     List<IAttributeType> initSelection = new ArrayList<IAttributeType>();
-                     for (String entry : selectedTypes) {
-                        for (AttributeType type : selectableTypes) {
-                           if (type.getGuid().equals(entry)) {
-                              initSelection.add(type);
+                        List<IAttributeType> initSelection = new ArrayList<IAttributeType>();
+                        for (String entry : selectedTypes) {
+                           for (AttributeType type : selectableTypes) {
+                              if (type.getGuid().equals(entry)) {
+                                 initSelection.add(type);
+                              }
                            }
                         }
-                     }
-                     dialog.setInitialElementSelections(initSelection);
+                        dialog.setInitialSelections(initSelection);
 
-                     int result = dialog.open();
-                     if (result == Window.OK) {
-                        selectedTypes.clear();
-                        for (Object object : dialog.getResult()) {
-                           if (object instanceof IAttributeType) {
-                              selectedTypes.add(((IAttributeType) object).getGuid());
+                        int result = dialog.open();
+                        if (result == Window.OK) {
+                           selectedTypes.clear();
+                           for (Object object : dialog.getResult()) {
+                              if (object instanceof IAttributeType) {
+                                 selectedTypes.add(((IAttributeType) object).getGuid());
+                              }
                            }
+                           refreshView();
                         }
-                        refreshView();
                      }
                   } catch (OseeCoreException ex) {
                      status =
