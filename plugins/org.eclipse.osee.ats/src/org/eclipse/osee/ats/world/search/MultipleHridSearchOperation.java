@@ -55,186 +55,186 @@ import org.eclipse.ui.dialogs.ListDialog;
  * @author Donald G. Dunne
  */
 public class MultipleHridSearchOperation extends AbstractOperation implements IWorldEditorConsumer {
-	private final Set<Artifact> resultAtsArts = new HashSet<Artifact>();
-	private final Set<Artifact> resultNonAtsArts = new HashSet<Artifact>();
-	private final Set<Artifact> artifacts = new HashSet<Artifact>();
-	private final MultipleHridSearchData data;
+   private final Set<Artifact> resultAtsArts = new HashSet<Artifact>();
+   private final Set<Artifact> resultNonAtsArts = new HashSet<Artifact>();
+   private final Set<Artifact> artifacts = new HashSet<Artifact>();
+   private final MultipleHridSearchData data;
 
-	public MultipleHridSearchOperation(MultipleHridSearchData data) {
-		super(data.getName(), AtsPlugin.PLUGIN_ID);
-		this.data = data;
-	}
+   public MultipleHridSearchOperation(MultipleHridSearchData data) {
+      super(data.getName(), AtsPlugin.PLUGIN_ID);
+      this.data = data;
+   }
 
-	@Override
-	protected void doWork(IProgressMonitor monitor) throws Exception {
-		if (!data.hasValidInput()) {
-			MultipleHridSearchUi ui = new MultipleHridSearchUi(data);
-			if (!ui.getInput()) {
-				return;
-			}
-		}
-		if (data.getIds().isEmpty()) {
-			AWorkbench.popup("Must Enter Valid Id");
-			return;
-		}
-		searchAndSplitResults();
-		if (resultAtsArts.isEmpty() && resultNonAtsArts.isEmpty()) {
-			AWorkbench.popup("Invalid HRID/Guid/Legacy PCR Id(s): " + Collections.toString(data.getIds(), ", "));
-			return;
-		}
-		if (resultNonAtsArts.size() > 0) {
-			ArtifactEditor.editArtifacts(resultNonAtsArts);
-		}
-		if (resultAtsArts.size() > 0) {
-			// If requested world editor and it's already been opened there, don't process other arts in editors
-			if (data.getWorldEditor() != null && data.getAtsEditor() == AtsEditor.WorldEditor) {
-				data.getWorldEditor().getWorldComposite().load(getName(), resultAtsArts, TableLoadOption.None);
-			} else {
-				if (data.getAtsEditor() == AtsEditor.WorkflowEditor) {
-					openWorkflowEditor(resultAtsArts);
-				} else if (data.getAtsEditor() == AtsEditor.ChangeReport) {
-					openChangeReport(resultAtsArts, data.getEnteredIds());
-				} else {
-					WorldEditor.open(new WorldEditorOperationProvider(this));
-				}
-			}
-		}
-	}
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      if (!data.hasValidInput()) {
+         MultipleHridSearchUi ui = new MultipleHridSearchUi(data);
+         if (!ui.getInput()) {
+            return;
+         }
+      }
+      if (data.getIds().isEmpty()) {
+         AWorkbench.popup("Must Enter Valid Id");
+         return;
+      }
+      searchAndSplitResults();
+      if (resultAtsArts.isEmpty() && resultNonAtsArts.isEmpty()) {
+         AWorkbench.popup("Invalid HRID/Guid/Legacy PCR Id(s): " + Collections.toString(data.getIds(), ", "));
+         return;
+      }
+      if (resultNonAtsArts.size() > 0) {
+         ArtifactEditor.editArtifacts(resultNonAtsArts);
+      }
+      if (resultAtsArts.size() > 0) {
+         // If requested world editor and it's already been opened there, don't process other arts in editors
+         if (data.getWorldEditor() != null && data.getAtsEditor() == AtsEditor.WorldEditor) {
+            data.getWorldEditor().getWorldComposite().load(getName(), resultAtsArts, TableLoadOption.None);
+         } else {
+            if (data.getAtsEditor() == AtsEditor.WorkflowEditor) {
+               openWorkflowEditor(resultAtsArts);
+            } else if (data.getAtsEditor() == AtsEditor.ChangeReport) {
+               openChangeReport(resultAtsArts, data.getEnteredIds());
+            } else {
+               WorldEditor.open(new WorldEditorOperationProvider(this));
+            }
+         }
+      }
+   }
 
-	private void openChangeReport(Set<Artifact> artifacts, final String enteredIds) {
-		try {
-			final Set<Artifact> addedArts = new HashSet<Artifact>();
-			for (Artifact artifact : artifacts) {
-				if (artifact instanceof ActionArtifact) {
-					for (TeamWorkFlowArtifact team : ((ActionArtifact) artifact).getTeamWorkFlowArtifacts()) {
-						if (team.getBranchMgr().isCommittedBranchExists() || team.getBranchMgr().isWorkingBranchInWork()) {
-							addedArts.add(team);
-						}
-					}
-				}
-				if (artifact instanceof TeamWorkFlowArtifact) {
-					if (((TeamWorkFlowArtifact) artifact).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) artifact).getBranchMgr().isWorkingBranchInWork()) {
-						addedArts.add(artifact);
-					}
-				}
-			}
-			if (addedArts.size() == 1) {
-				Displays.ensureInDisplayThread(new Runnable() {
-					@Override
-					public void run() {
-						for (Artifact art : addedArts) {
-							if (art instanceof TeamWorkFlowArtifact) {
-								((TeamWorkFlowArtifact) art).getBranchMgr().showChangeReport();
-							}
-						}
-					}
-				});
-			} else if (addedArts.size() > 0) {
-				Displays.ensureInDisplayThread(new Runnable() {
-					@Override
-					public void run() {
-						ArtifactDecoratorPreferences artDecorator = new ArtifactDecoratorPreferences();
-						artDecorator.setShowArtBranch(true);
-						artDecorator.setShowArtType(true);
-						SimpleCheckFilteredTreeDialog dialog =
-									new SimpleCheckFilteredTreeDialog("Select Available Change Reports",
-												"Select available Change Reports to run.", new ArrayTreeContentProvider(),
-												new ArtifactLabelProvider(artDecorator), new ArtifactViewerSorter(), 0,
-												Integer.MAX_VALUE);
-						dialog.setInput(addedArts);
-						if (dialog.open() == 0) {
-							if (dialog.getResult().length == 0) {
-								return;
-							}
-							for (Object obj : dialog.getResult()) {
-								((TeamWorkFlowArtifact) obj).getBranchMgr().showChangeReport();
-							}
-						}
-					}
-				});
-			} else {
-				Displays.ensureInDisplayThread(new Runnable() {
-					@Override
-					public void run() {
-						MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Open Change Reports",
-									"No change report exists for " + enteredIds);
-					}
-				});
-			}
-		} catch (Exception ex) {
-			OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-		}
-	}
+   private void openChangeReport(Set<Artifact> artifacts, final String enteredIds) {
+      try {
+         final Set<Artifact> addedArts = new HashSet<Artifact>();
+         for (Artifact artifact : artifacts) {
+            if (artifact instanceof ActionArtifact) {
+               for (TeamWorkFlowArtifact team : ((ActionArtifact) artifact).getTeamWorkFlowArtifacts()) {
+                  if (team.getBranchMgr().isCommittedBranchExists() || team.getBranchMgr().isWorkingBranchInWork()) {
+                     addedArts.add(team);
+                  }
+               }
+            }
+            if (artifact instanceof TeamWorkFlowArtifact) {
+               if (((TeamWorkFlowArtifact) artifact).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) artifact).getBranchMgr().isWorkingBranchInWork()) {
+                  addedArts.add(artifact);
+               }
+            }
+         }
+         if (addedArts.size() == 1) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  for (Artifact art : addedArts) {
+                     if (art instanceof TeamWorkFlowArtifact) {
+                        ((TeamWorkFlowArtifact) art).getBranchMgr().showChangeReport();
+                     }
+                  }
+               }
+            });
+         } else if (addedArts.size() > 0) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  ArtifactDecoratorPreferences artDecorator = new ArtifactDecoratorPreferences();
+                  artDecorator.setShowArtBranch(true);
+                  artDecorator.setShowArtType(true);
+                  SimpleCheckFilteredTreeDialog dialog =
+                           new SimpleCheckFilteredTreeDialog("Select Available Change Reports",
+                                    "Select available Change Reports to run.", new ArrayTreeContentProvider(),
+                                    new ArtifactLabelProvider(artDecorator), new ArtifactViewerSorter(), 0,
+                                    Integer.MAX_VALUE);
+                  dialog.setInput(addedArts);
+                  if (dialog.open() == 0) {
+                     if (dialog.getResult().length == 0) {
+                        return;
+                     }
+                     for (Object obj : dialog.getResult()) {
+                        ((TeamWorkFlowArtifact) obj).getBranchMgr().showChangeReport();
+                     }
+                  }
+               }
+            });
+         } else {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Open Change Reports",
+                           "No change report exists for " + enteredIds);
+               }
+            });
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+   }
 
-	private void openWorkflowEditor(final Set<Artifact> resultAtsArts) {
-		Displays.ensureInDisplayThread(new Runnable() {
+   private void openWorkflowEditor(final Set<Artifact> resultAtsArts) {
+      Displays.ensureInDisplayThread(new Runnable() {
 
-			@Override
-			public void run() {
-				Artifact artifact = null;
-				if (resultAtsArts.size() == 1) {
-					artifact = resultAtsArts.iterator().next();
-				} else {
-					ListDialog ld = new ListDialog(Display.getCurrent().getActiveShell());
-					ld.setContentProvider(new ArrayContentProvider());
-					ld.setLabelProvider(new SmaWorkflowLabelProvider());
-					ld.setTitle("Select Workflow");
-					ld.setMessage("Select Workflow");
-					ld.setInput(resultAtsArts);
-					if (ld.open() == 0) {
-						artifact = (Artifact) ld.getResult()[0];
-					}
-				}
-				if (artifact instanceof ActionArtifact) {
-					AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
-				} else {
-					SMAEditor.editArtifact(artifact);
-				}
-			}
-		});
-	}
+         @Override
+         public void run() {
+            Artifact artifact = null;
+            if (resultAtsArts.size() == 1) {
+               artifact = resultAtsArts.iterator().next();
+            } else {
+               ListDialog ld = new ListDialog(Display.getCurrent().getActiveShell());
+               ld.setContentProvider(new ArrayContentProvider());
+               ld.setLabelProvider(new SmaWorkflowLabelProvider());
+               ld.setTitle("Select Workflow");
+               ld.setMessage("Select Workflow");
+               ld.setInput(resultAtsArts);
+               if (ld.open() == 0) {
+                  artifact = (Artifact) ld.getResult()[0];
+               }
+            }
+            if (artifact instanceof ActionArtifact) {
+               AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+            } else {
+               SMAEditor.editArtifact(artifact);
+            }
+         }
+      });
+   }
 
-	private void searchAndSplitResults() throws OseeCoreException {
-		resultAtsArts.addAll(LegacyPCRActions.getTeamsTeamWorkflowArtifacts(data.getIds(),
-					(Collection<TeamDefinitionArtifact>) null));
+   private void searchAndSplitResults() throws OseeCoreException {
+      resultAtsArts.addAll(LegacyPCRActions.getTeamsTeamWorkflowArtifacts(data.getIds(),
+               (Collection<TeamDefinitionArtifact>) null));
 
-		// This does artId search
-		if (data.isIncludeArtIds() && data.getBranchForIncludeArtIds() != null) {
-			for (Artifact art : ArtifactQuery.getArtifactListFromIds(Lib.stringToIntegerList(data.getEnteredIds()),
-						data.getBranchForIncludeArtIds())) {
-				artifacts.add(art);
-			}
-		}
-		// This does hrid/guid search
-		for (Artifact art : ArtifactQuery.getArtifactListFromIds(data.getIds(), AtsUtil.getAtsBranch())) {
-			artifacts.add(art);
-		}
+      // This does artId search
+      if (data.isIncludeArtIds() && data.getBranchForIncludeArtIds() != null) {
+         for (Artifact art : ArtifactQuery.getArtifactListFromIds(Lib.stringToIntegerList(data.getEnteredIds()),
+                  data.getBranchForIncludeArtIds())) {
+            artifacts.add(art);
+         }
+      }
+      // This does hrid/guid search
+      for (Artifact art : ArtifactQuery.getArtifactListFromIds(data.getIds(), AtsUtil.getAtsBranch())) {
+         artifacts.add(art);
+      }
 
-		for (Artifact art : artifacts) {
-			if (art instanceof IATSArtifact) {
-				resultAtsArts.add(art);
-			} else {
-				resultNonAtsArts.add(art);
-			}
-		}
-	}
+      for (Artifact art : artifacts) {
+         if (art instanceof IATSArtifact) {
+            resultAtsArts.add(art);
+         } else {
+            resultNonAtsArts.add(art);
+         }
+      }
+   }
 
-	@Override
-	public void setWorldEditor(WorldEditor worldEditor) {
-		data.setWorldEditor(worldEditor);
-	}
+   @Override
+   public void setWorldEditor(WorldEditor worldEditor) {
+      data.setWorldEditor(worldEditor);
+   }
 
-	@Override
-	public WorldEditor getWorldEditor() {
-		return data.getWorldEditor();
-	}
+   @Override
+   public WorldEditor getWorldEditor() {
+      return data.getWorldEditor();
+   }
 
-	@Override
-	public String getName() {
-		if (Strings.isValid(data.getEnteredIds())) {
-			return String.format("%s - [%s]", super.getName(), data.getEnteredIds());
-		}
-		return super.getName();
-	}
+   @Override
+   public String getName() {
+      if (Strings.isValid(data.getEnteredIds())) {
+         return String.format("%s - [%s]", super.getName(), data.getEnteredIds());
+      }
+      return super.getName();
+   }
 
 }
