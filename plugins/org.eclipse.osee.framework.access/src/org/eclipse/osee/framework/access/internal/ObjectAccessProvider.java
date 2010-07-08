@@ -6,43 +6,39 @@
 package org.eclipse.osee.framework.access.internal;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.access.IAccessProvider;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AccessData;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public class ObjectAccessProvider implements IAccessProvider {
 
    @Override
-   public void computeAccess(IBasicArtifact<?> userArtifact, Collection<IBasicArtifact<?>> artsToCheck, AccessData accessData) throws OseeCoreException {
-      //      PermissionEnum branchPermission = null;
-      //      PermissionEnum permission = null;
-      //      Branch branch = null;
-      //
-      //      for (IBasicArtifact artifactToCheck : artsToCheck) {
-      //         if (object instanceof Artifact) {
-      //            Artifact artifact = (Artifact) object;
-      //            branch = artifact.getBranch();
-      //            userPermission = accessService.getArtifactPermission(userArtifact, artifact, permission);
-      //         } else if (object instanceof Branch) {
-      //            branch = (Branch) object;
-      //         } else {
-      //            throw new OseeStateException("Unhandled object type for access control - " + object);
-      //         }
-      //
-      //         PermissionEnum userPermission = null;
-      //         PermissionEnum branchPermission = accessService.getBranchPermission(userArtifact, branch, permission);
-      //         if (branchPermission == PermissionEnum.DENY || userPermission == null) {
-      //            userPermission = branchPermission;
-      //         }
-      //
-      //         if (permission == READ && userPermission == LOCK) {
-      //            hasPermission = true;
-      //         } else if (userPermission == null || userPermission == LOCK) {
-      //            hasPermission = false;
-      //         } else {
-      //            hasPermission = userPermission.getRank() >= permission.getRank() && !userPermission.equals(DENY);
-      //         }
-      //      }
+   public void computeAccess(IBasicArtifact<?> userArtifact, Collection<?> objToCheck, AccessData accessData) throws OseeCoreException {
+      PermissionEnum userPermission = null;
+      PermissionEnum branchPermission = null;
+      Branch branch = null;
+
+      for (Object object : objToCheck) {
+         if (object instanceof Artifact) {
+            Artifact artifact = (Artifact) object;
+            branch = artifact.getBranch();
+            userPermission = AccessControlManager.getService().getArtifactPermission(userArtifact, (Artifact) object);
+         } else if (object instanceof Branch) {
+            branch = (Branch) object;
+         } else {
+            throw new IllegalStateException("Unhandled object type for access control - " + object);
+         }
+         branchPermission = AccessControlManager.getService().getBranchPermission(userArtifact, branch);
+
+         if (branchPermission == PermissionEnum.DENY || userPermission == null) {
+            userPermission = branchPermission;
+         }
+         accessData.add(object, userPermission);
+      }
    }
 }

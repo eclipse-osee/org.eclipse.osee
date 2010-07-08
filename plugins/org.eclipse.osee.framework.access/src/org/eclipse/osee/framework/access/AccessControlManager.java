@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * Provides access control for OSEE. <REM2>
- *
+ * 
  * @author Jeff C. Phillips
  */
 
@@ -31,7 +31,7 @@ public class AccessControlManager {
    private AccessControlManager() {
    }
 
-   private static AccessControlService getService() {
+   public static AccessControlService getService() {
       return Activator.getAccessControlService();
    }
 

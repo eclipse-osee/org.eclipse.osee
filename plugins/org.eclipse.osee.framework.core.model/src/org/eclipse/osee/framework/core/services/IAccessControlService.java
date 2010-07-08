@@ -18,5 +18,5 @@ public interface IAccessControlService {
 
    void removePermissions(IOseeBranch branch) throws OseeCoreException;
 
-   AccessData getAccessData(IBasicArtifact<?> userArtifact, Collection<IBasicArtifact<?>> itemsToCheck) throws OseeCoreException;
+   AccessData getAccessData(IBasicArtifact<?> userArtifact, Collection<?> itemsToCheck) throws OseeCoreException;
 }

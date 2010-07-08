@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.access.internal;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -277,7 +278,7 @@ public class AccessControlService implements IAccessControlService {
    }
 
    //TODO Integrate HERE
-   public AccessData getAccessData(IBasicArtifact<?> userArtifact, Collection<IBasicArtifact<?>> objectsToCheck) throws OseeCoreException {
+   public AccessData getAccessData(IBasicArtifact<?> userArtifact, Collection<?> objectsToCheck) throws OseeCoreException {
       ILifecycleService service = getLifecycleService();
       AccessData accessData = new AccessData();
       AbstractLifecycleVisitor<?> visitor = new AccessProviderVisitor(userArtifact, objectsToCheck, accessData);
@@ -291,38 +292,8 @@ public class AccessControlService implements IAccessControlService {
    }
 
    private boolean hasPermission(IBasicArtifact<?> subject, Object object, PermissionEnum permission) throws OseeCoreException {
-      //TODO Integrate HERE     AccessData accessData = getAccessData(Artifact userArtifact, Collection<IBasicArtifact<?>> objectsToCheck);
-
-      PermissionEnum userPermission = null;
-      PermissionEnum branchPermission = null;
-      Branch branch = null;
-
-      if (object instanceof Artifact) {
-         Artifact artifact = (Artifact) object;
-         branch = artifact.getBranch();
-         userPermission = getArtifactPermission(subject, (Artifact) object, permission);
-      } else if (object instanceof Branch) {
-         branch = (Branch) object;
-      } else {
-         throw new IllegalStateException("Unhandled object type for access control - " + object);
-      }
-
-      branchPermission = getBranchPermission(subject, branch, permission);
-
-      if (branchPermission == PermissionEnum.DENY || userPermission == null) {
-         userPermission = branchPermission;
-      }
-
-      boolean hasPermission = false;
-      if (permission == PermissionEnum.READ && userPermission == PermissionEnum.LOCK) {
-         hasPermission = true;
-      } else if (userPermission == null || userPermission == PermissionEnum.LOCK) {
-         hasPermission = false;
-      } else {
-         hasPermission =
-               userPermission.getRank() >= permission.getRank() && !userPermission.equals(PermissionEnum.DENY);
-      }
-      return hasPermission;
+      AccessData accessData = getAccessData(subject, Collections.singletonList(object));
+      return accessData.matchesAll(permission);
    }
 
    private ILifecycleService getLifecycleService() throws OseeCoreException {
@@ -338,19 +309,19 @@ public class AccessControlService implements IAccessControlService {
       }
    }
 
-   public PermissionEnum getBranchPermission(IBasicArtifact<?> subject, Branch branch, PermissionEnum permission) {
+   public PermissionEnum getBranchPermission(IBasicArtifact<?> subject, Branch branch) {
       PermissionEnum userPermission = null;
       AccessObject accessObject = BranchAccessObject.getBranchAccessObjectFromCache(branch);
 
       if (accessObject == null) {
          userPermission = PermissionEnum.FULLACCESS;
       } else {
-         userPermission = acquirePermissionRank(subject, accessObject, permission);
+         userPermission = acquirePermissionRank(subject, accessObject);
       }
       return userPermission;
    }
 
-   public PermissionEnum getArtifactPermission(IBasicArtifact<?> subject, Artifact artifact, PermissionEnum permission) {
+   public PermissionEnum getArtifactPermission(IBasicArtifact<?> subject, Artifact artifact) {
       PermissionEnum userPermission = null;
       AccessObject accessObject = null;
 
@@ -376,12 +347,12 @@ public class AccessControlService implements IAccessControlService {
       }
 
       if (userPermission == null && accessObject != null) {
-         userPermission = acquirePermissionRank(subject, accessObject, permission);
+         userPermission = acquirePermissionRank(subject, accessObject);
       }
       return userPermission;
    }
 
-   private PermissionEnum acquirePermissionRank(IBasicArtifact<?> subject, AccessObject accessObject, PermissionEnum permission) {
+   private PermissionEnum acquirePermissionRank(IBasicArtifact<?> subject, AccessObject accessObject) {
       PermissionEnum userPermission = null;
       int subjectId = subject.getArtId();
 
@@ -543,7 +514,7 @@ public class AccessControlService implements IAccessControlService {
       int branchId = ((AccessObject) object).getId();
       Branch branch = BranchManager.getBranch(branchId);
 
-      return getBranchPermission(subject, branch, PermissionEnum.FULLACCESS);
+      return getBranchPermission(subject, branch);
    }
 
    public void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) throws OseeDataStoreException {

@@ -45,7 +45,6 @@ public class AccessData {
    }
 
    public void merge(AccessData accessData) {
-      //We might need something here !!!
    }
 
    public boolean matchesAll(PermissionEnum permissionEnum) {
