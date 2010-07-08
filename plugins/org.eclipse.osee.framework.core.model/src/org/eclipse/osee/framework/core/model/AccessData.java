@@ -8,35 +8,45 @@ package org.eclipse.osee.framework.core.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.model.access.ArtifactTypeFilter;
+import org.eclipse.osee.framework.core.model.access.AttributeTypeFilter;
+import org.eclipse.osee.framework.core.model.access.IAcceptFilter;
+import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 
+/**
+ * @author Jeff C. Phillips
+ * @author Roberto E. Escobar
+ */
 public class AccessData {
 
-   private final Map<Object, PermissionEnum> permissions;
+   private final DoubleKeyHashMap<IBasicArtifact<?>, Object, PermissionEnum> artifactPermissions;
 
    public AccessData() {
-      this.permissions = new HashMap<Object, PermissionEnum>();
+      this.artifactPermissions = new DoubleKeyHashMap<IBasicArtifact<?>, Object, PermissionEnum>();
    }
 
    public void add(Object object, PermissionEnum permission) {
-      permissions.put(object, permission);
+      artifactPermissions.put(null, object, permission);
+   }
+
+   public void add(IBasicArtifact<?> artifact, Object object, PermissionEnum permission) {
+      artifactPermissions.put(artifact, object, permission);
    }
 
    public void merge(AccessData accessData) {
+      //We might need something here !!!
    }
 
-   public boolean matches(PermissionEnum permissionEnum) {
+   public boolean matchesAll(PermissionEnum permissionEnum) {
       boolean matches = false;
-      for (Object object : permissions.keySet()) {
-         PermissionEnum objectPermission = permissions.get(object);
-         if (objectPermission.getRank() >= permissionEnum.getRank() && !objectPermission.equals(PermissionEnum.DENY) && !objectPermission.equals(PermissionEnum.LOCK)) {
+      for (PermissionEnum objectPermission : artifactPermissions.allValues()) {
+         if (objectPermission.matches(permissionEnum)) {
             matches = true;
          } else {
             matches = false;
@@ -46,67 +56,35 @@ public class AccessData {
       return matches;
    }
 
-   //   public boolean matches(IBasicArtifact<?> artifact, IAttributeType type, PermissionEnum permissionEnum) {
-   //      return false;
-   //   }
-
-   public Collection<IArtifactType> getArtifactType(IBasicArtifact<?> artifact, PermissionEnum permissionEnum) {
-      IArtifactType type = artifact.getArtifactType();
-      AcceptFilter<IArtifactType> filter = new ArtifactTypeFilter(permissionEnum, type);
-      return filter(filter);
+   public Collection<IArtifactType> getArtifactTypeMatches(IBasicArtifact<?> artifact, IArtifactType type, PermissionEnum permissionEnum) {
+      IAcceptFilter<IArtifactType> filter = new ArtifactTypeFilter(permissionEnum, type);
+      return filter(artifact, filter);
    }
 
-   public Collection<IAttributeType> getAttributeTypeMatches(IBasicArtifact<?> artifact, PermissionEnum permissionEnum) {
-
-      return Collections.emptyList();
+   public Collection<IAttributeType> getAttributeTypeMatches(IBasicArtifact<?> artifact, IAttributeType attributeType, PermissionEnum permissionEnum) {
+      List<Pair<IBasicArtifact<?>, IAttributeType>> pairList = new ArrayList<Pair<IBasicArtifact<?>, IAttributeType>>();
+      pairList.add(new Pair<IBasicArtifact<?>, IAttributeType>(artifact, attributeType));
+      IAcceptFilter<IAttributeType> filter = new AttributeTypeFilter(permissionEnum, pairList);
+      return filter(artifact, filter);
    }
 
    public Collection<IRelationType> getRelationTypeMatches(IBasicArtifact<?> artifact, PermissionEnum permissionEnum) {
       return Collections.emptyList();
    }
 
-   private <T> Collection<T> filter(AcceptFilter<T> filter) {
+   private <T> Collection<T> filter(IBasicArtifact<?> artifact, IAcceptFilter<T> filter) {
       Collection<T> filtered = new ArrayList<T>();
-      for (Entry<Object, PermissionEnum> entry : permissions.entrySet()) {
-         Object object = entry.getKey();
-         PermissionEnum permission = entry.getValue();
+      for (Object object : artifactPermissions.getSubHash(artifact).keySet()) {
+         PermissionEnum permission = artifactPermissions.get(artifact, object);
 
-         T toCheck = (T) object;
-
-         boolean shouldAccept = filter.accept(toCheck, permission);
-         if (shouldAccept) {
-            filtered.add(toCheck);
-         }
-      }
-      return filtered;
-   }
-
-   private static interface AcceptFilter<T> {
-
-      boolean accept(T item, PermissionEnum permission);
-   }
-
-   private static final class ArtifactTypeFilter implements AcceptFilter<IArtifactType> {
-      private final PermissionEnum toMatch;
-      private final Collection<IArtifactType> itemsToCheck;
-
-      public ArtifactTypeFilter(PermissionEnum toMatch, IArtifactType... itemsToCheck) {
-         this.toMatch = toMatch;
-         this.itemsToCheck = new HashSet<IArtifactType>();
-         if (itemsToCheck != null) {
-            for (IArtifactType type : itemsToCheck) {
-               this.itemsToCheck.add(type);
+         T toCheck = filter.getObject(object);
+         if (toCheck != null) {
+            boolean shouldAccept = filter.accept(toCheck, artifact, permission);
+            if (shouldAccept) {
+               filtered.add(toCheck);
             }
          }
       }
-
-      @Override
-      public boolean accept(IArtifactType item, PermissionEnum permission) {
-         boolean result = false;
-         if (itemsToCheck != null && itemsToCheck.contains(item)) {
-            result = toMatch.matches(permission);
-         }
-         return result;
-      }
+      return filtered;
    }
 }

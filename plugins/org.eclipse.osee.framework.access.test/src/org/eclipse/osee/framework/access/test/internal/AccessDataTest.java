@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.access.test.internal;
 
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.AccessData;
 import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
@@ -27,27 +29,58 @@ public class AccessDataTest {
    @Test
    public void testObjectBase() {
       AccessData accessData = new AccessData();
-      Assert.assertFalse(accessData.matches(PermissionEnum.READ));
+      Assert.assertFalse(accessData.matchesAll(PermissionEnum.READ));
 
       IBasicArtifact<?> basicArtifact2 = new DefaultBasicArtifact(2, "2", "Name2");
       accessData.add(basicArtifact2, PermissionEnum.WRITE);
       IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "Name");
       accessData.add(basicArtifact, PermissionEnum.READ);
 
-      Assert.assertTrue(accessData.matches(PermissionEnum.READ));
-      Assert.assertFalse(accessData.matches(PermissionEnum.WRITE));
+      Assert.assertTrue(accessData.matchesAll(PermissionEnum.READ));
+      Assert.assertFalse(accessData.matchesAll(PermissionEnum.WRITE));
    }
 
    @Test
    public void testObjectBaseDeny() {
       AccessData accessData = new AccessData();
-      Assert.assertFalse(accessData.matches(PermissionEnum.READ));
+      Assert.assertFalse(accessData.matchesAll(PermissionEnum.READ));
 
       IBasicArtifact<?> basicArtifact2 = new DefaultBasicArtifact(2, "2", "Name2");
       accessData.add(basicArtifact2, PermissionEnum.DENY);
       IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "Name");
       accessData.add(basicArtifact, PermissionEnum.READ);
 
-      Assert.assertFalse(accessData.matches(PermissionEnum.READ));
+      Assert.assertFalse(accessData.matchesAll(PermissionEnum.READ));
+   }
+
+   @Test
+   public void testAttributeTypeFilter() {
+      AccessData accessData = new AccessData();
+      Assert.assertFalse(accessData.matchesAll(PermissionEnum.READ));
+
+      IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "Name");
+      IBasicArtifact<?> basicArtifact2 = new DefaultBasicArtifact(2, "2", "Name Two");
+      accessData.add(basicArtifact, CoreAttributeTypes.WORD_TEMPLATE_CONTENT, PermissionEnum.READ);
+      accessData.add(basicArtifact2, CoreAttributeTypes.WORD_TEMPLATE_CONTENT, PermissionEnum.WRITE);
+
+      Assert.assertTrue(!accessData.getAttributeTypeMatches(basicArtifact, CoreAttributeTypes.WORD_TEMPLATE_CONTENT,
+            PermissionEnum.READ).isEmpty());
+      Assert.assertTrue(accessData.getAttributeTypeMatches(basicArtifact, CoreAttributeTypes.WORD_TEMPLATE_CONTENT,
+            PermissionEnum.WRITE).isEmpty());
+      Assert.assertTrue(accessData.matchesAll(PermissionEnum.READ));
+      Assert.assertFalse(accessData.matchesAll(PermissionEnum.WRITE));
+   }
+
+   @Test
+   public void testArtifactTypeFilter() {
+      AccessData accessData = new AccessData();
+      Assert.assertFalse(accessData.matchesAll(PermissionEnum.READ));
+
+      IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "Name");
+      accessData.add(basicArtifact, CoreArtifactTypes.AbstractSoftwareRequirement, PermissionEnum.READ);
+      Assert.assertTrue(!accessData.getArtifactTypeMatches(basicArtifact,
+            CoreArtifactTypes.AbstractSoftwareRequirement, PermissionEnum.READ).isEmpty());
+      Assert.assertTrue(accessData.getArtifactTypeMatches(basicArtifact, CoreArtifactTypes.AbstractSoftwareRequirement,
+            PermissionEnum.WRITE).isEmpty());
    }
 }
