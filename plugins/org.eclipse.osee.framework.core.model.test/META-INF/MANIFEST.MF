@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Core Model Test
 Bundle-SymbolicName: org.eclipse.osee.framework.core.model.test;singleton:=true
 Bundle-Version: 0.9.5.qualifier
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.framework.core.model;bundle-version="0.9.5"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit4;bundle-version="4.5.0"
