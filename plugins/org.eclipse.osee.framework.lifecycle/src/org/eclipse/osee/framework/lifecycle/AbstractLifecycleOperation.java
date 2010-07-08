@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.lifecycle;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.lifecycle.internal.OperationPointId;
 
@@ -32,12 +33,15 @@ public abstract class AbstractLifecycleOperation extends AbstractOperation {
 
    @Override
    protected final void doWork(IProgressMonitor monitor) throws Exception {
-      service.dispatch(monitor, lifecyclepoint, OperationPointId.CHECK_CONDITION_ID.name());
-      service.dispatch(monitor, lifecyclepoint, OperationPointId.PRE_CONDITION_ID.name());
-      try {
-         doCoreWork(monitor);
-      } finally {
-         service.dispatch(monitor, lifecyclepoint, OperationPointId.POST_CONDITION_ID.name());
+      IStatus status = service.dispatch(monitor, lifecyclepoint, OperationPointId.CHECK_CONDITION_ID.name());
+
+      if (status.isOK()) {
+         service.dispatch(monitor, lifecyclepoint, OperationPointId.PRE_CONDITION_ID.name());
+         try {
+            doCoreWork(monitor);
+         } finally {
+            service.dispatch(monitor, lifecyclepoint, OperationPointId.POST_CONDITION_ID.name());
+         }
       }
    }
 

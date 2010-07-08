@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
-import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
-import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor.Type;
 
 /**
  * @author Roberto E. Escobar

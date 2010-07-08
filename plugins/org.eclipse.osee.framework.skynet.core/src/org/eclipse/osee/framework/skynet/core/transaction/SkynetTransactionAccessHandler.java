@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AccessData;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
@@ -35,6 +36,9 @@ public class SkynetTransactionAccessHandler extends SkynetTransactionHandler {
       IStatus status = Status.OK_STATUS;
       try {
          AccessData accessData = service.getAccessData(getUserArtifact(), getItemsToPersist());
+         if (!accessData.matchesAll(PermissionEnum.WRITE)) {
+            throw new OseeCoreException("Does not have valid permission to edit this artifact");
+         }
       } catch (OseeCoreException ex) {
          status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error");
       }
