@@ -45,6 +45,36 @@ public class AccessData {
    }
 
    public void merge(AccessData accessData) {
+      //Merge all of the common permissions
+      for (IBasicArtifact<?> artifact : artifactPermissions.getKeySetOne()) {
+         for (Object object : artifactPermissions.getSubHash(artifact).keySet()) {
+            if (accessData.artifactPermissions.containsKey(artifact, object)) {
+               PermissionEnum mainPermission = artifactPermissions.get(artifact, object);
+               PermissionEnum subPermission = accessData.artifactPermissions.get(artifact, object);
+               PermissionEnum mergePermission;
+
+               //Deny overrides all permissions
+               if (mainPermission == PermissionEnum.DENY || subPermission == PermissionEnum.DENY) {
+                  mainPermission = PermissionEnum.DENY;
+                  subPermission = PermissionEnum.DENY;
+               }
+               //Always take the weaker permission
+               if (mainPermission.matches(subPermission)) {
+                  mergePermission = subPermission;
+               } else {
+                  mergePermission = mainPermission;
+               }
+               artifactPermissions.put(artifact, object, mergePermission);
+               accessData.artifactPermissions.remove(artifact, object);
+            }
+         }
+      }
+      //Add the uncommon permissions to the main accessData
+      for (IBasicArtifact<?> artifact : accessData.artifactPermissions.getKeySetOne()) {
+         for (Object object : accessData.artifactPermissions.getSubHash(artifact).keySet()) {
+            artifactPermissions.put(artifact, object, accessData.artifactPermissions.get(artifact, object));
+         }
+      }
    }
 
    public boolean matchesAll(PermissionEnum permissionEnum) {

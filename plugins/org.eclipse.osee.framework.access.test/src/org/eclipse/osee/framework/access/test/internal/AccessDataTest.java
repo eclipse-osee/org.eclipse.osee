@@ -83,4 +83,36 @@ public class AccessDataTest {
       Assert.assertTrue(accessData.getArtifactTypeMatches(basicArtifact, CoreArtifactTypes.AbstractSoftwareRequirement,
             PermissionEnum.WRITE).isEmpty());
    }
+
+   @Test
+   public void testMerge() {
+      AccessData mainAccessData = new AccessData();
+      AccessData subAccessData = new AccessData();
+
+      IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "Name");
+      mainAccessData.add(basicArtifact, CoreArtifactTypes.AbstractSoftwareRequirement, PermissionEnum.READ);
+      subAccessData.add(basicArtifact, CoreArtifactTypes.AbstractSoftwareRequirement, PermissionEnum.WRITE);
+      mainAccessData.merge(subAccessData);
+
+      Assert.assertTrue(!mainAccessData.getArtifactTypeMatches(basicArtifact,
+            CoreArtifactTypes.AbstractSoftwareRequirement, PermissionEnum.READ).isEmpty());
+
+      IBasicArtifact<?> basicArtifact2 = new DefaultBasicArtifact(2, "2", "NameTwo");
+      mainAccessData.add(basicArtifact2, CoreArtifactTypes.AbstractSoftwareRequirement, PermissionEnum.WRITE);
+      subAccessData.add(basicArtifact2, CoreArtifactTypes.AbstractSoftwareRequirement, PermissionEnum.READ);
+
+      mainAccessData.merge(subAccessData);
+
+      Assert.assertTrue(!mainAccessData.getArtifactTypeMatches(basicArtifact2,
+            CoreArtifactTypes.AbstractSoftwareRequirement, PermissionEnum.READ).isEmpty());
+
+      mainAccessData.add(basicArtifact2, CoreArtifactTypes.AbstractSoftwareRequirement, PermissionEnum.WRITE);
+      subAccessData.add(basicArtifact2, CoreArtifactTypes.AbstractSoftwareRequirement, PermissionEnum.DENY);
+
+      mainAccessData.merge(subAccessData);
+
+      Assert.assertFalse(!mainAccessData.getArtifactTypeMatches(basicArtifact2,
+            CoreArtifactTypes.AbstractSoftwareRequirement, PermissionEnum.READ).isEmpty());
+   }
+
 }

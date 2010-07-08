@@ -47,10 +47,10 @@ public class AccessProviderVisitor extends AbstractLifecycleVisitor<IAccessProvi
    protected IStatus dispatch(IProgressMonitor monitor, IAccessProvider accessProvider, String sourceId) {
       IStatus status = Status.OK_STATUS;
       try {
-         //         AccessData accessData = new AccessData();
-         accessProvider.computeAccess(userArtifact, artsToCheck, mainAccessData);
-         //         mainAccessData = accessData;
-         //         mainAccessData.merge(accessData);
+         AccessData accessData = new AccessData();
+         accessProvider.computeAccess(userArtifact, artsToCheck, accessData);
+         mainAccessData.merge(accessData);
+
       } catch (OseeCoreException ex) {
          status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error during access control computation", ex);
       }
