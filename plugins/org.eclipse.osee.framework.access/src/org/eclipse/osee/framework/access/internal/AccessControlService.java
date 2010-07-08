@@ -277,7 +277,6 @@ public class AccessControlService implements IAccessControlService {
       return PermissionEnum.FULLACCESS;
    }
 
-   //TODO Integrate HERE
    public AccessData getAccessData(IBasicArtifact<?> userArtifact, Collection<?> objectsToCheck) throws OseeCoreException {
       ILifecycleService service = getLifecycleService();
       AccessData accessData = new AccessData();
