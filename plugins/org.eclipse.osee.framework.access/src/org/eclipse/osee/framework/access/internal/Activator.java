@@ -63,7 +63,7 @@ public class Activator implements BundleActivator {
 
       @Override
       public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
-         IOseeCachingService service = (IOseeCachingService) services.get(ILifecycleService.class);
+         IOseeCachingService service = (IOseeCachingService) services.get(IOseeCachingService.class);
          accessService = new AccessControlService(service);
          serviceRegistration = context.registerService(IAccessControlService.class.getName(), accessService, null);
       }
@@ -78,7 +78,7 @@ public class Activator implements BundleActivator {
 
    private static final class TrackingHandler extends AbstractTrackingHandler {
 
-      private static final Class<?>[] DEPENDENCIES = new Class[] {ILifecycleService.class};
+      private static final Class<?>[] DEPENDENCIES = new Class[] {IAccessControlService.class, ILifecycleService.class};
 
       private IAccessProvider accessProvider;
       private ILifecycleService service;
@@ -91,8 +91,10 @@ public class Activator implements BundleActivator {
       @Override
       public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
          service = (ILifecycleService) services.get(ILifecycleService.class);
+         IAccessControlService accessService = (IAccessControlService) services.get(IAccessControlService.class);
          try {
-            accessProvider = new ObjectAccessProvider();
+            // TODO remove specific access control service cast
+            accessProvider = new ObjectAccessProvider((AccessControlService) accessService);
             service.addHandler(AccessProviderVisitor.TYPE, accessProvider);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

@@ -6,7 +6,6 @@
 package org.eclipse.osee.framework.access.internal;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.access.IAccessProvider;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -16,6 +15,12 @@ import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public class ObjectAccessProvider implements IAccessProvider {
+
+   private final AccessControlService accessService;
+
+   public ObjectAccessProvider(AccessControlService accessService) {
+      this.accessService = accessService;
+   }
 
    @Override
    public void computeAccess(IBasicArtifact<?> userArtifact, Collection<?> objToCheck, AccessData accessData) throws OseeCoreException {
@@ -27,13 +32,13 @@ public class ObjectAccessProvider implements IAccessProvider {
          if (object instanceof Artifact) {
             Artifact artifact = (Artifact) object;
             branch = artifact.getBranch();
-            userPermission = AccessControlManager.getService().getArtifactPermission(userArtifact, (Artifact) object);
+            userPermission = accessService.getArtifactPermission(userArtifact, (Artifact) object);
          } else if (object instanceof Branch) {
             branch = (Branch) object;
          } else {
             throw new IllegalStateException("Unhandled object type for access control - " + object);
          }
-         branchPermission = AccessControlManager.getService().getBranchPermission(userArtifact, branch);
+         branchPermission = accessService.getBranchPermission(userArtifact, branch);
 
          if (branchPermission == PermissionEnum.DENY || userPermission == null) {
             userPermission = branchPermission;
