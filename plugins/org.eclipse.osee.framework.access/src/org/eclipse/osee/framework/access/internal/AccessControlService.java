@@ -77,7 +77,7 @@ import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * Provides access control for OSEE. <REM2>
- *
+ * 
  * @author Jeff C. Phillips
  */
 
@@ -555,9 +555,7 @@ public class AccessControlService implements IAccessControlService {
 
       if (accessControlledObject instanceof ArtifactAccessObject) {
          accessControlledObject.removeFromCache();
-         // accessControlledObject.removeFromCache(accessControlListCache);
       }
-      // branchAccessObjectCache.remove(object.getId()); (commented out due to 3KJSW)
       deCacheAccessControlData(data);
    }
 

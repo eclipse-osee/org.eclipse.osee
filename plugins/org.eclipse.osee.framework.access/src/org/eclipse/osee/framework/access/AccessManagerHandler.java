@@ -48,15 +48,4 @@ public class AccessManagerHandler implements LifecycleHandler {
       }
       return statusToReturn;
    }
-
-   //   @Override
-   //   public IStatus onPostCondition(IProgressMonitor monitor) {
-   //      return status;
-   //   }
-   //
-   //   @Override
-   //   public IStatus onPreCondition(IProgressMonitor monitor) {
-   //      return status;
-   //   }
-
 }

@@ -15,27 +15,34 @@ public class ObjectAccessProvider implements IAccessProvider {
 
    @Override
    public void computeAccess(IBasicArtifact<?> userArtifact, Collection<IBasicArtifact<?>> artsToCheck, AccessData accessData) throws OseeCoreException {
-
-//      PermissionEnum branchPermission = null;
-//      PermissionEnum permission = null;
-//      Branch branch = null;
-//
-//      if (object instanceof Artifact) {
-//         Artifact artifact = (Artifact) object;
-//         branch = artifact.getBranch();
-//         userPermission = accessService.getArtifactPermission(userArtifact, artifact, permission);
-//      } else if (object instanceof Branch) {
-//         branch = (Branch) object;
-//      } else {
-//         throw new OseeStateException("Unhandled object type for access control - " + object);
-//      }
-//
-//      PermissionEnum userPermission = null;
-//      PermissionEnum branchPermission = accessService.getBranchPermission(userArtifact, branch, permission);
-//      if (branchPermission == PermissionEnum.DENY || userPermission == null) {
-//         userPermission = branchPermission;
-//      }
-//
-//      userPermission.matches();
+      //      PermissionEnum branchPermission = null;
+      //      PermissionEnum permission = null;
+      //      Branch branch = null;
+      //
+      //      for (IBasicArtifact artifactToCheck : artsToCheck) {
+      //         if (object instanceof Artifact) {
+      //            Artifact artifact = (Artifact) object;
+      //            branch = artifact.getBranch();
+      //            userPermission = accessService.getArtifactPermission(userArtifact, artifact, permission);
+      //         } else if (object instanceof Branch) {
+      //            branch = (Branch) object;
+      //         } else {
+      //            throw new OseeStateException("Unhandled object type for access control - " + object);
+      //         }
+      //
+      //         PermissionEnum userPermission = null;
+      //         PermissionEnum branchPermission = accessService.getBranchPermission(userArtifact, branch, permission);
+      //         if (branchPermission == PermissionEnum.DENY || userPermission == null) {
+      //            userPermission = branchPermission;
+      //         }
+      //
+      //         if (permission == READ && userPermission == LOCK) {
+      //            hasPermission = true;
+      //         } else if (userPermission == null || userPermission == LOCK) {
+      //            hasPermission = false;
+      //         } else {
+      //            hasPermission = userPermission.getRank() >= permission.getRank() && !userPermission.equals(DENY);
+      //         }
+      //      }
    }
 }
