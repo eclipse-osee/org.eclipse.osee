@@ -15,7 +15,6 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.rmi.server.ExportException;
-
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 
 /**
@@ -72,4 +71,6 @@ public interface IServiceConnector {
    boolean ping();
 
    EnhancedProperties getProperties();
+   
+   public String getUniqueServerId();
 }

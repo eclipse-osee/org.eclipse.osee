@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.logging.Level;
-
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
@@ -31,7 +30,6 @@ import net.jini.id.UuidFactory;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
-
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.ote.connection.jini.util.LeaseRenewTask;
@@ -169,5 +167,10 @@ public class JiniServiceSideConnector extends JiniConnector implements
 	public boolean ping() {
 		return true;
 	}
+
+   @Override
+   public String getUniqueServerId() {
+      return serviceId.toString();
+   }
 
 }

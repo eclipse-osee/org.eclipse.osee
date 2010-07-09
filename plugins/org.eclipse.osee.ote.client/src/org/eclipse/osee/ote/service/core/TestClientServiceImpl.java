@@ -11,17 +11,19 @@
 package org.eclipse.osee.ote.service.core;
 
 import java.net.InetAddress;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.connection.service.IConnectorListener;
 import org.eclipse.osee.connection.service.IServiceConnector;
+import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
@@ -46,7 +48,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 
 	private static final String NO_USER_MSG = "a user has not been set";
 	private final IConnectionService connectionService;
-	private final HashMap<IHostTestEnvironment, IServiceConnector> testHosts = new HashMap<IHostTestEnvironment, IServiceConnector>();
+	private final HashMap<String, IServiceConnector> testHosts = new HashMap<String, IServiceConnector>();
 	private final ListenerNotifier listenerNotifier = new ListenerNotifier();
 	private final HashSet<ITestEnvironmentAvailibilityListener> hostAvailabilityListeners = new HashSet<ITestEnvironmentAvailibilityListener>();
 	private final HostFilter hostFilter = new HostFilter();
@@ -80,8 +82,8 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	public synchronized void addEnvironmentAvailibiltyListener(ITestEnvironmentAvailibilityListener listener) {
 		checkState();
 		if (hostAvailabilityListeners.add(listener)) {
-			for (Entry<IHostTestEnvironment, IServiceConnector> entry : testHosts.entrySet()) {
-				listener.environmentAvailable(entry.getKey(), entry.getValue(), new OteServiceProperties(entry.getValue()));
+			for (Entry<String, IServiceConnector> entry : testHosts.entrySet()) {
+				listener.environmentAvailable((IHostTestEnvironment)entry.getValue().getService(), entry.getValue(), new OteServiceProperties(entry.getValue()));
 			}
 		}
 
@@ -101,12 +103,19 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 			throw new IllegalArgumentException("test host cannot be null");
 		}
 		try {
+		   
+		   IServiceConnector connector = getConnector(testHost);
+		   if(connector == null){
+		      throw new IllegalStateException("Unable to find a connection.");
+		   }	   
+		   
 		   configurer.configure(testHost);
-			testConnection = session.connect(testHosts.get(testHost), testHost, config);
+		   
+			testConnection = session.connect(connector, testHost, config);
 			if (testConnection != null) {
 				// success
 				ConnectionEvent event =
-					new ConnectionEvent(testHost, testHosts.get(testConnection.getConnectedTestHost()),
+					new ConnectionEvent(testHost, connector,
 							testConnection.getConnectEnvironment(), testConnection.getSessionKey());
 //				if (configurer != null) {
 //					try {
@@ -126,9 +135,20 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 		return null;
 	}
 
-	@Override
+   @Override
 	public IServiceConnector getConnector(IHostTestEnvironment host) {
-		return testHosts.get(host);
+      try {
+         EnhancedProperties properties = host.getProperties();
+         String passedInId = (String)properties.getProperty("id");
+         for(IServiceConnector connector:testHosts.values()){
+            String loopId = (String)connector.getProperties().getProperty("id");
+            if(passedInId != null && loopId != null && connector.getProperties().getProperty("id").equals(properties.getProperty("id"))){
+               return connector;
+            }
+         }
+      } catch (RemoteException ex) {
+      }
+      return null;
 	}
 
 	@Override
@@ -150,7 +170,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 			testConnection = null;
 		} else {
 			ConnectionEvent event =
-				new ConnectionEvent(this.getConnectedHost(), testHosts.get(testConnection.getConnectedTestHost()), envirnonment,
+				new ConnectionEvent(this.getConnectedHost(), getConnector(testConnection.getConnectedTestHost()), envirnonment,
 						testConnection.getSessionKey());
 			listenerNotifier.notifyDisconnect(event);
 			try {
@@ -266,12 +286,12 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	public synchronized void addConnectionFilters(ITestEnvironmentFilter filter) {
 		checkState();
 		if (environmentFilters.add(filter)) {
-			Iterator<Entry<IHostTestEnvironment, IServiceConnector>> envIterator = testHosts.entrySet().iterator();
+			Iterator<Entry<String, IServiceConnector>> envIterator = testHosts.entrySet().iterator();
 			while (envIterator.hasNext()) {
-				Entry<IHostTestEnvironment, IServiceConnector> entry = envIterator.next();
+				Entry<String, IServiceConnector> entry = envIterator.next();
 				OteServiceProperties props = new OteServiceProperties(entry.getValue());
-				if (!filter.accept(entry.getKey(), props)) {
-					notifyHostUnavailable(entry.getKey(), entry.getValue(), props);
+				if (!filter.accept((IHostTestEnvironment)entry.getValue().getService(), props)) {
+					notifyHostUnavailable((IHostTestEnvironment)entry.getValue().getService(), entry.getValue(), props);
 					envIterator.remove();
 				}
 			}
@@ -295,19 +315,19 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 					// this environment did not pass the filters. If we were
 					// tracking this environment then we
 					// need to remove it
-					if (testHosts.containsKey(env)) {
+					if (testHosts.containsKey(connector.getUniqueServerId())) {
 						// we were tracking this environment but our filters
 						// don't approve so we need to remove it
-						testHosts.remove(env);
+						testHosts.remove(connector.getUniqueServerId());
 						notifyHostUnavailable(env, connector, props);
 					}
 				} else {
 					// the filters have accepted this environment. Lets see if
 					// we were tracking it
-					if (!testHosts.containsKey(env)) {
+					if (!testHosts.containsKey(connector.getUniqueServerId())) {
 						// we were not tracking this environment so go ahead and
 						// add it
-						testHosts.put(env, connector);
+						testHosts.put(connector.getUniqueServerId(), connector);
 						notifyHostAvailable(env, connector, props);
 					}
 				}
@@ -382,7 +402,11 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 
 	@Override
 	public synchronized Collection<IHostTestEnvironment> getAvailableTestHosts() {
-		return testHosts.keySet();
+	   List<IHostTestEnvironment> envs = new ArrayList<IHostTestEnvironment>();
+	   for(IServiceConnector conn: testHosts.values()){
+	      envs.add((IHostTestEnvironment)conn.getService());
+	   }
+		return envs;
 	}
 
 	@Override
@@ -396,12 +420,16 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 
 	@Override
 	public OteServiceProperties getProperties(IHostTestEnvironment testHost) {
-
-		IServiceConnector connector = testHosts.get(testHost);
+	   
+		IServiceConnector connector = getConnector(testHost);
 		if (connector != null) {
 			return new OteServiceProperties(connector);
 		}
-		return null;
+		try {
+         return new OteServiceProperties(testHost.getProperties());
+      } catch (RemoteException ex) {
+         return null;
+      }
 	}
 
 
@@ -441,7 +469,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 			props.printStats();
 			IHostTestEnvironment env = (IHostTestEnvironment) connector.getService();
 			if (isAcceptableTestEnvironment(env, props)) {
-				testHosts.put(env, connector);
+				testHosts.put(connector.getUniqueServerId(), connector);
 				notifyHostAvailable(env, connector, props);
 			}
 		}
@@ -451,7 +479,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	public synchronized void onConnectorRemoved(IServiceConnector connector) {
 		if (hostFilter.accept(connector)) {
 			IHostTestEnvironment env = (IHostTestEnvironment) connector.getService();
-			testHosts.remove(env);
+			testHosts.remove(connector.getUniqueServerId());
 			notifyHostUnavailable(env, connector, new OteServiceProperties(connector));
 			IHostTestEnvironment connectedHost = getConnectedHost();
 			if (connectedHost != null && connectedHost.equals(env)) {

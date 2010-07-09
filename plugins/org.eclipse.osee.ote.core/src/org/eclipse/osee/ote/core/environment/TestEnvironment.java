@@ -37,7 +37,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.connection.service.LocalConnector;
@@ -180,7 +179,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       props.setProperty("date", new Date());
       props.setProperty("group", "OSEE Test Environment");
       props.setProperty("owner", System.getProperty("user.name"));
-      connector = new LocalConnector(this, props);
+      connector = new LocalConnector(this, Integer.toString(this.getUniqueId()), props);
    }
 
    private void setupOteServerLogFile() {

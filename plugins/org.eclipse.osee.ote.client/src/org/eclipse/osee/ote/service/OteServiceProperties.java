@@ -11,80 +11,95 @@
 package org.eclipse.osee.ote.service;
 
 import java.io.Serializable;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
+import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 
 /**
  * @author Ken J. Aguilar
  */
 public class OteServiceProperties {
-   private final IServiceConnector connector;
+   private IServiceConnector connector;
 
    private static final String NA = "N.A.";
    private boolean debug = false;
+
+   private EnhancedProperties properties;
 
    public OteServiceProperties(IServiceConnector connector) {
       this.connector = connector;
    }
 
+   public OteServiceProperties(EnhancedProperties properties) {
+      this.properties = properties;
+   }
+
+   private String getLocalProperty(String name){
+      if(connector != null){
+         return (String)connector.getProperty(name, NA);
+      } else if(properties != null){
+         return (String)properties.getProperty(name, NA);
+      }
+      return NA;
+   }
+   
    /**
     * @return the name
     */
    public String getName() {
-      return (String) connector.getProperty("name", NA);
+      return getLocalProperty("name");
    }
 
    /**
     * @return the station
     */
    public String getStation() {
-      return (String) connector.getProperty("station", NA);
+      return getLocalProperty("station");
    }
 
    /**
     * @return the type
     */
    public String getType() {
-      return (String) connector.getProperty("type", NA);
+      return getLocalProperty("type");
    }
 
    /**
     * @return the mode
     */
    public String getMode() {
-      return (String) connector.getProperty("mode", NA);
+      return getLocalProperty("mode");
    }
 
    /**
     * @return the version
     */
    public String getVersion() {
-      return (String) connector.getProperty("version", NA);
+      return getLocalProperty("version");
    }
 
    /**
     * @return the group
     */
    public String getGroup() {
-      return (String) connector.getProperty("groups", NA);
+      return getLocalProperty("groups");
    }
 
    /**
     * @return the comment
     */
    public String getComment() {
-      return (String) connector.getProperty("comment", NA);
+      return getLocalProperty("comment");
    }
 
    /**
     * @return the dateStart
     */
    public String getDateStarted() {
-      return connector.getProperty("date", NA).toString();
+      return getLocalProperty("date").toString();
    }
 
    public String getUserList() {
-      return connector.getProperty("user_list", NA).toString();
+      return getLocalProperty("user_list").toString();
    }
 
    public void printStats() {

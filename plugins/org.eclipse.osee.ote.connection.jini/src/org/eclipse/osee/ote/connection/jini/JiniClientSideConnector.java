@@ -15,7 +15,6 @@ import java.net.URI;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
-
 import net.jini.core.lookup.ServiceItem;
 
 /**
@@ -59,6 +58,11 @@ public class JiniClientSideConnector extends JiniConnector {
    @Override
    public void init(Object service) throws UnknownHostException, ExportException {
 	   
+   }
+
+   @Override
+   public String getUniqueServerId() {
+      return serviceItem.serviceID.toString();
    }
 
 }
