@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.rmi.server.ExportException;
 import java.util.HashSet;
+
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 
 /**
@@ -30,7 +31,7 @@ public class LocalConnector implements IServiceConnector {
          new HashSet<IServicePropertyChangeListener>();
 
 
-   private LocalConnector(){
+   public LocalConnector(){
       this(null, "",new EnhancedProperties());
    }
    
