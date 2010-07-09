@@ -49,7 +49,7 @@ public final class ChangeManager {
    private final static RevisionChangeLoader revsionChangeLoader = new RevisionChangeLoader();
 
    private ChangeManager() {
-      // this empty constructor exists to prevent the default constructor from allowing public construction
+      // this private empty constructor exists to prevent the default constructor from allowing public construction
    }
 
    public static Collection<ArtifactDelta> getCompareArtifacts(Collection<Change> changes) {
@@ -138,7 +138,7 @@ public final class ChangeManager {
             transactionNumber = branch.getSourceTransaction().getId();
             branch = branch.getParentBranch();
             insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getId(),
-                  transactionNumber});
+                     transactionNumber});
          }
       }
 
@@ -148,7 +148,7 @@ public final class ChangeManager {
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(insertParameters.size() * 2,
-                  ClientSessionManager.getSql(OseeSql.CHANGE_TX_MODIFYING), queryId);
+                     ClientSessionManager.getSql(OseeSql.CHANGE_TX_MODIFYING), queryId);
             while (chStmt.next()) {
                Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
                Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch);
@@ -185,7 +185,7 @@ public final class ChangeManager {
          for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING)) {
             if (artifact.getBranch().equals(workingBranch.getParentBranch())) {
                insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), workingBranch.getId(),
-                     SQL3DataType.INTEGER});
+                        SQL3DataType.INTEGER});
             }
          }
       }
@@ -196,7 +196,7 @@ public final class ChangeManager {
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(insertParameters.size() * 2,
-                  ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_MODIFYING), queryId);
+                     ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_MODIFYING), queryId);
             while (chStmt.next()) {
                if (chStmt.getInt("tx_count") > 0) {
                   Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));

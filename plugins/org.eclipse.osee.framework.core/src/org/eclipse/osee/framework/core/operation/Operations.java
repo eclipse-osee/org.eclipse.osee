@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public final class Operations {
 
    private Operations() {
-      // private empty constructor is to prevent external instantiation
+      // this private empty constructor exists to prevent the default constructor from allowing public construction
    }
 
    /**
@@ -46,7 +46,7 @@ public final class Operations {
    /**
     * Checks to see if the user canceled the operation. If the operation was canceled, the method will throw an
     * OperationCanceledException
-    *
+    * 
     * @param monitor
     * @throws OperationCanceledException
     */
@@ -69,7 +69,7 @@ public final class Operations {
 
    /**
     * Checks to see if the status has errors. If the status contains errors, an exception will be thrown.
-    *
+    * 
     * @param monitor
     * @throws Exception
     * @see {@link IStatus#matches(int)}
@@ -101,7 +101,7 @@ public final class Operations {
 
    /**
     * Checks to see if the status has errors. If the status contains errors, an exception will be thrown.
-    *
+    * 
     * @param monitor
     * @throws Exception
     * @see {@link IStatus#matches(int)}
@@ -113,7 +113,7 @@ public final class Operations {
    /**
     * Executes an operation calling the monitor begin and done methods. If workPercentage is set greater than 0, monitor
     * will be wrapped into a SubProgressMonitor set to the appropriate number of ticks to consume from the main monitor.
-    *
+    * 
     * @param operation
     * @param monitor
     * @param workPercentage
@@ -135,7 +135,7 @@ public final class Operations {
    /**
     * Executes an operation by calling {@link #executeWork(IOperation, IProgressMonitor, double)} and checks for error
     * status {@link #checkForErrorStatus(IStatus)}. An OseeCoreException is thrown is an error is detected
-    *
+    * 
     * @param operation
     * @param monitor
     * @param workPercentage

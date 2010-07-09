@@ -59,7 +59,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * Provides access to all branches as well as support for creating branches of all types
- *
+ * 
  * @author Ryan D. Brooks
  */
 public class BranchManager {
@@ -71,7 +71,7 @@ public class BranchManager {
    private Branch lastBranch;
 
    private BranchManager() {
-      // this constructor is defined to prevent the default constructor from allowing public construction
+      // this private empty constructor exists to prevent the default constructor from allowing public construction
    }
 
    @Deprecated
@@ -200,7 +200,7 @@ public class BranchManager {
 
    /**
     * Update branch
-    *
+    * 
     * @param Job
     */
    public static Job updateBranch(final Branch branch, final ConflictResolverOperation resolver) {
@@ -211,13 +211,13 @@ public class BranchManager {
    /**
     * Completes the update branch operation by committing latest parent based branch with branch with changes. Then
     * swaps branches so we are left with the most current branch containing latest changes.
-    *
+    * 
     * @param Job
     */
    public static Job completeUpdateBranch(final ConflictManagerExternal conflictManager, final boolean archiveSourceBranch, final boolean overwriteUnresolvedConflicts) {
       IOperation operation =
-            new FinishUpdateBranchOperation(Activator.PLUGIN_ID, conflictManager, archiveSourceBranch,
-                  overwriteUnresolvedConflicts);
+               new FinishUpdateBranchOperation(Activator.PLUGIN_ID, conflictManager, archiveSourceBranch,
+                        overwriteUnresolvedConflicts);
       return Operations.executeAsJob(operation, true);
    }
 
@@ -244,7 +244,7 @@ public class BranchManager {
    /**
     * Delete a branch from the system. (This operation will set the branch state to deleted. This operation is
     * undo-able)
-    *
+    * 
     * @param branchId
     */
    public static Job deleteBranch(final Branch branch) {
@@ -254,7 +254,7 @@ public class BranchManager {
    /**
     * Commit the net changes from the source branch into the destination branch. If there are conflicts between the two
     * branches, the source branch changes will override those on the destination branch.
-    *
+    * 
     * @param monitor
     * @param conflictManager
     * @param archiveSourceBranch
@@ -272,13 +272,13 @@ public class BranchManager {
       }
       runCommitExtPointActions(conflictManager);
       HttpCommitDataRequester.commitBranch(monitor, UserManager.getUser(), conflictManager.getSourceBranch(),
-            conflictManager.getDestinationBranch(), archiveSourceBranch);
+               conflictManager.getDestinationBranch(), archiveSourceBranch);
    }
 
    private static void runCommitExtPointActions(ConflictManagerExternal conflictManager) throws OseeCoreException {
       ExtensionDefinedObjects<CommitAction> extensions =
-            new ExtensionDefinedObjects<CommitAction>("org.eclipse.osee.framework.skynet.core.CommitActions",
-                  "CommitActions", "className");
+               new ExtensionDefinedObjects<CommitAction>("org.eclipse.osee.framework.skynet.core.CommitActions",
+                        "CommitActions", "className");
       for (CommitAction commitAction : extensions.getObjects()) {
          commitAction.runCommitAction(conflictManager.getSourceBranch(), conflictManager.getDestinationBranch());
       }
@@ -286,7 +286,7 @@ public class BranchManager {
 
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    *
+    * 
     * @param transactionIdNumber
     */
    public static void purgeTransactions(final int... transactionIdNumbers) {
@@ -295,7 +295,7 @@ public class BranchManager {
 
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    *
+    * 
     * @param transactionIdNumber
     */
    public static void purgeTransactions(IJobChangeListener jobChangeListener, final int... transactionIdNumbers) {
@@ -304,7 +304,7 @@ public class BranchManager {
 
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
-    *
+    * 
     * @param transactionIdNumber
     */
    public static Job purgeTransactions(IJobChangeListener jobChangeListener, boolean force, final int... transactionIdNumbers) {
@@ -333,7 +333,7 @@ public class BranchManager {
       List<Object[]> datas = new LinkedList<Object[]>();
       for (int artId : expectedArtIds) {
          datas.add(new Object[] {populateBaseTxFromAddressingQueryId, insertTime, artId, sourceBranch.getId(),
-               SQL3DataType.INTEGER});
+                  SQL3DataType.INTEGER});
       }
       MergeBranch mergeBranch = null;
       try {
@@ -341,13 +341,13 @@ public class BranchManager {
 
          int parentTxId = sourceBranch.getBaseTransaction().getId();
          String creationComment =
-               String.format("New Merge Branch from %s(%s) and %s", sourceBranch.getName(), parentTxId,
-                     destBranch.getName());
+                  String.format("New Merge Branch from %s(%s) and %s", sourceBranch.getName(), parentTxId,
+                           destBranch.getName());
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
          mergeBranch =
-               (MergeBranch) HttpBranchCreation.createBranch(BranchType.MERGE, parentTxId, sourceBranch.getId(),
-                     branchName, null, UserManager.getUser(), creationComment, populateBaseTxFromAddressingQueryId,
-                     destBranch.getId());
+                  (MergeBranch) HttpBranchCreation.createBranch(BranchType.MERGE, parentTxId, sourceBranch.getId(),
+                           branchName, null, UserManager.getUser(), creationComment,
+                           populateBaseTxFromAddressingQueryId, destBranch.getId());
          mergeBranch.setSourceBranch(sourceBranch);
          mergeBranch.setDestinationBranch(destBranch);
       } finally {
@@ -358,7 +358,7 @@ public class BranchManager {
 
    /**
     * Creates a new Branch based on the transaction number selected and the parent branch.
-    *
+    * 
     * @param parentTransactionId
     * @param childBranchName
     * @throws OseeCoreException
@@ -372,12 +372,12 @@ public class BranchManager {
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
       return HttpBranchCreation.createBranch(BranchType.WORKING, parentTransactionNumber, parentBranchId,
-            truncatedName, childBranchGuid, associatedArtifact, creationComment, -1, -1);
+               truncatedName, childBranchGuid, associatedArtifact, creationComment, -1, -1);
    }
 
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
-    *
+    * 
     * @param parentTransactionId
     * @param childBranchName
     * @throws OseeCoreException
@@ -394,7 +394,7 @@ public class BranchManager {
 
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
-    *
+    * 
     * @param parentTransactionId
     * @param childBranchName
     * @throws OseeCoreException
@@ -403,13 +403,13 @@ public class BranchManager {
       TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       String creationComment = String.format("Branch Creation for %s", childBranch.getName());
       return HttpBranchCreation.createBranch(BranchType.BASELINE, parentTransactionId.getId(),
-            parentTransactionId.getBranch().getId(), childBranch.getName(), childBranch.getGuid(), associatedArtifact,
-            creationComment, -1, -1);
+               parentTransactionId.getBranch().getId(), childBranch.getName(), childBranch.getGuid(),
+               associatedArtifact, creationComment, -1, -1);
    }
 
    /**
     * Creates a new root branch, imports skynet types and initializes.
-    *
+    * 
     * @param branchName
     * @param initializeArtifacts adds common artifacts needed by most normal root branches
     * @throws Exception
@@ -443,9 +443,9 @@ public class BranchManager {
 
    private Branch getDefaultInitialBranch() throws OseeCoreException {
       ExtensionDefinedObjects<IDefaultInitialBranchesProvider> extensions =
-            new ExtensionDefinedObjects<IDefaultInitialBranchesProvider>(
-                  "org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider",
-                  "DefaultInitialBranchProvider", "class");
+               new ExtensionDefinedObjects<IDefaultInitialBranchesProvider>(
+                        "org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider",
+                        "DefaultInitialBranchProvider", "class");
       for (IDefaultInitialBranchesProvider provider : extensions.getObjects()) {
          try {
             // Guard against problematic extensions
@@ -456,7 +456,7 @@ public class BranchManager {
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.WARNING,
-                  "Exception occurred while trying to determine initial default branch", ex);
+                     "Exception occurred while trying to determine initial default branch", ex);
          }
       }
       return getCommonBranch();

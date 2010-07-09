@@ -28,14 +28,14 @@ import org.eclipse.swt.widgets.Display;
 public final class ArtifactGuis {
 
    private ArtifactGuis() {
-      // this empty constructor exists to prevent the default constructor from allowing public construction
+      // this private empty constructor exists to prevent the default constructor from allowing public construction
    }
 
    private static final String OTHER_EDIT_SQL =
-         "select br.branch_id, att.gamma_id, att.attr_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and br.branch_id <> ? and br.parent_branch_id = ? and br.archived = ?";
+            "select br.branch_id, att.gamma_id, att.attr_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and br.branch_id <> ? and br.parent_branch_id = ? and br.archived = ?";
 
    private static final String EDIT_MESSAGE =
-         "%d of the %d artifacts about to be edited have already been modified on the following branches:%s\n\nDo you still wish to proceed?";
+            "%d of the %d artifacts about to be edited have already been modified on the following branches:%s\n\nDo you still wish to proceed?";
 
    public static boolean checkOtherEdit(List<Artifact> artifacts) throws OseeCoreException {
       Conditions.checkNotNull(artifacts, "artifacts to check");
@@ -64,7 +64,7 @@ public final class ArtifactGuis {
 
    /**
     * Returns non-archived sibling branches that this artifact's attributes have been edited on
-    *
+    * 
     * @throws OseeCoreException
     */
    private static boolean addBranchesWhereArtifactHasBeenModified(Artifact artifact, Set<String> otherBranches) throws OseeCoreException {
@@ -76,7 +76,7 @@ public final class ArtifactGuis {
          try {
             Branch branch = artifact.getBranch();
             chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), branch.getId(),
-                  branch.getParentBranch().getId(), BranchArchivedState.UNARCHIVED.getValue());
+                     branch.getParentBranch().getId(), BranchArchivedState.UNARCHIVED.getValue());
 
             while (chStmt.next()) {
                int modifiedAttrId = chStmt.getInt("attr_id");
