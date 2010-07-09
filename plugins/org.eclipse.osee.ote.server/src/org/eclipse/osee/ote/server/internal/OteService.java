@@ -57,6 +57,7 @@ public class OteService implements IHostTestEnvironment, IService {
 		enhancedProperties.setProperty("date", new Date().toString());
 		enhancedProperties.setProperty("group", "OSEE Test Environment");
 		enhancedProperties.setProperty("owner", System.getProperty("user.name"));
+		enhancedProperties.setProperty("id", serviceID.toString());
 	}
 
 	@Override
