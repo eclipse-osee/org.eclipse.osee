@@ -35,62 +35,63 @@ import org.eclipse.osee.framework.resource.management.Options;
  */
 public class AtsServlet extends OseeHttpServlet {
 
-   private static final long serialVersionUID = -9064467328387640427L;
+	private static final long serialVersionUID = -9064467328387640427L;
 
-   private final AtsService atsService;
+	private final AtsService atsService;
 
-   public AtsServlet() {
-      AtsService.IResourceProvider provider = new ResourceProvider();
-      AtsXmlSearch xmlSearch = new AtsXmlSearch();
-      AtsXmlMessages messages = new AtsXmlMessages(new XmlMessage());
+	public AtsServlet() {
+		AtsService.IResourceProvider provider = new ResourceProvider();
+		AtsXmlSearch xmlSearch = new AtsXmlSearch();
+		AtsXmlMessages messages = new AtsXmlMessages(new XmlMessage());
 
-      this.atsService = new AtsService(provider, xmlSearch, messages);
-   }
+		this.atsService = new AtsService(provider, xmlSearch, messages);
+	}
 
-   @Override
-   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-      // Open to all
-   }
+	@Override
+	protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
+		// Open to all
+	}
 
-   @Override
-   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      atsService.sendClient(request, response);
-   }
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		atsService.sendClient(request, response);
+	}
 
-   @Override
-   protected void doPost(final HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      IResourceLocator locator = new IResourceLocator() {
+	@Override
+	protected void doPost(final HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		IResourceLocator locator = new IResourceLocator() {
 
-         @Override
-         public String getRawPath() {
-            return request.getRequestURL().toString();
-         }
+			@Override
+			public String getRawPath() {
+				return request.getRequestURL().toString();
+			}
 
-         @Override
-         public String getProtocol() {
-            return request.getProtocol();
-         }
+			@Override
+			public String getProtocol() {
+				return request.getProtocol();
+			}
 
-         @Override
-         public URI getLocation() {
-            try {
-               return new URL(request.getRequestURL().toString()).toURI();
-            } catch (Exception ex) {
-               return null;
-            }
-         }
-      };
-      atsService.performOperation(new ServletResourceBridge(request, locator), response);
-   }
+			@Override
+			public URI getLocation() {
+				try {
+					return new URL(request.getRequestURL().toString()).toURI();
+				} catch (Exception ex) {
+					return null;
+				}
+			}
+		};
+		atsService.performOperation(new ServletResourceBridge(request, locator), response);
+	}
 
-   private static final class ResourceProvider implements AtsService.IResourceProvider {
-      public IResource getResource(String path) throws OseeCoreException {
-         IResourceLocatorManager locatorManager = Activator.getInstance().getResourceLocatorManager();
-         IResourceManager resourceManager = Activator.getInstance().getResourceManager();
+	private static final class ResourceProvider implements AtsService.IResourceProvider {
+		@Override
+		public IResource getResource(String path) throws OseeCoreException {
+			IResourceLocatorManager locatorManager = Activator.getInstance().getResourceLocatorManager();
+			IResourceManager resourceManager = Activator.getInstance().getResourceManager();
 
-         IResourceLocator locator = locatorManager.getResourceLocator(path);
-         return resourceManager.acquire(locator, new Options());
-      }
-   }
+			IResourceLocator locator = locatorManager.getResourceLocator(path);
+			return resourceManager.acquire(locator, new Options());
+		}
+	}
 
 }
