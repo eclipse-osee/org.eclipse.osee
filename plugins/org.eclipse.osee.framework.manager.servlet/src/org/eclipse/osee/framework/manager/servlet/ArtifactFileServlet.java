@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -41,8 +42,6 @@ public class ArtifactFileServlet extends OseeHttpServlet {
 
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      InputStream inputStream = null;
-      boolean wasProcessed = false;
       try {
          HttpArtifactFileInfo artifactFileInfo = null;
 
@@ -59,7 +58,7 @@ public class ArtifactFileServlet extends OseeHttpServlet {
             Pair<String, String> defaultArtifact = DefaultOseeArtifact.get();
             if (defaultArtifact != null) {
                artifactFileInfo =
-                     new HttpArtifactFileInfo(defaultArtifact.getFirst(), null, defaultArtifact.getSecond());
+                        new HttpArtifactFileInfo(defaultArtifact.getFirst(), null, defaultArtifact.getSecond());
             }
          } else {
             artifactFileInfo = new HttpArtifactFileInfo(request);
@@ -73,15 +72,31 @@ public class ArtifactFileServlet extends OseeHttpServlet {
                uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getId());
             }
          }
-         if (Strings.isValid(uri)) {
-            IResourceLocator locator =
-                  Activator.getInstance().getResourceLocatorManager().getResourceLocator(uri);
-            Options options = new Options();
-            options.put(StandardOptions.DecompressOnAquire.name(), true);
-            IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
+         handleArtifactUri(request.getQueryString(), uri, response);
+      } catch (NumberFormatException ex) {
+         handleError(response, HttpServletResponse.SC_BAD_REQUEST,
+                  String.format("Invalid Branch Id: [%s]", request.getQueryString()), ex);
+      } catch (Exception ex) {
+         handleError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                  String.format("Unable to acquire resource: [%s]", request.getQueryString()), ex);
+      } finally {
+         response.flushBuffer();
+      }
+   }
 
-            if (resource != null) {
-               wasProcessed = true;
+   public static void handleArtifactUri(String request, String uri, HttpServletResponse response) throws OseeCoreException {
+      boolean wasProcessed = false;
+      if (Strings.isValid(uri)) {
+         IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(uri);
+         Options options = new Options();
+         options.put(StandardOptions.DecompressOnAquire.name(), true);
+         IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
+
+         if (resource != null) {
+            wasProcessed = true;
+
+            InputStream inputStream = null;
+            try {
                inputStream = resource.getContent();
 
                response.setStatus(HttpServletResponse.SC_OK);
@@ -99,25 +114,22 @@ public class ArtifactFileServlet extends OseeHttpServlet {
                   response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
                }
                Lib.inputStreamToOutputStream(inputStream, response.getOutputStream());
+               response.flushBuffer();
+            } catch (IOException ex) {
+               OseeExceptions.wrapAndThrow(ex);
+            } finally {
+               Lib.close(inputStream);
             }
          }
-
-         if (!wasProcessed) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.setContentType("text/plain");
-            response.getWriter().write(String.format("Unable to find resource: [%s]", request.getQueryString()));
+      }
+      if (!wasProcessed) {
+         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+         response.setContentType("text/plain");
+         try {
+            response.getWriter().write(String.format("Unable to find resource: [%s]", request));
+         } catch (IOException ex) {
+            OseeExceptions.wrapAndThrow(ex);
          }
-      } catch (NumberFormatException ex) {
-         handleError(response, HttpServletResponse.SC_BAD_REQUEST, String.format("Invalid Branch Id: [%s]",
-               request.getQueryString()), ex);
-      } catch (Exception ex) {
-         handleError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, String.format(
-               "Unable to acquire resource: [%s]", request.getQueryString()), ex);
-      } finally {
-         if (inputStream != null) {
-            inputStream.close();
-         }
-         response.flushBuffer();
       }
    }
 

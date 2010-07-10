@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.manager.servlet.BranchExchangeServlet;
 import org.eclipse.osee.framework.manager.servlet.BranchManagerServlet;
 import org.eclipse.osee.framework.manager.servlet.ClientInstallInfoServlet;
 import org.eclipse.osee.framework.manager.servlet.ConfigurationServlet;
+import org.eclipse.osee.framework.manager.servlet.DataServlet;
 import org.eclipse.osee.framework.manager.servlet.OseeCacheServlet;
 import org.eclipse.osee.framework.manager.servlet.OseeModelServlet;
 import org.eclipse.osee.framework.manager.servlet.ResourceManagerServlet;
@@ -118,7 +119,8 @@ public class Activator implements BundleActivator, IOseeCachingServiceProvider, 
 
       createHttpServiceTracker(context, new AtsServlet(), "osee/ats");
       createHttpServiceTracker(context, new ConfigurationServlet(this, this, this, this),
-            OseeServerContext.OSEE_CONFIGURE_CONTEXT);
+               OseeServerContext.OSEE_CONFIGURE_CONTEXT);
+      createHttpServiceTracker(context, new DataServlet(), "osee/data");
    }
 
    public void stop(BundleContext context) throws Exception {
