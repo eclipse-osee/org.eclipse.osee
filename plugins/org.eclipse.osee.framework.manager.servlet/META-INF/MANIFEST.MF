@@ -45,4 +45,3 @@ Import-Package: com.lowagie.text;version="2.1.7",
 Service-Component: OSGI-INF/ats.provider.xml,
  OSGI-INF/locator.provider.ats.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.osgi.util.tracker
