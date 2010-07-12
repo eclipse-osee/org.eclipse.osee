@@ -33,16 +33,19 @@ public abstract class AbstractLifecycleOperation extends AbstractOperation {
 
    @Override
    protected final void doWork(IProgressMonitor monitor) throws Exception {
-      IStatus status = service.dispatch(monitor, lifecyclepoint, OperationPointId.CHECK_CONDITION_ID.name());
-
-      if (status.isOK()) {
-         service.dispatch(monitor, lifecyclepoint, OperationPointId.PRE_CONDITION_ID.name());
-         try {
-            doCoreWork(monitor);
-         } finally {
-            service.dispatch(monitor, lifecyclepoint, OperationPointId.POST_CONDITION_ID.name());
-         }
+      doPointWork(monitor, OperationPointId.CHECK_CONDITION_ID);
+      doPointWork(monitor, OperationPointId.PRE_CONDITION_ID);
+      try {
+         doCoreWork(monitor);
+      } finally {
+         doPointWork(monitor, OperationPointId.POST_CONDITION_ID);
       }
+   }
+
+   private void doPointWork(IProgressMonitor monitor, OperationPointId pointId) throws Exception {
+      IStatus status = service.dispatch(monitor, lifecyclepoint, pointId.name());
+      setStatus(status);
+      checkForErrorsOrCanceled(monitor);
    }
 
    abstract protected void doCoreWork(IProgressMonitor monitor) throws Exception;
