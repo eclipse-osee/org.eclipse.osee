@@ -9,7 +9,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -19,8 +18,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.osee.framework.ui.workspacebundleloader.JarChangeResourceListener;
-import org.eclipse.osee.ote.runtimemanager.BundleInfo;
-import org.eclipse.osee.ote.runtimemanager.OteBundleLocator;
+import org.eclipse.osee.ote.core.BundleInfo;
+import org.eclipse.osee.ote.core.OteBundleLocator;
 import org.eclipse.osee.ote.runtimemanager.OteUserLibsNature;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
