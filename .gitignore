@@ -107,3 +107,14 @@ plugins/org.eclipse.osee.ote.ui/bin/
 plugins/org.eclipse.osee.sos/bin/
 plugins/org.eclipse.osee.support.test.util/bin/
 plugins/org.eclipse.osee.support.test/bin/
+_Retired/org.eclipse.nebula.widgets.xviewer/bin/
+_Retired/org.eclipse.osee.framework.antsupport/bin/
+_Retired/org.eclipse.osee.framework.application.server/bin/
+_Retired/org.eclipse.osee.framework.osgi/bin/
+_Retired/org.eclipse.osee.framework.osgitestrunner/bin/
+_Retired/org.eclipse.osee.framework.resource.locator.snapshot.test/bin/
+_Retired/org.eclipse.osee.framework.resource.locator.snapshot/bin/
+_Retired/org.eclipse.osee.framework.resource.provider.common/bin/
+_Retired/org.eclipse.osee.framework.resource.provider.snapshot/bin/
+_Retired/org.eclipse.osee.framework.session.management.servlet.test/bin/
+_Retired/org.eclipse.osee.framework.skynet.core.test/bin/
