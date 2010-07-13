@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.osee.framework.ui.workspacebundleloader.FileChangeDetector;
 import org.eclipse.osee.framework.ui.workspacebundleloader.IJarChangeListener;
 import org.eclipse.osee.framework.ui.workspacebundleloader.JarCollectionNature;
+import org.eclipse.osee.ote.core.BundleInfo;
 import org.eclipse.osee.ote.runtimemanager.container.OteClasspathContainer;
 
 /**

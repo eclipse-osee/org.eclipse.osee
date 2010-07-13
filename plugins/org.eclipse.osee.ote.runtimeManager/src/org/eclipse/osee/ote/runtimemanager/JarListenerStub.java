@@ -20,6 +20,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import org.eclipse.osee.framework.ui.workspacebundleloader.IJarChangeListener;
 import org.eclipse.osee.framework.ui.workspacebundleloader.JarCollectionNature;
+import org.eclipse.osee.ote.core.BundleInfo;
 
 /**
  * @author Robert A. Fisher

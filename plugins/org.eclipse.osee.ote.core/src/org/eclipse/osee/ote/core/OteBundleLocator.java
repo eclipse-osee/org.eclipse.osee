@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.runtimemanager;
+package org.eclipse.osee.ote.core;
 
 import java.io.IOException;
 import java.util.Collection;

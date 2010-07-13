@@ -33,6 +33,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.workspace.SafeWorkspaceAccess;
 import org.eclipse.osee.framework.ui.workspacebundleloader.JarChangeResourceListener;
+import org.eclipse.osee.ote.core.BundleInfo;
+import org.eclipse.osee.ote.core.OteBundleLocator;
 import org.eclipse.osee.ote.runtimemanager.container.OteClasspathContainer;
 import org.eclipse.osee.ote.runtimemanager.internal.ProjectChangeResourceListener;
 import org.eclipse.osee.ote.runtimemanager.internal.RuntimeBundleServer;

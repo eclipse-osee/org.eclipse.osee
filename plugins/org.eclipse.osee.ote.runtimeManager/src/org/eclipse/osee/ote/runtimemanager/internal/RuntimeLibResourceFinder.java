@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.server.ResourceFinder;
-import org.eclipse.osee.ote.runtimemanager.BundleInfo;
+import org.eclipse.osee.ote.core.BundleInfo;
 import org.eclipse.osee.ote.runtimemanager.SafeWorkspaceTracker;
 
 /** 
