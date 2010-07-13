@@ -6,6 +6,7 @@
 package org.eclipse.osee.framework.access.internal;
 
 import java.util.Collection;
+
 import org.eclipse.osee.framework.access.IAccessProvider;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -29,6 +30,8 @@ public class ObjectAccessProvider implements IAccessProvider {
       Branch branch = null;
 
       for (Object object : objToCheck) {
+
+
          if (object instanceof Artifact) {
             Artifact artifact = (Artifact) object;
             branch = artifact.getBranch();
