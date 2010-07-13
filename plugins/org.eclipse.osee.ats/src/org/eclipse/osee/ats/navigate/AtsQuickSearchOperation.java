@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorOperationProvider;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
@@ -54,9 +55,13 @@ public class AtsQuickSearchOperation extends AbstractOperation implements IWorld
       }
       for (String str : data.getSearchStr().split(", ")) {
          if (HumanReadableId.isValid(str)) {
-            Artifact art = ArtifactQuery.getArtifactFromId(str, AtsUtil.getAtsBranch());
-            if (art != null) {
-               allArtifacts.add(art);
+            try {
+               Artifact art = ArtifactQuery.getArtifactFromId(str, AtsUtil.getAtsBranch());
+               if (art != null) {
+                  allArtifacts.add(art);
+               }
+            } catch (ArtifactDoesNotExist ex) {
+               // do nothing
             }
          }
       }
