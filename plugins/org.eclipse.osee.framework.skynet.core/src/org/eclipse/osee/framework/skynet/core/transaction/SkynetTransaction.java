@@ -359,8 +359,11 @@ public class SkynetTransaction extends AbstractOperation {
 
    private IOperation createLifeCycleOp() throws OseeCoreException {
       ILifecycleService service = Activator.getInstance().getLifecycleServices();
-      AbstractLifecyclePoint<?> lifecyclePoint =
-            new SkynetTransactionCheckPoint(UserManager.getUser(), new ArrayList<IBasicArtifact<?>>(artifactReferences));
+
+      Set<IBasicArtifact<?>> objectsToCheck = new HashSet<IBasicArtifact<?>>();
+      objectsToCheck.addAll(artifactReferences);
+      objectsToCheck.addAll(alreadyProcessedArtifacts);
+      AbstractLifecyclePoint<?> lifecyclePoint = new SkynetTransactionCheckPoint(UserManager.getUser(), objectsToCheck);
       return new LifecycleOperation(this, service, lifecyclePoint, getName());
    }
 
