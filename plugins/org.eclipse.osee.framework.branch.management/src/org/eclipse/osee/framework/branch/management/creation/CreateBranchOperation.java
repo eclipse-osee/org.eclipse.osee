@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.message.BranchCreationRequest;
 import org.eclipse.osee.framework.core.message.BranchCreationResponse;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -151,7 +150,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
                   request.getBranchType(), BranchState.CREATION_IN_PROGRESS, false);
 
       branch.setParentBranch(parentBranch);
-      branch.setAssociatedArtifact(new DefaultBasicArtifact(request.getAssociatedArtifactId(), "", ""));
+      branch.setAssociatedArtifactId(request.getAssociatedArtifactId());
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       int nextTransactionId = getDatabaseService().getSequence().getNextTransactionId();

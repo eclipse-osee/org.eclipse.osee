@@ -77,7 +77,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
@@ -429,8 +428,7 @@ public class RemoteEventManager {
                      int branchId = ((NetworkCommitBranchEvent) event).getId();
                      try {
                         try {
-                           TransactionManager.clearCommitArtifactCacheForAssociatedArtifact((IArtifact) BranchManager.getBranch(
-                                 branchId).getAssociatedArtifact());
+                           TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(BranchManager.getAssociatedArtifact(BranchManager.getBranch(branchId)));
                         } catch (OseeCoreException ex) {
                            OseeLog.log(Activator.class, Level.SEVERE, ex);
                         }

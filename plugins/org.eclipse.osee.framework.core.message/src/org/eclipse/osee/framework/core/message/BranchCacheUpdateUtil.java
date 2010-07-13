@@ -18,8 +18,6 @@ import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
-import org.eclipse.osee.framework.core.model.IArtifactFactory;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
@@ -45,13 +43,11 @@ public final class BranchCacheUpdateUtil {
 
    private final BranchFactory factory;
    private final TransactionCache txCache;
-   private final IArtifactFactory<?> artFactory;
 
-   public BranchCacheUpdateUtil(BranchFactory factory, TransactionCache txCache, IArtifactFactory<?> artFactory) {
+   public BranchCacheUpdateUtil(BranchFactory factory, TransactionCache txCache) {
       super();
       this.factory = factory;
       this.txCache = txCache;
-      this.artFactory = artFactory;
    }
 
    public Collection<Branch> updateCache(AbstractBranchCacheMessage cacheMessage, IOseeCache<Branch> cache) throws OseeCoreException {
@@ -72,7 +68,7 @@ public final class BranchCacheUpdateUtil {
 
          Integer artifactId = branchToAssocArt.get(branchId);
          if (artifactId != null) {
-            updated.setAssociatedArtifact(artFactory.createArtifact(artifactId));
+            updated.setAssociatedArtifactId(artifactId);
          }
       }
 
@@ -115,16 +111,16 @@ public final class BranchCacheUpdateUtil {
          }
          addTxRecord(message.getBranchToBaseTx(), branchId, br.getBaseTransaction());
          addTxRecord(message.getBranchToSourceTx(), branchId, br.getSourceTransaction());
-         addAssocArtifact(message.getBranchToAssocArt(), branchId, br.getAssociatedArtifact());
+         addAssocArtifact(message.getBranchToAssocArt(), branchId, br.getAssociatedArtifactId());
          if (br.getBranchType().isMergeBranch()) {
             addMergeBranches(message.getMergeBranches(), (MergeBranch) br);
          }
       }
    }
 
-   private static void addAssocArtifact(Map<Integer, Integer> map, Integer branchId, IBasicArtifact<?> art) {
-      if (art != null) {
-         map.put(branchId, art.getArtId());
+   private static void addAssocArtifact(Map<Integer, Integer> map, Integer branchId, Integer artId) {
+      if (artId != null) {
+         map.put(branchId, artId);
       } else {
          map.put(branchId, -1);
       }

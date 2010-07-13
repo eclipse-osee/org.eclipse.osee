@@ -36,9 +36,6 @@ import org.eclipse.osee.framework.core.message.OseeEnumTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.RelationTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
-import org.eclipse.osee.framework.core.model.IArtifactFactory;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
@@ -141,12 +138,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
       }
       IOseeModelFactoryService factoryService = Activator.getInstance().getOseeFactoryService();
       Collection<Branch> updated =
-            new BranchCacheUpdateUtil(factoryService.getBranchFactory(), txCache, new IArtifactFactory<Object>() {
-               @Override
-               public IBasicArtifact<Object> createArtifact(int artId) {
-                  return new DefaultBasicArtifact(artId, null, null);
-               }
-            }).updateCache(updateRequest, caching.getBranchCache());
+            new BranchCacheUpdateUtil(factoryService.getBranchFactory(), txCache).updateCache(updateRequest, caching.getBranchCache());
 
       BranchCache cache = caching.getBranchCache();
       if (updateRequest.isServerUpdateMessage()) {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.cases;
 
-import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,18 +21,18 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.config.AtsConfigManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -71,12 +70,10 @@ import org.junit.Before;
 public class AtsBranchConfigurationTest {
 
    public static class AtsTestBranches extends NamedIdentity implements IOseeBranch {
-      public static final AtsTestBranches BranchViaTeamDef =
-            new AtsTestBranches("AyH_e6damwQgvDhKfAAA", "BranchViaTeamDef");
-      public static final AtsTestBranches BranchViaVersions =
-            new AtsTestBranches("AyH_e6damwQgvDhKfBBB", "BranchViaVersions");
-      public static final AtsTestBranches BranchViaParallelVersions =
-            new AtsTestBranches("AyH_e6damwQgvDhKfCCC", "BranchViaParallelVersions");
+      public static final AtsTestBranches BranchViaTeamDef = new AtsTestBranches("AyH_e6damwQgvDhKfAAA",
+            "BranchViaTeamDef");
+      public static final AtsTestBranches BranchViaVersions = new AtsTestBranches("AyH_e6damwQgvDhKfBBB",
+            "BranchViaVersions");
 
       private AtsTestBranches(String guid, String name) {
          super(guid, name);
@@ -101,6 +98,7 @@ public class AtsBranchConfigurationTest {
          throw new IllegalStateException("BranchConfigThroughTeamDefTest should not be run on production DB");
       }
       AtsBulkLoad.loadConfig(true);
+      TestUtil.setIsInTest(true);
    }
 
    @org.junit.Test
@@ -199,10 +197,10 @@ public class AtsBranchConfigurationTest {
       // test change report
       OseeLog.log(AtsPlugin.class, Level.INFO, "Test change report results");
       ChangeData changeData = teamWf.getBranchMgr().getChangeDataFromEarliestTransactionId();
-      assertTrue("No changes detected", !changeData.isEmpty());
+      Assert.assertFalse("No changes detected", changeData.isEmpty());
 
       Collection<Artifact> newArts = changeData.getArtifacts(KindType.Artifact, ModificationType.NEW);
-      assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
+      Assert.assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
 
    }
 
@@ -292,13 +290,13 @@ public class AtsBranchConfigurationTest {
       // test change report
       OseeLog.log(AtsPlugin.class, Level.INFO, "Test change report results");
       ChangeData changeData = teamWf.getBranchMgr().getChangeDataFromEarliestTransactionId();
-      assertTrue("No changes detected", !changeData.isEmpty());
+      Assert.assertTrue("No changes detected", !changeData.isEmpty());
 
       Collection<Artifact> newArts = changeData.getArtifacts(KindType.Artifact, ModificationType.NEW);
-      assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
+      Assert.assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
    }
 
-   private void cleanupBranchTest(AtsTestBranches testType) throws Exception {
+   public static void cleanupBranchTest(AtsTestBranches testType) throws Exception {
       String namespace = "org.branchTest." + testType.getName().toLowerCase();
       OseeLog.log(AtsPlugin.class, Level.INFO, "Cleanup from previous run of ATS for team " + namespace);
       ActionArtifact aArt =
@@ -392,7 +390,7 @@ public class AtsBranchConfigurationTest {
       }
    }
 
-   private void commitBranch(TeamWorkFlowArtifact teamWf) throws Exception {
+   public static void commitBranch(TeamWorkFlowArtifact teamWf) throws Exception {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Commit Branch");
       Job job =
             teamWf.getBranchMgr().commitWorkingBranch(false, true,
@@ -404,7 +402,7 @@ public class AtsBranchConfigurationTest {
       }
    }
 
-   private void createBranch(String namespace, TeamWorkFlowArtifact teamWf) throws Exception {
+   public static void createBranch(String namespace, TeamWorkFlowArtifact teamWf) throws Exception {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Creating working branch");
       String implementPageId = namespace + ".Implement";
       Result result = teamWf.getBranchMgr().createWorkingBranch(implementPageId, false);
@@ -431,9 +429,10 @@ public class AtsBranchConfigurationTest {
    public void tearDown() throws Exception {
       cleanupBranchTest(AtsTestBranches.BranchViaVersions);
       cleanupBranchTest(AtsTestBranches.BranchViaTeamDef);
+      TestUtil.setIsInTest(false);
    }
 
-   private void configureAts(String namespace, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems, String workflowId) throws Exception {
+   public static void configureAts(String namespace, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems, String workflowId) throws Exception {
       AtsConfigManager.Display noDisplay = new MockAtsConfigDisplay();
       IOperation operation =
             new AtsConfigManager(noDisplay, namespace, teamDefName, versionNames, actionableItems, workflowId);
@@ -441,7 +440,7 @@ public class AtsBranchConfigurationTest {
       TestUtil.sleep(2000);
    }
 
-   private final class MockAtsConfigDisplay implements AtsConfigManager.Display {
+   private static final class MockAtsConfigDisplay implements AtsConfigManager.Display {
       @Override
       public void openAtsConfigurationEditors(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> aias, WorkFlowDefinition workFlowDefinition) {
          // Nothing to do - we have no display during testing

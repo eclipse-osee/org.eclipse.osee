@@ -69,7 +69,6 @@ public enum PermissionEnum {
 
    public boolean matches(PermissionEnum toMatch) {
       boolean hasPermission = false;
-
       if (toMatch == PermissionEnum.READ && this == PermissionEnum.LOCK) {
          hasPermission = true;
       } else if (this == null || this == PermissionEnum.LOCK) {

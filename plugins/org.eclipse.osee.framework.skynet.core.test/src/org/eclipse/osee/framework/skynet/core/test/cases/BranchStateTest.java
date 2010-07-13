@@ -173,7 +173,7 @@ public class BranchStateTest {
          job.join();
 
          Assert.assertEquals(BranchState.DELETED, workingBranch.getBranchState());
-         Assert.assertEquals(user.getArtId(), workingBranch.getAssociatedArtifact().getArtId());
+         Assert.assertEquals(user.getArtId(), BranchManager.getAssociatedArtifact(workingBranch).getArtId());
 
          Collection<Branch> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());
@@ -229,7 +229,7 @@ public class BranchStateTest {
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
          // Check that the associated artifact remained unchanged
-         assertEquals(workingBranch.getAssociatedArtifact().getArtId(), user.getArtId());
+         assertEquals(workingBranch.getAssociatedArtifactId().intValue(), user.getArtId());
 
          Collection<Branch> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());
@@ -299,8 +299,8 @@ public class BranchStateTest {
 
          // Check that a new destination branch exists
          Branch destinationBranch = resolverOperation.getConflictManager().getDestinationBranch();
-         assertTrue("Branch name not set correctly", destinationBranch.getName().startsWith(
-               String.format("%s - for update -", originalBranchName)));
+         assertTrue("Branch name not set correctly",
+               destinationBranch.getName().startsWith(String.format("%s - for update -", originalBranchName)));
          assertTrue("Branch was not editable", destinationBranch.isEditable());
 
          // Check that we have a merge branch
@@ -383,8 +383,8 @@ public class BranchStateTest {
       assertTrue("Branch was not archived", branchToCheck.getArchiveState().isArchived());
       assertTrue("Branch was still editable", !branchToCheck.isEditable());
       assertTrue("Branch state was not set as rebaselined", branchToCheck.getBranchState().isRebaselined());
-      assertTrue("Branch name not set correctly", branchToCheck.getName().startsWith(
-            String.format("%s - moved by update on -", originalBranchName)));
+      assertTrue("Branch name not set correctly",
+            branchToCheck.getName().startsWith(String.format("%s - moved by update on -", originalBranchName)));
    }
 
 }

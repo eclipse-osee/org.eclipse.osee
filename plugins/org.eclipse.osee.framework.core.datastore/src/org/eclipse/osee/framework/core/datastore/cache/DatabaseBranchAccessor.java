@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.datastore.internal.Activator;
@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
-import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -116,7 +115,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    private void loadAssociatedArtifacts(BranchCache cache, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
       for (Entry<Branch, Integer> entry : associatedArtifact.entrySet()) {
          Branch branch = entry.getKey();
-         branch.setAssociatedArtifact(new DefaultBasicArtifact(entry.getValue(), null, null));
+         branch.setAssociatedArtifactId(entry.getValue());
       }
    }
 

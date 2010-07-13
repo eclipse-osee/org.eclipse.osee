@@ -12,6 +12,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -42,14 +43,13 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
          @Override
          public void done(IJobChangeEvent event) {
             try {
-               Artifact assocArt = (Artifact) branchProvider.getBranch(null).getAssociatedArtifact().getFullArtifact();
+               Artifact assocArt = BranchManager.getAssociatedArtifact(branchProvider.getBranch(null));
                if (assocArt == null) {
                   AWorkbench.popup("ERROR", "Cannot access associated artifact.");
                } else if (assocArt instanceof User) {
                   AWorkbench.popup(String.format("Associated with user [%s]", assocArt.getName()));
                } else {
-                  RendererManager.openInJob(
-                        (Artifact) branchProvider.getBranch(null).getAssociatedArtifact().getFullArtifact(),
+                  RendererManager.openInJob(BranchManager.getAssociatedArtifact(branchProvider.getBranch(null)),
                         PresentationType.GENERALIZED_EDIT);
                }
             } catch (OseeCoreException ex) {
@@ -63,7 +63,7 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
       Artifact associatedArtifact = null;
       boolean isEnabled;
       try {
-         associatedArtifact = (Artifact) branchProvider.getBranch(null).getAssociatedArtifact();
+         associatedArtifact = BranchManager.getAssociatedArtifact(branchProvider.getBranch(null));
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
       }

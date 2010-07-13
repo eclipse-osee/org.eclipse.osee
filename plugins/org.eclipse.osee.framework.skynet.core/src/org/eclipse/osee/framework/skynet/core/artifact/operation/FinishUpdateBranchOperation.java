@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -55,13 +54,12 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
       Branch destinationBranch = conflictManager.getDestinationBranch();
 
       String originalBranchName = sourceBranch.getName();
-      IBasicArtifact<?> originalAssociatedArtifact = sourceBranch.getAssociatedArtifact();
 
       sourceBranch.setName(getUpdatedName(originalBranchName));
       monitor.worked(calculateWork(0.20));
 
       destinationBranch.setName(originalBranchName);
-      destinationBranch.setAssociatedArtifact(originalAssociatedArtifact);
+      destinationBranch.setAssociatedArtifactId(sourceBranch.getAssociatedArtifactId());
       sourceBranch.setBranchState(BranchState.REBASELINED);
 
       BranchManager.persist(sourceBranch, destinationBranch);

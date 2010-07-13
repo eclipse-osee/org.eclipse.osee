@@ -53,7 +53,7 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAda
       addField(BranchField.BRANCH_STATE_FIELD_KEY, new OseeField<BranchState>());
       addField(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, new OseeField<BranchArchivedState>());
 
-      addField(BranchField.BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY, new AssociatedArtifactField(null));
+      addField(BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY, new AssociatedArtifactField(null));
       addField(BranchField.BRANCH_CHILDREN, new CollectionField<Branch>(childBranches));
    }
 
@@ -85,12 +85,12 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAda
       return getFieldValueLogException(null, BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY);
    }
 
-   public IBasicArtifact<?> getAssociatedArtifact() throws OseeCoreException {
-      return getFieldValue(BranchField.BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY);
+   public Integer getAssociatedArtifactId() throws OseeCoreException {
+      return getFieldValue(BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY);
    }
 
-   public void setAssociatedArtifact(IBasicArtifact<?> artifact) throws OseeCoreException {
-      setField(BranchField.BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY, artifact);
+   public void setAssociatedArtifactId(Integer artId) throws OseeCoreException {
+      setField(BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY, artId);
    }
 
    public TransactionRecord getBaseTransaction() throws OseeCoreException {
@@ -198,6 +198,7 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAda
       return ancestors;
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter == null) {

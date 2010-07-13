@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
@@ -42,7 +43,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       try {
-         Artifact associatedArtifact = (Artifact) selectedBranch.getAssociatedArtifact().getFullArtifact();
+         Artifact associatedArtifact = BranchManager.getAssociatedArtifact(selectedBranch);
          if (associatedArtifact == null) {
             AWorkbench.popup("Open Associated Artifact", "No artifact associated with branch " + selectedBranch);
             return null;
@@ -57,7 +58,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
             OseeLog.log(
                   SkynetGuiPlugin.class,
                   OseeLevel.SEVERE_POPUP,
-                  "The user " + UserManager.getUser() + " does not have read access to " + selectedBranch.getAssociatedArtifact());
+                  "The user " + UserManager.getUser() + " does not have read access to " + selectedBranch.getAssociatedArtifactId());
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

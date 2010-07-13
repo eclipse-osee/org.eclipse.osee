@@ -165,11 +165,11 @@ public class CommitDbOperation extends AbstractDbTxOperation {
 
       getDatabaseService().runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
             TransactionDetailsType.NonBaselined.getId(), destinationBranch.getId(), newTransactionNumber, comment,
-            timestamp, userArtId, sourceBranch.getAssociatedArtifact().getArtId());
+            timestamp, userArtId, sourceBranch.getAssociatedArtifactId());
       TransactionRecord record =
             modelFactory.getOseeFactoryService().getTransactionFactory().create(newTransactionNumber,
-                  destinationBranch.getId(), comment, timestamp, userArtId,
-                  sourceBranch.getAssociatedArtifact().getArtId(), TransactionDetailsType.NonBaselined);
+                  destinationBranch.getId(), comment, timestamp, userArtId, sourceBranch.getAssociatedArtifactId(),
+                  TransactionDetailsType.NonBaselined);
 
       return record;
    }

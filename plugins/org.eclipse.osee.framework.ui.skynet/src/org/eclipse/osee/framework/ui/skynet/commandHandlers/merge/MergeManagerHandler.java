@@ -73,7 +73,7 @@ public class MergeManagerHandler extends CommandHandler {
                   enabled = true;
                } else {
                   enabled =
-                        selectedBranch != null && !(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact) && selectedBranch.hasParentBranch();
+                        selectedBranch != null && !(BranchManager.getAssociatedArtifact(selectedBranch) instanceof IATSArtifact) && selectedBranch.hasParentBranch();
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

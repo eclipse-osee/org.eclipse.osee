@@ -89,7 +89,7 @@ public final class DataAsserts {
          Assert.assertEquals(expected.getAccessControlBranch(), actual.getAccessControlBranch());
          Assert.assertEquals(expected.getAncestors(), actual.getAncestors());
          Assert.assertEquals(expected.getArchiveState(), actual.getArchiveState());
-         Assert.assertEquals(expected.getAssociatedArtifact(), actual.getAssociatedArtifact());
+         Assert.assertEquals(expected.getAssociatedArtifactId(), actual.getAssociatedArtifactId());
          Assert.assertEquals(expected.getBaseTransaction(), actual.getBaseTransaction());
          Assert.assertEquals(expected.getSourceTransaction(), actual.getSourceTransaction());
          Assert.assertEquals(expected.getParentBranch(), actual.getParentBranch());

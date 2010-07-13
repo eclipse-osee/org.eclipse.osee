@@ -31,7 +31,7 @@ public class BranchFilter {
    }
 
    public boolean matches(Branch branch) throws OseeCoreException {
-      if (associatedArtifact != null && !branch.getAssociatedArtifact().equals(associatedArtifact)) {
+      if (associatedArtifact != null && !branch.getAssociatedArtifactId().equals(associatedArtifact.getArtId())) {
          return false;
       }
       if (archivedState != null && !branch.getArchiveState().matches(archivedState)) {

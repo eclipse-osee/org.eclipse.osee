@@ -114,8 +114,8 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          }
       } else if (cCol.equals(BranchXViewerFactory.associatedArtifact)) {
          try {
-            if (branch.getAssociatedArtifact() != null) {
-               return branch.getAssociatedArtifact().getName();
+            if (branch.getAssociatedArtifactId() != null && BranchManager.getAssociatedArtifact(branch) != null) {
+               return BranchManager.getAssociatedArtifact(branch).getName();
             }
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
@@ -185,8 +185,8 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       if (xCol.equals(BranchXViewerFactory.associatedArtifact)) {
          if (element instanceof Branch) {
             try {
-               if (((Branch) element).getAssociatedArtifact() != null) {
-                  return ArtifactImageManager.getImage((Artifact) ((Branch) element).getAssociatedArtifact());
+               if (((Branch) element).getAssociatedArtifactId() != null) {
+                  return ArtifactImageManager.getImage(BranchManager.getAssociatedArtifact((Branch) element));
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

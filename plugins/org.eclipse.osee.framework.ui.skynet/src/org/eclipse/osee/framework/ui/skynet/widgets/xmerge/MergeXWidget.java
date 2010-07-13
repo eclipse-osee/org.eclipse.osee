@@ -270,7 +270,6 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       });
    }
 
-   @SuppressWarnings("unchecked")
    public ArrayList<Conflict> getSelectedConflicts() {
       ArrayList<Conflict> items = new ArrayList<Conflict>();
       if (mergeXViewer == null) {
@@ -279,7 +278,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       if (mergeXViewer.getSelection().isEmpty()) {
          return items;
       }
-      Iterator i = ((IStructuredSelection) mergeXViewer.getSelection()).iterator();
+      Iterator<?> i = ((IStructuredSelection) mergeXViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
          items.add((Conflict) obj);
@@ -438,7 +437,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
 
    private void refreshAssociatedArtifactItem(Branch sourceBranch) {
       try {
-         IArtifact branchAssociatedArtifact = (IArtifact) sourceBranch.getAssociatedArtifact();
+         IArtifact branchAssociatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
          if (branchAssociatedArtifact != null) {
             openAssociatedArtifactAction.setImageDescriptor(ArtifactImageManager.getImageDescriptor(branchAssociatedArtifact));
             openAssociatedArtifactAction.setEnabled(true);
@@ -478,7 +477,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
 
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       if (IActionable.class.equals(adapter)) {
@@ -577,7 +576,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       public void run() {
          try {
             Branch sourceBranch = conflicts[0].getSourceBranch();
-            Artifact branchAssociatedArtifact = (Artifact) sourceBranch.getAssociatedArtifact().getFullArtifact();
+            Artifact branchAssociatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
             if (branchAssociatedArtifact instanceof IATSArtifact) {
                OseeAts.getInstance().openArtifact(branchAssociatedArtifact);
             } else if (!branchAssociatedArtifact.equals(UserManager.getUser(SystemUser.OseeSystem))) {

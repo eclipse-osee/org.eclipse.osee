@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * @author Megumi Telles
@@ -67,8 +66,8 @@ public class HttpCommitDataRequester {
       TransactionRecord newTransaction = response.getTransaction();
       getAccessControlService().removePermissions(sourceBranch);
       // Update commit artifact cache with new information
-      if (sourceBranch.getAssociatedArtifact().getArtId() > 0) {
-         TransactionManager.cacheCommittedArtifactTransaction((IArtifact) sourceBranch.getAssociatedArtifact(),
+      if (sourceBranch.getAssociatedArtifactId() > 0) {
+         TransactionManager.cacheCommittedArtifactTransaction(BranchManager.getAssociatedArtifact(sourceBranch),
                newTransaction);
       }
       BranchManager.getCache().reloadCache();

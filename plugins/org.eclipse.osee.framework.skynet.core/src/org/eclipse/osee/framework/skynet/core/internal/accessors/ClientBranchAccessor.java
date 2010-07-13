@@ -23,8 +23,6 @@ import org.eclipse.osee.framework.core.message.BranchCacheUpdateUtil;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
-import org.eclipse.osee.framework.core.model.IArtifactFactory;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
@@ -32,13 +30,11 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
 
 /**
  * @author Roberto E. Escobar
@@ -70,8 +66,7 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
    @Override
    protected Collection<Branch> updateCache(IOseeCache<Branch> cache) throws OseeCoreException {
       BranchCacheUpdateResponse response = requestUpdateMessage(cache, CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
-      ShallowArtifactFactory artFactory = new ShallowArtifactFactory((BranchCache) cache);
-      return new BranchCacheUpdateUtil(getFactory(), transactionCache, artFactory).updateCache(response, cache);
+      return new BranchCacheUpdateUtil(getFactory(), transactionCache).updateCache(response, cache);
    }
 
    @Override
@@ -118,19 +113,4 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
       }
    }
 
-   private final static class ShallowArtifactFactory implements IArtifactFactory<Artifact> {
-
-      private final BranchCache cache;
-
-      public ShallowArtifactFactory(BranchCache cache) {
-         super();
-         this.cache = cache;
-      }
-
-      @Override
-      public IBasicArtifact<Artifact> createArtifact(int artId) {
-         return new ShallowArtifact(cache, artId);
-      }
-
-   }
 }

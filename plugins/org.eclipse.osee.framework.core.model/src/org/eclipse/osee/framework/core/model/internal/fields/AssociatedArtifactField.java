@@ -11,40 +11,39 @@
 package org.eclipse.osee.framework.core.model.internal.fields;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AssociatedArtifactField extends AbstractOseeField<IBasicArtifact<?>> {
+public class AssociatedArtifactField extends AbstractOseeField<Integer> {
 
-   private IBasicArtifact<?> basicArtifact;
+   private Integer artId;
 
-   public AssociatedArtifactField(IBasicArtifact<?> basicArtifact) {
+   public AssociatedArtifactField(Integer artId) {
       super();
-      this.basicArtifact = basicArtifact;
+      this.artId = artId;
    }
 
    @Override
-   public IBasicArtifact<?> get() throws OseeCoreException {
-      return basicArtifact;
+   public Integer get() throws OseeCoreException {
+      return artId;
    }
 
    @Override
-   public void set(IBasicArtifact<?> artifact) throws OseeCoreException {
-      boolean wasDifferent = isDifferent(get(), artifact);
+   public void set(Integer artId) throws OseeCoreException {
+      boolean wasDifferent = isDifferent(get(), artId);
       if (wasDifferent) {
-         this.basicArtifact = artifact;
+         this.artId = artId;
       }
       isDirty |= wasDifferent;
    }
 
-   private boolean isDifferent(IBasicArtifact<?> art1, IBasicArtifact<?> art2) {
+   private boolean isDifferent(Integer artId1, Integer artId2) {
       boolean result = false;
-      if (art1 != null && art2 == null || art1 == null && art2 != null) {
+      if (artId1 != null && artId2 == null || artId1 == null && artId2 != null) {
          result = true;
       } else {
-         result = art1.getArtId() != art2.getArtId();
+         result = artId1 != artId2;
       }
       return result;
    }

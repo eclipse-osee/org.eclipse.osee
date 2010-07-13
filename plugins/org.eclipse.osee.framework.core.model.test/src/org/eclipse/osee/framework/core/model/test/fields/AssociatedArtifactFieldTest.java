@@ -11,9 +11,7 @@
 package org.eclipse.osee.framework.core.model.test.fields;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.internal.fields.AssociatedArtifactField;
-import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,15 +23,15 @@ import org.junit.Test;
  */
 public class AssociatedArtifactFieldTest {
 
-   private static IBasicArtifact<?> art1;
-   private static IBasicArtifact<?> art2;
+   private static Integer art1;
+   private static Integer art2;
 
    //   private static IBasicArtifact<?> art3;
 
    @BeforeClass
    public static void prepareTest() {
-      art1 = MockDataFactory.createArtifact(1);
-      art2 = MockDataFactory.createArtifact(2);
+      art1 = 123432;
+      art2 = 345421;
       //      art3 = MockDataFactory.createArtifact(3);
    }
 

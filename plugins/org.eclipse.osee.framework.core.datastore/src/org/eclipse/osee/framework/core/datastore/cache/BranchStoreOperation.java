@@ -60,8 +60,8 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
 
       return new Object[] {branch.getId(), branch.getGuid(), branch.getName(), parentBranchId,
             branch.getSourceTransaction().getId(), branch.getArchiveState().getValue(),
-            branch.getAssociatedArtifact().getArtId(), branch.getBranchType().getValue(),
-            branch.getBranchState().getValue(), baselineTransaction};
+            branch.getAssociatedArtifactId(), branch.getBranchType().getValue(), branch.getBranchState().getValue(),
+            baselineTransaction};
    }
 
    private Object[] toUpdateValues(Branch branch) throws OseeCoreException {
@@ -70,8 +70,8 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
       return new Object[] {branch.getName(), parentBranchId, branch.getSourceTransaction().getId(),
-            branch.getArchiveState().getValue(), branch.getAssociatedArtifact().getArtId(),
-            branch.getBranchType().getValue(), branch.getBranchState().getValue(), baselineTransaction, branch.getId()};
+            branch.getArchiveState().getValue(), branch.getAssociatedArtifactId(), branch.getBranchType().getValue(),
+            branch.getBranchState().getValue(), baselineTransaction, branch.getId()};
    }
 
    private Object[] toDeleteValues(Branch branch) throws OseeDataStoreException {
@@ -128,7 +128,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
             BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, //
             BranchField.BRANCH_STATE_FIELD_KEY, //
             BranchField.BRANCH_TYPE_FIELD_KEY, //
-            BranchField.BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY, //
+            BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY, //
             BranchField.BRANCH_BASE_TRANSACTION);
    }
 }

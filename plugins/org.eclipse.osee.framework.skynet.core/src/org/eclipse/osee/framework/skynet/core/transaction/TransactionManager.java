@@ -69,8 +69,8 @@ public final class TransactionManager {
    private static final String SELECT_BRANCH_TRANSACTION_BY_DATE =
          "SELECT * FROM osee_tx_details WHERE branch_id = ? AND time < ? ORDER BY time DESC";
 
-   private static final HashMap<IArtifact, List<TransactionRecord>> commitArtifactMap =
-         new HashMap<IArtifact, List<TransactionRecord>>();
+   private static final HashMap<Integer, List<TransactionRecord>> commitArtifactIdMap =
+         new HashMap<Integer, List<TransactionRecord>>();
 
    private TransactionManager() {
    }
@@ -115,7 +115,7 @@ public final class TransactionManager {
    }
 
    public synchronized static Collection<TransactionRecord> getCommittedArtifactTransactionIds(IArtifact artifact) throws OseeCoreException {
-      List<TransactionRecord> transactionIds = commitArtifactMap.get(artifact);
+      List<TransactionRecord> transactionIds = commitArtifactIdMap.get(artifact.getArtId());
       // Cache the transactionIds first time through.  Other commits will be added to cache as they
       // happen in this client or as remote commit events come through
       if (transactionIds == null) {
@@ -127,7 +127,7 @@ public final class TransactionManager {
                transactionIds.add(getTransactionId(chStmt.getInt("transaction_id")));
             }
 
-            commitArtifactMap.put(artifact, transactionIds);
+            commitArtifactIdMap.put(artifact.getArtId(), transactionIds);
          } finally {
             chStmt.close();
          }
@@ -136,13 +136,13 @@ public final class TransactionManager {
    }
 
    /**
-    * Allow commitArtifactMap cache to be cleared for a given associatedArtifact. This will force a refresh of the cache
-    * the next time it's accessed. This is provided for remote event commits. All other updates to cache should be
+    * Allow commitArtifactIdMap cache to be cleared for a given associatedArtifact. This will force a refresh of the
+    * cache the next time it's accessed. This is provided for remote event commits. All other updates to cache should be
     * performed through cacheCommittedArtifactTransaction.
     */
    public static void clearCommitArtifactCacheForAssociatedArtifact(IArtifact associatedArtifact) {
       if (associatedArtifact != null) {
-         commitArtifactMap.remove(associatedArtifact);
+         commitArtifactIdMap.remove(associatedArtifact);
       }
    }
 

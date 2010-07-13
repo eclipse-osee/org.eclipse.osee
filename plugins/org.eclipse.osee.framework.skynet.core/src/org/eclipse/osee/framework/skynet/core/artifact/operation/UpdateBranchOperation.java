@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -110,13 +109,12 @@ public class UpdateBranchOperation extends AbstractOperation {
 
    private void deleteOldAndSetNewAsWorking(IProgressMonitor monitor, Branch originalBranch, Branch newWorkingBranch, double workPercentage) throws Exception {
       String originalBranchName = originalBranch.getName();
-      IBasicArtifact<?> originalAssociatedArtifact = originalBranch.getAssociatedArtifact();
 
       originalBranch.setName(getUpdatedName(originalBranchName));
       monitor.worked(calculateWork(0.20));
 
       newWorkingBranch.setName(originalBranchName);
-      newWorkingBranch.setAssociatedArtifact(originalAssociatedArtifact);
+      newWorkingBranch.setAssociatedArtifactId(originalBranch.getAssociatedArtifactId());
       originalBranch.setBranchState(BranchState.REBASELINED);
 
       BranchManager.persist(originalBranch, newWorkingBranch);

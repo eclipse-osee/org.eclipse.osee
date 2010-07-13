@@ -56,7 +56,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * Manages remote events from the SkynetEventService.
@@ -152,8 +151,7 @@ public class RemoteEventManager2 implements IFrameworkEventListener {
       BranchEventType eventType = branchEvent.getEventType();
       try {
          if (eventType == BranchEventType.Committed) {
-            TransactionManager.clearCommitArtifactCacheForAssociatedArtifact((IArtifact) BranchManager.getBranchByGuid(
-                  branchEvent.getBranchGuid()).getAssociatedArtifact());
+            TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(BranchManager.getAssociatedArtifact(BranchManager.getBranchByGuid(branchEvent.getBranchGuid())));
          }
          BranchManager.refreshBranches();
       } catch (Exception ex) {
