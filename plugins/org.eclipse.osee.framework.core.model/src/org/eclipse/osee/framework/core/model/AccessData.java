@@ -121,4 +121,10 @@ public class AccessData {
       }
       return filtered;
    }
+
+   @Override
+   public String toString() {
+      return artifactPermissions.toString();
+   }
+
 }
