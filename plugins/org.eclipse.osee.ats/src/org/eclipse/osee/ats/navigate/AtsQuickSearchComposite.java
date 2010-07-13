@@ -11,7 +11,6 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorOperationProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -21,8 +20,6 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -87,15 +84,6 @@ public class AtsQuickSearchComposite extends Composite {
          @Override
          public void keyPressed(KeyEvent event) {
             if (event.character == '\r') {
-               handleSearch();
-            }
-         }
-      });
-      searchArea.addModifyListener(new ModifyListener() {
-
-         @Override
-         public void modifyText(ModifyEvent e) {
-            if (HumanReadableId.isValid(searchArea.getText())) {
                handleSearch();
             }
          }
