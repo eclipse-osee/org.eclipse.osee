@@ -9,11 +9,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
+
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.ExceptionListener;
@@ -25,6 +26,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -38,6 +40,7 @@ import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.internal.Activator;
+import org.eclipse.osee.framework.messaging.services.internal.OseeMessagingStatusImpl;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -95,19 +98,26 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    }
 
    @Override
-   public synchronized void send(MessageID topic, Object body, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
-      send(topic, body, null, statusCallback);
+   public void send(MessageID topic, Object body) throws OseeCoreException {
+      String errorMessage = String.format("Error sending message(%s)", topic.getId());
+      OseeMessagingStatusImpl defaultErrorHandler = new OseeMessagingStatusImpl(errorMessage, getClass());
+      this.send(topic, body, defaultErrorHandler);
    }
    
    @Override
-   public synchronized void send(MessageID topic, Object body, Properties properties, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
+   public synchronized void send(MessageID messageId, Object message, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
+      send(messageId, message, null, statusCallback);
+   }
+   
+   @Override
+   public synchronized void send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
       try {
-         if (topic.isTopic()) {
+         if (messageId.isTopic()) {
             try{
-               sendInternal(topic, body, properties, statusCallback);
+               sendInternal(messageId, message, properties, statusCallback);
             } catch (JMSException ex){
-               removeProducerFromCache(topic);
-               sendInternal(topic, body, properties, statusCallback);
+               removeProducerFromCache(messageId);
+               sendInternal(messageId, message, properties, statusCallback);
             }
          //   OseeLog.log(Activator.class, Level.FINE, String.format("Sending message %s - %s", topic.getName(), topic.getGuid()));
             statusCallback.success();
@@ -121,11 +131,11 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       }
    }
    
-	private synchronized void sendInternal(MessageID topic, Object body, Properties properties, OseeMessagingStatusCallback statusCallback) throws JMSException, OseeCoreException {
-		Topic destination = getOrCreateTopic(topic);
+	private synchronized void sendInternal(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) throws JMSException, OseeCoreException {
+		Topic destination = getOrCreateTopic(messageId);
 		MessageProducer producer = getOrCreateProducer(destination);
-		Message msg = activeMqUtil.createMessage(session, topic.getSerializationClass(), body);
-		if (topic.isReplyRequired()) {
+		Message msg = activeMqUtil.createMessage(session, messageId.getSerializationClass(), message);
+		if (messageId.isReplyRequired()) {
 			msg.setJMSReplyTo(temporaryTopic);
 		}
 		if(properties != null){
@@ -195,6 +205,13 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          statusCallback.fail(ex);
       }
    }
+   
+   @Override
+   public void subscribe(MessageID messageId, OseeMessagingListener listener) {
+      String errorMessage = String.format("Error subscribing message(%s)", messageId.getId());
+      OseeMessagingStatusImpl defaultErrorHandler = new OseeMessagingStatusImpl(errorMessage, getClass());
+      this.subscribe(messageId, listener, defaultErrorHandler);
+   }
 
    private Topic getOrCreateTopic(MessageID messageId) throws JMSException {
       Topic topic = topicCache.get(messageId.getId());
@@ -224,6 +241,13 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    public boolean subscribeToReply(MessageID messageId, OseeMessagingListener listener) {
       replyListeners.put(messageId.getId(), listener);
       return true;
+   }
+   
+   @Override
+   public void unsubscribe(MessageID messageId, OseeMessagingListener listener) {
+      String errorMessage = String.format("Error unsubscribing message(%s)", messageId.getId());
+      OseeMessagingStatusImpl defaultErrorHandler = new OseeMessagingStatusImpl(errorMessage, getClass());
+      this.unsubscribe(messageId, listener, defaultErrorHandler);
    }
 
    @Override

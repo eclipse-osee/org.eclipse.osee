@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.messaging.MessageID;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.internal.activemq.OseeExceptionListener;
+import org.eclipse.osee.framework.messaging.services.internal.OseeMessagingStatusImpl;
 
 /**
  * @author Andrew M. Finkbeiner This is written using ActiveMQ as the use case. So it will only retry connection and it will keep
@@ -50,23 +51,30 @@ private ScheduledFuture<?> itemToCancel;
    }
 
    @Override
-   public void send(MessageID topic, Object body, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
-     send(topic, body, null, statusCallback);
+   public void send(MessageID messageId, Object message, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
+     send(messageId, message, null, statusCallback);
    }
 
 
    @Override
-   public void send(MessageID topic, Object body, Properties properties, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
+   public void send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
       attemptSmartConnect();
       if(lastConnectedState){
         try{
-           connectionNode.send(topic, body, properties, statusCallback);
+           connectionNode.send(messageId, message, properties, statusCallback);
         } catch (OseeCoreException ex){
            stop();
            run();
-           connectionNode.send(topic, body, properties, statusCallback);
+           connectionNode.send(messageId, message, properties, statusCallback);
         }
       }
+   }
+   
+   @Override
+   public void send(MessageID messageId, Object message) throws OseeCoreException {
+      String errorMessage = String.format("Error sending message(%s)", messageId.getId());
+      OseeMessagingStatusImpl defaultErrorHandler = new OseeMessagingStatusImpl(errorMessage, getClass());
+      this.send(messageId, message, defaultErrorHandler);
    }
    
    private void attemptSmartConnect() {
@@ -96,10 +104,25 @@ private ScheduledFuture<?> itemToCancel;
    }
    
    @Override
+   public void subscribe(MessageID messageId, OseeMessagingListener listener) {
+      String errorMessage = String.format("Error subscribing message(%s)", messageId.getId());
+      OseeMessagingStatusImpl defaultErrorHandler = new OseeMessagingStatusImpl(errorMessage, getClass());
+      this.subscribe(messageId, listener, defaultErrorHandler);
+   }
+   
+   @Override
    public boolean subscribeToReply(MessageID messageId, OseeMessagingListener listener) {
       return connectionNode.subscribeToReply(messageId, listener);
    }
 
+   
+   @Override
+   public void unsubscribe(MessageID messageId, OseeMessagingListener listener) {
+      String errorMessage = String.format("Error unsubscribing message(%s)", messageId.getId());
+      OseeMessagingStatusImpl defaultErrorHandler = new OseeMessagingStatusImpl(errorMessage, getClass());
+      this.unsubscribe(messageId, listener, defaultErrorHandler);
+   }
+   
    @Override
    public void unsubscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
       savedSubscribes.remove(new SavedSubscribe(messageId, listener, statusCallback));

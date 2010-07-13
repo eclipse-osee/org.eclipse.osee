@@ -16,18 +16,18 @@ import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
  */
 public class OseeMessagingStatusImpl implements OseeMessagingStatusCallback {
 
-	private String message;
+	private String failureMessage;
 	private Class<?> clazz;
 	
-	public OseeMessagingStatusImpl(String message, Class<?> clazz){
-		this.message = message;
+	public OseeMessagingStatusImpl(String failureMessage, Class<?> clazz){
+		this.failureMessage = failureMessage;
 		this.clazz = clazz;
 	}
 	
 	@Override
 	public void fail(Throwable th) {
 		th.printStackTrace();
-		OseeLog.log(clazz, Level.SEVERE, message, th);
+		OseeLog.log(clazz, Level.SEVERE, failureMessage, th);
 	}
 
 	@Override
