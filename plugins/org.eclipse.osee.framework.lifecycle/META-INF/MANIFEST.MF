@@ -11,11 +11,9 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.core.util,
- org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.lifecycle,
- org.osgi.framework,
- org.osgi.util.tracker
+ org.osgi.framework
 Eclipse-ExtensibleAPI: true
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.lifecycle
