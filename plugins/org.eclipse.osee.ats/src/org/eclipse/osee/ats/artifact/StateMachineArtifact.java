@@ -241,7 +241,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    /**
     * Override to apply different algorithm to current section expansion.
-    *
+    * 
     * @param page
     * @return true if section should be expanded
     * @throws OseeCoreException
@@ -802,7 +802,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    /**
     * Return true if this artifact, it's ATS relations and any of the other side artifacts are dirty
-    *
+    * 
     * @return true if any object in SMA tree is dirty
     */
    public Result isSMAEditorDirty() {
@@ -907,7 +907,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    /**
     * Called at the end of a transition just before transaction manager persist. SMAs can override to perform tasks due
     * to transition.
-    *
+    * 
     * @throws Exception
     */
    public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
@@ -1402,19 +1402,20 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    /**
-    * Return true if sma is TeamWorkflowArtifact and it's TeamDefinitionArtifact has rule set
-    *
-    * @param ruleId
-    * @return if has rule
-    * @throws OseeCoreException
-    * @throws
+    * Return true if sma is TeamWorkflowArtifact or review of a team workflow and it's TeamDefinitionArtifact has rule
+    * set
     */
    public boolean teamDefHasWorkRule(String ruleId) throws OseeCoreException {
-      if (!isTeamWorkflow()) {
-         return false;
+      TeamWorkFlowArtifact teamArt = null;
+      if (isTeamWorkflow()) {
+         teamArt = (TeamWorkFlowArtifact) this;
       }
+      if (this instanceof ReviewSMArtifact) {
+         teamArt = ((ReviewSMArtifact) this).getParentTeamWorkflow();
+      }
+      if (teamArt == null) return false;
       try {
-         return ((TeamWorkFlowArtifact) this).getTeamDefinition().hasWorkRule(ruleId);
+         return teamArt.getTeamDefinition().hasWorkRule(ruleId);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return false;
