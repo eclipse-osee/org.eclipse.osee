@@ -8,19 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.test;
+package org.eclipse.osee.framework.core.test.enums;
 
-import org.eclipse.osee.framework.core.test.enums.EnumsTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-EnumsTestSuite.class,//
+PermissionEnumTest.class,//
 })
 /**
  * @author Roberto E. Escobar
  */
-public class FrameworkCoreTestSuite {
+public class EnumsTestSuite {
 
 }
