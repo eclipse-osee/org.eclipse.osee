@@ -661,7 +661,7 @@ public class ArtifactEventManagerTest {
 
       // Add new Artifact Test
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
-      newArt.setName(getClass().getSimpleName() + " - testEvents");
+      newArt.setName(getClass().getSimpleName() + " - testPurgeArtifactEvents");
       newArt.persist();
 
       Thread.sleep(3000);
@@ -701,7 +701,7 @@ public class ArtifactEventManagerTest {
 
       // Add new Artifact Test
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
-      newArt.setName(getClass().getSimpleName() + " - testEvents");
+      newArt.setName(getClass().getSimpleName() + " - testReloadArtifactEvents");
       newArt.persist();
 
       Thread.sleep(3000);
@@ -713,6 +713,7 @@ public class ArtifactEventManagerTest {
       StaticIdManager.setSingletonAttributeValue(newArt, "this");
       Assert.assertTrue(newArt.isDirty());
       newArt.reloadAttributesAndRelations();
+      Assert.assertFalse(newArt.isDirty());
 
       Thread.sleep(3000);
 
@@ -740,7 +741,7 @@ public class ArtifactEventManagerTest {
 
       // Add new Artifact for Test
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
-      newArt.setName(getClass().getSimpleName() + " - testEvents");
+      newArt.setName(getClass().getSimpleName() + " - testChangeTypeArtifactEvents");
       newArt.persist();
 
       Thread.sleep(3000);

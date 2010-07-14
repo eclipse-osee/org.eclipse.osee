@@ -64,7 +64,8 @@ public final class ArtifactLoader {
       int queryId = getNewQueryId();
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate, false);
-      selectArtifacts(artifacts, queryId, insertParameters, sql, queryParameters, artifactCountEstimate, transactionId);
+      selectArtifacts(artifacts, queryId, insertParameters, sql, queryParameters, artifactCountEstimate, transactionId,
+            reload);
 
       boolean historical = transactionId != null;
       if (!insertParameters.isEmpty()) {
@@ -261,9 +262,13 @@ public final class ArtifactLoader {
    }
 
    /**
-    * @param insertParameters will be populated by this method
+    * Populates artifacts with any artifact already in cache and populates insertParameters with necessary data to load
+    * the rest.
+    * 
+    * @param reload will attempt to use cache if INCLUDE_CACHE
+    * @param insertParameters populated by this method
     */
-   private static void selectArtifacts(List<Artifact> artifacts, int queryId, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, String sql, Object[] queryParameters, int artifactCountEstimate, TransactionRecord transactionId) throws OseeCoreException {
+   private static void selectArtifacts(List<Artifact> artifacts, int queryId, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, String sql, Object[] queryParameters, int artifactCountEstimate, TransactionRecord transactionId, LoadType reload) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       long time = System.currentTimeMillis();
 
@@ -278,7 +283,7 @@ public final class ArtifactLoader {
             int artId = chStmt.getInt("art_id");
             int branchId = chStmt.getInt("branch_id");
             Artifact artifact = getArtifactFromCache(artId, transactionId, BranchManager.getBranch(branchId));
-            if (artifact != null) {
+            if (artifact != null && reload == LoadType.INCLUDE_CACHE) {
                artifacts.add(artifact);
             } else {
                Object transactionParameter = transactionId == null ? SQL3DataType.INTEGER : transactionId.getId();
