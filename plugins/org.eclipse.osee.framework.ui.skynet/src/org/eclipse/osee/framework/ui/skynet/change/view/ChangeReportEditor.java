@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
@@ -83,7 +84,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       OseeEventManager.addListener(eventRelay);
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter == IActionable.class) {
@@ -153,7 +154,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    private final class EventRelay implements IBranchEventListener, ITransactionEventListener, ITransactionsDeletedEventListener {
 
       @Override
-      public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
+      public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, final int branchId) {
          ChangeUiData changeUiData = getEditorInput().getChangeData();
          Branch[] branches = new Branch[2];
          try {
@@ -204,6 +205,33 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
                }
             }
          }
+      }
+
+      @Override
+      public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
+         ChangeUiData changeUiData = getEditorInput().getChangeData();
+         Branch[] branches = new Branch[2];
+         try {
+            branches[0] = changeUiData.getTxDelta().getStartTx().getBranch();
+            branches[1] = changeUiData.getTxDelta().getEndTx().getBranch();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error obtaining change report branches for branch event",
+                  ex);
+         }
+         for (Branch branch : branches) {
+            if (branch != null && branch.getGuid().equals(branchEvent.getBranchGuid())) {
+               if (branchEvent.getEventType() == BranchEventType.Deleted && branchEvent.getEventType() == BranchEventType.Purged) {
+                  close(false);
+               } else if (branchEvent.getEventType() == BranchEventType.Committed) {
+                  recomputeChangeReport();
+               }
+            }
+         }
+
+      }
+
+      @Override
+      public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
       }
    }
 }

@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListen
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -170,7 +171,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       }
 
       @Override
-      public void handleBranchEvent(Sender sender, final BranchEventType branchModType, final int branchId) {
+      public void handleBranchEventREM1(Sender sender, final BranchEventType branchModType, final int branchId) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
@@ -199,6 +200,24 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
          } catch (Exception ex) {
             // do nothing
          }
+      }
+
+      @Override
+      public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               if (branchEvent.getEventType() == BranchEventType.Committed) {
+                  if (getArtifactFromEditorInput().getBranch().getGuid() == branchEvent.getBranchGuid()) {
+                     closeEditor();
+                  }
+               }
+            }
+         });
+      }
+
+      @Override
+      public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
       }
    }
 }

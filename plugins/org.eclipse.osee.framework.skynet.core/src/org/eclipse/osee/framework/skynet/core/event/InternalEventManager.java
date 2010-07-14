@@ -73,8 +73,8 @@ public class InternalEventManager {
    private static boolean disableEvents = false;
 
    private static final ThreadFactory threadFactory = new OseeEventThreadFactory("Osee Events");
-   private static final ExecutorService executorService =
-         Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), threadFactory);
+   private static final ExecutorService executorService = Executors.newFixedThreadPool(
+         Runtime.getRuntime().availableProcessors(), threadFactory);
 
    // This will disable all Local TransactionEvents and enable loopback routing of Remote TransactionEvents back
    // through the RemoteEventService as if they came from another client.  This is for testing purposes only and
@@ -158,8 +158,8 @@ public class InternalEventManager {
                // Kick LOCAL
                if (!enableRemoteEventLoopback || enableRemoteEventLoopback && branchEventType.isRemoteEventType() && sender.isRemote()) {
                   if (sender.isRemote() || sender.isLocal() && branchEventType.isLocalEventType()) {
-                     safelyInvokeListeners(IBranchEventListener.class, "handleBranchEvent", sender, branchEventType,
-                           branchId);
+                     safelyInvokeListeners(IBranchEventListener.class, "handleBranchEventREM1", sender,
+                           branchEventType, branchId);
                   }
                }
                // Kick REMOTE (If source was Local and this was not a default branch changed event

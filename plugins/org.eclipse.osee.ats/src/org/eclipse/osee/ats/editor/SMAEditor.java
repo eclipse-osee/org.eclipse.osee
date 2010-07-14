@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactReloadEventListener;
@@ -58,6 +59,7 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -546,7 +548,15 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
+      try {
+         handleBranchEvent(branchModType, BranchManager.getBranch(branchId));
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   private void handleBranchEvent(BranchEventType branchModType, Branch branch) {
       try {
          if (!sma.isTeamWorkflow()) {
             return;
@@ -555,7 +565,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
             return;
          }
          if (branchModType == BranchEventType.Added || branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Purged || branchModType == BranchEventType.Committed) {
-            if (((TeamWorkFlowArtifact) sma).getBranchMgr().getId() == null || ((TeamWorkFlowArtifact) sma).getBranchMgr().getId() != branchId) {
+            if (((TeamWorkFlowArtifact) sma).getBranchMgr().getId() == null || ((TeamWorkFlowArtifact) sma).getBranchMgr().getId() != branch.getId()) {
                return;
             }
             Displays.ensureInDisplayThread(new Runnable() {
@@ -759,6 +769,19 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    @Override
    public boolean isDisposed() {
       return getContainer() == null || getContainer().isDisposed();
+   }
+
+   @Override
+   public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
+      try {
+         handleBranchEvent(branchEvent.getEventType(), BranchManager.getBranchByGuid(branchEvent.getBranchGuid()));
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
 }

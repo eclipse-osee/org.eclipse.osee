@@ -78,6 +78,7 @@ import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListen
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -196,8 +197,8 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private Composite stackComposite;
    private Control branchUnreadableWarning;
    private StackLayout stackLayout;
-   private final ArtifactDecorator artifactDecorator =
-         new ArtifactDecorator(SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
+   private final ArtifactDecorator artifactDecorator = new ArtifactDecorator(
+         SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
 
    public ArtifactExplorer() {
    }
@@ -693,8 +694,11 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   try {
                      ArtifactExplorer.revealArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), branch));
                   } catch (OseeCoreException ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, String.format(
-                           "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(), branch.getName()));
+                     OseeLog.log(
+                           SkynetGuiPlugin.class,
+                           OseeLevel.SEVERE_POPUP,
+                           String.format("Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(),
+                                 branch.getName()));
                   }
                }
 
@@ -999,8 +1003,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       }
 
       if (performPaste) {
-         Operations.executeAsJob(new ArtifactPasteOperation(config, destinationArtifact,
-               artifactClipboard.getCopiedContents(), new ArtifactNameConflictHandler()), true);
+         Operations.executeAsJob(
+               new ArtifactPasteOperation(config, destinationArtifact, artifactClipboard.getCopiedContents(),
+                     new ArtifactNameConflictHandler()), true);
       }
    }
 
@@ -1350,8 +1355,9 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   treeViewer.remove(art);
                }
                try {
-                  treeViewer.update(transData.getArtifactsInRelations(ChangeType.Changed,
-                        CoreRelationTypes.Default_Hierarchical__Child).toArray(), null);
+                  treeViewer.update(
+                        transData.getArtifactsInRelations(ChangeType.Changed,
+                              CoreRelationTypes.Default_Hierarchical__Child).toArray(), null);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
@@ -1437,7 +1443,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    }
 
    @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
+   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, final int branchId) {
       if (branchModType == BranchEventType.Committed && branch != null && branch.getId() == branchId) {
          SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
       }
@@ -1574,5 +1580,17 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             }
          }
       }
+   }
+
+   @Override
+   public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
+      if (branchEvent.getEventType() == BranchEventType.Committed && branch != null && branch.getGuid().equals(
+            branchEvent.getBranchGuid())) {
+         SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
+      }
+   }
+
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 }

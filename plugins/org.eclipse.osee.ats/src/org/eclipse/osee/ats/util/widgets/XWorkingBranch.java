@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -261,7 +262,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
    }
 
    @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
+   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
       refreshOnBranchEvent();
    }
 
@@ -298,6 +299,15 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       refreshOnBranchEvent();
+   }
+
+   @Override
+   public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
+      refreshOnBranchEvent();
+   }
+
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
 }

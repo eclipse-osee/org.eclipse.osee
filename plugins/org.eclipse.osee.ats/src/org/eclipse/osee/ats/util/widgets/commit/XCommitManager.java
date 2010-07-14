@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.event.IMergeBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.MergeBranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -216,7 +217,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       }
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public ArrayList<Branch> getSelectedBranches() {
       ArrayList<Branch> items = new ArrayList<Branch>();
       if (xCommitManager == null) {
@@ -375,7 +376,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    }
 
    @Override
-   public void handleBranchEvent(Sender sender, final BranchEventType branchModType, int branchId) throws OseeCoreException {
+   public void handleBranchEventREM1(Sender sender, final BranchEventType branchModType, int branchId) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -407,6 +408,26 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
 
    public String toString() {
       return String.format("%s", getLabel());
+   }
+
+   @Override
+   public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (branchEvent.getEventType() == BranchEventType.MergeConflictResolved) {
+               xCommitManager.refresh();
+               refresh();
+            } else {
+               loadTable();
+            }
+         }
+      });
+
+   }
+
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
 }

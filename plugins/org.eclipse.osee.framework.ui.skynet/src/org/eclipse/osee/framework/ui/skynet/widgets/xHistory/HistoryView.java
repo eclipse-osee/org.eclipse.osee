@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -287,7 +288,11 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
    }
 
    @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
+   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, final int branchId) {
+      handleBranchEvent(branchModType);
+   }
+
+   private void handleBranchEvent(BranchEventType branchModType) {
       if (branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Purged) {
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
@@ -316,5 +321,14 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
    @Override
    public void rebuildMenu() {
       setupMenus();
+   }
+
+   @Override
+   public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
+      handleBranchEvent(branchEvent.getEventType());
+   }
+
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 }

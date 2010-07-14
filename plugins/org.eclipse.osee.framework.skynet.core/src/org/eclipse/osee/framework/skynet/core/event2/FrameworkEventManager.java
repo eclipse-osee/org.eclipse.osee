@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IEventFilteredListener;
 import org.eclipse.osee.framework.skynet.core.event.IEventListener;
@@ -80,10 +81,20 @@ public class FrameworkEventManager {
    public static void processBranchEvent(Sender sender, BranchEvent branchEvent) {
       OseeEventManager.eventLog(String.format("FEM: processBranchEvent [%s]", branchEvent));
       for (IEventListener listener : priorityListeners) {
-         processBranchEventListener(listener, sender, branchEvent);
+         try {
+            processBranchEventListener(listener, sender, branchEvent);
+         } catch (Exception ex) {
+            OseeEventManager.eventLog(
+                  String.format("FEM: processBranchEvent [%s] error processing priorityListeners", branchEvent), ex);
+         }
       }
       for (IEventListener listener : listeners) {
-         processBranchEventListener(listener, sender, branchEvent);
+         try {
+            processBranchEventListener(listener, sender, branchEvent);
+         } catch (Exception ex) {
+            OseeEventManager.eventLog(
+                  String.format("FEM: processBranchEvent [%s] error processing listeners", branchEvent), ex);
+         }
       }
    }
 
@@ -97,18 +108,28 @@ public class FrameworkEventManager {
          }
       }
       // Call listener if we matched any of the filters
-      if (match) {
-         ((IBranchListener) listener).handleBranchEvent(sender, branchEvent);
+      if (listener instanceof IBranchEventListener && match) {
+         ((IBranchEventListener) listener).handleBranchEvent(sender, branchEvent);
       }
    }
 
    public static void processEventArtifactsAndRelations(Sender sender, ArtifactEvent artifactEvent) {
       OseeEventManager.eventLog(String.format("FEM: processArtsAndRels [%s]", artifactEvent));
       for (IEventListener listener : priorityListeners) {
-         processEventArtifactsAndRelationsListener(listener, artifactEvent, sender);
+         try {
+            processEventArtifactsAndRelationsListener(listener, artifactEvent, sender);
+         } catch (Exception ex) {
+            OseeEventManager.eventLog(
+                  String.format("FEM: processArtsAndRels [%s] error processing priorityListeners", artifactEvent), ex);
+         }
       }
       for (IEventListener listener : listeners) {
-         processEventArtifactsAndRelationsListener(listener, artifactEvent, sender);
+         try {
+            processEventArtifactsAndRelationsListener(listener, artifactEvent, sender);
+         } catch (Exception ex) {
+            OseeEventManager.eventLog(
+                  String.format("FEM: processArtsAndRels [%s] error processing listeners", artifactEvent), ex);
+         }
       }
    }
 
@@ -150,13 +171,24 @@ public class FrameworkEventManager {
    public static void processAccessControlEvent(Sender sender, AccessControlEvent accessControlEvent) {
       OseeEventManager.eventLog(String.format("FEM: processAccessControlEvent [%s]", accessControlEvent));
       for (IEventListener listener : priorityListeners) {
-         if (listener instanceof IAccessControlEventListener) {
-            ((IAccessControlEventListener) listener).handleAccessControlArtifactsEvent(sender, accessControlEvent);
+         try {
+            if (listener instanceof IAccessControlEventListener) {
+               ((IAccessControlEventListener) listener).handleAccessControlArtifactsEvent(sender, accessControlEvent);
+            }
+         } catch (Exception ex) {
+            OseeEventManager.eventLog(String.format(
+                  "FEM: processAccessControlEvent [%s] error processing priorityListeners", accessControlEvent), ex);
          }
       }
       for (IEventListener listener : listeners) {
-         if (listener instanceof IAccessControlEventListener) {
-            ((IAccessControlEventListener) listener).handleAccessControlArtifactsEvent(sender, accessControlEvent);
+         try {
+            if (listener instanceof IAccessControlEventListener) {
+               ((IAccessControlEventListener) listener).handleAccessControlArtifactsEvent(sender, accessControlEvent);
+            }
+         } catch (Exception ex) {
+            OseeEventManager.eventLog(
+                  String.format("FEM: processAccessControlEvent [%s] error processing listeners", accessControlEvent),
+                  ex);
          }
       }
    }
@@ -165,13 +197,23 @@ public class FrameworkEventManager {
       OseeEventManager.eventLog(String.format("FEM: processEventBroadcastEvent [%s]", broadcastEvent));
       if (broadcastEvent.getUsers().size() == 0) return;
       for (IEventListener listener : priorityListeners) {
-         if (listener instanceof IBroadcastEventListener) {
-            ((IBroadcastEventListener) listener).handleBroadcastEvent(sender, broadcastEvent);
+         try {
+            if (listener instanceof IBroadcastEventListener) {
+               ((IBroadcastEventListener) listener).handleBroadcastEvent(sender, broadcastEvent);
+            }
+         } catch (Exception ex) {
+            OseeEventManager.eventLog(String.format(
+                  "FEM: processEventBroadcastEvent [%s] error processing priorityListeners", broadcastEvent), ex);
          }
       }
       for (IEventListener listener : listeners) {
-         if (listener instanceof IBroadcastEventListener) {
-            ((IBroadcastEventListener) listener).handleBroadcastEvent(sender, broadcastEvent);
+         try {
+            if (listener instanceof IBroadcastEventListener) {
+               ((IBroadcastEventListener) listener).handleBroadcastEvent(sender, broadcastEvent);
+            }
+         } catch (Exception ex) {
+            OseeEventManager.eventLog(
+                  String.format("FEM: processEventBroadcastEvent [%s] error processing listeners", broadcastEvent), ex);
          }
       }
    }
@@ -179,13 +221,26 @@ public class FrameworkEventManager {
    public static void processRemoteEventManagerEvent(Sender sender, RemoteEventServiceEventType remoteEventServiceEvent) {
       OseeEventManager.eventLog(String.format("FEM: processRemoteEventManagerEvent [%s]", remoteEventServiceEvent));
       for (IEventListener listener : priorityListeners) {
-         if (listener instanceof IRemoteEventManagerEventListener) {
-            ((IRemoteEventManagerEventListener) listener).handleRemoteEventManagerEvent(sender, remoteEventServiceEvent);
+         try {
+            if (listener instanceof IRemoteEventManagerEventListener) {
+               ((IRemoteEventManagerEventListener) listener).handleRemoteEventManagerEvent(sender,
+                     remoteEventServiceEvent);
+            }
+         } catch (Exception ex) {
+            OseeEventManager.eventLog(String.format(
+                  "FEM: processRemoteEventManagerEvent [%s] error processing priorityListeners",
+                  remoteEventServiceEvent), ex);
          }
       }
       for (IEventListener listener : listeners) {
-         if (listener instanceof IRemoteEventManagerEventListener) {
-            ((IRemoteEventManagerEventListener) listener).handleRemoteEventManagerEvent(sender, remoteEventServiceEvent);
+         try {
+            if (listener instanceof IRemoteEventManagerEventListener) {
+               ((IRemoteEventManagerEventListener) listener).handleRemoteEventManagerEvent(sender,
+                     remoteEventServiceEvent);
+            }
+         } catch (Exception ex) {
+            OseeEventManager.eventLog(String.format(
+                  "FEM: processRemoteEventManagerEvent [%s] error processing listeners", remoteEventServiceEvent), ex);
          }
       }
    }
@@ -193,13 +248,23 @@ public class FrameworkEventManager {
    public static void processTransactionEvent(Sender sender, TransactionEvent transactionEvent) {
       OseeEventManager.eventLog(String.format("FEM: processTransactionEvent [%s]", transactionEvent));
       for (IEventListener listener : priorityListeners) {
-         if (listener instanceof ITransactionEventListener) {
-            ((ITransactionEventListener) listener).handleTransactionEvent(sender, transactionEvent);
+         try {
+            if (listener instanceof ITransactionEventListener) {
+               ((ITransactionEventListener) listener).handleTransactionEvent(sender, transactionEvent);
+            }
+         } catch (Exception ex) {
+            OseeEventManager.eventLog(String.format(
+                  "FEM: processTransactionEvent [%s] error processing priorityListeners", transactionEvent), ex);
          }
       }
       for (IEventListener listener : listeners) {
-         if (listener instanceof ITransactionEventListener) {
-            ((ITransactionEventListener) listener).handleTransactionEvent(sender, transactionEvent);
+         try {
+            if (listener instanceof ITransactionEventListener) {
+               ((ITransactionEventListener) listener).handleTransactionEvent(sender, transactionEvent);
+            }
+         } catch (Exception ex) {
+            OseeEventManager.eventLog(
+                  String.format("FEM: processTransactionEvent [%s] error processing listeners", transactionEvent), ex);
          }
       }
    }

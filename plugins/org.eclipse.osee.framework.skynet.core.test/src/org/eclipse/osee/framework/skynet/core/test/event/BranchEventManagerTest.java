@@ -31,11 +31,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
-import org.eclipse.osee.framework.skynet.core.event2.IBranchListener;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -310,7 +310,7 @@ public class BranchEventManagerTest {
       return false;
    }
 
-   public class BranchEventListener implements IBranchListener {
+   public class BranchEventListener implements IBranchEventListener {
 
       @Override
       public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
@@ -320,6 +320,11 @@ public class BranchEventManagerTest {
 
       @Override
       public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+      }
+
+      @Override
+      public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
+         // do nothing, this is legacy branch handler call
       }
    }
 

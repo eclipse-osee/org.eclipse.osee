@@ -85,7 +85,7 @@ public class OseeEventManager {
    public static void kickBranchEvent(Object source, BranchEvent branchEvent, int branchId) throws OseeCoreException {
       eventLog("OEM: kickBranchEvent: type: " + branchEvent.getEventType() + " guid: " + branchEvent.getBranchGuid() + " - " + source);
       if (testBranchEventListener != null) {
-         testBranchEventListener.handleBranchEvent(getSender(source), branchEvent.getEventType(), branchId);
+         testBranchEventListener.handleBranchEventREM1(getSender(source), branchEvent.getEventType(), branchId);
       }
       if (isDisableEvents()) {
          return;

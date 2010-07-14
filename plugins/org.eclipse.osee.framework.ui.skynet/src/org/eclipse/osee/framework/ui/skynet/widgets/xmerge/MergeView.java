@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
@@ -765,7 +766,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    }
 
    @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
       if (sourceBranch != null && destBranch != null && (sourceBranch.getId() == branchId || destBranch.getId() == branchId)) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
@@ -857,5 +858,27 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
    protected void showConflicts(boolean show) {
       showConflicts = show;
+   }
+
+   @Override
+   public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
+      if (sourceBranch != null && destBranch != null &&
+      //
+      (sourceBranch.getGuid().equals(branchEvent.getBranchGuid()) ||
+      //
+      destBranch.getGuid().equals(branchEvent.getBranchGuid()))) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               if (mergeXWidget != null && mergeXWidget.getXViewer().getTree().isDisposed() != true) {
+                  mergeXWidget.refresh();
+               }
+            }
+         });
+      }
+   }
+
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 }

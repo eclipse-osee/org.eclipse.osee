@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventLis
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
@@ -138,7 +139,7 @@ public class HttpAttributeTagger {
 
    private final class EventRelay implements IArtifactEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, ITransactionEventListener, ITransactionsDeletedEventListener {
       @Override
-      public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+      public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
       }
 
       @Override
@@ -238,6 +239,14 @@ public class HttpAttributeTagger {
             OseeLog.log(Activator.class, Level.SEVERE, ex1);
             return;
          }
+      }
+
+      @Override
+      public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
+      }
+
+      @Override
+      public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
       }
 
    }

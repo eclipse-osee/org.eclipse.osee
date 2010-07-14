@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEventType;
@@ -145,7 +146,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    }
 
    @Override
-   public void handleBranchEvent(Sender sender, final BranchEventType branchModType, final int branchId) {
+   public void handleBranchEventREM1(Sender sender, final BranchEventType branchModType, final int branchId) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
@@ -159,6 +160,27 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
             }
          }
       });
+   }
+
+   @Override
+   public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            try {
+               if (branchEvent.getEventType() == BranchEventType.Renamed) {
+                  xBranchWidget.refresh();
+               } else {
+                  xBranchWidget.loadData();
+               }
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
+   }
+
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
    @Override

@@ -17,13 +17,13 @@ import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 
 /**
  * @author Robert A. Fisher
  */
 public class DefaultBranchContentProvider implements ITreeContentProvider, IBranchEventListener {
    private final ITreeContentProvider provider;
-   private Viewer viewer;
    private final Branch branch;
 
    /**
@@ -34,12 +34,9 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IBran
 
       this.branch = branch;
       this.provider = provider;
-      this.viewer = null;
-
    }
 
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-      this.viewer = viewer;
    }
 
    public void dispose() {
@@ -63,7 +60,15 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IBran
    }
 
    @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
+   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, final int branchId) {
+   }
+
+   @Override
+   public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
+   }
+
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
 }

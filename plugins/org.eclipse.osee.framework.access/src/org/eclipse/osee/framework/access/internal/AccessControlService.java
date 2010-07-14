@@ -68,6 +68,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
@@ -86,25 +87,25 @@ public class AccessControlService implements IAccessControlService {
    private static final String ACCESS_POINT_ID = "osee.access.point";
 
    private final String INSERT_INTO_ARTIFACT_ACL =
-      "INSERT INTO OSEE_ARTIFACT_ACL (art_id, permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?, ?)";
+         "INSERT INTO OSEE_ARTIFACT_ACL (art_id, permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?, ?)";
    private final String INSERT_INTO_BRANCH_ACL =
-      "INSERT INTO OSEE_BRANCH_ACL (permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?)";
+         "INSERT INTO OSEE_BRANCH_ACL (permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?)";
 
    private final String UPDATE_ARTIFACT_ACL =
-      "UPDATE OSEE_ARTIFACT_ACL SET permission_id = ? WHERE privilege_entity_id =? AND art_id = ? AND branch_id = ?";
+         "UPDATE OSEE_ARTIFACT_ACL SET permission_id = ? WHERE privilege_entity_id =? AND art_id = ? AND branch_id = ?";
    private final String UPDATE_BRANCH_ACL =
-      "UPDATE OSEE_BRANCH_ACL SET permission_id = ? WHERE privilege_entity_id =? AND branch_id = ?";
+         "UPDATE OSEE_BRANCH_ACL SET permission_id = ? WHERE privilege_entity_id =? AND branch_id = ?";
 
    private final String GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST =
-      "SELECT aac1.*, art1.art_type_id FROM osee_artifact art1, osee_artifact_acl aac1 WHERE art1.art_id = aac1.privilege_entity_id";
+         "SELECT aac1.*, art1.art_type_id FROM osee_artifact art1, osee_artifact_acl aac1 WHERE art1.art_id = aac1.privilege_entity_id";
    private final String GET_ALL_BRANCH_ACCESS_CONTROL_LIST =
-      "SELECT bac1.*, art1.art_type_id FROM osee_artifact art1, osee_branch_acl bac1 WHERE art1.art_id = bac1.privilege_entity_id";
+         "SELECT bac1.*, art1.art_type_id FROM osee_artifact art1, osee_branch_acl bac1 WHERE art1.art_id = bac1.privilege_entity_id";
 
    private final String DELETE_ARTIFACT_ACL_FROM_BRANCH = "DELETE FROM OSEE_ARTIFACT_ACL WHERE  branch_id =?";
    private final String DELETE_BRANCH_ACL_FROM_BRANCH = "DELETE FROM OSEE_BRANCH_ACL WHERE branch_id =?";
 
    private final String USER_GROUP_MEMBERS =
-      "SELECT b_art_id FROM osee_relation_link WHERE a_art_id =? AND rel_link_type_id =? ORDER BY b_art_id";
+         "SELECT b_art_id FROM osee_relation_link WHERE a_art_id =? AND rel_link_type_id =? ORDER BY b_art_id";
 
    private DoubleKeyHashMap<Integer, AccessObject, PermissionEnum> accessControlListCache;
    private HashCollection<AccessObject, Integer> objectToSubjectCache; // <subjectId, groupId>
@@ -405,16 +406,16 @@ public class AccessControlService implements IAccessControlService {
 
                if (data.isBirth()) {
                   ConnectionHandler.runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject.getArtId(),
-                     data.getPermission().getPermId(), data.getSubject().getArtId(), artifactAccessObject.getId());
+                        data.getPermission().getPermId(), data.getSubject().getArtId(), artifactAccessObject.getId());
                } else {
                   ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
-                     data.getSubject().getArtId(), artifactAccessObject.getArtId(), artifactAccessObject.getId());
+                        data.getSubject().getArtId(), artifactAccessObject.getArtId(), artifactAccessObject.getId());
                }
 
                if (recurse) {
                   Artifact artifact =
-                     ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
-                        BranchManager.getBranch(artifactAccessObject.getId()));
+                        ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
+                              BranchManager.getBranch(artifactAccessObject.getId()));
                   AccessControlData childAccessControlData = null;
 
                   for (Artifact child : artifact.getChildren()) {
@@ -441,10 +442,10 @@ public class AccessControlService implements IAccessControlService {
 
                if (data.isBirth()) {
                   ConnectionHandler.runPreparedUpdate(INSERT_INTO_BRANCH_ACL, data.getPermission().getPermId(),
-                     data.getSubject().getArtId(), branchAccessObject.getId());
+                        data.getSubject().getArtId(), branchAccessObject.getId());
                } else {
                   ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_ACL, data.getPermission().getPermId(),
-                     data.getSubject().getArtId(), branchAccessObject.getId());
+                        data.getSubject().getArtId(), branchAccessObject.getId());
                }
             }
             cacheAccessControlData(data);
@@ -498,7 +499,7 @@ public class AccessControlService implements IAccessControlService {
          Artifact subject = UserManager.getUserByArtId(subjectId);
          PermissionEnum permissionEnum = accessControlListCache.get(subjectId, accessObject);
          AccessControlData accessControlData =
-            new AccessControlData(subject, accessObject, permissionEnum, false, false);
+               new AccessControlData(subject, accessObject, permissionEnum, false, false);
          if (accessObject instanceof ArtifactAccessObject) {
             accessControlData.setArtifactPermission(permissionEnum);
             accessControlData.setBranchPermission(getBranchPermission(subject, accessObject));
@@ -674,7 +675,7 @@ public class AccessControlService implements IAccessControlService {
       }
 
       @Override
-      public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+      public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
          try {
             if (branchModType == BranchEventType.Deleted || sender.isLocal() && branchModType == BranchEventType.Purged) {
                BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branchId);
@@ -686,7 +687,6 @@ public class AccessControlService implements IAccessControlService {
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-
       }
 
       @Override
@@ -731,6 +731,26 @@ public class AccessControlService implements IAccessControlService {
       @Override
       public List<? extends IEventFilter> getEventFilters() {
          return null;
+      }
+
+      @Override
+      public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
+         try {
+            if (branchEvent.getEventType() == BranchEventType.Deleted || sender.isLocal() && branchEvent.getEventType() == BranchEventType.Purged) {
+               BranchAccessObject branchAccessObject =
+                     BranchAccessObject.getBranchAccessObject(branchEvent.getBranchGuid());
+               List<AccessControlData> acl = generateAccessControlList(branchAccessObject);
+               for (AccessControlData accessControlData : acl) {
+                  removeAccessControlDataIf(sender.isLocal(), accessControlData);
+               }
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+
+      @Override
+      public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
       }
    }
 }
