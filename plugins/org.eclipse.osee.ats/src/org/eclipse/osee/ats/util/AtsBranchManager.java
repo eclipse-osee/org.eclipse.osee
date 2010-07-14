@@ -36,9 +36,9 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.commit.CommitStatus;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
+import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleOption;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
-import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleOption;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -140,6 +140,21 @@ public class AtsBranchManager {
    public boolean isMergeCompleted(Branch destinationBranch) throws OseeCoreException {
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, getWorkingBranch());
       return !conflictManager.remainingConflictsExist();
+   }
+
+   public TransactionRecord getCommitTransactionRecord(ICommitConfigArtifact configArt) throws OseeCoreException {
+      Branch branch = configArt.getParentBranch();
+      if (branch == null) {
+         return null;
+      }
+
+      Collection<TransactionRecord> transactions = TransactionManager.getCommittedArtifactTransactionIds(teamArt);
+      for (TransactionRecord transId : transactions) {
+         if (transId.getBranchId() == branch.getId()) {
+            return transId;
+         }
+      }
+      return null;
    }
 
    public CommitStatus getCommitStatus(ICommitConfigArtifact configArt) throws OseeCoreException {
