@@ -38,111 +38,111 @@ import org.eclipse.osee.framework.resource.management.StandardOptions;
  */
 public class ArtifactFileServlet extends OseeHttpServlet {
 
-   private static final long serialVersionUID = -6334080268467740905L;
+	private static final long serialVersionUID = -6334080268467740905L;
 
-   @Override
-   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      try {
-         HttpArtifactFileInfo artifactFileInfo = null;
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			HttpArtifactFileInfo artifactFileInfo = null;
 
-         String servletPath = request.getServletPath();
-         //         System.out.println("servletPath: " + servletPath);
-         if (!Strings.isValid(servletPath) || "/".equals(servletPath) || "/index".equals(servletPath)) {
-            //            Enumeration<?> enumeration = request.getHeaderNames();
-            //            while (enumeration.hasMoreElements()) {
-            //               String headerField = (String) enumeration.nextElement();
-            //               String value = request.getHeader(headerField);
-            //               System.out.println(String.format("%s: %s", headerField, value));
-            //            }
+			String servletPath = request.getServletPath();
+			//         System.out.println("servletPath: " + servletPath);
+			if (!Strings.isValid(servletPath) || "/".equals(servletPath) || "/index".equals(servletPath)) {
+				//            Enumeration<?> enumeration = request.getHeaderNames();
+				//            while (enumeration.hasMoreElements()) {
+				//               String headerField = (String) enumeration.nextElement();
+				//               String value = request.getHeader(headerField);
+				//               System.out.println(String.format("%s: %s", headerField, value));
+				//            }
 
-            Pair<String, String> defaultArtifact = DefaultOseeArtifact.get();
-            if (defaultArtifact != null) {
-               artifactFileInfo =
-                        new HttpArtifactFileInfo(defaultArtifact.getFirst(), null, defaultArtifact.getSecond());
-            }
-         } else {
-            artifactFileInfo = new HttpArtifactFileInfo(request);
-         }
+				Pair<String, String> defaultArtifact = DefaultOseeArtifact.get();
+				if (defaultArtifact != null) {
+					artifactFileInfo =
+								new HttpArtifactFileInfo(defaultArtifact.getFirst(), null, defaultArtifact.getSecond());
+				}
+			} else {
+				artifactFileInfo = new HttpArtifactFileInfo(request);
+			}
 
-         String uri = null;
-         if (artifactFileInfo != null) {
-            if (artifactFileInfo.isBranchNameValid()) {
-               uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getBranchName());
-            } else {
-               uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getId());
-            }
-         }
-         handleArtifactUri(request.getQueryString(), uri, response);
-      } catch (NumberFormatException ex) {
-         handleError(response, HttpServletResponse.SC_BAD_REQUEST,
-                  String.format("Invalid Branch Id: [%s]", request.getQueryString()), ex);
-      } catch (Exception ex) {
-         handleError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                  String.format("Unable to acquire resource: [%s]", request.getQueryString()), ex);
-      } finally {
-         response.flushBuffer();
-      }
-   }
+			String uri = null;
+			if (artifactFileInfo != null) {
+				if (artifactFileInfo.isBranchNameValid()) {
+					uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getBranchName());
+				} else {
+					uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getId());
+				}
+			}
+			handleArtifactUri(request.getQueryString(), uri, response);
+		} catch (NumberFormatException ex) {
+			handleError(response, HttpServletResponse.SC_BAD_REQUEST,
+						String.format("Invalid Branch Id: [%s]", request.getQueryString()), ex);
+		} catch (Exception ex) {
+			handleError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						String.format("Unable to acquire resource: [%s]", request.getQueryString()), ex);
+		} finally {
+			response.flushBuffer();
+		}
+	}
 
-   public static void handleArtifactUri(String request, String uri, HttpServletResponse response) throws OseeCoreException {
-      boolean wasProcessed = false;
-      if (Strings.isValid(uri)) {
-         IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(uri);
-         Options options = new Options();
-         options.put(StandardOptions.DecompressOnAquire.name(), true);
-         IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
+	public static void handleArtifactUri(String request, String uri, HttpServletResponse response) throws OseeCoreException {
+		boolean wasProcessed = false;
+		if (Strings.isValid(uri)) {
+			IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(uri);
+			Options options = new Options();
+			options.put(StandardOptions.DecompressOnAquire.name(), true);
+			IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
 
-         if (resource != null) {
-            wasProcessed = true;
+			if (resource != null) {
+				wasProcessed = true;
 
-            InputStream inputStream = null;
-            try {
-               inputStream = resource.getContent();
+				InputStream inputStream = null;
+				try {
+					inputStream = resource.getContent();
 
-               response.setStatus(HttpServletResponse.SC_OK);
-               response.setContentLength(inputStream.available());
-               response.setCharacterEncoding("ISO-8859-1");
-               String mimeType = HttpURLConnection.guessContentTypeFromStream(inputStream);
-               if (mimeType == null) {
-                  mimeType = HttpURLConnection.guessContentTypeFromName(resource.getLocation().toString());
-                  if (mimeType == null) {
-                     mimeType = "application/*";
-                  }
-               }
-               response.setContentType(mimeType);
-               if (!mimeType.equals("text/html")) {
-                  response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
-               }
-               Lib.inputStreamToOutputStream(inputStream, response.getOutputStream());
-               response.flushBuffer();
-            } catch (IOException ex) {
-               OseeExceptions.wrapAndThrow(ex);
-            } finally {
-               Lib.close(inputStream);
-            }
-         }
-      }
-      if (!wasProcessed) {
-         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-         response.setContentType("text/plain");
-         try {
-            response.getWriter().write(String.format("Unable to find resource: [%s]", request));
-         } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
-         }
-      }
-   }
+					response.setStatus(HttpServletResponse.SC_OK);
+					response.setContentLength(inputStream.available());
+					response.setCharacterEncoding("ISO-8859-1");
+					String mimeType = HttpURLConnection.guessContentTypeFromStream(inputStream);
+					if (mimeType == null) {
+						mimeType = HttpURLConnection.guessContentTypeFromName(resource.getLocation().toString());
+						if (mimeType == null) {
+							mimeType = "application/*";
+						}
+					}
+					response.setContentType(mimeType);
+					if (!mimeType.equals("text/html")) {
+						response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
+					}
+					Lib.inputStreamToOutputStream(inputStream, response.getOutputStream());
+					response.flushBuffer();
+				} catch (IOException ex) {
+					OseeExceptions.wrapAndThrow(ex);
+				} finally {
+					Lib.close(inputStream);
+				}
+			}
+		}
+		if (!wasProcessed) {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			response.setContentType("text/plain");
+			try {
+				response.getWriter().write(String.format("Unable to find resource: [%s]", request));
+			} catch (IOException ex) {
+				OseeExceptions.wrapAndThrow(ex);
+			}
+		}
+	}
 
-   private void handleError(HttpServletResponse response, int status, String message, Throwable ex) throws IOException {
-      response.setStatus(status);
-      response.setContentType("text/plain");
-      OseeLog.log(Activator.class, Level.SEVERE, message, ex);
-      response.getWriter().write(Lib.exceptionToString(ex));
-   }
+	private void handleError(HttpServletResponse response, int status, String message, Throwable ex) throws IOException {
+		response.setStatus(status);
+		response.setContentType("text/plain");
+		OseeLog.log(Activator.class, Level.SEVERE, message, ex);
+		response.getWriter().write(Lib.exceptionToString(ex));
+	}
 
-   @Override
-   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-      // Open to all
-   }
+	@Override
+	protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
+		// Open to all
+	}
 
 }
