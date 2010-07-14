@@ -98,7 +98,7 @@ public class ArtifactEventManagerTest {
    public void testRegistration() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      FrameworkEventManager.removeAllListeners();
+      FrameworkEventManager.internalRemoveAllListeners();
       Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
 
       FrameworkEventManager.addListener(artifactEventListener);
@@ -123,7 +123,7 @@ public class ArtifactEventManagerTest {
       }
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      FrameworkEventManager.removeAllListeners();
+      FrameworkEventManager.internalRemoveAllListeners();
       Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
 
       FrameworkEventManager.addListener(artifactEventListener);
@@ -150,7 +150,7 @@ public class ArtifactEventManagerTest {
    public void testArtifactRelationEvents() throws Exception {
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      FrameworkEventManager.removeAllListeners();
+      FrameworkEventManager.internalRemoveAllListeners();
       Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
 
       FrameworkEventManager.addListener(artifactEventListener);
@@ -656,7 +656,7 @@ public class ArtifactEventManagerTest {
    public void testPurgeArtifactEvents() throws Exception {
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      FrameworkEventManager.removeAllListeners();
+      FrameworkEventManager.internalRemoveAllListeners();
       Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
 
       // Add new Artifact Test
@@ -696,7 +696,7 @@ public class ArtifactEventManagerTest {
    @org.junit.Test
    public void testReloadArtifactEvents() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      FrameworkEventManager.removeAllListeners();
+      FrameworkEventManager.internalRemoveAllListeners();
       Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
 
       // Add new Artifact Test
@@ -736,7 +736,7 @@ public class ArtifactEventManagerTest {
    public void testChangeTypeArtifactEvents() throws Exception {
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      FrameworkEventManager.removeAllListeners();
+      FrameworkEventManager.internalRemoveAllListeners();
       Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
 
       // Add new Artifact for Test

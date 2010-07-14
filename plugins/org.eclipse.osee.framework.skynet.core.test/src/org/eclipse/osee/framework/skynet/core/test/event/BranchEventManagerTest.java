@@ -52,7 +52,7 @@ public class BranchEventManagerTest {
    public void testRegistration() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      FrameworkEventManager.removeAllListeners();
+      FrameworkEventManager.internalRemoveAllListeners();
       Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
 
       FrameworkEventManager.addListener(branchEventListener);
@@ -67,7 +67,7 @@ public class BranchEventManagerTest {
    @org.junit.Test
    public void testEvents() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      FrameworkEventManager.removeAllListeners();
+      FrameworkEventManager.internalRemoveAllListeners();
       FrameworkEventManager.addListener(branchEventListener);
       Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
 

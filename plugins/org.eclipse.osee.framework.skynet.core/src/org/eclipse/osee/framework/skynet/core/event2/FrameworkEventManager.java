@@ -65,7 +65,10 @@ public class FrameworkEventManager {
       priorityListeners.remove(listener);
    }
 
-   public static void removeAllListeners() {
+   /**
+    * Clear all registered listeners. Should be used for testing purposes only.
+    */
+   public static void internalRemoveAllListeners() {
       listeners.clear();
       priorityListeners.clear();
    }

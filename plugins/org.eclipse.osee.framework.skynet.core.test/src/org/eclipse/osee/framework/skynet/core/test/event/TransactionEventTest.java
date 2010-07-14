@@ -47,7 +47,7 @@ public class TransactionEventTest {
    public void testRegistration() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      FrameworkEventManager.removeAllListeners();
+      FrameworkEventManager.internalRemoveAllListeners();
       Assert.assertEquals(0, FrameworkEventManager.getNumberOfListeners());
 
       FrameworkEventManager.addListener(transEventListener);
@@ -83,10 +83,10 @@ public class TransactionEventTest {
          Assert.assertFalse(newArt.isDirty());
       }
 
-      Thread.sleep(2000);
+      Thread.sleep(3000);
 
       // Add listener for delete transaction event
-      FrameworkEventManager.removeAllListeners();
+      FrameworkEventManager.internalRemoveAllListeners();
       FrameworkEventManager.addListener(transEventListener);
       Assert.assertEquals(1, FrameworkEventManager.getNumberOfListeners());
 
