@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.manager.servlet.DataServlet;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.w3c.dom.Node;
 
@@ -126,7 +127,13 @@ public class AtsService {
 			} else {
 				String servletPath = request.getServletPath();
 				urlPath = request.getRequestURI().replace(servletPath, "");
-				resource = getResource(urlPath);
+
+				if (urlPath.contains("osee/data")) {
+					DataServlet.handleUriRequest(urlPath, response);
+					return;
+				} else {
+					resource = getResource(urlPath);
+				}
 			}
 		} catch (OseeCoreException ex) {
 			messages.sendError(response, ex);
