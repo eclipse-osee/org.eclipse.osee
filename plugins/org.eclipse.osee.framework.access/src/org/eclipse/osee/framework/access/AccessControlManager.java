@@ -19,7 +19,9 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.AccessData;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -99,6 +101,10 @@ public class AccessControlManager {
 
    public static void persistPermission(AccessControlData data, boolean isRecursionAllowed) {
       getService().persistPermission(data, isRecursionAllowed);
+   }
+
+   public static AccessData getAccessData(Collection<?> objectsToCheck) throws OseeCoreException {
+      return getService().getAccessData(UserManager.getUser(), objectsToCheck);
    }
 
 }

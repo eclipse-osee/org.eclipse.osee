@@ -6,8 +6,8 @@
 package org.eclipse.osee.framework.access.internal;
 
 import java.util.Collection;
-
 import org.eclipse.osee.framework.access.IAccessProvider;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AccessData;
@@ -28,12 +28,14 @@ public class ObjectAccessProvider implements IAccessProvider {
       PermissionEnum userPermission = null;
       PermissionEnum branchPermission = null;
       Branch branch = null;
+      Artifact keyArtifact = null;
 
       for (Object object : objToCheck) {
 
-
-         if (object instanceof Artifact) {
+         boolean isArtifact = object instanceof Artifact;
+         if (isArtifact) {
             Artifact artifact = (Artifact) object;
+            keyArtifact = artifact;
             branch = artifact.getBranch();
             userPermission = accessService.getArtifactPermission(userArtifact, (Artifact) object);
          } else if (object instanceof Branch) {
@@ -46,7 +48,17 @@ public class ObjectAccessProvider implements IAccessProvider {
          if (branchPermission == PermissionEnum.DENY || userPermission == null) {
             userPermission = branchPermission;
          }
-         accessData.add(object, userPermission);
+
+         if (isArtifact) {
+            setAttributeTypeSameAsArtifact(keyArtifact, object, userPermission, accessData);
+         }
+         accessData.add(keyArtifact, object, userPermission);
+      }
+   }
+
+   private void setAttributeTypeSameAsArtifact(Artifact artifact, Object object, PermissionEnum permissionEnum, AccessData accessData) throws OseeCoreException {
+      for (IAttributeType type : artifact.getAttributeTypes()) {
+         accessData.add(artifact, type, permissionEnum);
       }
    }
 }

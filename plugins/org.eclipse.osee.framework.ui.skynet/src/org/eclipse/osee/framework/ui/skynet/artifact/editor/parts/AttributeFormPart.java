@@ -11,10 +11,16 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.parts;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AccessData;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,6 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetValidateUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.AttributeXWidgetManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -73,7 +80,7 @@ public class AttributeFormPart extends AbstractFormPart {
 
       try {
          Artifact artifact = editor.getEditorInput().getArtifact();
-         boolean isEditable = !artifact.isReadOnly();
+         boolean isEditable = true;//!artifact.isReadOnly();
 
          List<AttributeType> types = Arrays.asList(AttributeTypeUtil.getTypesWithData(artifact));
          boolean willHaveASection = hasWordAttribute(types);
@@ -82,20 +89,30 @@ public class AttributeFormPart extends AbstractFormPart {
                createAttributeTypeControlsInSection(parent, toolkit, attributeType, willHaveASection, false);
             } else {
                createAttributeTypeControls(composite, toolkit, artifact, attributeType, willHaveASection, isEditable,
-                     false);
+                  false);
             }
          }
+         setLabelFonts(composite, FontManager.getDefaultLabelFont());
+         layoutControls(composite);
+
+         for (XWidget xWidget : XWidgetUtility.findXWidgetsInControl(composite)) {
+            xWidget.addXModifiedListener(new XWidgetValidationListener());
+         }
+         composite.setVisible(true);
+
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to access attribute types", ex);
       }
-      setLabelFonts(composite, FontManager.getDefaultLabelFont());
-      layoutControls(composite);
 
-      for (XWidget xWidget : XWidgetUtility.findXWidgetsInControl(composite)) {
-         xWidget.addXModifiedListener(new XWidgetValidationListener());
-      }
-      composite.setVisible(true);
    }
+
+   //   private void setPermissions(Composite parent) {
+   //      for (XWidget widget : XWidgetUtility.findXWidgetsInControl(parent)) {
+   //         IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
+   //         List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
+   //         setPermissions(artifact, attributeType, concreteWidgets);
+   //      }
+   //   }
 
    private boolean hasWordAttribute(List<AttributeType> types) throws OseeCoreException {
       for (AttributeType attributeType : types) {
@@ -159,10 +176,24 @@ public class AttributeFormPart extends AbstractFormPart {
          }
          WorkPage workPage = new WorkPage(concreteWidgets, new DefaultXWidgetOptionResolver());
          workPage.createBody(getManagedForm(), internalComposite, artifact, null, isEditable);
+
       } catch (OseeCoreException ex) {
          toolkit.createLabel(parent, String.format("Error creating controls for: [%s]", attributeType.getName()));
       }
       return internalComposite;
+   }
+
+   private void setPermissions(Artifact artifact, AttributeType attributeType, List<DynamicXWidgetLayoutData> concreteWidgets) throws OseeCoreException, OseeArgumentException {
+      for (DynamicXWidgetLayoutData data : concreteWidgets) {
+         if (data.getXWidget() != null && data.getXWidget().getControl() != null && !data.getXWidget().getControl().isDisposed()) {
+            AccessData accessData = AccessControlManager.getAccessData(Collections.singletonList(artifact));
+            data.getXWidget().setEditable(
+               !accessData.getAttributeTypeMatches(artifact, attributeType, PermissionEnum.WRITE).isEmpty());
+
+            XWidgetValidateUtility.setStatus(new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, ""), data.getXWidget());
+            //            data.getXWidget().setControlCausedMessage("1111", "No premission", 1);
+         }
+      }
    }
 
    private void createAttributeTypeControlsInSection(Composite parent, FormToolkit toolkit, AttributeType attributeType, boolean willHaveASection, boolean isEditable) {
@@ -180,8 +211,7 @@ public class AttributeFormPart extends AbstractFormPart {
       Artifact artifact = editor.getEditorInput().getArtifact();
 
       Composite composite =
-            createAttributeTypeControls(expandable, toolkit, artifact, attributeType, willHaveASection, isEditable,
-                  true);
+         createAttributeTypeControls(expandable, toolkit, artifact, attributeType, willHaveASection, isEditable, true);
       expandable.setClient(composite);
 
       expandable.addExpansionListener(new IExpansionListener() {

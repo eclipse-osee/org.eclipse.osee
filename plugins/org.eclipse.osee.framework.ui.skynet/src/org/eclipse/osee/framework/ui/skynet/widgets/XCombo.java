@@ -69,6 +69,14 @@ public class XCombo extends XWidget {
       return dataCombo;
    }
 
+   @Override
+   public void setEditable(boolean editable) {
+      super.setEditable(editable);
+      if (getControl() != null && !getControl().isDisposed()) {
+         getControl().setEnabled(editable);
+      }
+   }
+
    public void setEnabled(boolean enabled) {
       dataCombo.setEnabled(enabled);
    }
@@ -111,8 +119,12 @@ public class XCombo extends XWidget {
       dataCombo.setVisibleItemCount(Math.min(displayArray.length, 45));
 
       gd = new GridData();
-      if (fillHorizontally) gd.grabExcessHorizontalSpace = true;
-      if (fillVertically) gd.grabExcessVerticalSpace = true;
+      if (fillHorizontally) {
+         gd.grabExcessHorizontalSpace = true;
+      }
+      if (fillVertically) {
+         gd.grabExcessVerticalSpace = true;
+      }
       gd.horizontalSpan = horizontalSpan - 1;
       dataCombo.setLayoutData(gd);
       ModifyListener dataComboListener = new ModifyListener() {
@@ -134,14 +146,18 @@ public class XCombo extends XWidget {
 
    public int getDisplayPosition(String str) {
       for (int i = 0; i < displayArray.length; i++) {
-         if (str.equals(displayArray[i])) return i;
+         if (str.equals(displayArray[i])) {
+            return i;
+         }
       }
       return 0;
    }
 
    public int getDisplayPosition() {
       for (int i = 0; i < displayArray.length; i++) {
-         if (data.equals(displayArray[i])) return i;
+         if (data.equals(displayArray[i])) {
+            return i;
+         }
       }
       return 0;
    }
@@ -151,7 +167,9 @@ public class XCombo extends XWidget {
       setDisplayDataStrings();
       if (dataCombo != null && !dataCombo.isDisposed()) {
          dataCombo.setItems(displayArray);
-         if (displayArray.length < 15) dataCombo.setVisibleItemCount(displayArray.length);
+         if (displayArray.length < 15) {
+            dataCombo.setVisibleItemCount(displayArray.length);
+         }
       }
       updateComboWidget();
    }
@@ -182,7 +200,9 @@ public class XCombo extends XWidget {
 
    @Override
    public void setFocus() {
-      if (dataCombo != null) dataCombo.setFocus();
+      if (dataCombo != null) {
+         dataCombo.setFocus();
+      }
    }
 
    public void setDataStringToXmlTranslations(Map<String, String> dataStringToXmlString) {
@@ -194,13 +214,13 @@ public class XCombo extends XWidget {
       Matcher m;
       if (getXmlSubRoot().equals("")) {
          m =
-               Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-                     xml);
+            Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+               xml);
       } else {
          m =
-               Pattern.compile(
-                     "<" + getXmlRoot() + "><" + getXmlSubRoot() + ">(.*?)</" + getXmlSubRoot() + "></" + getXmlRoot() + ">",
-                     Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
+            Pattern.compile(
+               "<" + getXmlRoot() + "><" + getXmlSubRoot() + ">(.*?)</" + getXmlSubRoot() + "></" + getXmlRoot() + ">",
+               Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
       }
       while (m.find()) {
          String str = m.group(1);
@@ -234,7 +254,9 @@ public class XCombo extends XWidget {
    }
 
    public void addModifyListener(ModifyListener modifyListener) {
-      if (dataCombo != null) dataCombo.addModifyListener(modifyListener);
+      if (dataCombo != null) {
+         dataCombo.addModifyListener(modifyListener);
+      }
    }
 
    public Combo getComboBox() {
@@ -295,10 +317,11 @@ public class XCombo extends XWidget {
          } else {
             dataCombo.select(0);
          }
-         if (displayDataStrings.size() < 15)
+         if (displayDataStrings.size() < 15) {
             dataCombo.setVisibleItemCount(displayDataStrings.size());
-         else
+         } else {
             dataCombo.setVisibleItemCount(15);
+         }
          dataCombo.getParent().layout(true);
       }
       validate();
@@ -318,7 +341,9 @@ public class XCombo extends XWidget {
 
    public void remove(String data) {
       displayDataStrings.remove(data);
-      if (dataCombo.indexOf(data) >= 0) dataCombo.remove(data);
+      if (dataCombo.indexOf(data) >= 0) {
+         dataCombo.remove(data);
+      }
    }
 
    @Override
@@ -357,10 +382,18 @@ public class XCombo extends XWidget {
 
    @Override
    public void dispose() {
-      if (labelWidget != null) labelWidget.dispose();
-      if (dataCombo != null) dataCombo.dispose();
-      if (labelWidget != null) labelWidget.dispose();
-      if (parent != null && !parent.isDisposed()) parent.layout();
+      if (labelWidget != null) {
+         labelWidget.dispose();
+      }
+      if (dataCombo != null) {
+         dataCombo.dispose();
+      }
+      if (labelWidget != null) {
+         labelWidget.dispose();
+      }
+      if (parent != null && !parent.isDisposed()) {
+         parent.layout();
+      }
       super.dispose();
    }
 

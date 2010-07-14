@@ -78,7 +78,7 @@ public abstract class XStackedWidget<T> extends XLabel {
 
       if (maxPage < minPage) {
          throw new OseeArgumentException(
-               String.format("Invalid required number of pages [%s] < [%s]", maxPage, minPage));
+            String.format("Invalid required number of pages [%s] < [%s]", maxPage, minPage));
       }
       this.minPage = minPage;
       this.maxPage = maxPage;
@@ -86,6 +86,9 @@ public abstract class XStackedWidget<T> extends XLabel {
 
    @Override
    public Control getControl() {
+      if (stackedControl == null) {
+         return null;
+      }
       return stackedControl.stackedViewer;
    }
 
@@ -217,7 +220,7 @@ public abstract class XStackedWidget<T> extends XLabel {
                   currentPage = totalPages;
                }
                currentPageLabel.setText(String.format("Page %s of %s  -  Page Id (%s)", currentPage, totalPages,
-                     stackedControl.getCurrentPageId()));
+                  stackedControl.getCurrentPageId()));
             }
          }
       });
@@ -256,7 +259,7 @@ public abstract class XStackedWidget<T> extends XLabel {
                      break;
                }
                Image image =
-                     Strings.isValid(imageName) ? PlatformUI.getWorkbench().getSharedImages().getImage(imageName) : null;
+                  Strings.isValid(imageName) ? PlatformUI.getWorkbench().getSharedImages().getImage(imageName) : null;
                messageIcon.setImage(image);
                messageLabel.setText(isVisible ? " " + text : text);
 
@@ -432,8 +435,8 @@ public abstract class XStackedWidget<T> extends XLabel {
                setCurrentPage(numberOfPages);
                notifyXModifiedListeners();
             } else {
-               setMessage(IStatus.WARNING, String.format("Add page error - page at index [%s] already exists",
-                     getCurrentPageIndex()));
+               setMessage(IStatus.WARNING,
+                  String.format("Add page error - page at index [%s] already exists", getCurrentPageIndex()));
             }
          } else {
             setMessage(IStatus.ERROR, status.getMessage());
@@ -455,8 +458,8 @@ public abstract class XStackedWidget<T> extends XLabel {
                previous();
                notifyXModifiedListeners();
             } else {
-               setMessage(IStatus.WARNING, String.format("Remove page error - page at index [%s] does not exist",
-                     getCurrentPageIndex()));
+               setMessage(IStatus.WARNING,
+                  String.format("Remove page error - page at index [%s] does not exist", getCurrentPageIndex()));
             }
          } else {
             setMessage(IStatus.ERROR, status.getMessage());

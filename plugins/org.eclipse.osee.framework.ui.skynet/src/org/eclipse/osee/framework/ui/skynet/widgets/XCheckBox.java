@@ -46,10 +46,19 @@ public class XCheckBox extends XWidget {
       return checkButton;
    }
 
+   @Override
+   public void setEditable(boolean editable) {
+      super.setEditable(editable);
+      if (getControl() != null && !getControl().isDisposed()) {
+         getControl().setEnabled(editable);
+      }
+   }
+
    /**
     * Create Check Widgets. Widgets Created: Label: "text entry" horizonatalSpan takes up 2 columns; horizontalSpan must
     * be >=2
     */
+   @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       if (horizontalSpan < 2) {
          horizontalSpan = 2;
@@ -67,6 +76,7 @@ public class XCheckBox extends XWidget {
       checkButton.setLayoutData(gd2);
       checkButton.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent event) {
             selected = checkButton.getSelection();
             validate();
@@ -92,29 +102,37 @@ public class XCheckBox extends XWidget {
    public void dispose() {
       labelWidget.dispose();
       checkButton.dispose();
-      if (parent != null && !parent.isDisposed()) parent.layout();
+      if (parent != null && !parent.isDisposed()) {
+         parent.layout();
+      }
    }
 
+   @Override
    public void setFocus() {
       return;
    }
 
+   @Override
    public String getXmlData() {
-      if (get())
+      if (get()) {
          return "true";
-      else
+      } else {
          return "false";
+      }
    }
 
+   @Override
    public String getReportData() {
       return getXmlData();
    }
 
+   @Override
    public void setXmlData(String set) {
-      if (set.equals("true"))
+      if (set.equals("true")) {
          set(true);
-      else
+      } else {
          set(false);
+      }
    }
 
    public void addSelectionListener(SelectionListener selectionListener) {
@@ -130,7 +148,9 @@ public class XCheckBox extends XWidget {
    }
 
    private void updateCheckWidget() {
-      if (checkButton != null && !checkButton.isDisposed()) checkButton.setSelection(selected);
+      if (checkButton != null && !checkButton.isDisposed()) {
+         checkButton.setSelection(selected);
+      }
       validate();
    }
 
@@ -139,14 +159,17 @@ public class XCheckBox extends XWidget {
       updateCheckWidget();
    }
 
+   @Override
    public void refresh() {
       updateCheckWidget();
    }
 
+   @Override
    public IStatus isValid() {
       return Status.OK_STATUS;
    }
 
+   @Override
    public String toHTML(String labelFont) {
       return AHTML.getLabelStr(labelFont, getLabel() + ": ") + selected;
    }
