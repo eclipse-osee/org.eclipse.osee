@@ -41,9 +41,15 @@ public class SessionDataStoreSync implements ISessionDataStoreSync {
 
 	private final class UpdateDataStore extends TimerTask {
 
+		private boolean isCacheCurrent = false;
+
 		@Override
 		public void run() {
 			try {
+				if (!isCacheCurrent) {
+					sessionCache.reloadCache();
+					isCacheCurrent = true;
+				}
 				sessionCache.storeAllModified();
 			} catch (OseeCoreException ex) {
 				// Do nothing;
