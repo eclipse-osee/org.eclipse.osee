@@ -93,7 +93,7 @@ public class AbstractOseeTypeTest<T extends AbstractOseeType> {
    }
 
    @Test
-   public void testSetGetModificationType() {
+   public void testSetGetStorageState() {
       Assert.assertEquals(StorageState.LOADED, type.getStorageState());
       Assert.assertFalse(type.isDirty());
 

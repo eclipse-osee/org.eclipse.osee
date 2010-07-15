@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.TableD
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.TableTags;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
@@ -52,201 +52,202 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class DatabaseDataExtractor extends AbstractOperation {
 
-   private static final String SQL_WILD_QUERY = "SELECT * FROM ";
-   private final Set<String> schemas;
-   private final File directory;
-   private final List<Thread> workerThreads;
-   private final Set<String> extractTables;
+	private static final String SQL_WILD_QUERY = "SELECT * FROM ";
+	private final Set<String> schemas;
+	private final File directory;
+	private final List<Thread> workerThreads;
+	private final Set<String> extractTables;
 
-   private class ColumnInfo {
-      String name;
-      SQL3DataType type;
-   }
+	private class ColumnInfo {
+		String name;
+		SQL3DataType type;
+	}
 
-   private final IOseeDatabaseServiceProvider provider;
+	private final IOseeDatabaseService databaseService;
 
-   public DatabaseDataExtractor(IOseeDatabaseServiceProvider provider, Set<String> schemas, File directory) throws OseeDataStoreException {
-      super("Extract Database Data", Activator.PLUGIN_ID);
-      this.provider = provider;
-      this.schemas = schemas;
-      this.directory = directory;
-      this.workerThreads = new ArrayList<Thread>();
-      this.extractTables = new TreeSet<String>();
-   }
+	public DatabaseDataExtractor(IOseeDatabaseService databaseService, Set<String> schemas, File directory) throws OseeDataStoreException {
+		super("Extract Database Data", Activator.PLUGIN_ID);
+		this.databaseService = databaseService;
+		this.schemas = schemas;
+		this.directory = directory;
+		this.workerThreads = new ArrayList<Thread>();
+		this.extractTables = new TreeSet<String>();
+	}
 
-   public void addTableNameToExtract(String fullyQualifiedTableName) {
-      this.extractTables.add(fullyQualifiedTableName);
-   }
+	public void addTableNameToExtract(String fullyQualifiedTableName) {
+		this.extractTables.add(fullyQualifiedTableName);
+	}
 
-   public void clearFilter() {
-      this.extractTables.clear();
-   }
+	public void clearFilter() {
+		this.extractTables.clear();
+	}
 
-   @Override
-   protected void doWork(IProgressMonitor monitor) throws Exception {
-      FileUtility.setupDirectoryForWrite(directory);
+	@Override
+	protected void doWork(IProgressMonitor monitor) throws Exception {
+		FileUtility.setupDirectoryForWrite(directory);
 
-      Map<String, SchemaData> schemaDataMap = new HashMap<String, SchemaData>();
-      ExtractDatabaseSchemaOperation operation = new ExtractDatabaseSchemaOperation(provider, schemas, schemaDataMap);
-      doSubWork(operation, monitor, 0.20);
+		Map<String, SchemaData> schemaDataMap = new HashMap<String, SchemaData>();
+		ExtractDatabaseSchemaOperation operation =
+					new ExtractDatabaseSchemaOperation(databaseService, schemas, schemaDataMap);
+		doSubWork(operation, monitor, 0.20);
 
-      Set<String> schemaKeys = schemaDataMap.keySet();
-      for (String schema : schemaKeys) {
-         SchemaData schemaData = schemaDataMap.get(schema);
+		Set<String> schemaKeys = schemaDataMap.keySet();
+		for (String schema : schemaKeys) {
+			SchemaData schemaData = schemaDataMap.get(schema);
 
-         List<TableElement> tables = schemaData.getTablesOrderedByDependency();
-         for (TableElement table : tables) {
+			List<TableElement> tables = schemaData.getTablesOrderedByDependency();
+			for (TableElement table : tables) {
 
-            boolean extract = true;
-            // only extract items in filter since filter was set with data
-            if (this.extractTables != null && this.extractTables.size() > 0) {
-               extract = extractTables.contains(table.getFullyQualifiedTableName());
-            }
+				boolean extract = true;
+				// only extract items in filter since filter was set with data
+				if (this.extractTables != null && this.extractTables.size() > 0) {
+					extract = extractTables.contains(table.getFullyQualifiedTableName());
+				}
 
-            if (extract) {
-               DataExtractorThread workerThread = new DataExtractorThread(table);
-               workerThreads.add(workerThread);
-               workerThread.start();
-            }
-         }
-      }
-   }
+				if (extract) {
+					DataExtractorThread workerThread = new DataExtractorThread(table);
+					workerThreads.add(workerThread);
+					workerThread.start();
+				}
+			}
+		}
+	}
 
-   private class DataExtractorThread extends Thread {
-      private final TableElement table;
+	private class DataExtractorThread extends Thread {
+		private final TableElement table;
 
-      public DataExtractorThread(TableElement table) {
-         this.table = table;
-         setName(table.getName() + " Extractor");
-      }
+		public DataExtractorThread(TableElement table) {
+			this.table = table;
+			setName(table.getName() + " Extractor");
+		}
 
-      @Override
-      public void run() {
-         IOseeStatement chStmt = null;
-         OutputStream outputStream = null;
-         try {
-            chStmt = provider.getOseeDatabaseService().getStatement();
-            String fileName = table.getFullyQualifiedTableName() + FileUtility.DB_DATA_EXTENSION;
-            outputStream = new BufferedOutputStream(new FileOutputStream(new File(directory, fileName)));
+		@Override
+		public void run() {
+			IOseeStatement chStmt = null;
+			OutputStream outputStream = null;
+			try {
+				chStmt = databaseService.getStatement();
+				String fileName = table.getFullyQualifiedTableName() + FileUtility.DB_DATA_EXTENSION;
+				outputStream = new BufferedOutputStream(new FileOutputStream(new File(directory, fileName)));
 
-            try {
-               chStmt.runPreparedQuery(SQL_WILD_QUERY + table.getFullyQualifiedTableName());
-            } catch (OseeDataStoreException ex) {
-               chStmt.runPreparedQuery(SQL_WILD_QUERY + table.getName());
-            }
+				try {
+					chStmt.runPreparedQuery(SQL_WILD_QUERY + table.getFullyQualifiedTableName());
+				} catch (OseeDataStoreException ex) {
+					chStmt.runPreparedQuery(SQL_WILD_QUERY + table.getName());
+				}
 
-            buildXml(chStmt, table, outputStream);
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE,
-                  "Error Processing Table [ " + table.getSchema() + "." + table.getName() + " ] Data ", ex);
-         } finally {
-            Lib.close(chStmt);
-            Lib.close(outputStream);
-         }
-      }
-   }
+				buildXml(chStmt, table, outputStream);
+			} catch (Exception ex) {
+				OseeLog.log(Activator.class, Level.SEVERE,
+							"Error Processing Table [ " + table.getSchema() + "." + table.getName() + " ] Data ", ex);
+			} finally {
+				Lib.close(chStmt);
+				Lib.close(outputStream);
+			}
+		}
+	}
 
-   public void waitForWorkerThreads() {
-      for (Thread worker : workerThreads) {
-         try {
-            worker.join();
-         } catch (InterruptedException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, "Thread [" + worker.getName() + "] was Interrupted. ", ex);
-         }
-      }
-   }
+	public void waitForWorkerThreads() {
+		for (Thread worker : workerThreads) {
+			try {
+				worker.join();
+			} catch (InterruptedException ex) {
+				OseeLog.log(Activator.class, Level.SEVERE, "Thread [" + worker.getName() + "] was Interrupted. ", ex);
+			}
+		}
+	}
 
-   private void buildXml(IOseeStatement chStmt, TableElement table, OutputStream outputStream) throws Exception {
-      ArrayList<ColumnInfo> columns = new ArrayList<ColumnInfo>();
-      int numberOfColumns = chStmt.getColumnCount();
-      for (int index = 1; index <= numberOfColumns; index++) {
-         ColumnInfo columnInfo = new ColumnInfo();
-         columnInfo.name = chStmt.getColumnName(index);
-         columnInfo.name = columnInfo.name.toUpperCase();
+	private void buildXml(IOseeStatement chStmt, TableElement table, OutputStream outputStream) throws Exception {
+		ArrayList<ColumnInfo> columns = new ArrayList<ColumnInfo>();
+		int numberOfColumns = chStmt.getColumnCount();
+		for (int index = 1; index <= numberOfColumns; index++) {
+			ColumnInfo columnInfo = new ColumnInfo();
+			columnInfo.name = chStmt.getColumnName(index);
+			columnInfo.name = columnInfo.name.toUpperCase();
 
-         int dataType = chStmt.getColumnType(index);
-         if (chStmt.isDatabaseType(SupportedDatabase.foxpro)) {
-            if (dataType == Types.CHAR) {
-               dataType = Types.VARCHAR;
-            }
-         }
-         columnInfo.type = SQL3DataType.get(dataType);
-         columns.add(columnInfo);
-      }
+			int dataType = chStmt.getColumnType(index);
+			if (chStmt.isDatabaseType(SupportedDatabase.foxpro)) {
+				if (dataType == Types.CHAR) {
+					dataType = Types.VARCHAR;
+				}
+			}
+			columnInfo.type = SQL3DataType.get(dataType);
+			columns.add(columnInfo);
+		}
 
-      XMLOutputFactory factory = XMLOutputFactory.newInstance();
-      XMLStreamWriter writer = factory.createXMLStreamWriter(outputStream);
-      writer.writeStartDocument("UTF-8", "1.0");
-      writer.writeStartElement(TableTags.Table.name());
-      writer.writeAttribute(TableDescriptionFields.schema.name(), table.getSchema());
-      writer.writeAttribute(TableDescriptionFields.name.name(), table.getName());
+		XMLOutputFactory factory = XMLOutputFactory.newInstance();
+		XMLStreamWriter writer = factory.createXMLStreamWriter(outputStream);
+		writer.writeStartDocument("UTF-8", "1.0");
+		writer.writeStartElement(TableTags.Table.name());
+		writer.writeAttribute(TableDescriptionFields.schema.name(), table.getSchema());
+		writer.writeAttribute(TableDescriptionFields.name.name(), table.getName());
 
-      for (ColumnInfo info : columns) {
-         writer.writeStartElement(TableTags.ColumnInfo.name());
-         writer.writeAttribute(ColumnFields.id.name(), info.name);
-         writer.writeAttribute(ColumnFields.type.name(), info.type.name());
-         writer.writeEndElement();
-      }
+		for (ColumnInfo info : columns) {
+			writer.writeStartElement(TableTags.ColumnInfo.name());
+			writer.writeAttribute(ColumnFields.id.name(), info.name);
+			writer.writeAttribute(ColumnFields.type.name(), info.type.name());
+			writer.writeEndElement();
+		}
 
-      while (chStmt.next()) {
-         writer.writeStartElement(TableTags.Row.name());
-         for (ColumnInfo column : columns) {
-            String columnValue;
-            switch (column.type) {
-               case BIGINT:
-                  BigDecimal bigD = chStmt.getBigDecimal(column.name);
-                  columnValue = bigD != null ? bigD.toString() : "";
-                  break;
-               case DATE:
-                  Date date = chStmt.getDate(column.name);
-                  columnValue = date != null ? date.toString() : "";
-                  break;
-               case TIME:
-                  Time time = chStmt.getTime(column.name);
-                  columnValue = time != null ? time.toString() : "";
-                  break;
-               case TIMESTAMP:
-                  Timestamp timestamp = chStmt.getTimestamp(column.name);
-                  columnValue = timestamp != null ? timestamp.toString() : "";
-                  break;
-               default:
-                  columnValue = chStmt.getString(column.name);
-                  columnValue = handleSpecialCharacters(columnValue);
-                  break;
-            }
-            writer.writeAttribute(column.name, (columnValue != null ? columnValue : ""));
-         }
-         writer.writeEndElement();
-      }
-      writer.writeEndElement();
-      writer.writeEndDocument();
-      writer.flush();
-   }
+		while (chStmt.next()) {
+			writer.writeStartElement(TableTags.Row.name());
+			for (ColumnInfo column : columns) {
+				String columnValue;
+				switch (column.type) {
+					case BIGINT:
+						BigDecimal bigD = chStmt.getBigDecimal(column.name);
+						columnValue = bigD != null ? bigD.toString() : "";
+						break;
+					case DATE:
+						Date date = chStmt.getDate(column.name);
+						columnValue = date != null ? date.toString() : "";
+						break;
+					case TIME:
+						Time time = chStmt.getTime(column.name);
+						columnValue = time != null ? time.toString() : "";
+						break;
+					case TIMESTAMP:
+						Timestamp timestamp = chStmt.getTimestamp(column.name);
+						columnValue = timestamp != null ? timestamp.toString() : "";
+						break;
+					default:
+						columnValue = chStmt.getString(column.name);
+						columnValue = handleSpecialCharacters(columnValue);
+						break;
+				}
+				writer.writeAttribute(column.name, (columnValue != null ? columnValue : ""));
+			}
+			writer.writeEndElement();
+		}
+		writer.writeEndElement();
+		writer.writeEndDocument();
+		writer.flush();
+	}
 
-   private String handleSpecialCharacters(String value) {
-      // \0 An ASCII 0 (NUL) character.
-      // '' A single quote (ï¿½'ï¿½) character.
-      // \b A backspace character.
-      // \n A newline (linefeed) character.
-      // \r A carriage return character.
-      // \t A tab character.
-      // \Z ASCII 26 (Control-Z). See note following the table.
+	private String handleSpecialCharacters(String value) {
+		// \0 An ASCII 0 (NUL) character.
+		// '' A single quote (ï¿½'ï¿½) character.
+		// \b A backspace character.
+		// \n A newline (linefeed) character.
+		// \r A carriage return character.
+		// \t A tab character.
+		// \Z ASCII 26 (Control-Z). See note following the table.
 
-      if (value != null) {
+		if (value != null) {
 
-         value = value.replaceAll("\0", "");
-         value = value.replaceAll("'", "''");
-         // value = value.replaceAll("\"", "\\\\\""); No need to do this.
-         Pattern pattern =
-               Pattern.compile("[^" + "a-zA-Z0-9" + "!@#$%\\^&*\\(\\)" + "+ _.-=" + "\'\"<>{}\\[\\]|:;,\n\r\t\b?/`~\\\\]+");
-         Matcher matcher = pattern.matcher(value);
+			value = value.replaceAll("\0", "");
+			value = value.replaceAll("'", "''");
+			// value = value.replaceAll("\"", "\\\\\""); No need to do this.
+			Pattern pattern =
+						Pattern.compile("[^" + "a-zA-Z0-9" + "!@#$%\\^&*\\(\\)" + "+ _.-=" + "\'\"<>{}\\[\\]|:;,\n\r\t\b?/`~\\\\]+");
+			Matcher matcher = pattern.matcher(value);
 
-         while (matcher.find()) {
-            // System.out.println("Matcher: [" + matcher.group() + "]");
-            value = value.replace(matcher.group(), "");
-         }
-      }
-      return value;
-   }
+			while (matcher.find()) {
+				// System.out.println("Matcher: [" + matcher.group() + "]");
+				value = value.replace(matcher.group(), "");
+			}
+		}
+		return value;
+	}
 
 }

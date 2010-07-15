@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -74,7 +73,7 @@ public class ApplicationServerDataStore {
          ConnectionHandler.runBatchUpdate(DELETE_FROM_LOOKUP_TABLE, data);
          status = true;
       } catch (OseeCoreException ex) {
-         OseeLog.log(CoreServerActivator.class, Level.INFO, "Server lookup table not initialized");
+         OseeLog.log(ServerActivator.class, Level.INFO, "Server lookup table not initialized");
       }
       return status;
    }
@@ -94,7 +93,7 @@ public class ApplicationServerDataStore {
          ConnectionHandler.runBatchUpdate(INSERT_LOOKUP_TABLE, data);
          status = true;
       } catch (OseeCoreException ex) {
-         OseeLog.log(CoreServerActivator.class, Level.INFO, "Server lookup table not initialized");
+         OseeLog.log(ServerActivator.class, Level.INFO, "Server lookup table not initialized");
       }
       return status;
    }
@@ -193,7 +192,7 @@ public class ApplicationServerDataStore {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(CoreServerActivator.class, Level.INFO, "Server lookup table is not initialized");
+         OseeLog.log(ServerActivator.class, Level.INFO, "Server lookup table is not initialized");
       } finally {
          chStmt.close();
       }

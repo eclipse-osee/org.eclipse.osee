@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
@@ -20,33 +21,39 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface IApplicationServerManager {
 
-   public void shutdown() throws OseeCoreException;
+	void shutdown() throws OseeCoreException;
 
-   public ThreadFactory createNewThreadFactory(String name, int priority);
+	ThreadFactory createNewThreadFactory(String name, int priority);
 
-   public boolean isSystemIdle();
+	boolean isSystemIdle();
 
-   public int getNumberOfActiveThreads();
+	int getNumberOfActiveThreads();
 
-   public List<String> getCurrentProcesses();
+	List<String> getCurrentProcesses();
 
-   public void setServletRequestsAllowed(boolean value) throws OseeCoreException;
+	void setServletRequestsAllowed(boolean value) throws OseeCoreException;
 
-   public boolean executeLookupRegistration();
+	boolean executeLookupRegistration();
 
-   public String getId();
+	String getId();
 
-   public String getServerAddress();
+	String getServerAddress();
 
-   public int getPort();
+	int getPort();
 
-   public Date getDateStarted();
+	Date getDateStarted();
 
-   public boolean isAcceptingRequests();
+	boolean isAcceptingRequests();
 
-   public String[] getSupportedVersions();
+	String[] getSupportedVersions();
 
-   public void addSupportedVersion(String version) throws OseeCoreException;
+	void addSupportedVersion(String version) throws OseeCoreException;
 
-   public void removeSupportedVersion(String version) throws OseeCoreException;
+	void removeSupportedVersion(String version) throws OseeCoreException;
+
+	void register(String context, OseeHttpServlet servlets) throws OseeCoreException;
+
+	void unregister(String key);
+
+	Collection<String> getRegisteredServlets();
 }

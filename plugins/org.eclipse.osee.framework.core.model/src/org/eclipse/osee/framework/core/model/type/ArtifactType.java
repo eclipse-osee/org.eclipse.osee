@@ -21,10 +21,10 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.IOseeField;
+import org.eclipse.osee.framework.core.model.OseeField;
 import org.eclipse.osee.framework.core.model.internal.fields.ArtifactSuperTypeField;
 import org.eclipse.osee.framework.core.model.internal.fields.ArtifactTypeAttributesField;
-import org.eclipse.osee.framework.core.model.internal.fields.IOseeField;
-import org.eclipse.osee.framework.core.model.internal.fields.OseeField;
 
 /**
  * @author Robert A. Fisher

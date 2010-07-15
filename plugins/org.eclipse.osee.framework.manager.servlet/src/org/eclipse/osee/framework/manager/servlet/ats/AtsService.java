@@ -17,6 +17,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.manager.servlet.DataServlet;
 import org.eclipse.osee.framework.resource.management.IResource;
+import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.w3c.dom.Node;
 
 /**
@@ -41,12 +43,16 @@ public class AtsService {
 	private final IResourceProvider resourceProvider;
 	private final AtsXmlSearch xmlSearch;
 	private final AtsXmlMessages messages;
+	private final IResourceLocatorManager locatorManager;
+	private final IResourceManager resourceManager;
 
-	public AtsService(IResourceProvider resourceProvider, AtsXmlSearch xmlSearch, AtsXmlMessages messages) {
+	public AtsService(IResourceProvider resourceProvider, AtsXmlSearch xmlSearch, AtsXmlMessages messages, IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
 		super();
 		this.xmlSearch = xmlSearch;
 		this.messages = messages;
 		this.resourceProvider = resourceProvider;
+		this.locatorManager = locatorManager;
+		this.resourceManager = resourceManager;
 	}
 
 	public void performOperation(IResource resource, HttpServletResponse response) {
@@ -129,7 +135,7 @@ public class AtsService {
 				urlPath = request.getRequestURI().replace(servletPath, "");
 
 				if (urlPath.contains("osee/data")) {
-					DataServlet.handleUriRequest(urlPath, response);
+					DataServlet.handleUriRequest(locatorManager, resourceManager, urlPath, response);
 					return;
 				} else {
 					resource = getResource(urlPath);

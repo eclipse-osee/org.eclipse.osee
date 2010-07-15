@@ -10,20 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.server.OseeHttpServlet;
+import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.manager.servlet.ats.AtsService;
 import org.eclipse.osee.framework.manager.servlet.ats.AtsXmlMessages;
 import org.eclipse.osee.framework.manager.servlet.ats.AtsXmlSearch;
 import org.eclipse.osee.framework.manager.servlet.ats.XmlMessage;
 import org.eclipse.osee.framework.manager.servlet.data.ServletResourceBridge;
-import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
@@ -33,32 +30,32 @@ import org.eclipse.osee.framework.resource.management.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class AtsServlet extends OseeHttpServlet {
+public class AtsServlet extends UnsecuredOseeHttpServlet {
 
 	private static final long serialVersionUID = -9064467328387640427L;
 
 	private final AtsService atsService;
 
-	public AtsServlet() {
+	private final IResourceLocatorManager locatorManager;
+	private final IResourceManager resourceManager;
+
+	public AtsServlet(IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
+		super();
+		this.locatorManager = locatorManager;
+		this.resourceManager = resourceManager;
 		AtsService.IResourceProvider provider = new ResourceProvider();
 		AtsXmlSearch xmlSearch = new AtsXmlSearch();
 		AtsXmlMessages messages = new AtsXmlMessages(new XmlMessage());
-
-		this.atsService = new AtsService(provider, xmlSearch, messages);
+		this.atsService = new AtsService(provider, xmlSearch, messages, locatorManager, resourceManager);
 	}
 
 	@Override
-	protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-		// Open to all
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 		atsService.sendClient(request, response);
 	}
 
 	@Override
-	protected void doPost(final HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(final HttpServletRequest request, HttpServletResponse response) {
 		IResourceLocator locator = new IResourceLocator() {
 
 			@Override
@@ -83,12 +80,9 @@ public class AtsServlet extends OseeHttpServlet {
 		atsService.performOperation(new ServletResourceBridge(request, locator), response);
 	}
 
-	private static final class ResourceProvider implements AtsService.IResourceProvider {
+	private final class ResourceProvider implements AtsService.IResourceProvider {
 		@Override
 		public IResource getResource(String path) throws OseeCoreException {
-			IResourceLocatorManager locatorManager = Activator.getInstance().getResourceLocatorManager();
-			IResourceManager resourceManager = Activator.getInstance().getResourceManager();
-
 			IResourceLocator locator = locatorManager.getResourceLocator(path);
 			return resourceManager.acquire(locator, new Options());
 		}

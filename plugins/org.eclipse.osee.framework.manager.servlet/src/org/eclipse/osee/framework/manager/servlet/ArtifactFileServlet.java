@@ -14,12 +14,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.logging.Level;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.server.OseeHttpServlet;
+import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -30,18 +29,29 @@ import org.eclipse.osee.framework.manager.servlet.data.HttpArtifactFileInfo;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
+import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactFileServlet extends OseeHttpServlet {
+public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
 
 	private static final long serialVersionUID = -6334080268467740905L;
 
+	private final IResourceLocatorManager locatorManager;
+	private final IResourceManager resourceManager;
+
+	public ArtifactFileServlet(IResourceLocatorManager locatorManager, IResourceManager resourceManager) {
+		super();
+		this.locatorManager = locatorManager;
+		this.resourceManager = resourceManager;
+	}
+
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		try {
 			HttpArtifactFileInfo artifactFileInfo = null;
 
@@ -72,7 +82,7 @@ public class ArtifactFileServlet extends OseeHttpServlet {
 					uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getId());
 				}
 			}
-			handleArtifactUri(request.getQueryString(), uri, response);
+			handleArtifactUri(locatorManager, resourceManager, request.getQueryString(), uri, response);
 		} catch (NumberFormatException ex) {
 			handleError(response, HttpServletResponse.SC_BAD_REQUEST,
 						String.format("Invalid Branch Id: [%s]", request.getQueryString()), ex);
@@ -84,13 +94,13 @@ public class ArtifactFileServlet extends OseeHttpServlet {
 		}
 	}
 
-	public static void handleArtifactUri(String request, String uri, HttpServletResponse response) throws OseeCoreException {
+	public static void handleArtifactUri(IResourceLocatorManager locatorManager, IResourceManager resourceManager, String request, String uri, HttpServletResponse response) throws OseeCoreException {
 		boolean wasProcessed = false;
 		if (Strings.isValid(uri)) {
-			IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(uri);
+			IResourceLocator locator = locatorManager.getResourceLocator(uri);
 			Options options = new Options();
 			options.put(StandardOptions.DecompressOnAquire.name(), true);
-			IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
+			IResource resource = resourceManager.acquire(locator, options);
 
 			if (resource != null) {
 				wasProcessed = true;
@@ -139,10 +149,4 @@ public class ArtifactFileServlet extends OseeHttpServlet {
 		OseeLog.log(Activator.class, Level.SEVERE, message, ex);
 		response.getWriter().write(Lib.exceptionToString(ex));
 	}
-
-	@Override
-	protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-		// Open to all
-	}
-
 }

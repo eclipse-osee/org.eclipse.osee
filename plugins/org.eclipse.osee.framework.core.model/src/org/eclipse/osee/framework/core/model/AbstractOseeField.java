@@ -8,34 +8,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.model.internal.fields;
+package org.eclipse.osee.framework.core.model;
 
-import org.eclipse.osee.framework.jdk.core.util.Compare;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class OseeField<T> extends AbstractOseeField<T> {
+public abstract class AbstractOseeField<T> implements IOseeField<T> {
 
-   private T object;
+   protected boolean isDirty;
 
-   public OseeField(T initValue) {
-      super();
-      set(initValue);
+   public AbstractOseeField() {
+      isDirty = false;
    }
 
-   public OseeField() {
-      super();
+   public abstract void set(T value) throws OseeCoreException;
+
+   public abstract T get() throws OseeCoreException;
+
+   public void clearDirty() {
+      this.isDirty = false;
    }
 
-   @Override
-   public void set(T value) {
-      isDirty |= Compare.isDifferent(get(), value);
-      this.object = value;
+   public boolean isDirty() {
+      return isDirty;
    }
 
-   @Override
-   public T get() {
-      return object;
-   }
 }

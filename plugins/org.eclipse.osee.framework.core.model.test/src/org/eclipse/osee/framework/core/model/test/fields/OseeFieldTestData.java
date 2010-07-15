@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.internal.fields.IOseeField;
+import org.eclipse.osee.framework.core.model.IOseeField;
 
 /**
  * @author Roberto E. Escobar

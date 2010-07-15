@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
-import org.eclipse.osee.framework.core.model.internal.fields.OseeField;
+import org.eclipse.osee.framework.core.model.OseeField;
 
 /**
  * @author Robert A. Fisher

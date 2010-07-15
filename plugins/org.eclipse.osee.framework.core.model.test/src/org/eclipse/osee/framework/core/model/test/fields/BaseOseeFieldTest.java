@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.internal.fields.OseeField;
+import org.eclipse.osee.framework.core.model.OseeField;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;

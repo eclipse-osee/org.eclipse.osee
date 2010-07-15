@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
-import org.eclipse.osee.framework.core.model.internal.fields.OseeField;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**

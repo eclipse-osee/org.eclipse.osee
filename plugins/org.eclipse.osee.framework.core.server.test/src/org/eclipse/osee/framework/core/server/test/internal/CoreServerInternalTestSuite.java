@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.test.internal;
 
+import org.eclipse.osee.framework.core.server.test.internal.session.SessionTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { //
+@Suite.SuiteClasses({ //
 BuildTypeIdentifierTest.class, //
+			SessionTestSuite.class, //
 })
 /**
  * @author Roberto E. Escobar

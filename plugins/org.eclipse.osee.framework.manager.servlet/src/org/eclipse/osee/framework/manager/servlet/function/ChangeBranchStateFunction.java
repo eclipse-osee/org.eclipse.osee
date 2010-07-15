@@ -13,45 +13,45 @@ package org.eclipse.osee.framework.manager.servlet.function;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.branch.management.IOseeBranchServiceProvider;
+import org.eclipse.osee.framework.branch.management.IOseeBranchService;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.ChangeBranchStateRequest;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
-import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 
 /**
  * @author Megumi Telles
  */
 public class ChangeBranchStateFunction extends AbstractOperation {
-   private final HttpServletRequest req;
-   private final HttpServletResponse resp;
-   private final IOseeBranchServiceProvider branchServiceProvider;
-   private final IDataTranslationServiceProvider dataTransalatorProvider;
 
-   public ChangeBranchStateFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchServiceProvider branchServiceProvider, IDataTranslationServiceProvider dataTransalatorProvider) {
-      super("Update Branch State", Activator.PLUGIN_ID);
-      this.req = req;
-      this.resp = resp;
-      this.branchServiceProvider = branchServiceProvider;
-      this.dataTransalatorProvider = dataTransalatorProvider;
-   }
+	private final HttpServletRequest req;
+	private final HttpServletResponse resp;
+	private final IOseeBranchService branchService;
+	private final IDataTranslationService translationService;
 
-   @Override
-   protected void doWork(IProgressMonitor monitor) throws Exception {
-      IDataTranslationService service = dataTransalatorProvider.getTranslationService();
-      ChangeBranchStateRequest request = service.convert(req.getInputStream(), CoreTranslatorId.CHANGE_BRANCH_STATE);
+	public ChangeBranchStateFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchService branchService, IDataTranslationService translationService) {
+		super("Update Branch State", Activator.PLUGIN_ID);
+		this.req = req;
+		this.resp = resp;
+		this.branchService = branchService;
+		this.translationService = translationService;
+	}
 
-      IOperation subOp = branchServiceProvider.getBranchService().updateBranchState(monitor, request);
-      doSubWork(subOp, monitor, 0.90);
+	@Override
+	protected void doWork(IProgressMonitor monitor) throws Exception {
+		ChangeBranchStateRequest request =
+					translationService.convert(req.getInputStream(), CoreTranslatorId.CHANGE_BRANCH_STATE);
 
-      resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-      resp.setContentType("text/plain");
-      resp.setCharacterEncoding("UTF-8");
-      resp.getWriter().write("Purge was successful");
-      resp.getWriter().flush();
-      monitor.worked(calculateWork(0.10));
-   }
+		IOperation subOp = branchService.updateBranchState(monitor, request);
+		doSubWork(subOp, monitor, 0.90);
+
+		resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+		resp.setContentType("text/plain");
+		resp.setCharacterEncoding("UTF-8");
+		resp.getWriter().write("Purge was successful");
+		resp.getWriter().flush();
+		monitor.worked(calculateWork(0.10));
+	}
 }

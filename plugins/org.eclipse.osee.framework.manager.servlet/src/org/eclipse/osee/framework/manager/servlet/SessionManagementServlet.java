@@ -15,15 +15,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.Level;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
-import org.eclipse.osee.framework.core.server.OseeHttpServlet;
+import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
@@ -31,126 +31,128 @@ import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 /**
  * @author Roberto E. Escobar
  */
-public class SessionManagementServlet extends OseeHttpServlet {
+public class SessionManagementServlet extends UnsecuredOseeHttpServlet {
 
-   private static final long serialVersionUID = 3334123351267606890L;
+	private static final long serialVersionUID = 3334123351267606890L;
 
-   private static enum OperationType {
-      CREATE,
-      RELEASE,
-      INVALID;
+	private static enum OperationType {
+		CREATE,
+		RELEASE,
+		INVALID;
 
-      public static OperationType fromString(String value) {
-         OperationType toReturn = OperationType.INVALID;
-         for (OperationType operType : OperationType.values()) {
-            if (operType.name().equalsIgnoreCase(value)) {
-               toReturn = operType;
-               break;
-            }
-         }
-         return toReturn;
-      }
-   }
+		public static OperationType fromString(String value) {
+			OperationType toReturn = OperationType.INVALID;
+			for (OperationType operType : OperationType.values()) {
+				if (operType.name().equalsIgnoreCase(value)) {
+					toReturn = operType;
+					break;
+				}
+			}
+			return toReturn;
+		}
+	}
 
-   @Override
-   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-      // Allow access to all
-   }
+	private final IAuthenticationManager authenticationManager;
+	private final ISessionManager sessionManager;
 
-   @Override
-   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      try {
-         String[] protocols = Activator.getInstance().getAuthenticationManager().getProtocols();
-         response.setStatus(HttpServletResponse.SC_OK);
-         response.setContentType("text/plain");
-         response.setCharacterEncoding("UTF-8");
-         response.getWriter().write(Arrays.deepToString(protocols));
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format(
-               "Error processing request for protocols [%s]", request.toString()), ex);
-         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-         response.setContentType("text/plain");
-         response.getWriter().write(Lib.exceptionToString(ex));
-      } finally {
-         response.getWriter().flush();
-         response.getWriter().close();
-      }
-   }
+	public SessionManagementServlet(ISessionManager sessionManager, IAuthenticationManager authenticationManager) {
+		super();
+		this.sessionManager = sessionManager;
+		this.authenticationManager = authenticationManager;
+	}
 
-   @Override
-   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      String operation = request.getParameter("operation");
-      try {
-         OperationType operationType = OperationType.fromString(operation);
-         switch (operationType) {
-            case CREATE:
-               createSession(request, response);
-               break;
-            case RELEASE:
-               releaseSession(request, response);
-               break;
-            default:
-               break;
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing session request [%s]",
-               request.toString()), ex);
-         response.getWriter().write(Lib.exceptionToString(ex));
-         response.getWriter().flush();
-         response.getWriter().close();
-      }
-   }
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		try {
+			String[] protocols = authenticationManager.getProtocols();
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.setContentType("text/plain");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(Arrays.deepToString(protocols));
+		} catch (Exception ex) {
+			OseeLog.log(Activator.class, Level.SEVERE,
+						String.format("Error processing request for protocols [%s]", request.toString()), ex);
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.setContentType("text/plain");
+			response.getWriter().write(Lib.exceptionToString(ex));
+		} finally {
+			response.getWriter().flush();
+			response.getWriter().close();
+		}
+	}
 
-   private void createSession(HttpServletRequest request, HttpServletResponse response) throws OseeCoreException {
-      try {
-         ISessionManager manager = Activator.getInstance().getSessionManager();
-         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-         Lib.inputStreamToOutputStream(request.getInputStream(), outputStream);
-         byte[] bytes = outputStream.toByteArray();
-         // TODO Decrypt credential info
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String operation = request.getParameter("operation");
+		try {
+			OperationType operationType = OperationType.fromString(operation);
+			switch (operationType) {
+				case CREATE:
+					createSession(request, response);
+					break;
+				case RELEASE:
+					releaseSession(request, response);
+					break;
+				default:
+					break;
+			}
+		} catch (Exception ex) {
+			OseeLog.log(Activator.class, Level.SEVERE,
+						String.format("Error processing session request [%s]", request.toString()), ex);
+			response.getWriter().write(Lib.exceptionToString(ex));
+			response.getWriter().flush();
+			response.getWriter().close();
+		}
+	}
 
-         OseeCredential credential = OseeCredential.fromXml(new ByteArrayInputStream(bytes));
-         OseeSessionGrant oseeSessionGrant = manager.createSession(credential);
+	private void createSession(HttpServletRequest request, HttpServletResponse response) throws OseeCoreException {
+		try {
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			Lib.inputStreamToOutputStream(request.getInputStream(), outputStream);
+			byte[] bytes = outputStream.toByteArray();
+			// TODO Decrypt credential info
 
-         response.setStatus(HttpServletResponse.SC_ACCEPTED);
-         ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-         oseeSessionGrant.write(byteOutputStream);
+			OseeCredential credential = OseeCredential.fromXml(new ByteArrayInputStream(bytes));
+			OseeSessionGrant oseeSessionGrant = sessionManager.createSession(credential);
 
-         // TODO after encrypted these will need to change
-         response.setContentType("application/xml");
-         response.setCharacterEncoding("UTF-8");
-         response.setContentLength(byteOutputStream.size());
-         Lib.inputStreamToOutputStream(new ByteArrayInputStream(byteOutputStream.toByteArray()),
-               response.getOutputStream());
+			response.setStatus(HttpServletResponse.SC_ACCEPTED);
+			ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+			oseeSessionGrant.write(byteOutputStream);
 
-      } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      } finally {
-         try {
-            response.getOutputStream().flush();
-         } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
-         }
-      }
-   }
+			// TODO after encrypted these will need to change
+			response.setContentType("application/xml");
+			response.setCharacterEncoding("UTF-8");
+			response.setContentLength(byteOutputStream.size());
+			Lib.inputStreamToOutputStream(new ByteArrayInputStream(byteOutputStream.toByteArray()),
+						response.getOutputStream());
 
-   private void releaseSession(HttpServletRequest request, HttpServletResponse response) throws OseeCoreException {
-      try {
-         ISessionManager manager = Activator.getInstance().getSessionManager();
-         String sessionId = request.getParameter("sessionId");
-         manager.releaseSession(sessionId);
-         response.setStatus(HttpServletResponse.SC_ACCEPTED);
-         response.setContentType("text/plain");
-         response.getWriter().write(String.format("Session [%s] released.", sessionId));
-      } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      } finally {
-         try {
-            response.getWriter().flush();
-            response.getWriter().close();
-         } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
-         }
-      }
-   }
+		} catch (IOException ex) {
+			OseeExceptions.wrapAndThrow(ex);
+		} finally {
+			try {
+				response.getOutputStream().flush();
+			} catch (IOException ex) {
+				OseeExceptions.wrapAndThrow(ex);
+			}
+		}
+	}
+
+	private void releaseSession(HttpServletRequest request, HttpServletResponse response) throws OseeCoreException {
+		try {
+			String sessionId = request.getParameter("sessionId");
+			sessionManager.releaseSession(sessionId);
+			response.setStatus(HttpServletResponse.SC_ACCEPTED);
+			response.setContentType("text/plain");
+			response.getWriter().write(String.format("Session [%s] released.", sessionId));
+		} catch (IOException ex) {
+			OseeExceptions.wrapAndThrow(ex);
+		} finally {
+			try {
+				response.getWriter().flush();
+				response.getWriter().close();
+			} catch (IOException ex) {
+				OseeExceptions.wrapAndThrow(ex);
+			}
+		}
+	}
 }

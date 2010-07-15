@@ -10,36 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
-import java.util.List;
+import java.util.Collection;
 import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.data.OseeSession;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeInvalidSessionException;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface ISessionManager {
 
-   public OseeSessionGrant createSession(OseeCredential credential) throws OseeCoreException;
+	public OseeSessionGrant createSession(OseeCredential credential) throws OseeCoreException;
 
-   public void releaseSession(String sessionId);
+	public void releaseSession(String sessionId) throws OseeCoreException;
 
-   public void updateSessionActivity(String sessionId, String interactionName) throws OseeInvalidSessionException;
+	public void updateSessionActivity(String sessionId, String interactionName) throws OseeCoreException;
 
-   public SessionData getSessionById(String sessionId);
+	public ISession getSessionById(String sessionId) throws OseeCoreException;
 
-   public List<SessionData> getSessionByClientAddress(String clientAddress);
+	public Collection<ISession> getSessionByClientAddress(String clientAddress) throws OseeCoreException;
 
-   public List<SessionData> getSessionsByUserId(String userId, boolean includeNonServerManagedSessions) throws OseeCoreException;
+	public Collection<ISession> getSessionsByUserId(String userId, boolean includeNonServerManagedSessions) throws OseeCoreException;
 
-   public List<SessionData> getAllSessions(boolean includeNonServerManagedSessions) throws OseeDataStoreException;
+	public Collection<ISession> getAllSessions(boolean includeNonServerManagedSessions) throws OseeCoreException;
 
-   public void releaseSessionImmediate(String... sessionId) throws OseeCoreException;
+	public void releaseSessionImmediate(String... sessionId) throws OseeCoreException;
 
-   public boolean isAlive(OseeSession oseeSession) throws OseeCoreException;
-
-   public void shutdown();
 }

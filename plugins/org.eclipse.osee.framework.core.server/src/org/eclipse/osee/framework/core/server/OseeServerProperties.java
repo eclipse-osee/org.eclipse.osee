@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.server;
 
 import java.io.File;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.server.internal.ServerActivator;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -66,9 +67,9 @@ public class OseeServerProperties {
       if (!wasBinaryDataChecked) {
          File file = new File(toReturn);
          if (file.exists()) {
-            OseeLog.log(CoreServerActivator.class, Level.INFO, String.format("Application Server Data: [%s]", toReturn));
+            OseeLog.log(ServerActivator.class, Level.INFO, String.format("Application Server Data: [%s]", toReturn));
          } else {
-            OseeLog.log(CoreServerActivator.class, Level.WARNING, String.format(
+            OseeLog.log(ServerActivator.class, Level.WARNING, String.format(
                   "Application Server Data: [%s] does not exist and will be created", toReturn));
          }
          wasBinaryDataChecked = true;

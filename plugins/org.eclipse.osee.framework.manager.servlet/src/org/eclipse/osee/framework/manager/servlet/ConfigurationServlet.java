@@ -19,24 +19,21 @@ import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.osee.framework.branch.management.IOseeBranchServiceProvider;
+import org.eclipse.osee.framework.branch.management.IOseeBranchService;
 import org.eclipse.osee.framework.core.datastore.DatastoreInitOperation;
 import org.eclipse.osee.framework.core.datastore.IOseeSchemaProvider;
 import org.eclipse.osee.framework.core.datastore.IOseeSchemaResource;
 import org.eclipse.osee.framework.core.datastore.OseeSchemaProvider;
 import org.eclipse.osee.framework.core.datastore.SchemaCreationOptions;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.DatastoreInitRequest;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
-import org.eclipse.osee.framework.core.server.IApplicationServerManagerProvider;
-import org.eclipse.osee.framework.core.server.OseeHttpServlet;
+import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
-import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
@@ -44,93 +41,87 @@ import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 /**
  * @author Roberto E. Escobar
  */
-public class ConfigurationServlet extends OseeHttpServlet {
+public class ConfigurationServlet extends UnsecuredOseeHttpServlet {
 
-   private static final long serialVersionUID = -5421308349950133041L;
+	private static final long serialVersionUID = -5421308349950133041L;
 
-   private final IDataTranslationServiceProvider dataTransalatorProvider;
-   private final IOseeDatabaseServiceProvider dbServiceProvider;
-   private final IOseeBranchServiceProvider branchServiceProvider;
-   private final IApplicationServerManagerProvider managerProvider;
+	private final IDataTranslationService translationService;
+	private final IOseeDatabaseService databaseService;
+	private final IOseeBranchService branchService;
+	private final IApplicationServerManager appServerService;
 
-   public ConfigurationServlet(IApplicationServerManagerProvider managerProvider, IDataTranslationServiceProvider dataTransalatorProvider, IOseeDatabaseServiceProvider dbServiceProvider, IOseeBranchServiceProvider branchServiceProvider) {
-      this.dataTransalatorProvider = dataTransalatorProvider;
-      this.dbServiceProvider = dbServiceProvider;
-      this.branchServiceProvider = branchServiceProvider;
-      this.managerProvider = managerProvider;
-   }
+	public ConfigurationServlet(IApplicationServerManager appServerService, IDataTranslationService translationService, IOseeDatabaseService databaseService, IOseeBranchService branchService) {
+		this.translationService = translationService;
+		this.databaseService = databaseService;
+		this.branchService = branchService;
+		this.appServerService = appServerService;
+	}
 
-   @Override
-   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-      // Open to all
-   }
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String servletPath = request.getServletPath();
+		String urlPath = request.getRequestURI().replace(servletPath, "");
+		if (urlPath.startsWith("/datastore/schema")) {
+			StringWriter writer = new StringWriter();
+			IOseeSchemaProvider schemaProvider = new OseeSchemaProvider();
+			for (IOseeSchemaResource resource : schemaProvider.getSchemaResources()) {
+				InputStream inputStream = null;
+				try {
+					inputStream = new BufferedInputStream(resource.getContent());
+					writer.write(Lib.inputStreamToString(inputStream));
+				} catch (Exception ex) {
+					OseeLog.log(Activator.class, Level.SEVERE, ex);
+				} finally {
+					Lib.close(inputStream);
+				}
+			}
+			sendMessage(response, HttpURLConnection.HTTP_OK, writer.toString(), null);
+		} else {
+			String message = String.format("[%s] not found", request.getRequestURI());
+			sendMessage(response, HttpURLConnection.HTTP_NOT_FOUND, message, null);
+		}
+	}
 
-   @Override
-   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      String servletPath = request.getServletPath();
-      String urlPath = request.getRequestURI().replace(servletPath, "");
-      if (urlPath.startsWith("/datastore/schema")) {
-         StringWriter writer = new StringWriter();
-         IOseeSchemaProvider schemaProvider = new OseeSchemaProvider();
-         for (IOseeSchemaResource resource : schemaProvider.getSchemaResources()) {
-            InputStream inputStream = null;
-            try {
-               inputStream = new BufferedInputStream(resource.getContent());
-               writer.write(Lib.inputStreamToString(inputStream));
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            } finally {
-               Lib.close(inputStream);
-            }
-         }
-         sendMessage(response, HttpURLConnection.HTTP_OK, writer.toString(), null);
-      } else {
-         String message = String.format("[%s] not found", request.getRequestURI());
-         sendMessage(response, HttpURLConnection.HTTP_NOT_FOUND, message, null);
-      }
-   }
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String servletPath = request.getServletPath();
+		String urlPath = request.getRequestURI().replace(servletPath, "");
+		if (urlPath.startsWith("/datastore/initialize")) {
+			try {
+				SchemaCreationOptions options = getInitOptions(request);
+				IOseeSchemaProvider schemaProvider = new OseeSchemaProvider();
+				IOperation operation =
+							new DatastoreInitOperation(appServerService, databaseService, branchService, schemaProvider,
+										options);
+				Operations.executeWorkAndCheckStatus(operation, new LogProgressMonitor(), -1.0);
+			} catch (Exception ex) {
+				String message = String.format("Datastore Initialization: [%s]\n%s", response.toString(), ex.toString());
+				sendMessage(response, HttpURLConnection.HTTP_INTERNAL_ERROR, message, ex);
+			}
+		} else {
+			String message = String.format("[%s] not found", request.getRequestURI());
+			sendMessage(response, HttpURLConnection.HTTP_NOT_FOUND, message, null);
+		}
+	}
 
-   @Override
-   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      String servletPath = request.getServletPath();
-      String urlPath = request.getRequestURI().replace(servletPath, "");
-      if (urlPath.startsWith("/datastore/initialize")) {
-         try {
-            SchemaCreationOptions options = getInitOptions(request);
-            IOseeSchemaProvider schemaProvider = new OseeSchemaProvider();
-            IApplicationServerManager manager = managerProvider.getApplicationServerManager();
-            IOperation operation =
-                  new DatastoreInitOperation(manager, dbServiceProvider, branchServiceProvider, schemaProvider, options);
-            Operations.executeWorkAndCheckStatus(operation, new LogProgressMonitor(), -1.0);
-         } catch (Exception ex) {
-            String message = String.format("Datastore Initialization: [%s]\n%s", response.toString(), ex.toString());
-            sendMessage(response, HttpURLConnection.HTTP_INTERNAL_ERROR, message, ex);
-         }
-      } else {
-         String message = String.format("[%s] not found", request.getRequestURI());
-         sendMessage(response, HttpURLConnection.HTTP_NOT_FOUND, message, null);
-      }
-   }
+	private SchemaCreationOptions getInitOptions(HttpServletRequest request) throws Exception {
+		DatastoreInitRequest data =
+					translationService.convert(request.getInputStream(), CoreTranslatorId.OSEE_DATASTORE_INIT_REQUEST);
 
-   private SchemaCreationOptions getInitOptions(HttpServletRequest request) throws Exception {
-      IDataTranslationService service = dataTransalatorProvider.getTranslationService();
-      DatastoreInitRequest data =
-            service.convert(request.getInputStream(), CoreTranslatorId.OSEE_DATASTORE_INIT_REQUEST);
+		SchemaCreationOptions options =
+					new SchemaCreationOptions(data.getTableDataSpace(), data.getIndexDataSpace(),
+								data.isUseFileSpecifiedSchemas());
+		return options;
+	}
 
-      SchemaCreationOptions options =
-            new SchemaCreationOptions(data.getTableDataSpace(), data.getIndexDataSpace(),
-                  data.isUseFileSpecifiedSchemas());
-      return options;
-   }
-
-   private void sendMessage(HttpServletResponse response, int status, String message, Throwable ex) throws IOException {
-      if (ex != null) {
-         OseeLog.log(Activator.class, Level.SEVERE, message, ex);
-      }
-      response.setStatus(status);
-      response.setContentType("text/plain");
-      response.getWriter().write(message);
-      response.getWriter().flush();
-      response.getWriter().close();
-   }
+	private void sendMessage(HttpServletResponse response, int status, String message, Throwable ex) throws IOException {
+		if (ex != null) {
+			OseeLog.log(Activator.class, Level.SEVERE, message, ex);
+		}
+		response.setStatus(status);
+		response.setContentType("text/plain");
+		response.getWriter().write(message);
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
 }

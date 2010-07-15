@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -61,7 +60,7 @@ class InternalOseeServerInfo extends OseeServerInfo {
       try {
          supportedVersions.addAll(ApplicationServerDataStore.getOseeVersionsByServerId(getServerId()));
       } catch (OseeCoreException ex) {
-         OseeLog.log(CoreServerActivator.class, Level.SEVERE, ex);
+         OseeLog.log(ServerActivator.class, Level.SEVERE, ex);
       }
       if (!supportedVersions.containsAll(defaultVersions)) {
          supportedVersions.addAll(defaultVersions);

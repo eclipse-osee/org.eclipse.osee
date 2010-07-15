@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.core.model;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.internal.fields.OseeField;
 
 /**
  * @author Roberto E. Escobar

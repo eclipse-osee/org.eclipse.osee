@@ -14,14 +14,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.server.IApplicationServerLookupProvider;
-import org.eclipse.osee.framework.core.server.IApplicationServerManagerProvider;
-import org.eclipse.osee.framework.core.server.OseeHttpServlet;
+import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
+import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,81 +28,76 @@ import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 /**
  * @author Roberto E. Escobar
  */
-public class ServerLookupServlet extends OseeHttpServlet {
+public class ServerLookupServlet extends UnsecuredOseeHttpServlet {
 
-   private static final long serialVersionUID = -7055381632202456561L;
+	private static final long serialVersionUID = -7055381632202456561L;
 
-   private final IApplicationServerLookupProvider lookupProvider;
-   private final IApplicationServerManagerProvider managerProvider;
+	private final IApplicationServerLookup lookupService;
+	private final IApplicationServerManager applicationServerManager;
 
-   public ServerLookupServlet(IApplicationServerLookupProvider lookupProvider, IApplicationServerManagerProvider managerProvider) {
-      this.lookupProvider = lookupProvider;
-      this.managerProvider = managerProvider;
+	public ServerLookupServlet(IApplicationServerLookup lookupService, IApplicationServerManager applicationServerManager) {
+		this.lookupService = lookupService;
+		this.applicationServerManager = applicationServerManager;
 
-   }
+	}
 
-   @Override
-   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-      // Allow access to all
-   }
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		try {
+			String version = request.getParameter("version");
+			boolean wasBadRequest = false;
 
-   @Override
-   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      try {
-         String version = request.getParameter("version");
-         boolean wasBadRequest = false;
+			OseeServerInfo info = null;
+			if (Strings.isValid(version)) {
+				version = version.trim();
+				info = lookupService.getServerInfoBy(version);
+			} else {
+				wasBadRequest = true;
+			}
 
-         OseeServerInfo info = null;
-         if (Strings.isValid(version)) {
-            version = version.trim();
-            info = lookupProvider.getApplicationServerLookupService().getServerInfoBy(version);
-         } else {
-            wasBadRequest = true;
-         }
+			if (info == null) {
+				response.setStatus(wasBadRequest ? HttpServletResponse.SC_BAD_REQUEST : HttpServletResponse.SC_NO_CONTENT);
+				response.setContentType("txt/plain");
+				response.getWriter().write(
+							String.format("Unable to locate application server matching - [%s]", request.toString()));
+				response.getWriter().flush();
+				response.getWriter().close();
+			} else {
+				ByteArrayOutputStream stream = new ByteArrayOutputStream();
+				info.write(stream);
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.setContentType("application/xml");
+				response.setCharacterEncoding("UTF-8");
+				response.setContentLength(stream.size());
+				Lib.inputStreamToOutputStream(new ByteArrayInputStream(stream.toByteArray()), response.getOutputStream());
+				response.getOutputStream().flush();
+			}
+		} catch (Exception ex) {
+			OseeLog.log(Activator.class, Level.SEVERE,
+						String.format("Failed to process application server lookup request [%s]", request.toString()), ex);
+			response.getWriter().write(Lib.exceptionToString(ex));
+			response.getWriter().flush();
+			response.getWriter().close();
+		}
+	}
 
-         if (info == null) {
-            response.setStatus(wasBadRequest ? HttpServletResponse.SC_BAD_REQUEST : HttpServletResponse.SC_NO_CONTENT);
-            response.setContentType("txt/plain");
-            response.getWriter().write(
-                  String.format("Unable to locate application server matching - [%s]", request.toString()));
-            response.getWriter().flush();
-            response.getWriter().close();
-         } else {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            info.write(stream);
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/xml");
-            response.setCharacterEncoding("UTF-8");
-            response.setContentLength(stream.size());
-            Lib.inputStreamToOutputStream(new ByteArrayInputStream(stream.toByteArray()), response.getOutputStream());
-            response.getOutputStream().flush();
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format(
-               "Failed to process application server lookup request [%s]", request.toString()), ex);
-         response.getWriter().write(Lib.exceptionToString(ex));
-         response.getWriter().flush();
-         response.getWriter().close();
-      }
-   }
-
-   @Override
-   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      try {
-         boolean isRegistrationToLookupTableRequested = Boolean.valueOf(request.getParameter("registerToLookup"));
-         if (isRegistrationToLookupTableRequested) {
-            boolean wasSuccessful = managerProvider.getApplicationServerManager().executeLookupRegistration();
-            response.setStatus(wasSuccessful ? HttpServletResponse.SC_ACCEPTED : HttpServletResponse.SC_CONFLICT);
-            response.setContentType("txt/plain");
-            response.getWriter().write(
-                  String.format("Registration into server lookup was a [%s]", wasSuccessful ? "success" : "failure"));
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format(
-               "Failed to process application server lookup request [%s]", request.toString()), ex);
-         response.getWriter().write(Lib.exceptionToString(ex));
-      }
-      response.getWriter().flush();
-      response.getWriter().close();
-   }
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		try {
+			boolean isRegistrationToLookupTableRequested = Boolean.valueOf(request.getParameter("registerToLookup"));
+			if (isRegistrationToLookupTableRequested) {
+				boolean wasSuccessful = applicationServerManager.executeLookupRegistration();
+				response.setStatus(wasSuccessful ? HttpServletResponse.SC_ACCEPTED : HttpServletResponse.SC_CONFLICT);
+				response.setContentType("txt/plain");
+				response.getWriter().write(
+							String.format("Registration into server lookup was a [%s]", wasSuccessful ? "success" : "failure"));
+			}
+		} catch (Exception ex) {
+			OseeLog.log(Activator.class, Level.SEVERE,
+						String.format("Failed to process application server lookup request [%s]", request.toString()), ex);
+			response.getWriter().write(Lib.exceptionToString(ex));
+		}
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
 }

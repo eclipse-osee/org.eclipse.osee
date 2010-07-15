@@ -29,30 +29,30 @@ import org.eclipse.osee.framework.database.core.SupportedDatabase;
  * @author Roberto E. Escobar
  */
 public class CreateSchemaOperation extends AbstractDbTxOperation {
-   private final Map<String, SchemaData> userSchema;
-   private final Map<String, SchemaData> dbSchema;
+	private final Map<String, SchemaData> userSchema;
+	private final Map<String, SchemaData> dbSchema;
 
-   public CreateSchemaOperation(IOseeDatabaseServiceProvider provider, Map<String, SchemaData> userSchema, Map<String, SchemaData> dbSchema) {
-      super(provider, "Create Schema", Activator.PLUGIN_ID);
-      this.userSchema = userSchema;
-      this.dbSchema = dbSchema;
-   }
+	public CreateSchemaOperation(IOseeDatabaseServiceProvider provider, Map<String, SchemaData> userSchema, Map<String, SchemaData> dbSchema) {
+		super(provider, "Create Schema", Activator.PLUGIN_ID);
+		this.userSchema = userSchema;
+		this.dbSchema = dbSchema;
+	}
 
-   @Override
-   protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
-      DatabaseMetaData metaData = connection.getMetaData();
-      SqlManager sqlManager = SqlFactory.getSqlManager(metaData);
-      SchemaSqlUtil dbInit = new SchemaSqlUtil(sqlManager);
+	@Override
+	protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
+		DatabaseMetaData metaData = connection.getMetaData();
+		SqlManager sqlManager = SqlFactory.getSqlManager(metaData);
+		SchemaSqlUtil dbInit = new SchemaSqlUtil(sqlManager);
 
-      Set<String> schemas = userSchema.keySet();
-      dbInit.dropIndices(schemas, userSchema, dbSchema);
-      dbInit.dropTables(schemas, userSchema, dbSchema);
-      if (SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.postgresql)) {
-         dbInit.dropSchema(schemas);
-         dbInit.createSchema(schemas);
-      }
-      dbInit.addTables(schemas, userSchema);
-      dbInit.addIndices(schemas, userSchema);
-   }
+		Set<String> schemas = userSchema.keySet();
+		dbInit.dropIndices(schemas, userSchema, dbSchema);
+		dbInit.dropTables(schemas, userSchema, dbSchema);
+		if (SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.postgresql)) {
+			dbInit.dropSchema(schemas);
+			dbInit.createSchema(schemas);
+		}
+		dbInit.addTables(schemas, userSchema);
+		dbInit.addIndices(schemas, userSchema);
+	}
 
 }

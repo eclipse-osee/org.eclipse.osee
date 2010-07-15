@@ -15,7 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
@@ -24,9 +23,9 @@ import org.eclipse.osee.framework.core.message.IOseeModelingService;
 import org.eclipse.osee.framework.core.message.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.message.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
-import org.eclipse.osee.framework.core.server.OseeHttpServlet;
+import org.eclipse.osee.framework.core.server.ISessionManager;
+import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
-import org.eclipse.osee.framework.core.translation.IDataTranslationServiceProvider;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
@@ -34,73 +33,75 @@ import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 /**
  * @author Roberto E. Escobar
  */
-public class OseeModelServlet extends OseeHttpServlet {
+public class OseeModelServlet extends SecureOseeHttpServlet {
 
-   private static final long serialVersionUID = -2639113870500561780L;
-   private final IDataTranslationServiceProvider dataTransalatorProvider;
+	private static final long serialVersionUID = -2639113870500561780L;
 
-   public OseeModelServlet(IDataTranslationServiceProvider dataTransalatorProvider) {
-      super();
-      this.dataTransalatorProvider = dataTransalatorProvider;
-   }
+	private final IOseeModelingService modelingService;
+	private final IDataTranslationService dataTransalatorService;
 
-   private IOseeModelingService getModelingService() throws OseeCoreException {
-      return Activator.getInstance().getOseeModelingService();
-   }
+	public OseeModelServlet(ISessionManager sessionManager, IDataTranslationService dataTransalatorService, IOseeModelingService modelingService) {
+		super(sessionManager);
+		this.dataTransalatorService = dataTransalatorService;
+		this.modelingService = modelingService;
+	}
 
-   @Override
-   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-      if(!request.getMethod().equalsIgnoreCase("GET")){
-         super.checkAccessControl(request);
-      }
-   }
+	private IOseeModelingService getModelingService() {
+		return modelingService;
+	}
 
-   private void handleError(HttpServletResponse resp, String request, Throwable th) throws IOException {
-      OseeLog.log(Activator.class, Level.SEVERE, String.format("Osee Cache request error: [%s]", request),
-            th);
-      resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-      resp.setContentType("text/plain");
-      resp.getWriter().write(Lib.exceptionToString(th));
-      resp.getWriter().flush();
-      resp.getWriter().close();
-   }
+	@Override
+	protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
+		if (!request.getMethod().equalsIgnoreCase("GET")) {
+			super.checkAccessControl(request);
+		}
+	}
 
-   @Override
-   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-      try {
-         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	private void handleError(HttpServletResponse resp, String request, Throwable th) throws IOException {
+		OseeLog.log(Activator.class, Level.SEVERE, String.format("Osee Cache request error: [%s]", request), th);
+		resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		resp.setContentType("text/plain");
+		resp.getWriter().write(Lib.exceptionToString(th));
+		resp.getWriter().flush();
+		resp.getWriter().close();
+	}
 
-         getModelingService().exportOseeTypes(new LogProgressMonitor(), outputStream);
-         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-         resp.setContentType("text/plain");
-         resp.setCharacterEncoding("UTF-8");
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		try {
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-         Lib.inputStreamToOutputStream(new ByteArrayInputStream(outputStream.toByteArray()), resp.getOutputStream());
-      } catch (Exception ex) {
-         handleError(resp, req.getQueryString(), ex);
-      }
-   }
+			getModelingService().exportOseeTypes(new LogProgressMonitor(), outputStream);
+			resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+			resp.setContentType("text/plain");
+			resp.setCharacterEncoding("UTF-8");
 
-   @Override
-   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-      try {
-         IDataTranslationService service = dataTransalatorProvider.getTranslationService();
-         OseeImportModelRequest modelRequest =
-               service.convert(req.getInputStream(), CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
+			Lib.inputStreamToOutputStream(new ByteArrayInputStream(outputStream.toByteArray()), resp.getOutputStream());
+		} catch (Exception ex) {
+			handleError(resp, req.getQueryString(), ex);
+		}
+	}
 
-         OseeImportModelResponse modelResponse = new OseeImportModelResponse();
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		try {
+			IDataTranslationService service = dataTransalatorService;
+			OseeImportModelRequest modelRequest =
+						service.convert(req.getInputStream(), CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
 
-         getModelingService().importOseeTypes(new LogProgressMonitor(), isInitializing(req), modelRequest,
-               modelResponse);
+			OseeImportModelResponse modelResponse = new OseeImportModelResponse();
 
-         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-         resp.setContentType("text/xml");
-         resp.setCharacterEncoding("UTF-8");
+			getModelingService().importOseeTypes(new LogProgressMonitor(), isInitializing(req), modelRequest,
+						modelResponse);
 
-         InputStream inputStream = service.convertToStream(modelResponse, CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);
-         Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
-      } catch (Exception ex) {
-         handleError(resp, req.toString(), ex);
-      }
-   }
+			resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+			resp.setContentType("text/xml");
+			resp.setCharacterEncoding("UTF-8");
+
+			InputStream inputStream = service.convertToStream(modelResponse, CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);
+			Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
+		} catch (Exception ex) {
+			handleError(resp, req.toString(), ex);
+		}
+	}
 }

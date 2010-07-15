@@ -19,7 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.server.OseeHttpServlet;
+import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -52,85 +52,80 @@ import org.eclipse.osee.framework.manager.servlet.internal.Activator;
  * 
  * @author Roberto E. Escobar
  */
-public class ClientInstallInfoServlet extends OseeHttpServlet {
+public class ClientInstallInfoServlet extends UnsecuredOseeHttpServlet {
 
-   private static final long serialVersionUID = -4089363221030046759L;
+	private static final long serialVersionUID = -4089363221030046759L;
 
-   private static final String QUERY = "Select OSEE_KEY, OSEE_VALUE FROM osee_info where OSEE_KEY LIKE ?";
+	private static final String QUERY = "Select OSEE_KEY, OSEE_VALUE FROM osee_info where OSEE_KEY LIKE ?";
 
-   private enum CommandType {
-      exec_path;
-   }
+	private enum CommandType {
+		exec_path;
+	}
 
-   @Override
-   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-      // Allow access to all
-   }
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			String cmd = request.getParameter("cmd");
+			String key = request.getParameter("key");
+			boolean isCloseAllowed = Boolean.valueOf(request.getParameter("close"));
+			boolean isPromptAllowed = Boolean.valueOf(request.getParameter("prompt"));
+			if (Strings.isValid(cmd)) {
+				CommandType cmdType = CommandType.valueOf(cmd);
+				switch (cmdType) {
+					case exec_path:
+						if (!Strings.isValid(key)) {
+							key = "osee.install.%";
+						}
+						if (key.startsWith("osee.install.")) {
+							List<ClientInstallInfo> infos = getInfoEntry(key);
+							response.setStatus(HttpServletResponse.SC_OK);
+							response.setContentType("text/html");
+							if (infos.isEmpty()) {
+								response.getWriter().write("<html><body>No installations found</body></html>");
+							} else {
+								String html = InstallLinkPageGenerator.generate(infos, isCloseAllowed, isPromptAllowed);
+								response.getWriter().print(html);
+							}
+						} else {
+							response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+							response.setContentType("text/plain");
+							response.getWriter().write("key parameter was invalid. must start with: osee.install.");
+						}
+						break;
+					default:
+						response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+						break;
+				}
+			} else {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				response.setContentType("text/plain");
+				response.getWriter().write(
+							String.format("cmd parameter was invalid. use any of the following: %s",
+										Arrays.deepToString(CommandType.values())));
+			}
+		} catch (Exception ex) {
+			OseeLog.log(Activator.class, Level.SEVERE,
+						String.format("Failed to process client install info request [%s]", request.toString()), ex);
+			response.setContentType("text/plain");
+			response.getWriter().write(Lib.exceptionToString(ex));
+		}
+		response.getWriter().flush();
+		response.getWriter().close();
+	}
 
-   @Override
-   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      try {
-         String cmd = request.getParameter("cmd");
-         String key = request.getParameter("key");
-         boolean isCloseAllowed = Boolean.valueOf(request.getParameter("close"));
-         boolean isPromptAllowed = Boolean.valueOf(request.getParameter("prompt"));
-         if (Strings.isValid(cmd)) {
-            CommandType cmdType = CommandType.valueOf(cmd);
-            switch (cmdType) {
-               case exec_path:
-                  if (!Strings.isValid(key)) {
-                     key = "osee.install.%";
-                  }
-                  if (key.startsWith("osee.install.")) {
-                     List<ClientInstallInfo> infos = getInfoEntry(key);
-                     response.setStatus(HttpServletResponse.SC_OK);
-                     response.setContentType("text/html");
-                     if (infos.isEmpty()) {
-                        response.getWriter().write("<html><body>No installations found</body></html>");
-                     } else {
-                        String html = InstallLinkPageGenerator.generate(infos, isCloseAllowed, isPromptAllowed);
-                        response.getWriter().print(html);
-                     }
-                  } else {
-                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                     response.setContentType("text/plain");
-                     response.getWriter().write("key parameter was invalid. must start with: osee.install.");
-                  }
-                  break;
-               default:
-                  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                  break;
-            }
-         } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setContentType("text/plain");
-            response.getWriter().write(
-                  String.format("cmd parameter was invalid. use any of the following: %s",
-                        Arrays.deepToString(CommandType.values())));
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format(
-               "Failed to process client install info request [%s]", request.toString()), ex);
-         response.setContentType("text/plain");
-         response.getWriter().write(Lib.exceptionToString(ex));
-      }
-      response.getWriter().flush();
-      response.getWriter().close();
-   }
-
-   private List<ClientInstallInfo> getInfoEntry(String key) throws OseeCoreException {
-      List<ClientInstallInfo> infos = new ArrayList<ClientInstallInfo>();
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
-      try {
-         chStmt.runPreparedQuery(QUERY, key);
-         while (chStmt.next()) {
-            String name = chStmt.getString("osee_key");
-            String data = chStmt.getString("osee_value");
-            infos.add(ClientInstallInfo.createFromXml(name, data));
-         }
-      } finally {
-         chStmt.close();
-      }
-      return infos;
-   }
+	private List<ClientInstallInfo> getInfoEntry(String key) throws OseeCoreException {
+		List<ClientInstallInfo> infos = new ArrayList<ClientInstallInfo>();
+		IOseeStatement chStmt = ConnectionHandler.getStatement();
+		try {
+			chStmt.runPreparedQuery(QUERY, key);
+			while (chStmt.next()) {
+				String name = chStmt.getString("osee_key");
+				String data = chStmt.getString("osee_value");
+				infos.add(ClientInstallInfo.createFromXml(name, data));
+			}
+		} finally {
+			chStmt.close();
+		}
+		return infos;
+	}
 }
