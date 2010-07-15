@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.enums;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -22,23 +24,47 @@ import org.junit.Test;
  */
 public class PermissionEnumTest {
 
-	@Ignore
+	private static class PermissionTest {
+		PermissionEnum permission;
+		boolean[] expectedMatches;
+
+		public PermissionTest(PermissionEnum permission, boolean... expectedMatches) {
+			super();
+			this.permission = permission;
+			this.expectedMatches = expectedMatches;
+		}
+	}
+
 	@Test
 	public void testMatches() {
-		//		PermissionEnum.getPermission(permissionId);
-		//		PermissionEnum.getPermission(name);
-		//		
+		PermissionEnum[] toMatches = PermissionEnum.values();
+		System.out.println("Boolean order: " + Arrays.deepToString(toMatches));
+		//NONE, READ, WRITE, FULLACCESS, LOCK, DENY
 
-		//		PermissionEnum value = null;
-		//
-		//		value.getName();
-		//		value.getPermId()PermId();
-		//		value.getRank();
-		//
-		//		boolean expectedMatch = false;
-		//		boolean actualMatch = value.matches(toMatch);
-		//		Assert.assertEquals(expectedMatch, actualMatch);
+		Collection<PermissionTest> datas = new ArrayList<PermissionTest>();
+		datas.add(new PermissionTest(PermissionEnum.DENY, false, false, false, false, false, false));
+		datas.add(new PermissionTest(PermissionEnum.FULLACCESS, true, true, true, true, false, false));
+		datas.add(new PermissionTest(PermissionEnum.LOCK, false, true, false, false, false, false));
+		datas.add(new PermissionTest(PermissionEnum.NONE, true, false, false, false, false, false));
+		datas.add(new PermissionTest(PermissionEnum.READ, true, true, false, false, false, false));
+		datas.add(new PermissionTest(PermissionEnum.WRITE, true, true, true, false, false, false));
 
+		int test = 0;
+		for (PermissionTest data : datas) {
+			Assert.assertEquals("test data error", toMatches.length, data.expectedMatches.length);
+
+			for (int index = 0; index < toMatches.length; index++) {
+				boolean expectedMatch = data.expectedMatches[index];
+				PermissionEnum toMatch = toMatches[index];
+
+				boolean actualMatch = data.permission.matches(toMatch);
+				String message =
+							String.format("Test[%s] [%s matches %s] expected:[%s] actual:[%s]", test, data.permission,
+										toMatch, expectedMatch, actualMatch);
+				Assert.assertEquals(message, expectedMatch, actualMatch);
+			}
+			test++;
+		}
 	}
 
 	@Test
@@ -66,8 +92,11 @@ public class PermissionEnumTest {
 	public void testGetPermissionNames() {
 		String[] expectedNames = new String[] {"None", "Read", "Write", "Full Access", "Lock", "Deny"};
 		String[] actualNames = PermissionEnum.getPermissionNames();
+		PermissionEnum[] enums = PermissionEnum.values();
 		Assert.assertEquals(expectedNames.length, actualNames.length);
+		Assert.assertEquals(expectedNames.length, enums.length);
 		for (int index = 0; index < expectedNames.length; index++) {
+			Assert.assertEquals(expectedNames[index], enums[index].getName());
 			Assert.assertEquals(expectedNames[index], actualNames[index]);
 		}
 	}
