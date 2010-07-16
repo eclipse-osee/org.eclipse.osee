@@ -21,15 +21,15 @@ import org.eclipse.osee.framework.core.server.ISession;
  */
 public final class Session extends AbstractOseeType implements ISession, Comparable<ISession> {
 
-	private static final String SESSION_CREATION_DATE = "session.creation.date";
-	private static final String SESSION_USER_ID = "session.user.id";
-	private static final String SESSION_MANAGED_BY_SERVER_ID = "session.managed.by.server.id";
-	private static final String SESSION_CLIENT_MACHINE_NAME = "session.client.machine.name";
-	private static final String SESSION_CLIENT_VERSION = "session.client.version";
-	private static final String SESSION_CLIENT_ADDRESS = "session.client.address";
-	private static final String SESSION_CLIENT_PORT = "session.client.port";
-	private static final String SESSION_LAST_INTERACTION_DATE = "session.last.interaction.date";
-	private static final String SESSION_LAST_INTERACTION_DETAILS = "session.last.interaction.details";
+	public static final String SESSION_CREATION_DATE = "session.creation.date";
+	public static final String SESSION_USER_ID = "session.user.id";
+	public static final String SESSION_MANAGED_BY_SERVER_ID = "session.managed.by.server.id";
+	public static final String SESSION_CLIENT_MACHINE_NAME = "session.client.machine.name";
+	public static final String SESSION_CLIENT_VERSION = "session.client.version";
+	public static final String SESSION_CLIENT_ADDRESS = "session.client.address";
+	public static final String SESSION_CLIENT_PORT = "session.client.port";
+	public static final String SESSION_LAST_INTERACTION_DATE = "session.last.interaction.date";
+	public static final String SESSION_LAST_INTERACTION_DETAILS = "session.last.interaction.details";
 
 	public Session(String guid, String name, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String interactionDetails) {
 		super(guid, name);
@@ -126,7 +126,7 @@ public final class Session extends AbstractOseeType implements ISession, Compara
 		setFieldLogException(SESSION_CLIENT_ADDRESS, clientAddress);
 	}
 
-	public void setClientPort(int clientPort) {
+	public void setClientPort(Integer clientPort) {
 		setFieldLogException(SESSION_CLIENT_PORT, clientPort);
 	}
 
