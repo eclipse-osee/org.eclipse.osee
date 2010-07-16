@@ -22,34 +22,33 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
 /**
- * Perspective factory for the Define perspective. This sets up the initial layout and placeholders for views.
+ * Perspective factory for the Define perspective. This sets up the initial layout and place holders for views.
  * 
  * @author Robert A. Fisher
  */
 public class DefinePerspectiveFactory implements IPerspectiveFactory {
 
-   public void createInitialLayout(IPageLayout layout) {
-      String editorArea = layout.getEditorArea();
+	@Override
+	public void createInitialLayout(IPageLayout layout) {
+		String editorArea = layout.getEditorArea();
 
-      layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
-      layout.addShowViewShortcut(BranchView.VIEW_ID);
-      layout.addShowViewShortcut(QuickSearchView.VIEW_ID);
-      layout.addShowViewShortcut(DefineNavigateView.VIEW_ID);
-      layout.addShowViewShortcut(ArtifactTypeWalker.VIEW_ID);
-      layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");
+		layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
+		layout.addShowViewShortcut(BranchView.VIEW_ID);
+		layout.addShowViewShortcut(QuickSearchView.VIEW_ID);
+		layout.addShowViewShortcut(DefineNavigateView.VIEW_ID);
+		layout.addShowViewShortcut(ArtifactTypeWalker.VIEW_ID);
+		layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");
 
-      IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.25f, editorArea);
-      topLeft.addPlaceholder(ArtifactExplorer.VIEW_ID + ":*");
-      topLeft.addView(ArtifactExplorer.VIEW_ID);
-      topLeft.addView(DefineNavigateView.VIEW_ID);
+		IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.25f, editorArea);
+		topLeft.addPlaceholder(ArtifactExplorer.VIEW_ID + ":*");
+		topLeft.addView(ArtifactExplorer.VIEW_ID);
+		topLeft.addView(DefineNavigateView.VIEW_ID);
 
-      IFolderLayout lower = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.65f, editorArea);
-      lower.addView(BranchView.VIEW_ID);
-      lower.addPlaceholder(HistoryView.VIEW_ID);
-      lower.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
-      lower.addPlaceholder("org.eclipse.pde.runtime.LogView");
-
-      IFolderLayout underLower = layout.createFolder("underBottom", IPageLayout.BOTTOM, .75f, "bottom");
-      underLower.addView(QuickSearchView.VIEW_ID);
-   }
+		IFolderLayout lower = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.65f, editorArea);
+		lower.addView(BranchView.VIEW_ID);
+		lower.addPlaceholder(HistoryView.VIEW_ID);
+		lower.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
+		lower.addPlaceholder("org.eclipse.pde.runtime.LogView");
+		lower.addView(QuickSearchView.VIEW_ID);
+	}
 }
