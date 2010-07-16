@@ -48,28 +48,39 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
+ * <REM2> new handled in MassXViewerEventManager
+ * 
  * @author Donald G. Dunne
  */
-public class MassXViewer extends XViewer implements IFrameworkTransactionEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener {
+public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFrameworkTransactionEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener {
 
    private String title;
    private final Set<Artifact> artifacts = new HashSet<Artifact>(50);
    private final IDirtiableEditor editor;
    private final List<String> EXTRA_COLUMNS = Arrays.asList(new String[] {"GUID", "HRID", "Artifact Type"});
+   private final Composite parent;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public MassXViewer(Composite parent, int style, MassArtifactEditor editor) {
       super(parent, style, ((MassArtifactEditorInput) editor.getEditorInput()).getXViewerFactory());
+      this.parent = parent;
       this.editor = editor;
       OseeEventManager.addListener(this);
+      MassXViewerEventManager.add(this);
+      final MassXViewer fMassXViewer = this;
+      parent.addDisposeListener(new DisposeListener() {
+
+         @Override
+         public void widgetDisposed(DisposeEvent e) {
+            MassXViewerEventManager.remove(fMassXViewer);
+         }
+      });
    }
 
    @Override
@@ -201,12 +212,10 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
       return arts;
    }
 
-   /**
-    * Release resources
-    */
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
+      MassXViewerEventManager.remove(this);
       // Tell the label provider to release its resources
       getLabelProvider().dispose();
    }
@@ -219,9 +228,6 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
       return arts;
    }
 
-   /**
-    * @return Returns the title.
-    */
    public String getTitle() {
       return title;
    }
@@ -247,9 +253,6 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
       ((MassContentProvider) getContentProvider()).set(artifacts);
    }
 
-   /**
-    * @return the artifacts
-    */
    public Collection<? extends Artifact> getArtifacts() {
       return artifacts;
    }
@@ -264,7 +267,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
                return;
             }
             if (transData.cacheDeletedArtifacts.size() > 0) {
-               ((MassContentProvider) getContentProvider()).removeAll(transData.cacheDeletedArtifacts);
+               ((MassContentProvider) getContentProvider()).removeAllArts(transData.cacheDeletedArtifacts);
             }
             if (transData.cacheChangedArtifacts.size() > 0) {
                ((MassContentProvider) getContentProvider()).updateAll(transData.cacheChangedArtifacts);
@@ -304,6 +307,16 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
             }
          }
       });
+   }
+
+   @Override
+   public MassXViewer getMassXViewer() {
+      return this;
+   }
+
+   @Override
+   public boolean isDisposed() {
+      return parent == null || parent.isDisposed();
    }
 
 }

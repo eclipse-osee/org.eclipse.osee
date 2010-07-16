@@ -16,6 +16,7 @@ import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 
 public class MassContentProvider implements ITreeContentProvider {
@@ -64,15 +65,25 @@ public class MassContentProvider implements ITreeContentProvider {
       });
    }
 
-   public void remove(final Artifact art) {
+   public void remove(final EventBasicGuidArtifact art) {
       removeAll(Arrays.asList(art));
    }
 
-   public void removeAll(final Collection<? extends Artifact> arts) {
+   public void removeAll(final Collection<? extends EventBasicGuidArtifact> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            rootSet.remove(arts);
+            rootSet.removeAll(arts);
+            xViewer.refresh();
+         };
+      });
+   }
+
+   public void removeAllArts(final Collection<? extends Artifact> arts) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            rootSet.removeAll(arts);
             xViewer.refresh();
          };
       });
@@ -88,7 +99,7 @@ public class MassContentProvider implements ITreeContentProvider {
       });
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();

@@ -45,6 +45,11 @@ import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListene
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
@@ -71,7 +76,7 @@ import org.eclipse.ui.part.IPageSite;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implements IAdaptable, IRebuildMenuListener, IFrameworkTransactionEventListener, IArtifactsPurgedEventListener, IBranchProvider {
+public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implements IAdaptable, IRebuildMenuListener, IArtifactEventListener, IFrameworkTransactionEventListener, IArtifactsPurgedEventListener, IBranchProvider {
    private static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactSearchView";
 
    protected static final Match[] EMPTY_MATCH_ARRAY = new Match[0];
@@ -127,8 +132,8 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
 
    private IArtifactSearchContentProvider fContentProvider;
    private ISelectionProvider selectionProvider;
-   private final ArtifactDecorator artifactDecorator =
-         new ArtifactDecorator(SkynetGuiPlugin.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
+   private final ArtifactDecorator artifactDecorator = new ArtifactDecorator(
+         SkynetGuiPlugin.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
 
    public ArtifactSearchPage() {
       setElementLimit(new Integer(DEFAULT_ELEMENT_LIMIT));
@@ -262,7 +267,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       memento.putInteger(KEY_LIMIT, getElementLimit().intValue());
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public Object getAdapter(Class adapter) {
       return null;
    }
@@ -349,7 +354,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    }
 
    @Override
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked", "rawtypes"})
    protected void evaluateChangedElements(Match[] matches, Set changedElements) {
       if (showLineMatches()) {
          for (int i = 0; i < matches.length; i++) {
@@ -364,7 +369,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       }
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked", "rawtypes"})
    protected void evaluateInternalChangedElements(Match[] matches, Set changedElements) {
       for (int i = 0; i < matches.length; i++) {
          changedElements.add(matches[i].getElement());
@@ -522,7 +527,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
          return collection.isEmpty() ? null : iterator().next();
       }
 
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings("rawtypes")
       @Override
       public Iterator iterator() {
          return collection.iterator();
@@ -538,10 +543,41 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
          return collection.toArray();
       }
 
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings("rawtypes")
       @Override
       public List toList() {
          return new ArrayList<Artifact>(collection);
       }
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return null;
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      final Collection<EventBasicGuidArtifact> deletedPurgedArts =
+            artifactEvent.get(EventModType.Deleted, EventModType.Purged);
+      if (deletedPurgedArts.isEmpty()) {
+         return;
+      }
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (getViewer() != null) {
+               AbstractArtifactSearchResult results = getInput();
+               if (results != null) {
+                  for (EventBasicGuidArtifact guidArt : deletedPurgedArts) {
+                     for (Match match : results.getMatches(guidArt)) {
+                        results.removeMatch(match);
+                     }
+                  }
+                  getViewer().refresh();
+               }
+            }
+         }
+      });
+
    }
 }

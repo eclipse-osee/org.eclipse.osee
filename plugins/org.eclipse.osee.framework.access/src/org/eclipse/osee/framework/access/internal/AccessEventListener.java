@@ -23,93 +23,98 @@ import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventList
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
+/**
+ * <REM2>
+ * 
+ * @author Donald G. Dunne
+ */
 public final class AccessEventListener implements IBranchEventListener, IArtifactsPurgedEventListener, IArtifactEventListener {
 
-	private final AccessControlService service;
+   private final AccessControlService service;
 
-	public AccessEventListener(AccessControlService service) {
-		this.service = service;
-	}
+   public AccessEventListener(AccessControlService service) {
+      this.service = service;
+   }
 
-	private void reload() throws OseeCoreException {
-		service.reloadCache();
-	}
+   private void reload() throws OseeCoreException {
+      service.reloadCache();
+   }
 
-	@Override
-	public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
-		try {
-			if (branchModType == BranchEventType.Deleted || sender.isLocal() && branchModType == BranchEventType.Purged) {
-				BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branchId);
-				updateAccessList(sender, branchAccessObject);
-			}
-		} catch (OseeCoreException ex) {
-			OseeLog.log(Activator.class, Level.SEVERE, ex);
-		}
-	}
+   @Override
+   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
+      try {
+         if (branchModType == BranchEventType.Deleted || sender.isLocal() && branchModType == BranchEventType.Purged) {
+            BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branchId);
+            updateAccessList(sender, branchAccessObject);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
 
-	@Override
-	public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
-		try {
-			for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
-				ArtifactAccessObject artifactAccessObject = ArtifactAccessObject.getArtifactAccessObject(artifact);
-				updateAccessList(sender, artifactAccessObject);
-			}
-		} catch (OseeCoreException ex) {
-			OseeLog.log(Activator.class, Level.SEVERE, ex);
-		}
-	}
+   @Override
+   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
+      try {
+         for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
+            ArtifactAccessObject artifactAccessObject = ArtifactAccessObject.getArtifactAccessObject(artifact);
+            updateAccessList(sender, artifactAccessObject);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
 
-	@Override
-	public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-		for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
-			if (guidArt.is(EventModType.Added) && guidArt.is(CoreArtifactTypes.User)) {
-				try {
-					reload();
-				} catch (OseeCoreException ex) {
-					OseeLog.log(Activator.class, Level.SEVERE, ex);
-				}
-			}
-			if (guidArt.is(EventModType.Purged)) {
-				try {
-					Artifact cacheArt = ArtifactCache.getActive(guidArt);
-					if (cacheArt != null) {
-						ArtifactAccessObject artifactAccessObject = ArtifactAccessObject.getArtifactAccessObject(cacheArt);
-						updateAccessList(sender, artifactAccessObject);
-					}
-				} catch (OseeCoreException ex) {
-					OseeLog.log(Activator.class, Level.SEVERE, ex);
-				}
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
+         if (guidArt.is(EventModType.Added) && guidArt.is(CoreArtifactTypes.User)) {
+            try {
+               reload();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+         if (guidArt.is(EventModType.Purged)) {
+            try {
+               Artifact cacheArt = ArtifactCache.getActive(guidArt);
+               if (cacheArt != null) {
+                  ArtifactAccessObject artifactAccessObject = ArtifactAccessObject.getArtifactAccessObject(cacheArt);
+                  updateAccessList(sender, artifactAccessObject);
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
 
-			}
-		}
-	}
+         }
+      }
+   }
 
-	@Override
-	public List<? extends IEventFilter> getEventFilters() {
-		return null;
-	}
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return null;
+   }
 
-	@Override
-	public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
-		try {
-			if (branchEvent.getEventType() == BranchEventType.Deleted || sender.isLocal() && branchEvent.getEventType() == BranchEventType.Purged) {
-				BranchAccessObject branchAccessObject =
-							BranchAccessObject.getBranchAccessObject(branchEvent.getBranchGuid());
-				updateAccessList(sender, branchAccessObject);
-			}
-		} catch (OseeCoreException ex) {
-			OseeLog.log(Activator.class, Level.SEVERE, ex);
-		}
-	}
+   @Override
+   public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
+      try {
+         if (branchEvent.getEventType() == BranchEventType.Deleted || sender.isLocal() && branchEvent.getEventType() == BranchEventType.Purged) {
+            BranchAccessObject branchAccessObject =
+                  BranchAccessObject.getBranchAccessObject(branchEvent.getBranchGuid());
+            updateAccessList(sender, branchAccessObject);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
 
-	@Override
-	public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-	}
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+   }
 
-	private void updateAccessList(Sender sender, AccessObject accessObject) throws OseeCoreException {
-		List<AccessControlData> acl = service.generateAccessControlList(accessObject);
-		for (AccessControlData accessControlData : acl) {
-			service.removeAccessControlDataIf(sender.isLocal(), accessControlData);
-		}
-	}
+   private void updateAccessList(Sender sender, AccessObject accessObject) throws OseeCoreException {
+      List<AccessControlData> acl = service.generateAccessControlList(accessObject);
+      for (AccessControlData accessControlData : acl) {
+         service.removeAccessControlDataIf(sender.isLocal(), accessControlData);
+      }
+   }
 }
