@@ -80,7 +80,9 @@ public class AccessData {
 	public boolean matchesAll(PermissionEnum permissionEnum) {
 		boolean matches = false;
 		for (PermissionEnum objectPermission : artifactPermissions.allValues()) {
-			if (objectPermission == null || objectPermission.matches(permissionEnum)) {
+			if (objectPermission == null) {
+				matches = false;
+			} else if (objectPermission.matches(permissionEnum)) {
 				matches = true;
 			} else {
 				matches = false;
