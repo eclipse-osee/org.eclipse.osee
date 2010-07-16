@@ -26,38 +26,39 @@ import org.eclipse.osee.framework.server.admin.internal.Activator;
  */
 public class ReloadCachesWorker extends BaseServerCommand {
 
-   protected ReloadCachesWorker() {
-      super("Reload Cache(s)");
-   }
+	protected ReloadCachesWorker() {
+		super("Reload Cache(s)");
+	}
 
-   @Override
-   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
-      IOseeCachingService service = Activator.getInstance().getOseeCachingService();
-      Collection<OseeCacheEnum> cacheIds = getSelectedCaches();
-      if (cacheIds.isEmpty()) {
-         service.reloadAll();
-         println(String.format("Reloaded all caches %s", Arrays.deepToString(OseeCacheEnum.values())));
-      } else {
-         for (OseeCacheEnum cacheId : cacheIds) {
+	@Override
+	protected void doCommandWork(IProgressMonitor monitor) throws Exception {
+		IOseeCachingService service = Activator.getInstance().getOseeCachingService();
+		Collection<OseeCacheEnum> cacheIds = getSelectedCaches();
+		if (cacheIds.isEmpty()) {
+			service.reloadAll();
+			println(String.format("Reloaded all caches %s",
+						Arrays.deepToString(OseeCacheEnum.values()).replaceAll(", SESSION_CACHE", "")));
+		} else {
+			for (OseeCacheEnum cacheId : cacheIds) {
 
-            service.getCache(cacheId).reloadCache();
-         }
-         println(String.format("Reloading %s", cacheIds));
-      }
-   }
+				service.getCache(cacheId).reloadCache();
+			}
+			println(String.format("Reloading %s", cacheIds));
+		}
+	}
 
-   private Collection<OseeCacheEnum> getSelectedCaches() {
-      Set<OseeCacheEnum> caches = new HashSet<OseeCacheEnum>();
+	private Collection<OseeCacheEnum> getSelectedCaches() {
+		Set<OseeCacheEnum> caches = new HashSet<OseeCacheEnum>();
 
-      boolean hasArgument = true;
-      while (hasArgument) {
-         String value = getCommandInterpreter().nextArgument();
-         if (Strings.isValid(value)) {
-            caches.add(OseeCacheEnum.valueOf(value));
-         } else {
-            hasArgument = false;
-         }
-      }
-      return caches;
-   }
+		boolean hasArgument = true;
+		while (hasArgument) {
+			String value = getCommandInterpreter().nextArgument();
+			if (Strings.isValid(value)) {
+				caches.add(OseeCacheEnum.valueOf(value));
+			} else {
+				hasArgument = false;
+			}
+		}
+		return caches;
+	}
 }
