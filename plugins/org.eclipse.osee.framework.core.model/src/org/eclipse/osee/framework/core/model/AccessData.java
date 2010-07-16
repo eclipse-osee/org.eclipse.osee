@@ -30,101 +30,101 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  */
 public class AccessData {
 
-   private final DoubleKeyHashMap<IBasicArtifact<?>, Object, PermissionEnum> artifactPermissions;
+	private final DoubleKeyHashMap<IBasicArtifact<?>, Object, PermissionEnum> artifactPermissions;
 
-   public AccessData() {
-      this.artifactPermissions = new DoubleKeyHashMap<IBasicArtifact<?>, Object, PermissionEnum>();
-   }
+	public AccessData() {
+		this.artifactPermissions = new DoubleKeyHashMap<IBasicArtifact<?>, Object, PermissionEnum>();
+	}
 
-   public void add(Object object, PermissionEnum permission) {
-      artifactPermissions.put(null, object, permission);
-   }
+	public void add(Object object, PermissionEnum permission) {
+		artifactPermissions.put(null, object, permission);
+	}
 
-   public void add(IBasicArtifact<?> artifact, Object object, PermissionEnum permission) {
-      artifactPermissions.put(artifact, object, permission);
-   }
+	public void add(IBasicArtifact<?> artifact, Object object, PermissionEnum permission) {
+		artifactPermissions.put(artifact, object, permission);
+	}
 
-   public void merge(AccessData accessData) {
-      //Merge all of the common permissions
-      for (IBasicArtifact<?> artifact : artifactPermissions.getKeySetOne()) {
-         for (Object object : artifactPermissions.getSubHash(artifact).keySet()) {
-            if (accessData.artifactPermissions.containsKey(artifact, object)) {
-               PermissionEnum mainPermission = artifactPermissions.get(artifact, object);
-               PermissionEnum subPermission = accessData.artifactPermissions.get(artifact, object);
-               PermissionEnum mergePermission;
+	public void merge(AccessData accessData) {
+		//Merge all of the common permissions
+		for (IBasicArtifact<?> artifact : artifactPermissions.getKeySetOne()) {
+			for (Object object : artifactPermissions.getSubHash(artifact).keySet()) {
+				if (accessData.artifactPermissions.containsKey(artifact, object)) {
+					PermissionEnum mainPermission = artifactPermissions.get(artifact, object);
+					PermissionEnum subPermission = accessData.artifactPermissions.get(artifact, object);
+					PermissionEnum mergePermission;
 
-               //Deny overrides all permissions
-               if (mainPermission == PermissionEnum.DENY || subPermission == PermissionEnum.DENY) {
-                  mainPermission = PermissionEnum.DENY;
-                  subPermission = PermissionEnum.DENY;
-               }
-               //Always take the weaker permission
-               if (mainPermission.matches(subPermission)) {
-                  mergePermission = subPermission;
-               } else {
-                  mergePermission = mainPermission;
-               }
-               artifactPermissions.put(artifact, object, mergePermission);
-               accessData.artifactPermissions.remove(artifact, object);
-            }
-         }
-      }
-      //Add the uncommon permissions to the main accessData
-      for (IBasicArtifact<?> artifact : accessData.artifactPermissions.getKeySetOne()) {
-         for (Object object : accessData.artifactPermissions.getSubHash(artifact).keySet()) {
-            artifactPermissions.put(artifact, object, accessData.artifactPermissions.get(artifact, object));
-         }
-      }
-   }
+					//Deny overrides all permissions
+					if (mainPermission == PermissionEnum.DENY || subPermission == PermissionEnum.DENY) {
+						mainPermission = PermissionEnum.DENY;
+						subPermission = PermissionEnum.DENY;
+					}
+					//Always take the weaker permission
+					if (mainPermission.matches(subPermission)) {
+						mergePermission = subPermission;
+					} else {
+						mergePermission = mainPermission;
+					}
+					artifactPermissions.put(artifact, object, mergePermission);
+					accessData.artifactPermissions.remove(artifact, object);
+				}
+			}
+		}
+		//Add the uncommon permissions to the main accessData
+		for (IBasicArtifact<?> artifact : accessData.artifactPermissions.getKeySetOne()) {
+			for (Object object : accessData.artifactPermissions.getSubHash(artifact).keySet()) {
+				artifactPermissions.put(artifact, object, accessData.artifactPermissions.get(artifact, object));
+			}
+		}
+	}
 
-   public boolean matchesAll(PermissionEnum permissionEnum) {
-      boolean matches = false;
-      for (PermissionEnum objectPermission : artifactPermissions.allValues()) {
-         if (objectPermission.matches(permissionEnum)) {
-            matches = true;
-         } else {
-            matches = false;
-            break;
-         }
-      }
-      return matches;
-   }
+	public boolean matchesAll(PermissionEnum permissionEnum) {
+		boolean matches = false;
+		for (PermissionEnum objectPermission : artifactPermissions.allValues()) {
+			if (objectPermission == null || objectPermission.matches(permissionEnum)) {
+				matches = true;
+			} else {
+				matches = false;
+				break;
+			}
+		}
+		return matches;
+	}
 
-   public Collection<IArtifactType> getArtifactTypeMatches(IBasicArtifact<?> artifact, IArtifactType type, PermissionEnum permissionEnum) {
-      IAcceptFilter<IArtifactType> filter = new ArtifactTypeFilter(permissionEnum, type);
-      return filter(artifact, filter);
-   }
+	public Collection<IArtifactType> getArtifactTypeMatches(IBasicArtifact<?> artifact, IArtifactType type, PermissionEnum permissionEnum) {
+		IAcceptFilter<IArtifactType> filter = new ArtifactTypeFilter(permissionEnum, type);
+		return filter(artifact, filter);
+	}
 
-   public Collection<IAttributeType> getAttributeTypeMatches(IBasicArtifact<?> artifact, IAttributeType attributeType, PermissionEnum permissionEnum) {
-      List<Pair<IBasicArtifact<?>, IAttributeType>> pairList = new ArrayList<Pair<IBasicArtifact<?>, IAttributeType>>();
-      pairList.add(new Pair<IBasicArtifact<?>, IAttributeType>(artifact, attributeType));
-      IAcceptFilter<IAttributeType> filter = new AttributeTypeFilter(permissionEnum, pairList);
-      return filter(artifact, filter);
-   }
+	public Collection<IAttributeType> getAttributeTypeMatches(IBasicArtifact<?> artifact, IAttributeType attributeType, PermissionEnum permissionEnum) {
+		List<Pair<IBasicArtifact<?>, IAttributeType>> pairList = new ArrayList<Pair<IBasicArtifact<?>, IAttributeType>>();
+		pairList.add(new Pair<IBasicArtifact<?>, IAttributeType>(artifact, attributeType));
+		IAcceptFilter<IAttributeType> filter = new AttributeTypeFilter(permissionEnum, pairList);
+		return filter(artifact, filter);
+	}
 
-   public Collection<IRelationType> getRelationTypeMatches(IBasicArtifact<?> artifact, PermissionEnum permissionEnum) {
-      return Collections.emptyList();
-   }
+	public Collection<IRelationType> getRelationTypeMatches(IBasicArtifact<?> artifact, PermissionEnum permissionEnum) {
+		return Collections.emptyList();
+	}
 
-   private <T> Collection<T> filter(IBasicArtifact<?> artifact, IAcceptFilter<T> filter) {
-      Collection<T> filtered = new ArrayList<T>();
-      for (Object object : artifactPermissions.getSubHash(artifact).keySet()) {
-         PermissionEnum permission = artifactPermissions.get(artifact, object);
+	private <T> Collection<T> filter(IBasicArtifact<?> artifact, IAcceptFilter<T> filter) {
+		Collection<T> filtered = new ArrayList<T>();
+		for (Object object : artifactPermissions.getSubHash(artifact).keySet()) {
+			PermissionEnum permission = artifactPermissions.get(artifact, object);
 
-         T toCheck = filter.getObject(object);
-         if (toCheck != null) {
-            boolean shouldAccept = filter.accept(toCheck, artifact, permission);
-            if (shouldAccept) {
-               filtered.add(toCheck);
-            }
-         }
-      }
-      return filtered;
-   }
+			T toCheck = filter.getObject(object);
+			if (toCheck != null) {
+				boolean shouldAccept = filter.accept(toCheck, artifact, permission);
+				if (shouldAccept) {
+					filtered.add(toCheck);
+				}
+			}
+		}
+		return filtered;
+	}
 
-   @Override
-   public String toString() {
-      return artifactPermissions.toString();
-   }
+	@Override
+	public String toString() {
+		return artifactPermissions.toString();
+	}
 
 }
