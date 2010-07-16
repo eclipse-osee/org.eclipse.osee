@@ -34,6 +34,5 @@ public class SessionManagerTest {
 		//		public Collection<ISession> getSessionsByUserId(String userId, boolean includeNonServerManagedSessions) throws OseeCoreException;
 		//		public Collection<ISession> getAllSessions(boolean includeNonServerManagedSessions) throws OseeCoreException;
 		//		public void releaseSessionImmediate(String... sessionId) throws OseeCoreException;
-		//		public void shutdown();
 	}
 }
