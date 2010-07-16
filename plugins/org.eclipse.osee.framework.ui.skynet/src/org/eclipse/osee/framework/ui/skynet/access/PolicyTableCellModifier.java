@@ -19,49 +19,54 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class PolicyTableCellModifier implements ICellModifier {
 
-   private PolicyTableViewer policyTableViewer;
-   private boolean enabled = true;
+	private final PolicyTableViewer policyTableViewer;
+	private boolean enabled = true;
 
-   public PolicyTableCellModifier(PolicyTableViewer policyTableViewer) {
-      super();
-      this.policyTableViewer = policyTableViewer;
-   }
+	public PolicyTableCellModifier(PolicyTableViewer policyTableViewer) {
+		super();
+		this.policyTableViewer = policyTableViewer;
+	}
 
-   public boolean canModify(Object element, String property) {
-      if (property.equals(PolicyTableColumns.delete.toString())) return true;
-      return false;
-   }
+	@Override
+	public boolean canModify(Object element, String property) {
+		if (property.equals(PolicyTableColumns.delete.toString())) {
+			return true;
+		}
+		return false;
+	}
 
-   public Object getValue(Object element, String property) {
-      if (property.equals(PolicyTableColumns.delete.toString()))
-         return new Boolean(false);
-      else if (property.equals(PolicyTableColumns.artifact.toString())) {
-         return ((AccessControlData) element).getPermission().ordinal();
-      }
-      return "";
-   }
+	@Override
+	public Object getValue(Object element, String property) {
+		if (property.equals(PolicyTableColumns.delete.toString())) {
+			return new Boolean(false);
+		} else if (property.equals(PolicyTableColumns.artifact.toString())) {
+			return ((AccessControlData) element).getPermission().ordinal();
+		}
+		return "";
+	}
 
-   public void modify(Object element, String property, Object value) {
-      TreeItem item = (TreeItem) element;
-      AccessControlData data = (AccessControlData) item.getData();
+	@Override
+	public void modify(Object element, String property, Object value) {
+		TreeItem item = (TreeItem) element;
+		AccessControlData data = (AccessControlData) item.getData();
 
-      if (property.equals(PolicyTableColumns.delete.toString())) {
-         policyTableViewer.removeData(data);
-      }
+		if (property.equals(PolicyTableColumns.delete.toString())) {
+			policyTableViewer.removeData(data);
+		}
 
-      policyTableViewer.refresh();
-   }
+		policyTableViewer.refresh();
+	}
 
-   public boolean isEnabled() {
-      return enabled;
-   }
+	public boolean isEnabled() {
+		return enabled;
+	}
 
-   /**
-    * Don't disable entire viewer, just delete button
-    * 
-    * @param enabled the enabled to set
-    */
-   public void setEnabled(boolean enabled) {
-      this.enabled = enabled;
-   }
+	/**
+	 * Don't disable entire viewer, just delete button
+	 * 
+	 * @param enabled the enabled to set
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 }
