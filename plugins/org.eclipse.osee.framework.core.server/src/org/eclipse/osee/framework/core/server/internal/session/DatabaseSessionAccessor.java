@@ -108,7 +108,7 @@ public final class DatabaseSessionAccessor implements IOseeDataAccessor<Session>
 		}
 		getDatabaseService().runBatchUpdate(INSERT_SESSION, insertData);
 		getDatabaseService().runBatchUpdate(UPDATE_SESSION, updateData);
-		getDatabaseService().runBatchUpdate(DELETE_SESSION, updateData);
+		getDatabaseService().runBatchUpdate(DELETE_SESSION, deleteData);
 
 		for (Session session : sessions) {
 			session.clearDirty();
