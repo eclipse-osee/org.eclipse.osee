@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.service.core;
 
 import java.rmi.RemoteException;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
@@ -54,8 +53,8 @@ class TestHostConnection {
    /**
     * @return the connectedTestHost
     */
-   public IHostTestEnvironment getConnectedTestHost() {
-      return (IHostTestEnvironment) serviceConnector.getService();
+   public IServiceConnector getConnectedTestHost() {
+      return serviceConnector;
    }
 
    /**

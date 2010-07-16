@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.configuration.LoadWidget;
@@ -442,8 +441,8 @@ public abstract class ScriptPage extends TestManagerPage {
    }
 
    @Override
-   public boolean onConnectionLost(IHostTestEnvironment testHost) {
-      boolean result = getScriptManager().onConnectionLost(testHost);
+   public boolean onConnectionLost() {
+      boolean result = getScriptManager().onConnectionLost();
       Display.getDefault().asyncExec(new Runnable() {
 
          @Override

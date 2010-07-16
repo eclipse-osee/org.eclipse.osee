@@ -14,10 +14,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.service.Activator;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.service.IMessageDictionary;
@@ -83,15 +81,14 @@ class ListenerNotifier {
 		}
 	}
 
-	void notifyConnectionLost(final IServiceConnector connector,
-			final IHostTestEnvironment testHost) {
+	void notifyConnectionLost(final IServiceConnector connector) {
 		executor.submit(new Runnable() {
 
 			@Override
 			public void run() {
 				for (ITestConnectionListener listener : testConnectionListeners) {
 					try {
-						listener.onConnectionLost(connector, testHost);
+						listener.onConnectionLost(connector);
 					} catch (Exception ex) {
 						OseeLog
 						.log(

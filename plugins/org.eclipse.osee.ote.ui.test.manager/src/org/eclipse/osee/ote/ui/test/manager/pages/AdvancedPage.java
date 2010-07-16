@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.widgets.IPropertyStoreBasedControl;
 import org.eclipse.osee.framework.ui.plugin.widgets.PropertyStoreControlContributions;
-import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
@@ -160,7 +159,7 @@ public class AdvancedPage extends TestManagerPage {
    }
 
    @Override
-   public boolean onConnectionLost(IHostTestEnvironment testHost) {
+   public boolean onConnectionLost() {
       return false;
    }
 }

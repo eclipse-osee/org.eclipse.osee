@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
-import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.core.environment.status.IServiceStatusListener;
 import org.eclipse.osee.ote.core.environment.status.TestComplete;
@@ -118,12 +117,12 @@ public abstract class ScriptManager implements Runnable {
 			event.getEnvironment().removeStatusListener((IServiceStatusListener) event.getConnector().findExport(statusListenerImpl));
 			return false;
 		} catch (RemoteException e) {
-			TestManagerPlugin.log(Level.SEVERE, "problems removing listener", e);
+			TestManagerPlugin.log(Level.INFO, "problems removing listener", e);
 			return true;
 		}
 	}
 
-	public boolean onConnectionLost(IHostTestEnvironment testHost) {
+	public boolean onConnectionLost() {
 		connectedEnv = null;
 		sessionKey = null;
 		guidToScriptTask.clear();

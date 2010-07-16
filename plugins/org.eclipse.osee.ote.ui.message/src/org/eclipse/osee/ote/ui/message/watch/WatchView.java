@@ -60,7 +60,6 @@ import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.ote.client.msg.IOteMessageService;
-import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystem;
 import org.eclipse.osee.ote.message.tool.IUdpTransferListener;
 import org.eclipse.osee.ote.message.tool.TransferConfig;
@@ -979,7 +978,7 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
    }
 
    @Override
-   public void onConnectionLost(IServiceConnector connector, IHostTestEnvironment testHost) {
+   public void onConnectionLost(IServiceConnector connector) {
    }
 
    @Override

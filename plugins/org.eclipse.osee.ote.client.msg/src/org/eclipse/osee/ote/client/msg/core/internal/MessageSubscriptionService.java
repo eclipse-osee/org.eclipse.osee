@@ -24,7 +24,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -33,7 +32,6 @@ import org.eclipse.osee.ote.client.msg.core.IMessageDbFactory;
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
 import org.eclipse.osee.ote.core.environment.UserTestSessionKey;
-import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.message.commands.RecordCommand;
 import org.eclipse.osee.ote.message.commands.RecordCommand.MessageRecordDetails;
 import org.eclipse.osee.ote.message.enums.DataType;
@@ -126,7 +124,7 @@ public class MessageSubscriptionService implements IOteMessageService, IMessageD
 	}
 
 	@Override
-	public synchronized void onConnectionLost(IServiceConnector connector, IHostTestEnvironment testHost) {
+	public synchronized void onConnectionLost(IServiceConnector connector) {
 		OseeLog.log(Activator.class, Level.INFO, "connection lost: ote client message service halted");
 		shutdownDispatcher();
 		msgDatabase.detachService(null);

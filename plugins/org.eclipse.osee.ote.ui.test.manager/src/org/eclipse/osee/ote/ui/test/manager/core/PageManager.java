@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.ui.test.manager.core;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.ITestManagerFactory;
 import org.eclipse.osee.ote.ui.test.manager.pages.AdvancedPage;
@@ -173,10 +172,10 @@ public class PageManager {
       return problemEncountered;
    }
 
-   public boolean onConnectionLost(IHostTestEnvironment testHost) {
+   public boolean onConnectionLost() {
       boolean problemEncountered = false;
       for (TestManagerPage page : pages) {
-         problemEncountered |= page.onConnectionLost(testHost);
+         problemEncountered |= page.onConnectionLost();
       }
       return problemEncountered;
    }

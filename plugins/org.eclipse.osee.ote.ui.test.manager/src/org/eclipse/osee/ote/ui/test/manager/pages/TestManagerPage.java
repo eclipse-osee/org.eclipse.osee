@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.test.manager.pages;
 
-import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
 import org.eclipse.swt.SWT;
@@ -82,7 +81,7 @@ public abstract class TestManagerPage extends ScrolledComposite {
 
    public abstract boolean onDisconnect(ConnectionEvent event);
 
-   public abstract boolean onConnectionLost(IHostTestEnvironment testHost);
+   public abstract boolean onConnectionLost();
 
    @Override
    public void dispose() {

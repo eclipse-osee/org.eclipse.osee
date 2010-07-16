@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
-import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
@@ -165,7 +164,7 @@ public class OverviewPage extends TestManagerPage implements IActionable {
    }
 
    @Override
-   public boolean onConnectionLost(IHostTestEnvironment testHost) {
+   public boolean onConnectionLost() {
       return false;
    }
 

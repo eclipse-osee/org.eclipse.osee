@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.test.manager.pages;
 
-import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
@@ -86,7 +85,7 @@ public class HostPage extends TestManagerPage {
 	}
 
 	@Override
-	public boolean onConnectionLost(IHostTestEnvironment testHost) {
+	public boolean onConnectionLost() {
 		return false;
 	}
 

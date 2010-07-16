@@ -29,7 +29,6 @@ import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.PeriodicDisplayTask;
-import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.message.IInstrumentationRegistrationListener;
 import org.eclipse.osee.ote.message.instrumentation.IOInstrumentation;
@@ -817,7 +816,7 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
    }
 
    @Override
-   public void onConnectionLost(IServiceConnector connector, IHostTestEnvironment testHost) {
+   public void onConnectionLost(IServiceConnector connector) {
       handleConnectionLostStatus();
    }
 

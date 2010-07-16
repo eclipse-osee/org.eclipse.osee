@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.service;
 
 import org.eclipse.osee.connection.service.IServiceConnector;
-import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 
 /**
  * @author Ken J. Aguilar
@@ -27,7 +26,7 @@ public interface ITestConnectionListener {
     * @param connector
     * @param testHost
     */
-   void onConnectionLost(IServiceConnector connector, IHostTestEnvironment testHost);
+   void onConnectionLost(IServiceConnector connector);
 
    /**
     * this method is called when a disconnect request is initiated by the client. The connector and the service are

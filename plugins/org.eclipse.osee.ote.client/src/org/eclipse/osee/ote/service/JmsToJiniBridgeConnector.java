@@ -15,12 +15,10 @@ import java.rmi.server.ExportException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import net.jini.export.Exporter;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.connection.service.IServicePropertyChangeListener;
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
@@ -126,7 +124,15 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
 
    @Override
    public boolean ping() {
-      return true;
+      if(getService() != null && getService() instanceof IHostTestEnvironment){
+         try{
+            ((IHostTestEnvironment)getService()).getProperties();
+            return true;
+         } catch (Throwable th){
+            return false;
+         }
+      }
+      return false;
    }
 
    @Override

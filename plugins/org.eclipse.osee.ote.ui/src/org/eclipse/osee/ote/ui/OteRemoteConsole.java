@@ -12,11 +12,9 @@ package org.eclipse.osee.ote.ui;
 
 import java.rmi.RemoteException;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.util.IConsoleInputListener;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.service.ConnectionEvent;
@@ -68,7 +66,7 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
    }
 
    @Override
-   public void onConnectionLost(IServiceConnector connector, IHostTestEnvironment testHost) {
+   public void onConnectionLost(IServiceConnector connector) {
       if (isOteConsoleServiceAvailable()) {
          getOteConsole().removeInputListener(this);
       } else {

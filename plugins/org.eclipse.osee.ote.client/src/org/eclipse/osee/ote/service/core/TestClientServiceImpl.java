@@ -147,6 +147,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
             }
          }
       } catch (RemoteException ex) {
+         ex.printStackTrace();
       }
       return null;
 	}
@@ -165,12 +166,11 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 		ITestEnvironment envirnonment = testConnection.getConnectEnvironment();
 
 		if (!testConnection.getServiceConnector().ping()) {
-			listenerNotifier.notifyConnectionLost(testConnection.getServiceConnector(),
-					testConnection.getConnectedTestHost());
+			listenerNotifier.notifyConnectionLost(testConnection.getServiceConnector());
 			testConnection = null;
 		} else {
 			ConnectionEvent event =
-				new ConnectionEvent(this.getConnectedHost(), getConnector(testConnection.getConnectedTestHost()), envirnonment,
+				new ConnectionEvent(this.getConnectedHost(), testConnection.getConnectedTestHost(), envirnonment,
 						testConnection.getSessionKey());
 			listenerNotifier.notifyDisconnect(event);
 			try {
@@ -378,7 +378,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	@Override
 	public synchronized IHostTestEnvironment getConnectedHost() throws IllegalStateException {
 		checkState();
-		return testConnection == null ? null : testConnection.getConnectedTestHost();
+		return testConnection == null ? null : (IHostTestEnvironment)testConnection.getConnectedTestHost().getService();
 
 	}
 
@@ -484,7 +484,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 			IHostTestEnvironment connectedHost = getConnectedHost();
 			if (connectedHost != null && connectedHost.equals(env)) {
 				testConnection = null;
-				listenerNotifier.notifyConnectionLost(connector, env);
+				listenerNotifier.notifyConnectionLost(connector);
 			}
 		}
 	}

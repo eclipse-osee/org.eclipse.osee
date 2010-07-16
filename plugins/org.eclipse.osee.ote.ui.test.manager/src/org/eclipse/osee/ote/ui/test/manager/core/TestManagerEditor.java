@@ -517,10 +517,10 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    }
 
    @Override
-   public void onConnectionLost(IServiceConnector connector, IHostTestEnvironment testHost) {
+   public void onConnectionLost(IServiceConnector connector) {
       connectedEnv = null;
       connector = null;
-      boolean problemEncountered = pageManager.onConnectionLost(testHost);
+      boolean problemEncountered = pageManager.onConnectionLost();
       if (problemEncountered) {
          Display.getDefault().asyncExec(new Runnable() {
             @Override
