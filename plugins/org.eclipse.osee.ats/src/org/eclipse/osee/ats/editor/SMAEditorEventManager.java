@@ -65,7 +65,7 @@ public class SMAEditorEventManager implements IArtifactEventListener {
             handlers.remove(handler);
          }
       }
-      System.out.println("SMAEditor: handleArtifactModified called [" + artifactEvent + "] - sender " + sender + "");
+      System.out.println("SMAEditor: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
       try {
          if (artifactEvent.getBranchGuid() == null || !artifactEvent.getBranchGuid().equals(
                AtsUtil.getAtsBranch().getGuid())) {
@@ -74,7 +74,6 @@ public class SMAEditorEventManager implements IArtifactEventListener {
       } catch (OseeCoreException ex) {
          return;
       }
-      System.out.println("SMAEditor: handleArtifactModified called [" + artifactEvent + "] - sender " + sender + "");
       for (final ISMAEditorEventHandler handler : handlers) {
          final StateMachineArtifact sma = handler.getSMAEditor().getSma();
          ActionArtifact actionArt = null;

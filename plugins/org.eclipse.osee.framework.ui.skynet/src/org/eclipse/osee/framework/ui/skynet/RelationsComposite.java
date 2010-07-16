@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -43,11 +42,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
@@ -88,7 +84,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Ryan D. Brooks
  */
-public class RelationsComposite extends Composite implements IRelationModifiedEventListener, IFrameworkTransactionEventListener {
+public class RelationsComposite extends Composite implements IFrameworkTransactionEventListener {
    private TreeViewer treeViewer;
    private Tree tree;
    private NeedSelectedArtifactListener needSelectedArtifactListener;
@@ -569,11 +565,6 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       this.packColumnData();
    }
 
-   /**
-    * Performs the deletion functionality
-    *
-    * @param selection
-    */
    private void performDeleteArtifact(IStructuredSelection selection) {
       try {
          Set<Artifact> artifactsToBeDeleted = getSelectedArtifacts(selection);
@@ -597,12 +588,6 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       refresh();
    }
 
-   /**
-    * Performs the deletion functionality
-    *
-    * @param selection
-    * @throws ArtifactDoesNotExist
-    */
    private void performDeleteRelation(IStructuredSelection selection) throws ArtifactDoesNotExist {
       if (artifact.isReadOnly()) {
          MessageDialog.openError(
@@ -638,6 +623,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             }
          }
       }
+      editor.onDirtied();
    }
 
    public void refresh() {
@@ -668,9 +654,6 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       }
    }
 
-   /**
-    * @return Returns the artifact.
-    */
    public Artifact getArtifact() {
       return artifact;
    }
@@ -757,11 +740,6 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          }
       }
 
-      /**
-       * @param targetLink
-       * @param dropTarget
-       * @return
-       */
       private boolean relationLinkIsInSameGroup(WrapperForRelationLink targetLink, WrapperForRelationLink dropTarget) {
          return targetLink.getRelationType().equals(dropTarget.getRelationType()) && //same type
          (targetLink.getArtifactA().equals(dropTarget.getArtifactA()) || //either the A or B side is equal, meaning they are on the same side
@@ -807,6 +785,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                ArtifactDragDropSupport.performDragDrop(event, window,
                      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
                window.createArtifactInformationBox();
+               treeViewer.refresh();
+               editor.onDirtied();
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -821,29 +801,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             "org.eclipse.osee.framework.help.ui");
    }
 
-   /**
-    * @return the toolBar
-    */
    public ToolBar getToolBar() {
       return toolBar;
-   }
-
-   @Override
-   public void handleRelationModifiedEvent(Sender sender, RelationEventType relationEventType, RelationLink link, Branch branch, String relationType) {
-      try {
-         if (link.getArtifactA().equals(this.artifact) || link.getArtifactB().equals(this.artifact)) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  if (!treeViewer.getControl().isDisposed()) {
-                     treeViewer.refresh();
-                  }
-               }
-            });
-         }
-      } catch (Exception ex) {
-         // do nothing
-      }
    }
 
    @Override

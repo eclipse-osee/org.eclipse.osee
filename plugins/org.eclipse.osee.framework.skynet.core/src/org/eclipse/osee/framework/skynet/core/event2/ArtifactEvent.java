@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -40,6 +41,10 @@ public class ArtifactEvent extends FrameworkEvent {
 
    public void setBranchGuid(String value) {
       this.branchGuid = value;
+   }
+
+   public boolean isForBranch(Branch branch) {
+      return getBranchGuid().equals(branch.getGuid());
    }
 
    public int getTransactionId() {

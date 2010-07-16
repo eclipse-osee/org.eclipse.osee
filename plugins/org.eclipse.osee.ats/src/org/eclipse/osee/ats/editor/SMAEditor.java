@@ -56,12 +56,9 @@ import org.eclipse.osee.framework.skynet.core.event.IArtifactReloadEventListener
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -104,7 +101,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  * 
  * @author Donald G. Dunne
  */
-public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEventHandler, ISelectedAtsArtifacts, IDirtiableEditor, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
+public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEventHandler, ISelectedAtsArtifacts, IDirtiableEditor, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private StateMachineArtifact sma;
    private int workFlowPageIndex, metricsPageIndex, attributesPageIndex;
@@ -652,20 +649,6 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
                   closeEditor();
                }
             });
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-   }
-
-   @Override
-   public void handleRelationModifiedEvent(Sender sender, RelationEventType relationEventType, RelationLink link, Branch branch, String relationType) {
-      try {
-         if (branch.getId() != AtsUtil.getAtsBranch().getId()) {
-            return;
-         }
-         if (link.getArtifactA().equals(sma) || link.getArtifactB().equals(sma)) {
-            onDirtied();
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

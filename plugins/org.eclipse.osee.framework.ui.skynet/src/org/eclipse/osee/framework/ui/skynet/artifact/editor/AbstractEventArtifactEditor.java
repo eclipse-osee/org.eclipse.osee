@@ -12,42 +12,42 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactModifiedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
  */
-public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor {
+public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor implements IArtifactEditorEventHandler {
 
    private final InternalEventHandler internalEventHandler;
 
    public AbstractEventArtifactEditor() {
       super();
-      internalEventHandler = new InternalEventHandler();
-      OseeEventManager.addListener(internalEventHandler);
+      if (OseeEventManager.isOldEvents()) {
+         internalEventHandler = new InternalEventHandler();
+         OseeEventManager.addListener(internalEventHandler);
+      } else {
+         internalEventHandler = null;
+         ArtifactEditorEventManager.add(this);
+      }
    }
 
    @Override
@@ -68,33 +68,35 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
 
    protected abstract void checkEnabledTooltems();
 
-   protected abstract void refreshDirtyArtifact();
+   public abstract void refreshDirtyArtifact();
 
-   protected abstract void closeEditor();
+   public abstract void closeEditor();
 
-   protected abstract void refreshRelations();
+   public abstract void refreshRelations();
+
+   public void setMainImage(Image titleImage) {
+      super.setTitleImage(titleImage);
+   }
 
    @Override
    public void dispose() {
       super.dispose();
-      OseeEventManager.removeListener(internalEventHandler);
+      if (OseeEventManager.isOldEvents()) {
+         OseeEventManager.removeListener(internalEventHandler);
+      }
    }
 
-   private final class InternalEventHandler implements IArtifactsPurgedEventListener, IBranchEventListener, IAccessControlEventListener, IArtifactModifiedEventListener, IArtifactsChangeTypeEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener {
-      @Override
-      public void handleArtifactModifiedEvent(Sender sender, final ArtifactModType artifactModType, final Artifact artifact) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               if (getArtifactFromEditorInput() == null || !getArtifactFromEditorInput().equals(artifact)) {
-                  return;
-               }
-               if (artifactModType == ArtifactModType.Added || artifactModType == ArtifactModType.Changed || artifactModType == ArtifactModType.Reverted) {
-                  refreshDirtyArtifact();
-               }
-            }
-         });
-      }
+   @Override
+   public AbstractEventArtifactEditor getEditor() {
+      return this;
+   }
+
+   /**
+    * <REM2> this entire listener can be removed cause handled through ArtifactEditorEventManager
+    * 
+    * @author Donald G. Dunne
+    */
+   private final class InternalEventHandler implements IArtifactsPurgedEventListener, IBranchEventListener, IAccessControlEventListener, IArtifactsChangeTypeEventListener, IFrameworkTransactionEventListener {
 
       @Override
       public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) {
@@ -107,24 +109,6 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
                      closeEditor();
                   }
                } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
-            }
-         });
-      }
-
-      @Override
-      public void handleRelationModifiedEvent(Sender sender, RelationEventType relationEventType, final RelationLink link, Branch branch, String relationType) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               try {
-                  Artifact localArtifact = getArtifactFromEditorInput();
-                  if (link.getArtifactA().equals(localArtifact) || link.getArtifactB().equals(localArtifact)) {
-                     refreshRelations();
-                     onDirtied();
-                  }
-               } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
@@ -204,16 +188,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
 
       @Override
       public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               if (branchEvent.getEventType() == BranchEventType.Committed) {
-                  if (getArtifactFromEditorInput().getBranch().getGuid() == branchEvent.getBranchGuid()) {
-                     closeEditor();
-                  }
-               }
-            }
-         });
+         // Handled by ArtifactEditorEventManager
       }
 
       @Override

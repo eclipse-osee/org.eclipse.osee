@@ -60,7 +60,7 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
       return (XFormToolkit) super.getToolkit();
    }
 
-   protected Artifact getArtifactFromEditorInput() {
+   public Artifact getArtifactFromEditorInput() {
       return (Artifact) getEditorInput().getAdapter(Artifact.class);
    }
 

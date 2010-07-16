@@ -137,6 +137,11 @@ public class HttpAttributeTagger {
       }
    }
 
+   /**
+    * <REM2>
+    * 
+    * @author Donald G. Dunne
+    */
    private final class EventRelay implements IArtifactEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, ITransactionEventListener, ITransactionsDeletedEventListener {
       @Override
       public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {

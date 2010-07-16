@@ -41,7 +41,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -59,7 +58,6 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
@@ -69,18 +67,14 @@ import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
 import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactModifiedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
@@ -119,6 +113,8 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.TreeEditor;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
@@ -157,9 +153,11 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.UIJob;
 
 /**
+ * <REM2> except for IRelationModifiedEventListener, IArtifactModifiedEventListener
+ * 
  * @author Ryan D. Brooks
  */
-public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, IAccessControlEventListener, IRelationModifiedEventListener, IArtifactModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, IActionable, ISelectionProvider, IBranchProvider {
+public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEventHandler, IRebuildMenuListener, IAccessControlEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, IActionable, ISelectionProvider, IBranchProvider {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactExplorer";
    private static final String ROOT_GUID = "artifact.explorer.last.root_guid";
    private static final String ROOT_BRANCH = "artifact.explorer.last.root_branch";
@@ -325,6 +323,13 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          treeViewer = new TreeViewer(stackComposite);
          myTree = treeViewer.getTree();
          Tree tree = treeViewer.getTree();
+         final ArtifactExplorer fArtExplorere = this;
+         tree.addDisposeListener(new DisposeListener() {
+
+            public void widgetDisposed(DisposeEvent e) {
+               ArtifactExplorerEventManager.remove(fArtExplorere);
+            }
+         });
          treeViewer.setContentProvider(new ArtifactContentProvider());
 
          treeViewer.setLabelProvider(new ArtifactLabelProvider(artifactDecorator));
@@ -379,6 +384,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       }
 
       OseeEventManager.addListener(this);
+      ArtifactExplorerEventManager.add(this);
    }
 
    /**
@@ -1238,10 +1244,8 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
+      ArtifactExplorerEventManager.remove(this);
       super.dispose();
-      if (treeViewer != null) {
-         trees.remove(treeViewer.getTree());
-      }
    }
 
    public String getActionDescription() {
@@ -1373,70 +1377,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
-            }
-         }
-      });
-   }
-
-   @Override
-   public void handleRelationModifiedEvent(Sender sender, RelationEventType relationEventType, final RelationLink link, Branch branch, String relationType) {
-      try {
-         if (this.branch == null || !this.branch.equals(branch)) {
-            return;
-         }
-         if (link.isOfType(CoreRelationTypes.Default_Hierarchical__Child)) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  try {
-                     // Since this is always a local event, artifact will always be in cache
-                     Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
-                     if (aArtifact != null) {
-                        treeViewer.refresh(aArtifact);
-                     }
-                     Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
-                     if (bArtifact != null) {
-                        treeViewer.refresh(bArtifact);
-                     }
-                  } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.INFO, ex);
-                  }
-               }
-            });
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-   }
-
-   @Override
-   public void handleArtifactModifiedEvent(Sender sender, final ArtifactModType artifactModType, final Artifact artifact) {
-      try {
-         if (branch == null || !artifact.getBranch().equals(branch)) {
-            return;
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               if (artifactModType == ArtifactModType.Deleted) {
-                  treeViewer.remove(artifact);
-               } else if (artifactModType == ArtifactModType.Added) {
-                  if (artifact.getParent() != null) {
-                     treeViewer.refresh(artifact.getParent());
-                  }
-               } else if (artifactModType == ArtifactModType.Changed) {
-                  treeViewer.refresh(artifact, true);
-               } else if (artifactModType == ArtifactModType.Reverted) {
-                  if (artifact.hasParent()) {
-                     treeViewer.refresh(artifact.getParent());
-                  }
-               }
-            } catch (Exception ex) {
-               // do nothing
             }
          }
       });
@@ -1593,4 +1533,23 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    @Override
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
+
+   public TreeViewer getTreeViewer() {
+      return treeViewer;
+   }
+
+   public void setTreeViewer(TreeViewer treeViewer) {
+      this.treeViewer = treeViewer;
+   }
+
+   @Override
+   public ArtifactExplorer getArtifactExplorer() {
+      return this;
+   }
+
+   @Override
+   public boolean isDisposed() {
+      return treeViewer.getTree() == null || treeViewer.getTree().isDisposed();
+   }
+
 }

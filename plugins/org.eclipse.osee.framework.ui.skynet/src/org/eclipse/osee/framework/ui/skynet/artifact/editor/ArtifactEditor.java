@@ -137,7 +137,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    }
 
    @Override
-   protected void closeEditor() {
+   public void closeEditor() {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -147,12 +147,12 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    }
 
    @Override
-   protected void refreshDirtyArtifact() {
+   public void refreshDirtyArtifact() {
       Jobs.startJob(new RefreshDirtyArtifactJob());
    }
 
    @Override
-   protected void refreshRelations() {
+   public void refreshRelations() {
       Jobs.startJob(new RefreshRelations());
    }
 
@@ -174,7 +174,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       return formPage;
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter == IActionable.class) {
@@ -283,5 +283,10 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
             }
          }
       });
+   }
+
+   @Override
+   public boolean isDisposed() {
+      return formPage == null || formPage.getPartControl() == null || formPage.getPartControl().isDisposed();
    }
 }

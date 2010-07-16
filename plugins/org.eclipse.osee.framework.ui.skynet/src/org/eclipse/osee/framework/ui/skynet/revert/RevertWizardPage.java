@@ -14,29 +14,16 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
-import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.RevertJob;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.TreeEditor;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -50,7 +37,7 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Theron Virgin
  */
-public class RevertWizardPage extends WizardPage implements IRelationModifiedEventListener {
+public class RevertWizardPage extends WizardPage {
 
    private final List<List<Artifact>> artifacts;
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.revert.RevertWizardPage";
@@ -96,10 +83,6 @@ public class RevertWizardPage extends WizardPage implements IRelationModifiedEve
          getWizard().getContainer().updateButtons();
       }
    };
-
-   /**
-    * @param pageName
-    */
 
    public RevertWizardPage(List<List<Artifact>> artifacts) {
       super(TITLE);
@@ -158,8 +141,6 @@ public class RevertWizardPage extends WizardPage implements IRelationModifiedEve
       stackComposite.layout();
       stackComposite.getParent().layout();
 
-      new RevertDragAndDrop(tree, ArtifactExplorer.VIEW_ID);
-
       gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
       gridData.heightHint = 200;
       gridData.widthHint = 75;
@@ -173,7 +154,6 @@ public class RevertWizardPage extends WizardPage implements IRelationModifiedEve
       artifactSelectionBox.select(0);
       setControl(parent);
 
-      OseeEventManager.addListener(this);
    }
 
    private Button createButton(String text, String tooltip, Composite composite) {
@@ -189,65 +169,7 @@ public class RevertWizardPage extends WizardPage implements IRelationModifiedEve
    }
 
    public boolean closingPage() {
-      OseeEventManager.removeListener(this);
       return true;
    }
 
-   private class RevertDragAndDrop extends SkynetDragAndDrop {
-
-      public RevertDragAndDrop(Tree tree, String viewId) {
-         super(tree, tree, viewId);
-      }
-
-      @Override
-      public Artifact[] getArtifacts() {
-         IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-         Object[] objects = selection.toArray();
-         Artifact[] artifacts = new Artifact[objects.length];
-
-         for (int index = 0; index < objects.length; index++) {
-            artifacts[index] = (Artifact) objects[index];
-         }
-
-         return artifacts;
-      }
-
-      @Override
-      public void performDragOver(DropTargetEvent event) {
-         event.feedback = DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL | DND.FEEDBACK_EXPAND;
-
-         if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
-            event.detail = DND.DROP_COPY;
-         } else if (isValidForArtifactDrop(event)) {
-            event.detail = DND.DROP_MOVE;
-         } else {
-            event.detail = DND.DROP_NONE;
-         }
-      }
-
-      private boolean isValidForArtifactDrop(DropTargetEvent event) {
-         return false;
-      }
-   }
-
-   @Override
-   public void handleRelationModifiedEvent(Sender sender, RelationEventType relationEventType, RelationLink link, Branch branch, String relationType) {
-      // Since this is always a local event, artifact will always be in cache
-      try {
-         Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
-         if (aArtifact != null) {
-            treeViewer.refresh(aArtifact);
-         }
-      } catch (Exception ex) {
-         //Ignore and hide
-      }
-      try {
-         Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
-         if (bArtifact != null) {
-            treeViewer.refresh(bArtifact);
-         }
-      } catch (Exception ex) {
-         //Ignore and hide
-      }
-   }
 }
