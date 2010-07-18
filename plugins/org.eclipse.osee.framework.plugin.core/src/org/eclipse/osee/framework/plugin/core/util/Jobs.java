@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 public final class Jobs {
 
    private Jobs() {
+      // this private empty constructor exists to prevent the default constructor from allowing public construction
    }
 
    public static Job startJob(Job job, IJobChangeListener jobChangeListener) {
