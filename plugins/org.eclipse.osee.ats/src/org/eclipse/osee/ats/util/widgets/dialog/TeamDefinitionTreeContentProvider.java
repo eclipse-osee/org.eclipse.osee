@@ -37,7 +37,7 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
       this.active = active;
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();

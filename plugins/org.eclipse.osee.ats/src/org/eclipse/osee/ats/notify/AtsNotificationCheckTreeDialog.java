@@ -110,7 +110,7 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
 
    };
    static ITreeContentProvider treeContentProvider = new ITreeContentProvider() {
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings("rawtypes")
       public Object[] getElements(Object inputElement) {
          if (inputElement instanceof Collection) {
             return ((Collection) inputElement).toArray();
@@ -118,7 +118,7 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
          return EMPTY_ARRAY;
       };
 
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings("rawtypes")
       public Object[] getChildren(Object parentElement) {
          if (parentElement instanceof Collection) {
             return ((Collection) parentElement).toArray();

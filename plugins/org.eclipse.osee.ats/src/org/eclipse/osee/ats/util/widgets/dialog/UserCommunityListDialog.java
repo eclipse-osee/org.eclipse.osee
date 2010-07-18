@@ -30,7 +30,7 @@ public class UserCommunityListDialog extends org.eclipse.ui.dialogs.ListDialog {
       this.setTitle("Select User Community");
       this.setMessage("Select User Community");
       this.setContentProvider(new ArrayContentProvider() {
-         @SuppressWarnings("unchecked")
+         @SuppressWarnings({"rawtypes", "unchecked"})
          @Override
          public Object[] getElements(Object inputElement) {
             if (inputElement instanceof Collection) {

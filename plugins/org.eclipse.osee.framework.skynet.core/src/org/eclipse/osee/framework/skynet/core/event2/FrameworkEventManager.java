@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListener;
@@ -28,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRela
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -35,6 +40,8 @@ import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 public class FrameworkEventManager {
    private static final List<IEventListener> priorityListeners = new CopyOnWriteArrayList<IEventListener>();
    private static final List<IEventListener> listeners = new CopyOnWriteArrayList<IEventListener>();
+   private static List<IEventFilter> commonBranchEventFilter;
+   private static BranchGuidEventFilter commonBranchGuidEvenFilter;
 
    public static void addListener(IEventListener listener) {
       if (listener == null) {
@@ -293,6 +300,36 @@ public class FrameworkEventManager {
       } catch (Exception ex) {
          return object.getClass().getSimpleName() + " - exception on toString: " + ex.getLocalizedMessage();
       }
+   }
+
+   public static List<IEventFilter> getEventFiltersForBranch(Branch branch) {
+      try {
+         List<IEventFilter> eventFilters = new ArrayList<IEventFilter>(2);
+         eventFilters.add(new BranchGuidEventFilter(branch));
+         return eventFilters;
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return null;
+   }
+
+   public static List<IEventFilter> getCommonBranchEventFilters() {
+      try {
+         if (commonBranchEventFilter == null) {
+            commonBranchEventFilter = new ArrayList<IEventFilter>(2);
+            commonBranchEventFilter.add(getCommonBranchFilter());
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return commonBranchEventFilter;
+   }
+
+   public static BranchGuidEventFilter getCommonBranchFilter() {
+      if (commonBranchGuidEvenFilter == null) {
+         commonBranchGuidEvenFilter = new BranchGuidEventFilter(CoreBranches.COMMON);
+      }
+      return commonBranchGuidEvenFilter;
    }
 
 }

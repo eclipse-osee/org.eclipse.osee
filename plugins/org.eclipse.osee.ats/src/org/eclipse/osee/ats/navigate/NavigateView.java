@@ -62,7 +62,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -80,7 +79,6 @@ public class NavigateView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.ats.navigate.NavigateView";
    public static final String HELP_CONTEXT_ID = "atsNavigator";
    private AtsNavigateComposite xNavComp;
-   private Text searchArea;
    private boolean includeCompleteCancelled = false;
    private Composite parent;
    private LoadingComposite loadingComposite;

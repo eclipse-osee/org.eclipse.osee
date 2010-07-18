@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -423,7 +424,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
       }
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public ArrayList<DefectItem> getSelectedDefectItems() {
       ArrayList<DefectItem> items = new ArrayList<DefectItem>();
       if (xViewer == null) {
@@ -612,7 +613,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(AtsUtil.getCommonBranchFilter(), AtsUtil.getReviewArtifactTypeEventFilter());
+      return Arrays.asList(FrameworkEventManager.getCommonBranchFilter(), AtsUtil.getReviewArtifactTypeEventFilter());
    }
 
    @Override

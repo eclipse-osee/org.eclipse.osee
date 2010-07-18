@@ -55,7 +55,7 @@ public class ConnectionCreateCommand extends Command {
     * @throws IllegalArgumentException if source is null
     * @see Connection#setLineStyle(int)
     */
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public ConnectionCreateCommand(Shape source, Class clazz) {
       this.clazz = clazz;
       if (source == null) {

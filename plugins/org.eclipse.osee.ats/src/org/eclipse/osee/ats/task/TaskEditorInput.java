@@ -40,8 +40,7 @@ public class TaskEditorInput implements IEditorInput {
 
    @Override
    public boolean equals(Object obj) {
-      if (!(obj instanceof TaskEditorInput))
-         return false;
+      if (!(obj instanceof TaskEditorInput)) return false;
       TaskEditorInput castObj = (TaskEditorInput) obj;
       return castObj.itaskEditorProvider.equals(this.itaskEditorProvider);
    }
@@ -67,7 +66,7 @@ public class TaskEditorInput implements IEditorInput {
       }
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       return null;

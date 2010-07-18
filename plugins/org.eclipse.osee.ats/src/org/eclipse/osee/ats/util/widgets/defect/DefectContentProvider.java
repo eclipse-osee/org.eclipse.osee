@@ -62,7 +62,7 @@ public class DefectContentProvider implements ITreeContentProvider {
       });
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Object[]) {
          return (Object[]) parentElement;

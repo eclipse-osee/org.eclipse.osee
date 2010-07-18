@@ -81,8 +81,8 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
       }
 
       worldXViewer =
-         new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
-            xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory());
+            new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
+                  xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory());
       worldXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));
@@ -95,7 +95,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
       setExpandVertical(true);
       layout();
 
-      WorldViewerEventManager.add(this);
+      WorldXViewerEventManager.add(this);
    }
 
    public double getManHoursPerDayPreference() throws OseeCoreException {
@@ -134,7 +134,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
                }
             }
             if (customizeData != null && !worldXViewer.getCustomizeMgr().generateCustDataFromTable().equals(
-               customizeData)) {
+                  customizeData)) {
                setCustomizeData(customizeData);
             }
             if (arts.isEmpty()) {
@@ -146,7 +146,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
             worldXViewer.updateStatusLabel();
             if (otherArts.size() > 0) {
                if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Open in Artifact Editor?",
-                  otherArts.size() + " Non-WorldView Artifacts were returned from request.\n\nOpen in Artifact Editor?")) {
+                     otherArts.size() + " Non-WorldView Artifacts were returned from request.\n\nOpen in Artifact Editor?")) {
                   RendererManager.openInJob(otherArts, PresentationType.GENERALIZED_EDIT);
                }
             }
@@ -214,7 +214,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
       if (worldXViewer != null && !worldXViewer.getTree().isDisposed()) {
          worldXViewer.dispose();
       }
-      WorldViewerEventManager.remove(this);
+      WorldXViewerEventManager.remove(this);
    }
 
    public WorldXViewer getXViewer() {

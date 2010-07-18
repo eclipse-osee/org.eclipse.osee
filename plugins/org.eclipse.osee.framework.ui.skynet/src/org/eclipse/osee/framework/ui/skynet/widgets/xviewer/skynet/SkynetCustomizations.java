@@ -20,6 +20,8 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -29,11 +31,17 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Donald G. Dunne
  */
-public class SkynetCustomizations implements IXViewerCustomizations, IFrameworkTransactionEventListener {
+public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEventListener, IFrameworkTransactionEventListener {
 
    // Artifact that stores shared/global customizations
    private static Artifact globalCustomizationsArtifact;
@@ -127,7 +135,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IFrameworkT
     * @param defaultCustomizationsArtifact The defaultCustomizationsArtifact to set.
     */
    public void setGlobalCustomizationsArtifact(Artifact defaultCustomizationsArtifact) {
-      this.globalCustomizationsArtifact = defaultCustomizationsArtifact;
+      SkynetCustomizations.globalCustomizationsArtifact = defaultCustomizationsArtifact;
    }
 
    public void deleteCustomization(CustomizeData custData) throws OseeCoreException {
@@ -218,6 +226,30 @@ public class SkynetCustomizations implements IXViewerCustomizations, IFrameworkT
          if (transData.cacheChangedArtifacts.contains(getGlobalCustomizationsArtifact()) || transData.cacheChangedArtifacts.contains(UserManager.getUser())) {
             ensurePopulated(true);
          }
+      }
+   }
+
+   public static SkynetCustomizations getInstance() {
+      return instance;
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return FrameworkEventManager.getCommonBranchEventFilters();
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      final Collection<Artifact> modifiedArts =
+            artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
+      try {
+         if (!modifiedArts.isEmpty()) {
+            if (modifiedArts.contains(getGlobalCustomizationsArtifact()) || modifiedArts.contains(UserManager.getUser())) {
+               ensurePopulated(true);
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
       }
    }
 

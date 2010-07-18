@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.world.WorldContentProvider;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
-import org.eclipse.osee.ats.world.WorldViewerEventManager;
+import org.eclipse.osee.ats.world.WorldXViewerEventManager;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -119,7 +119,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
          setupDragAndDropSupport();
          parent.layout();
 
-         WorldViewerEventManager.add(this);
+         WorldXViewerEventManager.add(this);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -129,7 +129,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
       if (taskXViewer != null && !taskXViewer.getTree().isDisposed()) {
          taskXViewer.dispose();
       }
-      WorldViewerEventManager.remove(this);
+      WorldXViewerEventManager.remove(this);
    }
 
    public IXTaskViewer getIXTaskViewer() {

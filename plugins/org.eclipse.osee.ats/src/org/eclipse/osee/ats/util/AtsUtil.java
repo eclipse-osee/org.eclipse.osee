@@ -42,7 +42,6 @@ import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -56,8 +55,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.filter.ArtifactTypeEventFilter;
-import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
@@ -98,9 +97,8 @@ public final class AtsUtil {
    public static int MILLISECS_PER_DAY = 1000 * 60 * 60 * 24;
    public final static String normalColor = "#FFFFFF";
    public final static String activeColor = "#EEEEEE";
-   private static BranchGuidEventFilter branchGuidEventFilter;
    private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter, reviewArtifactTypesFilter,
-      teamWorkflowArtifactTypesFilter, workItemArtifactTypesFilter;
+         teamWorkflowArtifactTypesFilter, workItemArtifactTypesFilter;
    private static List<IEventFilter> atsObjectEventFilter;
 
    private AtsUtil() {
@@ -257,17 +255,17 @@ public final class AtsUtil {
       }
 
       try {
-         if (view == OseeEditor.ActionEditor) {
-            if (artifact instanceof StateMachineArtifact || artifact instanceof ActionArtifact) {
-               openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
-            } else {
+      if (view == OseeEditor.ActionEditor) {
+         if (artifact instanceof StateMachineArtifact || artifact instanceof ActionArtifact) {
+            openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+         } else {
                RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
-            }
-         } else if (view == OseeEditor.ArtifactEditor) {
-            RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
-         } else if (view == OseeEditor.ArtifactHyperViewer) {
-            AWorkbench.popup("ERROR", "Unimplemented");
          }
+      } else if (view == OseeEditor.ArtifactEditor) {
+            RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
+      } else if (view == OseeEditor.ArtifactHyperViewer) {
+         AWorkbench.popup("ERROR", "Unimplemented");
+      }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -277,11 +275,11 @@ public final class AtsUtil {
       // Ensure actionable item is configured for ATS before continuing
       try {
          AtsCacheManager.getSoleArtifactByName(ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem),
-            actionableItemName);
+               actionableItemName);
       } catch (ArtifactDoesNotExist ex) {
          AWorkbench.popup(
-            "Configuration Error",
-            "Actionable Item \"" + actionableItemName + "\" is not configured for ATS tracking.\n\nAction can not be created.");
+               "Configuration Error",
+               "Actionable Item \"" + actionableItemName + "\" is not configured for ATS tracking.\n\nAction can not be created.");
          return;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -317,7 +315,7 @@ public final class AtsUtil {
                }
             } else if (atsOpenOption == AtsOpenOption.AtsWorld) {
                WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
-                  Arrays.asList(actionArt)));
+                     Arrays.asList(actionArt)));
             } else if (atsOpenOption == AtsOpenOption.OpenOneOrPopupSelect) {
                if (teams.size() == 1) {
                   SMAEditor.editArtifact(teams.iterator().next());
@@ -369,7 +367,7 @@ public final class AtsUtil {
       for (Artifact art : artifacts) {
          if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
             WorldEditor.open(new WorldEditorUISearchItemProvider(new GroupWorldSearchItem(art), null,
-               TableLoadOption.None));
+                  TableLoadOption.None));
          } else {
             otherArts.add(art);
          }
@@ -430,7 +428,7 @@ public final class AtsUtil {
    public static <A extends Artifact> List<A> getActive(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws OseeCoreException {
       List<A> results = new ArrayList<A>();
       Collection<? extends Artifact> artsOfClass =
-         clazz != null ? Collections.castMatching(clazz, artifacts) : artifacts;
+            clazz != null ? Collections.castMatching(clazz, artifacts) : artifacts;
       for (Artifact art : artsOfClass) {
          if (active == Active.Both) {
             results.add((A) art);
@@ -447,18 +445,11 @@ public final class AtsUtil {
       return results;
    }
 
-   public static BranchGuidEventFilter getCommonBranchFilter() {
-      if (branchGuidEventFilter == null) {
-         branchGuidEventFilter = new BranchGuidEventFilter(CoreBranches.COMMON);
-      }
-      return branchGuidEventFilter;
-   }
-
    public static List<IEventFilter> getAtsObjectEventFilters() {
       try {
          if (atsObjectEventFilter == null) {
             atsObjectEventFilter = new ArrayList<IEventFilter>(2);
-            atsObjectEventFilter.add(getCommonBranchFilter());
+            atsObjectEventFilter.add(FrameworkEventManager.getCommonBranchFilter());
             atsObjectEventFilter.add(getAtsObjectArtifactTypeEventFilter());
          }
       } catch (Exception ex) {
@@ -486,7 +477,7 @@ public final class AtsUtil {
    public static ArtifactTypeEventFilter getReviewArtifactTypeEventFilter() {
       if (reviewArtifactTypesFilter == null) {
          reviewArtifactTypesFilter =
-            new ArtifactTypeEventFilter(AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
+               new ArtifactTypeEventFilter(AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
       }
       return reviewArtifactTypesFilter;
    }

@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-// TODO remove this when old branch events go away; handled by BranchEventType.MergeConflictResolved for new events
+// TODO <REM2> remove this when old branch events go away; handled by BranchEventType.MergeConflictResolved for new events
 public interface IMergeBranchEventListener extends IEventListener {
 
    public void handleMergeBranchEvent(Sender sender, MergeBranchEventType branchModType, int branchId) throws OseeCoreException;

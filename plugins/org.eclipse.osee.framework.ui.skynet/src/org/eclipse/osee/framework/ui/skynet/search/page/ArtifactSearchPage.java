@@ -74,6 +74,8 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.part.IPageSite;
 
 /**
+ * <REM2>
+ * 
  * @author Roberto E. Escobar
  */
 public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implements IAdaptable, IRebuildMenuListener, IArtifactEventListener, IFrameworkTransactionEventListener, IArtifactsPurgedEventListener, IBranchProvider {

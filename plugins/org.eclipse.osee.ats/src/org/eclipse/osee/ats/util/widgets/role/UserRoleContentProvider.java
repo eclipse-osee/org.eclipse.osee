@@ -35,8 +35,7 @@ public class UserRoleContentProvider implements ITreeContentProvider {
    public void add(final Collection<? extends UserRole> items) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (xViewer.getInput() == null)
-               xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
             rootSet.addAll(items);
             xViewer.refresh();
          };
@@ -46,8 +45,7 @@ public class UserRoleContentProvider implements ITreeContentProvider {
    public void set(final Collection<? extends UserRole> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (xViewer.getInput() == null)
-               xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
             clear();
             add(arts);
          };
@@ -57,15 +55,14 @@ public class UserRoleContentProvider implements ITreeContentProvider {
    public void clear() {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (xViewer.getInput() == null)
-               xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
             rootSet.clear();
             xViewer.refresh();
          };
       });
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Object[]) {
          return (Object[]) parentElement;
@@ -85,8 +82,7 @@ public class UserRoleContentProvider implements ITreeContentProvider {
    }
 
    public Object[] getElements(Object inputElement) {
-      if (inputElement instanceof String)
-         return new Object[] {inputElement};
+      if (inputElement instanceof String) return new Object[] {inputElement};
       return getChildren(inputElement);
    }
 

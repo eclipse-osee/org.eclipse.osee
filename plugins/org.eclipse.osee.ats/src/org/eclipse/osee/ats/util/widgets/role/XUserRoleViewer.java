@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.FrameworkEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -316,7 +317,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
       }
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    public ArrayList<UserRole> getSelectedUserRoleItems() {
       ArrayList<UserRole> items = new ArrayList<UserRole>();
       if (xViewer == null) {
@@ -498,7 +499,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(AtsUtil.getCommonBranchFilter(), AtsUtil.getReviewArtifactTypeEventFilter());
+      return Arrays.asList(FrameworkEventManager.getCommonBranchFilter(), AtsUtil.getReviewArtifactTypeEventFilter());
    }
 
    @Override

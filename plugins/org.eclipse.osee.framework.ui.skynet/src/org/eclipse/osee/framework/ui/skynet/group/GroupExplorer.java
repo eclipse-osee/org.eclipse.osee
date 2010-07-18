@@ -39,6 +39,9 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -78,7 +81,7 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * @author Donald G. Dunne
  */
-public class GroupExplorer extends ViewPart implements IFrameworkTransactionEventListener, IActionable, IRebuildMenuListener {
+public class GroupExplorer extends ViewPart implements IArtifactEventListener, IFrameworkTransactionEventListener, IActionable, IRebuildMenuListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.group.GroupExplorer";
    private GroupTreeViewer treeViewer;
    private Artifact rootArt;
@@ -569,6 +572,35 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Group Explorer exception on init", ex);
       }
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return null;
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      if (rootArt == null || branch == null || artifactEvent.getBranchGuid().equals(branch.getGuid())) {
+         return;
+      }
+      try {
+         Artifact topArt = UniversalGroup.getTopUniversalGroupArtifact(branch);
+         if (topArt != null) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  storeExpandedAndSelection();
+                  refresh();
+                  restoreExpandedAndSelection();
+               }
+            });
+            return;
+         }
+      } catch (Exception ex) {
+         // do nothing
+      }
+
    }
 
 }

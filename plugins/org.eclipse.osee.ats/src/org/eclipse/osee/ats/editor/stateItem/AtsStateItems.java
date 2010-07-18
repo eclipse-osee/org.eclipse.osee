@@ -43,7 +43,7 @@ public class AtsStateItems {
       return getStateItems(sma.getWorkPageDefinition().getId());
    }
 
-   @SuppressWarnings( {"unchecked"})
+   @SuppressWarnings({"rawtypes"})
    private void loadAllStateItems() {
       if (stateItems.size() > 0) return;
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsStateItem");
